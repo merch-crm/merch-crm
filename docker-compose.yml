@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: ghcr.io/${GITHUB_REPOSITORY}:latest # This will be replaced or you can use your image name
+    container_name: merch-crm
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local # Make sure this file exists on the server or map individual ENV vars
+    environment:
+      - NODE_ENV=production

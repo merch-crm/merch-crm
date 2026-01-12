@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdfdfd;
+  --foreground: #18181b;
+  /* zinc-950 */
+
+  --card: #ffffff;
+  --card-foreground: #18181b;
+
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+
+  --primary: #4f46e5;
+  /* indigo-600 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f4f4f5;
+  /* zinc-100 */
+  --secondary-foreground: #18181b;
+
+  --muted: #f4f4f5;
+  /* zinc-100 */
+  --muted-foreground: #71717a;
+  /* zinc-500 */
+
+  --accent: #f4f4f5;
+  /* zinc-100 */
+  --accent-foreground: #18181b;
+
+  --destructive: #ef4444;
+  /* red-500 */
+  --destructive-foreground: #ffffff;
+
+  --border: #e4e4e7;
+  /* zinc-200 */
+  --input: #e4e4e7;
+  --ring: #4f46e5;
+
+  --radius: 18px;
+  /* Установлено 18px по запросу пользователя */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Dark mode removed to force light theme */
+/* 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b; 
+    --foreground: #fafafa;
+    
+    --card: #09090b;
+    --card-foreground: #fafafa;
+    
+    --popover: #09090b;
+    --popover-foreground: #fafafa;
+    
+    --primary: #6366f1;
+    --primary-foreground: #fafafa;
+    
+    --secondary: #27272a; 
+    --secondary-foreground: #fafafa;
+    
+    --muted: #27272a; 
+    --muted-foreground: #a1a1aa; 
+    
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
+    
+    --destructive: #7f1d1d; 
+    --destructive-foreground: #fafafa;
+    
+    --border: #27272a; 
+    --input: #27272a;
+    --ring: #6366f1;
+  }
+}
+*/
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  @apply antialiased selection:bg-indigo-500/20 selection:text-indigo-600 dark:selection:text-indigo-400;
+}
+
+/* Custom Scrollbar for Bento feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-200 dark:bg-zinc-800 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-300 dark:bg-zinc-700;
+}
+
+/* react-day-picker custom styles */
+.rdp {
+  margin: 0;
+  padding: 0;
+}
+
+.rdp-custom {
+  --rdp-accent-color: #14b8a6;
+  --rdp-background-color: #ccfbf1;
+}
+
+/* Force proper table structure */
+.rdp-table {
+  width: 100%;
+  border-collapse: collapse;
+  display: table !important;
+  table-layout: fixed !important;
+}
+
+.rdp-thead {
+  display: table-header-group !important;
+}
+
+.rdp-tbody {
+  display: table-row-group !important;
+}
+
+.rdp-head_row,
+.rdp-row {
+  display: table-row !important;
+}
+
+.rdp-head_cell,
+.rdp-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 !important;
+  width: 40px !important;
+  min-width: 40px !important;
+}
+
+/* Weekday headers - teal color */
+.rdp-custom .rdp-head_cell {
+  color: #14b8a6 !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+}
+
+/* Ensure buttons don't break layout */
+.rdp-day_button,
+.rdp-day {
+  display: inline-flex !important;
+  margin: 0 auto;
+}
+
+/* Range styling with higher specificity */
+.rdp-custom .rdp-day_range_middle {
+  background-color: #ccfbf1 !important;
+  color: #0f766e !important;
+  border-radius: 0 !important;
+}
+
+.rdp-custom .rdp-day_range_start,
+.rdp-custom .rdp-day_range_end {
+  background-color: #14b8a6 !important;
+  color: white !important;
+  border-radius: 0.75rem !important;
+}
+
+.rdp-custom .rdp-day_range_start:hover,
+.rdp-custom .rdp-day_range_end:hover {
+  background-color: #0d9488 !important;
+}
+
+/* Today indicator */
+.rdp-custom .rdp-day_today {
+  color: #14b8a6 !important;
+  font-weight: 700 !important;
+}
+
+/* Selected day */
+.rdp-custom .rdp-day_selected:not(.rdp-day_range_middle):not(.rdp-day_range_start):not(.rdp-day_range_end) {
+  background-color: #14b8a6 !important;
+  color: white !important;
+  border-radius: 0.75rem !important;
+}
