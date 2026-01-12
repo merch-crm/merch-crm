@@ -8,6 +8,31 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env.local # Make sure this file exists on the server or map individual ENV vars
+      - .env.local
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/merch_crm
+    networks:
+      - app_network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: merch-crm-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres # Change this in production if exposed, but internal net is safe enough for start
+      POSTGRES_DB: merch_crm
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
