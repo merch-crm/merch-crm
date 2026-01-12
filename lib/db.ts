@@ -1,7 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-const connectionString = process.env.DATABASE_URL!;
+// Provide a fallback for build time. We don't want to crash during build if env vars aren't present.
+const connectionString = process.env.DATABASE_URL || "postgres://user:pass@localhost:5432/db";
 
 const pool = new Pool({
     connectionString: connectionString,
