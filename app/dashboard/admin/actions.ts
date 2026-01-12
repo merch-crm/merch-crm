@@ -48,7 +48,7 @@ export async function getRoles() {
             "Дизайнер": 7,
         };
 
-        const sortedRoles = allRoles.sort((a, b) => {
+        const sortedRoles = allRoles.sort((a: any, b: any) => {
             // First, sort by department priority
             const deptA = a.department?.name || "";
             const deptB = b.department?.name || "";
@@ -160,9 +160,9 @@ export async function getAuditLogs() {
 
         // Fetch users to map names
         const allUsers = await db.query.users.findMany();
-        const userMap = new Map(allUsers.map(u => [u.id, u]));
+        const userMap = new Map(allUsers.map((u: any) => [u.id, u]));
 
-        const enrichedLogs = logs.map(log => ({
+        const enrichedLogs = logs.map((log: any) => ({
             ...log,
             user: log.userId ? userMap.get(log.userId) : null
         }));
@@ -435,7 +435,7 @@ export async function getDepartments() {
 
         if (unsyncedUsers.length > 0) {
             console.log(`Found ${unsyncedUsers.length} unsynced users. Attempting to link...`);
-            const deptMap = new Map(allDepts.map(d => [d.name.toLowerCase(), d.id]));
+            const deptMap = new Map(allDepts.map((d: any) => [d.name.toLowerCase(), d.id]));
 
             for (const user of unsyncedUsers) {
                 if (user.department) {
@@ -460,7 +460,7 @@ export async function getDepartments() {
             "Дизайн": 4,
         };
 
-        const sortedDepts = allDepts.sort((a, b) => {
+        const sortedDepts = allDepts.sort((a: any, b: any) => {
             const priorityA = deptPriority[a.name] || 999;
             const priorityB = deptPriority[b.name] || 999;
             if (priorityA !== priorityB) {
@@ -469,7 +469,7 @@ export async function getDepartments() {
             return a.name.localeCompare(b.name);
         });
 
-        const dataWithCounts = sortedDepts.map(dept => ({
+        const dataWithCounts = sortedDepts.map((dept: any) => ({
             ...dept,
             userCount: dept.users?.length || 0
         }));

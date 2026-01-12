@@ -28,7 +28,7 @@ export async function InventoryTable() {
                     </tr>
                 </thead>
                 <tbody className="bg-card divide-y divide-border">
-                    {items.map((item) => {
+                    {items.map((item: any) => {
                         const isLowStock = item.quantity <= item.lowStockThreshold;
                         return (
                             <tr key={item.id} className="hover:bg-muted/50 transition-colors">

@@ -41,10 +41,10 @@ export default async function OrdersPage({
 
     const stats = {
         total: allOrders.length,
-        new: allOrders.filter(o => o.status === "new").length,
-        inProduction: allOrders.filter(o => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
-        completed: allOrders.filter(o => o.status === "done").length,
-        revenue: allOrders.reduce((acc, o) => acc + Number(o.totalAmount || 0), 0)
+        new: allOrders.filter((o: any) => o.status === "new").length,
+        inProduction: allOrders.filter((o: any) => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
+        completed: allOrders.filter((o: any) => o.status === "done").length,
+        revenue: allOrders.reduce((acc: number, o: any) => acc + Number(o.totalAmount || 0), 0)
     };
 
     return (
