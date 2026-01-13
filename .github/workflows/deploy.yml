@@ -45,6 +45,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/merch-crm # Replace with your app directory
+            cd ~/merch-crm
+            git pull origin main
             docker pull ghcr.io/${{ github.repository }}:latest
             docker compose up -d
