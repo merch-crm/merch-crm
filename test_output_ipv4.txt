@@ -1,9 +1,0 @@
-[dotenv@17.2.3] injecting env (1) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-Connecting...
-Connection error: Error: Connection terminated unexpectedly
-    at Connection.<anonymous> (/Users/leonidmolchanov/Desktop/merch-crm/node_modules/pg/lib/client.js:136:73)
-    at Object.onceWrapper (node:events:622:28)
-    at Connection.emit (node:events:508:28)
-    at Socket.<anonymous> (/Users/leonidmolchanov/Desktop/merch-crm/node_modules/pg/lib/connection.js:62:12)
-    at Socket.emit (node:events:508:28)
-    at TCP.<anonymous> (node:net:346:12)
