@@ -747,25 +747,13 @@ export async function getSystemStats() {
             auditLogs: await fetchCount(auditLogs),
         };
 
-        // 3. Storage Stats
-        const uploadsDir = path.join(process.cwd(), "public/uploads");
-        let storageSize = 0;
-        let fileCount = 0;
-
-        if (fs.existsSync(uploadsDir)) {
-            const getAllFiles = (dir: string) => {
-                const files = fs.readdirSync(dir);
-                files.forEach(file => {
-                    const name = path.join(dir, file);
-                    if (fs.statSync(name).isDirectory()) {
-                        getAllFiles(name);
-                    } else {
-                        storageSize += fs.statSync(name).size;
-                        fileCount++;
-                    }
-                });
-            };
-            getAllFiles(uploadsDir);
+        // 3. Storage Stats (S3)
+        let storageStats = { size: 0, fileCount: 0 };
+        try {
+            const { getStorageStats } = await import("@/lib/storage");
+            storageStats = await getStorageStats();
+        } catch (e) {
+            console.error("Failed to get storage stats:", e);
         }
 
         return {
@@ -783,8 +771,8 @@ export async function getSystemStats() {
                     tableCounts
                 },
                 storage: {
-                    size: storageSize,
-                    fileCount
+                    size: storageStats.size,
+                    fileCount: storageStats.fileCount
                 }
             }
         };

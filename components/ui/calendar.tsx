@@ -33,8 +33,8 @@ function Calendar({
                 ),
                 nav_button_previous: "absolute left-1",
                 nav_button_next: "absolute right-1",
-                table: "w-full border-collapse space-y-1",
-                head_row: "flex",
+                table: "w-full space-y-1 block", // Ensure table behaves as block for flex rows
+                head_row: "hidden", // Hide the header row as requested
                 head_cell: "text-slate-500 rounded-md w-9 font-normal text-[0.8rem] capitalize",
                 row: "flex w-full mt-2",
                 cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-indigo-50/50 [&:has([aria-selected])]:bg-indigo-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative z-20",

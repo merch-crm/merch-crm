@@ -51,4 +51,38 @@ export async function getFileUrl(key: string, expiresIn = 3600) {
     }
 }
 
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+
+export async function getStorageStats() {
+    let totalSize = 0;
+    let fileCount = 0;
+    let continuationToken: string | undefined = undefined;
+
+    try {
+        do {
+            const command = new ListObjectsV2Command({
+                Bucket: bucketName,
+                ContinuationToken: continuationToken,
+            });
+
+            const response = await s3Client.send(command);
+
+            if (response.Contents) {
+                for (const object of response.Contents) {
+                    totalSize += object.Size || 0;
+                    fileCount++;
+                }
+            }
+
+            continuationToken = response.NextContinuationToken;
+        } while (continuationToken);
+
+        return { size: totalSize, fileCount };
+    } catch (error) {
+        console.error("Error fetching storage stats:", error);
+        // Fallback to 0 if we can't read the bucket (e.g. permission issues)
+        return { size: 0, fileCount: 0 };
+    }
+}
+
 export { s3Client };
