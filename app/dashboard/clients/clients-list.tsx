@@ -19,6 +19,8 @@ import {
 import { ClientDetailPopup } from "./client-detail-popup";
 import { EditClientDialog } from "./edit-client-dialog";
 import { DeleteClientDialog } from "./delete-client-dialog";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { Pagination } from "@/components/ui/pagination";
 
 export function ClientsTable({ userPermissions, userRoleName }: { userPermissions?: any; userRoleName?: string | null }) {
     const [clients, setClients] = useState<any[]>([]);
@@ -27,6 +29,8 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
     const [editingClient, setEditingClient] = useState<any | null>(null);
     const [deletingClient, setDeletingClient] = useState<any | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const searchParams = useSearchParams();
+    const currentPage = Number(searchParams.get("page")) || 1;
 
     // Filter & Sort State
     const [sortBy, setSortBy] = useState<"alphabet" | "last_order" | "order_count" | "revenue">("alphabet");
@@ -249,7 +253,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {sortedAndFilteredClients.map(client => (
+                            {sortedAndFilteredClients.slice((currentPage - 1) * 20, currentPage * 20).map(client => (
                                 <tr key={client.id} className="hover:bg-slate-50 transition-colors group">
                                     <td className="p-4 text-center">
                                         <input type="checkbox" className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
@@ -314,31 +318,40 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                         <p className="text-sm mt-1">Попробуйте изменить параметры поиска</p>
                     </div>
                 )}
+                {sortedAndFilteredClients.length > 0 && (
+                    <div className="mt-4 border-t border-slate-100 pt-4">
+                        <Pagination
+                            totalItems={sortedAndFilteredClients.length}
+                            pageSize={20}
+                            currentPage={currentPage}
+                            itemName="клиентов"
+                        />
+                    </div>
+                )}
+
+                <ClientDetailPopup
+                    clientId={selectedClientId || ""}
+                    isOpen={!!selectedClientId}
+                    onClose={() => setSelectedClientId(null)}
+                />
+
+                <EditClientDialog
+                    client={editingClient}
+                    isOpen={!!editingClient}
+                    onClose={() => {
+                        setEditingClient(null);
+                        fetchClients();
+                    }}
+                />
+
+                <DeleteClientDialog
+                    client={deletingClient}
+                    isOpen={!!deletingClient}
+                    onClose={() => {
+                        setDeletingClient(null);
+                        fetchClients();
+                    }}
+                />
             </div>
-
-            <ClientDetailPopup
-                clientId={selectedClientId || ""}
-                isOpen={!!selectedClientId}
-                onClose={() => setSelectedClientId(null)}
-            />
-
-            <EditClientDialog
-                client={editingClient}
-                isOpen={!!editingClient}
-                onClose={() => {
-                    setEditingClient(null);
-                    fetchClients();
-                }}
-            />
-
-            <DeleteClientDialog
-                client={deletingClient}
-                isOpen={!!deletingClient}
-                onClose={() => {
-                    setDeletingClient(null);
-                    fetchClients();
-                }}
-            />
-        </div>
-    );
+            );
 }

@@ -97,6 +97,13 @@ export function SystemStats() {
                 </div>
             </div>
 
+            {error && (
+                <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100 flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                    <p className="text-sm font-bold">Ошибка обновления: {error}</p>
+                </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="border-none shadow-sm bg-gradient-to-br from-indigo-500 to-indigo-600 text-white overflow-hidden relative">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -211,6 +218,6 @@ export function SystemStats() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     );
 }

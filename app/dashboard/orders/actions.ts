@@ -3,18 +3,31 @@
 import { db } from "@/lib/db";
 import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, inArray, and, gte, lte } from "drizzle-orm";
+import { desc, eq, inArray, and, gte, lte, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 
-export async function getOrders(from?: Date, to?: Date) {
+export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20) {
     try {
+        const offset = (page - 1) * limit;
+
         const whereClause = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
 
+        const finalWhere = whereClause.length > 0 ? and(...whereClause) : undefined;
+
+        // 1. Get Total Count
+        // Note: db.query.orders.findMany doesn"t support count easily with filters without raw sql or selecting count
+        // Using db.select count
+        const totalRes = await db.select({ count: sql<number>`count(*)` })
+            .from(orders)
+            .where(finalWhere);
+        const total = Number(totalRes[0]?.count || 0);
+
+        // 2. Get Paginated Data
         const data = await db.query.orders.findMany({
-            where: whereClause.length > 0 ? and(...whereClause) : undefined,
+            where: finalWhere,
             with: {
                 client: true,
                 items: true,
@@ -22,8 +35,16 @@ export async function getOrders(from?: Date, to?: Date) {
                 attachments: true,
             },
             orderBy: desc(orders.createdAt),
+            limit,
+            offset
         });
-        return { data };
+
+        return {
+            data,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        };
     } catch (error) {
         console.error("Error fetching orders:", error);
         return { error: "Failed to fetch orders" };
@@ -227,7 +248,6 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
         const { uploadFile } = await import("@/lib/s3");
         const { key, url } = await uploadFile(buffer, file.name, file.type);
 
-        // const { orderAttachments } = await import("@/lib/schema"); // Already imported at the top
         await db.insert(orderAttachments).values({
             orderId,
             fileName: file.name,
@@ -244,5 +264,32 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
     } catch (error) {
         console.error("Error uploading order file:", error);
         return { error: "Failed to upload file" };
+    }
+}
+
+// Separate stats fetcher to avoid fetching all orders for pagination
+export async function getOrderStats(from?: Date, to?: Date) {
+    try {
+        const whereClause = [];
+        if (from) whereClause.push(gte(orders.createdAt, from));
+        if (to) whereClause.push(lte(orders.createdAt, to));
+
+        const finalWhere = whereClause.length > 0 ? and(...whereClause) : undefined;
+
+        const allOrders = await db.select({
+            status: orders.status,
+            totalAmount: orders.totalAmount
+        }).from(orders).where(finalWhere);
+
+        return {
+            total: allOrders.length,
+            new: allOrders.filter(o => o.status === "new").length,
+            inProduction: allOrders.filter(o => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
+            completed: allOrders.filter(o => o.status === "done").length,
+            revenue: allOrders.reduce((acc, o) => acc + Number(o.totalAmount || 0), 0)
+        };
+    } catch (error) {
+        console.error("Error fetching order stats:", error);
+        return { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
     }
 }

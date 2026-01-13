@@ -154,23 +154,69 @@ export async function deleteUser(userId: string) {
     }
 }
 
-export async function getAuditLogs() {
+export async function getAuditLogs(page = 1, limit = 20, search = "") {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
     try {
-        const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt));
+        const offset = (page - 1) * limit;
 
-        // Fetch users to map names
-        const allUsers = await db.query.users.findMany();
-        const userMap = new Map(allUsers.map((u) => [u.id, u] as const));
+        // Build filtering conditions
+        const conditions = [];
+        if (search) {
+            const searchLower = `%${search.toLowerCase()}%`;
+
+            // Find users matching search to filter by userId
+            const matchingUsers = await db.query.users.findMany({
+                where: sql`lower(${users.name}) LIKE ${searchLower}`,
+                columns: { id: true }
+            });
+            const matchingUserIds = matchingUsers.map(u => u.id);
+
+            conditions.push(sql`
+                (
+                    lower(${auditLogs.action}) LIKE ${searchLower} OR 
+                    lower(${auditLogs.entityType}) LIKE ${searchLower} OR
+                    ${matchingUserIds.length > 0 ? inArray(auditLogs.userId, matchingUserIds) : sql`false`}
+                )
+            `);
+        }
+
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+        // 1. Get Total Count for Pagination
+        const totalRes = await db.select({ count: sql<number>`count(*)` })
+            .from(auditLogs)
+            .where(whereClause);
+        const total = Number(totalRes[0]?.count || 0);
+
+        // 2. Get Paginated Data
+        const logs = await db.select()
+            .from(auditLogs)
+            .where(whereClause)
+            .orderBy(desc(auditLogs.createdAt))
+            .limit(limit)
+            .offset(offset);
+
+        // 3. Fetch users for mapping
+        const userIds = Array.from(new Set(logs.map(l => l.userId).filter(Boolean))) as string[];
+        const relatedUsers = userIds.length > 0
+            ? await db.query.users.findMany({ where: inArray(users.id, userIds) })
+            : [];
+
+        const userMap = new Map(relatedUsers.map((u) => [u.id, u] as const));
 
         const enrichedLogs = logs.map((log) => ({
             ...log,
             user: log.userId ? userMap.get(log.userId) : null
         }));
 
-        return { data: enrichedLogs };
+        return {
+            data: enrichedLogs,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        };
     } catch (error) {
         console.error("Error fetching audit logs:", error);
         return { error: "Failed to fetch audit logs" };
@@ -675,20 +721,30 @@ export async function getSystemStats() {
         const freeMem = os.freemem();
         const uptime = os.uptime();
 
-        // 2. Database Stats (PostgreSQL specific size query)
-        const dbSizeResult: any = await db.execute(sql`SELECT pg_database_size(current_database())`);
-        const dbSize = parseInt(dbSizeResult[0]?.pg_database_size || "0");
+        // 2. Database Stats
+        let dbSize = 0;
+        try {
+            const dbSizeResult: any = await db.execute(sql`SELECT pg_database_size(current_database())`);
+            dbSize = parseInt(dbSizeResult[0]?.pg_database_size || "0");
+        } catch (e) {
+            console.error("Failed to get db size:", e);
+        }
 
-        const fetchCount = async (table: string) => {
-            const res = await db.execute(sql.raw(`SELECT count(*) as count FROM ${table}`));
-            return (res[0] as { count: number | string }).count;
+        const fetchCount = async (table: any) => {
+            try {
+                const res = await db.select({ value: count() }).from(table);
+                return res[0].value;
+            } catch (e) {
+                console.error("Failed to count table:", e);
+                return 0;
+            }
         };
 
         const tableCounts = {
-            users: await fetchCount("users"),
-            orders: await fetchCount("orders"),
-            clients: await fetchCount("clients"),
-            auditLogs: await fetchCount("audit_logs"),
+            users: await fetchCount(users),
+            orders: await fetchCount(orders),
+            clients: await fetchCount(clients),
+            auditLogs: await fetchCount(auditLogs),
         };
 
         // 3. Storage Stats

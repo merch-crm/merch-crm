@@ -2,18 +2,20 @@ import { CreateOrderDialog } from "./create-order-dialog";
 import { OrdersTable, Order } from "./orders-table";
 import { OrderStats } from "./order-stats";
 import { DateRangeFilter } from "./date-range-filter";
-import { getOrders } from "./actions";
+import { getOrders, getOrderStats } from "./actions";
 import { startOfDay, endOfDay, subDays } from "date-fns";
+import { Pagination } from "@/components/ui/pagination";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
 }: {
-    searchParams: Promise<{ range?: string; from?: string; to?: string }>;
+    searchParams: Promise<{ range?: string; from?: string; to?: string; page?: string }>;
 }) {
     const searchParams = await searchParamsPromise;
     const range = searchParams.range || "all";
     const fromParam = searchParams.from;
     const toParam = searchParams.to;
+    const page = Number(searchParams.page) || 1;
 
     let from: Date | undefined;
     let to: Date | undefined;
@@ -37,16 +39,10 @@ export default async function OrdersPage({
         to = endOfDay(now);
     }
 
-    const { data: allOrdersResponse = [], error } = await getOrders(from, to) as { data: Order[], error?: string };
+    const { data: allOrdersResponse = [], total = 0, error } = await getOrders(from, to, page) as { data: Order[], total?: number, error?: string };
     const allOrders = allOrdersResponse;
 
-    const stats = {
-        total: allOrders.length,
-        new: allOrders.filter((o: Order) => o.status === "new").length,
-        inProduction: allOrders.filter((o: Order) => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
-        completed: allOrders.filter((o: Order) => o.status === "done").length,
-        revenue: allOrders.reduce((acc: number, o: Order) => acc + Number(o.totalAmount || 0), 0)
-    };
+    const stats = await getOrderStats(from, to);
 
     return (
         <div className="space-y-6">
@@ -65,6 +61,13 @@ export default async function OrdersPage({
             <OrderStats stats={stats} />
 
             <OrdersTable orders={allOrders} error={error} />
+
+            <Pagination
+                totalItems={total}
+                pageSize={20}
+                currentPage={page}
+                itemName="заказов"
+            />
         </div>
     );
 }
