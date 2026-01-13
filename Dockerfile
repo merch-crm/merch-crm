@@ -4,7 +4,9 @@ FROM node:20-slim AS base
 # Install dependencies only when needed
 FROM base AS deps
 # Install libc6-compat and other potential missing build tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Fix for slow builds in RF: use Yandex mirror
+RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y --no-install-recommends \
     libc6 \
     && rm -rf /var/lib/apt/lists/*
 
