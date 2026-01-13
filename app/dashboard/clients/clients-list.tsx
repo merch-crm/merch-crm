@@ -353,5 +353,6 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                     }}
                 />
             </div>
-            );
+        </div>
+    );
 }

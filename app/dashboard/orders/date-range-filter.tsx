@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar as CalendarIcon, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronDown, Check } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { DayPicker, type DateRange } from "react-day-picker";
+import { DateRange } from "react-day-picker";
+import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
@@ -15,144 +16,12 @@ import {
 import { Button } from "@/components/ui/button";
 
 const ranges = [
-    { label: "Today", value: "today" },
-    { label: "Yesterday", value: "yesterday" },
-    { label: "7 days", value: "7d" },
-    { label: "30 days", value: "30d" },
-    { label: "90 days", value: "90d" },
+    { label: "Сегодня", value: "today" },
+    { label: "Вчера", value: "yesterday" },
+    { label: "7 дней", value: "7d" },
+    { label: "30 дней", value: "30d" },
+    { label: "90 дней", value: "90d" },
 ];
-
-// Custom DayButton component with teal styling
-interface CustomDayButtonProps {
-    day: Date;
-    modifiers: {
-        range_start?: boolean;
-        range_end?: boolean;
-        range_middle?: boolean;
-        selected?: boolean;
-        today?: boolean;
-        outside?: boolean;
-        disabled?: boolean;
-    };
-    children: React.ReactNode;
-    [key: string]: unknown;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomDayButton(props: any) {
-    const { day, modifiers, children, ...buttonProps } = props;
-
-    let style: React.CSSProperties = {
-        width: '40px',
-        height: '40px',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '14px',
-        fontWeight: '500',
-        transition: 'all 0.2s',
-        border: 'none',
-        background: 'transparent',
-        cursor: 'pointer',
-        color: '#334155',
-    };
-
-    if (modifiers.range_start || modifiers.range_end) {
-        style = {
-            ...style,
-            backgroundColor: '#14b8a6',
-            color: 'white',
-            borderRadius: '12px',
-            fontWeight: '600',
-        };
-    } else if (modifiers.range_middle) {
-        style = {
-            ...style,
-            backgroundColor: '#ccfbf1',
-            color: '#0f766e',
-            borderRadius: '0',
-        };
-    } else if (modifiers.selected) {
-        style = {
-            ...style,
-            backgroundColor: '#14b8a6',
-            color: 'white',
-            borderRadius: '12px',
-        };
-    } else if (modifiers.today) {
-        style = {
-            ...style,
-            color: '#14b8a6',
-            fontWeight: '700',
-        };
-    }
-
-    if (modifiers.outside) {
-        style = {
-            ...style,
-            color: '#cbd5e1',
-            opacity: 0.4,
-        };
-    }
-
-    if (modifiers.disabled) {
-        style = {
-            ...style,
-            color: '#cbd5e1',
-            opacity: 0.4,
-            cursor: 'not-allowed',
-        };
-    }
-
-    return (
-        <button
-            {...buttonProps}
-            style={style}
-            onMouseEnter={(e) => {
-                if (!modifiers.range_start && !modifiers.range_end && !modifiers.selected && !modifiers.disabled) {
-                    e.currentTarget.style.backgroundColor = '#ccfbf1';
-                    e.currentTarget.style.color = '#0f766e';
-                }
-            }}
-            onMouseLeave={(e) => {
-                if (!modifiers.range_start && !modifiers.range_end && !modifiers.selected) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = '#334155';
-                }
-            }}
-        >
-            {children}
-        </button>
-    );
-}
-
-// Custom HeadCell component for teal weekday headers
-interface CustomHeadCellProps {
-    children: React.ReactNode;
-    [key: string]: unknown;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomHeadCell(props: any) {
-    const { children, ...rest } = props;
-    return (
-        <th
-            {...rest}
-            style={{
-                color: '#14b8a6',
-                fontWeight: '700',
-                fontSize: '12px',
-                textTransform: 'uppercase',
-                textAlign: 'center',
-                padding: '8px',
-                width: '40px',
-                height: '40px',
-            }}
-        >
-            {children}
-        </th>
-    );
-}
 
 export function DateRangeFilter() {
     const router = useRouter();
@@ -177,21 +46,14 @@ export function DateRangeFilter() {
         setIsPopoverOpen(false);
     };
 
-    const handleReset = () => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.delete("range");
-        params.delete("from");
-        params.delete("to");
-        router.push(`?${params.toString()}`);
-        setDateRange(undefined);
-        setIsPopoverOpen(false);
-    };
-
     const handleApplyCustomRange = () => {
-        if (dateRange?.from && dateRange?.to) {
+        if (dateRange?.from) {
             const params = new URLSearchParams(searchParams.toString());
-            params.set("from", format(dateRange.from, "yyyy-MM-dd"));
-            params.set("to", format(dateRange.to, "yyyy-MM-dd"));
+            const fromStr = format(dateRange.from, "yyyy-MM-dd");
+            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : fromStr;
+
+            params.set("from", fromStr);
+            params.set("to", toStr);
             params.set("range", "custom");
             router.push(`?${params.toString()}`);
             setIsPopoverOpen(false);
@@ -213,7 +75,7 @@ export function DateRangeFilter() {
                             : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                     )}
                 >
-                    {range.label === "Today" ? "Сегодня" : range.label === "Yesterday" ? "Вчера" : "7 дней"}
+                    {range.label}
                 </button>
             ))}
 
@@ -222,79 +84,57 @@ export function DateRangeFilter() {
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                 <PopoverTrigger asChild>
                     <button className={cn(
-                        "flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all border border-transparent",
+                        "flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all border border-transparent group",
                         isCustom
-                            ? "bg-white text-slate-900 shadow-sm border-slate-200"
-                            : "text-slate-500 hover:text-slate-900 transition-colors"
+                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                            : "bg-white text-slate-700 shadow-sm hover:text-slate-900 border-slate-200"
                     )}>
-                        <CalendarIcon className="w-4 h-4" />
-                        <span>{isCustom && dateRange?.from && dateRange?.to
-                            ? `${format(dateRange.from, "dd.MM.yy")} - ${format(dateRange.to, "dd.MM.yy")}`
-                            : "Выбрать период"}</span>
-                        <ChevronDown className="w-4 h-4" />
+                        <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-white" : "text-slate-400 group-hover:text-slate-600")} />
+                        <span>
+                            {isCustom && dateRange?.from
+                                ? `${format(dateRange.from, "dd.MM.yy")} - ${dateRange.to ? format(dateRange.to, "dd.MM.yy") : format(dateRange.from, "dd.MM.yy")}`
+                                : "Выбрать период"}
+                        </span>
+                        <ChevronDown className={cn("w-4 h-4 ml-1 opacity-50", isCustom ? "text-white" : "")} />
                     </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 rounded-[24px] overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
+                <PopoverContent className="w-auto p-0 rounded-2xl overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
                     {/* Calendar */}
-                    <div className="p-4 bg-white relative">
-                        <DayPicker
+                    <div className="p-4 bg-white">
+                        <Calendar
+                            initialFocus
                             mode="range"
+                            defaultMonth={dateRange?.from}
                             selected={dateRange}
                             onSelect={setDateRange}
+                            numberOfMonths={1}
                             locale={ru}
-                            className="rdp-custom"
-                            classNames={{
-                                months: "space-y-4",
-                                month: "space-y-4",
-                                caption: "flex justify-center pt-1 relative items-center mb-6",
-                                caption_label: "text-sm font-bold text-slate-900",
-                                nav: "space-x-1 flex items-center",
-                                nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 transition-opacity inline-flex items-center justify-center rounded-lg hover:bg-slate-100",
-                                nav_button_previous: "absolute left-1",
-                                nav_button_next: "absolute right-1",
-                                table: "w-full space-y-1 block",
-                                head_row: "flex w-full",
-                                head_cell: "text-teal-500 rounded-md w-10 h-10 flex items-center justify-center font-bold text-[0.8rem] uppercase p-0 shrink-0",
-                                row: "flex w-full mt-2",
-                                cell: "h-10 w-10 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-teal-50/50 [&:has([aria-selected])]:bg-teal-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative z-20 shrink-0",
-                                day: "h-10 w-10 p-0 font-medium aria-selected:opacity-100 inline-flex items-center justify-center rounded-lg hover:bg-teal-50 hover:text-teal-700 text-slate-700 transition-colors",
-                                day_range_start: "day-range-start",
-                                day_range_end: "day-range-end",
-                                day_selected: "bg-teal-500 text-white hover:bg-teal-600 hover:text-white focus:bg-teal-500 focus:text-white",
-                                day_today: "bg-slate-100 text-slate-900",
-                                day_outside: "text-slate-300 opacity-50",
-                                day_disabled: "text-slate-300 opacity-50",
-                                day_range_middle: "aria-selected:bg-teal-50 aria-selected:text-teal-900",
-                                day_hidden: "invisible",
-                            }}
-                            components={{
-                                DayButton: CustomDayButton,
-                                Chevron: (props) => (
-                                    props.orientation === "left"
-                                        ? <ChevronLeft className="h-4 w-4 text-slate-500" />
-                                        : <ChevronRight className="h-4 w-4 text-slate-500" />
-                                ),
-                            }}
-                            formatters={{
-                                formatCaption: (date) => format(date, "MMMM yyyy", { locale: ru }).replace(/^\w/, c => c.toUpperCase()),
-                                formatWeekdayName: (date) => format(date, "EEEEEE", { locale: ru })
-                            }}
                         />
 
-                        {isCustom && (
-                            <div className="mt-6 flex justify-end gap-2 pr-2">
-                                <Button
-                                    size="sm"
-                                    onClick={handleApplyCustomRange}
-                                    className="bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-bold px-8 py-6 shadow-lg text-base"
-                                >
-                                    Выбрать
-                                </Button>
+                        <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                            <div className="text-xs font-medium text-slate-500">
+                                {dateRange?.from ? (
+                                    <>
+                                        Выбрано: <span className="text-indigo-600 font-bold">
+                                            {format(dateRange.from, "d MMM", { locale: ru })}
+                                            {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
+                                        </span>
+                                    </>
+                                ) : "Выберите даты"}
                             </div>
-                        )}
+                            <Button
+                                size="sm"
+                                onClick={handleApplyCustomRange}
+                                disabled={!dateRange?.from}
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-600/20"
+                            >
+                                <Check className="w-4 h-4 mr-2" />
+                                Применить
+                            </Button>
+                        </div>
                     </div>
                 </PopoverContent>
             </Popover>
-        </div >
+        </div>
     );
 }
