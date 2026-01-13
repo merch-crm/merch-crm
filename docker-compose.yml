@@ -11,6 +11,7 @@ services:
       - .env
     environment:
       - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
     networks:
       - app_network
     depends_on:
