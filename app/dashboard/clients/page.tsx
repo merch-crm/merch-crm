@@ -4,8 +4,6 @@ import { getClientStats } from "./actions";
 import {
     Users,
     UserPlus,
-    CheckCircle,
-    Star,
     CreditCard,
     BarChart3,
     ChevronRight,
@@ -113,7 +111,7 @@ export default async function ClientsPage() {
                     ))}
                 </div>
 
-                <ClientsTable userPermissions={userWithRole?.role?.permissions as any} userRoleName={userWithRole?.role?.name} />
+                <ClientsTable userPermissions={userWithRole?.role?.permissions} userRoleName={userWithRole?.role?.name} />
             </div>
         </div>
     );

@@ -1,9 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { tasks, users, roles } from "@/lib/schema";
+import { tasks } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { eq, desc, or, and } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getTasks() {

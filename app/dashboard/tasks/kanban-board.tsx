@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition } from "react";
 import {
     CheckCircle2,
     Clock,
     User,
-    Shield,
-    Calendar,
     MoreHorizontal,
-    Trash2,
-    Flag,
     Plus,
-    Eye,
-    Layout
+    Eye
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateTask } from "./actions";
@@ -47,8 +42,9 @@ const COLUMNS = [
     { id: "done", label: "Завершено", color: "bg-emerald-500", bg: "bg-emerald-50/10" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function KanbanBoard({ tasks, currentUserId, currentUserRoleId }: KanbanBoardProps) {
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
 

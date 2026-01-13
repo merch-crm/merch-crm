@@ -5,7 +5,12 @@ import { deleteClient } from "./actions";
 import { Loader2, AlertTriangle, X } from "lucide-react";
 
 interface DeleteClientDialogProps {
-    client: any | null;
+    client: {
+        id: string;
+        lastName: string;
+        firstName: string;
+        patronymic?: string | null;
+    } | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -27,7 +32,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
             } else {
                 onClose();
             }
-        } catch (err) {
+        } catch {
             setError("Произошла ошибка при удалении");
         } finally {
             setIsLoading(false);

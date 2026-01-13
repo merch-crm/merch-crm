@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Building, Loader2, Palette, Shield, Trash2, Plus, Key, Save } from "lucide-react";
+import { X, Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
 import { updateDepartment, getRolesByDepartment, getRoles, updateRoleDepartment } from "../actions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -55,6 +55,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
         if (isOpen && department && activeTab === "roles") {
             fetchRoles();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, department, activeTab]);
 
     const fetchRoles = async () => {

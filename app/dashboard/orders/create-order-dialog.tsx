@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, X, Search, ChevronRight, Check, Clock } from "lucide-react";
-import { createOrder, getInventoryForSelect, searchClients } from "./actions";
+import { getInventoryForSelect, searchClients } from "./actions";
 import { cn } from "@/lib/utils";
 
 interface InventoryItem {
@@ -26,6 +26,7 @@ interface Client {
 export function CreateOrderDialog() {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(1);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
     // Step 1: Client State

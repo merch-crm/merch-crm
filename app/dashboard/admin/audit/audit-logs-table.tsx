@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { getAuditLogs } from "../actions";
-import { Search, FileText, User, Calendar, Clock, Activity } from "lucide-react";
+import { Search, Activity, Calendar, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
@@ -13,7 +13,8 @@ interface AuditLog {
     action: string;
     entityType: string;
     entityId: string | null;
-    details: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    details: Record<string, any> | null;
     createdAt: Date | string;
     userId: string | null;
     user?: {
@@ -122,8 +123,7 @@ export function AuditLogsTable() {
                                                     <div className="font-medium text-slate-700">{log.action}</div>
                                                     {log.details && (
                                                         <div className="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                                            {(log.details as any).name || (log.details as any).reason || JSON.stringify(log.details)}
+                                                            {log.details?.name || log.details?.reason || JSON.stringify(log.details)}
                                                         </div>
                                                     )}
                                                 </div>

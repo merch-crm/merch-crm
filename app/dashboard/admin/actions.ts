@@ -6,8 +6,6 @@ import { getSession, hashPassword } from "@/lib/auth";
 import { eq, asc, desc, isNull, sql, and, inArray, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import os from "os";
-import fs from "fs";
-import path from "path";
 
 export async function getUsers(page = 1, limit = 20, search = "") {
     const session = await getSession();
@@ -408,7 +406,7 @@ export async function createRole(formData: FormData) {
     const departmentId = formData.get("departmentId") as string;
 
     const permissionsJson = formData.get("permissions") as string;
-    let permissions = {};
+    let permissions: Record<string, unknown> = {};
     try {
         if (permissionsJson) {
             permissions = JSON.parse(permissionsJson);
@@ -750,12 +748,14 @@ export async function getSystemStats() {
         // 2. Database Stats
         let dbSize = 0;
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const dbSizeResult: any = await db.execute(sql`SELECT pg_database_size(current_database())`);
             dbSize = parseInt(dbSizeResult[0]?.pg_database_size || "0");
         } catch (e) {
             console.error("Failed to get db size:", e);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const fetchCount = async (table: any) => {
             try {
                 const res = await db.select({ value: count() }).from(table);

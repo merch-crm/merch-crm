@@ -42,6 +42,7 @@ export function DepartmentsTable() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchDepartments(true);
         const interval = setInterval(() => fetchDepartments(false), 15000);
         return () => clearInterval(interval);

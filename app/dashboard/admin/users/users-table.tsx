@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { User as UserIcon, Trash2, Edit, Users, Building, Search, X } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { AddUserDialog } from "./add-user-dialog";
@@ -22,12 +22,13 @@ interface User {
 }
 
 interface UsersTableProps {
-    initialUsers: any[];
+    initialUsers: User[];
     error?: string;
     currentPage: number;
     totalItems: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function UsersTable({ initialUsers, error, currentPage, totalItems }: UsersTableProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -71,7 +72,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
         }
     };
 
-    const handleSelectRow = (id: string, e: React.MouseEvent | React.ChangeEvent) => {
+    const handleSelectRow = (id: string) => {
         // Prevent click events from triggering row actions if needed
         setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
@@ -143,7 +144,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 type="checkbox"
                                                 className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
                                                 checked={isSelected}
-                                                onChange={(e) => handleSelectRow(user.id, e)}
+                                                onChange={() => handleSelectRow(user.id)}
                                             />
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">

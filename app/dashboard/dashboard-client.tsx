@@ -8,8 +8,7 @@ import {
     UserPlus,
     UploadCloud,
     Package,
-    TrendingUp,
-    Wallet
+    TrendingUp
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { Card } from "@/components/ui/card";

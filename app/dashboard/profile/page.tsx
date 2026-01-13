@@ -36,8 +36,6 @@ export default async function ProfilePage() {
         { id: 4, text: "Встреча с отделом производства", time: "15:30", priority: "Средний", priorityColor: "bg-yellow-100 text-yellow-700", completed: false },
     ];
 
-    const employeeId = `EMP-${new Date(user.createdAt).getFullYear()}-${String(user.id).slice(-3).padStart(3, '0')}`;
-
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Breadcrumbs */}
@@ -45,7 +43,7 @@ export default async function ProfilePage() {
                 <Home className="w-4 h-4" />
                 <span className="cursor-pointer hover:text-slate-800">Главная</span>
                 <ChevronRight className="w-4 h-4" />
-                <span className="font-medium text-slate-800">Employee dashboard</span>
+                <span className="font-medium text-slate-800">Кабинет сотрудника</span>
             </div>
 
             {/* Welcome Banner */}
@@ -64,8 +62,7 @@ export default async function ProfilePage() {
                 user={user}
                 activities={activities}
                 tasks={tasks}
-                employeeId={employeeId}
             />
-        </div>
+        </div >
     );
 }

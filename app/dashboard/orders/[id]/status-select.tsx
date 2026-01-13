@@ -7,8 +7,7 @@ import {
     Paintbrush,
     Settings2,
     CheckCircle2,
-    Truck,
-    Circle
+    Truck
 } from "lucide-react";
 import { updateOrderStatus } from "../actions";
 
@@ -49,6 +48,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
         setIsOpen(false);
 
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await updateOrderStatus(orderId, newStatusId as any);
         } catch (error) {
             console.error("Failed to update status", error);

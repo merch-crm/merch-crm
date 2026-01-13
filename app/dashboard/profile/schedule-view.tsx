@@ -12,8 +12,20 @@ import { cn } from "@/lib/utils";
 import { format, isToday, isTomorrow, isPast } from "date-fns";
 import { ru } from "date-fns/locale";
 
+interface ScheduleTask {
+    id: string;
+    title: string;
+    description: string | null;
+    status: string;
+    priority: string;
+    dueDate: Date | null;
+    assignedToUserId: string | null;
+    createdAt: Date;
+    updatedAt?: Date;
+}
+
 interface ScheduleViewProps {
-    tasks: any[];
+    tasks: ScheduleTask[];
 }
 
 export function ScheduleView({ tasks }: ScheduleViewProps) {
@@ -32,7 +44,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
         return colors[priority] || "bg-slate-100 text-slate-700";
     };
 
-    const getStatusIcon = (status: string, dueDate: string | null) => {
+    const getStatusIcon = (status: string, dueDate: Date | null) => {
         if (status === 'done') return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
         if (dueDate && isPast(new Date(dueDate)) && status !== 'done') {
             return <AlertCircle className="w-5 h-5 text-rose-500" />;
@@ -40,17 +52,17 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
         return <Clock className="w-5 h-5 text-amber-500" />;
     };
 
-    const formatDateLabel = (dateStr: string | null) => {
-        if (!dateStr) return "Без даты";
-        const date = new Date(dateStr);
+    const formatDateLabel = (dateInput: Date | null) => {
+        if (!dateInput) return "Без даты";
+        const date = new Date(dateInput);
         if (isToday(date)) return "Сегодня";
         if (isTomorrow(date)) return "Завтра";
         return format(date, "d MMMM", { locale: ru });
     };
 
-    const formatTime = (dateStr: string | null) => {
-        if (!dateStr) return "";
-        return format(new Date(dateStr), "HH:mm");
+    const formatTime = (dateInput: Date | null) => {
+        if (!dateInput) return "";
+        return format(new Date(dateInput), "HH:mm");
     };
 
     return (

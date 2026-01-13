@@ -14,7 +14,6 @@ import {
     PlusCircle
 } from "lucide-react";
 import { createTask } from "./actions";
-import { cn } from "@/lib/utils";
 
 interface User {
     id: string;
@@ -35,7 +34,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const router = useRouter();
 
     async function handleSubmit(formData: FormData) {

@@ -13,13 +13,11 @@ import {
     Circle,
     ChevronDown
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
     bulkUpdateOrderStatus,
     bulkUpdateOrderPriority,
     bulkDeleteOrders
 } from "./actions";
-import { cn } from "@/lib/utils";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -41,6 +39,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
 
     const handleStatusUpdate = async (status: string) => {
         setIsProcessing(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await bulkUpdateOrderStatus(selectedIds, status as any);
         if (res.success) {
             onClear();

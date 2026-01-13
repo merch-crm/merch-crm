@@ -35,7 +35,7 @@ export async function getUserProfile() {
     }
 }
 
-import { uploadFile, getFileUrl } from "@/lib/storage";
+import { uploadFile } from "@/lib/storage";
 
 export async function updateProfile(formData: FormData) {
     const session = await getSession();
@@ -49,7 +49,8 @@ export async function updateProfile(formData: FormData) {
     if (!name) return { error: "Имя обязательно" };
 
     try {
-        const updateData: any = { name, phone, departmentLegacy };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const updateData: Record<string, any> = { name, phone, departmentLegacy };
 
         if (avatarFile && avatarFile.size > 0) {
             // Check for S3 configuration (support both REG_STORAGE and S3_ prefixes)
@@ -82,9 +83,9 @@ export async function updateProfile(formData: FormData) {
         revalidatePath("/", "layout");
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error updating profile:", error);
-        return { error: `Ошибка обновления профиля: ${error.message || String(error)}` };
+        return { error: `Ошибка обновления профиля: ${(error as Error).message || String(error)}` };
     }
 }
 

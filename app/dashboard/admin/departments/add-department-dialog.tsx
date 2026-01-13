@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, Building, Loader2, Palette, Shield, Check } from "lucide-react";
+import { Plus, X, Building, Loader2, Check } from "lucide-react";
 import { createDepartment, getRoles } from "../actions";
+
+interface Role {
+    id: string;
+    name: string;
+    department?: {
+        name: string;
+    } | null;
+}
 
 interface AddDepartmentDialogProps {
     onSuccess: () => void;
@@ -25,16 +33,17 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
     const [fetchingRoles, setFetchingRoles] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState("indigo");
-    const [roles, setRoles] = useState<any[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
     const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
 
     useEffect(() => {
         if (isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFetchingRoles(true);
             getRoles().then(res => {
                 if (res.data) {
                     // Only roles without a department or from other departments (user can move them)
-                    setRoles(res.data);
+                    setRoles(res.data as Role[]);
                 }
                 setFetchingRoles(false);
             });

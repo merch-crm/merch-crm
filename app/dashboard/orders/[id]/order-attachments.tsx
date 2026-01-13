@@ -9,9 +9,8 @@ import {
     UploadCloud,
     Plus
 } from "lucide-react";
-import { useState, useTransition, useRef } from "react";
+import { useTransition, useRef } from "react";
 import { uploadOrderFile } from "../actions";
-import { cn } from "@/lib/utils";
 
 interface Attachment {
     id: string;

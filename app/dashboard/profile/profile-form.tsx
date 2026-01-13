@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateProfile } from "./actions";
 import { Loader2, CheckCircle2, AlertCircle, Camera } from "lucide-react";
+import NextImage from "next/image";
 
 interface UserProfile {
     id: string;
@@ -94,7 +95,12 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 <div className="relative group cursor-pointer">
                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-100 shadow-sm relative bg-slate-100">
                         {avatarPreview ? (
-                            <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                            <NextImage
+                                src={avatarPreview}
+                                alt="Avatar"
+                                fill
+                                className="object-cover"
+                            />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-300">
                                 <span className="text-4xl font-bold">{user.name.charAt(0)}</span>
@@ -157,13 +163,15 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
             </div>
 
-            {message.text && (
-                <div className={`p-4 rounded-lg flex items-center gap-3 animate-in fade-in zoom-in-95 ${message.type === "success" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-red-50 text-red-700 border border-red-100"
-                    }`}>
-                    {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
-                    <span className="text-sm font-medium">{message.text}</span>
-                </div>
-            )}
+            {
+                message.text && (
+                    <div className={`p-4 rounded-lg flex items-center gap-3 animate-in fade-in zoom-in-95 ${message.type === "success" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-red-50 text-red-700 border border-red-100"
+                        }`}>
+                        {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+                        <span className="text-sm font-medium">{message.text}</span>
+                    </div>
+                )
+            }
 
             <div className="pt-2">
                 <button
@@ -175,6 +183,6 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     {loading ? "Сохранение..." : "Сохранить изменения"}
                 </button>
             </div>
-        </form>
+        </form >
     );
 }

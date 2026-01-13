@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, clients, orderStatusEnum } from "@/lib/schema";
+import { orders, clients } from "@/lib/schema";
 import { count, sum, ne, inArray, and, gte, lte } from "drizzle-orm";
 import {
     startOfDay,
@@ -11,8 +11,12 @@ import {
     endOfMonth,
     startOfQuarter
 } from "date-fns";
+import { getSession } from "@/lib/auth";
 
 export async function getDashboardStatsByPeriod(period: string = "month") {
+    const session = await getSession();
+    if (!session) throw new Error("Unauthorized");
+
     const now = new Date();
     let startDate: Date;
     let endDate: Date = endOfDay(now);
@@ -80,7 +84,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         // 4. In Production count (Current snapshot)
         const inProductionResult = await db.select({ value: count() })
             .from(orders)
-            .where(inArray(orders.status, ["new", "layout_pending", "layout_approved", "in_printing"] as any));
+            .where(inArray(orders.status, ["new", "design", "production"]));
         const inProduction = inProductionResult[0].value;
 
         // 7. Total Revenue for period
@@ -88,20 +92,12 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             value: sum(orders.totalAmount)
         })
             .from(orders)
-            .where(and(
-                dateFilter,
-                ne(orders.status, "cancelled" as any)
-            ));
+            .where(dateFilter);
 
         const rawRevenue = Number(revenueResult[0].value || 0);
 
         // 8. Average Check
         const averageCheck = totalOrders > 0 ? (rawRevenue / totalOrders) : 0;
-
-        // Helper for formatting
-        const formatMoney = (val: number) => {
-            return val.toLocaleString('ru-RU') + " ₽";
-        };
 
         const formatCondensed = (val: number) => {
             if (val >= 1000000) return (val / 1000000).toFixed(1) + "M ₽";

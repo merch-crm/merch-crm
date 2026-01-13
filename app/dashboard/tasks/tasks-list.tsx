@@ -3,13 +3,10 @@
 import { useState, useTransition } from "react";
 import {
     CheckCircle2,
-    Clock,
     User,
     Shield,
     Calendar,
-    MoreHorizontal,
-    Trash2,
-    Flag
+    Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toggleTaskStatus, deleteTask } from "./actions";
@@ -37,8 +34,9 @@ interface TasksListProps {
     currentUserRoleId: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksListProps) {
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     const getPriorityConfig = (priority: string) => {

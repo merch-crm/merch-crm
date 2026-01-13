@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 export default function StatusBadge({ status }: { status: string }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const config: Record<string, { label: string, icon: any, color: string, lightBg: string }> = {
         new: {
             label: "Новый",

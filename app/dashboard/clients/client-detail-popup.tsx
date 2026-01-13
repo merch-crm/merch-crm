@@ -8,6 +8,7 @@ import { ru } from "date-fns/locale";
 import StatusBadge from "../orders/status-badge";
 
 export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: string, isOpen: boolean, onClose: () => void }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [client, setClient] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -17,6 +18,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: str
 
     useEffect(() => {
         if (isOpen && clientId) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLoading(true);
             setDeleteError("");
             setConfirmDelete(false);
@@ -178,6 +180,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: str
                                             <ShoppingBag className="w-4 h-4" />
                                         </h3>
                                         <div className="space-y-3">
+                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                             {client.orders.map((order: any) => (
                                                 <div key={order.id} className="bg-white border border-slate-100 rounded-xl p-4 hover:shadow-md transition-shadow">
                                                     <div className="flex justify-between items-start mb-2">

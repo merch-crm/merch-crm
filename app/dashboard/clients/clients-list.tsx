@@ -3,12 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { getClients } from "./actions";
 import {
-    Mail,
-    Phone,
-    MapPin,
-    Send,
-    Instagram,
-    User,
     Search,
     SlidersHorizontal,
     Eye,
@@ -19,15 +13,29 @@ import {
 import { ClientDetailPopup } from "./client-detail-popup";
 import { EditClientDialog } from "./edit-client-dialog";
 import { DeleteClientDialog } from "./delete-client-dialog";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/ui/pagination";
 
-export function ClientsTable({ userPermissions, userRoleName }: { userPermissions?: any; userRoleName?: string | null }) {
-    const [clients, setClients] = useState<any[]>([]);
+interface Client {
+    id: string;
+    firstName: string;
+    lastName: string;
+    patronymic?: string | null;
+    email: string | null;
+    phone: string;
+    city: string | null;
+    company: string | null;
+    totalOrders: number;
+    totalSpent: number | string; // decimal string or number
+    lastOrderDate: string | null;
+}
+
+export function ClientsTable({ userRoleName }: { userRoleName?: string | null }) {
+    const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
-    const [editingClient, setEditingClient] = useState<any | null>(null);
-    const [deletingClient, setDeletingClient] = useState<any | null>(null);
+    const [editingClient, setEditingClient] = useState<Client | null>(null);
+    const [deletingClient, setDeletingClient] = useState<Client | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const searchParams = useSearchParams();
@@ -42,7 +50,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
 
     const fetchClients = () => {
         getClients().then(res => {
-            if (res.data) setClients(res.data);
+            if (res.data) setClients(res.data as Client[]);
             setLoading(false);
         });
     };
@@ -54,10 +62,11 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
     // Extract unique regions for filter
     const regions = useMemo(() => {
         const unique = new Set(clients.map(c => c.city).filter(Boolean));
-        return Array.from(unique).sort();
+        return Array.from(unique).sort() as string[];
     }, [clients]);
 
-    const sortClients = (a: any, b: any) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const sortClients = (a: Client, b: Client) => {
         switch (sortBy) {
             case "alphabet":
                 return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
@@ -68,7 +77,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
             case "order_count":
                 return (b.totalOrders || 0) - (a.totalOrders || 0);
             case "revenue":
-                return (parseFloat(b.totalSpent) || 0) - (parseFloat(a.totalSpent) || 0);
+                return (Number(b.totalSpent) || 0) - (Number(a.totalSpent) || 0);
             default:
                 return 0;
         }
@@ -122,7 +131,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
         }
 
         return result.sort(sortClients);
-    }, [clients, searchQuery, sortBy, filterPeriod, filterOrderCount, filterRegion]);
+    }, [clients, searchQuery, filterPeriod, filterOrderCount, filterRegion, sortClients]);
 
     const currentPageItems = useMemo(() =>
         sortedAndFilteredClients.slice((currentPage - 1) * 20, currentPage * 20),
@@ -313,7 +322,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
-                                        {Math.round(parseFloat(client.totalSpent) || 0)} ₽
+                                        {Math.round(Number(client.totalSpent) || 0)} ₽
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex items-center justify-end gap-1">

@@ -8,8 +8,7 @@ import {
     Calendar,
     Clock,
     Edit3,
-    CheckCircle2,
-    Construction
+    CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RoleBadge } from "@/components/ui/role-badge";
@@ -52,7 +51,6 @@ interface ProfileClientProps {
     user: UserProfile;
     activities: Activity[];
     tasks: Task[];
-    employeeId: string;
 }
 
 const IconMap: Record<string, ComponentType<{ className?: string }>> = {
@@ -62,10 +60,30 @@ const IconMap: Record<string, ComponentType<{ className?: string }>> = {
     CheckCircle2: CheckCircle2
 };
 
-export function ProfileClient({ user, activities, tasks, employeeId }: ProfileClientProps) {
+interface StatisticsData {
+    totalOrders: number;
+    totalRevenue: number;
+    monthlyOrders: number;
+    tasksByStatus: Array<{ count: number; status: string }>;
+    totalActivity: number;
+}
+
+interface ScheduleTask {
+    id: string;
+    title: string;
+    description: string | null;
+    status: string;
+    priority: string;
+    dueDate: Date | null;
+    assignedToUserId: string | null;
+    createdAt: Date;
+    updatedAt?: Date;
+}
+
+export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">("profile");
-    const [statsData, setStatsData] = useState<any>(null);
-    const [scheduleData, setScheduleData] = useState<any[]>([]);
+    const [statsData, setStatsData] = useState<StatisticsData | null>(null);
+    const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
     const [loading, setLoading] = useState(false);
 
     const fetchStats = async () => {
@@ -88,7 +106,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
         if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
     };
 
-    const isAdmin = user.role?.name === "Администратор";
+
 
     const tabs = [
         { id: "profile", name: "Профиль", icon: User },
@@ -106,7 +124,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                     return (
                         <button
                             key={tab.id}
-                            onClick={() => onTabChange(tab.id as any)}
+                            onClick={() => onTabChange(tab.id as "profile" | "settings" | "statistics" | "schedule")}
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-all",
                                 isActive
@@ -158,10 +176,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Отдел</div>
                                     <div className="text-base font-bold text-indigo-600">{(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "—")}</div>
                                 </div>
-                                <div className="space-y-1">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">ID сотрудника</div>
-                                    <div className="text-base font-bold text-slate-900">{employeeId}</div>
-                                </div>
+
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Дата начала работы</div>
                                     <div className="text-base font-bold text-slate-900">

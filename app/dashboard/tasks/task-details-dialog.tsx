@@ -2,12 +2,8 @@
 
 import {
     X,
-    Type,
     AlignLeft,
     User,
-    Shield,
-    Calendar,
-    Flag,
     CheckCircle2,
     Clock,
     UserCircle2,

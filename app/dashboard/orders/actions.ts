@@ -86,7 +86,6 @@ export async function createOrder(formData: FormData) {
     if (!session) return { error: "Unauthorized" };
 
     const clientId = formData.get("clientId") as string;
-    const status = "new"; // Default status
     const priority = formData.get("priority") as string;
     const deadline = formData.get("deadline") ? new Date(formData.get("deadline") as string) : null;
 
@@ -100,7 +99,7 @@ export async function createOrder(formData: FormData) {
     }> = [];
     try {
         items = JSON.parse(itemsJson);
-    } catch (e) {
+    } catch {
         return { error: "Invalid items data" };
     }
 
@@ -191,7 +190,7 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
         // Also revalidate the specific order page
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
-    } catch (e) {
+    } catch {
         return { error: "Failed to update status" };
     }
 }
@@ -202,7 +201,7 @@ export async function updateOrderPriority(orderId: string, newPriority: string) 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
-    } catch (e) {
+    } catch {
         return { error: "Failed to update priority" };
     }
 }

@@ -1,11 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import { updateClient } from "./actions";
 
 interface EditClientDialogProps {
-    client: any;
+    client: {
+        id: string;
+        lastName: string;
+        firstName: string;
+        patronymic?: string | null;
+        company?: string | null;
+        phone?: string | null;
+        telegram?: string | null;
+        instagram?: string | null;
+        email?: string | null;
+        city?: string | null;
+        comments?: string | null;
+    };
     isOpen: boolean;
     onClose: () => void;
 }
@@ -89,7 +101,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <input
                                 type="text"
                                 name="phone"
-                                defaultValue={client.phone}
+                                defaultValue={client.phone || ""}
                                 required
                                 className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                             />
