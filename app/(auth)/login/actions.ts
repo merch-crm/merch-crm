@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function loginAction(prevState: any, formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -48,14 +49,17 @@ export async function loginAction(prevState: any, formData: FormData) {
             where: eq(roles.id, user[0].roleId)
         }) : null;
 
-        const session = await encrypt({
+        const sessionData = {
             id: user[0].id,
             email: user[0].email,
-            roleId: user[0].roleId,
+            roleId: user[0].roleId || "",
             roleName: role?.name || "User",
-            name: user[0].name,
+            departmentName: user[0].department || "",
+            name: user[0].name || "",
             expires,
-        });
+        };
+
+        const session = await encrypt(sessionData);
 
         console.log(`[Login] Session encrypted, setting cookie...`);
         (await cookies()).set("session", session, {

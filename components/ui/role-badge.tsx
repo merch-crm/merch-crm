@@ -2,13 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import {
-    ShieldCheck,
-    Users,
-    Banknote,
-    Palette,
-    Wrench,
-    Printer,
-    User
+    ShieldCheck
 } from "lucide-react";
 
 interface RoleBadgeProps {

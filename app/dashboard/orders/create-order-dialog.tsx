@@ -1,19 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, Search, ChevronRight, User, Check, Clock } from "lucide-react";
+import { Plus, X, Search, ChevronRight, Check, Clock } from "lucide-react";
 import { createOrder, getInventoryForSelect, searchClients } from "./actions";
 import { cn } from "@/lib/utils";
+
+interface InventoryItem {
+    id: string;
+    name: string;
+    quantity: number;
+    unit: string;
+}
+
+interface Client {
+    id: string;
+    name: string | null;
+    company?: string | null;
+    city?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+}
 
 export function CreateOrderDialog() {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(1);
-    const [inventory, setInventory] = useState<any[]>([]);
+    const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
     // Step 1: Client State
     const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState<any[]>([]);
-    const [selectedClient, setSelectedClient] = useState<any | null>(null);
+    const [searchResults, setSearchResults] = useState<Client[]>([]);
+    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
 
     const [newClient, setNewClient] = useState({
@@ -27,9 +45,6 @@ export function CreateOrderDialog() {
     useEffect(() => {
         if (isOpen) {
             getInventoryForSelect().then(setInventory);
-            setStep(1);
-            setSelectedClient(null);
-            setSearchQuery("");
         }
     }, [isOpen]);
 
@@ -55,10 +70,17 @@ export function CreateOrderDialog() {
         if (step > 1) setStep(step - 1);
     };
 
+    const handleOpen = () => {
+        setStep(1);
+        setSelectedClient(null);
+        setSearchQuery("");
+        setIsOpen(true);
+    };
+
     if (!isOpen) {
         return (
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={handleOpen}
                 className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all"
             >
                 <Plus className="w-5 h-5" />
@@ -164,7 +186,7 @@ export function CreateOrderDialog() {
                                                         {client.name.charAt(0)}
                                                     </div>
                                                     <div className="text-left">
-                                                        <p className="font-bold text-slate-900">{client.name}</p>
+                                                        <p className="font-bold text-slate-900">{client.name || "Без имени"}</p>
                                                         <p className="text-xs text-slate-500">{client.company} • {client.city}</p>
                                                     </div>
                                                 </button>
@@ -176,10 +198,10 @@ export function CreateOrderDialog() {
                                         <div className="mt-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex items-center justify-between">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-indigo-600 font-black text-lg">
-                                                    {selectedClient.name.charAt(0)}
+                                                    {(selectedClient.name || "Б")[0]}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-black text-slate-900">{selectedClient.name}</p>
+                                                    <p className="text-sm font-black text-slate-900">{selectedClient.name || "Без имени"}</p>
                                                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{selectedClient.company || "Личный заказ"}</p>
                                                 </div>
                                             </div>

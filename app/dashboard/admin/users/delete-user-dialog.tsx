@@ -5,7 +5,7 @@ import { deleteUser } from "../actions";
 import { Loader2, AlertTriangle, X } from "lucide-react";
 
 interface DeleteUserDialogProps {
-    user: any | null;
+    user: { id: string; name: string } | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -29,7 +29,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                 onSuccess();
                 onClose();
             }
-        } catch (err) {
+        } catch {
             setError("Произошла ошибка при удалении");
         } finally {
             setIsLoading(false);

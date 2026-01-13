@@ -1,5 +1,5 @@
 import { CreateOrderDialog } from "./create-order-dialog";
-import { OrdersTable } from "./orders-table";
+import { OrdersTable, Order } from "./orders-table";
 import { OrderStats } from "./order-stats";
 import { DateRangeFilter } from "./date-range-filter";
 import { getOrders } from "./actions";
@@ -37,14 +37,15 @@ export default async function OrdersPage({
         to = endOfDay(now);
     }
 
-    const { data: allOrders = [], error } = await getOrders(from, to);
+    const { data: allOrdersResponse = [], error } = await getOrders(from, to) as { data: Order[], error?: string };
+    const allOrders = allOrdersResponse;
 
     const stats = {
         total: allOrders.length,
-        new: allOrders.filter((o: any) => o.status === "new").length,
-        inProduction: allOrders.filter((o: any) => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
-        completed: allOrders.filter((o: any) => o.status === "done").length,
-        revenue: allOrders.reduce((acc: number, o: any) => acc + Number(o.totalAmount || 0), 0)
+        new: allOrders.filter((o: Order) => o.status === "new").length,
+        inProduction: allOrders.filter((o: Order) => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
+        completed: allOrders.filter((o: Order) => o.status === "done").length,
+        revenue: allOrders.reduce((acc: number, o: Order) => acc + Number(o.totalAmount || 0), 0)
     };
 
     return (
@@ -67,4 +68,3 @@ export default async function OrdersPage({
         </div>
     );
 }
-

@@ -31,8 +31,8 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [departments, setDepartments] = useState<any[]>([]);
-    const [permissions, setPermissions] = useState<any>({});
+    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
+    const [permissions, setPermissions] = useState<Record<string, Record<string, boolean>>>({});
 
     useEffect(() => {
         if (isOpen) {
@@ -43,7 +43,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
     }, [isOpen]);
 
     const handleToggle = (sectionId: string, actionId: string) => {
-        setPermissions((prev: any) => {
+        setPermissions((prev) => {
             const section = prev[sectionId] || {};
             const newValue = !section[actionId];
 

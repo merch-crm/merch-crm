@@ -14,7 +14,12 @@ import { Loader2, Save, Shield, Building } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RolePermissionsDialogProps {
-    role: any;
+    role: {
+        id: string;
+        name: string;
+        departmentId: string | null;
+        permissions: Record<string, Record<string, boolean>>;
+    } | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -38,9 +43,9 @@ const ACTIONS = [
 ];
 
 export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissionsDialogProps) {
-    const [permissions, setPermissions] = useState<any>({});
+    const [permissions, setPermissions] = useState<Record<string, Record<string, boolean>>>({});
     const [loading, setLoading] = useState(false);
-    const [departments, setDepartments] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
     const [roleName, setRoleName] = useState("");
     const [departmentId, setDepartmentId] = useState("");
 
@@ -65,7 +70,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     }, [role]);
 
     const handleToggle = (sectionId: string, actionId: string) => {
-        setPermissions((prev: any) => {
+        setPermissions((prev) => {
             const section = prev[sectionId] || {};
             const newValue = !section[actionId];
 

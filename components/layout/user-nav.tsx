@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, LogOut, ChevronDown, Settings, Shield } from "lucide-react";
+import { User, LogOut, ChevronDown, Settings } from "lucide-react";
 import { logout } from "@/app/dashboard/profile/actions";
 
 import { useRouter } from "next/navigation";
@@ -97,6 +97,6 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
     );
 }
 
-function cn(...classes: any[]) {
+function cn(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(" ");
 }

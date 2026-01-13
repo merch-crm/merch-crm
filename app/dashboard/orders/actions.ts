@@ -45,7 +45,7 @@ export async function searchClients(query: string) {
 
     try {
         const results = await db.query.clients.findMany({
-            where: (c: any, { or, ilike }: any) => or(
+            where: (c, { or, ilike }) => or(
                 ilike(c.name, `%${query}%`),
                 ilike(c.email, `%${query}%`),
                 ilike(c.phone, `%${query}%`),
@@ -71,7 +71,12 @@ export async function createOrder(formData: FormData) {
 
     // Parse items from hidden JSON field (simplified for this demo)
     const itemsJson = formData.get("items") as string;
-    let items: any[] = [];
+    let items: Array<{
+        inventoryId?: string;
+        quantity: number;
+        price: number;
+        description: string;
+    }> = [];
     try {
         items = JSON.parse(itemsJson);
     } catch (e) {
@@ -114,7 +119,7 @@ export async function createOrder(formData: FormData) {
                 orderId: newOrder.id,
                 description: item.description,
                 quantity: item.quantity,
-                price: item.price
+                price: String(item.price)
             });
 
             // Deduct from inventory if it's linked
@@ -158,7 +163,7 @@ export async function createOrder(formData: FormData) {
 }
 
 
-export async function updateOrderStatus(orderId: string, newStatus: any) {
+export async function updateOrderStatus(orderId: string, newStatus: (typeof orders.$inferInsert)["status"]) {
     try {
         await db.update(orders).set({ status: newStatus }).where(eq(orders.id, orderId));
         revalidatePath("/dashboard/orders");

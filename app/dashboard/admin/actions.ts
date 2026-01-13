@@ -48,7 +48,7 @@ export async function getRoles() {
             "Дизайнер": 7,
         };
 
-        const sortedRoles = allRoles.sort((a: any, b: any) => {
+        const sortedRoles = allRoles.sort((a, b) => {
             // First, sort by department priority
             const deptA = a.department?.name || "";
             const deptB = b.department?.name || "";
@@ -160,9 +160,9 @@ export async function getAuditLogs() {
 
         // Fetch users to map names
         const allUsers = await db.query.users.findMany();
-        const userMap = new Map(allUsers.map((u: any) => [u.id, u] as const));
+        const userMap = new Map(allUsers.map((u) => [u.id, u] as const));
 
-        const enrichedLogs = logs.map((log: any) => ({
+        const enrichedLogs = logs.map((log) => ({
             ...log,
             user: log.userId ? userMap.get(log.userId) : null
         }));
@@ -174,7 +174,7 @@ export async function getAuditLogs() {
     }
 }
 
-export async function updateRolePermissions(roleId: string, permissions: any) {
+export async function updateRolePermissions(roleId: string, permissions: Record<string, unknown>) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -291,13 +291,12 @@ export async function updateUser(userId: string, formData: FormData) {
     }
 
     try {
-        const updateData: any = {
+        const updateData: Partial<typeof users.$inferInsert> & { updatedAt?: Date } = {
             name,
             email,
             roleId,
             department,
             departmentId: finalDeptId,
-            updatedAt: new Date()
         };
 
         if (password) {
@@ -435,7 +434,7 @@ export async function getDepartments() {
 
         if (unsyncedUsers.length > 0) {
             console.log(`Found ${unsyncedUsers.length} unsynced users. Attempting to link...`);
-            const deptMap = new Map(allDepts.map((d: any) => [d.name.toLowerCase(), d.id]));
+            const deptMap = new Map(allDepts.map((d) => [d.name.toLowerCase(), d.id]));
 
             for (const user of unsyncedUsers) {
                 if (user.department) {
@@ -460,7 +459,7 @@ export async function getDepartments() {
             "Дизайн": 4,
         };
 
-        const sortedDepts = allDepts.sort((a: any, b: any) => {
+        const sortedDepts = allDepts.sort((a, b) => {
             const priorityA = deptPriority[a.name] || 999;
             const priorityB = deptPriority[b.name] || 999;
             if (priorityA !== priorityB) {
@@ -469,7 +468,7 @@ export async function getDepartments() {
             return a.name.localeCompare(b.name);
         });
 
-        const dataWithCounts = sortedDepts.map((dept: any) => ({
+        const dataWithCounts = sortedDepts.map((dept) => ({
             ...dept,
             userCount: dept.users?.length || 0
         }));

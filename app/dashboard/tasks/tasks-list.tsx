@@ -17,15 +17,29 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
 
+interface Task {
+    id: string;
+    title: string;
+    description?: string | null;
+    status: string;
+    priority: string;
+    assignedToUserId?: string | null;
+    assignedToRoleId?: string | null;
+    assignedToUser?: { name: string } | null;
+    assignedToRole?: { name: string } | null;
+    dueDate?: Date | string | null;
+    createdAt: Date | string;
+}
+
 interface TasksListProps {
-    tasks: any[];
+    tasks: Task[];
     currentUserId: string;
     currentUserRoleId: string;
 }
 
 export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksListProps) {
     const [isPending, startTransition] = useTransition();
-    const [selectedTask, setSelectedTask] = useState<any | null>(null);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     const getPriorityConfig = (priority: string) => {
         switch (priority) {

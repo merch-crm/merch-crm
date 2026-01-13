@@ -5,7 +5,13 @@ import { X, User, Mail, Lock, Shield, Building, Save, Loader2, Eye, EyeOff } fro
 import { updateUser, getRoles, getDepartments } from "../actions";
 
 interface EditUserDialogProps {
-    user: any;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        roleId: string | null;
+        departmentId: string | null;
+    } | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -13,24 +19,21 @@ interface EditUserDialogProps {
 
 export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDialogProps) {
     const [loading, setLoading] = useState(false);
-    const [roles, setRoles] = useState<any[]>([]);
-    const [departments, setDepartments] = useState<any[]>([]);
+    const [roles, setRoles] = useState<{ id: string, name: string, departmentId: string | null }[]>([]);
+    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [selectedRoleId, setSelectedRoleId] = useState(user?.roleId || "");
     const [selectedDeptId, setSelectedDeptId] = useState(user?.departmentId || "");
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && user) {
             getRoles().then(res => {
-                if (res.data) setRoles(res.data);
+                if (res.data) setRoles(res.data as { id: string, name: string, departmentId: string | null }[]);
             });
             getDepartments().then(res => {
-                if (res.data) setDepartments(res.data);
+                if (res.data) setDepartments(res.data as { id: string, name: string }[]);
             });
-            // Update internal state when user changes
-            setSelectedRoleId(user.roleId || "");
-            setSelectedDeptId(user.departmentId || "");
         }
     }, [isOpen, user]);
 

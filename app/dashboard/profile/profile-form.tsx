@@ -4,7 +4,17 @@ import { useState } from "react";
 import { updateProfile } from "./actions";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
-export function ProfileForm({ user }: { user: any }) {
+interface UserProfile {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string | null;
+    department?: { name: string } | string | null;
+    role?: { name: string } | null;
+    createdAt: string | Date;
+}
+
+export function ProfileForm({ user }: { user: UserProfile }) {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -41,7 +51,7 @@ export function ProfileForm({ user }: { user: any }) {
                     <input
                         name="phone"
                         type="tel"
-                        defaultValue={user.phone}
+                        defaultValue={user.phone || ""}
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
                         placeholder="+7 (999) 000-00-00"
                     />
@@ -50,11 +60,11 @@ export function ProfileForm({ user }: { user: any }) {
                     <label className="text-sm font-bold text-slate-700 ml-1">Отдел</label>
                     <input
                         type="text"
-                        value={user.department?.name || user.department || "Без отдела"}
+                        value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "Без отдела")}
                         readOnly
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-100 cursor-not-allowed outline-none font-medium text-slate-600"
                     />
-                    <input type="hidden" name="department" value={user.department?.name || user.department || ""} />
+                    <input type="hidden" name="department" value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "")} />
                 </div>
                 <div className="space-y-2 opacity-60">
                     <label className="text-sm font-bold text-slate-700 ml-1">Email (только чтение)</label>

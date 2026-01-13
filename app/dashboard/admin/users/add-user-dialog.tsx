@@ -7,8 +7,8 @@ import { createUser, getRoles, getDepartments } from "../actions";
 export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [roles, setRoles] = useState<any[]>([]);
-    const [departments, setDepartments] = useState<any[]>([]);
+    const [roles, setRoles] = useState<{ id: string, name: string, departmentId: string | null }[]>([]);
+    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [selectedRoleId, setSelectedRoleId] = useState("");
     const [selectedDeptId, setSelectedDeptId] = useState("");

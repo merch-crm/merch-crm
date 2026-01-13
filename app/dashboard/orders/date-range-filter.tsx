@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar as CalendarIcon, ChevronDown, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { format, subDays, startOfDay, endOfDay, isSameDay } from "date-fns";
+import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { DayPicker, type DateRange } from "react-day-picker";
@@ -23,6 +23,22 @@ const ranges = [
 ];
 
 // Custom DayButton component with teal styling
+interface CustomDayButtonProps {
+    day: Date;
+    modifiers: {
+        range_start?: boolean;
+        range_end?: boolean;
+        range_middle?: boolean;
+        selected?: boolean;
+        today?: boolean;
+        outside?: boolean;
+        disabled?: boolean;
+    };
+    children: React.ReactNode;
+    [key: string]: unknown;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CustomDayButton(props: any) {
     const { day, modifiers, children, ...buttonProps } = props;
 
@@ -111,6 +127,12 @@ function CustomDayButton(props: any) {
 }
 
 // Custom HeadCell component for teal weekday headers
+interface CustomHeadCellProps {
+    children: React.ReactNode;
+    [key: string]: unknown;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CustomHeadCell(props: any) {
     const { children, ...rest } = props;
     return (

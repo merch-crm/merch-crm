@@ -6,26 +6,38 @@ import { Search, FileText, User, Calendar, Clock, Activity } from "lucide-react"
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
+interface AuditLog {
+    id: string;
+    action: string;
+    entityType: string;
+    entityId: string | null;
+    details: unknown;
+    createdAt: Date | string;
+    userId: string | null;
+    user?: {
+        name: string;
+    } | null;
+}
+
 export function AuditLogsTable() {
-    const [logs, setLogs] = useState<any[]>([]);
+    const [logs, setLogs] = useState<AuditLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fetchLogs = () => {
-        setLoading(true);
-        getAuditLogs().then(res => {
-            if (res.data) setLogs(res.data);
-            setLoading(false);
-        });
-    };
-
     useEffect(() => {
+        const fetchLogs = () => {
+            setLoading(true);
+            getAuditLogs().then(res => {
+                if (res.data) setLogs(res.data as AuditLog[]);
+                setLoading(false);
+            });
+        };
         fetchLogs();
     }, []);
 
     const filteredLogs = logs.filter(log =>
         log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        log.user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (log.user?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         log.entityType.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -59,8 +71,8 @@ export function AuditLogsTable() {
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className={`h-8 w-8 rounded-full flex items-center justify-center ${log.action.includes("Удален") ? "bg-red-100 text-red-600" :
-                                                log.action.includes("Создан") ? "bg-emerald-100 text-emerald-600" :
-                                                    "bg-indigo-100 text-indigo-600"
+                                            log.action.includes("Создан") ? "bg-emerald-100 text-emerald-600" :
+                                                "bg-indigo-100 text-indigo-600"
                                             }`}>
                                             <Activity className="w-4 h-4" />
                                         </div>
@@ -68,7 +80,8 @@ export function AuditLogsTable() {
                                             <div className="font-medium text-slate-700">{log.action}</div>
                                             {log.details && (
                                                 <div className="text-xs text-slate-500 mt-0.5">
-                                                    {log.details.name || log.details.reason || JSON.stringify(log.details)}
+                                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                                    {(log.details as any).name || (log.details as any).reason || JSON.stringify(log.details)}
                                                 </div>
                                             )}
                                         </div>
@@ -78,9 +91,9 @@ export function AuditLogsTable() {
                                     {log.user ? (
                                         <div className="flex items-center gap-2">
                                             <div className="h-6 w-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                                {log.user.name.charAt(0)}
+                                                {(log.user?.name || "С")[0]}
                                             </div>
-                                            <span className="text-sm text-slate-900">{log.user.name}</span>
+                                            <span className="text-sm text-slate-900">{log.user?.name}</span>
                                         </div>
                                     ) : (
                                         <span className="text-slate-400 italic text-sm">Система</span>

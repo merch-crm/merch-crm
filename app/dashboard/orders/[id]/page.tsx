@@ -3,9 +3,16 @@ import { getOrderById } from "../actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
-import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock, Plus } from "lucide-react";
+import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
+
+interface OrderItem {
+    id: string;
+    description: string;
+    quantity: number;
+    price: string;
+}
 
 export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
@@ -60,12 +67,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 bg-white">
-                                {order.items.map((item: any) => (
+                                {order.items.map((item: OrderItem) => (
                                     <tr key={item.id} className="text-sm hover:bg-slate-50/50 transition-colors">
                                         <td className="px-8 py-5 text-slate-900 font-semibold">{item.description}</td>
                                         <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.quantity} шт</td>
                                         <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} ₽</td>
-                                        <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * item.price} ₽</td>
+                                        <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} ₽</td>
                                     </tr>
                                 ))}
                             </tbody>

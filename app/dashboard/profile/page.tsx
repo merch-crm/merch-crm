@@ -1,23 +1,8 @@
 import { getUserProfile } from "./actions";
-import { ProfileForm } from "./profile-form";
-import { PasswordForm } from "./password-form";
 import { ProfileClient } from "./profile-client";
 import {
-    User,
-    Shield,
-    Info,
     Home,
     ChevronRight,
-    Clock,
-    Settings,
-    BarChart3,
-    Calendar,
-    Edit3,
-    PlusCircle,
-    RefreshCw,
-    Send,
-    CheckCircle2,
-    AlertCircle
 } from "lucide-react";
 
 import { RoleBadge } from "@/components/ui/role-badge";

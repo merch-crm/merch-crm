@@ -5,7 +5,11 @@ import { X, Shield, Loader2, Building, ChevronDown } from "lucide-react";
 import { updateRole, getDepartments } from "../actions";
 
 interface EditRoleDialogProps {
-    role: any;
+    role: {
+        id: string;
+        name: string;
+        departmentId: string | null;
+    } | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -14,7 +18,7 @@ interface EditRoleDialogProps {
 export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDialogProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [departments, setDepartments] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
 
     useEffect(() => {
         if (isOpen) {

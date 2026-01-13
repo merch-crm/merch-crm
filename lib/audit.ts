@@ -6,7 +6,7 @@ export async function logAction(
     action: string,
     entityType: string,
     entityId: string,
-    details?: any
+    details?: Record<string, unknown>
 ) {
     const session = await getSession();
 

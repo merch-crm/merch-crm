@@ -7,16 +7,23 @@ import {
     Image as ImageIcon,
     Download,
     UploadCloud,
-    X,
     Plus
 } from "lucide-react";
 import { useState, useTransition, useRef } from "react";
 import { uploadOrderFile } from "../actions";
 import { cn } from "@/lib/utils";
 
+interface Attachment {
+    id: string;
+    fileUrl: string;
+    fileName: string;
+    fileSize: number | null;
+    contentType: string | null;
+}
+
 interface OrderAttachmentsProps {
     orderId: string;
-    attachments: any[];
+    attachments: Attachment[];
 }
 
 export default function OrderAttachments({ orderId, attachments = [] }: OrderAttachmentsProps) {
@@ -74,7 +81,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {attachments.map((file) => (
+                {attachments.map((file: Attachment) => (
                     <a
                         key={file.id}
                         href={file.fileUrl}
@@ -83,11 +90,11 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                         className="flex items-center gap-4 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl hover:border-indigo-200 hover:bg-white hover:shadow-xl hover:shadow-indigo-500/5 transition-all group"
                     >
                         <div className="h-12 w-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
-                            {getFileIcon(file.contentType)}
+                            {getFileIcon(file.contentType || "")}
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-black text-slate-900 truncate uppercase tracking-tight">{file.fileName}</p>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{formatSize(file.fileSize)}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{file.fileSize ? formatSize(file.fileSize) : "0 B"}</p>
                         </div>
                         <Download className="w-4 h-4 text-slate-200 group-hover:text-indigo-400 transition-colors shrink-0" />
                     </a>
@@ -108,4 +115,12 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
             </div>
         </div>
     );
+}
+
+interface Attachment {
+    id: string;
+    fileUrl: string;
+    fileName: string;
+    fileSize: number | null;
+    contentType: string | null;
 }

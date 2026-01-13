@@ -25,8 +25,32 @@ import { ru } from "date-fns/locale";
 import { toggleTaskStatus, deleteTask, uploadTaskFile } from "./actions";
 import { useTransition, useRef } from "react";
 
+interface Attachment {
+    id: string;
+    fileName: string;
+    fileUrl: string;
+    fileSize: number;
+    contentType: string;
+}
+
+interface Task {
+    id: string;
+    title: string;
+    description?: string | null;
+    status: string;
+    priority: string;
+    assignedToUserId?: string | null;
+    assignedToRoleId?: string | null;
+    assignedToUser?: { name: string } | null;
+    assignedToRole?: { name: string } | null;
+    creator?: { name: string } | null;
+    dueDate?: Date | string | null;
+    createdAt: Date | string;
+    attachments?: Attachment[];
+}
+
 interface TaskDetailsDialogProps {
-    task: any;
+    task: Task;
     onClose: () => void;
 }
 
@@ -210,7 +234,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {task.attachments?.map((file: any) => (
+                            {task.attachments?.map((file) => (
                                 <a
                                     key={file.id}
                                     href={file.fileUrl}

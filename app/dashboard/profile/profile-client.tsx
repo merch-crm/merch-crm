@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ComponentType } from "react";
 import {
     User,
     Settings,
@@ -9,8 +9,6 @@ import {
     Clock,
     Edit3,
     CheckCircle2,
-    Shield,
-    Users as UsersIcon,
     Construction
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,18 +19,46 @@ import { UsersTable } from "../admin/users/users-table";
 import AdminRolesPage from "../admin/roles/page";
 import { PlusCircle, Send } from "lucide-react";
 
+interface UserProfile {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string | null;
+    department?: { name: string } | string | null;
+    role?: { name: string } | null;
+    createdAt: string | Date;
+}
+
+interface Activity {
+    id: number;
+    type: string;
+    text: string;
+    time: string;
+    iconName: string;
+    color: string;
+}
+
+interface Task {
+    id: number;
+    text: string;
+    time: string;
+    priority: string;
+    priorityColor: string;
+    completed: boolean;
+}
+
 interface ProfileClientProps {
-    user: any;
-    activities: any[];
-    tasks: any[];
+    user: UserProfile;
+    activities: Activity[];
+    tasks: Task[];
     employeeId: string;
 }
 
-const IconMap: Record<string, any> = {
-    PlusCircle,
-    User,
-    Send,
-    CheckCircle2
+const IconMap: Record<string, ComponentType<{ className?: string }>> = {
+    PlusCircle: PlusCircle,
+    User: User,
+    Send: Send,
+    CheckCircle2: CheckCircle2
 };
 
 export function ProfileClient({ user, activities, tasks, employeeId }: ProfileClientProps) {
@@ -56,7 +82,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                     return (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
+                            onClick={() => setActiveTab(tab.id as "profile" | "settings" | "statistics" | "schedule")}
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-all",
                                 isActive
@@ -106,7 +132,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Отдел</div>
-                                    <div className="text-base font-bold text-indigo-600">{user.department?.name || user.department || "—"}</div>
+                                    <div className="text-base font-bold text-indigo-600">{(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "—")}</div>
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">ID сотрудника</div>

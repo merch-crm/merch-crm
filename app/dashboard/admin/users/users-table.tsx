@@ -1,29 +1,42 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { getUsers, deleteUser } from "../actions";
-import { Search, User, Mail, Shield, Building, MoreVertical, Trash2, Edit, Users } from "lucide-react";
+import { getUsers } from "../actions";
+import { Search, User, Trash2, Edit, Users, Building } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { AddUserDialog } from "./add-user-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    roleId: string | null;
+    departmentId: string | null;
+    department?: string | null;
+    role?: {
+        name: string;
+    } | null;
+}
+
 export function UsersTable() {
-    const [users, setUsers] = useState<any[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [deletingUser, setDeletingUser] = useState<any | null>(null);
-    const [editingUser, setEditingUser] = useState<any | null>(null);
+    const [deletingUser, setDeletingUser] = useState<User | null>(null);
+    const [editingUser, setEditingUser] = useState<User | null>(null);
 
     const fetchUsers = () => {
         setLoading(true);
         getUsers().then(res => {
-            if (res.data) setUsers(res.data);
+            if (res.data) setUsers(res.data as User[]);
             setLoading(false);
         });
     };
 
     useEffect(() => {
+        /* eslint-disable-next-line react-hooks/set-state-in-effect */
         fetchUsers();
     }, []);
 
@@ -128,6 +141,7 @@ export function UsersTable() {
             />
 
             <EditUserDialog
+                key={editingUser?.id}
                 isOpen={!!editingUser}
                 user={editingUser}
                 onClose={() => setEditingUser(null)}

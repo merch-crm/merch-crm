@@ -3,8 +3,18 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusBadge from "./status-badge";
 
+export interface Order {
+    id: string;
+    createdAt: string | Date;
+    totalAmount: string;
+    status: string;
+    priority: string;
+    client: { name: string };
+    creator?: { name: string } | null;
+}
+
 interface OrdersTableProps {
-    orders: any[];
+    orders: Order[];
     error?: string;
 }
 

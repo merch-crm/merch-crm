@@ -2,22 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { getRoles, deleteRole } from "../actions";
-import { Shield, Key, Plus, Settings2, Palette, Printer, Scissors, Package, ShoppingBag, UserCog, LucideIcon, Trash2, Edit2 } from "lucide-react";
+import { Shield, Key, Palette, Printer, Scissors, Package, ShoppingBag, UserCog, LucideIcon, Trash2, Edit2 } from "lucide-react";
 import { RolePermissionsDialog } from "./role-permissions-dialog";
 import { AddRoleDialog } from "./add-role-dialog";
 import { EditRoleDialog } from "./edit-role-dialog";
 import { DeleteRoleDialog } from "./delete-role-dialog";
 
+interface Role {
+    id: string;
+    name: string;
+    isSystem: boolean;
+    departmentId: string | null;
+    department?: {
+        name: string;
+    } | null;
+    permissions: Record<string, Record<string, boolean>>;
+}
+
 export default function AdminRolesPage() {
-    const [roles, setRoles] = useState<any[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState(true);
-    const [permissionsRole, setPermissionsRole] = useState<any | null>(null);
-    const [editingRole, setEditingRole] = useState<any | null>(null);
-    const [deletingRole, setDeletingRole] = useState<any | null>(null);
+    const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
+    const [editingRole, setEditingRole] = useState<Role | null>(null);
+    const [deletingRole, setDeletingRole] = useState<Role | null>(null);
 
     const fetchRoles = () => {
         getRoles().then(res => {
-            if (res.data) setRoles(res.data);
+            if (res.data) setRoles(res.data as Role[]);
             setLoading(false);
         });
     };
@@ -161,8 +172,10 @@ export default function AdminRolesPage() {
 
                                 <div className="flex-1">
                                     <div className="flex flex-wrap gap-1.5 h-[40px] overflow-hidden items-start">
-                                        {Object.keys(role.permissions || {}).length > 0 ? (
-                                            Object.keys(role.permissions || {}).slice(0, 3).map(p => (
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                        {Object.keys((role.permissions as any) || {}).length > 0 ? (
+                                            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                                            Object.keys((role.permissions as any) || {}).slice(0, 3).map(p => (
                                                 <span key={p} className="text-[10px] bg-white border border-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded shadow-sm">
                                                     {p}
                                                 </span>
@@ -170,9 +183,11 @@ export default function AdminRolesPage() {
                                         ) : (
                                             <span className="text-[11px] text-slate-400 italic">Нет настроенных прав</span>
                                         )}
-                                        {Object.keys(role.permissions || {}).length > 3 && (
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                        {(Object.keys((role.permissions as any) || {}).length || 0) > 3 && (
                                             <span className="text-[10px] text-slate-400 font-bold px-1 py-0.5">
-                                                +{Object.keys(role.permissions || {}).length - 3}
+                                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                                +{(Object.keys((role.permissions as any) || {}).length || 0) - 3}
                                             </span>
                                         )}
                                     </div>
@@ -184,7 +199,8 @@ export default function AdminRolesPage() {
                                         <span>Разрешения</span>
                                     </div>
                                     <span className="text-sm font-bold text-slate-900">
-                                        {Object.keys(role.permissions || {}).length || 0}
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                        {Object.keys((role.permissions as any) || {}).length || 0}
                                     </span>
                                 </div>
                             </div>

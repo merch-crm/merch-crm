@@ -33,7 +33,7 @@ export async function createTask(formData: FormData) {
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
-    const priority = (formData.get("priority") as any) || "normal";
+    const priority = (formData.get("priority") as (typeof tasks.$inferInsert)["priority"]) || "normal";
     const assignedToUserId = formData.get("assignedToUserId") as string;
     const assignedToRoleId = formData.get("assignedToRoleId") as string;
     const dueDateStr = formData.get("dueDate") as string;
@@ -66,8 +66,8 @@ export async function updateTask(taskId: string, formData: FormData) {
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
-    const priority = formData.get("priority") as any;
-    const status = formData.get("status") as any;
+    const priority = formData.get("priority") as (typeof tasks.$inferInsert)["priority"];
+    const status = formData.get("status") as (typeof tasks.$inferInsert)["status"];
     const assignedToUserId = formData.get("assignedToUserId") as string;
     const assignedToRoleId = formData.get("assignedToRoleId") as string;
     const dueDateStr = formData.get("dueDate") as string;
@@ -101,7 +101,7 @@ export async function toggleTaskStatus(taskId: string, currentStatus: string) {
 
     try {
         await db.update(tasks)
-            .set({ status: newStatus as any })
+            .set({ status: newStatus as (typeof tasks.$inferInsert)["status"] })
             .where(eq(tasks.id, taskId));
 
         revalidatePath("/dashboard/tasks");

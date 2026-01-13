@@ -1,6 +1,15 @@
 import { getInventoryItems } from "./actions";
 import { Edit, Trash2, AlertTriangle } from "lucide-react";
 
+interface InventoryItem {
+    id: string;
+    name: string;
+    sku: string | null;
+    quantity: number;
+    unit: string;
+    lowStockThreshold: number;
+}
+
 export async function InventoryTable() {
     const { data: items, error } = await getInventoryItems();
 
@@ -28,7 +37,7 @@ export async function InventoryTable() {
                     </tr>
                 </thead>
                 <tbody className="bg-card divide-y divide-border">
-                    {items.map((item: any) => {
+                    {items.map((item: InventoryItem) => {
                         const isLowStock = item.quantity <= item.lowStockThreshold;
                         return (
                             <tr key={item.id} className="hover:bg-muted/50 transition-colors">

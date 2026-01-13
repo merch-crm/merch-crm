@@ -16,7 +16,9 @@ const pool = new Pool({
 
 import * as schema from "./schema";
 
-const globalForDb = global as unknown as { db: any };
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
+const globalForDb = global as unknown as { db: NodePgDatabase<typeof schema> };
 
 export const db = globalForDb.db || drizzle(pool, { schema });
 

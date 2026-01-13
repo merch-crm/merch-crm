@@ -16,9 +16,19 @@ import {
 import { createTask } from "./actions";
 import { cn } from "@/lib/utils";
 
+interface User {
+    id: string;
+    name: string;
+}
+
+interface Role {
+    id: string;
+    name: string;
+}
+
 interface CreateTaskDialogProps {
-    users: any[];
-    roles: any[];
+    users: User[];
+    roles: Role[];
 }
 
 export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {

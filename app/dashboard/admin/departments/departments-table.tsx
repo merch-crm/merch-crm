@@ -7,17 +7,25 @@ import { AddDepartmentDialog } from "./add-department-dialog";
 import { DeleteDepartmentDialog } from "./delete-department-dialog";
 import { EditDepartmentDialog } from "./edit-department-dialog";
 
+interface Department {
+    id: string;
+    name: string;
+    description: string | null;
+    color: string | null;
+    userCount?: number;
+}
+
 export function DepartmentsTable() {
-    const [departments, setDepartments] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<Department[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [departmentToDelete, setDepartmentToDelete] = useState<any | null>(null);
-    const [departmentToEdit, setDepartmentToEdit] = useState<any | null>(null);
+    const [departmentToDelete, setDepartmentToDelete] = useState<Department | null>(null);
+    const [departmentToEdit, setDepartmentToEdit] = useState<Department | null>(null);
 
     const fetchDepartments = () => {
-        setLoading(true);
+        // setLoading(true); // Remove to avoid sync setState in useEffect
         getDepartments().then(res => {
-            if (res.data) setDepartments(res.data);
+            if (res.data) setDepartments(res.data as Department[]);
             setLoading(false);
         });
     };
@@ -26,7 +34,7 @@ export function DepartmentsTable() {
         fetchDepartments();
     }, []);
 
-    const handleDeleteClick = (dept: any) => {
+    const handleDeleteClick = (dept: Department) => {
         setDepartmentToDelete(dept);
         setDeleteDialogOpen(true);
     };

@@ -1,15 +1,12 @@
 import Link from "next/link";
 import {
-    ShoppingCart,
     Users,
-    Settings,
     DollarSign,
     Plus,
     UserPlus,
     UploadCloud,
     Package,
     TrendingUp,
-    Star,
     Wallet
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -26,6 +23,14 @@ import {
     endOfMonth,
     startOfQuarter
 } from "date-fns";
+
+const periods = [
+    { label: "Сегодня", value: "today" },
+    { label: "Эта неделя", value: "week" },
+    { label: "Этот месяц", value: "month" },
+    { label: "Квартал", value: "quarter" },
+    { label: "Весь период", value: "all" },
+];
 
 export default async function DashboardPage({
     searchParams,
@@ -224,11 +229,3 @@ export default async function DashboardPage({
         </div>
     );
 }
-
-const periods = [
-    { label: "Сегодня", value: "today" },
-    { label: "Эта неделя", value: "week" },
-    { label: "Этот месяц", value: "month" },
-    { label: "Квартал", value: "quarter" },
-    { label: "Весь период", value: "all" },
-];

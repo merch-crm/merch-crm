@@ -13,10 +13,32 @@ import { CreateTaskDialog } from "./create-task-dialog";
 import { KanbanBoard } from "./kanban-board";
 import { cn } from "@/lib/utils";
 
+interface Task {
+    id: string;
+    title: string;
+    description?: string | null;
+    status: string;
+    priority: string;
+    assignedToUserId?: string | null;
+    assignedToRoleId?: string | null;
+    dueDate?: Date | string | null;
+    createdAt: Date | string;
+}
+
+interface User {
+    id: string;
+    name: string;
+}
+
+interface Role {
+    id: string;
+    name: string;
+}
+
 interface TasksClientProps {
-    initialTasks: any[];
-    users: any[];
-    roles: any[];
+    initialTasks: Task[];
+    users: User[];
+    roles: Role[];
     currentUserId: string;
     currentUserRoleId: string;
 }

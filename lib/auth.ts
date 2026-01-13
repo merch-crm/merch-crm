@@ -5,7 +5,19 @@ import bcrypt from "bcryptjs";
 const SECRET_KEY = process.env.JWT_SECRET_KEY || "your-secret-key-change-it";
 const key = new TextEncoder().encode(SECRET_KEY);
 
-export async function encrypt(payload: any) {
+import { JWTPayload } from "jose";
+
+export interface Session extends JWTPayload {
+    id: string;
+    email: string;
+    name: string;
+    roleName: string;
+    roleId: string;
+    departmentName: string;
+    expires?: Date;
+}
+
+export async function encrypt(payload: Session) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -13,11 +25,11 @@ export async function encrypt(payload: any) {
         .sign(key);
 }
 
-export async function decrypt(input: string): Promise<any> {
+export async function decrypt(input: string): Promise<Session> {
     const { payload } = await jwtVerify(input, key, {
         algorithms: ["HS256"],
     });
-    return payload;
+    return payload as Session;
 }
 
 export async function hashPassword(password: string) {
@@ -28,7 +40,7 @@ export async function comparePassword(password: string, hash: string) {
     return await bcrypt.compare(password, hash);
 }
 
-export async function getSession() {
+export async function getSession(): Promise<Session | null> {
     const cookieStore = await cookies();
     const session = cookieStore.get("session")?.value;
     if (!session) return null;
