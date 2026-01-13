@@ -19,7 +19,6 @@ const navigation = [
     { name: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
     { name: "Склад", href: "/dashboard/warehouse", icon: Package },
     { name: "Клиенты", href: "/dashboard/clients", icon: Users },
-    { name: "Настройки", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function Sidebar({ className }: { className?: string }) {

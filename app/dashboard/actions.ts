@@ -2,7 +2,47 @@
 
 import { db } from "@/lib/db";
 import { orders, clients, orderStatusEnum } from "@/lib/schema";
-import { count, sum, ne, inArray, sql, and, gte, lte } from "drizzle-orm";
+import { count, sum, ne, inArray, and, gte, lte } from "drizzle-orm";
+import {
+    startOfDay,
+    endOfDay,
+    startOfWeek,
+    startOfMonth,
+    endOfMonth,
+    startOfQuarter
+} from "date-fns";
+
+export async function getDashboardStatsByPeriod(period: string = "month") {
+    const now = new Date();
+    let startDate: Date;
+    let endDate: Date = endOfDay(now);
+
+    switch (period) {
+        case "today":
+            startDate = startOfDay(now);
+            break;
+        case "week":
+            startDate = startOfWeek(now, { weekStartsOn: 1 });
+            break;
+        case "month":
+            startDate = startOfMonth(now);
+            endDate = endOfMonth(now);
+            break;
+        case "quarter":
+            startDate = startOfQuarter(now);
+            break;
+        case "all":
+            startDate = new Date(2000, 0, 1);
+            endDate = new Date(2100, 0, 1);
+            break;
+        default:
+            startDate = startOfMonth(now);
+            endDate = endOfMonth(now);
+    }
+
+    return getDashboardStats(startDate, endDate);
+}
+
 
 export async function getDashboardStats(startDate?: Date, endDate?: Date) {
     try {

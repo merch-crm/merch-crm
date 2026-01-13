@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { getDepartments, deleteDepartment } from "../actions";
-import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Edit2 } from "lucide-react";
+import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
 import { AddDepartmentDialog } from "./add-department-dialog";
 import { DeleteDepartmentDialog } from "./delete-department-dialog";
-import { EditDepartmentDialog } from "./edit-department-dialog";
+import { DepartmentSettingsDialog } from "./department-settings-dialog";
 
 interface Department {
     id: string;
@@ -15,23 +15,36 @@ interface Department {
     userCount?: number;
 }
 
+const COLOR_MAP: Record<string, { bg: string; text: string; border: string; gradient: string; iconBg: string; iconColor: string }> = {
+    indigo: { bg: "bg-indigo-50", text: "text-indigo-600", border: "border-indigo-100", gradient: "from-indigo-50/50 to-indigo-100/30", iconBg: "bg-indigo-100", iconColor: "text-indigo-600" },
+    purple: { bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-100", gradient: "from-purple-50/50 to-purple-100/30", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
+    rose: { bg: "bg-rose-50", text: "text-rose-600", border: "border-rose-100", gradient: "from-rose-50/50 to-rose-100/30", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
+    orange: { bg: "bg-orange-50", text: "text-orange-600", border: "border-orange-100", gradient: "from-orange-50/50 to-orange-100/30", iconBg: "bg-orange-100", iconColor: "text-orange-600" },
+    amber: { bg: "bg-amber-50", text: "text-amber-600", border: "border-amber-100", gradient: "from-amber-50/50 to-amber-100/30", iconBg: "bg-amber-100", iconColor: "text-amber-600" },
+    emerald: { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-100", gradient: "from-emerald-50/50 to-emerald-100/30", iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
+    sky: { bg: "bg-sky-50", text: "text-sky-600", border: "border-sky-100", gradient: "from-sky-50/50 to-sky-100/30", iconBg: "bg-sky-100", iconColor: "text-sky-600" },
+    slate: { bg: "bg-slate-50", text: "text-slate-600", border: "border-slate-100", gradient: "from-slate-50/50 to-slate-100/30", iconBg: "bg-slate-100", iconColor: "text-slate-600" },
+};
+
 export function DepartmentsTable() {
     const [departments, setDepartments] = useState<Department[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [departmentToDelete, setDepartmentToDelete] = useState<Department | null>(null);
-    const [departmentToEdit, setDepartmentToEdit] = useState<Department | null>(null);
+    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
 
-    const fetchDepartments = () => {
-        // setLoading(true); // Remove to avoid sync setState in useEffect
+    const fetchDepartments = (isInitial = true) => {
+        if (isInitial) setLoading(true);
         getDepartments().then(res => {
             if (res.data) setDepartments(res.data as Department[]);
-            setLoading(false);
+            if (isInitial) setLoading(false);
         });
     };
 
     useEffect(() => {
-        fetchDepartments();
+        fetchDepartments(true);
+        const interval = setInterval(() => fetchDepartments(false), 15000);
+        return () => clearInterval(interval);
     }, []);
 
     const handleDeleteClick = (dept: Department) => {
@@ -50,39 +63,18 @@ export function DepartmentsTable() {
         setDepartmentToDelete(null);
     };
 
-    const getDepartmentConfig = (deptName: string) => {
-        const config: Record<string, { icon: LucideIcon; gradient: string; iconBg: string; iconColor: string }> = {
-            "Руководство": {
-                icon: Crown,
-                gradient: "from-rose-50/50 to-rose-100/30",
-                iconBg: "bg-rose-100",
-                iconColor: "text-rose-600"
-            },
-            "Отдел продаж": {
-                icon: ShoppingBag,
-                gradient: "from-emerald-50/50 to-emerald-100/30",
-                iconBg: "bg-emerald-100",
-                iconColor: "text-emerald-600"
-            },
-            "Производство": {
-                icon: Cog,
-                gradient: "from-slate-50/50 to-slate-100/30",
-                iconBg: "bg-slate-100",
-                iconColor: "text-slate-600"
-            },
-            "Дизайн": {
-                icon: Palette,
-                gradient: "from-purple-50/50 to-purple-100/30",
-                iconBg: "bg-purple-100",
-                iconColor: "text-purple-600"
-            },
+    const getDepartmentConfig = (deptName: string, deptColor: string | null) => {
+        const icons: Record<string, LucideIcon> = {
+            "Руководство": Crown,
+            "Отдел продаж": ShoppingBag,
+            "Производство": Cog,
+            "Дизайн": Palette,
         };
-        return config[deptName] || {
-            icon: Building,
-            gradient: "from-indigo-50/50 to-indigo-100/30",
-            iconBg: "bg-indigo-100",
-            iconColor: "text-indigo-600"
-        };
+
+        const Icon = icons[deptName] || Building;
+        const colorConfig = COLOR_MAP[deptColor || "indigo"] || COLOR_MAP.indigo;
+
+        return { Icon, ...colorConfig };
     };
 
     if (loading) return <div className="text-slate-400 p-12 text-center text-sm font-medium">Загрузка отделов...</div>;
@@ -104,39 +96,40 @@ export function DepartmentsTable() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {departments.map((dept) => {
-                    const config = getDepartmentConfig(dept.name);
-                    const Icon = config.icon;
+                    const config = getDepartmentConfig(dept.name, dept.color);
+                    const Icon = config.Icon;
 
                     return (
                         <div
                             key={dept.id}
-                            className={`group relative rounded-xl border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-indigo-400 hover:shadow-lg transition-all h-[180px] flex flex-col`}
+                            onClick={() => setSelectedDepartment(dept)}
+                            className={`group relative rounded-2xl border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all h-[200px] flex flex-col cursor-pointer active:scale-[0.98]`}
                         >
-                            <div className="p-6 flex flex-col h-full">
-                                <div className="flex items-start gap-4 mb-3">
-                                    <div className={`flex-shrink-0 h-11 w-11 rounded-lg ${config.iconBg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
-                                        <Icon className={`w-5 h-5 ${config.iconColor}`} />
+                            <div className="p-7 flex flex-col h-full">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <div className={`flex-shrink-0 h-14 w-14 rounded-2xl ${config.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 border border-white shadow-sm`}>
+                                        <Icon className={`w-7 h-7 ${config.iconColor}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="text-lg font-bold text-slate-900 truncate tracking-tight">{dept.name}</h4>
-                                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Отдел</p>
+                                        <h4 className="text-xl font-black text-slate-900 truncate tracking-tight">{dept.name}</h4>
+                                        <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
                                     </div>
-                                    <div className="flex flex-col gap-1 -mr-2 -mt-2">
+                                    <div className="flex flex-col gap-1 -mr-3 -mt-3">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setDepartmentToEdit(dept);
+                                                setSelectedDepartment(dept);
                                             }}
-                                            className="p-1.5 text-slate-300 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50"
+                                            className="p-2 text-slate-300 hover:text-indigo-600 transition-colors rounded-xl hover:bg-white shadow-sm"
                                         >
-                                            <Edit2 className="w-4 h-4" />
+                                            <Settings2 className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleDeleteClick(dept);
                                             }}
-                                            className="p-1.5 text-slate-300 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50"
+                                            className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-xl hover:bg-white shadow-sm"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -182,10 +175,10 @@ export function DepartmentsTable() {
                 onConfirm={handleDeleteConfirm}
             />
 
-            <EditDepartmentDialog
-                department={departmentToEdit}
-                isOpen={!!departmentToEdit}
-                onClose={() => setDepartmentToEdit(null)}
+            <DepartmentSettingsDialog
+                department={selectedDepartment}
+                isOpen={!!selectedDepartment}
+                onClose={() => setSelectedDepartment(null)}
                 onSuccess={fetchDepartments}
             />
         </div>

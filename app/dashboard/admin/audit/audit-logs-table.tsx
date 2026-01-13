@@ -25,14 +25,17 @@ export function AuditLogsTable() {
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        const fetchLogs = () => {
-            setLoading(true);
+        const fetchLogs = (isInitial = false) => {
+            if (isInitial) setLoading(true);
             getAuditLogs().then(res => {
                 if (res.data) setLogs(res.data as AuditLog[]);
-                setLoading(false);
+                if (isInitial) setLoading(false);
             });
         };
-        fetchLogs();
+
+        fetchLogs(true);
+        const interval = setInterval(() => fetchLogs(false), 15000);
+        return () => clearInterval(interval);
     }, []);
 
     const filteredLogs = logs.filter(log =>

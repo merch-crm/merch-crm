@@ -147,26 +147,7 @@ export default function AdminRolesPage() {
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-1 -mr-2 -mt-2">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setEditingRole(role);
-                                            }}
-                                            className="p-1.5 text-slate-300 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50"
-                                        >
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        {!role.isSystem && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeletingRole(role);
-                                                }}
-                                                className="p-1.5 text-slate-300 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        )}
+                                        {/* Actions hidden as per UI cleanup request */}
                                     </div>
                                 </div>
 

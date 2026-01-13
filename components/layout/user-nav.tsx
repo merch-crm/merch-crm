@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, LogOut, ChevronDown, Settings } from "lucide-react";
+import { User, LogOut, ChevronDown, Shield } from "lucide-react";
 import { logout } from "@/app/dashboard/profile/actions";
 
 import { useRouter } from "next/navigation";
@@ -65,14 +65,16 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                             Профиль
                         </Link>
 
-                        <Link
-                            href={user.roleName === "Администратор" ? "/dashboard/settings" : "/dashboard/profile?tab=settings"}
-                            onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-4 px-4 py-3 text-[15px] font-bold text-slate-700 rounded-lg hover:bg-slate-50 transition-colors group"
-                        >
-                            <Settings className="h-5 w-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
-                            Настройки
-                        </Link>
+                        {user.roleName === "Администратор" && (
+                            <Link
+                                href="/dashboard/admin"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-4 px-4 py-3 text-[15px] font-bold text-slate-700 rounded-lg hover:bg-slate-50 transition-colors group"
+                            >
+                                <Shield className="h-5 w-5 text-slate-400 group-hover:text-amber-600 transition-colors" />
+                                Админ-панель
+                            </Link>
+                        )}
 
                     </div>
 

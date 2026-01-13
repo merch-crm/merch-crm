@@ -3,8 +3,11 @@
 import { db } from "@/lib/db";
 import { users, roles, auditLogs, departments } from "@/lib/schema";
 import { getSession, hashPassword } from "@/lib/auth";
-import { eq, asc, desc, isNull } from "drizzle-orm";
+import { eq, asc, desc, isNull, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import os from "os";
+import fs from "fs";
+import path from "path";
 
 export async function getUsers() {
     const session = await getSession();
@@ -393,7 +396,7 @@ export async function deleteRole(roleId: string) {
             where: eq(roles.id, roleId)
         });
 
-        if (role?.isSystem) {
+        if (role?.name === "Администратор") {
             return { error: "Нельзя удалить системную роль" };
         }
 
@@ -480,7 +483,7 @@ export async function getDepartments() {
     }
 }
 
-export async function createDepartment(formData: FormData) {
+export async function createDepartment(formData: FormData, roleIds?: string[]) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -499,13 +502,22 @@ export async function createDepartment(formData: FormData) {
 
         const newDept = result[0];
 
+        // Link roles if provided
+        if (roleIds && roleIds.length > 0) {
+            for (const roleId of roleIds) {
+                await db.update(roles)
+                    .set({ departmentId: newDept.id })
+                    .where(eq(roles.id, roleId));
+            }
+        }
+
         // Audit Log
         await db.insert(auditLogs).values({
             userId: session.id,
             action: `Создание отдела: ${name}`,
             entityType: "department",
             entityId: newDept.id,
-            details: { name, description }
+            details: { name, description, linkedRoles: roleIds?.length || 0 }
         });
 
         revalidatePath("/dashboard/admin");
@@ -583,5 +595,145 @@ export async function deleteDepartment(deptId: string) {
     } catch (error) {
         console.error("Error deleting department:", error);
         return { error: "Failed to delete department" };
+    }
+}
+export async function getRolesByDepartment(departmentId: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const departmentRoles = await db.query.roles.findMany({
+            where: eq(roles.departmentId, departmentId),
+            orderBy: [asc(roles.name)]
+        });
+        return { data: departmentRoles };
+    } catch (error) {
+        console.error("Error fetching department roles:", error);
+        return { error: "Failed to fetch department roles" };
+    }
+}
+
+export async function updateRoleDepartment(roleId: string, departmentId: string | null) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может изменять отдел роли" };
+    }
+
+    try {
+        await db.update(roles)
+            .set({ departmentId })
+            .where(eq(roles.id, roleId));
+
+        const role = await db.query.roles.findFirst({
+            where: eq(roles.id, roleId)
+        });
+
+        // Audit Log
+        await db.insert(auditLogs).values({
+            userId: session.id,
+            action: departmentId
+                ? `Добавление роли "${role?.name}" в отдел`
+                : `Удаление роли "${role?.name}" из отдела`,
+            entityType: "role",
+            entityId: roleId,
+            details: { departmentId, roleName: role?.name }
+        });
+
+        revalidatePath("/dashboard/admin/departments");
+        revalidatePath("/dashboard/admin/roles");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating role department:", error);
+        return { error: "Failed to update role department" };
+    }
+}
+
+export async function getSystemStats() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        // 1. OS Stats
+        const cpuLoad = os.loadavg();
+        const totalMem = os.totalmem();
+        const freeMem = os.freemem();
+        const uptime = os.uptime();
+
+        // 2. Database Stats (PostgreSQL specific size query)
+        const dbSizeResult: any = await db.execute(sql`SELECT pg_database_size(current_database())`);
+        const dbSize = parseInt(dbSizeResult[0]?.pg_database_size || "0");
+
+        const fetchCount = async (table: string) => {
+            const res = await db.execute(sql.raw(`SELECT count(*) as count FROM ${table}`));
+            return (res[0] as { count: number | string }).count;
+        };
+
+        const tableCounts = {
+            users: await fetchCount("users"),
+            orders: await fetchCount("orders"),
+            clients: await fetchCount("clients"),
+            auditLogs: await fetchCount("audit_logs"),
+        };
+
+        // 3. Storage Stats
+        const uploadsDir = path.join(process.cwd(), "public/uploads");
+        let storageSize = 0;
+        let fileCount = 0;
+
+        if (fs.existsSync(uploadsDir)) {
+            const getAllFiles = (dir: string) => {
+                const files = fs.readdirSync(dir);
+                files.forEach(file => {
+                    const name = path.join(dir, file);
+                    if (fs.statSync(name).isDirectory()) {
+                        getAllFiles(name);
+                    } else {
+                        storageSize += fs.statSync(name).size;
+                        fileCount++;
+                    }
+                });
+            };
+            getAllFiles(uploadsDir);
+        }
+
+        return {
+            data: {
+                server: {
+                    cpuLoad,
+                    totalMem,
+                    freeMem,
+                    uptime,
+                    platform: os.platform(),
+                    arch: os.arch(),
+                },
+                database: {
+                    size: dbSize,
+                    tableCounts
+                },
+                storage: {
+                    size: storageSize,
+                    fileCount
+                }
+            }
+        };
+    } catch (error) {
+        console.error("Error fetching system stats:", error);
+        return { error: "Не удалось получить системные показатели" };
     }
 }

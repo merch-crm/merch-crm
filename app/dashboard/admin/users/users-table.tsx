@@ -27,17 +27,18 @@ export function UsersTable() {
     const [deletingUser, setDeletingUser] = useState<User | null>(null);
     const [editingUser, setEditingUser] = useState<User | null>(null);
 
-    const fetchUsers = () => {
-        setLoading(true);
+    const fetchUsers = (isInitial = true) => {
+        if (isInitial) setLoading(true);
         getUsers().then(res => {
             if (res.data) setUsers(res.data as User[]);
-            setLoading(false);
+            if (isInitial) setLoading(false);
         });
     };
 
     useEffect(() => {
-        /* eslint-disable-next-line react-hooks/set-state-in-effect */
-        fetchUsers();
+        fetchUsers(true);
+        const interval = setInterval(() => fetchUsers(false), 15000);
+        return () => clearInterval(interval);
     }, []);
 
     const filteredUsers = useMemo(() => {

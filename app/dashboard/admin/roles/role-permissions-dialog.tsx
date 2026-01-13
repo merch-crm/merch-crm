@@ -9,15 +9,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { updateRolePermissions, updateRole, getDepartments } from "../actions";
-import { Loader2, Save, Shield, Building } from "lucide-react";
+import { updateRolePermissions, updateRole, getDepartments, deleteRole } from "../actions";
+import { Loader2, Save, Shield, Building, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DeleteRoleDialog } from "./delete-role-dialog";
 
 interface RolePermissionsDialogProps {
     role: {
         id: string;
         name: string;
         departmentId: string | null;
+        isSystem: boolean;
         permissions: Record<string, Record<string, boolean>>;
     } | null;
     isOpen: boolean;
@@ -48,6 +50,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
     const [roleName, setRoleName] = useState("");
     const [departmentId, setDepartmentId] = useState("");
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -84,6 +87,28 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
         });
     };
 
+    const handleDelete = async () => {
+        setShowDeleteConfirm(true);
+    };
+
+    const onConfirmDelete = async () => {
+        if (!role) return;
+        setLoading(true);
+        try {
+            const res = await deleteRole(role.id);
+            if (res.error) {
+                alert(res.error);
+                setLoading(false);
+            } else {
+                setShowDeleteConfirm(false);
+                onClose();
+            }
+        } catch (error) {
+            console.error("Failed to delete role:", error);
+            setLoading(false);
+        }
+    };
+
     const handleSave = async () => {
         if (!role) return;
         setLoading(true);
@@ -106,7 +131,10 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+            <DialogContent
+                className="max-w-4xl max-h-[85vh] overflow-y-auto"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
                 <DialogHeader>
                     <DialogTitle>Редактирование роли</DialogTitle>
                     <DialogDescription>
@@ -125,7 +153,6 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                     type="text"
                                     value={roleName}
                                     onChange={(e) => setRoleName(e.target.value)}
-                                    onFocus={(e) => e.target.blur()}
                                     className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all"
                                 />
                             </div>
@@ -199,24 +226,44 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 </div>
 
                 <DialogFooter>
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
-                        disabled={loading}
-                    >
-                        Отмена
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        disabled={loading}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                        <Save className="w-4 h-4" />
-                        Сохранить изменения
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {role && role.name !== "Администратор" && (
+                            <button
+                                onClick={handleDelete}
+                                disabled={loading}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-lg transition-colors disabled:opacity-50"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Удалить роль
+                            </button>
+                        )}
+                        <div className="flex-1" />
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                            disabled={loading}
+                        >
+                            Отмена
+                        </button>
+                        <button
+                            onClick={handleSave}
+                            disabled={loading}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                            <Save className="w-4 h-4" />
+                            Сохранить изменения
+                        </button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
+
+            <DeleteRoleDialog
+                role={role ? { id: role.id, name: role.name } : null}
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={onConfirmDelete}
+            />
         </Dialog>
     );
 }
