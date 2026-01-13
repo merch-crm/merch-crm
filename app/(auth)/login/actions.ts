@@ -61,7 +61,7 @@ export async function loginAction(prevState: any, formData: FormData) {
         (await cookies()).set("session", session, {
             expires,
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Only secure in production
+            secure: false, // process.env.NODE_ENV === "production", // Temprary disabled for HTTP access
             sameSite: "lax",
         });
         console.log(`[Login] Cookie set, redirecting to dashboard...`);

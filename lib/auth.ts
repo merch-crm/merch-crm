@@ -51,7 +51,7 @@ export async function updateSession() {
     const res = new Response();
     res.headers.set(
         "Set-Cookie",
-        `session=${session}; HttpOnly; Secure; SameSite=Lax; Expires=${parsed.expires.toUTCString()}`
+        `session=${session}; HttpOnly; SameSite=Lax; Expires=${parsed.expires.toUTCString()}`
     );
     return res;
 }
