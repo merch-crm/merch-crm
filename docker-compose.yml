@@ -2,11 +2,12 @@ version: '3.8'
 
 services:
   app:
-    image: ghcr.io/merch-crm/merch-crm:latest
+    build: .
+    image: merch-crm:latest
     container_name: merch-crm
     restart: always
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     env_file:
       - .env
     environment:
@@ -17,13 +18,27 @@ services:
     depends_on:
       - db
 
+  nginx-proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx_data:/data
+      - ./nginx_letsencrypt:/etc/letsencrypt
+    networks:
+      - app_network
+
   db:
     image: postgres:15-alpine
     container_name: merch-crm-db
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres # Change this in production if exposed, but internal net is safe enough for start
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: merch_crm
     volumes:
       - postgres_data:/var/lib/postgresql/data
