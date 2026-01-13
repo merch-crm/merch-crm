@@ -160,7 +160,7 @@ export async function getAuditLogs() {
 
         // Fetch users to map names
         const allUsers = await db.query.users.findMany();
-        const userMap = new Map(allUsers.map((u: any) => [u.id, u]));
+        const userMap = new Map(allUsers.map((u: any) => [u.id, u] as const));
 
         const enrichedLogs = logs.map((log: any) => ({
             ...log,
