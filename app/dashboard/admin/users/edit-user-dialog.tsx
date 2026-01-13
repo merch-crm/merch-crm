@@ -17,8 +17,8 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
     const [departments, setDepartments] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedRoleId, setSelectedRoleId] = useState(user.roleId || "");
-    const [selectedDeptId, setSelectedDeptId] = useState(user.departmentId || "");
+    const [selectedRoleId, setSelectedRoleId] = useState(user?.roleId || "");
+    const [selectedDeptId, setSelectedDeptId] = useState(user?.departmentId || "");
 
     useEffect(() => {
         if (isOpen) {
