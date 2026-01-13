@@ -50,9 +50,14 @@ export async function updateProfile(formData: FormData) {
         const updateData: any = { name, phone, department };
 
         if (avatarFile && avatarFile.size > 0) {
-            // Check for S3 configuration
-            if (!process.env.REG_STORAGE_BUCKET || !process.env.REG_STORAGE_ACCESS_KEY || !process.env.REG_STORAGE_SECRET_KEY) {
-                throw new Error("S3 хранилище не навернуто (отсутствуют переменные окружения)");
+            // Check for S3 configuration (support both REG_STORAGE and S3_ prefixes)
+            const bucket = process.env.REG_STORAGE_BUCKET || process.env.S3_BUCKET;
+            const accessKey = process.env.REG_STORAGE_ACCESS_KEY || process.env.S3_ACCESS_KEY;
+            const secretKey = process.env.REG_STORAGE_SECRET_KEY || process.env.S3_SECRET_KEY;
+            const endpoint = process.env.REG_STORAGE_ENDPOINT || process.env.S3_ENDPOINT || "https://s3.reg0.rusrv.ru";
+
+            if (!bucket || !accessKey || !secretKey) {
+                throw new Error("S3 хранилище не настроено (отсутствуют переменные окружения)");
             }
 
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
@@ -61,43 +66,7 @@ export async function updateProfile(formData: FormData) {
             // Upload to S3 (Reg.ru)
             const key = await uploadFile(filename, buffer, "image/jpeg");
 
-            // Get public URL (assuming bucket is public or we generate a signed URL)
-            // For now, simpler: Just store the logic. But wait, getFileUrl returns signed URL.
-            // If the bucket is public-read, we can construct URL.
-            // Let's assume we store the KEY or we use a helper to get URL.
-            // But usually for avatars we want a permanent URL if possible or signed.
-            // Let's store the full endpoint URL if public or just the Key.
-            // If we store Key, we need to sign it on read. 
-            // Existing schema says "avatar" is text.
-            // Let's try to get the URL. S3 usually: endpoint/bucket/key
-
-            const endpoint = process.env.REG_STORAGE_ENDPOINT || "https://s3.reg0.rusrv.ru";
-            const bucket = process.env.REG_STORAGE_BUCKET || "";
-            // Constructing public URL (assuming public bucket policy for avatars or we will sign it on render)
-            // Ideally we should sign it on render. But `user.avatar` is used directly in UI.
-            // If we assume the bucket is NOT public, we must sign.
-            // But for this task, the User asked for "upload and install".
-            // Let's simple store the path and we might need to fix display if it's private.
-            // However, typical S3 for web apps often make avatars public.
-            // Let's use the helper to get a long-lived signed URL or just the path?
-            // Let's try to get a signed URL for now, max duration. Max is usually 7 days.
-            // BUT `getFileUrl` logic in lib/storage generates signed url.
-
-            // Let's store the raw KEY for now? No, the UI expects a URL to render <img src={user.avatar} />.
-            // So we really should store a URL.
-            // Let's assume we can generate a URL. 
-            // If I look at `lib/storage.ts`, `getFileUrl` is exported.
-
-            // Hack/Quick fix: Generate a very long signed URL or assume public access.
-            // If I use `https://${bucket}.${endpoint.replace('https://', '')}/${key}`?
-            // Safe bet: Generate a signed URL for 7 days? No, that expires.
-            // Let's assume the user has set up a public bucket policy or we can serve it via an endpoint.
-            // "uploadFile" returns "key".
-
-            // Let's try to construct a public URL format, assuming user will make bucket public.
-            // endpoint is https://s3.reg0.rusrv.ru
-            // bucket is ...
-            // URL: https://s3.reg0.rusrv.ru/bucket-name/key (path style)
+            // Construct public URL
             const publicUrl = `${endpoint}/${bucket}/${key}`;
             updateData.avatar = publicUrl;
         }
