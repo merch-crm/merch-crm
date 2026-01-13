@@ -97,7 +97,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                     required
                                     defaultValue={user.name}
                                     placeholder="Иван Иванов"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -112,7 +112,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                     required
                                     defaultValue={user.email}
                                     placeholder="ivan@crm.local"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -125,7 +125,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                     type={showPassword ? "text" : "password"}
                                     name="password"
                                     placeholder="••••••••"
-                                    className="block w-full pl-10 pr-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 pr-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                                 <button
                                     type="button"
@@ -147,7 +147,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                         required
                                         value={selectedRoleId}
                                         onChange={(e) => handleRoleChange(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none"
+                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
                                     >
                                         <option value="" disabled>Выберите роль</option>
                                         {roles.map(role => (
@@ -164,7 +164,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                         name="departmentId"
                                         value={selectedDeptId}
                                         onChange={(e) => setSelectedDeptId(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none"
+                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
                                     >
                                         <option value="">Выберите отдел</option>
                                         {departments.map(dept => (
@@ -187,7 +187,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex items-center justify-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="flex-[2] inline-flex items-center justify-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />

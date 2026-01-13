@@ -83,7 +83,7 @@ export function AuditLogsTable() {
                     placeholder="Поиск по логам..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-slate-700"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
                 />
             </div>
 
@@ -167,16 +167,14 @@ export function AuditLogsTable() {
                     </table>
                 </div>
 
-                {/* Pagination */}
-                <div className="border-t border-slate-200">
-                    <Pagination
-                        totalItems={totalLogs}
-                        pageSize={20}
-                        currentPage={page}
-                        itemName="записей"
-                    />
-                </div>
             </div>
+
+            <Pagination
+                totalItems={totalLogs}
+                pageSize={20}
+                currentPage={page}
+                itemName="записей"
+            />
         </div>
     );
 }

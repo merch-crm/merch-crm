@@ -3,14 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { type VariantProps, cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-/* Note: You might need to install @radix-ui/react-slot if not present. 
-   If not, I can replace Slot with a simple conditional render or you can tell me to install it. 
-   For now I'll assume standard shadcn-like structure which usually wants Radix Slot,
-   but actually I will write a version without Radix dependency to be safe unless I see it in package.json.
-   I checked package.json -> NO Radix. 
-   I will implement a simpler Button without Slot polymorphism to avoid installing extra deps for now, 
-   or I can use simple `asChild` logic if strictly needed, but simple is better.
-*/
+
 
 const buttonVariants = cva(
     "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95",
@@ -49,9 +42,7 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
-        // Simplified handling without Radix Slot: just render button
-        // If asChild is true, we would technically need Slot, but let's stick to button for now.
-        const Comp = "button"
+        const Comp = asChild ? Slot : "button"
         return (
             <Comp
                 className={cn(buttonVariants({ variant, size, className }))}

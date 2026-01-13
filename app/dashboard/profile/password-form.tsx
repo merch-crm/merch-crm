@@ -34,7 +34,7 @@ export function PasswordForm() {
                         name="currentPassword"
                         type={showPasswords ? "text" : "password"}
                         required
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
                     />
                     <button
                         type="button"
@@ -52,7 +52,7 @@ export function PasswordForm() {
                             name="newPassword"
                             type={showPasswords ? "text" : "password"}
                             required
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
                         />
                     </div>
                     <div className="space-y-2">
@@ -61,7 +61,7 @@ export function PasswordForm() {
                             name="confirmPassword"
                             type={showPasswords ? "text" : "password"}
                             required
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
                         />
                     </div>
                 </div>

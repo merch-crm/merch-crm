@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles } from "@/lib/schema";
+import { users, roles, departments } from "@/lib/schema";
 import { comparePassword, encrypt } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
@@ -49,12 +49,16 @@ export async function loginAction(prevState: any, formData: FormData) {
             where: eq(roles.id, user[0].roleId)
         }) : null;
 
+        const department = user[0].departmentId ? await db.query.departments.findFirst({
+            where: eq(departments.id, user[0].departmentId)
+        }) : null;
+
         const sessionData = {
             id: user[0].id,
             email: user[0].email,
             roleId: user[0].roleId || "",
             roleName: role?.name || "User",
-            departmentName: user[0].department || "",
+            departmentName: department?.name || user[0].departmentLegacy || "",
             name: user[0].name || "",
             expires,
         };

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 const periods = [

@@ -81,7 +81,7 @@ export function CreateOrderDialog() {
         return (
             <button
                 onClick={handleOpen}
-                className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
             >
                 <Plus className="w-5 h-5" />
                 Создать заказ
@@ -161,7 +161,7 @@ export function CreateOrderDialog() {
                                             placeholder="Поиск клиента по имени, email, телефону или городу..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="block w-full rounded-2xl border-slate-200 bg-white pl-12 pr-4 py-4 text-sm font-medium placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                                            className="block w-full rounded-2xl border-slate-200 bg-white pl-12 pr-4 py-4 text-sm font-medium placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
                                         />
                                         {isSearching && (
                                             <div className="absolute right-4 top-4">
@@ -183,7 +183,7 @@ export function CreateOrderDialog() {
                                                     className="w-full flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold shrink-0">
-                                                        {client.name.charAt(0)}
+                                                        {client.name?.charAt(0) || "—"}
                                                     </div>
                                                     <div className="text-left">
                                                         <p className="font-bold text-slate-900">{client.name || "Без имени"}</p>
@@ -223,33 +223,33 @@ export function CreateOrderDialog() {
                                             placeholder="Имя"
                                             value={newClient.name}
                                             onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
-                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-50/50 transition-all"
+                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:outline-none focus:border-indigo-500 transition-all"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Фамилия"
-                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-50/50 transition-all"
+                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:outline-none focus:border-indigo-500 transition-all"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Номер телефона"
                                             value={newClient.phone}
                                             onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
-                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-50/50 transition-all"
+                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:outline-none focus:border-indigo-500 transition-all"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Город"
                                             value={newClient.city}
                                             onChange={(e) => setNewClient({ ...newClient, city: e.target.value })}
-                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-50/50 transition-all"
+                                            className="rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:outline-none focus:border-indigo-500 transition-all"
                                         />
                                         <input
                                             type="email"
                                             placeholder="Email"
                                             value={newClient.email}
                                             onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                                            className="col-span-2 rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-50/50 transition-all"
+                                            className="col-span-2 rounded-xl border-slate-200 py-3 px-4 text-sm font-medium focus:border-indigo-500  transition-all"
                                         />
                                     </div>
                                 </div>

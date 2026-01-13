@@ -9,12 +9,9 @@ import {
     Palette,
     Settings,
     Bell,
-    ChevronDown,
     Printer,
-    Package,
     CheckSquare
 } from "lucide-react";
-import { users, roles } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -28,12 +25,6 @@ const navigation = [
         departments: ["Руководство", "Отдел продаж"]
     },
     { name: "Задачи", href: "/dashboard/tasks", icon: CheckSquare },
-    {
-        name: "Склад",
-        href: "/dashboard/warehouse",
-        icon: Package,
-        departments: ["Руководство", "Отдел продаж"]
-    },
     {
         name: "Производство",
         href: "/dashboard/production",

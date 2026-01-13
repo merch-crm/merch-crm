@@ -219,3 +219,18 @@ body {
   color: white !important;
   border-radius: 0.75rem !important;
 }
+/* Глобальный сброс выделения (рамки) при фокусе */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Сброс для кнопок и инпутов */
+button:focus, 
+input:focus, 
+select:focus, 
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  ring: 0 !important;
+}

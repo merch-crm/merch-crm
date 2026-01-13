@@ -79,7 +79,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 active:scale-95 transition-all"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
             >
                 <Plus className="w-5 h-5" />
                 Добавить роль
@@ -124,7 +124,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                         name="name"
                                         required
                                         placeholder="Например: Оператор цеха"
-                                        className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                        className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                     />
                                 </div>
                             </div>
@@ -135,7 +135,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                     <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <select
                                         name="departmentId"
-                                        className="block w-full pl-10 h-[46px] rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all appearance-none"
+                                        className="block w-full pl-10 h-[46px] rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
                                     >
                                         <option value="">Общая роль (без отдела)</option>
                                         {departments.map(dept => (
@@ -202,7 +202,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {loading ? "Создание..." : "Создать роль"}

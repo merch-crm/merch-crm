@@ -49,7 +49,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     name="lastName"
                                     defaultValue={client.lastName}
                                     required
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                 />
                             </div>
                             <div>
@@ -59,7 +59,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     name="firstName"
                                     defaultValue={client.firstName}
                                     required
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                 />
                             </div>
                         </div>
@@ -70,7 +70,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="patronymic"
                                 defaultValue={client.patronymic || ""}
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                             />
                         </div>
 
@@ -80,7 +80,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="company"
                                 defaultValue={client.company || ""}
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                             />
                         </div>
 
@@ -91,7 +91,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="phone"
                                 defaultValue={client.phone}
                                 required
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                             />
                         </div>
 
@@ -102,7 +102,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     type="text"
                                     name="telegram"
                                     defaultValue={client.telegram || ""}
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                     placeholder="@username"
                                 />
                             </div>
@@ -112,7 +112,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     type="text"
                                     name="instagram"
                                     defaultValue={client.instagram || ""}
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                     placeholder="insta_link"
                                 />
                             </div>
@@ -125,7 +125,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     type="email"
                                     name="email"
                                     defaultValue={client.email || ""}
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                 />
                             </div>
                             <div>
@@ -134,7 +134,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                     type="text"
                                     name="city"
                                     defaultValue={client.city || ""}
-                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                    className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                                 />
                             </div>
                         </div>
@@ -145,7 +145,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="comments"
                                 defaultValue={client.comments || ""}
                                 rows={3}
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all"
+                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all"
                             />
                         </div>
 
@@ -160,7 +160,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all"
+                                className="flex-[2] inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all"
                             >
                                 {loading ? "Сохранение..." : "Сохранить изменения"}
                             </button>

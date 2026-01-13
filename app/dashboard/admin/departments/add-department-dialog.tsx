@@ -67,9 +67,9 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
             >
-                <Plus className="mr-2 h-5 w-5" />
+                <Plus className="w-5 h-5" />
                 Добавить отдел
             </button>
         );
@@ -113,7 +113,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                     name="name"
                                     required
                                     placeholder="Например: Цех печати"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -124,7 +124,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                 name="description"
                                 rows={2}
                                 placeholder="Чем занимается этот отдел..."
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
+                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
                             />
                         </div>
 
@@ -193,7 +193,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="w-full inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {loading ? "Создание..." : "Создать отдел"}

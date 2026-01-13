@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { getUsers } from "../actions";
-import { Search, User, Trash2, Edit, Users, Building } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { User as UserIcon, Trash2, Edit, Users, Building, Search, X } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { AddUserDialog } from "./add-user-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface User {
     id: string;
@@ -20,39 +21,70 @@ interface User {
     } | null;
 }
 
-export function UsersTable() {
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState("");
+interface UsersTableProps {
+    initialUsers: any[];
+    error?: string;
+    currentPage: number;
+    totalItems: number;
+}
+
+export function UsersTable({ initialUsers, error, currentPage, totalItems }: UsersTableProps) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [deletingUser, setDeletingUser] = useState<User | null>(null);
     const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
 
-    const fetchUsers = (isInitial = true) => {
-        if (isInitial) setLoading(true);
-        getUsers().then(res => {
-            if (res.data) setUsers(res.data as User[]);
-            if (isInitial) setLoading(false);
-        });
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (value) {
+                params.set(name, value);
+            } else {
+                params.delete(name);
+            }
+            if (name === "search") params.delete("page"); // Reset page on search
+            return params.toString();
+        },
+        [searchParams]
+    );
+
+    const handleSearch = (value: string) => {
+        setSearchValue(value);
+        // Debounce would be better, but for now simple update
     };
 
-    useEffect(() => {
-        fetchUsers(true);
-        const interval = setInterval(() => fetchUsers(false), 15000);
-        return () => clearInterval(interval);
-    }, []);
+    const applySearch = () => {
+        router.push(`${pathname}?${createQueryString("search", searchValue)}`);
+    };
 
-    const filteredUsers = useMemo(() => {
-        if (!searchQuery) return users;
-        const query = searchQuery.toLowerCase();
-        return users.filter(user =>
-            user.name.toLowerCase().includes(query) ||
-            user.email.toLowerCase().includes(query) ||
-            (user.department || "").toLowerCase().includes(query)
+    const isAllSelected = initialUsers.length > 0 && initialUsers.every(u => selectedIds.includes(u.id));
+
+    const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            setSelectedIds(initialUsers.map(u => u.id));
+        } else {
+            setSelectedIds([]);
+        }
+    };
+
+    const handleSelectRow = (id: string, e: React.MouseEvent | React.ChangeEvent) => {
+        // Prevent click events from triggering row actions if needed
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
         );
-    }, [users, searchQuery]);
+    };
 
-
-    if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка данных сотрудников...</div>;
+    if (error) {
+        return (
+            <div className="text-rose-600 p-6 bg-rose-50 rounded-2xl border border-rose-100 font-bold">
+                Ошибка: {error}
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -62,71 +94,110 @@ export function UsersTable() {
                     <input
                         type="text"
                         placeholder="Поиск сотрудника..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        value={searchValue}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && applySearch()}
+                        className="w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:text-slate-400 font-medium"
                     />
+                    {searchValue && (
+                        <button
+                            onClick={() => { setSearchValue(""); router.push(pathname); }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
-                <AddUserDialog onSuccess={fetchUsers} />
+                <AddUserDialog onSuccess={() => router.refresh()} />
             </div>
 
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-slate-50 border-b border-slate-200">
-                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Сотрудник</th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Роль</th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Отдел</th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {filteredUsers.map((user) => (
-                            <tr key={user.id} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                                            <User className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
-                                            <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[11px]" />
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                                        <Building className="w-4 h-4 text-slate-400" />
-                                        {user.department || "—"}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            onClick={() => setEditingUser(user)}
-                                            className="p-2 text-slate-400 hover:text-indigo-600 transition-colors rounded-lg hover:bg-slate-100"
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => setDeletingUser(user)}
-                                            className="p-2 text-slate-400 hover:text-red-600 transition-colors rounded-lg hover:bg-slate-100"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </td>
+            <div className="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr className="bg-gray-50">
+                                <th className="w-[50px] px-6 py-3 text-left">
+                                    <input
+                                        type="checkbox"
+                                        className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                        checked={isAllSelected}
+                                        onChange={handleSelectAll}
+                                    />
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Сотрудник</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Роль</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Отдел</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {filteredUsers.length === 0 && (
-                    <div className="text-center py-20 text-slate-400">
-                        <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                        <p className="text-lg font-medium">Сотрудники не найдены</p>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {initialUsers.map((user) => {
+                                const isSelected = selectedIds.includes(user.id);
+                                return (
+                                    <tr key={user.id} className={cn(
+                                        "hover:bg-gray-50 transition-colors group",
+                                        isSelected ? "bg-indigo-50/30" : ""
+                                    )}>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                                checked={isSelected}
+                                                onChange={(e) => handleSelectRow(user.id, e)}
+                                            />
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "h-10 w-10 rounded-full flex items-center justify-center transition-colors shadow-sm border",
+                                                    isSelected ? "bg-white border-indigo-200 text-indigo-600" : "bg-slate-50 border-slate-100 text-slate-400"
+                                                )}>
+                                                    <UserIcon className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
+                                                    <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-black uppercase tracking-wider" />
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                                <Building className="w-4 h-4 text-slate-300" />
+                                                {user.department || "—"}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => setEditingUser(user)}
+                                                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-lg transition-all"
+                                                >
+                                                    <Edit className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeletingUser(user)}
+                                                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg transition-all"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                {initialUsers.length === 0 && (
+                    <div className="text-center py-24">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
+                            <Users className="w-8 h-8 text-slate-200" />
+                        </div>
+                        <p className="text-base font-bold text-slate-900">Сотрудники не найдены</p>
+                        <p className="text-sm text-slate-400 mt-1">Попробуйте изменить запрос или добавьте нового сотрудника</p>
                     </div>
                 )}
             </div>
@@ -137,7 +208,7 @@ export function UsersTable() {
                 onClose={() => setDeletingUser(null)}
                 onSuccess={() => {
                     setDeletingUser(null);
-                    fetchUsers();
+                    router.refresh();
                 }}
             />
 
@@ -148,7 +219,7 @@ export function UsersTable() {
                 onClose={() => setEditingUser(null)}
                 onSuccess={() => {
                     setEditingUser(null);
-                    fetchUsers();
+                    router.refresh();
                 }}
             />
         </div >

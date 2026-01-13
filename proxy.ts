@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
                     return NextResponse.redirect(new URL("/dashboard", request.url));
                 }
             }
-        } catch (e) {
+        } catch {
             return NextResponse.redirect(new URL("/login", request.url));
         }
     }
@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
         try {
             await decrypt(session);
             return NextResponse.redirect(new URL("/dashboard", request.url));
-        } catch (e) {
+        } catch {
             // Session invalid, allow login
         }
     }

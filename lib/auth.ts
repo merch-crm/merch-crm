@@ -46,7 +46,7 @@ export async function getSession(): Promise<Session | null> {
     if (!session) return null;
     try {
         return await decrypt(session);
-    } catch (e) {
+    } catch {
         return null;
     }
 }

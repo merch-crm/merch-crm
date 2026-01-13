@@ -175,7 +175,7 @@ export async function createOrder(formData: FormData) {
         await db.update(orders).set({ totalAmount: String(totalAmount) }).where(eq(orders.id, newOrder.id));
 
         revalidatePath("/dashboard/orders");
-        revalidatePath("/dashboard/warehouse"); // Update warehouse counts
+        revalidatePath("/dashboard/admin/warehouse"); // Update warehouse counts
         return { success: true };
     } catch (error) {
         console.error("Error creating order:", error);
@@ -193,6 +193,89 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
         return { success: true };
     } catch (e) {
         return { error: "Failed to update status" };
+    }
+}
+
+export async function updateOrderPriority(orderId: string, newPriority: string) {
+    try {
+        await db.update(orders).set({ priority: newPriority }).where(eq(orders.id, orderId));
+        revalidatePath("/dashboard/orders");
+        revalidatePath(`/dashboard/orders/${orderId}`);
+        return { success: true };
+    } catch (e) {
+        return { error: "Failed to update priority" };
+    }
+}
+
+export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (typeof orders.$inferInsert)["status"]) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(orders).set({ status: newStatus }).where(inArray(orders.id, orderIds));
+
+        for (const orderId of orderIds) {
+            await logAction("Обновлен статус (массово)", "order", orderId, {
+                status: newStatus
+            });
+            revalidatePath(`/dashboard/orders/${orderId}`);
+        }
+
+        revalidatePath("/dashboard/orders");
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { error: "Failed to update status" };
+    }
+}
+
+export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(orders).set({ priority: newPriority }).where(inArray(orders.id, orderIds));
+
+        for (const orderId of orderIds) {
+            await logAction("Обновлен приоритет (массово)", "order", orderId, {
+                priority: newPriority
+            });
+            revalidatePath(`/dashboard/orders/${orderId}`);
+        }
+
+        revalidatePath("/dashboard/orders");
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { error: "Failed to update priority" };
+    }
+}
+
+export async function bulkDeleteOrders(orderIds: string[]) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    // Check if admin - we should probably check role name or permissions
+    // For now, let's assume the component will check, but we should double check session here too
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (user?.role?.name !== "administrator") {
+        return { error: "Доступ запрещен. Только администратор может удалять заказы." };
+    }
+
+    try {
+        for (const orderId of orderIds) {
+            await logAction("Удален заказ (массово)", "order", orderId);
+        }
+        await db.delete(orders).where(inArray(orders.id, orderIds));
+        revalidatePath("/dashboard/orders");
+        return { success: true };
+    } catch (error) {
+        console.error("Error bulk deleting orders:", error);
+        return { error: "Failed to delete orders" };
     }
 }
 
@@ -284,8 +367,8 @@ export async function getOrderStats(from?: Date, to?: Date) {
         return {
             total: allOrders.length,
             new: allOrders.filter(o => o.status === "new").length,
-            inProduction: allOrders.filter(o => ["layout_pending", "layout_approved", "in_printing"].includes(o.status)).length,
-            completed: allOrders.filter(o => o.status === "done").length,
+            inProduction: allOrders.filter(o => ["design", "production"].includes(o.status)).length,
+            completed: allOrders.filter(o => ["done", "shipped"].includes(o.status)).length,
             revenue: allOrders.reduce((acc, o) => acc + Number(o.totalAmount || 0), 0)
         };
     } catch (error) {

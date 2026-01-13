@@ -3,6 +3,7 @@ import { getOrderById } from "../actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
+import PrioritySelect from "./priority-select";
 import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
@@ -40,9 +41,15 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                         </p>
                     </div>
                 </div>
-                <div className="w-64">
-                    <label className="text-xs text-slate-400 uppercase font-bold tracking-widest block mb-2 px-1">Статус заказа</label>
-                    <StatusSelect orderId={order.id} currentStatus={order.status} />
+                <div className="flex gap-4">
+                    <div className="w-48">
+                        <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Приоритет</label>
+                        <PrioritySelect orderId={order.id} currentPriority={order.priority || 'normal'} />
+                    </div>
+                    <div className="w-56">
+                        <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Статус заказа</label>
+                        <StatusSelect orderId={order.id} currentStatus={order.status} />
+                    </div>
                 </div>
             </div>
 

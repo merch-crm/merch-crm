@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSystemStats } from "@/app/dashboard/admin/actions";
 import {
     Activity,
@@ -14,8 +14,7 @@ import {
     RefreshCw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface StatsData {
     server: {
@@ -42,7 +41,7 @@ export function SystemStats() {
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         setLoading(true);
         const res = await getSystemStats();
         if (res.data) {
@@ -52,13 +51,14 @@ export function SystemStats() {
             setError(res.error);
         }
         setLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
+        // eslint-disable-next-line
         fetchStats();
         const interval = setInterval(fetchStats, 15000);
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchStats]);
 
     const formatSize = (bytes: number) => {
         if (bytes === 0) return '0 B';

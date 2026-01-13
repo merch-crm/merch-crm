@@ -101,7 +101,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 type="text"
                                 required
                                 placeholder="Например: Закупить материалы для склада"
-                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all outline-none font-medium"
+                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-medium"
                             />
                         </div>
                     </div>
@@ -115,7 +115,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 name="description"
                                 rows={3}
                                 placeholder="Добавьте подробности или инструкции..."
-                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all outline-none font-medium resize-none"
+                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-medium resize-none"
                             />
                         </div>
                     </div>
@@ -129,7 +129,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 <select
                                     name="priority"
                                     defaultValue="normal"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none font-bold"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-bold"
                                 >
                                     <option value="low">Низкий</option>
                                     <option value="normal">Обычный</option>
@@ -146,7 +146,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 <input
                                     name="dueDate"
                                     type="date"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all outline-none font-bold"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-bold"
                                 />
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="assignedToUserId"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none font-medium"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
                                     <option value="">Сотрудник</option>
                                     {users.map(u => (
@@ -172,7 +172,7 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                                 <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="assignedToRoleId"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none font-medium"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
                                     <option value="">Должность</option>
                                     {roles.map(r => (

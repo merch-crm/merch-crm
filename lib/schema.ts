@@ -6,7 +6,6 @@ import {
     pgEnum,
     integer,
     decimal,
-    serial,
     jsonb,
     boolean,
     date,
@@ -16,11 +15,10 @@ import { relations } from "drizzle-orm";
 // Enums
 export const orderStatusEnum = pgEnum("order_status", [
     "new",
-    "layout_pending",
-    "layout_approved",
-    "in_printing",
+    "design",
+    "production",
     "done",
-    "cancelled",
+    "shipped",
 ]);
 
 export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out"]);
@@ -83,7 +81,7 @@ export const users = pgTable("users", {
     phone: text("phone"),
     birthday: date("birthday"),
     avatar: text("avatar"),
-    department: text("department"),
+    departmentLegacy: text("department_legacy"),
     departmentId: uuid("department_id").references(() => departments.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -106,14 +104,32 @@ export const clients = pgTable("clients", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Inventory Categories
+export const inventoryCategories = pgTable("inventory_categories", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull().unique(),
+    description: text("description"),
+    icon: text("icon"),
+    color: text("color"),
+    prefix: text("prefix"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Inventory Items
 export const inventoryItems = pgTable("inventory_items", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     sku: text("sku").unique(),
+    categoryId: uuid("category_id").references(() => inventoryCategories.id),
     quantity: integer("quantity").default(0).notNull(),
-    unit: text("unit").default("pcs").notNull(), // pcs, meters, etc.
-    lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
+    unit: text("unit").default("шт").notNull(), // pcs, meters, etc.
+    lowStockThreshold: integer("low_stock_threshold").default(5).notNull(),
+    description: text("description"),
+    location: text("location"),
+    storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
+    qualityCode: text("quality_code"),
+    attributeCode: text("attribute_code"),
+    sizeCode: text("size_code"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -151,9 +167,10 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     itemId: uuid("item_id")
         .references(() => inventoryItems.id)
         .notNull(),
-    changeAmount: integer("change_amount").notNull(), // Positive for IN, Negative for OUT (or utilize type)
+    changeAmount: integer("change_amount").notNull(),
     type: transactionTypeEnum("type").notNull(),
     reason: text("reason"),
+    storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
     createdBy: uuid("created_by").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -180,6 +197,16 @@ export const notifications = pgTable("notifications", {
     message: text("message").notNull(),
     type: notificationTypeEnum("type").default("info").notNull(),
     isRead: boolean("is_read").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Storage Locations
+export const storageLocations = pgTable("storage_locations", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    address: text("address").notNull(),
+    description: text("description"),
+    responsibleUserId: uuid("responsible_user_id").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -226,7 +253,33 @@ export const orderAttachments = pgTable("order_attachments", {
 });
 
 // Relations
-export const usersRelations = relations(users, ({ one, many }) => ({
+// Inventory Stocks (Остатки на складах)
+export const inventoryStocks = pgTable("inventory_stocks", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    itemId: uuid("item_id")
+        .references(() => inventoryItems.id)
+        .notNull(),
+    storageLocationId: uuid("storage_location_id")
+        .references(() => storageLocations.id)
+        .notNull(),
+    quantity: integer("quantity").default(0).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Inventory Transfers (Перемещения)
+export const inventoryTransfers = pgTable("inventory_transfers", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    itemId: uuid("item_id").references(() => inventoryItems.id).notNull(),
+    fromLocationId: uuid("from_location_id").references(() => storageLocations.id),
+    toLocationId: uuid("to_location_id").references(() => storageLocations.id),
+    quantity: integer("quantity").notNull(),
+    comment: text("comment"),
+    createdBy: uuid("created_by").references(() => users.id).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Relations
+export const usersRelations = relations(users, ({ one }) => ({
     role: one(roles, {
         fields: [users.roleId],
         references: [roles.id],
@@ -268,6 +321,24 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     }),
 }));
 
+export const inventoryCategoriesRelations = relations(inventoryCategories, ({ many }) => ({
+    items: many(inventoryItems),
+}));
+
+export const inventoryItemsRelations = relations(inventoryItems, ({ one, many }) => ({
+    category: one(inventoryCategories, {
+        fields: [inventoryItems.categoryId],
+        references: [inventoryCategories.id],
+    }),
+    storageLocation: one(storageLocations, {
+        fields: [inventoryItems.storageLocationId],
+        references: [storageLocations.id],
+    }),
+    transactions: many(inventoryTransactions),
+    stocks: many(inventoryStocks),
+    transfers: many(inventoryTransfers),
+}));
+
 export const inventoryTransactionsRelations = relations(
     inventoryTransactions,
     ({ one }) => ({
@@ -279,8 +350,44 @@ export const inventoryTransactionsRelations = relations(
             fields: [inventoryTransactions.createdBy],
             references: [users.id],
         }),
+        storageLocation: one(storageLocations, {
+            fields: [inventoryTransactions.storageLocationId],
+            references: [storageLocations.id],
+        }),
     })
 );
+
+export const inventoryStocksRelations = relations(inventoryStocks, ({ one }) => ({
+    item: one(inventoryItems, {
+        fields: [inventoryStocks.itemId],
+        references: [inventoryItems.id],
+    }),
+    storageLocation: one(storageLocations, {
+        fields: [inventoryStocks.storageLocationId],
+        references: [storageLocations.id],
+    }),
+}));
+
+export const inventoryTransfersRelations = relations(inventoryTransfers, ({ one }) => ({
+    item: one(inventoryItems, {
+        fields: [inventoryTransfers.itemId],
+        references: [inventoryItems.id],
+    }),
+    fromLocation: one(storageLocations, {
+        fields: [inventoryTransfers.fromLocationId],
+        references: [storageLocations.id],
+        relationName: "transfersOut",
+    }),
+    toLocation: one(storageLocations, {
+        fields: [inventoryTransfers.toLocationId],
+        references: [storageLocations.id],
+        relationName: "transfersIn",
+    }),
+    creator: one(users, {
+        fields: [inventoryTransfers.createdBy],
+        references: [users.id],
+    }),
+}));
 
 export const tasksRelations = relations(tasks, ({ one, many }) => ({
     assignedToUser: one(users, {
@@ -323,9 +430,23 @@ export const departmentsRelations = relations(departments, ({ many }) => ({
     roles: many(roles),
 }));
 
-export const rolesRelations = relations(roles, ({ one, many }) => ({
+export const rolesRelations = relations(roles, ({ one }) => ({
     department: one(departments, {
         fields: [roles.departmentId],
         references: [departments.id],
     }),
 }));
+
+export const storageLocationsRelations = relations(storageLocations, ({ one, many }) => ({
+    responsibleUser: one(users, {
+        fields: [storageLocations.responsibleUserId],
+        references: [users.id],
+    }),
+    // items теперь должны получаться через stocks, но старую связь можно оставить для legacy
+    items: many(inventoryItems),
+    stocks: many(inventoryStocks),
+    transfersIn: many(inventoryTransfers, { relationName: "transfersIn" }),
+    transfersOut: many(inventoryTransfers, { relationName: "transfersOut" }),
+}));
+
+

@@ -84,7 +84,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                                     required
                                     defaultValue={role?.name}
                                     placeholder="Например: Оператор цеха"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -96,7 +96,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                                 <select
                                     name="departmentId"
                                     defaultValue={role?.departmentId || ""}
-                                    className="block w-full pl-10 h-[46px] rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all appearance-none"
+                                    className="block w-full pl-10 h-[46px] rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
                                 >
                                     <option value="">Общая роль (без отдела)</option>
                                     {departments.map(dept => (
@@ -118,7 +118,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {loading ? "Сохранение..." : "Сохранить изменения"}

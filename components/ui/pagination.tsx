@@ -3,12 +3,13 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface PaginationProps {
     totalItems: number;
     pageSize?: number;
     currentPage?: number;
+    onPageChange?: (page: number) => void;
     itemName?: string;
 }
 
@@ -16,6 +17,7 @@ export function Pagination({
     totalItems,
     pageSize = 20,
     currentPage,
+    onPageChange,
     itemName = "items"
 }: PaginationProps) {
     const router = useRouter();
@@ -33,14 +35,18 @@ export function Pagination({
     };
 
     const handlePageChange = (newPage: number) => {
-        router.push(createPageURL(newPage));
+        if (onPageChange) {
+            onPageChange(newPage);
+        } else {
+            router.push(createPageURL(newPage));
+        }
     };
 
     if (totalItems === 0) return null;
 
     return (
         <div className="relative flex flex-col md:flex-row items-center justify-between px-2 py-4 gap-4">
-            <div className="text-sm text-slate-500 w-full md:w-auto text-center md:text-left order-2 md:order-1">
+            <div className="text-[13px] text-slate-400 w-full md:w-auto text-center md:text-left order-2 md:order-1 font-medium">
                 Показано {Math.min((page - 1) * pageSize + 1, totalItems)}-
                 {Math.min(page * pageSize, totalItems)} из {totalItems} {itemName}
             </div>
@@ -49,47 +55,46 @@ export function Pagination({
                 <div className="flex items-center space-x-2">
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-9 w-9 p-0 rounded-full border-slate-200 text-slate-400 hover:text-slate-900 transition-all bg-white"
                         onClick={() => handlePageChange(1)}
                         disabled={page === 1}
                     >
                         <span className="sr-only">Первая страница</span>
-                        <ChevronsLeft className="h-4 w-4" />
+                        <ChevronsLeft className="h-4 w-4 stroke-[1.5]" />
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-9 w-9 p-0 rounded-full border-slate-200 text-slate-400 hover:text-slate-900 transition-all bg-white"
                         onClick={() => handlePageChange(page - 1)}
                         disabled={page === 1}
                     >
                         <span className="sr-only">Предыдущая страница</span>
-                        <ChevronLeft className="h-4 w-4" />
+                        <ChevronLeft className="h-4 w-4 stroke-[1.5]" />
                     </Button>
-                    <div className="flex items-center justify-center text-sm font-medium whitespace-nowrap px-2">
+                    <div className="flex items-center justify-center text-[13px] font-medium text-slate-900 whitespace-nowrap px-4">
                         Страница {page} из {totalPages}
                     </div>
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-9 w-9 p-0 rounded-full border-slate-200 text-slate-400 hover:text-slate-900 transition-all bg-white"
                         onClick={() => handlePageChange(page + 1)}
                         disabled={page === totalPages}
                     >
                         <span className="sr-only">Следующая страница</span>
-                        <ChevronRight className="h-4 w-4" />
+                        <ChevronRight className="h-4 w-4 stroke-[1.5]" />
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-9 w-9 p-0 rounded-full border-slate-200 text-slate-400 hover:text-slate-900 transition-all bg-white"
                         onClick={() => handlePageChange(totalPages)}
                         disabled={page === totalPages}
                     >
                         <span className="sr-only">Последняя страница</span>
-                        <ChevronsRight className="h-4 w-4" />
+                        <ChevronsRight className="h-4 w-4 stroke-[1.5]" />
                     </Button>
                 </div>
             </div>
 
-            {/* Empty div to balance justify-between if needed, or just let the absolute centering work */}
             <div className="hidden md:block w-auto order-3" />
         </div>
     );

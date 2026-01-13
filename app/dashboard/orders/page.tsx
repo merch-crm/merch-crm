@@ -5,6 +5,7 @@ import { DateRangeFilter } from "./date-range-filter";
 import { getOrders, getOrderStats } from "./actions";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 import { Pagination } from "@/components/ui/pagination";
+import { getSession } from "@/lib/auth";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -51,16 +52,20 @@ export default async function OrdersPage({
                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Заказы</h1>
                     <p className="text-sm text-slate-500 mt-1">Управление и мониторинг всех заказов компании</p>
                 </div>
-                <div className="mt-4 sm:mt-0">
-                    <CreateOrderDialog />
-                </div>
             </div>
 
-            <DateRangeFilter />
+            <div className="flex items-center justify-between mb-8">
+                <DateRangeFilter />
+                <CreateOrderDialog />
+            </div>
 
             <OrderStats stats={stats} />
 
-            <OrdersTable orders={allOrders} error={error} />
+            <OrdersTable
+                orders={allOrders}
+                error={error}
+                isAdmin={(await getSession())?.roleName === "administrator"}
+            />
 
             <Pagination
                 totalItems={total}

@@ -11,6 +11,7 @@ interface UserProfile {
     phone?: string | null;
     department?: { name: string } | string | null;
     role?: { name: string } | null;
+    avatar?: string | null;
     createdAt: string | Date;
 }
 
@@ -121,7 +122,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                         type="text"
                         defaultValue={user.name}
                         required
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
                         placeholder="Имя Фамилия"
                     />
                 </div>
@@ -131,7 +132,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                         name="phone"
                         type="tel"
                         defaultValue={user.phone || ""}
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-slate-50/30 font-medium"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
                         placeholder="+7 (999) 000-00-00"
                     />
                 </div>

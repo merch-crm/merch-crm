@@ -51,7 +51,7 @@ export async function getFileUrl(key: string, expiresIn = 3600) {
     }
 }
 
-import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { ListObjectsV2Command, ListObjectsV2Output } from "@aws-sdk/client-s3";
 
 export async function getStorageStats() {
     let totalSize = 0;
@@ -65,7 +65,7 @@ export async function getStorageStats() {
                 ContinuationToken: continuationToken,
             });
 
-            const response = await s3Client.send(command);
+            const response: ListObjectsV2Output = await s3Client.send(command);
 
             if (response.Contents) {
                 for (const object of response.Contents) {

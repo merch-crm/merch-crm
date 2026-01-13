@@ -153,7 +153,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                     type="text"
                                     value={roleName}
                                     onChange={(e) => setRoleName(e.target.value)}
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all"
                                 />
                             </div>
                         </div>
@@ -165,7 +165,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                 <select
                                     value={departmentId}
                                     onChange={(e) => setDepartmentId(e.target.value)}
-                                    className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none"
+                                    className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
                                 >
                                     <option value="">Без отдела</option>
                                     {departments.map(dept => (

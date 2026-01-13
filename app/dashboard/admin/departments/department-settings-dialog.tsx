@@ -190,7 +190,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                                 name="name"
                                                 defaultValue={department.name}
                                                 required
-                                                className="block w-full pl-10 rounded-xl border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 px-3 py-3 border transition-all font-bold"
+                                                className="block w-full pl-10 rounded-xl border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-3 border transition-all font-bold"
                                             />
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                             defaultValue={department.description || ""}
                                             rows={3}
                                             placeholder="Опишите, чем занимается этот отдел..."
-                                            className="block w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 px-3 py-3 border transition-all resize-none leading-relaxed"
+                                            className="block w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-3 border transition-all resize-none leading-relaxed"
                                         />
                                     </div>
 

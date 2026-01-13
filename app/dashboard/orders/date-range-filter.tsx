@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const ranges = [
+    { label: "Все время", value: "all" },
     { label: "Сегодня", value: "today" },
     { label: "Вчера", value: "yesterday" },
     { label: "7 дней", value: "7d" },
@@ -63,78 +64,90 @@ export function DateRangeFilter() {
     const isCustom = currentRange === "custom";
 
     return (
-        <div className="flex flex-wrap items-center gap-2 mb-6 p-1 bg-slate-100/50 rounded-2xl w-fit">
-            {ranges.slice(0, 3).map((range) => (
-                <button
-                    key={range.value}
-                    onClick={() => handleRangeChange(range.value)}
-                    className={cn(
-                        "px-4 py-2 text-sm font-semibold rounded-xl transition-all",
-                        currentRange === range.value && !isCustom
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
-                    )}
-                >
-                    {range.label}
-                </button>
-            ))}
-
-            <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block" />
-
-            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <PopoverTrigger asChild>
-                    <button className={cn(
-                        "flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all border border-transparent group",
-                        isCustom
-                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                            : "bg-white text-slate-700 shadow-sm hover:text-slate-900 border-slate-200"
-                    )}>
-                        <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-white" : "text-slate-400 group-hover:text-slate-600")} />
-                        <span>
-                            {isCustom && dateRange?.from
-                                ? `${format(dateRange.from, "dd.MM.yy")} - ${dateRange.to ? format(dateRange.to, "dd.MM.yy") : format(dateRange.from, "dd.MM.yy")}`
-                                : "Выбрать период"}
-                        </span>
-                        <ChevronDown className={cn("w-4 h-4 ml-1 opacity-50", isCustom ? "text-white" : "")} />
+        <div className="flex flex-wrap items-center gap-4 mb-2">
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
+                {ranges.slice(0, 4).map((range) => (
+                    <button
+                        key={range.value}
+                        onClick={() => handleRangeChange(range.value)}
+                        className={cn(
+                            "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                            currentRange === range.value && !isCustom
+                                ? "bg-white text-indigo-600 shadow-sm"
+                                : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                        )}
+                    >
+                        {range.label}
                     </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 rounded-2xl overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
-                    {/* Calendar */}
-                    <div className="p-4 bg-white">
-                        <Calendar
-                            initialFocus
-                            mode="range"
-                            defaultMonth={dateRange?.from}
-                            selected={dateRange}
-                            onSelect={setDateRange}
-                            numberOfMonths={1}
-                            locale={ru}
-                        />
+                ))}
+            </div>
 
-                        <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
-                            <div className="text-xs font-medium text-slate-500">
-                                {dateRange?.from ? (
-                                    <>
-                                        Выбрано: <span className="text-indigo-600 font-bold">
-                                            {format(dateRange.from, "d MMM", { locale: ru })}
-                                            {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
-                                        </span>
-                                    </>
-                                ) : "Выберите даты"}
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
+                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                    <PopoverTrigger asChild>
+                        <button
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                                isCustom
+                                    ? "bg-white text-indigo-600 shadow-sm"
+                                    : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                            )}
+                        >
+                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-indigo-600" : "text-slate-400")} />
+                            <span>Выбрать период</span>
+                            <ChevronDown className="w-4 h-4 opacity-50" />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 rounded-xl overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
+                        <div className="p-4 bg-white">
+                            <Calendar
+                                initialFocus
+                                mode="range"
+                                defaultMonth={dateRange?.from}
+                                selected={dateRange}
+                                onSelect={setDateRange}
+                                numberOfMonths={1}
+                                locale={ru}
+                            />
+
+                            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                                <div className="text-xs font-medium text-slate-500">
+                                    {dateRange?.from ? (
+                                        <>
+                                            Выбрано: <span className="text-indigo-600 font-bold">
+                                                {format(dateRange.from, "d MMM", { locale: ru })}
+                                                {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
+                                            </span>
+                                        </>
+                                    ) : "Выберите даты"}
+                                </div>
+                                <Button
+                                    size="sm"
+                                    onClick={handleApplyCustomRange}
+                                    disabled={!dateRange?.from}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-600/20 px-6"
+                                >
+                                    Выбрать
+                                </Button>
                             </div>
-                            <Button
-                                size="sm"
-                                onClick={handleApplyCustomRange}
-                                disabled={!dateRange?.from}
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-600/20"
-                            >
-                                <Check className="w-4 h-4 mr-2" />
-                                Применить
-                            </Button>
                         </div>
+                    </PopoverContent>
+                </Popover>
+
+                {isCustom && fromParam && toParam && (
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <span className="text-indigo-600 font-black text-sm uppercase tracking-wider">
+                            {format(new Date(fromParam), "dd.MM.yy")} — {format(new Date(toParam), "dd.MM.yy")}
+                        </span>
+                        <button
+                            onClick={() => handleRangeChange("all")}
+                            className="text-slate-300 hover:text-rose-500 transition-colors"
+                        >
+                            <Check className="w-4 h-4" />
+                        </button>
                     </div>
-                </PopoverContent>
-            </Popover>
+                )}
+            </div>
         </div>
     );
 }

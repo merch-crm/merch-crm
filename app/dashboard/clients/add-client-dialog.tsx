@@ -33,9 +33,9 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
             >
-                <Plus className="-ml-1 mr-2 h-5 w-5" />
+                <Plus className="w-5 h-5" />
                 Добавить клиента
             </button>
         );
@@ -59,61 +59,61 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Фамилия <span className="text-red-500">*</span></label>
-                                <input type="text" name="lastName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                                <input type="text" name="lastName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Имя <span className="text-red-500">*</span></label>
-                                <input type="text" name="firstName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                                <input type="text" name="firstName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Отчество</label>
-                            <input type="text" name="patronymic" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                            <input type="text" name="patronymic" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Компания</label>
-                            <input type="text" name="company" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                            <input type="text" name="company" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Телефон <span className="text-red-500">*</span></label>
-                            <input type="text" name="phone" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                            <input type="text" name="phone" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Telegram</label>
-                                <input type="text" name="telegram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" placeholder="@username" />
+                                <input type="text" name="telegram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" placeholder="@username" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Instagram</label>
-                                <input type="text" name="instagram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" placeholder="insta_link" />
+                                <input type="text" name="instagram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" placeholder="insta_link" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                                <input type="email" name="email" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                                <input type="email" name="email" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Город</label>
-                                <input type="text" name="city" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                                <input type="text" name="city" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Комментарии</label>
-                            <textarea name="comments" rows={3} className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border transition-all" />
+                            <textarea name="comments" rows={3} className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
                         </div>
 
                         <div className="mt-6">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all"
+                                className="w-full inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all"
                             >
                                 {loading ? "Сохранение..." : "Сохранить клиента"}
                             </button>

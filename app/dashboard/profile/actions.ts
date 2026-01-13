@@ -3,9 +3,11 @@
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { getSession, comparePassword, hashPassword } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { eq, count, sum, desc, and, gte, lte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { orders, tasks, auditLogs } from "@/lib/schema";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 export async function logout() {
     (await cookies()).delete("session");
@@ -41,13 +43,13 @@ export async function updateProfile(formData: FormData) {
 
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
-    const department = formData.get("department") as string;
+    const departmentLegacy = formData.get("department") as string;
     const avatarFile = formData.get("avatar") as File;
 
     if (!name) return { error: "Имя обязательно" };
 
     try {
-        const updateData: any = { name, phone, department };
+        const updateData: any = { name, phone, departmentLegacy };
 
         if (avatarFile && avatarFile.size > 0) {
             // Check for S3 configuration (support both REG_STORAGE and S3_ prefixes)
@@ -125,5 +127,80 @@ export async function updatePassword(formData: FormData) {
     } catch (error) {
         console.error("Error updating password:", error);
         return { error: "Failed to update password" };
+    }
+}
+
+export async function getUserStatistics() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const now = new Date();
+        const firstDayOfMonth = startOfMonth(now);
+        const lastDayOfMonth = endOfMonth(now);
+
+        // 1. Orders stats
+        const userOrders = await db.select({
+            count: count(),
+            totalRevenue: sum(orders.totalAmount)
+        })
+            .from(orders)
+            .where(eq(orders.createdBy, session.id));
+
+        const monthlyOrders = await db.select({
+            count: count()
+        })
+            .from(orders)
+            .where(and(
+                eq(orders.createdBy, session.id),
+                gte(orders.createdAt, firstDayOfMonth),
+                lte(orders.createdAt, lastDayOfMonth)
+            ));
+
+        // 2. Tasks stats
+        const userTasks = await db.select({
+            count: count(),
+            status: tasks.status
+        })
+            .from(tasks)
+            .where(eq(tasks.assignedToUserId, session.id))
+            .groupBy(tasks.status);
+
+        // 3. Activity stats
+        const activityCount = await db.select({
+            count: count()
+        })
+            .from(auditLogs)
+            .where(eq(auditLogs.userId, session.id));
+
+        return {
+            data: {
+                totalOrders: Number(userOrders[0]?.count || 0),
+                totalRevenue: Number(userOrders[0]?.totalRevenue || 0),
+                monthlyOrders: Number(monthlyOrders[0]?.count || 0),
+                tasksByStatus: userTasks,
+                totalActivity: Number(activityCount[0]?.count || 0)
+            }
+        };
+    } catch (error) {
+        console.error("Error fetching user statistics:", error);
+        return { error: "Failed to fetch statistics" };
+    }
+}
+
+export async function getUserSchedule() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const userTasks = await db.query.tasks.findMany({
+            where: eq(tasks.assignedToUserId, session.id),
+            orderBy: [desc(tasks.dueDate)]
+        });
+
+        return { data: userTasks };
+    } catch (error) {
+        console.error("Error fetching user schedule:", error);
+        return { error: "Failed to fetch schedule" };
     }
 }

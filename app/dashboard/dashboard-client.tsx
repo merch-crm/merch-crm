@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
     Users,
-    DollarSign,
     Plus,
     UserPlus,
     UploadCloud,
@@ -12,6 +11,7 @@ import {
     TrendingUp,
     Wallet
 } from "lucide-react";
+import { Rouble } from "@/components/ui/icons";
 import { Card } from "@/components/ui/card";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { cn } from "@/lib/utils";
@@ -83,7 +83,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             value: statsData?.averageCheck ?? "0 ₽",
             change: "-2%",
             isNegative: true,
-            icon: Wallet,
+            icon: Rouble,
             color: "bg-slate-700",
             lightColor: "bg-slate-50",
             textColor: "text-slate-600",
@@ -93,7 +93,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             value: statsData?.revenue ?? "0 ₽",
             change: "+18%",
             isNegative: false,
-            icon: DollarSign,
+            icon: Rouble,
             color: "bg-indigo-700",
             lightColor: "bg-indigo-50",
             textColor: "text-indigo-700",
@@ -123,7 +123,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             name: "Управление складом",
             icon: Package,
             color: "bg-amber-600",
-            href: "/dashboard/warehouse",
+            href: "/dashboard/admin/warehouse",
         },
     ];
 

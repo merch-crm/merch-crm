@@ -1,6 +1,7 @@
 "use client";
 
-import { FileText, PlusCircle, Settings, CheckCircle2, DollarSign } from "lucide-react";
+import { FileText, PlusCircle, Settings, CheckCircle2 } from "lucide-react";
+import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 interface OrderStatsProps {
@@ -46,7 +47,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
         {
             label: "Общая выручка",
             value: `${stats.revenue.toLocaleString("ru-RU")} ₽`,
-            icon: DollarSign,
+            icon: Rouble,
             color: "text-violet-500",
             bgColor: "bg-violet-50",
         },

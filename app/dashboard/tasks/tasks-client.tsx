@@ -5,9 +5,7 @@ import {
     Search,
     Filter,
     Calendar,
-    CheckCircle2,
-    ListTodo,
-    ChevronDown
+    ListTodo
 } from "lucide-react";
 import { CreateTaskDialog } from "./create-task-dialog";
 import { KanbanBoard } from "./kanban-board";
@@ -87,7 +85,7 @@ export function TasksClient({ initialTasks, users, roles, currentUserId, current
                                 placeholder="Найти поручение..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-12 pr-6 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-indigo-100 w-full sm:w-64 transition-all"
+                                className="pl-12 pr-6 py-3.5 bg-white border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 w-full sm:w-64 transition-all"
                             />
                         </div>
                         <CreateTaskDialog users={users} roles={roles} />

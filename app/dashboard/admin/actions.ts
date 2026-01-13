@@ -1,24 +1,52 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, auditLogs, departments } from "@/lib/schema";
+import { users, roles, auditLogs, departments, clients, orders } from "@/lib/schema";
 import { getSession, hashPassword } from "@/lib/auth";
-import { eq, asc, desc, isNull, sql } from "drizzle-orm";
+import { eq, asc, desc, isNull, sql, and, inArray, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import os from "os";
 import fs from "fs";
 import path from "path";
 
-export async function getUsers() {
+export async function getUsers(page = 1, limit = 20, search = "") {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
     try {
+        const offset = (page - 1) * limit;
+
+        const whereClause = search
+            ? sql`lower(${users.name}) LIKE ${`%${search.toLowerCase()}%`} OR lower(${users.email}) LIKE ${`%${search.toLowerCase()}%`}`
+            : undefined;
+
+        // Get total count
+        const totalResult = await db.select({ count: sql<number>`count(*)` })
+            .from(users)
+            .where(whereClause);
+        const total = Number(totalResult[0]?.count || 0);
+
+        // Get paginated users
         const allUsers = await db.query.users.findMany({
             with: { role: true },
-            orderBy: [asc(users.name)]
+            where: (u, { or, ilike }) => {
+                if (!search) return undefined;
+                return or(
+                    ilike(u.name, `%${search}%`),
+                    ilike(u.email, `%${search}%`)
+                );
+            },
+            orderBy: [asc(users.name)],
+            limit,
+            offset
         });
-        return { data: allUsers };
+
+        return {
+            data: allUsers,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        };
     } catch (error) {
         console.error("Error fetching users:", error);
         return { error: "Failed to fetch users" };
@@ -111,7 +139,6 @@ export async function createUser(formData: FormData) {
             email,
             passwordHash: hashedPassword,
             roleId,
-            department,
             departmentId: finalDeptId
         });
 
@@ -344,7 +371,6 @@ export async function updateUser(userId: string, formData: FormData) {
             name,
             email,
             roleId,
-            department,
             departmentId: finalDeptId,
         };
 
@@ -486,8 +512,8 @@ export async function getDepartments() {
             const deptMap = new Map(allDepts.map((d) => [d.name.toLowerCase(), d.id]));
 
             for (const user of unsyncedUsers) {
-                if (user.department) {
-                    const deptId = deptMap.get(user.department.toLowerCase());
+                if (user.departmentLegacy) {
+                    const deptId = deptMap.get(user.departmentLegacy.toLowerCase());
                     if (deptId) {
                         await db.update(users)
                             .set({ departmentId: deptId })

@@ -2,14 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, LogOut, ChevronDown, Shield } from "lucide-react";
+import { User, LogOut, ChevronDown, Shield, Package } from "lucide-react";
 import { logout } from "@/app/dashboard/profile/actions";
 
 import { useRouter } from "next/navigation";
 
 import { RoleBadge } from "@/components/ui/role-badge";
 
-export function UserNav({ user }: { user: { name: string, email: string, roleName: string } }) {
+export function UserNav({ user }: { user: { name: string, email: string, roleName: string, departmentName: string } }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -64,6 +64,17 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                             <User className="h-5 w-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
                             Профиль
                         </Link>
+
+                        {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleName === "Администратор") && (
+                            <Link
+                                href="/dashboard/warehouse"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-4 px-4 py-3 text-[15px] font-bold text-slate-700 rounded-lg hover:bg-slate-50 transition-colors group"
+                            >
+                                <Package className="h-5 w-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+                                Склад
+                            </Link>
+                        )}
 
                         {user.roleName === "Администратор" && (
                             <Link

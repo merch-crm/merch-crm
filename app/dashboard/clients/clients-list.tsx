@@ -29,6 +29,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
     const [editingClient, setEditingClient] = useState<any | null>(null);
     const [deletingClient, setDeletingClient] = useState<any | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const searchParams = useSearchParams();
     const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -123,6 +124,31 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
         return result.sort(sortClients);
     }, [clients, searchQuery, sortBy, filterPeriod, filterOrderCount, filterRegion]);
 
+    const currentPageItems = useMemo(() =>
+        sortedAndFilteredClients.slice((currentPage - 1) * 20, currentPage * 20),
+        [sortedAndFilteredClients, currentPage]
+    );
+
+    const isAllSelected = currentPageItems.length > 0 && currentPageItems.every(c => selectedIds.includes(c.id));
+
+    const handleSelectAll = () => {
+        if (isAllSelected) {
+            setSelectedIds(prev => prev.filter(id => !currentPageItems.some(c => c.id === id)));
+        } else {
+            const newIds = [...selectedIds];
+            currentPageItems.forEach(c => {
+                if (!newIds.includes(c.id)) newIds.push(c.id);
+            });
+            setSelectedIds(newIds);
+        }
+    };
+
+    const handleSelectRow = (id: string) => {
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
     if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка клиентов...</div>;
 
     return (
@@ -137,7 +163,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                         placeholder="Поиск по имени, email или телефону..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="flex-1 py-3 bg-transparent border-none focus:ring-0 text-sm font-medium placeholder:text-slate-400"
+                        className="flex-1 py-3 bg-transparent border-none focus:ring-0 focus:outline-none text-sm font-medium placeholder:text-slate-400"
                     />
                     <button
                         onClick={() => setShowFilters(!showFilters)}
@@ -163,7 +189,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                                     <select
                                         value={filterPeriod}
                                         onChange={(e) => setFilterPeriod(e.target.value)}
-                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
+                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-0 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
                                     >
                                         <option value="all">Все время</option>
                                         <option value="month">За последний месяц</option>
@@ -181,7 +207,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                                     <select
                                         value={filterOrderCount}
                                         onChange={(e) => setFilterOrderCount(e.target.value)}
-                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
+                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-0 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
                                     >
                                         <option value="any">Любое количество</option>
                                         <option value="0">Без заказов</option>
@@ -199,7 +225,7 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                                     <select
                                         value={filterRegion}
                                         onChange={(e) => setFilterRegion(e.target.value)}
-                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
+                                        className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-0 focus:border-indigo-500 block p-2.5 pr-8 font-medium cursor-pointer hover:bg-slate-100 transition-colors"
                                     >
                                         <option value="all">Все регионы</option>
                                         {regions.map(city => (
@@ -219,67 +245,77 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="min-w-full divide-y divide-gray-200">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200">
-                                <th className="p-4 w-12 text-center">
-                                    <input type="checkbox" className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                            <tr className="bg-gray-50">
+                                <th className="w-[50px] px-6 py-3 text-left">
+                                    <input
+                                        type="checkbox"
+                                        className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                        checked={isAllSelected}
+                                        onChange={handleSelectAll}
+                                    />
                                 </th>
-                                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("alphabet")}>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("alphabet")}>
                                     <div className="flex items-center gap-1">
                                         Клиент
                                     </div>
                                 </th>
-                                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest text-slate-500">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                     <div className="flex items-center gap-1">
                                         Контакты
                                     </div>
                                 </th>
-                                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("order_count")}>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("order_count")}>
                                     <div className="flex items-center gap-1">
                                         Заказы
                                         <ChevronDown className={`h-3 w-3 ${sortBy === "order_count" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
                                     </div>
                                 </th>
-                                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("revenue")}>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("revenue")}>
                                     <div className="flex items-center gap-1">
                                         Сумма покупок
                                         <ChevronDown className={`h-3 w-3 ${sortBy === "revenue" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
                                     </div>
                                 </th>
-                                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">Действия</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {sortedAndFilteredClients.slice((currentPage - 1) * 20, currentPage * 20).map(client => (
-                                <tr key={client.id} className="hover:bg-slate-50 transition-colors group">
-                                    <td className="p-4 text-center">
-                                        <input type="checkbox" className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {currentPageItems.map(client => (
+                                <tr key={client.id} className={`hover:bg-gray-50 transition-colors group ${selectedIds.includes(client.id) ? 'bg-indigo-50/30' : ''}`}>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <input
+                                            type="checkbox"
+                                            className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                            checked={selectedIds.includes(client.id)}
+                                            onChange={() => handleSelectRow(client.id)}
+                                        />
                                     </td>
-                                    <td className="p-4">
+                                    <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
                                             <span className="font-bold text-slate-900 text-[15px]">{client.lastName} {client.firstName}</span>
                                             <span className="text-xs text-slate-400 font-medium">{client.city || "Город не указан"}</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">
+                                    <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
                                             <span className="text-sm font-medium text-slate-700">{client.email || "—"}</span>
                                             <span className="text-xs text-slate-400 font-medium">{client.phone}</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">
+                                    <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
                                             <span className="font-bold text-slate-900">{client.totalOrders || 0}</span>
                                             <span className="text-xs text-slate-400 font-medium uppercase tracking-tighter">заказов</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">
-                                        <span className="font-bold text-slate-900">{Math.round(parseFloat(client.totalSpent) || 0)} ₽</span>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
+                                        {Math.round(parseFloat(client.totalSpent) || 0)} ₽
                                     </td>
-                                    <td className="p-4">
+                                    <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex items-center justify-end gap-1">
                                             <button
                                                 onClick={() => setSelectedClientId(client.id)}
@@ -318,17 +354,6 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                         <p className="text-sm mt-1">Попробуйте изменить параметры поиска</p>
                     </div>
                 )}
-                {sortedAndFilteredClients.length > 0 && (
-                    <div className="mt-4 border-t border-slate-100 pt-4">
-                        <Pagination
-                            totalItems={sortedAndFilteredClients.length}
-                            pageSize={20}
-                            currentPage={currentPage}
-                            itemName="клиентов"
-                        />
-                    </div>
-                )}
-
                 <ClientDetailPopup
                     clientId={selectedClientId || ""}
                     isOpen={!!selectedClientId}
@@ -353,6 +378,16 @@ export function ClientsTable({ userPermissions, userRoleName }: { userPermission
                     }}
                 />
             </div>
+
+            {sortedAndFilteredClients.length > 0 && (
+                <Pagination
+                    totalItems={sortedAndFilteredClients.length}
+                    pageSize={20}
+                    currentPage={currentPage}
+                    itemName="клиентов"
+                />
+            )}
+
         </div>
     );
 }

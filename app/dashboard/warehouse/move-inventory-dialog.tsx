@@ -1,0 +1,188 @@
+"use client";
+
+import { useState } from "react";
+import { ArrowRightLeft, X, MapPin, Package, AlertCircle } from "lucide-react";
+import { InventoryItem } from "./inventory-client";
+import { StorageLocation } from "./storage-locations-tab";
+import { Button } from "@/components/ui/button";
+import { moveInventoryItem } from "./actions"; // Will be created
+import { useFormStatus } from "react-dom";
+
+
+interface MoveInventoryDialogProps {
+    items: InventoryItem[];
+    locations: StorageLocation[];
+}
+
+export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogProps) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [error, setError] = useState("");
+    const [selectedItemId, setSelectedItemId] = useState("");
+    const [fromLocationId, setFromLocationId] = useState("");
+
+
+
+    // If item is selected and has a default location, set it
+    // Note: With new schema, we'd need to fetch stocks. For now, using legacy logic as starting point or fetch logic.
+    // Assuming items have 'storageLocationId' or we need to select source warehouse.
+
+    async function handleSubmit(formData: FormData) {
+        const res = await moveInventoryItem(formData);
+        if (res?.error) {
+            setError(res.error);
+        } else {
+            setIsOpen(false);
+            setError("");
+            setSelectedItemId("");
+            setFromLocationId("");
+        }
+    }
+
+    return (
+        <>
+            <Button
+                onClick={() => setIsOpen(true)}
+                variant="outline"
+                className="h-10 rounded-xl px-4 gap-2 font-bold border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-100 bg-white"
+            >
+                <ArrowRightLeft className="w-4 h-4" />
+                Переместить
+            </Button>
+
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Перемещение</h2>
+                                <p className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] mt-1">Отгрузка между складами</p>
+                            </div>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all hover:rotate-90"
+                            >
+                                <X className="h-6 w-6" />
+                            </button>
+                        </div>
+
+                        <form action={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    <Package className="w-3 h-3" /> Товар
+                                </label>
+                                <div className="relative group">
+                                    <select
+                                        name="itemId"
+                                        required
+                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        value={selectedItemId}
+                                        onChange={(e) => setSelectedItemId(e.target.value)}
+                                    >
+                                        <option value="">Выберите товар...</option>
+                                        {items.map((item) => (
+                                            <option key={item.id} value={item.id}>
+                                                {item.name} {item.sku ? `(${item.sku})` : ""}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                        <MapPin className="w-3 h-3" /> Откуда
+                                    </label>
+                                    <select
+                                        name="fromLocationId"
+                                        required
+                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        value={fromLocationId}
+                                        onChange={(e) => setFromLocationId(e.target.value)}
+                                    >
+                                        <option value="">Склад...</option>
+                                        {locations.map((loc) => (
+                                            <option key={loc.id} value={loc.id}>
+                                                {loc.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                        <MapPin className="w-3 h-3" /> Куда
+                                    </label>
+                                    <select
+                                        name="toLocationId"
+                                        required
+                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                    >
+                                        <option value="">Склад...</option>
+                                        {locations.map((loc) => (
+                                            <option key={loc.id} value={loc.id} disabled={loc.id === fromLocationId}>
+                                                {loc.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Количество</label>
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    required
+                                    min="1"
+                                    placeholder="0"
+                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий</label>
+                                <input
+                                    name="comment"
+                                    placeholder="Причина перемещения..."
+                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 animate-in shake duration-500">
+                                    <AlertCircle className="w-5 h-5 text-rose-500" />
+                                    <p className="text-rose-600 text-xs font-bold">{error}</p>
+                                </div>
+                            )}
+
+                            <SubmitButton />
+                        </form>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button
+            type="submit"
+            disabled={pending}
+            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
+        >
+            {pending ? (
+                <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Перемещение...
+                </div>
+            ) : "Переместить товар"}
+        </Button>
+    );
+}

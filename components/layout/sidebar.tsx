@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     ShoppingCart,
-    Package,
     Users,
-    Settings,
     LogOut,
     Printer,
 } from "lucide-react";
@@ -17,7 +15,6 @@ import { Button } from "@/components/ui/button";
 const navigation = [
     { name: "Обзор", href: "/dashboard", icon: LayoutDashboard },
     { name: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
-    { name: "Склад", href: "/dashboard/warehouse", icon: Package },
     { name: "Клиенты", href: "/dashboard/clients", icon: Users },
 ];
 

@@ -80,7 +80,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         // 4. In Production count (Current snapshot)
         const inProductionResult = await db.select({ value: count() })
             .from(orders)
-            .where(inArray(orders.status, ["new", "layout_pending", "layout_approved", "in_printing"]));
+            .where(inArray(orders.status, ["new", "layout_pending", "layout_approved", "in_printing"] as any));
         const inProduction = inProductionResult[0].value;
 
         // 7. Total Revenue for period
@@ -90,7 +90,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             .from(orders)
             .where(and(
                 dateFilter,
-                ne(orders.status, "cancelled")
+                ne(orders.status, "cancelled" as any)
             ));
 
         const rawRevenue = Number(revenueResult[0].value || 0);

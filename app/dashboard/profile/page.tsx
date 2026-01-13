@@ -55,7 +55,7 @@ export default async function ProfilePage() {
                     <div className="flex items-center gap-3 mt-2">
                         <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-xs" />
                         <span className="text-slate-300">•</span>
-                        <span className="text-slate-400 font-medium">{user.department?.name || user.department || "Без отдела"}</span>
+                        <span className="text-slate-400 font-medium">{user.department?.name || user.departmentLegacy || "Без отдела"}</span>
                     </div>
                 </div>
             </div>

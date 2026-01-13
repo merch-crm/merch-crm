@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { ProfileForm } from "./profile-form";
 import { PasswordForm } from "./password-form";
-import { UsersTable } from "../admin/users/users-table";
-import AdminRolesPage from "../admin/roles/page";
-import { PlusCircle, Send } from "lucide-react";
+import { PlusCircle, Send, Loader2 } from "lucide-react";
+import { getUserStatistics, getUserSchedule } from "./actions";
+import { StatisticsView } from "./statistics-view";
+import { ScheduleView } from "./schedule-view";
 
 interface UserProfile {
     id: string;
@@ -63,6 +64,29 @@ const IconMap: Record<string, ComponentType<{ className?: string }>> = {
 
 export function ProfileClient({ user, activities, tasks, employeeId }: ProfileClientProps) {
     const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">("profile");
+    const [statsData, setStatsData] = useState<any>(null);
+    const [scheduleData, setScheduleData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchStats = async () => {
+        setLoading(true);
+        const res = await getUserStatistics();
+        if (res.data) setStatsData(res.data);
+        setLoading(false);
+    };
+
+    const fetchSchedule = async () => {
+        setLoading(true);
+        const res = await getUserSchedule();
+        if (res.data) setScheduleData(res.data);
+        setLoading(false);
+    };
+
+    const onTabChange = (tab: "profile" | "settings" | "statistics" | "schedule") => {
+        setActiveTab(tab);
+        if (tab === "statistics" && !statsData) fetchStats();
+        if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
+    };
 
     const isAdmin = user.role?.name === "Администратор";
 
@@ -82,7 +106,7 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                     return (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id as "profile" | "settings" | "statistics" | "schedule")}
+                            onClick={() => onTabChange(tab.id as any)}
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-all",
                                 isActive
@@ -233,11 +257,27 @@ export function ProfileClient({ user, activities, tasks, employeeId }: ProfileCl
                 </div>
             )}
 
-            {(activeTab === "statistics" || activeTab === "schedule") && (
-                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg border border-slate-200 shadow-sm border-dashed animate-in fade-in duration-500">
-                    <Construction className="w-16 h-16 text-slate-200 mb-4" />
-                    <h2 className="text-xl font-bold text-slate-900">Раздел в разработке</h2>
-                    <p className="text-slate-500 mt-2">Мы работаем над этим функционалом</p>
+            {activeTab === "statistics" && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {loading && !statsData ? (
+                        <div className="flex items-center justify-center py-20">
+                            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                        </div>
+                    ) : (
+                        <StatisticsView data={statsData} />
+                    )}
+                </div>
+            )}
+
+            {activeTab === "schedule" && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {loading && scheduleData.length === 0 ? (
+                        <div className="flex items-center justify-center py-20">
+                            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                        </div>
+                    ) : (
+                        <ScheduleView tasks={scheduleData} />
+                    )}
                 </div>
             )}
         </div>

@@ -93,7 +93,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                                     name="name"
                                     required
                                     placeholder="Иван Иванов"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -107,7 +107,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                                     name="email"
                                     required
                                     placeholder="ivan@crm.local"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -121,7 +121,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                                     name="password"
                                     required
                                     placeholder="••••••••"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
@@ -136,7 +136,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                                         required
                                         value={selectedRoleId}
                                         onChange={(e) => handleRoleChange(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none"
+                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
                                     >
                                         <option value="" disabled>Выберите роль</option>
                                         {roles.map(role => (
@@ -153,7 +153,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                                         name="departmentId"
                                         value={selectedDeptId}
                                         onChange={(e) => setSelectedDeptId(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border transition-all appearance-none outline-none"
+                                        className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
                                     >
                                         <option value="">Выберите отдел</option>
                                         {departments.map(dept => (
@@ -169,7 +169,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="w-full inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading ? "Создание..." : "Создать сотрудника"}
                             </button>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Shield, Settings, Building, History } from "lucide-react";
+import { Users, Shield, Settings, Building, History, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
