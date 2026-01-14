@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: .
-    image: merch-crm:latest
+    image: ghcr.io/merch-crm/merch-crm:latest
     container_name: merch-crm
     restart: always
     expose:
