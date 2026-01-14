@@ -26,7 +26,10 @@ export async function getUsers(page = 1, limit = 20, search = "") {
 
         // Get paginated users
         const allUsers = await db.query.users.findMany({
-            with: { role: true },
+            with: {
+                role: true,
+                department: true
+            },
             where: (u, { or, ilike }) => {
                 if (!search) return undefined;
                 return or(
@@ -39,8 +42,13 @@ export async function getUsers(page = 1, limit = 20, search = "") {
             offset
         });
 
+        const data = allUsers.map(user => ({
+            ...user,
+            department: user.department?.name || null
+        }));
+
         return {
-            data: allUsers,
+            data,
             total,
             totalPages: Math.ceil(total / limit),
             currentPage: page
