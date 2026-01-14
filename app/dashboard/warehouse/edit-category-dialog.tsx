@@ -176,10 +176,11 @@ export function EditCategoryDialog({ category, isOpen, onClose }: EditCategoryDi
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-12">
-                            <div className="space-y-5">
-                                <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Иконка</label>
-                                <div className="grid grid-cols-5 gap-3">
+                        <div className="grid grid-cols-2 gap-10">
+                            {/* Icon Selection */}
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Иконка</label>
+                                <div className="grid grid-cols-5 gap-2">
                                     {icons.map((item) => {
                                         const Icon = item.icon;
                                         const isSelected = selectedIcon === item.name;
@@ -187,28 +188,25 @@ export function EditCategoryDialog({ category, isOpen, onClose }: EditCategoryDi
                                             <button
                                                 key={item.name}
                                                 type="button"
-                                                title={item.label}
                                                 onClick={() => setSelectedIcon(item.name)}
                                                 className={cn(
-                                                    "aspect-square rounded-[22px] flex items-center justify-center transition-all duration-500 border-2 active:scale-90 group relative overflow-hidden",
+                                                    "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border active:scale-95 group",
                                                     isSelected
-                                                        ? "bg-slate-900 border-slate-900 text-white shadow-2xl scale-100 z-10"
-                                                        : "bg-slate-50 border-transparent text-slate-400 hover:bg-white hover:border-slate-200 hover:text-slate-900 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]"
+                                                        ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200"
+                                                        : "bg-white border-slate-100 text-slate-400 hover:border-slate-200 hover:bg-slate-50"
                                                 )}
                                             >
-                                                <Icon className={cn("w-6 h-6 transition-all duration-500 ease-out", isSelected ? "scale-110" : "group-hover:scale-125 group-hover:rotate-3")} />
-                                                {!isSelected && (
-                                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                                )}
+                                                <Icon className={cn("w-4 h-4", isSelected ? "scale-110" : "group-hover:scale-110")} />
                                             </button>
                                         );
                                     })}
                                 </div>
                             </div>
 
-                            <div className="space-y-5">
-                                <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Цвет оформления</label>
-                                <div className="grid grid-cols-4 gap-5 pr-2">
+                            {/* Color Selection */}
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Цвет оформления</label>
+                                <div className="grid grid-cols-4 gap-3">
                                     {colors.map((color) => {
                                         const isSelected = selectedColor === color.name;
                                         return (
@@ -217,17 +215,12 @@ export function EditCategoryDialog({ category, isOpen, onClose }: EditCategoryDi
                                                 type="button"
                                                 onClick={() => setSelectedColor(color.name)}
                                                 className={cn(
-                                                    "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-500 relative shrink-0 active:scale-75 group",
+                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90",
                                                     color.class,
-                                                    isSelected
-                                                        ? "ring-[4px] ring-slate-950 ring-offset-4 scale-100 z-10"
-                                                        : "hover:scale-125 hover:shadow-2xl hover:ring-[3px] hover:ring-white hover:z-20"
+                                                    isSelected ? "ring-4 ring-offset-2 ring-slate-100" : "hover:scale-110"
                                                 )}
                                             >
-                                                {isSelected && <Check className="w-5 h-5 text-white stroke-[4] animate-in zoom-in duration-500" />}
-                                                {!isSelected && (
-                                                    <div className="absolute inset-0 rounded-full ring-0 group-hover:ring-4 ring-white/30 transition-all duration-500" />
-                                                )}
+                                                {isSelected && <Check className="w-4 h-4 text-white stroke-[3]" />}
                                             </button>
                                         );
                                     })}
@@ -236,28 +229,29 @@ export function EditCategoryDialog({ category, isOpen, onClose }: EditCategoryDi
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50 mt-4">
                         <button
                             type="button"
                             onClick={handleDelete}
                             disabled={isPending}
                             className={cn(
-                                "h-14 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-slate-100",
+                                "h-14 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 border shadow-sm",
                                 deleteConfirm
-                                    ? "bg-rose-500 text-white shadow-lg shadow-rose-200"
-                                    : "bg-white text-slate-400 hover:text-rose-500 hover:bg-rose-50"
+                                    ? "bg-rose-500 border-rose-500 text-white shadow-rose-200"
+                                    : "bg-white border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-100 hover:bg-rose-50"
                             )}
                         >
                             <Trash2 className="w-4 h-4" />
                             {deleteConfirm ? "Подтвердить" : "Удалить"}
                         </button>
 
-                        <Button
+                        <button
+                            type="submit"
                             disabled={isPending}
                             className="h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-base shadow-xl shadow-slate-200 transition-all active:scale-[0.98] disabled:opacity-50"
                         >
                             {isPending ? "Сохранение..." : "Сохранить"}
-                        </Button>
+                        </button>
                     </div>
                 </form>
             </div>

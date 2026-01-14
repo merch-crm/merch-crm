@@ -86,15 +86,17 @@ export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: str
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mb-2">Статистика</div>
-                                        <div className="flex flex-wrap justify-end gap-3 sm:gap-4">
-                                            <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100">
-                                                <div className="text-slate-500 text-xs">Заказов</div>
-                                                <div className="text-xl font-bold text-slate-900">{client.stats.count}</div>
+                                        <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mb-3">Статистика</div>
+                                        <div className="flex flex-wrap justify-end gap-5">
+                                            <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] text-left transition-all hover:shadow-md">
+                                                <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Заказов</div>
+                                                <div className="text-2xl font-black text-slate-900 leading-none">{client.stats.count}</div>
                                             </div>
-                                            <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100">
-                                                <div className="text-slate-500 text-xs">Сумма</div>
-                                                <div className="text-xl font-bold text-emerald-600">{client.stats.total} ₽</div>
+                                            <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100 min-w-[140px] text-left transition-all hover:shadow-md">
+                                                <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Сумма</div>
+                                                <div className="text-2xl font-black text-emerald-600 leading-none">
+                                                    {client.stats.total} <span className="text-lg font-bold ml-0.5">₽</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

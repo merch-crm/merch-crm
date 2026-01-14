@@ -99,43 +99,44 @@ export function AddCategoryDialog() {
                             )}
 
                             <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Название категории</label>
-                                    <input
-                                        name="name"
-                                        required
-                                        placeholder="Например: Футболки"
-                                        className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium placeholder:text-slate-300"
-                                    />
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="col-span-2 space-y-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Название категории</label>
+                                        <input
+                                            name="name"
+                                            required
+                                            placeholder="Футболки"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Артикул</label>
+                                        <input
+                                            name="prefix"
+                                            placeholder="TS, HD..."
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white uppercase"
+                                            onInput={(e) => {
+                                                const val = e.currentTarget.value;
+                                                e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+                                            }}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Описание (необязательно)</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание (необязательно)</label>
                                     <textarea
                                         name="description"
-                                        placeholder="Краткое описание категории..."
-                                        className="w-full min-h-[100px] p-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium placeholder:text-slate-300 resize-none"
+                                        placeholder="Краткое описание..."
+                                        className="w-full min-h-[60px] p-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Префикс артикула (напр. TS)</label>
-                                    <input
-                                        name="prefix"
-                                        placeholder="TS, HD, SW..."
-                                        className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold placeholder:text-slate-300 uppercase"
-                                        onInput={(e) => {
-                                            const sanitizeSku = (val: string) => val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-                                            e.currentTarget.value = sanitizeSku(e.currentTarget.value);
-                                        }}
-                                    />
-                                    <p className="text-[10px] text-slate-400 ml-1">Будет использоваться для генерации артикулов товаров</p>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-12">
-                                    <div className="space-y-5">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Иконка</label>
-                                        <div className="grid grid-cols-5 gap-3">
+                                <div className="grid grid-cols-2 gap-10">
+                                    {/* Icon Selection */}
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Иконка</label>
+                                        <div className="grid grid-cols-5 gap-2">
                                             {icons.map((item) => {
                                                 const Icon = item.icon;
                                                 const isSelected = selectedIcon === item.name;
@@ -143,28 +144,25 @@ export function AddCategoryDialog() {
                                                     <button
                                                         key={item.name}
                                                         type="button"
-                                                        title={item.label}
                                                         onClick={() => setSelectedIcon(item.name)}
                                                         className={cn(
-                                                            "aspect-square rounded-[22px] flex items-center justify-center transition-all duration-500 border-2 active:scale-90 group relative overflow-hidden",
+                                                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border active:scale-95 group",
                                                             isSelected
-                                                                ? "bg-slate-900 border-slate-900 text-white shadow-2xl scale-100 z-10"
-                                                                : "bg-slate-50 border-transparent text-slate-400 hover:bg-white hover:border-slate-200 hover:text-slate-900 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]"
+                                                                ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200"
+                                                                : "bg-white border-slate-100 text-slate-400 hover:border-slate-200 hover:bg-slate-50"
                                                         )}
                                                     >
-                                                        <Icon className={cn("w-6 h-6 transition-all duration-500 ease-out", isSelected ? "scale-110" : "group-hover:scale-125 group-hover:rotate-3")} />
-                                                        {!isSelected && (
-                                                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                                        )}
+                                                        <Icon className={cn("w-4 h-4", isSelected ? "scale-110" : "group-hover:scale-110")} />
                                                     </button>
                                                 );
                                             })}
                                         </div>
                                     </div>
 
-                                    <div className="space-y-5">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Цвет оформления</label>
-                                        <div className="grid grid-cols-4 gap-5 pr-2">
+                                    {/* Color Selection */}
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Цвет оформления</label>
+                                        <div className="grid grid-cols-4 gap-3">
                                             {colors.map((color) => {
                                                 const isSelected = selectedColor === color.name;
                                                 return (
@@ -173,17 +171,12 @@ export function AddCategoryDialog() {
                                                         type="button"
                                                         onClick={() => setSelectedColor(color.name)}
                                                         className={cn(
-                                                            "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-500 relative shrink-0 active:scale-75 group",
+                                                            "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90",
                                                             color.class,
-                                                            isSelected
-                                                                ? "ring-[4px] ring-slate-950 ring-offset-4 scale-100 z-10"
-                                                                : "hover:scale-125 hover:shadow-2xl hover:ring-[3px] hover:ring-white hover:z-20"
+                                                            isSelected ? "ring-4 ring-offset-2 ring-slate-100" : "hover:scale-110"
                                                         )}
                                                     >
-                                                        {isSelected && <Check className="w-5 h-5 text-white stroke-[4] animate-in zoom-in duration-500" />}
-                                                        {!isSelected && (
-                                                            <div className="absolute inset-0 rounded-full ring-0 group-hover:ring-4 ring-white/30 transition-all duration-500" />
-                                                        )}
+                                                        {isSelected && <Check className="w-4 h-4 text-white stroke-[3]" />}
                                                     </button>
                                                 );
                                             })}
@@ -192,13 +185,14 @@ export function AddCategoryDialog() {
                                 </div>
                             </div>
 
-                            <div className="pt-2">
-                                <Button
+                            <div className="pt-4 border-t border-slate-50">
+                                <button
+                                    type="submit"
                                     disabled={isPending}
-                                    className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50"
+                                    className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-lg shadow-xl shadow-slate-200 transition-all active:scale-[0.98] disabled:opacity-50"
                                 >
                                     {isPending ? "Создание..." : "Создать категорию"}
-                                </Button>
+                                </button>
                             </div>
                         </form>
                     </div>

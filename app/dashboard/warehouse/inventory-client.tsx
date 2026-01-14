@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Edit, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, ChevronRight } from "lucide-react";
+import { Package, Edit, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, ChevronRight, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,7 @@ interface InventoryClientProps {
 }
 
 import { EditCategoryDialog } from "./edit-category-dialog";
+import { deleteInventoryCategory } from "./actions";
 
 export function InventoryClient({ items, categories }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -140,120 +141,114 @@ function CategoryCard({
     const getColorStyles = (color: string | null | undefined) => {
         const c = color || "slate";
         const styles: Record<string, string> = {
-            "slate": "bg-slate-100 text-slate-600 group-hover:bg-slate-200",
-            "red": "bg-red-100 text-red-600 group-hover:bg-red-200",
-            "orange": "bg-orange-100 text-orange-600 group-hover:bg-orange-200",
-            "amber": "bg-amber-100 text-amber-600 group-hover:bg-amber-200",
-            "yellow": "bg-yellow-100 text-yellow-600 group-hover:bg-yellow-200",
-            "lime": "bg-lime-100 text-lime-600 group-hover:bg-lime-200",
-            "green": "bg-green-100 text-green-600 group-hover:bg-green-200",
-            "emerald": "bg-emerald-100 text-emerald-600 group-hover:bg-emerald-200",
-            "teal": "bg-teal-100 text-teal-600 group-hover:bg-teal-200",
-            "cyan": "bg-cyan-100 text-cyan-600 group-hover:bg-cyan-200",
-            "sky": "bg-sky-100 text-sky-600 group-hover:bg-sky-200",
-            "blue": "bg-blue-100 text-blue-600 group-hover:bg-blue-200",
-            "indigo": "bg-indigo-100 text-indigo-600 group-hover:bg-indigo-200",
-            "violet": "bg-violet-100 text-violet-600 group-hover:bg-violet-200",
-            "purple": "bg-purple-100 text-purple-600 group-hover:bg-purple-200",
-            "fuchsia": "bg-fuchsia-100 text-fuchsia-600 group-hover:bg-fuchsia-200",
-            "pink": "bg-pink-100 text-pink-600 group-hover:bg-pink-200",
-            "rose": "bg-rose-100 text-rose-600 group-hover:bg-rose-200",
+            "slate": "bg-slate-100/80 text-slate-600",
+            "red": "bg-red-100/80 text-red-600",
+            "orange": "bg-orange-100/80 text-orange-600",
+            "amber": "bg-amber-100/80 text-amber-600",
+            "yellow": "bg-yellow-100/80 text-yellow-600",
+            "lime": "bg-lime-100/80 text-lime-600",
+            "green": "bg-green-100/80 text-green-600",
+            "emerald": "bg-emerald-100/80 text-emerald-600",
+            "teal": "bg-teal-100/80 text-teal-600",
+            "cyan": "bg-cyan-100/80 text-cyan-600",
+            "sky": "bg-sky-100/80 text-sky-600",
+            "blue": "bg-blue-100/80 text-blue-600",
+            "indigo": "bg-indigo-100/80 text-indigo-600",
+            "violet": "bg-violet-100/80 text-violet-600",
+            "purple": "bg-purple-100/80 text-purple-600",
+            "fuchsia": "bg-fuchsia-100/80 text-fuchsia-600",
+            "pink": "bg-pink-100/80 text-pink-600",
+            "rose": "bg-rose-100/80 text-rose-600",
         };
         return styles[c] || styles["slate"];
     };
 
     const colorStyle = getColorStyles(category.color);
 
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (confirm("Вы уверены, что хотите удалить эту категорию?")) {
+            const result = await deleteInventoryCategory(category.id);
+            if (result.success) {
+                alert("Категория удалена");
+            } else {
+                alert(result.error || "Ошибка при удалении");
+            }
+        }
+    };
+
     return (
         <div
             onClick={() => {
-                try {
-                    const params = new URLSearchParams();
-                    params.set('category', category.id);
-                    router.push(`/dashboard/warehouse?${params.toString()}`);
-                } catch {
-                    // Ignore navigation errors
-                }
+                router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group relative bg-white/70 backdrop-blur-sm rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-500 cursor-pointer overflow-hidden"
+            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-4"
         >
-            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                {!isOrphaned && onEdit && (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit(category);
-                        }}
-                        className="p-2 bg-white/80 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-xl transition-all shadow-sm"
-                    >
-                        <Edit className="w-4 h-4" />
-                    </button>
+            <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4">
+                    <div className={cn(
+                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                        colorStyle
+                    )}>
+                        {createElement(IconComponent, { className: "w-6 h-6" })}
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">
+                            {category.name}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                {category.items.length} позиций
+                            </span>
+                            {lowStockCount > 0 && (
+                                <Badge className="bg-rose-50 text-rose-600 border-none px-1.5 py-0 text-[9px] font-black uppercase pointer-events-none">
+                                    {lowStockCount} Крит.
+                                </Badge>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {!isOrphaned && (
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onEdit) onEdit(category);
+                            }}
+                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                        >
+                            <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={handleDelete}
+                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    </div>
                 )}
             </div>
 
-            <div className="flex items-start justify-between mb-4">
-                <div className={cn(
-                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
-                    colorStyle
-                )}>
-                    {createElement(IconComponent, { className: "w-5 h-5" })}
-                </div>
-                <div>
-                    <h3 className="text-base font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
-                        {category.name}
-                    </h3>
-                    <div className="flex items-center gap-1.5 mt-0.5 text-slate-400">
-                        <span className="text-[9px] font-black uppercase tracking-widest">
-                            {category.items.length} позиций
-                        </span>
-                        {lowStockCount > 0 && (
-                            <Badge variant="secondary" className="bg-rose-50 text-rose-600 border-none px-1.5 py-0 text-[9px] font-black uppercase ml-1">
-                                {lowStockCount} Крит.
-                            </Badge>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <div className={cn(
-                "flex gap-2 transition-opacity",
-                isOrphaned ? "hidden" : "opacity-0 group-hover:opacity-100"
-            )}>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (onEdit) onEdit(category);
-                    }}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
-                >
-                    <Pencil className="w-4 h-4" />
-                </button>
-            </div>
-
-
-            {/* Description */}
-            <div className="mb-4 h-10 flex items-start">
-                {category.description && (
-                    <p className="text-[13px] text-slate-600 font-medium leading-tight line-clamp-2">
+            <div className="h-10">
+                {category.description ? (
+                    <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2">
                         {category.description}
+                    </p>
+                ) : (
+                    <p className="text-[13px] text-slate-300 italic font-medium">
+                        Нет описания
                     </p>
                 )}
             </div>
 
-            {/* Footer Action */}
-            <div className="mt-auto">
-                <button
-                    className="w-full h-9 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 font-bold text-[10px] uppercase tracking-widest flex items-center justify-between px-4 transition-all hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 active:scale-[0.98]"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/warehouse/${category.id}`);
-                    }}
-                >
-                    <span>Подробнее</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                </button>
+            <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-600 transition-colors">
+                    Подробнее
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
             </div>
-        </div >
+        </div>
     );
 }
 
