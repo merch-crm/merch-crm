@@ -79,10 +79,10 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                 {/* Selection Badge Section */}
                 <div className="flex items-center gap-4 pl-4 pr-6 border-r border-slate-100">
                     <div className="relative">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-lg text-white shadow-lg shadow-indigo-200 rotate-[-4deg]">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-lg text-white shadow-lg shadow-indigo-200">
                             {selectedIds.length}
                         </div>
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 leading-none">Выбрано</span>
@@ -99,9 +99,9 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                                 className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 disabled:opacity-50"
                                 disabled={isProcessing}
                             >
-                                <CheckCircle2 className="w-5 h-5 text-indigo-500 transition-transform group-hover:scale-110" />
+                                <CheckCircle2 className="w-5 h-5 text-indigo-500" />
                                 Статус
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-300 transition-transform group-hover:translate-y-0.5" />
+                                <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
                             </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top" align="start" sideOffset={20} className="w-64 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
@@ -122,9 +122,9 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                                 className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 disabled:opacity-50"
                                 disabled={isProcessing}
                             >
-                                <Zap className="w-5 h-5 text-rose-500 transition-transform group-hover:scale-110" />
+                                <Zap className="w-5 h-5 text-rose-500" />
                                 Приоритет
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-300 transition-transform group-hover:translate-y-0.5" />
+                                <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
                             </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top" align="center" sideOffset={20} className="w-56 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
@@ -197,7 +197,7 @@ function StatusMenuItem({ icon: Icon, color, label, onClick }: { icon: any, colo
             className="rounded-xl focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900 group"
             onClick={onClick}
         >
-            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110", color.replace('text-', 'bg-').replace('-500', '-100'))}>
+            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", color.replace('text-', 'bg-').replace('-500', '-100'))}>
                 <Icon className={cn("w-4 h-4", color)} />
             </div>
             {label}
