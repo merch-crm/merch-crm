@@ -59,8 +59,13 @@ export function OrderStats({ stats, showFinancials }: OrderStatsProps) {
         },
     ].filter(card => card.visible);
 
+    const gridCols = {
+        4: "lg:grid-cols-4",
+        5: "lg:grid-cols-5"
+    };
+
     return (
-        <div className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-${cards.length} gap-4 mb-8`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 ${gridCols[cards.length as keyof typeof gridCols]} gap-4 mb-8`}>
             {cards.map((card, idx) => (
                 <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                     <div>
