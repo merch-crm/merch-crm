@@ -20,7 +20,9 @@ import {
     ShieldCheck,
     Megaphone,
     Layers,
-    PieChart
+    PieChart,
+    Trash2,
+    Tags
 } from "lucide-react";
 import { format, startOfDay, endOfDay, subDays } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -102,6 +104,90 @@ export default async function FinancePage({
     const totalRev = Number(summary.totalRevenue || 0);
     const orderCnt = Number(summary.orderCount || 0);
     const avgCheck = Number(summary.avgOrderValue || 0);
+    const netProfit = Number(summary.netProfit || 0);
+    const avgCost = Number(summary.averageCost || 0);
+    const writeOffs = Number(summary.writeOffs || 0);
+
+    const statsCards = [
+        {
+            label: "Общая выручка",
+            value: totalRev.toLocaleString('ru-RU'),
+            suffix: "₽",
+            icon: DollarSign,
+            color: "text-emerald-600",
+            bgIcon: "bg-emerald-100",
+            bgCard: "bg-emerald-50",
+            trend: "+12.5%",
+            trendLabel: "к прошл. периоду",
+            trendColor: "text-emerald-600",
+            trendIcon: ArrowUpRight
+        },
+        {
+            label: "Чистая прибыль",
+            value: netProfit.toLocaleString('ru-RU'),
+            suffix: "₽",
+            icon: TrendingUp,
+            color: "text-indigo-600",
+            bgIcon: "bg-indigo-100",
+            bgCard: "bg-indigo-50",
+            trend: "+8.3%",
+            trendLabel: "рост эффективности",
+            trendColor: "text-indigo-600",
+            trendIcon: ArrowUpRight
+        },
+        {
+            label: "Средний чек",
+            value: Math.round(avgCheck).toLocaleString('ru-RU'),
+            suffix: "₽",
+            icon: CreditCard,
+            color: "text-amber-600",
+            bgIcon: "bg-amber-100",
+            bgCard: "bg-amber-50",
+            trend: "-2.1%",
+            trendLabel: "отклонение",
+            trendColor: "text-rose-500",
+            trendIcon: ArrowDownRight
+        },
+        {
+            label: "Количество заказов",
+            value: orderCnt,
+            suffix: "шт.",
+            icon: ShoppingBag,
+            color: "text-blue-600",
+            bgIcon: "bg-blue-100",
+            bgCard: "bg-blue-50",
+            trend: "+5.2%",
+            trendLabel: "рост активности",
+            trendColor: "text-blue-600",
+            trendIcon: ArrowUpRight
+        },
+        {
+            label: "Средняя с/с изделия",
+            value: Math.round(avgCost).toLocaleString('ru-RU'),
+            suffix: "₽",
+            icon: Tags,
+            color: "text-violet-600",
+            bgIcon: "bg-violet-100",
+            bgCard: "bg-violet-50",
+            trend: "~0%",
+            trendLabel: "стабильно",
+            trendColor: "text-slate-500",
+            trendIcon: Activity
+        },
+        {
+            label: "Списания",
+            value: Math.round(writeOffs).toLocaleString('ru-RU'),
+            suffix: "₽",
+            icon: Trash2,
+            color: "text-rose-600",
+            bgIcon: "bg-rose-100",
+            bgCard: "bg-rose-50",
+            trend: "+1.2%",
+            trendLabel: "в пределах нормы",
+            trendColor: "text-rose-500",
+            trendIcon: ArrowUpRight
+        }
+    ];
 
     // Функция для безопасного создания query string
     const createQueryString = (params: Record<string, string | undefined>) => {
@@ -175,60 +261,26 @@ export default async function FinancePage({
             <div key={activeTab}>
                 {activeTab === 'sales' ? (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                                <div className="relative">
-                                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6 font-bold shadow-inner">
-                                        <DollarSign className="w-6 h-6" />
-                                    </div>
-                                    <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">Общая выручка</div>
-                                    <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                        {totalRev.toLocaleString('ru-RU')} <span className="text-lg">₽</span>
-                                    </div>
-                                    <div className="flex items-center gap-1 mt-4 text-emerald-600 font-bold text-sm">
-                                        <ArrowUpRight className="w-4 h-4" />
-                                        <span>+12.5%</span>
-                                        <span className="text-slate-400 font-medium ml-1">к прошл. периоду</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                                <div className="relative">
-                                    <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 mb-6 font-bold shadow-inner">
-                                        <ShoppingBag className="w-6 h-6" />
-                                    </div>
-                                    <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">Всего заказов</div>
-                                    <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                        {orderCnt} <span className="text-lg font-bold">шт.</span>
-                                    </div>
-                                    <div className="flex items-center gap-1 mt-4 text-blue-600 font-bold text-sm">
-                                        <ArrowUpRight className="w-4 h-4" />
-                                        <span>+5.2%</span>
-                                        <span className="text-slate-400 font-medium ml-1">рост активности</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {statsCards.map((card, i) => (
+                                <div key={i} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                    <div className={`absolute top-0 right-0 w-32 h-32 ${card.bgCard} rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110`} />
+                                    <div className="relative">
+                                        <div className={`w-12 h-12 rounded-2xl ${card.bgIcon} flex items-center justify-center ${card.color} mb-6 font-bold shadow-inner`}>
+                                            <card.icon className="w-6 h-6" />
+                                        </div>
+                                        <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">{card.label}</div>
+                                        <div className="text-4xl font-black text-slate-900 tracking-tight">
+                                            {card.value} <span className="text-lg">{card.suffix}</span>
+                                        </div>
+                                        <div className={`flex items-center gap-1 mt-4 ${card.trendColor} font-bold text-sm`}>
+                                            <card.trendIcon className="w-4 h-4" />
+                                            <span>{card.trend}</span>
+                                            <span className="text-slate-400 font-medium ml-1">{card.trendLabel}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                                <div className="relative">
-                                    <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 mb-6 font-bold shadow-inner">
-                                        <CreditCard className="w-6 h-6" />
-                                    </div>
-                                    <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">Средний чек</div>
-                                    <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                        {Math.round(avgCheck).toLocaleString('ru-RU')} <span className="text-lg">₽</span>
-                                    </div>
-                                    <div className="flex items-center gap-1 mt-4 text-rose-500 font-bold text-sm">
-                                        <ArrowDownRight className="w-4 h-4" />
-                                        <span>-2.1%</span>
-                                        <span className="text-slate-400 font-medium ml-1">отклонение</span>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

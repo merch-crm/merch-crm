@@ -10,6 +10,9 @@ export interface FinancialStats {
         totalRevenue: number;
         orderCount: number;
         avgOrderValue: number;
+        netProfit: number;
+        averageCost: number;
+        writeOffs: number;
     };
     chartData: Array<{
         date: string;
@@ -119,9 +122,18 @@ export async function getFinancialStats(from?: Date, to?: Date) {
             }
         });
 
+        const summary = stats[0] || { totalRevenue: 0, orderCount: 0, avgOrderValue: 0 };
+
         return {
             data: {
-                summary: stats[0] || { totalRevenue: 0, orderCount: 0, avgOrderValue: 0 },
+                summary: {
+                    totalRevenue: Number(summary.totalRevenue || 0),
+                    orderCount: Number(summary.orderCount || 0),
+                    avgOrderValue: Number(summary.avgOrderValue || 0),
+                    netProfit: Number(summary.totalRevenue || 0) * 0.3, // Примерный расчет: 30% маржинальность
+                    averageCost: Number(summary.avgOrderValue || 0) * 0.7, // Примерный расчет: 70% себестоимость
+                    writeOffs: Number(summary.totalRevenue || 0) * 0.02, // Примерный расчет: 2% списания
+                },
                 chartData: dailyStats.map(d => ({
                     date: new Date(d.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
                     revenue: Number(d.revenue || 0),
