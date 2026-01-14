@@ -21,6 +21,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [selectedItemId, setSelectedItemId] = useState("");
     const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
     const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
+    const [quantity, setQuantity] = useState("");
     const [commentError, setCommentError] = useState(false);
 
     // Sync defaults if locations change
@@ -39,6 +40,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
             setIsOpen(false);
             setError("");
             setSelectedItemId("");
+            setQuantity("");
             // Reset to defaults
             setFromLocationId(locations[0]?.id || "");
             setToLocationId(locations[1]?.id || locations[0]?.id || "");
@@ -154,6 +156,8 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     required
                                     min="1"
                                     placeholder="0"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}
                                     className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
                                 />
                             </div>
