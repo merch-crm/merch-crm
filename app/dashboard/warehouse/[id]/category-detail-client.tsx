@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,7 @@ interface CategoryDetailClientProps {
 
 export function CategoryDetailClient({ category, items, storageLocations = [] }: CategoryDetailClientProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isDeleting, setIsDeleting] = useState(false);
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
@@ -52,6 +53,20 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isAdjustOpen, setIsAdjustOpen] = useState(false);
     const [isAddOpen, setIsAddOpen] = useState(false);
+
+    // Effect to open drawer if itemId is in URL
+    useEffect(() => {
+        const itemId = searchParams.get("itemId");
+        if (itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                setViewingItem(item);
+                // Clear the param without refreshing to avoid re-opening if drawer is closed
+                const newPath = window.location.pathname;
+                window.history.replaceState(null, '', newPath);
+            }
+        }
+    }, [searchParams, items]);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState<"all" | "low" | "out">("all");
@@ -260,7 +275,10 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                 return (
                                     <div
                                         key={item.id}
-                                        onClick={() => setViewingItem(item)}
+                                        onClick={() => {
+                                            setEditingItem(item);
+                                            setIsEditOpen(true);
+                                        }}
                                         className={cn(
                                             "group relative bg-white rounded-[2rem] border border-slate-200/60 p-6 transition-all duration-300 cursor-pointer overflow-hidden",
                                             "hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 hover:border-indigo-100",

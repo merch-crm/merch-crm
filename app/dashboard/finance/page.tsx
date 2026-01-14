@@ -10,10 +10,8 @@ import {
     ShoppingBag,
     ArrowUpRight,
     ArrowDownRight,
-    Calendar as CalendarIcon,
     DollarSign,
     CreditCard,
-    BarChart3,
     Wallet,
     Briefcase,
     Activity,
@@ -23,10 +21,10 @@ import {
     PieChart,
     Trash2,
     Tags,
-    Package
+    Package,
+    LucideIcon
 } from "lucide-react";
-import { format, startOfDay, endOfDay, subDays } from "date-fns";
-import { ru } from "date-fns/locale";
+import { startOfDay, endOfDay, subDays } from "date-fns";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FinanceDateFilter } from "./finance-date-filter";
@@ -98,7 +96,7 @@ export default async function FinancePage({
 
     if (!salesData || !salaryData || !fundsData) return null;
 
-    const { summary, chartData, categories, recentTransactions } = salesData;
+    const { summary, categories } = salesData;
     const { totalBudget, employeePayments } = salaryData;
     const { funds } = fundsData;
 
@@ -199,14 +197,6 @@ export default async function FinancePage({
         return newParams.toString();
     };
 
-    const statusConfig: Record<string, { label: string, color: string }> = {
-        new: { label: "Новый", color: "bg-blue-50 text-blue-600" },
-        design: { label: "Дизайн", color: "bg-purple-50 text-purple-600" },
-        production: { label: "Производство", color: "bg-amber-50 text-amber-600" },
-        done: { label: "Готов", color: "bg-emerald-50 text-emerald-600" },
-        shipped: { label: "Отправлен", color: "bg-slate-50 text-slate-600" },
-    };
-
     const categoryLabels: Record<string, { label: string, color: string }> = {
         print: { label: "Печать", color: "bg-indigo-500" },
         embroidery: { label: "Вышивка", color: "bg-purple-500" },
@@ -243,16 +233,6 @@ export default async function FinancePage({
                     >
                         <Wallet className="w-4 h-4" />
                         Зарплата
-                    </Link>
-                    <Link
-                        href={`?${createQueryString({ tab: 'products' })}`}
-                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${activeTab === 'products'
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-700"
-                            }`}
-                    >
-                        <Package className="w-4 h-4" />
-                        Изделия
                     </Link>
                     <Link
                         href={`?${createQueryString({ tab: 'funds' })}`}
@@ -292,35 +272,77 @@ export default async function FinancePage({
                                 </div>
                             ))}
                         </div>
+
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            {categories.map((cat, i) => {
+                                const config = categoryLabels[cat.name] || categoryLabels.other;
+                                const percentage = totalRev > 0 ? (cat.revenue / totalRev) * 100 : 0;
+
+                                return (
+                                    <div key={i} className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                        <div className={`absolute top-0 right-0 w-24 h-24 ${config.color.replace('bg-', 'bg-')}/10 rounded-bl-[3rem] -mr-8 -mt-8 transition-transform group-hover:scale-110`} />
+                                        <div className="relative">
+                                            <div className={`w-10 h-10 rounded-xl ${config.color.replace('bg-', 'bg-')}/20 flex items-center justify-center ${config.color.replace('bg-', 'text-')} mb-4 font-bold shadow-inner`}>
+                                                <Package className="w-5 h-5" />
+                                            </div>
+                                            <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">{config.label}</div>
+                                            <div className="text-2xl font-black text-slate-900 tracking-tight mb-1">
+                                                {cat.count}
+                                            </div>
+                                            <div className="text-[10px] text-slate-500 font-bold mb-3">заказов</div>
+
+                                            <div className="space-y-1.5 pt-3 border-t border-slate-100">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-[10px] font-bold text-slate-500">Выручка</span>
+                                                    <span className="text-xs font-black text-slate-900">
+                                                        {cat.revenue.toLocaleString()} ₽
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-[10px] font-bold text-slate-500">Доля</span>
+                                                    <span className="text-xs font-black text-slate-900">{Math.round(percentage)}%</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mt-2">
+                                                    <div
+                                                        className={`h-full ${config.color} transition-all duration-1000`}
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 ) : activeTab === 'salary' ? (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110" />
+                            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-[3rem] -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                                 <div className="relative">
-                                    <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 mb-6 font-bold shadow-inner">
-                                        <Activity className="w-6 h-6" />
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 mb-4 font-bold shadow-inner">
+                                        <Activity className="w-5 h-5" />
                                     </div>
-                                    <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">Общий ФОТ</div>
-                                    <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                        {totalBudget.toLocaleString('ru-RU')} <span className="text-lg font-bold text-slate-400 whitespace-nowrap">₽ / мес</span>
+                                    <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">Общий ФОТ</div>
+                                    <div className="text-2xl font-black text-slate-900 tracking-tight">
+                                        {totalBudget.toLocaleString('ru-RU')} <span className="text-sm font-bold text-slate-400 whitespace-nowrap">₽ / мес</span>
                                     </div>
-                                    <p className="mt-4 text-sm text-slate-500 font-medium">Расчет за выбранный период на основе окладов и бонусов</p>
+                                    <p className="mt-3 text-xs text-slate-500 font-medium">Расчет за выбранный период на основе окладов и бонусов</p>
                                 </div>
                             </div>
 
-                            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110" />
+                            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[3rem] -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                                 <div className="relative">
-                                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6 font-bold shadow-inner">
-                                        <Users className="w-6 h-6" />
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4 font-bold shadow-inner">
+                                        <Users className="w-5 h-5" />
                                     </div>
-                                    <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">Всего сотрудников</div>
-                                    <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                        {employeePayments.length} <span className="text-lg font-bold text-slate-400">чел.</span>
+                                    <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">Всего сотрудников</div>
+                                    <div className="text-2xl font-black text-slate-900 tracking-tight">
+                                        {employeePayments.length} <span className="text-sm font-bold text-slate-400">чел.</span>
                                     </div>
-                                    <p className="mt-4 text-sm text-slate-500 font-medium text-emerald-600 font-bold">Все выплаты рассчитаны автоматически</p>
+                                    <p className="mt-3 text-xs text-slate-500 font-medium text-emerald-600 font-bold">Все выплаты рассчитаны автоматически</p>
                                 </div>
                             </div>
                         </div>
@@ -395,55 +417,11 @@ export default async function FinancePage({
                             })}
                         </div>
                     </div>
-                ) : activeTab === 'products' ? (
-                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {categories.map((cat, i) => {
-                                const config = categoryLabels[cat.name] || categoryLabels.other;
-                                const percentage = totalRev > 0 ? (cat.revenue / totalRev) * 100 : 0;
-
-                                return (
-                                    <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                        <div className={`absolute top-0 right-0 w-32 h-32 ${config.color.replace('bg-', 'bg-')}/10 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110`} />
-                                        <div className="relative">
-                                            <div className={`w-12 h-12 rounded-2xl ${config.color.replace('bg-', 'bg-')}/20 flex items-center justify-center ${config.color.replace('bg-', 'text-')} mb-6 font-bold shadow-inner`}>
-                                                <Package className="w-6 h-6" />
-                                            </div>
-                                            <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">{config.label}</div>
-                                            <div className="text-4xl font-black text-slate-900 tracking-tight mb-1">
-                                                {cat.count}
-                                            </div>
-                                            <div className="text-xs text-slate-500 font-bold mb-4">заказов</div>
-
-                                            <div className="space-y-2 pt-4 border-t border-slate-100">
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-xs font-bold text-slate-500">Выручка</span>
-                                                    <span className="text-sm font-black text-slate-900">
-                                                        {cat.revenue.toLocaleString()} ₽
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-xs font-bold text-slate-500">Доля</span>
-                                                    <span className="text-sm font-black text-slate-900">{Math.round(percentage)}%</span>
-                                                </div>
-                                                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mt-3">
-                                                    <div
-                                                        className={`h-full ${config.color} transition-all duration-1000`}
-                                                        style={{ width: `${percentage}%` }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
                 ) : (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {funds.map((fund, i) => {
-                                const IconMap: Record<string, any> = {
+                                const IconMap: Record<string, LucideIcon> = {
                                     Activity,
                                     Users,
                                     TrendingUp,

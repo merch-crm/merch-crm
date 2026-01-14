@@ -145,6 +145,23 @@ export async function updateClient(clientId: string, formData: FormData) {
     }
 }
 
+export async function updateClientComments(clientId: string, comments: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(clients)
+            .set({ comments })
+            .where(eq(clients.id, clientId));
+
+        revalidatePath("/dashboard/clients");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating comments:", error);
+        return { error: "Failed to update comments" };
+    }
+}
+
 export async function getClientDetails(clientId: string) {
     try {
         const client = await db.query.clients.findFirst({

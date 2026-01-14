@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import StatusBadge from "./status-badge";
-import PriorityBadge from "./priority-badge";
+import StatusBadgeInteractive from "./status-badge-interactive";
+import PriorityBadgeInteractive from "./priority-badge-interactive";
 import { BulkActionsPanel } from "./bulk-actions-panel";
 
 export interface Order {
@@ -72,8 +72,12 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials }: OrdersTa
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {orders.map((order) => (
-                        <tr key={order.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(order.id) ? 'bg-indigo-50/30' : ''}`}>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                        <tr
+                            key={order.id}
+                            onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
+                            className={`hover:bg-gray-50 transition-colors cursor-pointer ${selectedIds.includes(order.id) ? 'bg-indigo-50/30' : ''}`}
+                        >
+                            <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                 <input
                                     type="checkbox"
                                     className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
@@ -95,12 +99,12 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials }: OrdersTa
                                 </td>
                             )}
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <StatusBadge status={order.status} />
+                                <StatusBadgeInteractive orderId={order.id} status={order.status} />
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <PriorityBadge priority={order.priority} />
+                                <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
                                 <a href={`/dashboard/orders/${order.id}`} className="text-indigo-600 hover:text-indigo-900">Открыть</a>
                             </td>
                         </tr>

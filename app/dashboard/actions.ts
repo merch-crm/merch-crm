@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { orders, clients } from "@/lib/schema";
-import { count, sum, ne, inArray, and, gte, lte } from "drizzle-orm";
+import { count, sum, inArray, and, gte, lte } from "drizzle-orm";
 import {
     startOfDay,
     endOfDay,

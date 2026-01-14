@@ -2,6 +2,7 @@ import { getUserProfile, getUserActivities } from "./actions";
 import { formatDistanceToNow, format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { ProfileClient } from "./profile-client";
+import Image from "next/image";
 import {
     Home,
     ChevronRight,
@@ -106,7 +107,7 @@ export default async function ProfilePage() {
 
                 {user.avatar && (
                     <div className="relative z-10 h-20 w-20 rounded-full overflow-hidden border-4 border-slate-50 shadow-sm hidden sm:block">
-                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                        <Image src={user.avatar} alt={user.name} width={80} height={80} className="w-full h-full object-cover" />
                     </div>
                 )}
             </div>

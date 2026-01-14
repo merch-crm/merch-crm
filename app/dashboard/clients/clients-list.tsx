@@ -296,8 +296,12 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {currentPageItems.map(client => (
-                                <tr key={client.id} className={`hover:bg-gray-50 transition-colors group ${selectedIds.includes(client.id) ? 'bg-indigo-50/30' : ''}`}>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                <tr
+                                    key={client.id}
+                                    onClick={() => setSelectedClientId(client.id)}
+                                    className={`hover:bg-gray-50 transition-colors group cursor-pointer ${selectedIds.includes(client.id) ? 'bg-indigo-50/30' : ''}`}
+                                >
+                                    <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                         <input
                                             type="checkbox"
                                             className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
@@ -328,7 +332,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             {Math.round(Number(client.totalSpent) || 0)} ₽
                                         </td>
                                     )}
-                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                    <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                         <div className="flex items-center justify-end gap-1">
                                             <button
                                                 onClick={() => setSelectedClientId(client.id)}

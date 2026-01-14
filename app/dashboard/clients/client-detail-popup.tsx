@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Mail, Phone, MapPin, ShoppingBag, Send, Instagram, Trash2, AlertTriangle } from "lucide-react";
-import { getClientDetails, deleteClient } from "./actions";
+import { X, Mail, Phone, MapPin, ShoppingBag, Send, Instagram, Trash2, AlertTriangle, Pencil, Check, Save } from "lucide-react";
+import { getClientDetails, deleteClient, updateClientComments } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusBadge from "../orders/status-badge";
+import StatusBadgeInteractive from "../orders/status-badge-interactive";
+import { EditClientDialog } from "./edit-client-dialog";
+import { Pagination } from "@/components/ui/pagination";
 
 export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }: { clientId: string, isOpen: boolean, onClose: () => void, showFinancials?: boolean }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,6 +18,13 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
     const [isDeleting, setIsDeleting] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteError, setDeleteError] = useState("");
+    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [ordersPage, setOrdersPage] = useState(1);
+
+    const [isEditingComments, setIsEditingComments] = useState(false);
+    const [tempComments, setTempComments] = useState("");
+    const [isSavingComments, setIsSavingComments] = useState(false);
 
     useEffect(() => {
         if (isOpen && clientId) {
@@ -23,11 +33,24 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
             setDeleteError("");
             setConfirmDelete(false);
             getClientDetails(clientId).then(res => {
-                if (res.data) setClient(res.data);
+                if (res.data) {
+                    setClient(res.data);
+                    setTempComments(res.data.comments || "");
+                }
                 setLoading(false);
             });
         }
-    }, [isOpen, clientId]);
+    }, [isOpen, clientId, refreshKey]);
+
+    const handleSaveComments = async () => {
+        setIsSavingComments(true);
+        const res = await updateClientComments(clientId, tempComments);
+        if (!res.error) {
+            setIsEditingComments(false);
+            setClient({ ...client, comments: tempComments });
+        }
+        setIsSavingComments(false);
+    };
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -69,13 +92,22 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 {client.lastName} {client.firstName} {client.patronymic}
                                             </h2>
                                             {!confirmDelete && (
-                                                <button
-                                                    onClick={() => setConfirmDelete(true)}
-                                                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                                    title="Удалить клиента"
-                                                >
-                                                    <Trash2 className="w-5 h-5" />
-                                                </button>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        onClick={() => setShowEditDialog(true)}
+                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                        title="Редактировать клиента"
+                                                    >
+                                                        <Pencil className="w-5 h-5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setConfirmDelete(true)}
+                                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                        title="Удалить клиента"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
                                         {client.company && (
@@ -123,7 +155,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
                                                 disabled={isDeleting}
                                             >
-                                                {isDeleting ? "Удаление..." : "Да, удалить"}
+                                                {isDeleting ? "Удаление..." : "удалить"}
                                             </button>
                                         </div>
                                     </div>
@@ -144,36 +176,109 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                         <section>
                                             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Контакты</h3>
                                             <ul className="space-y-3">
-                                                <li className="flex items-center text-sm font-medium text-slate-700">
-                                                    <Phone className="w-4 h-4 mr-3 text-indigo-500" />
-                                                    {client.phone}
+                                                <li>
+                                                    <a
+                                                        href={`tel:${client.phone.replace(/\D/g, '')}`}
+                                                        className="flex items-center text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors group"
+                                                    >
+                                                        <Phone className="w-4 h-4 mr-3 text-indigo-500 group-hover:scale-110 transition-transform" />
+                                                        {client.phone}
+                                                    </a>
                                                 </li>
                                                 {client.email && (
-                                                    <li className="flex items-center text-sm font-medium text-slate-700">
-                                                        <Mail className="w-4 h-4 mr-3 text-indigo-500" />
-                                                        {client.email}
+                                                    <li>
+                                                        <a
+                                                            href={`mailto:${client.email}`}
+                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors group"
+                                                        >
+                                                            <Mail className="w-4 h-4 mr-3 text-indigo-500 group-hover:scale-110 transition-transform" />
+                                                            {client.email}
+                                                        </a>
                                                     </li>
                                                 )}
                                                 {client.telegram && (
-                                                    <li className="flex items-center text-sm font-medium text-slate-700">
-                                                        <Send className="w-4 h-4 mr-3 text-blue-400" />
-                                                        {client.telegram}
+                                                    <li>
+                                                        <a
+                                                            href={`https://t.me/${client.telegram.startsWith('@') ? client.telegram.slice(1) : client.telegram}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-blue-500 transition-colors group"
+                                                        >
+                                                            <Send className="w-4 h-4 mr-3 text-blue-400 group-hover:scale-110 transition-transform" />
+                                                            {client.telegram}
+                                                        </a>
                                                     </li>
                                                 )}
                                                 {client.instagram && (
-                                                    <li className="flex items-center text-sm font-medium text-slate-700">
-                                                        <Instagram className="w-4 h-4 mr-3 text-pink-500" />
-                                                        {client.instagram}
+                                                    <li>
+                                                        <a
+                                                            href={`https://instagram.com/${client.instagram.startsWith('@') ? client.instagram.slice(1) : client.instagram}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-pink-500 transition-colors group"
+                                                        >
+                                                            <Instagram className="w-4 h-4 mr-3 text-pink-500 group-hover:scale-110 transition-transform" />
+                                                            {client.instagram}
+                                                        </a>
                                                     </li>
                                                 )}
                                             </ul>
                                         </section>
 
                                         <section>
-                                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Комментарии</h3>
-                                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-sm text-slate-600 italic whitespace-pre-wrap">
-                                                {client.comments || "Нет комментариев"}
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Комментарии</h3>
+                                                {!isEditingComments ? (
+                                                    <button
+                                                        onClick={() => setIsEditingComments(true)}
+                                                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                        title="Редактировать"
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </button>
+                                                ) : (
+                                                    <div className="flex gap-1">
+                                                        <button
+                                                            disabled={isSavingComments}
+                                                            onClick={() => setIsEditingComments(false)}
+                                                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                            title="Отменить"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            disabled={isSavingComments}
+                                                            onClick={handleSaveComments}
+                                                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all"
+                                                            title="Сохранить"
+                                                        >
+                                                            {isSavingComments ? (
+                                                                <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                                                            ) : (
+                                                                <Check className="w-4 h-4" />
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {isEditingComments ? (
+                                                <textarea
+                                                    value={tempComments}
+                                                    onChange={(e) => setTempComments(e.target.value)}
+                                                    className="w-full bg-slate-50 rounded-xl p-4 border border-indigo-200 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none min-h-[100px] resize-none transition-all"
+                                                    placeholder="Введите комментарий..."
+                                                    autoFocus
+                                                />
+                                            ) : (
+                                                <div
+                                                    onClick={() => setIsEditingComments(true)}
+                                                    className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-sm text-slate-600 italic whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
+                                                >
+                                                    {client.comments || "Нет комментариев"}
+                                                    <div className="mt-2 text-[10px] text-slate-300 font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">Нажмите, чтобы редактировать</div>
+                                                </div>
+                                            )}
                                         </section>
                                     </div>
 
@@ -185,11 +290,11 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                         </h3>
                                         <div className="space-y-3">
                                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                            {client.orders.map((order: any) => (
+                                            {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order: any) => (
                                                 <div key={order.id} className="bg-white border border-slate-100 rounded-xl p-4 hover:shadow-md transition-shadow">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <span className="text-xs font-mono text-slate-400">#{order.id.slice(0, 8)}</span>
-                                                        <StatusBadge status={order.status} />
+                                                        <StatusBadgeInteractive orderId={order.id} status={order.status} />
                                                     </div>
                                                     <div className="flex justify-between items-center">
                                                         <div>
@@ -210,6 +315,18 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 </div>
                                             )}
                                         </div>
+
+                                        {client.orders.length > 3 && (
+                                            <div className="mt-4 pt-4 border-t border-slate-50">
+                                                <Pagination
+                                                    totalItems={client.orders.length}
+                                                    pageSize={3}
+                                                    currentPage={ordersPage}
+                                                    onPageChange={setOrdersPage}
+                                                    itemName="заказов"
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -219,6 +336,18 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                     )}
                 </div>
             </div>
+            {showEditDialog && (
+                <div className="z-[70] relative">
+                    <EditClientDialog
+                        client={client}
+                        isOpen={showEditDialog}
+                        onClose={() => {
+                            setShowEditDialog(false);
+                            setRefreshKey(prev => prev + 1);
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 }

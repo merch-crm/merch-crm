@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, users, auditLogs } from "@/lib/schema";
+import { orders, users } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
 
@@ -64,7 +64,7 @@ export async function getFinancialStats(from?: Date, to?: Date) {
     if (!session) return { error: "Unauthorized" };
 
     // Проверка доступа
-    const user = await db.query.users.findFirst({
+    await db.query.users.findFirst({
         where: eq(users.id, session.id),
         with: {
             role: true,
@@ -144,7 +144,7 @@ export async function getFinancialStats(from?: Date, to?: Date) {
                     revenue: Number(c.revenue || 0),
                     count: Number(c.count || 0)
                 })),
-                recentTransactions: recentOrders.map((o: any) => ({
+                recentTransactions: recentOrders.map((o) => ({
                     id: o.id,
                     clientName: `${o.client.lastName} ${o.client.firstName}`,
                     amount: Number(o.totalAmount || 0),

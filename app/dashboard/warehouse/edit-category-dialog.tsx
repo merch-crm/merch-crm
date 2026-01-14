@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, Shirt, Package, Layers, Zap, Scissors, Box, Hourglass, Wind, Tag, ShoppingBag, Check, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";

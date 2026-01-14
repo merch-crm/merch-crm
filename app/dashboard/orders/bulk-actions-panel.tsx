@@ -15,7 +15,8 @@ import {
     Printer,
     FileDown,
     UserPlus,
-    Clock
+    Clock,
+    LucideIcon
 } from "lucide-react";
 import {
     bulkUpdateOrderStatus,
@@ -191,7 +192,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
     );
 }
 
-function StatusMenuItem({ icon: Icon, color, label, onClick }: { icon: any, color: string, label: string, onClick: () => void }) {
+function StatusMenuItem({ icon: Icon, color, label, onClick }: { icon: LucideIcon, color: string, label: string, onClick: () => void }) {
     return (
         <DropdownMenuItem
             className="rounded-xl focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900 group"

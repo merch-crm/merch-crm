@@ -138,6 +138,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                 {(() => {
                                     const grouped = loc.items?.reduce((acc: Record<string, number>, item: InventoryItem) => {
                                         if (item.quantity > 0) {
+                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                             const cat = (item as any).categoryName || "Прочее";
                                             acc[cat] = (acc[cat] || 0) + item.quantity;
                                         }

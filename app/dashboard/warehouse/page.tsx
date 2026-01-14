@@ -1,4 +1,4 @@
-import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers, seedStorageLocations } from "./actions";
+import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers } from "./actions";
 // Auto-deploy trigger v1.1 - Restarting...
 import { WarehouseClient } from "./warehouse-client";
 

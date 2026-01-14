@@ -11,7 +11,6 @@ import {
     CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { RoleBadge } from "@/components/ui/role-badge";
 import { ProfileForm } from "./profile-form";
 import { PasswordForm } from "./password-form";
 import { PlusCircle, Send, Loader2 } from "lucide-react";
@@ -25,8 +24,12 @@ interface UserProfile {
     email: string;
     phone?: string | null;
     avatar?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+    socialMax?: string | null;
     department?: { name: string } | string | null;
     role?: { name: string } | null;
+    birthday?: string | null;
     createdAt: string | Date;
 }
 
@@ -161,23 +164,72 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">ФИО</div>
                                     <div className="text-base font-bold text-slate-900">{user.name}</div>
                                 </div>
-                                <div className="space-y-2">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Должность</div>
-                                    <RoleBadge roleName={user.role?.name} />
+                                <div className="space-y-1">
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Дата рождения</div>
+                                    <div className="text-base font-bold text-slate-900">
+                                        {user.birthday ? new Date(user.birthday).toLocaleDateString("ru-RU", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                        }) : "—"}
+                                    </div>
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email</div>
-                                    <div className="text-base font-bold text-slate-900">{user.email}</div>
+                                    <a
+                                        href={`mailto:${user.email}`}
+                                        className="text-base font-bold text-slate-900 hover:text-indigo-600 transition-colors block"
+                                    >
+                                        {user.email}
+                                    </a>
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Телефон</div>
-                                    <div className="text-base font-bold text-slate-900">{user.phone || "—"}</div>
+                                    {user.phone ? (
+                                        <a
+                                            href={`tel:${user.phone.replace(/\D/g, '')}`}
+                                            className="text-base font-bold text-slate-900 hover:text-indigo-600 transition-colors block"
+                                        >
+                                            {user.phone}
+                                        </a>
+                                    ) : (
+                                        <div className="text-base font-bold text-slate-900">—</div>
+                                    )}
                                 </div>
                                 <div className="space-y-1">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Отдел</div>
-                                    <div className="text-base font-bold text-indigo-600">{(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "—")}</div>
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Telegram</div>
+                                    {user.telegram ? (
+                                        <a
+                                            href={`https://t.me/${user.telegram.startsWith('@') ? user.telegram.slice(1) : user.telegram}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-base font-bold text-slate-900 hover:text-blue-500 transition-colors block"
+                                        >
+                                            {user.telegram}
+                                        </a>
+                                    ) : (
+                                        <div className="text-base font-bold text-slate-900">—</div>
+                                    )}
                                 </div>
-
+                                <div className="space-y-1">
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Instagram</div>
+                                    {user.instagram ? (
+                                        <a
+                                            href={`https://instagram.com/${user.instagram.startsWith('@') ? user.instagram.slice(1) : user.instagram}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-base font-bold text-slate-900 hover:text-pink-500 transition-colors block"
+                                        >
+                                            {user.instagram}
+                                        </a>
+                                    ) : (
+                                        <div className="text-base font-bold text-slate-900">—</div>
+                                    )}
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Max</div>
+                                    <div className="text-base font-bold text-slate-900">{user.socialMax || "—"}</div>
+                                </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Дата начала работы</div>
                                     <div className="text-base font-bold text-slate-900">

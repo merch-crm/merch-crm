@@ -107,11 +107,17 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                 const isSelected = selectedIds.includes(t.id);
 
                                 return (
-                                    <tr key={t.id} className={cn(
-                                        "hover:bg-gray-50 transition-colors group",
-                                        isSelected ? "bg-indigo-50/30" : ""
-                                    )}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                    <tr
+                                        key={t.id}
+                                        onClick={() => {
+                                            /* Movement details */
+                                        }}
+                                        className={cn(
+                                            "hover:bg-gray-50 transition-colors group cursor-pointer",
+                                            isSelected ? "bg-indigo-50/30" : ""
+                                        )}
+                                    >
+                                        <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
                                                 className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
@@ -119,7 +125,7 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                                 onChange={() => handleSelectRow(t.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                                             <div className="flex items-center gap-4">
                                                 <div className={cn(
                                                     "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110",
@@ -175,7 +181,7 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                        <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                             <div className="flex items-center justify-end gap-2.5">
                                                 <div className="text-right">
                                                     <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
@@ -183,9 +189,9 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                                         {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
                                                     </div>
                                                 </div>
-                                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
+                                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0 relative">
                                                     {t.creator?.avatar ? (
-                                                        <img src={t.creator.avatar} alt={t.creator.name} className="w-full h-full object-cover" />
+                                                        <Image src={t.creator.avatar} alt={t.creator.name} width={32} height={32} className="w-full h-full object-cover" />
                                                     ) : (
                                                         <User className="w-4 h-4" />
                                                     )}

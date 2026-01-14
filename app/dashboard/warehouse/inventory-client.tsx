@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Edit, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, ChevronRight, Trash2 } from "lucide-react";
+import { Package, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, ChevronRight, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ export interface InventoryItem {
     unit: string;
     lowStockThreshold: number;
     categoryId: string | null;
+    description?: string | null;
 }
 
 export interface Category {

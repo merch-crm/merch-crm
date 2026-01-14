@@ -43,7 +43,7 @@ export async function getUserProfile() {
     }
 }
 
-import { uploadFile } from "@/lib/storage";
+
 
 export async function updateProfile(formData: FormData) {
     const session = await getSession();
@@ -54,11 +54,16 @@ export async function updateProfile(formData: FormData) {
     const departmentLegacy = formData.get("department") as string;
     const avatarFile = formData.get("avatar") as File;
 
+    const telegram = formData.get("telegram") as string;
+    const instagram = formData.get("instagram") as string;
+    const socialMax = formData.get("socialMax") as string;
+    const birthday = formData.get("birthday") as string;
+
     if (!name) return { error: "Имя обязательно" };
 
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: Record<string, any> = { name, phone, departmentLegacy };
+        const updateData: Record<string, any> = { name, phone, departmentLegacy, telegram, instagram, socialMax, birthday: birthday || null };
 
         if (avatarFile && avatarFile.size > 0) {
             const buffer = Buffer.from(await avatarFile.arrayBuffer());

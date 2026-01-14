@@ -2,7 +2,9 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your-secret-key-change-it";
+import { env } from "./env";
+
+const SECRET_KEY = env.JWT_SECRET_KEY;
 const key = new TextEncoder().encode(SECRET_KEY);
 
 import { JWTPayload } from "jose";

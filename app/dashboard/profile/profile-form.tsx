@@ -13,6 +13,10 @@ interface UserProfile {
     department?: { name: string } | string | null;
     role?: { name: string } | null;
     avatar?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+    socialMax?: string | null;
+    birthday?: string | null;
     createdAt: string | Date;
 }
 
@@ -143,15 +147,44 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                         placeholder="+7 (999) 000-00-00"
                     />
                 </div>
-                <div className="space-y-2 opacity-80">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Отдел</label>
+                <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Telegram</label>
                     <input
+                        name="telegram"
                         type="text"
-                        value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "Без отдела")}
-                        readOnly
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-100 cursor-not-allowed outline-none font-medium text-slate-600"
+                        defaultValue={user.telegram || ""}
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
+                        placeholder="@username"
                     />
-                    <input type="hidden" name="department" value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "")} />
+                </div>
+                <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Instagram</label>
+                    <input
+                        name="instagram"
+                        type="text"
+                        defaultValue={user.instagram || ""}
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
+                        placeholder="@username"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Max</label>
+                    <input
+                        name="socialMax"
+                        type="text"
+                        defaultValue={user.socialMax || ""}
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
+                        placeholder="ID или ссылка"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Дата рождения</label>
+                    <input
+                        name="birthday"
+                        type="date"
+                        defaultValue={user.birthday || ""}
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-0 transition-all outline-none bg-slate-50/30 font-medium"
+                    />
                 </div>
                 <div className="space-y-2 opacity-60">
                     <label className="text-sm font-bold text-slate-700 ml-1">Email (только чтение)</label>
@@ -161,6 +194,16 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                         readOnly
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-100 cursor-not-allowed outline-none font-medium"
                     />
+                </div>
+                <div className="space-y-2 opacity-80">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Отдел</label>
+                    <input
+                        type="text"
+                        value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "Без отдела")}
+                        readOnly
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-100 cursor-not-allowed outline-none font-medium text-slate-600"
+                    />
+                    <input type="hidden" name="department" value={(typeof user.department === 'object' && user.department !== null) ? user.department.name : (user.department || "")} />
                 </div>
             </div>
 

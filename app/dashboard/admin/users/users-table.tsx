@@ -135,11 +135,15 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                             {initialUsers.map((user) => {
                                 const isSelected = selectedIds.includes(user.id);
                                 return (
-                                    <tr key={user.id} className={cn(
-                                        "hover:bg-gray-50 transition-colors group",
-                                        isSelected ? "bg-indigo-50/30" : ""
-                                    )}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                    <tr
+                                        key={user.id}
+                                        onClick={() => setEditingUser(user)}
+                                        className={cn(
+                                            "hover:bg-gray-50 transition-colors group cursor-pointer",
+                                            isSelected ? "bg-indigo-50/30" : ""
+                                        )}
+                                    >
+                                        <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
                                                 className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
@@ -170,7 +174,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 {user.department || "—"}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                        <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => setEditingUser(user)}

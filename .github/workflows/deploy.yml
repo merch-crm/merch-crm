@@ -6,7 +6,29 @@ on:
       - main
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
   build-and-push:
+    needs: check
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -52,9 +74,6 @@ jobs:
           script: |
             cd ~/merch-crm
             git pull origin main
-            # Make sure we are using the remote image
-            ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-            ssh-add -D
             docker compose pull
             docker compose up -d
             docker system prune -f

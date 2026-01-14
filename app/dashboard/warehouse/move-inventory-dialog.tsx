@@ -18,13 +18,16 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState("");
     const [selectedItemId, setSelectedItemId] = useState("");
-    const [fromLocationId, setFromLocationId] = useState("");
+    const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
+    const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
 
-
-
-    // If item is selected and has a default location, set it
-    // Note: With new schema, we'd need to fetch stocks. For now, using legacy logic as starting point or fetch logic.
-    // Assuming items have 'storageLocationId' or we need to select source warehouse.
+    // Sync defaults if locations change
+    if (locations.length > 0 && !fromLocationId) {
+        setFromLocationId(locations[0].id);
+        if (locations.length > 1 && !toLocationId) {
+            setToLocationId(locations[1].id);
+        }
+    }
 
     async function handleSubmit(formData: FormData) {
         const res = await moveInventoryItem(formData);
@@ -34,7 +37,9 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
             setIsOpen(false);
             setError("");
             setSelectedItemId("");
-            setFromLocationId("");
+            // Reset to defaults
+            setFromLocationId(locations[0]?.id || "");
+            setToLocationId(locations[1]?.id || locations[0]?.id || "");
         }
     }
 
@@ -103,7 +108,6 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                         value={fromLocationId}
                                         onChange={(e) => setFromLocationId(e.target.value)}
                                     >
-                                        <option value="">Склад...</option>
                                         {locations.map((loc) => (
                                             <option key={loc.id} value={loc.id}>
                                                 {loc.name}
@@ -120,8 +124,9 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                         name="toLocationId"
                                         required
                                         className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        value={toLocationId}
+                                        onChange={(e) => setToLocationId(e.target.value)}
                                     >
-                                        <option value="">Склад...</option>
                                         {locations.map((loc) => (
                                             <option key={loc.id} value={loc.id} disabled={loc.id === fromLocationId}>
                                                 {loc.name}

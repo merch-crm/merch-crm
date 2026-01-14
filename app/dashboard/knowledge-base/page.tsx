@@ -1,4 +1,4 @@
-import { Search, Book, FileText, Video, HelpCircle, ChevronRight, ShoppingCart as ShoppingCartIcon, Palette as PaletteIcon, Settings as SettingsIcon } from "lucide-react";
+import { Search, Book, FileText, HelpCircle, ChevronRight, ShoppingCart as ShoppingCartIcon, Palette as PaletteIcon, Settings as SettingsIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
