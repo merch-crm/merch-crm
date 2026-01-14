@@ -8,6 +8,12 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { orders, tasks, auditLogs } from "@/lib/schema";
 import { startOfMonth, endOfMonth } from "date-fns";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
+
+const writeFile = promisify(fs.writeFile);
+const mkdir = promisify(fs.mkdir);
 
 export async function logout() {
     (await cookies()).delete("session");
@@ -53,25 +59,20 @@ export async function updateProfile(formData: FormData) {
         const updateData: Record<string, any> = { name, phone, departmentLegacy };
 
         if (avatarFile && avatarFile.size > 0) {
-            // Check for S3 configuration (support both REG_STORAGE and S3_ prefixes)
-            const bucket = process.env.REG_STORAGE_BUCKET || process.env.S3_BUCKET;
-            const accessKey = process.env.REG_STORAGE_ACCESS_KEY || process.env.S3_ACCESS_KEY;
-            const secretKey = process.env.REG_STORAGE_SECRET_KEY || process.env.S3_SECRET_KEY;
-            const endpoint = process.env.REG_STORAGE_ENDPOINT || process.env.S3_ENDPOINT || "https://s3.reg0.rusrv.ru";
+            const buffer = Buffer.from(await avatarFile.arrayBuffer());
+            const filename = `${session.id}-${Date.now()}.jpg`;
+            const uploadDir = path.join(process.cwd(), "public/uploads/avatars");
 
-            if (!bucket || !accessKey || !secretKey) {
-                throw new Error("S3 хранилище не настроено (отсутствуют переменные окружения)");
+            // Ensure directory exists
+            if (!fs.existsSync(uploadDir)) {
+                await mkdir(uploadDir, { recursive: true });
             }
 
-            const buffer = Buffer.from(await avatarFile.arrayBuffer());
-            const filename = `avatars/${session.id}-${Date.now()}.jpg`;
+            const filePath = path.join(uploadDir, filename);
+            await writeFile(filePath, buffer);
 
-            // Upload to S3 (Reg.ru)
-            const key = await uploadFile(filename, buffer, "image/jpeg");
-
-            // Construct public URL
-            const publicUrl = `${endpoint}/${bucket}/${key}`;
-            updateData.avatar = publicUrl;
+            // Path for the browser (public is the root for static files)
+            updateData.avatar = `/uploads/avatars/${filename}`;
         }
 
         await db.update(users)
