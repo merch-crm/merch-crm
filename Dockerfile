@@ -27,6 +27,11 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Skip env validation during build
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
+ENV JWT_SECRET_KEY="super-secret-key-for-build-process-min-10-chars"
+ENV SKIP_ENV_VALIDATION="true"
+
 RUN npm run build
 
 # Production image, copy all the files and run next
