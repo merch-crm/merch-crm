@@ -7,6 +7,7 @@ import { StorageLocation } from "./storage-locations-tab";
 import { Button } from "@/components/ui/button";
 import { moveInventoryItem } from "./actions"; // Will be created
 import { useFormStatus } from "react-dom";
+import { cn } from "@/lib/utils";
 
 
 interface MoveInventoryDialogProps {
@@ -20,6 +21,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [selectedItemId, setSelectedItemId] = useState("");
     const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
     const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
+    const [commentError, setCommentError] = useState(false);
 
     // Sync defaults if locations change
     if (locations.length > 0 && !fromLocationId) {
@@ -73,7 +75,15 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </button>
                         </div>
 
-                        <form action={handleSubmit} className="space-y-6">
+                        <form action={(formData) => {
+                            const comment = formData.get("comment") as string;
+                            if (!comment || !comment.trim()) {
+                                setCommentError(true);
+                                return;
+                            }
+                            setCommentError(false);
+                            handleSubmit(formData);
+                        }} className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                     <Package className="w-3 h-3" /> Товар
@@ -149,13 +159,23 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий <span className="text-rose-500 text-[10px] align-top">*</span></label>
                                 <input
                                     name="comment"
-                                    required
                                     placeholder="Причина перемещения..."
-                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    className={cn(
+                                        "w-full h-14 px-5 rounded-2xl border text-sm font-bold focus:ring-4 outline-none transition-all",
+                                        commentError
+                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
+                                            : "border-slate-100 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500/5"
+                                    )}
+                                    onChange={() => setCommentError(false)}
                                 />
+                                {commentError && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-left-1">
+                                        Обязательно укажите причину перемещения
+                                    </p>
+                                )}
                             </div>
 
                             {error && (
