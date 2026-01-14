@@ -175,8 +175,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             <div className="flex justify-between items-center pt-5 border-t border-slate-800">
                                 <span className="text-slate-400 font-medium">Ответственный</span>
                                 <div className="flex items-center font-bold">
-                                    <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] mr-2">
-                                        {order.creator?.name?.[0]}
+                                    <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] mr-2 overflow-hidden">
+                                        {order.creator?.avatar ? (
+                                            <img src={order.creator.avatar} alt={order.creator.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            order.creator?.name?.[0]
+                                        )}
                                     </div>
                                     {order.creator?.name}
                                 </div>

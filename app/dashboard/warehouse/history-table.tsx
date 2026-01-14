@@ -183,9 +183,9 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                                         {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
                                                     </div>
                                                 </div>
-                                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0 relative">
+                                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
                                                     {t.creator?.avatar ? (
-                                                        <Image src={t.creator.avatar} alt={t.creator.name} fill className="object-cover" />
+                                                        <img src={t.creator.avatar} alt={t.creator.name} className="w-full h-full object-cover" />
                                                     ) : (
                                                         <User className="w-4 h-4" />
                                                     )}

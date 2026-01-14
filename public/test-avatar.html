@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Avatar Test</title>
+</head>
+<body>
+    <h1>Avatar Display Test</h1>
+    
+    <h2>Direct Image Tag:</h2>
+    <img src="/uploads/avatars/11db5637-0679-4151-b5e4-6def81914834-1768358139845.jpg" 
+         alt="Avatar" 
+         style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
+    
+    <h2>Next.js Image (unoptimized):</h2>
+    <img src="/uploads/avatars/11db5637-0679-4151-b5e4-6def81914834-1768358139845.jpg" 
+         alt="Avatar Unoptimized" 
+         width="200" 
+         height="200"
+         style="object-fit: cover; border-radius: 50%;">
+    
+    <h2>Background Image:</h2>
+    <div style="width: 200px; height: 200px; border-radius: 50%; background-image: url('/uploads/avatars/11db5637-0679-4151-b5e4-6def81914834-1768358139845.jpg'); background-size: cover; background-position: center;"></div>
+    
+    <script>
+        console.log('Test page loaded');
+        const img = new Image();
+        img.onload = () => console.log('✅ Avatar loaded successfully');
+        img.onerror = () => console.error('❌ Avatar failed to load');
+        img.src = '/uploads/avatars/11db5637-0679-4151-b5e4-6def81914834-1768358139845.jpg';
+    </script>
+</body>
+</html>
