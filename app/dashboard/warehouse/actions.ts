@@ -289,7 +289,8 @@ export async function getInventoryHistory() {
                     with: {
                         role: true
                     }
-                }
+                },
+                storageLocation: true
             },
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 50

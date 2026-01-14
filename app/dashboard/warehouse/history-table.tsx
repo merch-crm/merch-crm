@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { Package, ArrowUpRight, ArrowDownLeft, User, Clock, Info } from "lucide-react";
+import { Package, ArrowUpRight, ArrowDownLeft, User, Clock, Info, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -24,6 +24,9 @@ export interface Transaction {
             name: string;
         } | null;
     };
+    storageLocation: {
+        name: string;
+    } | null;
     creator: {
         name: string;
         avatar: string | null;
@@ -157,13 +160,33 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            {t.item.storageLocation ? (
-                                                <Badge variant="outline" className="text-xs font-medium text-slate-600 bg-slate-50 border-slate-200">
-                                                    {t.item.storageLocation.name}
-                                                </Badge>
-                                            ) : (
-                                                <span className="text-xs text-slate-400">-</span>
-                                            )}
+                                            {(() => {
+                                                const transferMatch = t.reason?.match(/Перемещение со склада "(.+)" на "(.+)"/);
+                                                if (transferMatch) {
+                                                    return (
+                                                        <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                                                            <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border border-slate-100 max-w-[100px]" title={transferMatch[1]}>
+                                                                <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
+                                                                <span className="font-medium truncate">{transferMatch[1]}</span>
+                                                            </div>
+                                                            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                                            <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border border-slate-100 max-w-[100px]" title={transferMatch[2]}>
+                                                                <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
+                                                                <span className="font-medium truncate">{transferMatch[2]}</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                return t.storageLocation ? (
+                                                    <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 w-fit">
+                                                        <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                                                        <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">-</span>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
                                             <Badge className={cn(
