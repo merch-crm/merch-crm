@@ -258,7 +258,7 @@ export default async function FinancePage({
                 <FinanceDateFilter />
             </div>
 
-            <div key={activeTab}>
+            <div>
                 {activeTab === 'sales' ? (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
