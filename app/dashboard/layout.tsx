@@ -32,6 +32,7 @@ export default async function DashboardLayout({
     const user = {
         name: userData.name,
         email: userData.email,
+        avatar: userData.avatar,
         roleName: userData.role?.name || "Пользователь",
         departmentName: userData.department?.name || ""
     };

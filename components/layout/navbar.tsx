@@ -41,7 +41,7 @@ const navigation = [
 
 import { UserNav } from "./user-nav";
 
-export function Navbar({ user }: { user: { name: string, email: string, roleName: string, departmentName: string } }) {
+export function Navbar({ user }: { user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null } }) {
     const pathname = usePathname();
 
     const filteredNavigation = navigation.filter(item => {

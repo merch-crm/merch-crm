@@ -56,6 +56,12 @@ export default async function ProfilePage() {
                         <span className="text-slate-400 font-medium">{user.department?.name || user.departmentLegacy || "Без отдела"}</span>
                     </div>
                 </div>
+
+                {user.avatar && (
+                    <div className="relative z-10 h-20 w-20 rounded-full overflow-hidden border-4 border-slate-50 shadow-sm hidden sm:block">
+                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    </div>
+                )}
             </div>
 
             <ProfileClient

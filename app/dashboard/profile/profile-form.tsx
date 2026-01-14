@@ -99,6 +99,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                                 src={avatarPreview}
                                 alt="Avatar"
                                 fill
+                                unoptimized
                                 className="object-cover"
                             />
                         ) : (

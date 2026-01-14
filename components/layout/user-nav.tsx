@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { RoleBadge } from "@/components/ui/role-badge";
 
-export function UserNav({ user }: { user: { name: string, email: string, roleName: string, departmentName: string } }) {
+export function UserNav({ user }: { user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null } }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -30,8 +30,12 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-3 p-1 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none"
             >
-                <div className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
-                    <User className="h-5 w-5" />
+                <div className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200 overflow-hidden shrink-0">
+                    {user.avatar ? (
+                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                        <User className="h-5 w-5" />
+                    )}
                 </div>
                 <div className="hidden lg:block text-left">
                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
@@ -44,8 +48,12 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                 <div className="absolute right-0 mt-2 w-72 origin-top-right rounded-lg bg-white shadow-2xl ring-1 ring-black/5 focus:outline-none z-[100] animate-in fade-in zoom-in-95 duration-100 overflow-hidden">
                     {/* Header */}
                     <div className="p-5 flex items-center gap-4 border-b border-slate-50 bg-white text-left">
-                        <div className="h-14 w-14 rounded-full bg-slate-500/10 flex items-center justify-center text-slate-500 shrink-0">
-                            <User className="h-7 w-7" />
+                        <div className="h-14 w-14 rounded-full bg-slate-500/10 flex items-center justify-center text-slate-500 shrink-0 overflow-hidden">
+                            {user.avatar ? (
+                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <User className="h-7 w-7" />
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 items-start overflow-hidden">
                             <span className="text-lg font-bold text-slate-900 leading-tight truncate w-full">{user.name}</span>
