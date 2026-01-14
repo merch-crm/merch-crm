@@ -167,15 +167,14 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
                                             <Badge className={cn(
-                                                "px-3 py-1 font-black text-xs border-none",
-                                                isIn ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
+                                                "px-3 py-1 font-black text-xs border-none shadow-none",
+                                                isIn ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-50" : "bg-rose-50 text-rose-600 hover:bg-rose-50"
                                             )}>
                                                 {isIn ? "+" : "-"}{amount} {t.item.unit}
                                             </Badge>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-start gap-2">
-                                                <Info className="w-3.5 h-3.5 text-slate-300 mt-0.5 shrink-0" />
                                                 <span className="text-sm font-medium text-slate-500 leading-snug">
                                                     {t.reason || "Без описания"}
                                                 </span>
