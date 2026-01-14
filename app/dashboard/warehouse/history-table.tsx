@@ -199,7 +199,14 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                         <td className="px-6 py-4">
                                             <div className="flex items-start gap-2">
                                                 <span className="text-sm font-medium text-slate-500 leading-snug">
-                                                    {t.reason || "Без описания"}
+                                                    {(() => {
+                                                        const transferMatch = t.reason?.match(/Перемещение со склада "(.+)" на "(.+)"(: (.+))?/);
+                                                        if (transferMatch) {
+                                                            // If there is a comment (group 4), show it. Otherwise just "Перемещение"
+                                                            return transferMatch[4] || "Перемещение";
+                                                        }
+                                                        return t.reason || "Без описания";
+                                                    })()}
                                                 </span>
                                             </div>
                                         </td>

@@ -152,6 +152,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий</label>
                                 <input
                                     name="comment"
+                                    required
                                     placeholder="Причина перемещения..."
                                     className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
                                 />
