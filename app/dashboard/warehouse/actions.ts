@@ -638,6 +638,17 @@ export async function moveInventoryItem(formData: FormData) {
 
     try {
         await db.transaction(async (tx) => {
+            // Fetch location names for logging
+            const [fromLocation] = await tx.select({ name: storageLocations.name }).from(storageLocations).where(eq(storageLocations.id, fromLocationId));
+            const [toLocation] = await tx.select({ name: storageLocations.name }).from(storageLocations).where(eq(storageLocations.id, toLocationId));
+
+            if (!fromLocation || !toLocation) {
+                throw new Error("One or both locations not found");
+            }
+
+            const fromName = fromLocation.name;
+            const toName = toLocation.name;
+            const logMessage = `Перемещение со склада "${fromName}" на "${toName}"${comment ? `: ${comment}` : ""}`;
             // 1. Get/Init Source Stock
             let sourceStock = await tx.query.inventoryStocks.findFirst({
                 where: and(
@@ -712,7 +723,7 @@ export async function moveInventoryItem(formData: FormData) {
                 itemId,
                 changeAmount: -quantity,
                 type: "out",
-                reason: `Перемещение (Transfer) на склад ${toLocationId}: ${comment || ''}`,
+                reason: logMessage,
                 createdBy: session.id
             });
 
@@ -720,7 +731,7 @@ export async function moveInventoryItem(formData: FormData) {
                 itemId,
                 changeAmount: quantity,
                 type: "in",
-                reason: `Перемещение (Transfer) со склада ${fromLocationId}: ${comment || ''}`,
+                reason: logMessage,
                 createdBy: session.id
             });
         });
