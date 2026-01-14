@@ -21,9 +21,10 @@ interface OrdersTableProps {
     orders: Order[];
     error?: string;
     isAdmin: boolean;
+    showFinancials?: boolean;
 }
 
-export function OrdersTable({ orders, error, isAdmin }: OrdersTableProps) {
+export function OrdersTable({ orders, error, isAdmin, showFinancials }: OrdersTableProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     const isAllSelected = orders.length > 0 && orders.every(o => selectedIds.includes(o.id));
@@ -61,7 +62,9 @@ export function OrdersTable({ orders, error, isAdmin }: OrdersTableProps) {
                         </th>
                         <th className="w-[140px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">ID / Дата</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Клиент</th>
-                        <th className="w-[120px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Сумма</th>
+                        {showFinancials && (
+                            <th className="w-[120px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Сумма</th>
+                        )}
                         <th className="w-[140px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Статус</th>
                         <th className="w-[120px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Приоритет</th>
                         <th className="w-[100px] px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
@@ -86,9 +89,11 @@ export function OrdersTable({ orders, error, isAdmin }: OrdersTableProps) {
                                 <div className="text-sm font-medium text-slate-900">{order.client.name}</div>
                                 <div className="text-xs text-slate-500">Создал: {order.creator?.name}</div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
-                                {order.totalAmount} ₽
-                            </td>
+                            {showFinancials && (
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
+                                    {order.totalAmount} ₽
+                                </td>
+                            )}
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <StatusBadge status={order.status} />
                             </td>

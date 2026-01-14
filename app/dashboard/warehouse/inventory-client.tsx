@@ -117,6 +117,7 @@ const getCategoryIcon = (category: Partial<Category>) => {
         "Зип-худи": Zap,
         "Штаны": Package,
         "Поло": Shirt,
+        "Кепки": Box,
         "Упаковка": Box,
         "Расходники": Scissors,
     };
@@ -177,6 +178,12 @@ function CategoryCard({
         }
     };
 
+    const SYSTEM_CATEGORIES = [
+        "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
+        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники"
+    ];
+    const isSystem = SYSTEM_CATEGORIES.includes(category.name);
+
     return (
         <div
             onClick={() => {
@@ -220,12 +227,14 @@ function CategoryCard({
                         >
                             <Pencil className="w-4 h-4" />
                         </button>
-                        <button
-                            onClick={handleDelete}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        {!isSystem && (
+                            <button
+                                onClick={handleDelete}
+                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

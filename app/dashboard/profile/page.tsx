@@ -1,5 +1,5 @@
 import { getUserProfile, getUserActivities } from "./actions";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { ProfileClient } from "./profile-client";
 import {
@@ -63,11 +63,14 @@ export default async function ProfilePage() {
 
     const activities = (groupedLogs || []).slice(0, 5).map((log, index) => {
         const style = getActivityStyle(log.action);
+        const exactTime = format(new Date(log.createdAt), "HH:mm");
+        const relativeTime = formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: ru });
+
         return {
             id: index,
             type: "log",
             text: log.action,
-            time: formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: ru }),
+            time: `${exactTime} (${relativeTime})`,
             iconName: style.iconName,
             color: style.color
         };

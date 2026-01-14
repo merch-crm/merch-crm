@@ -30,7 +30,7 @@ interface Client {
     lastOrderDate: string | null;
 }
 
-export function ClientsTable({ userRoleName }: { userRoleName?: string | null }) {
+export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: string | null, showFinancials?: boolean }) {
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -283,12 +283,14 @@ export function ClientsTable({ userRoleName }: { userRoleName?: string | null })
                                         <ChevronDown className={`h-3 w-3 ${sortBy === "order_count" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
                                     </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("revenue")}>
-                                    <div className="flex items-center gap-1">
-                                        Сумма покупок
-                                        <ChevronDown className={`h-3 w-3 ${sortBy === "revenue" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
-                                    </div>
-                                </th>
+                                {showFinancials && (
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("revenue")}>
+                                        <div className="flex items-center gap-1">
+                                            Сумма покупок
+                                            <ChevronDown className={`h-3 w-3 ${sortBy === "revenue" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
+                                        </div>
+                                    </th>
+                                )}
                                 <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
                             </tr>
                         </thead>
@@ -321,9 +323,11 @@ export function ClientsTable({ userRoleName }: { userRoleName?: string | null })
                                             <span className="text-xs text-slate-400 font-medium uppercase tracking-tighter">заказов</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
-                                        {Math.round(Number(client.totalSpent) || 0)} ₽
-                                    </td>
+                                    {showFinancials && (
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
+                                            {Math.round(Number(client.totalSpent) || 0)} ₽
+                                        </td>
+                                    )}
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex items-center justify-end gap-1">
                                             <button
@@ -367,25 +371,30 @@ export function ClientsTable({ userRoleName }: { userRoleName?: string | null })
                     clientId={selectedClientId || ""}
                     isOpen={!!selectedClientId}
                     onClose={() => setSelectedClientId(null)}
+                    showFinancials={showFinancials}
                 />
 
-                <EditClientDialog
-                    client={editingClient}
-                    isOpen={!!editingClient}
-                    onClose={() => {
-                        setEditingClient(null);
-                        fetchClients();
-                    }}
-                />
+                {editingClient && (
+                    <EditClientDialog
+                        client={editingClient}
+                        isOpen={!!editingClient}
+                        onClose={() => {
+                            setEditingClient(null);
+                            fetchClients();
+                        }}
+                    />
+                )}
 
-                <DeleteClientDialog
-                    client={deletingClient}
-                    isOpen={!!deletingClient}
-                    onClose={() => {
-                        setDeletingClient(null);
-                        fetchClients();
-                    }}
-                />
+                {deletingClient && (
+                    <DeleteClientDialog
+                        client={deletingClient}
+                        isOpen={!!deletingClient}
+                        onClose={() => {
+                            setDeletingClient(null);
+                            fetchClients();
+                        }}
+                    />
+                )}
             </div>
 
             {sortedAndFilteredClients.length > 0 && (

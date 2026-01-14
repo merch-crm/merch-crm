@@ -113,7 +113,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
         { id: "profile", name: "Профиль", icon: User },
         { id: "settings", name: "Настройки", icon: Settings },
         { id: "statistics", name: "Статистика", icon: BarChart3 },
-        { id: "schedule", name: "График", icon: Calendar },
+        { id: "schedule", name: "Заработная плата", icon: Calendar },
     ];
 
     return (

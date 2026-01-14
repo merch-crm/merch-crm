@@ -20,10 +20,14 @@ import { getSession } from "@/lib/auth";
 
 export default async function ClientsPage() {
     const session = await getSession();
-    const userWithRole = session ? await db.query.users.findFirst({
+    const user = session ? await db.query.users.findFirst({
         where: eq(users.id, session.id),
-        with: { role: true }
+        with: { role: true, department: true }
     }) : null;
+
+    const showFinancials =
+        user?.role?.name === "Администратор" ||
+        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
     const statsRes = await getClientStats();
     const stats = statsRes.data || {
@@ -41,6 +45,7 @@ export default async function ClientsPage() {
             iconColor: "text-blue-500",
             trend: "+12%",
             isPositive: true,
+            visible: true
         },
         {
             name: "Новых за месяц",
@@ -49,6 +54,7 @@ export default async function ClientsPage() {
             iconColor: "text-emerald-500",
             trend: "+8%",
             isPositive: true,
+            visible: true
         },
         {
             name: "Средний чек",
@@ -57,6 +63,7 @@ export default async function ClientsPage() {
             iconColor: "text-slate-400",
             trend: "-2%",
             isPositive: false,
+            visible: showFinancials
         },
         {
             name: "Общая выручка",
@@ -65,8 +72,9 @@ export default async function ClientsPage() {
             iconColor: "text-blue-500",
             trend: "+18%",
             isPositive: true,
+            visible: showFinancials
         },
-    ];
+    ].filter(card => card.visible);
 
     return (
         <div className="space-y-6">
@@ -91,7 +99,7 @@ export default async function ClientsPage() {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-4`}>
                     {statCards.map((item) => (
                         <Card key={item.name} className="p-4 border border-slate-100 shadow-sm rounded-xl bg-white flex flex-col justify-between h-32 hover:shadow-md transition-shadow">
                             <div className="flex justify-between items-start">
@@ -111,7 +119,7 @@ export default async function ClientsPage() {
                     ))}
                 </div>
 
-                <ClientsTable userPermissions={userWithRole?.role?.permissions} userRoleName={userWithRole?.role?.name} />
+                <ClientsTable userRoleName={user?.role?.name} showFinancials={showFinancials} />
             </div>
         </div>
     );

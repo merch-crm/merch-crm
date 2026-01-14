@@ -11,10 +11,11 @@ interface OrderStatsProps {
         inProduction: number;
         completed: number;
         revenue: number;
-    }
+    };
+    showFinancials?: boolean;
 }
 
-export function OrderStats({ stats }: OrderStatsProps) {
+export function OrderStats({ stats, showFinancials }: OrderStatsProps) {
     const cards = [
         {
             label: "Всего заказов",
@@ -22,6 +23,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
             icon: FileText,
             color: "text-blue-500",
             bgColor: "bg-blue-50",
+            visible: true,
         },
         {
             label: "Новые заказы",
@@ -29,6 +31,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
             icon: PlusCircle,
             color: "text-indigo-500",
             bgColor: "bg-indigo-50",
+            visible: true,
         },
         {
             label: "В производстве",
@@ -36,6 +39,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
             icon: Settings,
             color: "text-orange-500",
             bgColor: "bg-orange-50",
+            visible: true,
         },
         {
             label: "Завершено",
@@ -43,6 +47,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
             icon: CheckCircle2,
             color: "text-emerald-500",
             bgColor: "bg-emerald-50",
+            visible: true,
         },
         {
             label: "Общая выручка",
@@ -50,11 +55,12 @@ export function OrderStats({ stats }: OrderStatsProps) {
             icon: Rouble,
             color: "text-violet-500",
             bgColor: "bg-violet-50",
+            visible: showFinancials,
         },
-    ];
+    ].filter(card => card.visible);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <div className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-${cards.length} gap-4 mb-8`}>
             {cards.map((card, idx) => (
                 <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                     <div>

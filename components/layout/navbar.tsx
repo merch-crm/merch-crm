@@ -3,20 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-    LayoutDashboard,
     ShoppingCart,
     Users,
     Palette,
     Settings,
     Bell,
     Printer,
-    CheckSquare
+    CheckSquare,
+    BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
-    { name: "Главная", href: "/dashboard", icon: LayoutDashboard },
     { name: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
     {
         name: "Клиенты",
@@ -32,11 +31,12 @@ const navigation = [
         departments: ["Руководство", "Производство"]
     },
     {
-        name: "Дизайн-студия",
+        name: "Дизайн",
         href: "/dashboard/design",
         icon: Palette,
         departments: ["Руководство", "Дизайн"]
     },
+    { name: "База знаний", href: "/dashboard/knowledge-base", icon: BookOpen },
 ];
 
 import { UserNav } from "./user-nav";
@@ -54,7 +54,7 @@ export function Navbar({ user }: { user: { name: string, email: string, roleName
             <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center">
                     {/* Left: Logo */}
-                    <div className="flex-1 flex items-center">
+                    <div className="flex items-center">
                         <Link href="/dashboard" className="flex items-center gap-2">
                             <div className="bg-indigo-600 rounded-full p-1.5 shadow-sm shadow-indigo-100">
                                 <Printer className="h-5 w-5 text-white" />
@@ -63,8 +63,10 @@ export function Navbar({ user }: { user: { name: string, email: string, roleName
                         </Link>
                     </div>
 
+                    <div className="flex-1" />
+
                     {/* Center: Nav Links */}
-                    <nav className="hidden md:flex items-center justify-center gap-2">
+                    <nav className="hidden md:flex items-center gap-2">
                         {filteredNavigation.map((item) => {
                             const isActive = item.href === "/dashboard"
                                 ? pathname === "/dashboard"
@@ -87,8 +89,10 @@ export function Navbar({ user }: { user: { name: string, email: string, roleName
                         })}
                     </nav>
 
+                    <div className="flex-1" />
+
                     {/* Right Side: Notifications & Profile */}
-                    <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
+                    <div className="flex items-center justify-end gap-2 md:gap-4">
                         <Button variant="ghost" size="icon" className="relative text-slate-400 hover:text-indigo-600 transition-colors rounded-full">
                             <Bell className="h-5 w-5" />
                             <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />

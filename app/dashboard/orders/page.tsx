@@ -6,6 +6,9 @@ import { getOrders, getOrderStats } from "./actions";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 import { Pagination } from "@/components/ui/pagination";
 import { getSession } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { users } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -43,6 +46,16 @@ export default async function OrdersPage({
     const { data: allOrdersResponse = [], total = 0, error } = await getOrders(from, to, page) as { data: Order[], total?: number, error?: string };
     const allOrders = allOrdersResponse;
 
+    const session = await getSession();
+    const user = session ? await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true, department: true }
+    }) : null;
+
+    const showFinancials =
+        user?.role?.name === "Администратор" ||
+        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
+
     const stats = await getOrderStats(from, to);
 
     return (
@@ -59,12 +72,13 @@ export default async function OrdersPage({
                 <CreateOrderDialog />
             </div>
 
-            <OrderStats stats={stats} />
+            <OrderStats stats={stats} showFinancials={showFinancials} />
 
             <OrdersTable
                 orders={allOrders}
                 error={error}
-                isAdmin={(await getSession())?.roleName === "administrator"}
+                isAdmin={user?.role?.name === "Администратор"}
+                showFinancials={showFinancials}
             />
 
             <Pagination

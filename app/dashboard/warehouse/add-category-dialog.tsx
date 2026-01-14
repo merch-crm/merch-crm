@@ -117,6 +117,9 @@ export function AddCategoryDialog() {
                                             className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white uppercase"
                                             onInput={(e) => {
                                                 const val = e.currentTarget.value;
+                                                if (/[а-яА-ЯёЁ]/.test(val)) {
+                                                    alert("Используйте только латиницу, цифры 0-9 и символ «-»");
+                                                }
                                                 e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
                                             }}
                                         />

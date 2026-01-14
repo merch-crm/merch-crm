@@ -117,20 +117,20 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                     <button
                         onClick={() => router.back()}
-                        className="w-14 h-14 rounded-[20px] bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all shadow-sm active:scale-95 shrink-0"
+                        className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 shadow-sm hover:shadow-md transition-all active:scale-95 shrink-0"
                     >
-                        <ArrowLeft className="w-6 h-6" />
+                        <ArrowLeft className="w-5 h-5" />
                     </button>
 
                     <div className="flex items-center gap-3">
-                        <div className="h-14 px-6 bg-white rounded-[20px] border border-slate-200 shadow-sm flex items-center justify-center min-w-[120px]">
-                            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{category.name}</h1>
+                        <div className="h-12 px-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
+                            <h1 className="text-lg font-black text-slate-900 tracking-tight">{category.name}</h1>
                         </div>
 
-                        <div className="h-14 px-5 bg-indigo-50 rounded-[20px] flex items-center justify-center text-indigo-600 font-black shadow-sm shrink-0 whitespace-nowrap">
+                        <div className="h-12 px-5 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-[11px] font-black uppercase tracking-widest shadow-sm border border-indigo-100/50 shrink-0 whitespace-nowrap">
                             {items.length} позиций
                         </div>
                     </div>
@@ -138,22 +138,21 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
 
                 <div className="flex items-center gap-3">
                     {selectedIds.length > 0 && (
-                        <div className="flex items-center gap-2 mr-2 animate-in fade-in zoom-in duration-300">
-                            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Выбрано: {selectedIds.length}</span>
+                        <div className="flex items-center gap-2 px-2 py-1 bg-white rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-right-4 duration-500">
+                            <span className="px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Выбрано: {selectedIds.length}</span>
                             <Button
                                 variant="ghost"
                                 disabled={isDeleting}
                                 onClick={() => handleDelete(selectedIds)}
-                                className="h-10 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl px-4 gap-2 font-bold transition-all"
+                                className="h-10 w-10 p-0 text-rose-500 hover:text-white hover:bg-rose-500 rounded-xl transition-all"
                             >
                                 <Trash2 className="w-4 h-4" />
-                                {isDeleting ? "Удаление..." : "Удалить"}
                             </Button>
                         </div>
                     )}
                     <Button
                         onClick={() => setIsAddOpen(true)}
-                        className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
+                        className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95"
                     >
                         <Plus className="w-5 h-5" />
                         Добавить позицию
@@ -441,13 +440,25 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
     const [sizeCode, setSizeCode] = useState("");
 
     // SKU Sanitizer: Only A-Z, 0-9, and dashes allowed
-    const sanitizeSku = (val: string) => val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+    const sanitizeSku = (val: string) => {
+        if (/[\u0400-\u04FF]/.test(val)) {
+            if (typeof window !== 'undefined') {
+                window.alert("Используйте только латиницу, цифры 0-9 и символ «-»");
+            }
+        }
+        return val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+    };
 
     const skuPreview = category.prefix
         ? [category.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-")
         : "";
 
     async function handleSubmit(formData: FormData) {
+        const skuValue = formData.get("sku") as string;
+        if (skuValue && /[^a-zA-Z0-9-]/.test(skuValue)) {
+            setError("Артикул может содержать только латиницу, цифры и «-»");
+            return;
+        }
         const res = await addInventoryItem(formData);
         if (res?.error) {
             setError(res.error);
@@ -591,13 +602,25 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
     const [sizeCode, setSizeCode] = useState(item.sizeCode || "");
 
     // SKU Sanitizer: Only A-Z, 0-9, and dashes allowed
-    const sanitizeSku = (val: string) => val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+    const sanitizeSku = (val: string) => {
+        if (/[\u0400-\u04FF]/.test(val)) {
+            if (typeof window !== 'undefined') {
+                window.alert("Используйте только латиницу, цифры 0-9 и символ «-»");
+            }
+        }
+        return val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+    };
 
     const skuPreview = category.prefix
         ? [category.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-")
         : "";
 
     async function handleSubmit(formData: FormData) {
+        const skuValue = formData.get("sku") as string;
+        if (skuValue && /[^a-zA-Z0-9-]/.test(skuValue)) {
+            setError("Артикул может содержать только латиницу, цифры и «-»");
+            return;
+        }
         const res = await updateInventoryItem(item.id, formData);
         if (res?.error) {
             setError(res.error);

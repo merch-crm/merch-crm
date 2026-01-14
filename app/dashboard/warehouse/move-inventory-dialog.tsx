@@ -42,11 +42,10 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                variant="outline"
-                className="h-10 rounded-xl px-4 gap-2 font-bold border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-100 bg-white"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[20px] px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 transition-all"
             >
-                <ArrowRightLeft className="w-4 h-4" />
-                Переместить
+                <ArrowRightLeft className="w-5 h-5" />
+                Переместить позиции
             </Button>
 
             {isOpen && (

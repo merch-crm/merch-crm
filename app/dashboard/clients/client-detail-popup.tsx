@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusBadge from "../orders/status-badge";
 
-export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: string, isOpen: boolean, onClose: () => void }) {
+export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }: { clientId: string, isOpen: boolean, onClose: () => void, showFinancials?: boolean }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [client, setClient] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -92,12 +92,14 @@ export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: str
                                                 <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Заказов</div>
                                                 <div className="text-2xl font-black text-slate-900 leading-none">{client.stats.count}</div>
                                             </div>
-                                            <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100 min-w-[140px] text-left transition-all hover:shadow-md">
-                                                <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Сумма</div>
-                                                <div className="text-2xl font-black text-emerald-600 leading-none">
-                                                    {client.stats.total} <span className="text-lg font-bold ml-0.5">₽</span>
+                                            {showFinancials && (
+                                                <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100 min-w-[140px] text-left transition-all hover:shadow-md">
+                                                    <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Сумма</div>
+                                                    <div className="text-2xl font-black text-emerald-600 leading-none">
+                                                        {client.stats.total} <span className="text-lg font-bold ml-0.5">₽</span>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -192,7 +194,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose }: { clientId: str
                                                     <div className="flex justify-between items-center">
                                                         <div>
                                                             <div className="text-sm font-bold text-slate-900">
-                                                                {order.items.length} поз. на {order.totalAmount} ₽
+                                                                {order.items.length} поз. {showFinancials && `на ${order.totalAmount} ₽`}
                                                             </div>
                                                             <div className="text-xs text-slate-400">
                                                                 {format(new Date(order.createdAt), "dd MMM yyyy", { locale: ru })}

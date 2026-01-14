@@ -7,6 +7,10 @@ import PrioritySelect from "./priority-select";
 import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
+import { db } from "@/lib/db";
+import { users } from "@/lib/schema";
+import { eq } from "drizzle-orm";
+import { getSession } from "@/lib/auth";
 
 interface OrderItem {
     id: string;
@@ -22,6 +26,16 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     if (error || !order) {
         notFound();
     }
+
+    const session = await getSession();
+    const user = session ? await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true, department: true }
+    }) : null;
+
+    const showFinancials =
+        user?.role?.name === "Администратор" ||
+        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
     return (
         <div className="space-y-6">
@@ -69,8 +83,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <tr>
                                     <th className="px-8 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Наименование</th>
                                     <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Кол-во</th>
-                                    <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Цена</th>
-                                    <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Сумма</th>
+                                    {showFinancials && (
+                                        <>
+                                            <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Цена</th>
+                                            <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Сумма</th>
+                                        </>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 bg-white">
@@ -78,17 +96,23 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                     <tr key={item.id} className="text-sm hover:bg-slate-50/50 transition-colors">
                                         <td className="px-8 py-5 text-slate-900 font-semibold">{item.description}</td>
                                         <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.quantity} шт</td>
-                                        <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} ₽</td>
-                                        <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} ₽</td>
+                                        {showFinancials && (
+                                            <>
+                                                <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} ₽</td>
+                                                <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} ₽</td>
+                                            </>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
-                            <tfoot className="bg-slate-50/80">
-                                <tr>
-                                    <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500 uppercase tracking-wider">Итого к оплате:</td>
-                                    <td className="px-8 py-6 text-right text-2xl text-indigo-600 font-black">{order.totalAmount} ₽</td>
-                                </tr>
-                            </tfoot>
+                            {showFinancials && (
+                                <tfoot className="bg-slate-50/80">
+                                    <tr>
+                                        <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500 uppercase tracking-wider">Итого к оплате:</td>
+                                        <td className="px-8 py-6 text-right text-2xl text-indigo-600 font-black">{order.totalAmount} ₽</td>
+                                    </tr>
+                                </tfoot>
+                            )}
                         </table>
                     </div>
 

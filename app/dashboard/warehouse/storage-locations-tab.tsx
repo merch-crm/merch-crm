@@ -65,10 +65,16 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         );
     }
 
+    const sortedLocations = [...locations].sort((a, b) => {
+        if (a.name.toLowerCase() === "производство") return -1;
+        if (b.name.toLowerCase() === "производство") return 1;
+        return 0;
+    });
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {locations.map((loc) => {
+                {sortedLocations.map((loc) => {
                     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
                     const isBrak = loc.name.toLowerCase().includes("брак");
                     const isMain = loc.name.toLowerCase().includes("главный") || loc.name.toLowerCase().includes("основной");

@@ -11,7 +11,7 @@ export default async function WarehousePage() {
 
     const desiredOrder = [
         "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
-        "Зип-худи", "Штаны", "Поло", "Упаковка", "Расходники"
+        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники"
     ];
 
     const categories = [...categoriesFromDb].sort((a, b) => {
