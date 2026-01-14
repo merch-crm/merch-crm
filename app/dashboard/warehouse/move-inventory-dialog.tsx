@@ -22,6 +22,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
     const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
     const [quantity, setQuantity] = useState("");
+    const [comment, setComment] = useState("");
     const [commentError, setCommentError] = useState(false);
 
     // Sync defaults if locations change
@@ -41,6 +42,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
             setError("");
             setSelectedItemId("");
             setQuantity("");
+            setComment("");
             // Reset to defaults
             setFromLocationId(locations[0]?.id || "");
             setToLocationId(locations[1]?.id || locations[0]?.id || "");
@@ -51,7 +53,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[20px] px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 transition-all"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 transition-all"
             >
                 <ArrowRightLeft className="w-5 h-5" />
                 Переместить позиции
@@ -173,7 +175,11 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
                                             : "border-slate-100 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500/5"
                                     )}
-                                    onChange={() => setCommentError(false)}
+                                    value={comment}
+                                    onChange={(e) => {
+                                        setComment(e.target.value);
+                                        setCommentError(false);
+                                    }}
                                 />
                                 {commentError && (
                                     <p className="absolute -bottom-5 left-1 text-[10px] font-bold text-rose-500 animate-in slide-in-from-top-1 fade-in duration-200">
