@@ -19,4 +19,5 @@ if (!result.success) {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const env = result.success ? result.data : process.env as any;

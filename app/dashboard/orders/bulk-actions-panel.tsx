@@ -10,11 +10,9 @@ import {
     Settings2,
     Truck,
     Zap,
-    Circle,
     ChevronDown,
     Printer,
     FileDown,
-    UserPlus,
     Clock,
     LucideIcon
 } from "lucide-react";

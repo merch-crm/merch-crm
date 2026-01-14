@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Mail, Phone, MapPin, ShoppingBag, Send, Instagram, Trash2, AlertTriangle, Pencil, Check, Save } from "lucide-react";
+import { X, Mail, Phone, MapPin, ShoppingBag, Send, Instagram, Trash2, AlertTriangle, Pencil, Check } from "lucide-react";
 import { getClientDetails, deleteClient, updateClientComments } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import StatusBadge from "../orders/status-badge";
 import StatusBadgeInteractive from "../orders/status-badge-interactive";
 import { EditClientDialog } from "./edit-client-dialog";
 import { Pagination } from "@/components/ui/pagination";

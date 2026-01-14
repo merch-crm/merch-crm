@@ -1,6 +1,7 @@
 "use client";
 
 import { StorageLocation } from "./storage-locations-tab";
+import { InventoryItem } from "./inventory-client";
 
 import { useState } from "react";
 import { Plus, X, MapPin, User, Building, Package, AlignLeft, ChevronLeft, ChevronRight } from "lucide-react";
@@ -21,7 +22,7 @@ const ITEMS_PER_PAGE = 7;
 export function EditStorageLocationDialog({ users, location, isOpen, onClose }: EditStorageLocationDialogProps) {
     const [error, setError] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
     async function handleSubmit(formData: FormData) {
         if (!location) return;

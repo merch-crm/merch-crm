@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { Card } from "@/components/ui/card";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { cn } from "@/lib/utils";
 import { getDashboardStatsByPeriod } from "./actions";
 
@@ -32,23 +31,15 @@ interface DashboardClientProps {
     userName: string;
 }
 
-const periods = [
-    { label: "Сегодня", value: "today" },
-    { label: "Эта неделя", value: "week" },
-    { label: "Этот месяц", value: "month" },
-    { label: "Квартал", value: "quarter" },
-    { label: "Весь период", value: "all" },
-];
 
 export function DashboardClient({ initialStats, period, userName }: DashboardClientProps) {
     const [statsData, setStatsData] = useState<DashboardStats>(initialStats);
-    const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
     useEffect(() => {
         const fetchStats = async () => {
             const data = await getDashboardStatsByPeriod(period);
             setStatsData(data);
-            setLastUpdated(new Date());
+            setStatsData(data);
         };
 
         const interval = setInterval(fetchStats, 15000);

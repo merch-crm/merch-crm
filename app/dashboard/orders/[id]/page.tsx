@@ -201,6 +201,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <div className="flex items-center font-bold">
                                     <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] mr-2 overflow-hidden">
                                         {order.creator?.avatar ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
                                             <img src={order.creator.avatar} alt={order.creator.name} className="w-full h-full object-cover" />
                                         ) : (
                                             order.creator?.name?.[0]

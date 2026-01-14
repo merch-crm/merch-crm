@@ -50,6 +50,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
         setCurrentStatus(newId);
         setIsOpen(false);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await updateOrderStatus(orderId, newId as any);
         if (res.error) {
             setCurrentStatus(prevStatus);

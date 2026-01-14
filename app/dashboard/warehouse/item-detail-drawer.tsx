@@ -7,17 +7,8 @@ import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { getItemHistory, getItemStocks } from "./actions";
+import { InventoryItem } from "./inventory-client";
 
-interface InventoryItem {
-    id: string;
-    name: string;
-    sku: string | null;
-    quantity: number;
-    unit: string;
-    lowStockThreshold: number;
-    description: string | null;
-    location: string | null;
-}
 
 // Local types for this component's data requirements
 interface ItemHistoryTransaction {

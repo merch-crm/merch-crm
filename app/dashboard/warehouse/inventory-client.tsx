@@ -15,6 +15,7 @@ export interface InventoryItem {
     lowStockThreshold: number;
     categoryId: string | null;
     description?: string | null;
+    location?: string | null;
 }
 
 export interface Category {
