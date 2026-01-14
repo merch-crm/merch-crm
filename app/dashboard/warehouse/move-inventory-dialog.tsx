@@ -158,7 +158,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                 />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 relative">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий <span className="text-rose-500 text-[10px] align-top">*</span></label>
                                 <input
                                     name="comment"
@@ -172,7 +172,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     onChange={() => setCommentError(false)}
                                 />
                                 {commentError && (
-                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-left-1">
+                                    <p className="absolute -bottom-5 left-1 text-[10px] font-bold text-rose-500 animate-in slide-in-from-top-1 fade-in duration-200">
                                         Обязательно укажите причину перемещения
                                     </p>
                                 )}
