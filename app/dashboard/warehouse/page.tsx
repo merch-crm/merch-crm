@@ -1,4 +1,5 @@
 import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers, seedStorageLocations } from "./actions";
+// Auto-deploy trigger v1.0
 import { WarehouseClient } from "./warehouse-client";
 
 export default async function WarehousePage() {
