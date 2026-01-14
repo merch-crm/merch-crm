@@ -261,22 +261,21 @@ export default async function FinancePage({
             <div key={activeTab}>
                 {activeTab === 'sales' ? (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
                             {statsCards.map((card, i) => (
-                                <div key={i} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                    <div className={`absolute top-0 right-0 w-32 h-32 ${card.bgCard} rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110`} />
+                                <div key={i} className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                    <div className={`absolute top-0 right-0 w-24 h-24 ${card.bgCard} rounded-bl-[3rem] -mr-8 -mt-8 transition-transform group-hover:scale-110`} />
                                     <div className="relative">
-                                        <div className={`w-12 h-12 rounded-2xl ${card.bgIcon} flex items-center justify-center ${card.color} mb-6 font-bold shadow-inner`}>
-                                            <card.icon className="w-6 h-6" />
+                                        <div className={`w-10 h-10 rounded-xl ${card.bgIcon} flex items-center justify-center ${card.color} mb-4 font-bold shadow-inner`}>
+                                            <card.icon className="w-5 h-5" />
                                         </div>
-                                        <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">{card.label}</div>
-                                        <div className="text-4xl font-black text-slate-900 tracking-tight">
-                                            {card.value} <span className="text-lg">{card.suffix}</span>
+                                        <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2 truncate" title={card.label}>{card.label}</div>
+                                        <div className="text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">
+                                            {card.value} <span className="text-sm text-slate-500">{card.suffix}</span>
                                         </div>
-                                        <div className={`flex items-center gap-1 mt-4 ${card.trendColor} font-bold text-sm`}>
-                                            <card.trendIcon className="w-4 h-4" />
+                                        <div className={`flex items-center gap-1 mt-3 ${card.trendColor} font-bold text-xs`}>
+                                            <card.trendIcon className="w-3 h-3" />
                                             <span>{card.trend}</span>
-                                            <span className="text-slate-400 font-medium ml-1">{card.trendLabel}</span>
                                         </div>
                                     </div>
                                 </div>
