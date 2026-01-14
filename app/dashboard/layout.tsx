@@ -17,13 +17,18 @@ export default async function DashboardLayout({
 
     // Fetch full user data with role and department info
     // Fetch full user data with role and department info
-    const userData = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: {
-            role: true,
-            department: true
-        }
-    });
+    let userData = null;
+    try {
+        userData = await db.query.users.findFirst({
+            where: eq(users.id, session.id),
+            with: {
+                role: true,
+                department: true
+            }
+        });
+    } catch (error) {
+        console.error("Error loading user in layout:", error);
+    }
 
     console.log(`[DashboardLayout] User: ${userData?.email}, Avatar: ${userData?.avatar}`);
 
