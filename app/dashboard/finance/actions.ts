@@ -1,17 +1,17 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders } from "@/lib/schema";
+import { orders, users, auditLogs } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { and, gte, lte, sql } from "drizzle-orm";
+import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
 
 export async function getFinancialStats(from?: Date, to?: Date) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
-    // Проверка доступа: только Руководство, Отдел продаж или Админ
+    // Проверка доступа
     const user = await db.query.users.findFirst({
-        where: sql`${orders.creatorId} = ${session.id}`, // Это просто для получения инфо о юзере через сессию
+        where: eq(users.id, session.id),
         with: {
             role: true,
             department: true

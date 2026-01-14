@@ -69,22 +69,22 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <MoveInventoryDialog items={items} locations={storageLocations} />
-
                     {activeTab === "storage" ? (
-                        <AddStorageLocationDialog users={users} />
+                        <>
+                            <MoveInventoryDialog items={items} locations={storageLocations} />
+                            <AddStorageLocationDialog users={users} />
+                        </>
                     ) : activeTab === "inventory" ? (
                         <AddCategoryDialog />
                     ) : null}
                 </div>
             </div>
 
-            <WarehouseWidgets items={items} categories={categories} history={history} />
-
             {/* Content Area */}
             <div className="relative">
                 {activeTab === "inventory" ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col gap-6">
+                        <WarehouseWidgets items={items} categories={categories} history={history} />
                         <InventoryClient items={items} categories={categories} />
                     </div>
                 ) : activeTab === "storage" ? (

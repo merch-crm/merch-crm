@@ -210,7 +210,7 @@ function CategoryCard({
                 </div>
 
                 {!isOrphaned && (
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center gap-1 transition-opacity duration-300">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();

@@ -70,7 +70,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 {locations.map((loc) => {
                     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
-                    const occupancy = Math.min(Math.round((totalItemsInLoc / 1000) * 100), 100); // Assume 1000 units capacity
                     const isBrak = loc.name.toLowerCase().includes("брак");
                     const isMain = loc.name.toLowerCase().includes("главный") || loc.name.toLowerCase().includes("основной");
 
@@ -101,7 +100,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <div className="flex items-center gap-1 transition-opacity duration-300">
                                     <button
                                         onClick={(e) => handleEdit(e, loc)}
                                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
@@ -114,23 +113,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
-                                </div>
-                            </div>
-
-                            {/* Occupancy Progress */}
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                    <span className="text-slate-400">Заполненность</span>
-                                    <span className={cn(occupancy > 90 ? "text-rose-500" : "text-slate-600")}>{occupancy}%</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100">
-                                    <div
-                                        className={cn(
-                                            "h-full rounded-full transition-all duration-1000",
-                                            occupancy > 90 ? "bg-rose-500" : occupancy > 50 ? "bg-amber-500" : "bg-indigo-500"
-                                        )}
-                                        style={{ width: `${occupancy}%` }}
-                                    />
                                 </div>
                             </div>
 
