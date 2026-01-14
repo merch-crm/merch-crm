@@ -2,9 +2,6 @@ import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStor
 import { WarehouseClient } from "./warehouse-client";
 
 export default async function WarehousePage() {
-    // Seed initial locations if they don't exist
-    await seedStorageLocations();
-
     const { data: categoriesFromDb = [] } = await getInventoryCategories();
     const { data: items = [] } = await getInventoryItems();
     const { data: history = [] } = await getInventoryHistory();
