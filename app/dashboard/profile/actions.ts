@@ -34,6 +34,8 @@ export async function getUserProfile() {
 
         if (!user) return { error: "User not found" };
 
+        console.log(`[getUserProfile] User: ${user.email}, ID: ${user.id}, Avatar: ${user.avatar}`);
+
         return { data: user };
     } catch (error) {
         console.error("Error fetching profile:", error);

@@ -25,6 +25,8 @@ export default async function DashboardLayout({
         }
     });
 
+    console.log(`[DashboardLayout] User: ${userData?.email}, Avatar: ${userData?.avatar}`);
+
     if (!userData) {
         redirect("/login");
     }
