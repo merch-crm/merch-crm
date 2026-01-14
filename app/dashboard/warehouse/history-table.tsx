@@ -200,11 +200,19 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                                             <div className="flex items-start gap-2">
                                                 <span className="text-sm font-medium text-slate-500 leading-snug">
                                                     {(() => {
-                                                        const transferMatch = t.reason?.match(/Перемещение со склада "(.+)" на "(.+)"(: (.+))?/);
-                                                        if (transferMatch) {
-                                                            // If there is a comment (group 4), show it. Otherwise just "Перемещение"
-                                                            return transferMatch[4] || "Перемещение";
+                                                        // 1. Try New Format: Перемещение со склада "A" на "B": comment
+                                                        const newMatch = t.reason?.match(/Перемещение со склада "(.+)" на "(.+)"(: (.+))?/);
+                                                        if (newMatch) {
+                                                            return newMatch[4] || "Перемещение";
                                                         }
+
+                                                        // 2. Try Legacy Format: Перемещение (Transfer) ... : comment
+                                                        const legacyMatch = t.reason?.match(/Перемещение \(Transfer\) .+?: (.+)/);
+                                                        if (legacyMatch) {
+                                                            return legacyMatch[1];
+                                                        }
+
+                                                        // 3. Fallback
                                                         return t.reason || "Без описания";
                                                     })()}
                                                 </span>
