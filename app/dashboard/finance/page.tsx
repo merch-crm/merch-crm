@@ -22,7 +22,8 @@ import {
     Layers,
     PieChart,
     Trash2,
-    Tags
+    Tags,
+    Package
 } from "lucide-react";
 import { format, startOfDay, endOfDay, subDays } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -244,6 +245,16 @@ export default async function FinancePage({
                         Зарплата
                     </Link>
                     <Link
+                        href={`?${createQueryString({ tab: 'products' })}`}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${activeTab === 'products'
+                            ? "bg-white text-slate-900 shadow-sm"
+                            : "text-slate-500 hover:text-slate-700"
+                            }`}
+                    >
+                        <Package className="w-4 h-4" />
+                        Изделия
+                    </Link>
+                    <Link
                         href={`?${createQueryString({ tab: 'funds' })}`}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${activeTab === 'funds'
                             ? "bg-white text-slate-900 shadow-sm"
@@ -378,6 +389,50 @@ export default async function FinancePage({
                                                     ))}
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ) : activeTab === 'products' ? (
+                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {categories.map((cat, i) => {
+                                const config = categoryLabels[cat.name] || categoryLabels.other;
+                                const percentage = totalRev > 0 ? (cat.revenue / totalRev) * 100 : 0;
+
+                                return (
+                                    <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                        <div className={`absolute top-0 right-0 w-32 h-32 ${config.color.replace('bg-', 'bg-')}/10 rounded-bl-[5rem] -mr-16 -mt-16 transition-transform group-hover:scale-110`} />
+                                        <div className="relative">
+                                            <div className={`w-12 h-12 rounded-2xl ${config.color.replace('bg-', 'bg-')}/20 flex items-center justify-center ${config.color.replace('bg-', 'text-')} mb-6 font-bold shadow-inner`}>
+                                                <Package className="w-6 h-6" />
+                                            </div>
+                                            <div className="text-slate-400 text-sm font-black uppercase tracking-widest leading-none mb-2">{config.label}</div>
+                                            <div className="text-4xl font-black text-slate-900 tracking-tight mb-1">
+                                                {cat.count}
+                                            </div>
+                                            <div className="text-xs text-slate-500 font-bold mb-4">заказов</div>
+
+                                            <div className="space-y-2 pt-4 border-t border-slate-100">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-xs font-bold text-slate-500">Выручка</span>
+                                                    <span className="text-sm font-black text-slate-900">
+                                                        {cat.revenue.toLocaleString()} ₽
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-xs font-bold text-slate-500">Доля</span>
+                                                    <span className="text-sm font-black text-slate-900">{Math.round(percentage)}%</span>
+                                                </div>
+                                                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mt-3">
+                                                    <div
+                                                        className={`h-full ${config.color} transition-all duration-1000`}
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 );
