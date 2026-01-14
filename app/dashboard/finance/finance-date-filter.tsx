@@ -25,7 +25,7 @@ const ranges = [
 export function FinanceDateFilter() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentRange = searchParams.get("range") || "all";
+    const currentRange = searchParams.get("range") || "30d"; // Default to Month
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
 
@@ -64,17 +64,6 @@ export function FinanceDateFilter() {
     return (
         <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
-                <button
-                    onClick={() => handleRangeChange("all")}
-                    className={cn(
-                        "px-4 py-2 text-sm font-bold rounded-lg transition-all",
-                        currentRange === "all" && !isCustom
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
-                    )}
-                >
-                    Все время
-                </button>
                 {ranges.map((range) => (
                     <button
                         key={range.value}
@@ -89,6 +78,17 @@ export function FinanceDateFilter() {
                         {range.label}
                     </button>
                 ))}
+                <button
+                    onClick={() => handleRangeChange("all")}
+                    className={cn(
+                        "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                        currentRange === "all" && !isCustom
+                            ? "bg-white text-slate-900 shadow-sm"
+                            : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                    )}
+                >
+                    Все время
+                </button>
             </div>
 
             <div className="flex items-center gap-2">
