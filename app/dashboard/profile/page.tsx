@@ -37,7 +37,31 @@ export default async function ProfilePage() {
         return { iconName: "Activity", color: "bg-slate-400" };
     };
 
-    const activities = (logs || []).map((log, index) => {
+    // Group logs: if action contains "(массово)", group consecutive identical ones close in time
+    const groupedLogs: typeof logs = [];
+    if (logs && logs.length > 0) {
+        let lastLog = logs[0];
+        groupedLogs.push(lastLog);
+
+        for (let i = 1; i < logs.length; i++) {
+            const currentLog = logs[i];
+            const isMass = currentLog.action.includes("(массово)");
+            const prevWasMass = lastLog.action.includes("(массово)");
+            const sameAction = currentLog.action === lastLog.action;
+            const timeDiff = Math.abs(new Date(currentLog.createdAt).getTime() - new Date(lastLog.createdAt).getTime());
+            const closeInTime = timeDiff < 60000; // 1 minute
+
+            if (isMass && prevWasMass && sameAction && closeInTime) {
+                // Skip adding to groupedLogs, effectively collapsing it
+                continue;
+            } else {
+                groupedLogs.push(currentLog);
+                lastLog = currentLog;
+            }
+        }
+    }
+
+    const activities = (groupedLogs || []).slice(0, 5).map((log, index) => {
         const style = getActivityStyle(log.action);
         return {
             id: index,

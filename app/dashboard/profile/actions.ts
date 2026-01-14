@@ -218,7 +218,7 @@ export async function getUserActivities() {
             .from(auditLogs)
             .where(eq(auditLogs.userId, session.id))
             .orderBy(desc(auditLogs.createdAt))
-            .limit(5);
+            .limit(50);
 
         return { data: logs };
     } catch (error) {

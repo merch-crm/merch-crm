@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, User, Building2, Trash2, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { deleteStorageLocation } from "./actions";
 import { useState } from "react";
@@ -66,127 +67,108 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {locations.map((loc) => (
-                    <div
-                        key={loc.id}
-                        onClick={() => setEditingLocation(loc)}
-                        className="group relative bg-white rounded-2xl border border-slate-200/60 p-5 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-100/50 hover:-translate-y-1 hover:border-indigo-100 cursor-pointer"
-                    >
-                        {/* Header: Name */}
-                        <div className="flex items-start justify-between mb-5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600 duration-500">
-                                    <Building2 className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="text-base font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
-                                        {loc.name}
-                                    </h3>
-                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                        <div className="flex items-center gap-1">
-                                            <div className={cn("w-2 h-2 rounded-full animate-pulse", loc.items?.length ? "bg-emerald-500" : "bg-slate-300")} />
-                                            <span className={cn("text-[9px] font-black uppercase tracking-widest", loc.items?.length ? "text-emerald-600" : "text-slate-400")}>
-                                                {loc.items?.length ? "Активно" : "Пусто"}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {locations.map((loc) => {
+                    const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
+                    const occupancy = Math.min(Math.round((totalItemsInLoc / 1000) * 100), 100); // Assume 1000 units capacity
+                    const isBrak = loc.name.toLowerCase().includes("брак");
+                    const isMain = loc.name.toLowerCase().includes("главный") || loc.name.toLowerCase().includes("основной");
+
+                    return (
+                        <div
+                            key={loc.id}
+                            onClick={() => setEditingLocation(loc)}
+                            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5"
+                        >
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                                        isBrak ? "bg-rose-50 text-rose-500" : isMain ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"
+                                    )}>
+                                        <Building2 className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">
+                                            {loc.name}
+                                        </h3>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                            <div className={cn("w-1.5 h-1.5 rounded-full", totalItemsInLoc > 0 ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                {totalItemsInLoc > 0 ? `${totalItemsInLoc} шт.` : "Пусто"}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={(e) => handleEdit(e, loc)}
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all opacity-0 group-hover:opacity-100"
-                                    title="Редактировать"
-                                >
-                                    <Pencil className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={(e) => handleDeleteClick(e, loc.id, loc.name)}
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100"
-                                    title="Удалить"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-4 h-10 flex items-start">
-                            {loc.description && (
-                                <p className="text-[13px] text-slate-600 font-medium leading-tight line-clamp-2">
-                                    {loc.description}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Content: Details */}
-                        <div className="space-y-3">
-                            <div className="flex items-start gap-2.5 p-3 bg-slate-50 rounded-xl border border-transparent transition-all group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm">
-                                <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
-                                <div>
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Адрес</p>
-                                    <p className="text-xs font-bold text-slate-700 leading-relaxed">
-                                        {loc.address}
-                                    </p>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button
+                                        onClick={(e) => handleEdit(e, loc)}
+                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                    >
+                                        <Pencil className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => handleDeleteClick(e, loc.id, loc.name)}
+                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-2.5 p-3 bg-slate-50 rounded-xl border border-transparent transition-all group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm">
-                                <User className="w-4 h-4 text-slate-400 mt-0.5" />
-                                <div>
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Ответственный</p>
-                                    <p className="text-xs font-black text-slate-900">
-                                        {loc.responsibleUser?.name || "Не назначен"}
-                                    </p>
+                            {/* Occupancy Progress */}
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                                    <span className="text-slate-400">Заполненность</span>
+                                    <span className={cn(occupancy > 90 ? "text-rose-500" : "text-slate-600")}>{occupancy}%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                                    <div
+                                        className={cn(
+                                            "h-full rounded-full transition-all duration-1000",
+                                            occupancy > 90 ? "bg-rose-500" : occupancy > 50 ? "bg-amber-500" : "bg-indigo-500"
+                                        )}
+                                        style={{ width: `${occupancy}%` }}
+                                    />
                                 </div>
                             </div>
+
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-2xl border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
+                                    <MapPin className="w-4 h-4 text-slate-400" />
+                                    <span className="text-xs font-bold text-slate-600 truncate">{loc.address}</span>
+                                </div>
+                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-2xl border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
+                                    <User className="w-4 h-4 text-slate-400" />
+                                    <span className="text-xs font-black text-slate-900 truncate">{loc.responsibleUser?.name || "Не назначен"}</span>
+                                </div>
+                            </div>
+
+                            {/* Storage categories dots */}
+                            <div className="mt-2 flex flex-wrap gap-2">
+                                {(() => {
+                                    const grouped = loc.items?.reduce((acc: Record<string, number>, item: InventoryItem) => {
+                                        if (item.quantity > 0) {
+                                            const cat = (item as any).categoryName || "Прочее";
+                                            acc[cat] = (acc[cat] || 0) + item.quantity;
+                                        }
+                                        return acc;
+                                    }, {}) || {};
+
+                                    const categories = Object.entries(grouped);
+                                    if (categories.length === 0) return null;
+
+                                    return categories.slice(0, 3).map(([category, count]) => (
+                                        <Badge key={category} className="bg-white border-slate-100 text-[10px] font-bold text-slate-500 hover:text-indigo-600 transition-colors pointer-events-none">
+                                            {category}: {count}
+                                        </Badge>
+                                    ));
+                                })()}
+                            </div>
                         </div>
-
-                        {/* Content: Storage Summary by Category */}
-                        <div className="mt-4 pt-4 border-t border-slate-50">
-                            {(() => {
-                                const grouped = loc.items?.reduce((acc: Record<string, number>, item: InventoryItem) => {
-                                    if (item.quantity > 0) {
-                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                        const cat = (item as any).categoryName || "Прочее";
-                                        acc[cat] = (acc[cat] || 0) + item.quantity;
-                                    }
-                                    return acc;
-                                }, {}) || {};
-
-                                const categories = Object.entries(grouped);
-
-                                if (categories.length === 0) {
-                                    return (
-                                        <div className="py-2 text-center bg-slate-50/50 rounded-lg border border-dashed border-slate-200">
-                                            <span className="text-[10px] font-medium text-slate-400">Нет товаров на хранении</span>
-                                        </div>
-                                    );
-                                }
-
-                                return (
-                                    <div className="space-y-2">
-                                        {categories.map(([category, count]) => (
-                                            <div key={category} className="flex items-center justify-between text-xs group/cat">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover/cat:bg-indigo-400 transition-colors" />
-                                                    <span className="font-bold text-slate-700">{category}</span>
-                                                </div>
-                                                <span className="font-black text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
-                                                    {count}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                );
-                            })()}
-                        </div>
-
-
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Custom Delete Confirmation Modal */}

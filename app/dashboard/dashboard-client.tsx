@@ -135,23 +135,13 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
                     <span className="text-slate-300">/</span>
                     <span className="text-slate-900 font-bold">Dashboard</span>
                 </div>
-
-                <PeriodSelector />
             </div>
 
             {/* Welcome Banner */}
             <Card className="p-10 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-xl bg-white relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="relative z-10">
-                    <div className="flex flex-wrap items-center gap-2 mb-6">
-                        <div className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.15em] bg-indigo-50 px-3 py-1.5 rounded-lg">
-                            {period === 'month' ? 'Текущий месяц' : periods.find(p => p.value === period)?.label}
-                        </div>
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Обновлено: {lastUpdated.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                        </div>
-                    </div>
+
                     <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
                         Добро пожаловать,<br /> {userName || "Администратор"}! 👋
                     </h1>

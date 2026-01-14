@@ -12,6 +12,7 @@ import { MoveInventoryDialog } from "./move-inventory-dialog";
 import { InventoryItem, Category } from "./inventory-client";
 import { StorageLocation } from "./storage-locations-tab";
 import { Transaction } from "./history-table";
+import { WarehouseWidgets } from "./warehouse-widgets";
 
 interface WarehouseClientProps {
     items: InventoryItem[];
@@ -77,6 +78,8 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
                     ) : null}
                 </div>
             </div>
+
+            <WarehouseWidgets items={items} categories={categories} history={history} />
 
             {/* Content Area */}
             <div className="relative">
