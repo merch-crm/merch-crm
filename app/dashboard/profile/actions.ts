@@ -208,3 +208,21 @@ export async function getUserSchedule() {
         return { error: "Failed to fetch schedule" };
     }
 }
+
+export async function getUserActivities() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const logs = await db.select()
+            .from(auditLogs)
+            .where(eq(auditLogs.userId, session.id))
+            .orderBy(desc(auditLogs.createdAt))
+            .limit(5);
+
+        return { data: logs };
+    } catch (error) {
+        console.error("Error fetching user activities:", error);
+        return { error: "Failed to fetch activities" };
+    }
+}

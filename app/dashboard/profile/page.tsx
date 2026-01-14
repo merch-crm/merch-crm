@@ -1,4 +1,6 @@
-import { getUserProfile } from "./actions";
+import { getUserProfile, getUserActivities } from "./actions";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 import { ProfileClient } from "./profile-client";
 import {
     Home,
@@ -21,13 +23,31 @@ export default async function ProfilePage() {
         );
     }
 
-    // Mock data for activities and tasks
-    const activities = [
-        { id: 1, type: "order", text: "Создан заказ #2024-157", time: "30 минут назад", iconName: "PlusCircle", color: "bg-blue-500" },
-        { id: 2, type: "profile", text: "Обновлен профиль клиента", time: "1 час назад", iconName: "User", color: "bg-emerald-500" },
-        { id: 3, type: "offer", text: "Отправлено КП клиенту", time: "2 часа назад", iconName: "Send", color: "bg-indigo-500" },
-        { id: 4, type: "completed", text: "Завершен заказ #2024-145", time: "3 часа назад", iconName: "CheckCircle2", color: "bg-orange-500" },
-    ];
+    // Fetch real activities
+    const { data: logs } = await getUserActivities();
+
+    // Helper to determine icon and color based on action text
+    const getActivityStyle = (action: string) => {
+        const lower = action.toLowerCase();
+        if (lower.includes("создан")) return { iconName: "PlusCircle", color: "bg-blue-500" };
+        if (lower.includes("обновлен") || lower.includes("изменен")) return { iconName: "User", color: "bg-emerald-500" };
+        if (lower.includes("удален")) return { iconName: "Trash2", color: "bg-red-500" };
+        if (lower.includes("отправлен")) return { iconName: "Send", color: "bg-indigo-500" };
+        if (lower.includes("завершен")) return { iconName: "CheckCircle2", color: "bg-orange-500" };
+        return { iconName: "Activity", color: "bg-slate-400" };
+    };
+
+    const activities = (logs || []).map((log, index) => {
+        const style = getActivityStyle(log.action);
+        return {
+            id: index,
+            type: "log",
+            text: log.action,
+            time: formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: ru }),
+            iconName: style.iconName,
+            color: style.color
+        };
+    });
 
     const tasks = [
         { id: 1, text: "Связаться с клиентом #2024-156", time: "10:00", priority: "Высокий", priorityColor: "bg-orange-100 text-orange-700", completed: true },
