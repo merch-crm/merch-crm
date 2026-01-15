@@ -5,5 +5,5 @@ echo "⏳ Running database sync (drizzle-kit push)..."
 # In some environments we need to be careful with paths
 npm run db:push
 
-echo "🚀 Starting Next.js server..."
-node server.js
+echo "🚀 Starting Next.js server with GC enabled..."
+node --expose-gc server.js
