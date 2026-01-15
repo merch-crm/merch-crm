@@ -147,7 +147,6 @@ export function LocalStorageManager() {
         setIsRenaming(true);
         try {
             const oldPath = renamingPath;
-            const isDir = oldPath.endsWith("/");
             // Ensure new path doesn't escape parent
             const parent = currentPrefix;
             const newPath = parent + newName.trim();

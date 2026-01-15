@@ -41,8 +41,6 @@ import {
   Shield,
   Lock,
   AlertTriangle,
-  UserCog,
-  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
