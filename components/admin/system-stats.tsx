@@ -124,14 +124,7 @@ interface SecurityData {
   maintenanceMode: boolean;
 }
 
-interface SecurityEventsSummary {
-  loginAttempts: number;
-  successfulLogins: number;
-  failedLogins: number;
-  permissionChanges: number;
-  dataExports: number;
-  criticalEvents: number;
-}
+
 
 export function SystemStats() {
   const { toast } = useToast();
