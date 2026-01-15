@@ -71,7 +71,7 @@ export async function getUsers(page = 1, limit = 20, search = "") {
             totalPages: Math.ceil(total / limit),
             currentPage: page
         };
-    } catch (error) {
+    } catch {
         console.error("Error fetching users:", error);
         return { error: "Failed to fetch users" };
     }
@@ -126,7 +126,7 @@ export async function getRoles() {
         });
 
         return { data: sortedRoles };
-    } catch (error) {
+    } catch {
         console.error("Error fetching roles:", error);
         return { error: "Failed to fetch roles" };
     }
@@ -177,7 +177,7 @@ export async function createUser(formData: FormData) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error creating user:", error);
         return { error: "Пользователь с таким email уже существует" };
     }
@@ -203,7 +203,7 @@ export async function updateUserRole(userId: string, roleId: string) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating user role:", error);
         return { error: "Failed to update user role" };
     }
@@ -226,7 +226,7 @@ export async function deleteUser(userId: string) {
         await db.delete(users).where(eq(users.id, userId));
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting user:", error);
         return { error: "Failed to delete user" };
     }
@@ -304,7 +304,7 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
             totalPages: Math.ceil(total / limit),
             currentPage: page
         };
-    } catch (error) {
+    } catch {
         console.error("Error fetching audit logs:", error);
         return { error: "Failed to fetch audit logs" };
     }
@@ -341,7 +341,7 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating role permissions:", error);
     }
 }
@@ -386,7 +386,7 @@ export async function updateRole(roleId: string, formData: FormData) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating role:", error);
         return { error: "Роль с таким названием уже существует" };
     }
@@ -444,7 +444,7 @@ export async function updateUser(userId: string, formData: FormData) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating user:", error);
         return { error: "Ошибка при обновлении данных пользователя. Возможно, такой email уже занят." };
     }
@@ -503,7 +503,7 @@ export async function createRole(formData: FormData) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error creating role:", error);
         return { error: "Роль с таким названием уже существует" };
     }
@@ -555,7 +555,7 @@ export async function deleteRole(roleId: string) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting role:", error);
         return { error: "Failed to delete role" };
     }
@@ -618,7 +618,7 @@ export async function getDepartments() {
         }));
 
         return { data: dataWithCounts };
-    } catch (error) {
+    } catch {
         console.error("Error fetching departments:", error);
         return { error: "Failed to fetch departments" };
     }
@@ -663,7 +663,7 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error creating department:", error);
         return { error: "Отдел с таким названием уже существует" };
     }
@@ -695,7 +695,7 @@ export async function updateDepartment(deptId: string, formData: FormData) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating department:", error);
         return { error: "Failed to update department" };
     }
@@ -733,7 +733,7 @@ export async function deleteDepartment(deptId: string) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting department:", error);
         return { error: "Failed to delete department" };
     }
@@ -748,7 +748,7 @@ export async function getRolesByDepartment(departmentId: string) {
             orderBy: [asc(roles.name)]
         });
         return { data: departmentRoles };
-    } catch (error) {
+    } catch {
         console.error("Error fetching department roles:", error);
         return { error: "Failed to fetch department roles" };
     }
@@ -790,7 +790,7 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
         revalidatePath("/dashboard/admin/departments");
         revalidatePath("/dashboard/admin/roles");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating role department:", error);
         return { error: "Failed to update role department" };
     }
@@ -929,7 +929,7 @@ export async function getSystemStats() {
                 }
             }
         };
-    } catch (error) {
+    } catch {
         console.error("Error fetching system stats:", error);
         return { error: "Не удалось получить системные показатели" };
     }
@@ -962,7 +962,7 @@ export async function clearAuditLogs() {
 
         revalidatePath("/dashboard/admin/audit");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error clearing audit logs:", error);
         return { error: "Failed to clear audit logs" };
     }
@@ -1062,7 +1062,7 @@ export async function checkSystemHealth() {
         }
 
         return { data: health };
-    } catch (error) {
+    } catch {
         console.error("Health check error:", error);
         return { error: "Ошибка при выполнении диагностики" };
     }
@@ -1117,7 +1117,7 @@ export async function createDatabaseBackup() {
         });
 
         return { success: true, fileName };
-    } catch (error) {
+    } catch {
         console.error("Backup creation error:", error);
         return { error: "Не удалось создать резервную копию" };
     }
@@ -1145,7 +1145,7 @@ export async function getBackupsList() {
             .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         return { data: backups as BackupFile[] };
-    } catch (error) {
+    } catch {
         return { error: "Не удалось получить список копий" };
     }
 }
@@ -1181,7 +1181,7 @@ export async function deleteBackupAction(fileName: string) {
             return { success: true };
         }
         return { error: "Файл не найден" };
-    } catch (error) {
+    } catch {
         return { error: "Ошибка при удалении" };
     }
 }
@@ -1194,19 +1194,19 @@ export async function getSystemSettings() {
 
     try {
         const settings = await db.select().from(systemSettings);
-        const settingsMap: Record<string, any> = {};
+        const settingsMap: Record<string, string | number | boolean | null> = {};
         settings.forEach(s => {
-            settingsMap[s.key] = s.value;
+            settingsMap[s.key] = s.value as string | number | boolean | null;
         });
         return { data: settingsMap };
-    } catch (error) {
+    } catch {
         return {
             error: "Failed to fetch settings"
         };
     }
 }
 
-export async function updateSystemSetting(key: string, value: any) {
+export async function updateSystemSetting(key: string, value: string | number | boolean | null) {
     const session = await getSession();
     if (!session) return {
         error: "Unauthorized"
@@ -1235,7 +1235,7 @@ export async function updateSystemSetting(key: string, value: any) {
 
         revalidatePath("/dashboard/admin/settings");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Update setting error:", error);
         return {
             error: "Ошибка при обновлении настроек"
@@ -1265,7 +1265,7 @@ export async function clearRamAction() {
                 details: "Однако, некоторые внутренние буферы могут быть очищены при обращении к этой функции."
             };
         }
-    } catch (error) {
+    } catch {
         return { error: "Ошибка при очистке памяти" };
     }
 }
@@ -1301,7 +1301,7 @@ export async function restartServerAction() {
         }, 1000);
 
         return { success: true, message: "Перезапуск инициирован. Система будет недоступна 10-30 секунд." };
-    } catch (error) {
+    } catch {
         return { error: "Ошибка при инициализации перезапуска" };
     }
 }
@@ -1366,7 +1366,7 @@ export async function getMonitoringStats() {
                 count: parseInt(String(s.count), 10)
             }))
         };
-    } catch (error) {
+    } catch {
         console.error("Monitoring stats error:", error);
         return { error: "Ошибка получения данных мониторинга" };
     }

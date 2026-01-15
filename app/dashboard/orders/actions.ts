@@ -182,7 +182,7 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
         const order = await db.query.orders.findFirst({
             where: eq(orders.id, orderId),
             with: { items: { with: { inventoryItem: true } } }
-        }) as any;
+        });
 
         if (!order) return { error: "Заказ не найден" };
         const oldStatus = order.status;

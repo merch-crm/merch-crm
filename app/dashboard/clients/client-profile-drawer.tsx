@@ -68,13 +68,13 @@ type TabType = "general" | "orders" | "activity";
 /**
  * Safe date formatter to prevent "Invalid time value" errors
  */
-const safeFormat = (dateStr: string | null | undefined, formatStr: string, options: any) => {
+const safeFormat = (dateStr: string | null | undefined, formatStr: string, options: { locale: typeof ru }) => {
     if (!dateStr) return "---";
     try {
         const date = new Date(dateStr);
         if (isNaN(date.getTime())) return "---";
         return format(date, formatStr, options);
-    } catch (e) {
+    } catch {
         return "---";
     }
 };
