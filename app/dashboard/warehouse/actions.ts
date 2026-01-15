@@ -22,7 +22,7 @@ export async function getInventoryCategories() {
     try {
         const categories = await db.select().from(inventoryCategories).orderBy(desc(inventoryCategories.createdAt));
         return { data: categories };
-    } catch (error) {
+    } catch {
         console.error("Error fetching inventory categories:", error);
         return { error: "Failed to fetch inventory categories" };
     }
@@ -53,7 +53,7 @@ export async function addInventoryCategory(formData: FormData) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error adding category:", error);
         return { error: "Failed to add category" };
     }
@@ -78,7 +78,7 @@ export async function deleteInventoryCategory(id: string) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting category:", error);
         return { error: "Failed to delete category" };
     }
@@ -112,7 +112,7 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating category:", error);
     }
 }
@@ -126,7 +126,7 @@ export async function getInventoryItems() {
             orderBy: desc(inventoryItems.createdAt)
         });
         return { data: items };
-    } catch (error) {
+    } catch {
         console.error("Error fetching inventory:", error);
         return { error: "Failed to fetch inventory items" };
     }
@@ -228,7 +228,7 @@ export async function addInventoryItem(formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error adding item:", error);
         return { error: "Failed to add item" };
     }
@@ -247,7 +247,7 @@ export async function deleteInventoryItems(ids: string[]) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting items:", error);
         return { error: "Failed to delete items" };
     }
@@ -318,7 +318,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating item:", error);
         return { error: "Failed to update item" };
     }
@@ -345,7 +345,7 @@ export async function getInventoryHistory() {
             limit: 50
         });
         return { data: history };
-    } catch (error) {
+    } catch {
         console.error("Error fetching inventory history:", error);
         return { error: "Failed to fetch inventory history" };
     }
@@ -448,7 +448,7 @@ export async function getItemStocks(itemId: string) {
             }
         });
         return { data: stocks };
-    } catch (error) {
+    } catch {
         console.error("Error fetching item stocks:", error);
         return { error: "Failed to fetch item stocks" };
     }
@@ -466,7 +466,7 @@ export async function getItemHistory(itemId: string) {
             limit: 50
         });
         return { data: history };
-    } catch (error) {
+    } catch {
         console.error("Error fetching item history:", error);
         return { error: "Failed to fetch item history" };
     }
@@ -552,7 +552,7 @@ export async function getStorageLocations() {
         );
 
         return { data: locationsWithItems };
-    } catch (error) {
+    } catch {
         console.error("Error fetching storage locations:", error);
         return { error: "Failed to fetch storage locations" };
     }
@@ -581,7 +581,7 @@ export async function addStorageLocation(formData: FormData) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error adding storage location:", error);
         return { error: "Failed to add storage location" };
     }
@@ -605,7 +605,7 @@ export async function deleteStorageLocation(id: string) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting storage location:", error);
         return { error: "Failed to delete storage location" };
     }
@@ -630,7 +630,7 @@ export async function updateStorageLocation(id: string, formData: FormData) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error updating storage location:", error);
         return { error: "Failed to update storage location" };
     }
@@ -640,7 +640,7 @@ export async function getAllUsers() {
     try {
         const allUsers = await db.select().from(users).orderBy(users.name);
         return { data: allUsers };
-    } catch (error) {
+    } catch {
         console.error("Error fetching users:", error);
         return { error: "Failed to fetch users" };
     }
@@ -666,7 +666,7 @@ export async function seedStorageLocations() {
         }
         // Removed revalidatePath - this function is called during render
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error seeding storage locations:", error);
         return { error: "Failed to seed" };
     }
@@ -826,7 +826,7 @@ export async function deleteInventoryTransactions(ids: string[]) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error deleting transactions:", error);
         return { error: "Ошибка при удалении записей" };
     }
@@ -843,7 +843,7 @@ export async function clearInventoryHistory() {
         await logAction("Очистка истории инвентаря", "inventory_history", "all", {});
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Error clearing inventory history:", error);
         return { error: "Ошибка при очистке истории" };
     }
@@ -903,7 +903,7 @@ export async function bulkMoveInventoryItems(ids: string[], toLocationId: string
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Bulk move error:", error);
         return { error: "Ошибка при массовом перемещении" };
     }
@@ -924,7 +924,7 @@ export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: s
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error) {
+    } catch {
         console.error("Bulk category update error:", error);
         return { error: "Ошибка при массовой смене категории" };
     }

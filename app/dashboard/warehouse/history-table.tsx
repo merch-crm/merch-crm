@@ -159,7 +159,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                         <button
                             key={f.id}
                             onClick={() => {
-                                setActiveFilter(f.id as any);
+                                setActiveFilter(f.id as typeof activeFilter);
                                 setCurrentPage(1);
                             }}
                             className={cn(

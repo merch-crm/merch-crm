@@ -137,7 +137,7 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
             } else {
                 toast(res?.error || "Ошибка при удалении", "error");
             }
-        } catch (error) {
+        } catch {
             console.error(error);
             toast("Произошла ошибка", "error");
         } finally {
@@ -994,7 +994,7 @@ function BulkMoveDialog({ selectedIds, storageLocations, onClose, onSuccess }: {
             } else {
                 toast(res.error || "Ошибка при перемещении", "error");
             }
-        } catch (error) {
+        } catch {
             toast("Произошла ошибка", "error");
         } finally {
             setIsLoading(false);
@@ -1069,7 +1069,7 @@ function BulkCategoryDialog({ selectedIds, categories, onClose, onSuccess }: { s
             } else {
                 toast(res.error || "Ошибка", "error");
             }
-        } catch (error) {
+        } catch {
             toast("Произошла ошибка", "error");
         } finally {
             setIsLoading(false);

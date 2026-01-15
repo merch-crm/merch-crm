@@ -70,7 +70,7 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
             } else {
                 toast(result.error || "Ошибка при удалении", "error");
             }
-        } catch (error) {
+        } catch {
             console.error(error);
             toast("Произошла ошибка", "error");
         } finally {

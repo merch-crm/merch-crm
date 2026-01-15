@@ -81,7 +81,7 @@ export function SystemStats() {
     const [activeTab, setActiveTab] = useState<"stats" | "diagnostics" | "backups">("stats");
 
     // Diagnostics state
-    const [healthData, setHealthData] = useState<HealthData | null>(null);
+    const [healthData, setHealthData] = useState<any>(null);
     const [diagnosing, setDiagnosing] = useState(false);
 
     // Backups state
@@ -89,7 +89,7 @@ export function SystemStats() {
     const [loadingBackups, setLoadingBackups] = useState(false);
     const [creatingBackup, setCreatingBackup] = useState(false);
     const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
-    const [settings, setSettings] = useState<Record<string, any>>({});
+    const [settings, setSettings] = useState<Record<string, string | number | boolean | null>>({});
     const [loadingSettings, setLoadingSettings] = useState(false);
     const [clearingRam, setClearingRam] = useState(false);
     const [restarting, setRestarting] = useState(false);
