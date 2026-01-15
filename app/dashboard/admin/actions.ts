@@ -3,8 +3,10 @@
 import { db } from "@/lib/db";
 import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
+import { startOfMonth, endOfMonth, subDays } from "date-fns";
+import { logAction } from "@/lib/audit";
 import { hashPassword } from "@/lib/password";
-import { eq, asc, desc, isNull, sql, and, inArray, count, gte } from "drizzle-orm";
+import { eq, asc, desc, isNull, sql, and, inArray, count, gte, lte, sum } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logSecurityEvent } from "@/lib/security-logger";
 import os from "os";
@@ -1786,6 +1788,7 @@ export async function deleteS3FileAction(key: string) {
         const { deleteFile } = await import("@/lib/storage");
         const res = await deleteFile(key);
         if (res.success) {
+            await logAction("Удален файл S3", "s3_storage", "system", { key });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1802,6 +1805,7 @@ export async function createS3FolderAction(path: string) {
         const { createFolder } = await import("@/lib/storage");
         const res = await createFolder(path);
         if (res.success) {
+            await logAction("Создана папка S3", "s3_storage", "system", { path });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1840,6 +1844,7 @@ export async function createLocalFolderAction(folderPath: string) {
         const { createLocalFolder } = await import("@/lib/local-storage");
         const res = await createLocalFolder(folderPath);
         if (res.success) {
+            await logAction("Создана локальная папка", "local_storage", "system", { path: folderPath });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1857,6 +1862,7 @@ export async function deleteLocalFileAction(filePath: string) {
         const { deleteLocalFile } = await import("@/lib/local-storage");
         const res = await deleteLocalFile(filePath);
         if (res.success) {
+            await logAction("Удален локальный файл", "local_storage", "system", { path: filePath });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1874,6 +1880,7 @@ export async function renameS3FileAction(oldKey: string, newKey: string) {
         const { renameFile } = await import("@/lib/storage");
         const res = await renameFile(oldKey, newKey);
         if (res.success) {
+            await logAction("Переименован файл S3", "s3_storage", "system", { oldKey, newKey });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1891,6 +1898,7 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
         const { deleteMultipleFiles } = await import("@/lib/storage");
         const res = await deleteMultipleFiles(keys);
         if (res.success) {
+            await logAction("Удалено несколько файлов S3", "s3_storage", "system", { count: keys.length, keys });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1908,6 +1916,7 @@ export async function renameLocalFileAction(oldPath: string, newPath: string) {
         const { renameLocalFile } = await import("@/lib/local-storage");
         const res = await renameLocalFile(oldPath, newPath);
         if (res.success) {
+            await logAction("Переименован локальный файл", "local_storage", "system", { oldPath, newPath });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
@@ -1925,12 +1934,27 @@ export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
         const { deleteMultipleLocalFiles } = await import("@/lib/local-storage");
         const res = await deleteMultipleLocalFiles(filePaths);
         if (res.success) {
+            await logAction("Удалено несколько локальных файлов", "local_storage", "system", { count: filePaths.length, paths: filePaths });
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
     } catch (e) {
         console.error("Delete multiple local files error:", e);
         return { success: false, error: "Ошибка при удалении файлов" };
+    }
+}
+
+export async function getS3FileUrlAction(key: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { getFileUrl } = await import("@/lib/storage");
+        const url = await getFileUrl(key);
+        return { success: true, url };
+    } catch (e) {
+        console.error("Get file URL error:", e);
+        return { success: false, error: "Ошибка при получении ссылки на файл" };
     }
 }
 

@@ -21,7 +21,10 @@ import {
     HardDrive,
     Edit2,
     CheckSquare,
-    Square
+    Square,
+    Eye,
+    X,
+    ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -80,6 +83,9 @@ export function LocalStorageManager() {
     const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
     const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
     const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
+
+    // Preview State
+    const [previewFile, setPreviewFile] = useState<{ name: string, url: string, type: 'image' | 'other' } | null>(null);
 
     const fetchData = useCallback(async (manual = false, prefix = currentPrefix) => {
         if (manual) setLoading(true);
@@ -205,6 +211,23 @@ export function LocalStorageManager() {
         filteredFolders.forEach(f => all.add(f));
         filteredFiles.forEach(f => all.add(f.path));
         setSelectedPaths(all);
+    };
+
+    const handleFileClick = (file: LocalFile) => {
+        if (isMultiSelectMode) {
+            toggleSelection(file.path);
+            return;
+        }
+
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+        const url = `/api/storage/local/${file.path}`;
+
+        if (isImage) {
+            setPreviewFile({ name: file.name, url, type: 'image' });
+        } else {
+            window.open(url, '_blank');
+        }
     };
 
     const formatSize = (bytes: number) => {
@@ -500,9 +523,10 @@ export function LocalStorageManager() {
                                             <tr
                                                 key={file.path}
                                                 className={cn(
-                                                    "transition-colors group",
+                                                    "transition-colors group cursor-pointer",
                                                     isSelected ? "bg-emerald-50" : "hover:bg-slate-50/50"
                                                 )}
+                                                onClick={() => handleFileClick(file)}
                                             >
                                                 {isMultiSelectMode && (
                                                     <td className="px-4 py-4">
@@ -516,7 +540,12 @@ export function LocalStorageManager() {
                                                 )}
                                                 <td className="px-8 py-4">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="p-2.5 bg-slate-100 text-slate-400 rounded-xl group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors shadow-sm">
+                                                        <div className={cn(
+                                                            "p-2.5 rounded-xl group-hover:scale-110 transition-transform shadow-sm",
+                                                            ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(file.name.split('.').pop()?.toLowerCase() || '')
+                                                                ? "bg-emerald-50 text-emerald-500"
+                                                                : "bg-slate-100 text-slate-400"
+                                                        )}>
                                                             <File size={18} />
                                                         </div>
                                                         <div className="max-w-[300px] sm:max-w-none">
@@ -534,6 +563,13 @@ export function LocalStorageManager() {
                                                     <div className="flex items-center justify-center gap-2">
                                                         {!isMultiSelectMode && (
                                                             <>
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); handleFileClick(file); }}
+                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
+                                                                    title="Просмотреть"
+                                                                >
+                                                                    <Eye size={16} />
+                                                                </button>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); openRenameModal(file.path); }}
                                                                     className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
@@ -673,6 +709,51 @@ export function LocalStorageManager() {
                 variant="destructive"
                 isLoading={isDeletingMultiple}
             />
+
+            {/* Preview Dialog */}
+            <Dialog open={!!previewFile} onOpenChange={() => setPreviewFile(null)}>
+                <DialogContent className="sm:max-w-4xl rounded-[40px] border-none shadow-2xl p-0 bg-white overflow-hidden">
+                    <div className="relative">
+                        <div className="absolute top-6 right-6 z-50 flex gap-2">
+                            <button
+                                onClick={() => window.open(previewFile?.url, '_blank')}
+                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-2xl shadow-xl transition-all active:scale-95"
+                                title="Открыть в новой вкладке"
+                            >
+                                <ExternalLink size={20} />
+                            </button>
+                            <button
+                                onClick={() => setPreviewFile(null)}
+                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xl transition-all active:scale-95 shadow-rose-200"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 border-b border-slate-50 bg-slate-50/50">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-100">
+                                    <File size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Предпросмотр файла</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-4 bg-slate-900 flex items-center justify-center min-h-[400px] max-h-[70vh]">
+                            {previewFile?.type === 'image' && (
+                                <img
+                                    src={previewFile.url}
+                                    alt={previewFile.name}
+                                    className="max-w-full max-h-full object-contain shadow-2xl rounded-lg"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

@@ -482,6 +482,12 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
             createdBy: session.id,
         });
 
+        await logAction("Загружен файл заказа", "s3_storage", orderId, {
+            fileName: file.name,
+            fileKey: key,
+            orderId
+        });
+
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };

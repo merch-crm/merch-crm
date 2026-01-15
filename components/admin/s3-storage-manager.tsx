@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction } from "@/app/dashboard/admin/actions";
+import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/dashboard/admin/actions";
 import {
     HardDrive,
     RefreshCw,
@@ -19,7 +19,10 @@ import {
     Home,
     Edit2,
     CheckSquare,
-    Square
+    Square,
+    Eye,
+    X,
+    ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -81,6 +84,10 @@ export function S3StorageManager() {
     const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
     const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
     const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
+
+    // Preview State
+    const [previewFile, setPreviewFile] = useState<{ name: string, url: string, type: 'image' | 'other' } | null>(null);
+    const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
     const fetchData = useCallback(async (manual = false, prefix = currentPrefix) => {
         if (manual) setLoading(true);
@@ -209,6 +216,35 @@ export function S3StorageManager() {
 
     const deselectAll = () => {
         setSelectedKeys(new Set());
+    };
+
+    const handleFileClick = async (file: StorageFile) => {
+        if (isMultiSelectMode) {
+            toggleSelection(file.key);
+            return;
+        }
+
+        const name = file.key.replace(currentPrefix, "");
+        const ext = name.split('.').pop()?.toLowerCase();
+        const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+
+        setIsPreviewLoading(true);
+        try {
+            const res = await getS3FileUrlAction(file.key);
+            if (res.success && res.url) {
+                if (isImage) {
+                    setPreviewFile({ name, url: res.url, type: 'image' });
+                } else {
+                    window.open(res.url, '_blank');
+                }
+            } else {
+                toast(res.error || "Ошибка при получении ссылки на файл", "error");
+            }
+        } catch {
+            toast("Ошибка сети", "error");
+        } finally {
+            setIsPreviewLoading(false);
+        }
     };
 
     const formatSize = (bytes: number) => {
@@ -527,6 +563,9 @@ export function S3StorageManager() {
                                             {filteredFiles.map((file) => {
                                                 const name = file.key.replace(currentPrefix, "");
                                                 const isSelected = selectedKeys.has(file.key);
+                                                const ext = name.split('.').pop()?.toLowerCase();
+                                                const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+
                                                 return (
                                                     <tr
                                                         key={file.key}
@@ -552,9 +591,15 @@ export function S3StorageManager() {
                                                                 </button>
                                                             </td>
                                                         )}
-                                                        <td className="px-8 py-4">
+                                                        <td
+                                                            className="px-8 py-4 cursor-pointer"
+                                                            onClick={() => handleFileClick(file)}
+                                                        >
                                                             <div className="flex items-center gap-4">
-                                                                <div className="p-2.5 bg-slate-100 text-slate-400 rounded-xl group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors shadow-sm">
+                                                                <div className={cn(
+                                                                    "p-2.5 rounded-xl group-hover:scale-110 transition-transform shadow-sm",
+                                                                    isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
+                                                                )}>
                                                                     <File size={18} />
                                                                 </div>
                                                                 <div className="max-w-[300px] sm:max-w-none">
@@ -572,6 +617,16 @@ export function S3StorageManager() {
                                                             <div className="flex items-center justify-center gap-2">
                                                                 {!isMultiSelectMode && (
                                                                     <>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                handleFileClick(file);
+                                                                            }}
+                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            title="Просмотреть"
+                                                                        >
+                                                                            <Eye size={16} />
+                                                                        </button>
                                                                         <button
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
@@ -789,6 +844,59 @@ export function S3StorageManager() {
                 variant="destructive"
                 isLoading={isDeletingMultiple}
             />
+
+            {/* Preview Dialog */}
+            <Dialog open={!!previewFile} onOpenChange={() => setPreviewFile(null)}>
+                <DialogContent className="sm:max-w-4xl rounded-[40px] border-none shadow-2xl p-0 bg-white overflow-hidden">
+                    <div className="relative">
+                        <div className="absolute top-6 right-6 z-50 flex gap-2">
+                            <button
+                                onClick={() => window.open(previewFile?.url, '_blank')}
+                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-2xl shadow-xl transition-all active:scale-95"
+                                title="Открыть в новой вкладке"
+                            >
+                                <ExternalLink size={20} />
+                            </button>
+                            <button
+                                onClick={() => setPreviewFile(null)}
+                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xl transition-all active:scale-95 shadow-rose-200"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 border-b border-slate-50 bg-slate-50/50">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-100">
+                                    <File size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Предпросмотр файла</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-4 bg-slate-900 flex items-center justify-center min-h-[400px] max-h-[70vh]">
+                            {previewFile?.type === 'image' && (
+                                <img
+                                    src={previewFile.url}
+                                    alt={previewFile.name}
+                                    className="max-w-full max-h-full object-contain shadow-2xl rounded-lg"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Loading Overlay for Preview */}
+            {isPreviewLoading && (
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center gap-4 text-white">
+                    <RefreshCw className="animate-spin" size={48} />
+                    <p className="text-xs font-black uppercase tracking-widest">Генерация ссылки...</p>
+                </div>
+            )}
         </div>
     );
 }

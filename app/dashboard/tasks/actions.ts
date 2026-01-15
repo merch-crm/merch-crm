@@ -6,6 +6,9 @@ import { getSession } from "@/lib/auth";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { startOfMonth, endOfMonth } from "date-fns";
+import { logAction } from "@/lib/audit";
+
 export async function getTasks() {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
@@ -147,6 +150,12 @@ export async function uploadTaskFile(taskId: string, formData: FormData) {
             fileSize: file.size,
             contentType: file.type,
             createdBy: session.id,
+        });
+
+        await logAction("Загружен файл задачи", "s3_storage", taskId, {
+            fileName: file.name,
+            fileKey: key,
+            taskId
         });
 
         revalidatePath("/dashboard/tasks");
