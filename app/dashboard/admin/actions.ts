@@ -10,6 +10,13 @@ import os from "os";
 import fs from "fs";
 import path from "path";
 
+const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
+    return Promise.race([
+        promise,
+        new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms))
+    ]);
+};
+
 export interface BackupFile {
     name: string;
     size: number;
@@ -820,7 +827,7 @@ export async function getSystemStats() {
         let dbSize = 0;
         try {
             // Drizzle returns raw rows; for pg_database_size we need to parse carefully
-            const dbSizeResult = await db.execute(sql`SELECT pg_database_size(current_database())`);
+            const dbSizeResult = await withTimeout(db.execute(sql`SELECT pg_database_size(current_database())`), 2000);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rows = dbSizeResult.rows as any[];
             dbSize = parseInt(rows[0]?.pg_database_size || "0");
@@ -831,7 +838,7 @@ export async function getSystemStats() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const fetchCount = async (table: any) => {
             try {
-                const res = await db.select({ value: count() }).from(table);
+                const res = await withTimeout(db.select({ value: count() }).from(table), 2000);
                 return res[0].value;
             } catch (e) {
                 console.error("Failed to count table:", e);
@@ -850,7 +857,7 @@ export async function getSystemStats() {
         let storageStats = { size: 0, fileCount: 0 };
         try {
             const { getStorageStats } = await import("@/lib/storage");
-            storageStats = await getStorageStats();
+            storageStats = await withTimeout(getStorageStats(), 5000);
         } catch (e) {
             console.error("Failed to get storage stats:", e);
         }
@@ -987,7 +994,7 @@ export async function checkSystemHealth() {
     try {
         // 1. Database Ping & Latency
         const startDb = Date.now();
-        await db.execute(sql`SELECT 1`);
+        await withTimeout(db.execute(sql`SELECT 1`), 2000);
         health.database.latency = Date.now() - startDb;
         health.database.status = "ok";
 
@@ -995,15 +1002,15 @@ export async function checkSystemHealth() {
         try {
             const { uploadFile, s3Client } = await import("@/lib/storage");
             const testKey = `health-check-${Date.now()}.txt`;
-            await uploadFile(testKey, Buffer.from("health-check"), "text/plain");
+            await withTimeout(uploadFile(testKey, Buffer.from("health-check"), "text/plain"), 5000);
 
             // Delete the test file immediately
             const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
             const bucket = process.env.S3_BUCKET || process.env.REG_STORAGE_BUCKET || "";
-            await s3Client.send(new DeleteObjectCommand({
+            await withTimeout(s3Client.send(new DeleteObjectCommand({
                 Bucket: bucket,
                 Key: testKey
-            }));
+            })), 5000);
 
             health.storage.status = "ok";
         } catch (e) {
