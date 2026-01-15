@@ -5,11 +5,7 @@ import { usePathname } from "next/navigation";
 import { Users, Shield, Settings, Building, HardDrive } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface AdminTabsProps {
-}
-
-
-export default function AdminTabs({ }: AdminTabsProps) {
+export default function AdminTabs() {
     const pathname = usePathname();
 
     const tabs = [
