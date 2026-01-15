@@ -31,22 +31,30 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    const loadSettings = async () => {
-        setLoading(true);
-        const res = await getStorageQuotaSettings();
-        if ("error" in res) {
-            toast(res.error as string, "error");
-        } else if (res.data) {
-            setSettings(res.data);
-        }
-        setLoading(false);
-    };
-
     useEffect(() => {
-        if (open) {
-            loadSettings();
-        }
-    }, [open]);
+        if (!open) return;
+
+        let cancelled = false;
+
+        const loadSettings = async () => {
+            setLoading(true);
+            const res = await getStorageQuotaSettings();
+            if (!cancelled) {
+                if ("error" in res) {
+                    toast(res.error as string, "error");
+                } else if (res.data) {
+                    setSettings(res.data);
+                }
+                setLoading(false);
+            }
+        };
+
+        loadSettings();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [open, toast]);
 
     const handleSave = async () => {
         setSaving(true);

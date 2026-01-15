@@ -16,10 +16,23 @@ export function StorageManager() {
     const [quotaUsage, setQuotaUsage] = useState<StorageQuotaUsage | null>(null);
 
     useEffect(() => {
+        let cancelled = false;
+
+        const loadQuotas = async () => {
+            const res = await checkStorageQuotas();
+            if (!cancelled && res.data) {
+                setQuotaUsage(res.data);
+            }
+        };
+
         loadQuotas();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
-    const loadQuotas = async () => {
+    const refreshQuotas = async () => {
         const res = await checkStorageQuotas();
         if (res.data) setQuotaUsage(res.data);
     };
@@ -122,7 +135,7 @@ export function StorageManager() {
             <StorageQuotaDialog
                 open={isSettingsOpen}
                 onOpenChange={setIsSettingsOpen}
-                onSaved={loadQuotas}
+                onSaved={refreshQuotas}
             />
         </div>
     );
