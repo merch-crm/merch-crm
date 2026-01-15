@@ -31,11 +31,11 @@
 ---
 
 ## ☁️ 4. Облачное хранилище (Reg.ru S3)
-*   **Endpoint:** `https://s3.reg0.rusrv.ru`
+*   **Endpoint:** `https://s3.regru.cloud`
 *   **Bucket:** `merch-crm-storage`
 *   **Region:** `ru-1`
-*   **Access Key:** `S5GORA0UWV81QDIOGMA`
-*   **Secret Key:** `ZEFFxisDZZSojaasSmyLsnp9KhKCstviYeIZFEfh`
+*   **Access Key:** `S5GORAOOUWV81QDIOGMA`
+*   **Secret Key:** `ZEFFxisDZZSojaasSmyLsnp9KhKCstviYelZFEfh`
 
 ---
 
