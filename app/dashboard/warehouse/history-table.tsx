@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { Package, ArrowUpRight, ArrowDownLeft, User, Clock, Info, Building2, ArrowRight, ArrowLeftRight, Trash2, Eraser, Search, Filter, X as CloseIcon, FileDown } from "lucide-react";
+import { Package, ArrowUpRight, ArrowDownLeft, User, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Eraser, Search, Filter, X as CloseIcon, FileDown } from "lucide-react";
 import { deleteInventoryTransactions, clearInventoryHistory } from "./actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";

@@ -10,7 +10,6 @@ import {
     Cpu,
     MemoryStick,
     RefreshCw,
-    PlayCircle,
     CheckCircle2,
     XCircle,
     Download,

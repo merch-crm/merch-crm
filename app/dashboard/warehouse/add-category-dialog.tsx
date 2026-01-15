@@ -220,7 +220,13 @@ export function AddCategoryDialog() {
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-slate-50">
+                            <div className="pt-4 border-t border-slate-50 space-y-4">
+                                {error && (
+                                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-2 animate-in slide-in-from-top-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                        {error}
+                                    </div>
+                                )}
                                 <button
                                     type="submit"
                                     disabled={isPending}

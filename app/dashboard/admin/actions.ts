@@ -1047,7 +1047,7 @@ export async function checkSystemHealth() {
             } else {
                 health.backup.status = "none";
             }
-        } catch (e) {
+        } catch {
             health.backup.status = "error";
         }
 
