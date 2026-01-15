@@ -481,8 +481,13 @@ export function SystemStats() {
                         </Card>
 
                         {/* Active Sessions - Spans remaining columns (2 cols on lg) */}
-                        <Card className="border-slate-200/60 shadow-sm lg:col-span-2">
-                            <CardContent className="p-0 h-full flex items-center">
+                        <Card className="border-slate-200/60 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
+                            <CardHeader className="pb-0 pt-4 px-6">
+                                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <Users size={14} /> Пользователи онлайн
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 flex-1 flex items-center">
                                 {/* Only show if we have data */}
                                 {!monitoringData ? (
                                     <div className="w-full px-6 py-4 flex items-center gap-3 animate-pulse">
