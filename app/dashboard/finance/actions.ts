@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { orders, users } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
+import { logError } from "@/lib/error-logger";
 
 export interface FinancialStats {
     summary: {
@@ -155,6 +156,12 @@ export async function getFinancialStats(from?: Date, to?: Date) {
             } as FinancialStats
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/finance",
+            method: "getFinancialStats",
+            details: { from, to }
+        });
         console.error("Financial stats error:", error);
         return { error: "Ошибка при загрузке финансовых данных" };
     }
@@ -212,6 +219,12 @@ export async function getSalaryStats(from?: Date, to?: Date) {
         };
 
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/finance/salary",
+            method: "getSalaryStats",
+            details: { from, to }
+        });
         console.error("Salary stats error:", error);
         return { error: "Ошибка при загрузке данных по зарплатам" };
     }
@@ -257,6 +270,12 @@ export async function getFundsStats(from?: Date, to?: Date) {
         };
 
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/finance/funds",
+            method: "getFundsStats",
+            details: { from, to }
+        });
         console.error("Funds stats error:", error);
         return { error: "Ошибка при загрузке данных по фондам" };
     }

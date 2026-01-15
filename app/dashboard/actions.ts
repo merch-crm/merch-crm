@@ -12,6 +12,7 @@ import {
     startOfQuarter
 } from "date-fns";
 import { getSession } from "@/lib/auth";
+import { logError } from "@/lib/error-logger";
 
 export async function getDashboardStatsByPeriod(period: string = "month") {
     const session = await getSession();
@@ -115,6 +116,11 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             rawRevenue
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard",
+            method: "getDashboardStats"
+        });
         console.error("Error fetching dashboard stats:", error);
         return {
             totalClients: 0,

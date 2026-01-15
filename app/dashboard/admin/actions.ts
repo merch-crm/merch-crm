@@ -1,10 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents } from "@/lib/schema";
+import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents, systemErrors } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { startOfMonth, endOfMonth, subDays } from "date-fns";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 import { hashPassword } from "@/lib/password";
 import { eq, asc, desc, isNull, sql, and, inArray, count, gte, lte, sum } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -93,7 +94,13 @@ export async function getUsers(page = 1, limit = 20, search = "") {
             totalPages: Math.ceil(total / limit),
             currentPage: page
         };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/users",
+            method: "getUsers",
+            details: { page, limit, search }
+        });
         console.error("Error fetching users:");
         return { error: "Failed to fetch users" };
     }
@@ -225,7 +232,13 @@ export async function updateUserRole(userId: string, roleId: string) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/users",
+            method: "updateUserRole",
+            details: { userId, roleId }
+        });
         console.error("Error updating user role:");
         return { error: "Failed to update user role" };
     }
@@ -248,7 +261,13 @@ export async function deleteUser(userId: string) {
         await db.delete(users).where(eq(users.id, userId));
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/users",
+            method: "deleteUser",
+            details: { userId }
+        });
         console.error("Error deleting user:");
         return { error: "Failed to delete user" };
     }
@@ -326,7 +345,13 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
             totalPages: Math.ceil(total / limit),
             currentPage: page
         };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/audit",
+            method: "getAuditLogs",
+            details: { page, limit, search }
+        });
         console.error("Error fetching audit logs:");
         return { error: "Failed to fetch audit logs" };
     }
@@ -363,8 +388,15 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/roles/${roleId}/permissions`,
+            method: "updateRolePermissions",
+            details: { roleId }
+        });
         console.error("Error updating role permissions:");
+        return { error: "Failed to update permissions" };
     }
 }
 
@@ -408,7 +440,13 @@ export async function updateRole(roleId: string, formData: FormData) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/roles/${roleId}`,
+            method: "updateRole",
+            details: { roleId, name }
+        });
         console.error("Error updating role:");
         return { error: "Роль с таким названием уже существует" };
     }
@@ -466,7 +504,13 @@ export async function updateUser(userId: string, formData: FormData) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/users/${userId}`,
+            method: "updateUser",
+            details: { userId, name, email, roleId }
+        });
         console.error("Error updating user:");
         return { error: "Ошибка при обновлении данных пользователя. Возможно, такой email уже занят." };
     }
@@ -525,7 +569,13 @@ export async function createRole(formData: FormData) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/roles",
+            method: "createRole",
+            details: { name, departmentId }
+        });
         console.error("Error creating role:");
         return { error: "Роль с таким названием уже существует" };
     }
@@ -577,7 +627,13 @@ export async function deleteRole(roleId: string) {
         revalidatePath("/dashboard/admin/roles");
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/roles/${roleId}`,
+            method: "deleteRole",
+            details: { roleId }
+        });
         console.error("Error deleting role:");
         return { error: "Failed to delete role" };
     }
@@ -640,7 +696,12 @@ export async function getDepartments() {
         }));
 
         return { data: dataWithCounts };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/departments",
+            method: "getDepartments"
+        });
         console.error("Error fetching departments:");
         return { error: "Failed to fetch departments" };
     }
@@ -685,7 +746,13 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/departments",
+            method: "createDepartment",
+            details: { name }
+        });
         console.error("Error creating department:");
         return { error: "Отдел с таким названием уже существует" };
     }
@@ -717,7 +784,13 @@ export async function updateDepartment(deptId: string, formData: FormData) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/departments/${deptId}`,
+            method: "updateDepartment",
+            details: { deptId, name }
+        });
         console.error("Error updating department:");
         return { error: "Failed to update department" };
     }
@@ -755,7 +828,13 @@ export async function deleteDepartment(deptId: string) {
 
         revalidatePath("/dashboard/admin");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/departments/${deptId}`,
+            method: "deleteDepartment",
+            details: { deptId }
+        });
         console.error("Error deleting department:");
         return { error: "Failed to delete department" };
     }
@@ -770,7 +849,13 @@ export async function getRolesByDepartment(departmentId: string) {
             orderBy: [asc(roles.name)]
         });
         return { data: departmentRoles };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/departments",
+            method: "getRolesByDepartment",
+            details: { departmentId }
+        });
         console.error("Error fetching department roles:");
         return { error: "Failed to fetch department roles" };
     }
@@ -812,7 +897,13 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
         revalidatePath("/dashboard/admin/departments");
         revalidatePath("/dashboard/admin/roles");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/roles/${roleId}/department`,
+            method: "updateRoleDepartment",
+            details: { roleId, departmentId }
+        });
         console.error("Error updating role department:");
         return { error: "Failed to update role department" };
     }
@@ -953,7 +1044,12 @@ export async function getSystemStats() {
                 }
             }
         };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/stats",
+            method: "getSystemStats"
+        });
         console.error("Error fetching system stats:");
         return { error: "Не удалось получить системные показатели" };
     }
@@ -986,7 +1082,12 @@ export async function clearAuditLogs() {
 
         revalidatePath("/dashboard/admin/audit");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/audit",
+            method: "clearAuditLogs"
+        });
         console.error("Error clearing audit logs:");
         return { error: "Failed to clear audit logs" };
     }
@@ -1088,7 +1189,12 @@ export async function checkSystemHealth() {
         }
 
         return { data: health };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/health",
+            method: "checkSystemHealth"
+        });
         console.error("Health check error:");
         return { error: "Ошибка при выполнении диагностики" };
     }
@@ -1143,7 +1249,12 @@ export async function createDatabaseBackup() {
         });
 
         return { success: true, fileName };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/backup",
+            method: "createDatabaseBackup"
+        });
         console.error("Backup creation error:");
         return { error: "Не удалось создать резервную копию" };
     }
@@ -1171,7 +1282,12 @@ export async function getBackupsList() {
             .sort((a: BackupFile, b: BackupFile) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         return { data: backups as BackupFile[] };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/backups",
+            method: "getBackupsList"
+        });
         return { error: "Не удалось получить список копий" };
     }
 }
@@ -1207,7 +1323,13 @@ export async function deleteBackupAction(fileName: string) {
             return { success: true };
         }
         return { error: "Файл не найден" };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/backup/delete",
+            method: "deleteBackupAction",
+            details: { fileName }
+        });
         return { error: "Ошибка при удалении" };
     }
 }
@@ -1261,7 +1383,13 @@ export async function updateSystemSetting(key: string, value: string | number | 
 
         revalidatePath("/dashboard/admin/settings");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/admin/settings/${key}`,
+            method: "updateSystemSetting",
+            details: { key, value }
+        });
         console.error("Update setting error:");
         return {
             error: "Ошибка при обновлении настроек"
@@ -1291,7 +1419,12 @@ export async function clearRamAction() {
                 details: "Однако, некоторые внутренние буферы могут быть очищены при обращении к этой функции."
             };
         }
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/ram",
+            method: "clearRamAction"
+        });
         return { error: "Ошибка при очистке памяти" };
     }
 }
@@ -1327,7 +1460,12 @@ export async function restartServerAction() {
         }, 1000);
 
         return { success: true, message: "Перезапуск инициирован. Система будет недоступна 10-30 секунд." };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/system/restart",
+            method: "restartServerAction"
+        });
         return { error: "Ошибка при инициализации перезапуска" };
     }
 }
@@ -1412,9 +1550,12 @@ export async function getMonitoringStats() {
                 count: Number(s.count)
             }))
         };
-
-
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/monitoring",
+            method: "getMonitoringStats"
+        });
         console.error("Monitoring stats error:");
         return { error: "Ошибка получения данных мониторинга" };
     }
@@ -1451,12 +1592,9 @@ export async function getSecurityStats() {
         });
 
         // 3. System Errors
-        const systemErrors = await db.query.securityEvents.findMany({
-            where: and(
-                eq(securityEvents.eventType, 'system_error'),
-                gte(securityEvents.createdAt, last24h)
-            ),
-            orderBy: [desc(securityEvents.createdAt)],
+        const errors = await db.query.systemErrors.findMany({
+            where: gte(systemErrors.createdAt, last24h),
+            orderBy: [desc(systemErrors.createdAt)],
             limit: 100
         });
 
@@ -1481,17 +1619,23 @@ export async function getSecurityStats() {
                 details: l.details,
                 createdAt: l.createdAt
             })),
-            systemErrors: systemErrors.map(l => ({
-                id: l.id,
-                message: (l.details as Record<string, unknown>)?.message as string || 'System Error',
-                path: (l.details as Record<string, unknown>)?.path as string || null,
-                severity: l.severity,
-                ipAddress: l.ipAddress,
-                createdAt: l.createdAt
+            systemErrors: errors.map(e => ({
+                id: e.id,
+                message: e.message,
+                path: e.path,
+                method: e.method,
+                severity: e.severity,
+                ipAddress: e.ipAddress,
+                createdAt: e.createdAt
             })),
             maintenanceMode: maintenanceSetting?.value === true
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/security/stats",
+            method: "getSecurityStats"
+        });
         console.error("Security stats error:", error);
         return { error: "Ошибка получения данных безопасности" };
     }
@@ -1499,15 +1643,32 @@ export async function getSecurityStats() {
 
 export async function clearSecurityErrors() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может очищать логи ошибок" };
+    }
 
     try {
+        await db.delete(systemErrors);
+        // Also clear system_error events from security_events for consistency
         await db.delete(securityEvents).where(eq(securityEvents.eventType, 'system_error'));
-        revalidatePath('/dashboard/admin/monitoring');
+
+        await logAction("Очистка системных ошибок", "system", "system");
         return { success: true };
     } catch (error) {
-        console.error("Clear security errors error:", error);
-        return { error: "Ошибка при очистке ошибок" };
+        await logError({
+            error,
+            path: "/dashboard/admin/security/clear-errors",
+            method: "clearSecurityErrors"
+        });
+        console.error(error);
+        return { error: "Failed to clear errors" };
     }
 }
 
@@ -1520,6 +1681,11 @@ export async function clearFailedLogins() {
         revalidatePath('/dashboard/admin/monitoring');
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/security/clear-logins",
+            method: "clearFailedLogins"
+        });
         console.error("Clear failed logins error:", error);
         return { error: "Ошибка при очистке попыток входа" };
     }
@@ -1548,9 +1714,14 @@ export async function toggleMaintenanceMode(enabled: boolean) {
                 toggledBy: session.name
             }
         });
-
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/maintenance",
+            method: "toggleMaintenanceMode",
+            details: { enabled }
+        });
         console.error("Maintenance mode error:", error);
         return { error: "Ошибка переключения режима" };
     }
@@ -1658,6 +1829,12 @@ export async function getSecurityEvents({
             }
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/security/events",
+            method: "getSecurityEvents",
+            details: { page, limit, eventType, severity }
+        });
         console.error("Security events error:", error);
         return { error: "Ошибка получения событий безопасности" };
     }
@@ -1743,6 +1920,11 @@ export async function getSecurityEventsSummary() {
             }))
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/security/summary",
+            method: "getSecurityEventsSummary"
+        });
         console.error("Security events summary error:", error);
         return { error: "Ошибка получения сводки безопасности" };
     }
@@ -1774,8 +1956,14 @@ export async function getStorageDetails(prefix?: string) {
             },
             local: localStats
         };
-    } catch (e) {
-        console.error("Storage details error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/details",
+            method: "getStorageDetails",
+            details: { prefix }
+        });
+        console.error("Storage details error:", error);
         return { error: "Ошибка при получении данных хранилища" };
     }
 }
@@ -1792,8 +1980,14 @@ export async function deleteS3FileAction(key: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Delete file error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/delete",
+            method: "deleteS3FileAction",
+            details: { key }
+        });
+        console.error("Delete file error:", error);
         return { success: false, error: "Ошибка при удалении файла" };
     }
 }
@@ -1809,8 +2003,14 @@ export async function createS3FolderAction(path: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Create folder error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/folder",
+            method: "createS3FolderAction",
+            details: { path }
+        });
+        console.error("Create folder error:", error);
         return { success: false, error: "Ошибка при создании папки" };
     }
 }
@@ -1830,8 +2030,14 @@ export async function getLocalStorageDetails(prefix?: string) {
             folders: content.folders,
             files: content.files
         };
-    } catch (e) {
-        console.error("Local storage details error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/local",
+            method: "getLocalStorageDetails",
+            details: { prefix }
+        });
+        console.error("Local storage details error:", error);
         return { error: "Ошибка при получении данных локального хранилища" };
     }
 }
@@ -1848,8 +2054,14 @@ export async function createLocalFolderAction(folderPath: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Create local folder error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/local/folder",
+            method: "createLocalFolderAction",
+            details: { folderPath }
+        });
+        console.error("Create local folder error:", error);
         return { success: false, error: "Ошибка при создании папки" };
     }
 }
@@ -1866,8 +2078,14 @@ export async function deleteLocalFileAction(filePath: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Delete local file error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/local/delete",
+            method: "deleteLocalFileAction",
+            details: { filePath }
+        });
+        console.error("Delete local file error:", error);
         return { success: false, error: "Ошибка при удалении файла" };
     }
 }
@@ -1884,8 +2102,14 @@ export async function renameS3FileAction(oldKey: string, newKey: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Rename file error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/rename",
+            method: "renameS3FileAction",
+            details: { oldKey, newKey }
+        });
+        console.error("Rename file error:", error);
         return { success: false, error: "Ошибка при переименовании" };
     }
 }
@@ -1902,8 +2126,14 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Delete multiple files error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/bulk-delete",
+            method: "deleteMultipleS3FilesAction",
+            details: { count: keys.length }
+        });
+        console.error("Delete multiple files error:", error);
         return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
@@ -1920,8 +2150,14 @@ export async function renameLocalFileAction(oldPath: string, newPath: string) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Rename local file error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/local/rename",
+            method: "renameLocalFileAction",
+            details: { oldPath, newPath }
+        });
+        console.error("Rename local file error:", error);
         return { success: false, error: "Ошибка при переименовании" };
     }
 }
@@ -1938,8 +2174,14 @@ export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
             revalidatePath("/dashboard/admin/storage");
         }
         return res;
-    } catch (e) {
-        console.error("Delete multiple local files error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/local/bulk-delete",
+            method: "deleteMultipleLocalFilesAction",
+            details: { count: filePaths.length }
+        });
+        console.error("Delete multiple local files error:", error);
         return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
@@ -1952,8 +2194,14 @@ export async function getS3FileUrlAction(key: string) {
         const { getFileUrl } = await import("@/lib/storage");
         const url = await getFileUrl(key);
         return { success: true, url };
-    } catch (e) {
-        console.error("Get file URL error:", e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/admin/storage/url",
+            method: "getS3FileUrlAction",
+            details: { key }
+        });
+        console.error("Get file URL error:", error);
         return { success: false, error: "Ошибка при получении ссылки на файл" };
     }
 }

@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 
 export async function getTasks() {
     const session = await getSession();
@@ -25,6 +26,11 @@ export async function getTasks() {
         });
         return { data: allTasks };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/tasks",
+            method: "getTasks"
+        });
         console.error("Error fetching tasks:", error);
         return { error: "Failed to fetch tasks" };
     }
@@ -58,6 +64,12 @@ export async function createTask(formData: FormData) {
         revalidatePath("/dashboard/tasks");
         return { data: result[0], success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/tasks",
+            method: "createTask",
+            details: { title, priority }
+        });
         console.error("Error creating task:", error);
         return { error: "Failed to create task" };
     }
@@ -91,6 +103,12 @@ export async function updateTask(taskId: string, formData: FormData) {
         revalidatePath("/dashboard/tasks");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/tasks/${taskId}`,
+            method: "updateTask",
+            details: { taskId, title, status }
+        });
         console.error("Error updating task:", error);
         return { error: "Failed to update task" };
     }
@@ -124,6 +142,12 @@ export async function deleteTask(taskId: string) {
         revalidatePath("/dashboard/tasks");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/tasks/${taskId}`,
+            method: "deleteTask",
+            details: { taskId }
+        });
         console.error("Error deleting task:", error);
         return { error: "Failed to delete task" };
     }
@@ -161,6 +185,12 @@ export async function uploadTaskFile(taskId: string, formData: FormData) {
         revalidatePath("/dashboard/tasks");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/tasks/${taskId}`,
+            method: "uploadTaskFile",
+            details: { taskId, fileName: file.name }
+        });
         console.error("Error uploading task file:", error);
         return { error: "Failed to upload file" };
     }

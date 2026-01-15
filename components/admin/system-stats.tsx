@@ -124,6 +124,7 @@ interface SecurityData {
     id: string;
     message: string;
     path?: string | null;
+    method?: string | null;
     severity?: string;
     ipAddress?: string | null;
     createdAt: Date;
@@ -1343,8 +1344,9 @@ export function SystemStats() {
                                   {error.message}
                                 </p>
                                 {error.path && (
-                                  <p className="text-[10px] font-mono text-slate-400 truncate">
-                                    PATH: {error.path}
+                                  <p className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
+                                    <span className="bg-slate-100 px-1 rounded font-bold text-slate-500">{error.method || 'REQ'}</span>
+                                    <span className="truncate">{error.path}</span>
                                   </p>
                                 )}
                               </div>

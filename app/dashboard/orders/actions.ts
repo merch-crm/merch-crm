@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { desc, eq, inArray, and, gte, lte, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 
 export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20) {
     try {
@@ -46,6 +47,12 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20) {
             currentPage: page
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/orders",
+            method: "getOrders",
+            details: { from, to, page, limit }
+        });
         console.error("Error fetching orders:", error);
         return { error: "Failed to fetch orders" };
     }
@@ -168,6 +175,12 @@ export async function createOrder(formData: FormData) {
         revalidatePath("/dashboard/admin/warehouse"); // Update warehouse counts
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/orders/new",
+            method: "createOrder",
+            details: { clientId, priority }
+        });
         console.error("Error creating order:", error);
         return { error: "Failed to create order" };
     }
@@ -290,6 +303,12 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/orders/${orderId}`,
+            method: "updateOrderStatus",
+            details: { orderId, newStatus }
+        });
         console.error("Error updating order status:", error);
         return { error: "Failed to update status" };
     }
@@ -438,6 +457,12 @@ export async function deleteOrder(orderId: string) {
         revalidatePath("/dashboard/orders");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/orders/${orderId}`,
+            method: "deleteOrder",
+            details: { orderId }
+        });
         console.error("Error deleting order:", error);
         return { error: "Failed to delete order" };
     }

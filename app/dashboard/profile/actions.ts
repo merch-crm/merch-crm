@@ -10,6 +10,7 @@ import { cookies } from "next/headers";
 import { orders, tasks, auditLogs } from "@/lib/schema";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 import { saveAvatarFile } from "@/lib/avatar-storage";
 
 export async function logout() {
@@ -35,6 +36,11 @@ export async function getUserProfile() {
 
         return { data: user };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getUserProfile"
+        });
         console.error("Error fetching profile:", error);
         return { error: "Failed to fetch profile" };
     }
@@ -91,6 +97,12 @@ export async function updateProfile(formData: FormData) {
 
         return { success: true };
     } catch (error: unknown) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "updateProfile",
+            details: { name, phone }
+        });
         console.error("Error updating profile:", error);
         return { error: `Ошибка обновления профиля: ${(error as Error).message || String(error)}` };
     }
@@ -135,6 +147,11 @@ export async function updatePassword(formData: FormData) {
 
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "updatePassword"
+        });
         console.error("Error updating password:", error);
         return { error: "Failed to update password" };
     }
@@ -193,6 +210,11 @@ export async function getUserStatistics() {
             }
         };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getUserStatistics"
+        });
         console.error("Error fetching user statistics:", error);
         return { error: "Failed to fetch statistics" };
     }
@@ -210,6 +232,11 @@ export async function getUserSchedule() {
 
         return { data: userTasks };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getUserSchedule"
+        });
         console.error("Error fetching user schedule:", error);
         return { error: "Failed to fetch schedule" };
     }
@@ -230,6 +257,11 @@ export async function getUserActivities() {
 
         return { data: logs };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getUserActivities"
+        });
         console.error("Error fetching user activities:", error);
         return { error: "Failed to fetch activities" };
     }

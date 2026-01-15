@@ -16,6 +16,7 @@ import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 import fs from "fs";
 import path from "path";
 
@@ -224,7 +225,13 @@ export async function addInventoryItem(formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse",
+            method: "addInventoryItem",
+            details: { name, sku, quantity, storageLocationId, categoryId }
+        });
         return { error: "Failed to add item" };
     }
 }
@@ -267,8 +274,14 @@ export async function deleteInventoryItems(ids: string[]) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (e) {
-        console.error(e);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse",
+            method: "deleteInventoryItems",
+            details: { ids }
+        });
+        console.error(error);
         return { error: "Не удалось удалить выбранные позиции" };
     }
 }
@@ -338,7 +351,13 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/warehouse/item/${id}`,
+            method: "updateInventoryItem",
+            details: { id, name, sku, quantity }
+        });
         return { error: "Failed to update item" };
     }
 }
@@ -452,6 +471,12 @@ export async function adjustInventoryStock(itemId: string, amount: number, type:
 
         return { success: true };
     } catch (error: unknown) {
+        await logError({
+            error,
+            path: `/dashboard/warehouse/adjust/${itemId}`,
+            method: "adjustInventoryStock",
+            details: { itemId, amount, type, reason, storageLocationId }
+        });
         return { error: (error as Error).message || "Failed to adjust stock" };
     }
 }
@@ -855,6 +880,12 @@ export async function moveInventoryItem(formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch (error: unknown) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/move",
+            method: "moveInventoryItem",
+            details: { itemId, fromLocationId, toLocationId, quantity }
+        });
         return { error: (error as Error).message || "Failed to move inventory" };
     }
 }
@@ -872,7 +903,13 @@ export async function deleteInventoryTransactions(ids: string[]) {
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/history",
+            method: "deleteInventoryTransactions",
+            details: { ids }
+        });
         return { error: "Ошибка при удалении записей" };
     }
 }
@@ -888,7 +925,12 @@ export async function clearInventoryHistory() {
         await logAction("Очистка истории инвентаря", "inventory_history", "all", {});
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/history",
+            method: "clearInventoryHistory"
+        });
         return { error: "Ошибка при очистке истории" };
     }
 }
@@ -947,7 +989,13 @@ export async function bulkMoveInventoryItems(ids: string[], toLocationId: string
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/bulk-move",
+            method: "bulkMoveInventoryItems",
+            details: { count: ids.length, toLocationId }
+        });
         return { error: "Ошибка при массовом перемещении" };
     }
 }
@@ -967,7 +1015,13 @@ export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: s
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/bulk-category",
+            method: "bulkUpdateInventoryCategory",
+            details: { count: ids.length, toCategoryId }
+        });
         return { error: "Ошибка при массовой смене категории" };
     }
 }

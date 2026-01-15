@@ -270,6 +270,21 @@ export const securityEvents = pgTable("security_events", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// System Errors
+export const systemErrors = pgTable("system_errors", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").references(() => users.id),
+    message: text("message").notNull(),
+    stack: text("stack"),
+    path: text("path"),
+    method: text("method"),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    severity: text("severity").default("error").notNull(), // error, warning, critical
+    details: jsonb("details"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 
 // Task Attachments
 export const taskAttachments = pgTable("task_attachments", {
@@ -524,6 +539,13 @@ export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
 export const securityEventsRelations = relations(securityEvents, ({ one }) => ({
     user: one(users, {
         fields: [securityEvents.userId],
+        references: [users.id],
+    }),
+}));
+
+export const systemErrorsRelations = relations(systemErrors, ({ one }) => ({
+    user: one(users, {
+        fields: [systemErrors.userId],
         references: [users.id],
     }),
 }));

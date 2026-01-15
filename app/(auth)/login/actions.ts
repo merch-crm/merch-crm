@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { logSecurityEvent } from "@/lib/security-logger";
+import { logError } from "@/lib/error-logger";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function loginAction(prevState: any, formData: FormData) {
@@ -127,6 +128,12 @@ export async function loginAction(prevState: any, formData: FormData) {
 
         console.log(`[Login] Cookie set, redirecting to dashboard...`);
     } catch (error) {
+        await logError({
+            error,
+            path: "/login",
+            method: "loginAction",
+            details: { email }
+        });
         console.error("[Login] Execution error:", error);
         return { error: `Ошибка сервера: ${(error as Error).message}` };
     }

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { asc, desc, eq, sql, or, and, ilike } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 
 
 export async function getManagers() {
@@ -55,6 +56,11 @@ export async function getClients() {
 
         return { data };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/clients",
+            method: "getClients"
+        });
         console.error("Error fetching clients:", error);
         return { error: "Failed to fetch clients" };
     }
@@ -155,6 +161,12 @@ export async function addClient(formData: FormData) {
         revalidatePath("/dashboard/orders"); // For client selection
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/clients",
+            method: "addClient",
+            details: { lastName, firstName, phone, email }
+        });
         console.error("Error adding client:", error);
         return { error: "Failed to add client" };
     }
@@ -214,6 +226,12 @@ export async function updateClient(clientId: string, formData: FormData) {
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/clients/${clientId}`,
+            method: "updateClient",
+            details: { clientId, lastName, firstName, phone }
+        });
         console.error("Error updating client:", error);
         return { error: "Failed to update client" };
     }
@@ -376,6 +394,12 @@ export async function deleteClient(clientId: string) {
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
+        await logError({
+            error,
+            path: `/dashboard/clients/${clientId}`,
+            method: "deleteClient",
+            details: { clientId }
+        });
         console.error("Error deleting client:", error);
         return { error: "Failed to delete client" };
     }
