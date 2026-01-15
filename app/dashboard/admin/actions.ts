@@ -1541,7 +1541,7 @@ export async function getSecurityEvents({
         const conditions = [];
 
         if (eventType) {
-            conditions.push(eq(securityEvents.eventType, eventType as any));
+            conditions.push(eq(securityEvents.eventType, eventType as "login_success" | "login_failed" | "logout" | "password_change" | "email_change" | "profile_update" | "role_change" | "permission_change" | "data_export" | "record_delete" | "settings_change" | "maintenance_mode_toggle" | "system_error"));
         }
 
         if (severity) {

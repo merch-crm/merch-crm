@@ -5,7 +5,7 @@ import {
   getMonitoringStats,
   getSecurityStats,
   toggleMaintenanceMode,
-  getSecurityEventsSummary,
+
   checkSystemHealth,
   createDatabaseBackup,
   getBackupsList,
@@ -154,8 +154,7 @@ export function SystemStats() {
 
   // Security state
   const [securityData, setSecurityData] = useState<SecurityData | null>(null);
-  const [securityEventsSummary, setSecurityEventsSummary] =
-    useState<SecurityEventsSummary | null>(null);
+
   const [togglingMaintenance, setTogglingMaintenance] = useState(false);
   const [settings, setSettings] = useState<
     Record<string, string | number | boolean | null>
