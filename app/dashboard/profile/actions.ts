@@ -72,7 +72,9 @@ export async function updateProfile(formData: FormData) {
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
 
             // Use utility function that handles both save and delete
-            updateData.avatar = await saveAvatarFile(buffer, session.id, currentUser?.avatar || null);
+            // Use the name from form or session for filename
+            const displayName = name || session.name || "user";
+            updateData.avatar = await saveAvatarFile(buffer, session.id, displayName, currentUser?.avatar || null);
         }
 
         await db.update(users)

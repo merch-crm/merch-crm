@@ -1,18 +1,20 @@
 import fs from 'fs';
 import path from 'path';
+import { LOCAL_STORAGE_ROOT } from './local-storage';
 
 /**
  * Удаляет файл аватара из локального хранилища
- * @param avatarPath - путь к аватару в формате /uploads/avatars/filename.jpg
+ * @param avatarPath - путь к аватару в формате /api/storage/avatars/filename.jpg
  * @returns true если файл был удален, false если файл не найден или произошла ошибка
  */
 export function deleteAvatarFile(avatarPath: string | null): boolean {
-    if (!avatarPath || !avatarPath.startsWith('/uploads/avatars/')) {
+    if (!avatarPath || !avatarPath.startsWith('/api/storage/avatars/')) {
         return false;
     }
 
     try {
-        const filePath = path.join(process.cwd(), 'public', avatarPath);
+        const filename = avatarPath.replace('/api/storage/avatars/', '');
+        const filePath = path.join(LOCAL_STORAGE_ROOT, 'avatars', filename);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
@@ -32,16 +34,20 @@ export function deleteAvatarFile(avatarPath: string | null): boolean {
  * Сохраняет новый файл аватара и удаляет старый
  * @param buffer - буфер с данными изображения
  * @param userId - ID пользователя
+ * @param username - имя пользователя для именования файла
  * @param oldAvatarPath - путь к старому аватару (если есть)
- * @returns путь к новому аватару
+ * @returns путь к новому аватару (URL)
  */
 export async function saveAvatarFile(
     buffer: Buffer,
     userId: string,
+    username: string,
     oldAvatarPath: string | null = null
 ): Promise<string> {
-    const filename = `${userId}-${Date.now()}.jpg`;
-    const uploadDir = path.join(process.cwd(), 'public/uploads/avatars');
+    // Sanitize username for filename
+    const safeUsername = username.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const filename = `avatar_${safeUsername}_${Date.now()}.jpg`;
+    const uploadDir = path.join(LOCAL_STORAGE_ROOT, 'avatars');
 
     // Создаем директорию если не существует
     if (!fs.existsSync(uploadDir)) {
@@ -57,7 +63,9 @@ export async function saveAvatarFile(
     const filePath = path.join(uploadDir, filename);
     fs.writeFileSync(filePath, buffer);
 
-    console.log(`[saveAvatarFile] Saved new avatar: ${filePath}`);
+    console.log(`[saveAvatarFile] Saved new avatar to local storage: ${filePath}`);
 
-    return `/uploads/avatars/${filename}`;
+    // Return the URL that will be served via our API route
+    return `/api/storage/avatars/${filename}`;
 }
+
