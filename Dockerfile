@@ -63,6 +63,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/lib/schema.ts ./lib/schema.ts
 COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
+ENV HOME="/app"
 USER nextjs
 
 EXPOSE 3000
