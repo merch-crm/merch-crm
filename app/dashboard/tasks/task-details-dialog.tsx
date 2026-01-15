@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image";
 import {
     X,
     AlignLeft,
@@ -153,11 +154,11 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         // Disabled
     };
 
-    const handleToggleChecklist = (id: string, completed: boolean) => {
+    const handleToggleChecklist = (_id: string, _completed: boolean) => {
         // Disabled
     };
 
-    const handleDeleteChecklist = (id: string) => {
+    const handleDeleteChecklist = (_id: string) => {
         // Disabled
     };
 
@@ -262,7 +263,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     <div className="flex items-center gap-3">
                                         <div className="h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
                                             {task.assignedToUser?.avatar ? (
-                                                <img src={task.assignedToUser.avatar} alt="" className="w-full h-full object-cover" />
+                                                <NextImage src={task.assignedToUser.avatar} alt={task.assignedToUser.name} width={36} height={36} className="w-full h-full object-cover" unoptimized />
                                             ) : (
                                                 <UserCircle2 className="w-5 h-5 text-slate-400" />
                                             )}
@@ -451,7 +452,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     <div key={comment.id} className="flex gap-4">
                                         <div className="h-10 w-10 rounded-2xl bg-slate-100 shrink-0 overflow-hidden">
                                             {comment.user.avatar ? (
-                                                <img src={comment.user.avatar} className="w-full h-full object-cover" />
+                                                <NextImage src={comment.user.avatar} alt={comment.user.name} width={40} height={40} className="w-full h-full object-cover" unoptimized />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500 font-bold text-xs uppercase">
                                                     {comment.user.name.charAt(0)}

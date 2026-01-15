@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, Layers, ChevronRight, FolderOpen } from "lucide-react";
+import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, Layers, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -711,7 +711,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, on
 
         // Add attributes to form data
         const cleanedAttributes = Object.fromEntries(
-            Object.entries(attributes).filter(([_, v]) => v.trim() !== "")
+            Object.entries(attributes).filter(([, v]) => v.trim() !== "")
         );
         formData.append("attributes", JSON.stringify(cleanedAttributes));
 

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    TrendingUp,
     CheckCircle2,
     Clock,
     AlertTriangle,

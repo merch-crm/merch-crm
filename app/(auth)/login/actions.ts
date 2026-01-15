@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, departments, auditLogs } from "@/lib/schema";
+import { users, roles, departments } from "@/lib/schema";
 import { encrypt } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
 import { eq } from "drizzle-orm";
