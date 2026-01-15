@@ -31,12 +31,6 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    useEffect(() => {
-        if (open) {
-            loadSettings();
-        }
-    }, [open]);
-
     const loadSettings = async () => {
         setLoading(true);
         const res = await getStorageQuotaSettings();
@@ -47,6 +41,12 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        if (open) {
+            loadSettings();
+        }
+    }, [open]);
 
     const handleSave = async () => {
         setSaving(true);
