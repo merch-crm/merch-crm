@@ -618,7 +618,7 @@ export function SystemStats() {
                                     disabled={restarting}
                                     className="px-5 py-2.5 bg-rose-500 text-white text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-rose-600 shadow-md shadow-rose-100 transition-all active:scale-95 disabled:opacity-50"
                                 >
-                                    {restarting ? "Wait..." : "Restart"}
+                                    {restarting ? "Запуск..." : "Рестарт"}
                                 </button>
                             </div>
                         </div>
