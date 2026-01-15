@@ -129,6 +129,49 @@ export async function deleteLocalFile(filePath: string): Promise<{ success: bool
     }
 }
 
+export async function deleteMultipleLocalFiles(filePaths: string[]): Promise<{ success: boolean; deleted: number; errors: string[] }> {
+    await ensureLocalStorageRoot();
+
+    let deletedCount = 0;
+    const errors: string[] = [];
+
+    for (const filePath of filePaths) {
+        const res = await deleteLocalFile(filePath);
+        if (res.success) {
+            deletedCount++;
+        } else {
+            errors.push(`${filePath}: ${res.error}`);
+        }
+    }
+
+    return { success: true, deleted: deletedCount, errors };
+}
+
+export async function renameLocalFile(oldPath: string, newPath: string): Promise<{ success: boolean; error?: string }> {
+    await ensureLocalStorageRoot();
+
+    const fullOldPath = path.join(LOCAL_STORAGE_ROOT, oldPath);
+    const fullNewPath = path.join(LOCAL_STORAGE_ROOT, newPath);
+
+    // Security check
+    if (!fullOldPath.startsWith(LOCAL_STORAGE_ROOT) || !fullNewPath.startsWith(LOCAL_STORAGE_ROOT)) {
+        return { success: false, error: "Invalid path" };
+    }
+
+    try {
+        // Ensure destination parent directory exists
+        const dir = path.dirname(fullNewPath);
+        await mkdir(dir, { recursive: true });
+
+        await promisify(fs.rename)(fullOldPath, fullNewPath);
+        return { success: true };
+    } catch (error) {
+        console.error("Error renaming local file:", error);
+        return { success: false, error: String(error) };
+    }
+}
+
+
 /**
  * Get storage statistics
  */

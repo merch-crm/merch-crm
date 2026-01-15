@@ -10,14 +10,7 @@ import { cookies } from "next/headers";
 import { orders, tasks, auditLogs } from "@/lib/schema";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
-import fs from "fs";
-import path from "path";
-import { promisify } from "util";
-
 import { saveAvatarFile } from "@/lib/avatar-storage";
-
-const writeFile = promisify(fs.writeFile);
-const mkdir = promisify(fs.mkdir);
 
 export async function logout() {
     (await cookies()).delete("session");

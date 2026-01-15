@@ -1899,3 +1899,38 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
         return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
+
+export async function renameLocalFileAction(oldPath: string, newPath: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { renameLocalFile } = await import("@/lib/local-storage");
+        const res = await renameLocalFile(oldPath, newPath);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Rename local file error:", e);
+        return { success: false, error: "Ошибка при переименовании" };
+    }
+}
+
+export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { deleteMultipleLocalFiles } = await import("@/lib/local-storage");
+        const res = await deleteMultipleLocalFiles(filePaths);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Delete multiple local files error:", e);
+        return { success: false, error: "Ошибка при удалении файлов" };
+    }
+}
+
