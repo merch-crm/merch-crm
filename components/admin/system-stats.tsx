@@ -64,10 +64,21 @@ interface BackupFile {
 }
 
 interface MonitoringData {
-    activeUsers: Array<{ id: string; name: string; lastActiveAt: Date | null; avatar: string | null }>;
-    activityStats: { hour: number; count: number }[];
-    performance: number; // mock or calculated
+    activeUsers: Array<{
+        id: string;
+        name: string;
+        email: string;
+        avatar: string | null;
+        role?: string;
+        department?: string;
+        lastActiveAt: Date | null;
+    }>;
+    activityStats: { hour: number; type: string; count: number }[];
+    entityStats: { type: string; count: number }[];
+    performance: number;
 }
+
+
 
 export function SystemStats() {
     const { toast } = useToast();
@@ -150,6 +161,7 @@ export function SystemStats() {
                 setMonitoringData({
                     activeUsers: monRes.activeUsers || [],
                     activityStats: monRes.activityStats || [],
+                    entityStats: monRes.entityStats || [],
                     performance: Math.round(end - start)
                 });
             }
@@ -640,40 +652,81 @@ export function SystemStats() {
                                     {monitoringData ? monitoringData.activityStats.reduce((acc, curr) => acc + curr.count, 0) : '0'} <span className="text-xs font-bold text-slate-400 uppercase">действий</span>
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <div className="h-[150px] w-full flex items-end gap-1 pt-4">
-                                    {!monitoringData ? (
-                                        [...Array(24)].map((_, i) => (
-                                            <div key={i} className="flex-1 bg-slate-50 animate-pulse rounded-t-sm h-1/4" />
-                                        ))
-                                    ) : (
-                                        [...Array(24)].map((_, i) => {
-                                            const hourStat = monitoringData.activityStats.find(s => Number(s.hour) === i);
-                                            const count = hourStat ? hourStat.count : 0;
-                                            // Avoid division by zero
-                                            const maxVal = Math.max(...monitoringData.activityStats.map(s => s.count), 0);
-                                            const max = maxVal < 5 ? 10 : maxVal;
+                            <CardContent className="space-y-6">
+                                {/* Bar Chart */}
+                                <div className="space-y-2">
+                                    <div className="h-[120px] w-full flex items-end gap-1 px-1">
+                                        {!monitoringData ? (
+                                            [...Array(24)].map((_, i) => (
+                                                <div key={i} className="flex-1 bg-slate-50 animate-pulse rounded-t-sm h-1/4" />
+                                            ))
+                                        ) : (
+                                            [...Array(24)].map((_, i) => {
+                                                const hourStat = monitoringData.activityStats.find(s => Number(s.hour) === i);
+                                                const count = hourStat ? hourStat.count : 0;
+                                                const maxVal = Math.max(...monitoringData.activityStats.map(s => s.count), 0);
+                                                const max = maxVal < 5 ? 10 : maxVal;
+                                                const height = Math.max((count / max) * 100, 5);
 
-                                            const height = Math.max((count / max) * 100, 5);
+                                                return (
+                                                    <div key={i} className="flex-1 group relative h-full flex items-end">
+                                                        <div
+                                                            className={cn(
+                                                                "w-full rounded-t-sm transition-all duration-300 group-hover:bg-indigo-400",
+                                                                count > 0 ? "bg-indigo-600 shadow-[0_0_10px_rgba(99,102,241,0.2)]" : "bg-slate-100/50"
+                                                            )}
+                                                            style={{ height: `${height}%` }}
+                                                        />
+                                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                                                            <div className="bg-slate-900 text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap">
+                                                                {count} {Math.abs(count % 10) === 1 && count % 100 !== 11 ? 'действие' : [2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100) ? 'действия' : 'действий'}
+                                                            </div>
+                                                            <div className="w-2 h-2 bg-slate-900 rotate-45 mx-auto -mt-1 shadow-xl" />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        )}
+                                    </div>
 
-                                            return (
-                                                <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative h-full justify-end">
-                                                    <div
-                                                        className={cn(
-                                                            "w-full rounded-t-sm transition-all duration-300 group-hover:bg-indigo-400",
-                                                            count > 0 ? "bg-indigo-600 shadow-[0_0_10px_rgba(99,102,241,0.2)]" : "bg-slate-100/50"
-                                                        )}
-                                                        style={{ height: `${height}%` }}
-                                                    />
-                                                    <span className="text-[9px] text-white font-black opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 px-2 py-1 rounded-lg z-10 shadow-xl pointer-events-none whitespace-nowrap">
-                                                        {count} {Math.abs(count % 10) === 1 && count % 100 !== 11 ? 'действие' : [2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100) ? 'действия' : 'действий'}
+                                    {/* Time Labels Row */}
+                                    <div className="w-full flex gap-1 px-1 border-t border-slate-100 pt-2">
+                                        {[...Array(24)].map((_, i) => (
+                                            <div key={i} className="flex-1 text-center">
+                                                {i % 4 === 0 && (
+                                                    <span className="text-[9px] text-slate-400 font-black">
+                                                        {i.toString().padStart(2, '0')}:00
                                                     </span>
-                                                    {i % 4 === 0 && <span className="text-[9px] text-slate-400 font-black mt-1">{i}:00</span>}
-                                                </div>
-                                            )
-                                        })
-                                    )}
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Action Breakdown Legend */}
+                                {monitoringData && monitoringData.entityStats.length > 0 && (
+                                    <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-50">
+                                        {monitoringData.entityStats.map((stat) => (
+                                            <div key={stat.type} className="flex items-center gap-2">
+                                                <div className={cn(
+                                                    "w-2 h-2 rounded-full",
+                                                    stat.type === 'orders' ? 'bg-blue-500' :
+                                                        stat.type === 'inventory' ? 'bg-amber-500' :
+                                                            stat.type === 'users' ? 'bg-emerald-500' :
+                                                                'bg-slate-400'
+                                                )} />
+                                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tight">
+                                                    {stat.type === 'orders' ? 'Заказы' :
+                                                        stat.type === 'inventory' ? 'Склад' :
+                                                            stat.type === 'users' ? 'Пользователи' :
+                                                                stat.type === 'auth' ? 'Авторизация' :
+                                                                    stat.type === 'system' ? 'Система' : stat.type}:
+                                                </span>
+                                                <span className="text-[10px] font-black text-slate-900">{stat.count}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>

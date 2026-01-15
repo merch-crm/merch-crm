@@ -1350,18 +1350,30 @@ export async function getMonitoringStats() {
             limit: 10
         });
 
-        // 2. Get activity stats (audit logs per hour for last 24h)
+        // 2. Get activity stats (audit logs per hour and type for last 24h)
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-        // Use a more robust query for Postgres EXTRACT
+        // Get breakdown by hour and type for stacked bars
         const activityStatsResult = await db.execute(sql`
             SELECT 
                 EXTRACT(HOUR FROM ${auditLogs.createdAt})::int as hour, 
+                ${auditLogs.entityType} as type,
+                count(*)::int as count 
+            FROM ${auditLogs} 
+            WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
+            GROUP BY 1, 2 
+            ORDER BY 1, 2
+        `);
+
+        // Get overall breakdown for legend (last 24h)
+        const entityStatsResult = await db.execute(sql`
+            SELECT 
+                ${auditLogs.entityType} as type, 
                 count(*)::int as count 
             FROM ${auditLogs} 
             WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
             GROUP BY 1 
-            ORDER BY 1
+            ORDER BY 2 DESC
         `);
 
         return {
@@ -1374,11 +1386,18 @@ export async function getMonitoringStats() {
                 department: u.department?.name,
                 lastActiveAt: u.lastActiveAt
             })),
-            activityStats: (activityStatsResult.rows as unknown as Array<{ hour: number; count: number }> || []).map((s) => ({
+            activityStats: (activityStatsResult.rows as unknown as Array<{ hour: number; type: string; count: number }> || []).map((s) => ({
                 hour: Number(s.hour),
+                type: s.type || 'system',
+                count: Number(s.count)
+            })),
+            entityStats: (entityStatsResult.rows as unknown as Array<{ type: string; count: number }> || []).map((s) => ({
+                type: s.type || 'system',
                 count: Number(s.count)
             }))
         };
+
+
     } catch {
         console.error("Monitoring stats error:");
         return { error: "Ошибка получения данных мониторинга" };
