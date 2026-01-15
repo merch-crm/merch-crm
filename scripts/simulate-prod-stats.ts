@@ -9,8 +9,8 @@ async function main() {
     console.log("🔌 Connecting to database...");
 
     // Dynamic imports to handle path aliases
-    const { db } = await import("@/lib/db");
-    const { auditLogs, users } = await import("@/lib/schema");
+    const { db } = await import("../lib/db");
+    const { auditLogs, users } = await import("../lib/schema");
     const { eq } = await import("drizzle-orm");
 
     console.log("🚀 Simulating production events for security audit...");
