@@ -21,8 +21,8 @@ async function debugS3() {
     }
 
     const client = new S3Client({
-        region: "ru-1",
-        endpoint: "https://s3.regru.cloud", // Try official endpoint
+        region: process.env.S3_REGION || "ru-1",
+        endpoint: process.env.S3_ENDPOINT || "https://s3.regru.cloud",
         credentials: {
             accessKeyId: process.env.S3_ACCESS_KEY,
             secretAccessKey: process.env.S3_SECRET_KEY,
