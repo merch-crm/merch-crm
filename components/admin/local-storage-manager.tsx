@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import {
     getLocalStorageDetails,
@@ -744,10 +745,13 @@ export function LocalStorageManager() {
 
                         <div className="p-4 bg-slate-900 flex items-center justify-center min-h-[400px] max-h-[70vh]">
                             {previewFile?.type === 'image' && (
-                                <img
+                                <NextImage
                                     src={previewFile.url}
                                     alt={previewFile.name}
-                                    className="max-w-full max-h-full object-contain shadow-2xl rounded-lg"
+                                    width={1000}
+                                    height={800}
+                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-lg w-auto h-auto"
+                                    unoptimized
                                 />
                             )}
                         </div>

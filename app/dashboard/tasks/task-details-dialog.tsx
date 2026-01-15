@@ -154,11 +154,14 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         // Disabled
     };
 
-    const handleToggleChecklist = (_id: string, _completed: boolean) => {
+    const handleToggleChecklist = (id: string, completed: boolean) => {
+        void id;
+        void completed;
         // Disabled
     };
 
-    const handleDeleteChecklist = (_id: string) => {
+    const handleDeleteChecklist = (id: string) => {
+        void id;
         // Disabled
     };
 

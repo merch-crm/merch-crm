@@ -976,7 +976,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
 
         // Add attributes to form data
         const cleanedAttributes = Object.fromEntries(
-            Object.entries(attributes).filter(([_, v]) => v.trim() !== "")
+            Object.entries(attributes).filter(([, v]) => v.trim() !== "")
         );
         formData.append("attributes", JSON.stringify(cleanedAttributes));
 

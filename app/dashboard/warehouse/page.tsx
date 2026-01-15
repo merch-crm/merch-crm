@@ -67,7 +67,7 @@ export default async function WarehousePage() {
                 history={history}
                 storageLocations={storageLocations}
                 users={users}
-                measurementUnits={measurementUnits}
+
                 user={session}
             />
         </div>
