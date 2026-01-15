@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Shield, Settings, Building, History } from "lucide-react";
+import { Users, Shield, Settings, Building, HardDrive } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AdminTabsProps {
@@ -16,14 +16,14 @@ export default function AdminTabs({ isAdmin }: AdminTabsProps) {
         { name: "Пользователи", href: "/dashboard/admin/users", icon: Users },
         { name: "Отделы компании", href: "/dashboard/admin/departments", icon: Building },
         { name: "Роли и права", href: "/dashboard/admin/roles", icon: Shield },
-        ...(isAdmin ? [{ name: "Лог действий", href: "/dashboard/admin/audit", icon: History }] : []),
-        { name: "Мониторинг", href: "/dashboard/admin/settings", icon: Settings },
+        { name: "Мониторинг", href: "/dashboard/admin/monitoring", icon: Settings },
+        { name: "Хранилище", href: "/dashboard/admin/storage", icon: HardDrive },
     ];
 
     return (
         <nav className="inline-flex items-center gap-1 p-1 bg-[#f1f5f9] rounded-full border-none shadow-none flex-wrap">
             {tabs.map((tab) => {
-                const isActive = pathname === tab.href || (pathname === "/dashboard/admin" && tab.href === "/dashboard/admin/users");
+                const isActive = pathname.startsWith(tab.href) || (pathname === "/dashboard/admin" && tab.href === "/dashboard/admin/users");
                 return (
                     <Link
                         key={tab.name}

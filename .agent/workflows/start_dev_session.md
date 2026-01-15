@@ -11,8 +11,9 @@ lsof -ti:5432 | xargs kill -9 2>/dev/null || true
 
 2. Establish a background SSH tunnel to the remote server (89.104.69.25). 
 This links the remote Postgres in Docker to your local port 5432.
+We add a small sleep to ensure the tunnel is fully established before the next step.
 ```bash
-ssh -i ~/.ssh/antigravity_key -f -N -L 5432:localhost:5432 root@89.104.69.25
+ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 root@89.104.69.25 && sleep 1
 ```
 
 3. Verify database connectivity using the local environment settings.
@@ -24,3 +25,4 @@ node scripts/check-connection.js
 ```bash
 npm run dev
 ```
+

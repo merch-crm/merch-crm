@@ -34,8 +34,8 @@
 *   **Endpoint:** `https://s3.regru.cloud`
 *   **Bucket:** `merch-crm-storage`
 *   **Region:** `ru-1`
-*   **Access Key:** `S5GORAOOUWV81QDIOGMA`
-*   **Secret Key:** `ZEFFxisDZZSojaasSmyLsnp9KhKCstviYelZFEfh`
+*   **Access Key:** `S5GORAO0UWV81QDIOGMA`
+*   **Secret Key:** `ZEFFxisDZZSojaasSmyLsnp9KhKCstviYeIZFEfh`
 
 ---
 

@@ -14,6 +14,8 @@ import fs from "fs";
 import path from "path";
 import { promisify } from "util";
 
+import { saveAvatarFile } from "@/lib/avatar-storage";
+
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
 
@@ -68,20 +70,16 @@ export async function updateProfile(formData: FormData) {
         const updateData: Record<string, any> = { name, phone, departmentLegacy, telegram, instagram, socialMax, birthday: birthday || null };
 
         if (avatarFile && avatarFile.size > 0) {
+            // Get current user to check for existing avatar
+            const currentUser = await db.query.users.findFirst({
+                where: eq(users.id, session.id),
+                columns: { avatar: true }
+            });
+
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
-            const filename = `${session.id}-${Date.now()}.jpg`;
-            const uploadDir = path.join(process.cwd(), "public/uploads/avatars");
 
-            // Ensure directory exists
-            if (!fs.existsSync(uploadDir)) {
-                await mkdir(uploadDir, { recursive: true });
-            }
-
-            const filePath = path.join(uploadDir, filename);
-            await writeFile(filePath, buffer);
-
-            // Path for the browser (public is the root for static files)
-            updateData.avatar = `/uploads/avatars/${filename}`;
+            // Use utility function that handles both save and delete
+            updateData.avatar = await saveAvatarFile(buffer, session.id, currentUser?.avatar || null);
         }
 
         await db.update(users)
@@ -221,6 +219,8 @@ export async function getUserSchedule() {
         return { error: "Failed to fetch schedule" };
     }
 }
+
+
 
 export async function getUserActivities() {
     const session = await getSession();

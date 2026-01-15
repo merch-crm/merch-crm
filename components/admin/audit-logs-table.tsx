@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getAuditLogs, clearAuditLogs } from "../actions";
+import { getAuditLogs, clearAuditLogs } from "@/app/dashboard/admin/actions";
 import { Search, Activity, Calendar, Clock, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -120,7 +120,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                         disabled={clearing}
                         className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-red-600 border border-red-100 rounded-lg font-bold hover:bg-red-50 hover:border-red-200 transition-all shadow-sm active:scale-95 disabled:opacity-50"
                     >
-                        <Trash2 className="w-4.5 h-4.5" />
+                        <Trash2 className="w-4 h-4" />
                         {clearing ? "Очистка..." : "Очистить логи"}
                     </button>
                 )}

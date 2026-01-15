@@ -14,7 +14,11 @@ import {
   updateSystemSetting,
   clearRamAction,
   restartServerAction,
+  getCurrentUserAction,
+  clearSecurityErrors,
+  clearFailedLogins,
 } from "@/app/dashboard/admin/actions";
+import { AuditLogsTable } from "./audit-logs-table";
 import {
   Activity,
   Database,
@@ -107,6 +111,8 @@ interface SecurityData {
     id: string;
     email: string;
     reason: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
     createdAt: Date;
   }>;
   sensitiveActions: Array<{
@@ -119,6 +125,9 @@ interface SecurityData {
   systemErrors: Array<{
     id: string;
     message: string;
+    path?: string | null;
+    severity?: string;
+    ipAddress?: string | null;
     createdAt: Date;
   }>;
   maintenanceMode: boolean;
@@ -133,7 +142,7 @@ export function SystemStats() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<
-    "monitoring" | "diagnostics" | "backups" | "security" | "logs"
+    "monitoring" | "diagnostics" | "backups" | "security" | "action_log"
   >("monitoring");
 
   const [healthData, setHealthData] = useState<HealthData | null>(null);
@@ -147,8 +156,9 @@ export function SystemStats() {
 
   // Security state
   const [securityData, setSecurityData] = useState<SecurityData | null>(null);
-
   const [togglingMaintenance, setTogglingMaintenance] = useState(false);
+  const [clearingErrors, setClearingErrors] = useState(false);
+  const [clearingLogins, setClearingLogins] = useState(false);
   const [settings, setSettings] = useState<
     Record<string, string | number | boolean | null>
   >({});
@@ -235,6 +245,18 @@ export function SystemStats() {
     }
   }, []);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const res = await getCurrentUserAction();
+      if (res.data?.role?.name === "Администратор") {
+        setIsAdmin(true);
+      }
+    };
+    checkAdmin();
+  }, []);
+
   const handleToggleMaintenance = async (enabled: boolean) => {
     setTogglingMaintenance(true);
     try {
@@ -252,6 +274,40 @@ export function SystemStats() {
       toast("Ошибка сети", "error");
     } finally {
       setTogglingMaintenance(false);
+    }
+  };
+
+  const handleClearSecurityErrors = async () => {
+    setClearingErrors(true);
+    try {
+      const res = await clearSecurityErrors();
+      if (res.success) {
+        toast("Список ошибок успешно очищен", "success");
+        fetchSecurityData();
+      } else {
+        toast(res.error || "Ошибка", "error");
+      }
+    } catch {
+      toast("Ошибка сети", "error");
+    } finally {
+      setClearingErrors(false);
+    }
+  };
+
+  const handleClearFailedLogins = async () => {
+    setClearingLogins(true);
+    try {
+      const res = await clearFailedLogins();
+      if (res.success) {
+        toast("Список попыток входа очищен", "success");
+        fetchSecurityData();
+      } else {
+        toast(res.error || "Ошибка", "error");
+      }
+    } catch {
+      toast("Ошибка сети", "error");
+    } finally {
+      setClearingLogins(false);
     }
   };
 
@@ -461,6 +517,17 @@ export function SystemStats() {
             )}
           >
             Безопасность
+          </button>
+          <button
+            onClick={() => setActiveTab("action_log")}
+            className={cn(
+              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              activeTab === "action_log"
+                ? "bg-white text-indigo-600 shadow-sm"
+                : "text-slate-500 hover:text-slate-700",
+            )}
+          >
+            Лог действий
           </button>
         </div>
       </div>
@@ -1041,25 +1108,27 @@ export function SystemStats() {
 
       {activeTab === "security" && (
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300 px-1">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="h-6 w-1 bg-indigo-500 rounded-full" />
-            <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              Безопасность
-            </h5>
-          </div>
-
           <div className="space-y-8">
             {/* Security Section Header */}
-            <div className="px-1">
-              <h4 className="text-lg font-black text-slate-800">
-                Безопасность
-              </h4>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Режим обслуживания и фильтрация входа
-              </p>
+            <div className="px-1 flex items-center justify-between">
+              <div>
+                <h4 className="text-lg font-black text-slate-800">
+                  Безопасность
+                </h4>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Режим обслуживания и фильтрация входа
+                </p>
+              </div>
+              <button
+                onClick={() => fetchStats(true)}
+                className="p-2.5 bg-white border border-slate-100 text-slate-400 rounded-xl hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
+                title="Обновить данные"
+              >
+                <RefreshCw size={16} />
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-6 pb-4">
               {/* Maintenance Mode */}
               <Card className="border-slate-100 shadow-sm overflow-hidden bg-white rounded-[32px] border">
                 <CardHeader className="pb-4">
@@ -1092,9 +1161,7 @@ export function SystemStats() {
                 <CardContent className="pt-2 pb-6">
                   <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100/50">
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-slate-800">
-                        Maintenance Mode
-                      </p>
+
                       <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-[320px]">
                         При активации доступ к CRM будет разрешен только
                         администраторам.
@@ -1125,169 +1192,103 @@ export function SystemStats() {
                 </CardContent>
               </Card>
 
-              {/* Failed Logins */}
-              <Card className="border-slate-100 shadow-sm overflow-hidden bg-white rounded-[32px] border">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-rose-50 text-rose-600 rounded-2xl">
-                      <Lock size={20} />
+              {/* Failed Logins Table */}
+              <Card className="border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden bg-white rounded-[32px] border">
+                <CardHeader className="pb-4 border-b border-slate-50 bg-slate-50/10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-rose-50 text-rose-600 rounded-2xl">
+                        <Lock size={20} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-base font-bold text-slate-900">
+                          Попытки входа (24ч)
+                        </CardTitle>
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
+                          Мониторинг безопасности доступа
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-base font-bold text-slate-900">
-                        Попытки входа (24ч)
-                      </CardTitle>
-                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
-                        Мониторинг безопасности доступа
-                      </p>
-                    </div>
+                    <button
+                      onClick={handleClearFailedLogins}
+                      disabled={clearingLogins || !securityData?.failedLogins.length}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm",
+                        securityData?.failedLogins.length && !clearingLogins
+                          ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
+                          : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
+                      )}
+                    >
+                      <Trash2 size={14} />
+                      {clearingLogins ? "Очистка..." : "Очистить список"}
+                    </button>
                   </div>
                 </CardHeader>
-                <CardContent className="p-0">
-
-                  <div className="p-5 pb-2">
-                    <div className="flex gap-3 items-start bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                      <div className="shrink-0 mt-0.5 text-slate-400">
-                        <Info size={14} />
-                      </div>
-                      <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium leading-relaxed">
-                        Здесь отображаются все неудачные попытки входа в систему,
-                        что позволяет выявить брутфорс-атаки и подозрительную
-                        активность.
-                      </p>
-                    </div>
+                <CardContent className="p-0 max-h-[400px] overflow-y-auto">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50/50">
+                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email / Аккаунт</th>
+                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Причина</th>
+                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Адрес</th>
+                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Дата и время</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {securityData?.failedLogins.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
+                              Атак не обнаружено
+                            </td>
+                          </tr>
+                        ) : (
+                          securityData?.failedLogins.map((login) => (
+                            <tr key={login.id} className="hover:bg-slate-50/50 transition-colors group">
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-rose-50 text-rose-500 rounded-lg group-hover:scale-110 transition-transform">
+                                    <AlertTriangle size={14} />
+                                  </div>
+                                  <span className="text-sm font-bold text-slate-700">{login.email}</span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={cn(
+                                  "px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-tight",
+                                  login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
+                                )}>
+                                  {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100/50 px-2 py-1 rounded">
+                                  {login.ipAddress || "Unknown"}
+                                </code>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="text-[10px] font-black text-slate-400 uppercase">
+                                  {getTimeAgo(login.createdAt)} назад
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
                   </div>
-                  {securityData?.failedLogins.length === 0 ? (
-                    <div className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
-                      Атак не обнаружено
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-slate-50">
-                      {securityData?.failedLogins.map((login) => (
-                        <div
-                          key={login.id}
-                          className="p-5 flex items-center justify-between hover:bg-slate-50/50 transition-colors group"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="p-2.5 bg-rose-50 text-rose-500 rounded-xl">
-                              <AlertTriangle size={16} />
-                            </div>
-                            <div>
-                              <p className="text-sm font-bold text-slate-900">
-                                {login.email}
-                              </p>
-                              <p className="text-xs text-slate-400 font-medium">
-                                {login.reason === "password_mismatch"
-                                  ? "Неверный пароль"
-                                  : "Пользователь не найден"}
-                              </p>
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-black text-slate-300 uppercase">
-                            {getTimeAgo(login.createdAt)} назад
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>
           </div>
 
-          {/* Action Log Section */}
-          <div className="px-1 pt-8">
-            <h4 className="text-lg font-black text-slate-800">Лог действий</h4>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Аудит чувствительных событий системы
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Audit Feed */}
-            <Card className="border-slate-100 shadow-sm overflow-hidden flex flex-col h-full bg-white rounded-[32px] border">
-              <CardHeader className="pb-4">
+          {/* System Errors Table */}
+          <Card className="border-rose-100 shadow-xl shadow-rose-200/20 overflow-hidden bg-white rounded-[32px] border">
+            <CardHeader className="pb-4 border-b border-rose-50 bg-rose-50/10">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl">
-                    <UserCog size={20} />
-                  </div>
-                  <div>
-                    <CardTitle className="text-base font-bold text-slate-900">
-                      Критические изменения
-                    </CardTitle>
-                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
-                      Лог за последние 24 часа
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0 flex-1 overflow-auto max-h-[400px]">
-                <div className="p-5 pb-2">
-                  <div className="flex gap-3 items-start bg-indigo-50/50 p-3.5 rounded-2xl border border-indigo-100/50">
-                    <div className="shrink-0 mt-0.5 text-indigo-400">
-                      <Info size={14} />
-                    </div>
-                    <p className="text-[10px] sm:text-[11px] text-slate-600 font-medium leading-relaxed">
-                      В этом логе фиксируются чувствительные действия: смена
-                      паролей, изменение email и настроек профиля.
-                    </p>
-                  </div>
-                </div>
-                {securityData?.sensitiveActions.length === 0 ? (
-                  <div className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
-                    Действий не зафиксировано
-                  </div>
-                ) : (
-                  <div className="divide-y divide-slate-50">
-                    {securityData?.sensitiveActions.map((log) => (
-                      <div
-                        key={log.id}
-                        className="p-5 hover:bg-slate-50/50 transition-colors group"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={cn(
-                                "text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-tight",
-                                log.action === "password_change"
-                                  ? "bg-indigo-50 text-indigo-600"
-                                  : log.action === "email_change"
-                                    ? "bg-amber-50 text-amber-600"
-                                    : "bg-emerald-50 text-emerald-600",
-                              )}
-                            >
-                              {log.action === "password_change"
-                                ? "Пароль"
-                                : log.action === "email_change"
-                                  ? "Email"
-                                  : "Профиль"}
-                            </span>
-                            <span className="text-sm font-bold text-slate-900">
-                              {log.user}
-                            </span>
-                          </div>
-                          <span className="text-[10px] font-black text-slate-300 group-hover:text-slate-500 uppercase transition-colors">
-                            {getTimeAgo(log.createdAt)}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
-                          {log.action === "password_change"
-                            ? "Смена пароля в личном кабинете"
-                            : log.action === "email_change"
-                              ? "Смена адреса электронной почты"
-                              : `Обновление информации профиля`}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* System Errors */}
-            <Card className="border-rose-100 shadow-sm overflow-hidden bg-rose-50/5 rounded-[32px] border">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-sm shadow-rose-200">
+                  <div className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center">
                     <AlertTriangle size={20} />
                   </div>
                   <div>
@@ -1295,51 +1296,95 @@ export function SystemStats() {
                       Системные ошибки
                     </CardTitle>
                     <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mt-0.5">
-                      Критические сбои
+                      Критические сбои и исключения
                     </p>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="p-0">
-
-                <div className="p-5 pb-2">
-                  <div className="flex gap-3 items-start bg-rose-50 p-3.5 rounded-2xl border border-rose-100/50">
-                    <div className="shrink-0 mt-0.5 text-rose-400">
-                      <Info size={14} />
-                    </div>
-                    <p className="text-[10px] sm:text-[11px] text-rose-900/70 font-medium leading-relaxed">
-                      Список критических ошибок приложения и исключений сервера.
-                      Если список растет — обратитесь к разработчику.
-                    </p>
-                  </div>
-                </div>
-                {securityData?.systemErrors.length === 0 ? (
-                  <div className="py-12 text-center text-emerald-600 font-black text-[10px] uppercase tracking-widest">
-                    Ошибок не выявлено
-                  </div>
-                ) : (
-                  <div className="divide-y divide-rose-100/30">
-                    {securityData?.systemErrors.map((error) => (
-                      <div
-                        key={error.id}
-                        className="p-5 flex items-start gap-4 hover:bg-rose-100/20 transition-colors"
-                      >
-                        <div className="mt-1.5 h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-                        <div className="flex-1">
-                          <p className="text-[11px] font-bold text-rose-950 leading-relaxed truncate">
-                            {error.message}
-                          </p>
-                          <p className="text-[9px] text-rose-500/80 font-black uppercase mt-1 tracking-wider">
-                            {getTimeAgo(error.createdAt)} назад
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                <button
+                  onClick={handleClearSecurityErrors}
+                  disabled={clearingErrors || !securityData?.systemErrors.length}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm",
+                    securityData?.systemErrors.length && !clearingErrors
+                      ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
+                      : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
+                  )}
+                >
+                  <Trash2 size={14} />
+                  {clearingErrors ? "Очистка..." : "Очистить ошибки"}
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0 max-h-[400px] overflow-y-auto">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-rose-50/30">
+                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Сообщение об ошибке</th>
+                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Критичность</th>
+                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">IP / Путь</th>
+                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Дата</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-rose-50">
+                    {securityData?.systemErrors.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="py-16 text-center text-emerald-600 font-black text-[10px] uppercase tracking-widest">
+                          <Zap className="w-8 h-8 mx-auto mb-3 opacity-20" />
+                          Ошибок не выявлено
+                        </td>
+                      </tr>
+                    ) : (
+                      securityData?.systemErrors.map((error) => (
+                        <tr key={error.id} className="hover:bg-rose-50/30 transition-colors group">
+                          <td className="px-6 py-4 max-w-md">
+                            <div className="flex items-start gap-3">
+                              <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500 animate-pulse" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-bold text-slate-900 leading-tight">
+                                  {error.message}
+                                </p>
+                                {error.path && (
+                                  <p className="text-[10px] font-mono text-slate-400 truncate">
+                                    PATH: {error.path}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={cn(
+                              "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-tight",
+                              error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
+                            )}>
+                              {error.severity === "critical" ? "Критично" : "Предупреждение"}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded w-fit">
+                                {error.ipAddress || "Unknown IP"}
+                              </code>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col">
+                              <span className="text-[10px] font-black text-slate-900 uppercase">
+                                {getTimeAgo(error.createdAt)}
+                              </span>
+                              <span className="text-[9px] font-bold text-slate-400">
+                                {new Date(error.createdAt).toLocaleTimeString()}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
@@ -2017,6 +2062,12 @@ export function SystemStats() {
         </div>
       )}
 
+      {activeTab === "action_log" && (
+        <div className="animate-in fade-in duration-300">
+          <AuditLogsTable isAdmin={isAdmin} />
+        </div>
+      )}
+
       <ConfirmDialog
         isOpen={!!backupToDelete}
         onClose={() => setBackupToDelete(null)}
@@ -2025,43 +2076,45 @@ export function SystemStats() {
         description={`Вы собираетесь навсегда удалить файл ${backupToDelete}. Это действие нельзя отменить.`}
       />
 
-      {isRestarting && (
-        <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
-          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6">
-            <div className="relative w-20 h-20 mx-auto">
-              <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Server className="w-8 h-8 text-indigo-600" />
+      {
+        isRestarting && (
+          <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
+            <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6">
+              <div className="relative w-20 h-20 mx-auto">
+                <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Server className="w-8 h-8 text-indigo-600" />
+                </div>
               </div>
-            </div>
-            <div>
-              <h3 className="text-xl font-black text-slate-800 mb-2">
-                Обновление системы
-              </h3>
-              <p className="text-slate-500 font-medium">
-                Сервер перезагружается. Это займет от 10 до 30 секунд.
+              <div>
+                <h3 className="text-xl font-black text-slate-800 mb-2">
+                  Обновление системы
+                </h3>
+                <p className="text-slate-500 font-medium">
+                  Сервер перезагружается. Это займет от 10 до 30 секунд.
+                </p>
+              </div>
+              <div className="bg-slate-50 rounded-xl p-4 text-left">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Статус подключения
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 font-mono">
+                  &gt; Waiting for server response...
+                  <br />
+                  &gt; Reconnecting to dashboard...
+                </p>
+              </div>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest animate-pulse">
+                Не закрывайте эту страницу
               </p>
             </div>
-            <div className="bg-slate-50 rounded-xl p-4 text-left">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Статус подключения
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-mono">
-                &gt; Waiting for server response...
-                <br />
-                &gt; Reconnecting to dashboard...
-              </p>
-            </div>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest animate-pulse">
-              Не закрывайте эту страницу
-            </p>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <ConfirmDialog
         isOpen={showRestartConfirm}
@@ -2070,6 +2123,6 @@ export function SystemStats() {
         title="Перезагрузить сервер приложений?"
         description="Это действие прервет все активные сессии и сделает CRM недоступной на 10-30 секунд. Вы точно уверены?"
       />
-    </div>
+    </div >
   );
 }

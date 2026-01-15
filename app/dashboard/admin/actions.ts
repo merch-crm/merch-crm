@@ -24,6 +24,18 @@ export interface BackupFile {
     createdAt: string;
 }
 
+export async function getCurrentUserAction() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    return { data: currentUser };
+}
+
 export async function getUsers(page = 1, limit = 20, search = "") {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
@@ -1414,16 +1426,16 @@ export async function getSecurityStats() {
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         // 1. Failed Logins
-        const failedLogins = await db.query.auditLogs.findMany({
+        const failedLogins = await db.query.securityEvents.findMany({
             where: and(
-                eq(auditLogs.action, 'login_failed'),
-                gte(auditLogs.createdAt, last24h)
+                eq(securityEvents.eventType, 'login_failed'),
+                gte(securityEvents.createdAt, last24h)
             ),
-            orderBy: [desc(auditLogs.createdAt)],
+            orderBy: [desc(securityEvents.createdAt)],
             limit: 20
         });
 
-        // 2. Sensitive Actions (Password, Email, Profile)
+        // 2. Sensitive Actions (from auditLogs as they represent user actions)
         const sensitiveActions = await db.query.auditLogs.findMany({
             where: and(
                 sql`${auditLogs.action} IN ('password_change', 'email_change', 'profile_update')`,
@@ -1437,13 +1449,13 @@ export async function getSecurityStats() {
         });
 
         // 3. System Errors
-        const systemErrors = await db.query.auditLogs.findMany({
+        const systemErrors = await db.query.securityEvents.findMany({
             where: and(
-                eq(auditLogs.action, 'system_error'),
-                gte(auditLogs.createdAt, last24h)
+                eq(securityEvents.eventType, 'system_error'),
+                gte(securityEvents.createdAt, last24h)
             ),
-            orderBy: [desc(auditLogs.createdAt)],
-            limit: 20
+            orderBy: [desc(securityEvents.createdAt)],
+            limit: 100
         });
 
         // 4. Maintenance Mode Status
@@ -1456,6 +1468,8 @@ export async function getSecurityStats() {
                 id: l.id,
                 email: (l.details as Record<string, unknown>)?.email as string || 'Unknown',
                 reason: (l.details as Record<string, unknown>)?.reason as string || 'Unknown',
+                ipAddress: l.ipAddress,
+                userAgent: l.userAgent,
                 createdAt: l.createdAt
             })),
             sensitiveActions: sensitiveActions.map(l => ({
@@ -1467,7 +1481,10 @@ export async function getSecurityStats() {
             })),
             systemErrors: systemErrors.map(l => ({
                 id: l.id,
-                message: (l.details as Record<string, unknown>)?.message as string || l.action,
+                message: (l.details as Record<string, unknown>)?.message as string || 'System Error',
+                path: (l.details as Record<string, unknown>)?.path as string || null,
+                severity: l.severity,
+                ipAddress: l.ipAddress,
                 createdAt: l.createdAt
             })),
             maintenanceMode: maintenanceSetting?.value === true
@@ -1475,6 +1492,34 @@ export async function getSecurityStats() {
     } catch (error) {
         console.error("Security stats error:", error);
         return { error: "Ошибка получения данных безопасности" };
+    }
+}
+
+export async function clearSecurityErrors() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        await db.delete(securityEvents).where(eq(securityEvents.eventType, 'system_error'));
+        revalidatePath('/dashboard/admin/monitoring');
+        return { success: true };
+    } catch (error) {
+        console.error("Clear security errors error:", error);
+        return { error: "Ошибка при очистке ошибок" };
+    }
+}
+
+export async function clearFailedLogins() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        await db.delete(securityEvents).where(eq(securityEvents.eventType, 'login_failed'));
+        revalidatePath('/dashboard/admin/monitoring');
+        return { success: true };
+    } catch (error) {
+        console.error("Clear failed logins error:", error);
+        return { error: "Ошибка при очистке попыток входа" };
     }
 }
 
@@ -1698,5 +1743,104 @@ export async function getSecurityEventsSummary() {
     } catch (error) {
         console.error("Security events summary error:", error);
         return { error: "Ошибка получения сводки безопасности" };
+    }
+}
+
+// Storage Management Actions
+export async function getStorageDetails(prefix?: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { listFiles, getStorageStats } = await import("@/lib/storage");
+        const s3Stats = await getStorageStats();
+        const s3Content = await listFiles(prefix);
+
+        const stat = fs.statfsSync(process.cwd());
+        const localStats = {
+            total: Number(stat.bsize * stat.blocks),
+            free: Number(stat.bsize * stat.bfree),
+            used: Number(stat.bsize * (stat.blocks - stat.bfree)),
+            path: process.cwd(),
+        };
+
+        return {
+            s3: {
+                ...s3Stats,
+                folders: s3Content.folders,
+                files: s3Content.files
+            },
+            local: localStats
+        };
+    } catch (e) {
+        console.error("Storage details error:", e);
+        return { error: "Ошибка при получении данных хранилища" };
+    }
+}
+
+export async function deleteS3FileAction(key: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { deleteFile } = await import("@/lib/storage");
+        const res = await deleteFile(key);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Delete file error:", e);
+        return { success: false, error: "Ошибка при удалении файла" };
+    }
+}
+export async function createS3FolderAction(path: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { createFolder } = await import("@/lib/storage");
+        const res = await createFolder(path);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Create folder error:", e);
+        return { success: false, error: "Ошибка при создании папки" };
+    }
+}
+
+export async function renameS3FileAction(oldKey: string, newKey: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { renameFile } = await import("@/lib/storage");
+        const res = await renameFile(oldKey, newKey);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Rename file error:", e);
+        return { success: false, error: "Ошибка при переименовании" };
+    }
+}
+
+export async function deleteMultipleS3FilesAction(keys: string[]) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { deleteMultipleFiles } = await import("@/lib/storage");
+        const res = await deleteMultipleFiles(keys);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Delete multiple files error:", e);
+        return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
