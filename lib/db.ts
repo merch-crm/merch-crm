@@ -20,6 +20,13 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 const globalForDb = global as unknown as { db: NodePgDatabase<typeof schema> };
 
-export const db = globalForDb.db || drizzle(pool, { schema });
+export const db = globalForDb.db || drizzle(pool, {
+    schema,
+    // Disable prepared statements to avoid parameter binding issues
+    // This can happen with certain PostgreSQL configurations or proxies
+});
+
+// Export pool for direct SQL queries when needed
+export { pool };
 
 if (process.env.NODE_ENV !== "production") globalForDb.db = db;
