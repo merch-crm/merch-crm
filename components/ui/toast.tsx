@@ -68,10 +68,12 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
 
 let toastFn: (message: string, type?: ToastType) => void = () => { };
 
+const toastApi = {
+    toast: (message: string, type?: ToastType) => toastFn(message, type),
+};
+
 export function useToast() {
-    return {
-        toast: (message: string, type?: ToastType) => toastFn(message, type),
-    };
+    return toastApi;
 }
 
 export function ToastContainer() {
