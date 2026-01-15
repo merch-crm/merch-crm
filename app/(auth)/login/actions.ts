@@ -2,7 +2,8 @@
 
 import { db } from "@/lib/db";
 import { users, roles, departments } from "@/lib/schema";
-import { comparePassword, encrypt } from "@/lib/auth";
+import { encrypt } from "@/lib/auth";
+import { comparePassword } from "@/lib/password";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -75,7 +76,7 @@ export async function loginAction(prevState: any, formData: FormData) {
         console.log(`[Login] Cookie set, redirecting to dashboard...`);
     } catch (error) {
         console.error("[Login] Execution error:", error);
-        return { error: "Ошибка сервера" };
+        return { error: `Ошибка сервера: ${(error as Error).message}` };
     }
 
     redirect("/dashboard");

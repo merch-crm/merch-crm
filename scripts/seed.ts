@@ -6,7 +6,7 @@ async function main() {
     // Dynamic imports to ensure env vars are loaded first
     const { db } = await import("@/lib/db");
     const { users, roles } = await import("@/lib/schema");
-    const { hashPassword } = await import("@/lib/auth");
+    const { hashPassword } = await import("@/lib/password");
     const { eq } = await import("drizzle-orm");
 
     console.log("Seeding roles and migrating users...");

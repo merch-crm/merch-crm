@@ -5,6 +5,8 @@ import { Package, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, Ch
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export interface InventoryItem {
     id: string;
@@ -16,6 +18,8 @@ export interface InventoryItem {
     categoryId: string | null;
     description?: string | null;
     location?: string | null;
+    image?: string | null;
+    reservedQuantity?: number;
 }
 
 export interface Category {
@@ -38,6 +42,9 @@ import { deleteInventoryCategory } from "./actions";
 export function InventoryClient({ items, categories }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+    const { toast } = useToast();
 
     const itemsByCategory = categories.map(category => ({
         ...category,
@@ -52,6 +59,25 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
         setIsEditDialogOpen(true);
     };
 
+    const handleDeleteConfirm = async () => {
+        if (!categoryToDelete) return;
+        setIsDeleting(true);
+        try {
+            const result = await deleteInventoryCategory(categoryToDelete.id);
+            if (result.success) {
+                toast("Категория удалена", "success");
+                setCategoryToDelete(null);
+            } else {
+                toast(result.error || "Ошибка при удалении", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            toast("Произошла ошибка", "error");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -60,6 +86,7 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                         key={category.id}
                         category={category}
                         onEdit={handleEditCategory}
+                        onDelete={() => setCategoryToDelete(category)}
                     />
                 ))}
 
@@ -85,6 +112,17 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                     onClose={() => setIsEditDialogOpen(false)}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={!!categoryToDelete}
+                onClose={() => setCategoryToDelete(null)}
+                onConfirm={handleDeleteConfirm}
+                title="Удаление категории"
+                description={`Вы уверены, что хотите удалить категорию "${categoryToDelete?.name}"? Это действие необратимо.`}
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isDeleting}
+            />
         </>
     );
 }
@@ -131,12 +169,14 @@ import { createElement } from "react";
 function CategoryCard({
     category,
     onEdit,
+    onDelete,
 }: {
     category: Category & { items: InventoryItem[] },
     onEdit?: (cat: Category) => void,
+    onDelete?: () => void,
 }) {
     const router = useRouter();
-    const lowStockCount = category.items.filter((i) => i.quantity <= i.lowStockThreshold).length;
+    const lowStockCount = category.items.filter((i) => (i.quantity - (i.reservedQuantity || 0)) <= i.lowStockThreshold).length;
     const IconComponent = getCategoryIcon(category);
     const isOrphaned = category.id === "orphaned";
 
@@ -170,14 +210,7 @@ function CategoryCard({
 
     const handleDelete = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (confirm("Вы уверены, что хотите удалить эту категорию?")) {
-            const result = await deleteInventoryCategory(category.id);
-            if (result.success) {
-                alert("Категория удалена");
-            } else {
-                alert(result.error || "Ошибка при удалении");
-            }
-        }
+        if (onDelete) onDelete();
     };
 
     const SYSTEM_CATEGORIES = [

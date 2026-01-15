@@ -214,6 +214,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             {editingLocation && (
                 <EditStorageLocationDialog
                     users={users}
+                    locations={locations}
                     location={editingLocation}
                     isOpen={!!editingLocation}
                     onClose={() => setEditingLocation(null)}

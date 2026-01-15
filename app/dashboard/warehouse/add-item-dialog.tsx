@@ -5,6 +5,7 @@ import { Plus, X, Package, Ruler, Hash, BarChart3, Folder } from "lucide-react";
 import { addInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 
 function SubmitButton() {
@@ -31,6 +32,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
     const [qualityCode, setQualityCode] = useState("");
     const [attributeCode, setAttributeCode] = useState("");
     const [sizeCode, setSizeCode] = useState("");
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const selectedCategory = initialCategories.find(c => c.id === selectedCategoryId);
 
@@ -42,6 +44,19 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
         : "";
 
     async function clientAction(formData: FormData) {
+        const name = formData.get("name") as string;
+        const categoryId = formData.get("categoryId") as string;
+
+        const newErrors: Record<string, string> = {};
+        if (!name || name.trim().length < 2) newErrors.name = "Введите название товара";
+        if (!categoryId) newErrors.categoryId = "Выберите категорию";
+
+        if (Object.keys(newErrors).length > 0) {
+            setFieldErrors(newErrors);
+            return;
+        }
+
+        setFieldErrors({});
         const res = await addInventoryItem(formData);
         if (res?.error) {
             setError(res.error);
@@ -51,6 +66,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
             setQualityCode("");
             setAttributeCode("");
             setSizeCode("");
+            setFieldErrors({});
         }
     }
 
@@ -86,20 +102,30 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                             </button>
                         </div>
 
-                        <form action={clientAction} className="p-8 pt-4 space-y-5">
+                        <form action={clientAction} noValidate className="p-8 pt-4 space-y-5">
                             <div className="space-y-5">
                                 <div className="space-y-2.5">
                                     <label className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                                         <Package className="w-3.5 h-3.5" />
-                                        Название товара
+                                        Название товара <span className="text-rose-500 font-bold">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         name="name"
-                                        required
-                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none placeholder:text-slate-400"
+                                        className={cn(
+                                            "w-full h-12 px-4 rounded-xl border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all placeholder:text-slate-400",
+                                            fieldErrors.name
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                : "border-slate-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500"
+                                        )}
                                         placeholder="Напр. Ткань хлопок белая"
+                                        onChange={() => setFieldErrors(prev => ({ ...prev, name: "" }))}
                                     />
+                                    {fieldErrors.name && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                            {fieldErrors.name}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -140,15 +166,22 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                 <div className="space-y-2.5">
                                     <label className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                                         <Folder className="w-3.5 h-3.5" />
-                                        Категория
+                                        Категория <span className="text-rose-500 font-bold">*</span>
                                     </label>
                                     <div className="relative">
                                         <select
                                             name="categoryId"
-                                            required
                                             value={selectedCategoryId}
-                                            onChange={(e) => setSelectedCategoryId(e.target.value)}
-                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none appearance-none cursor-pointer"
+                                            onChange={(e) => {
+                                                setSelectedCategoryId(e.target.value);
+                                                setFieldErrors(prev => ({ ...prev, categoryId: "" }));
+                                            }}
+                                            className={cn(
+                                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all appearance-none cursor-pointer",
+                                                fieldErrors.categoryId
+                                                    ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                    : "border-slate-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500"
+                                            )}
                                         >
                                             <option value="">Выберите категорию...</option>
                                             {initialCategories.map(cat => (
@@ -156,6 +189,11 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             ))}
                                         </select>
                                     </div>
+                                    {fieldErrors.categoryId && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                            {fieldErrors.categoryId}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {selectedCategory?.prefix && (
@@ -225,8 +263,19 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             type="number"
                                             name="lowStockThreshold"
                                             defaultValue="5"
-                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none placeholder:text-slate-400"
+                                            className={cn(
+                                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all placeholder:text-slate-400",
+                                                fieldErrors.lowStockThreshold
+                                                    ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                    : "border-slate-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500"
+                                            )}
+                                            onChange={() => setFieldErrors(prev => ({ ...prev, lowStockThreshold: "" }))}
                                         />
+                                        {fieldErrors.lowStockThreshold && (
+                                            <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                                {fieldErrors.lowStockThreshold}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

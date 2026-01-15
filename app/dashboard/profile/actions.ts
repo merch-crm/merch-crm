@@ -2,7 +2,8 @@
 
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
-import { getSession, comparePassword, hashPassword } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
+import { comparePassword, hashPassword } from "@/lib/password";
 import { eq, count, sum, desc, and, gte, lte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";

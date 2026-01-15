@@ -6,12 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { deleteInventoryItems, updateInventoryItem, addInventoryItem } from "@/app/dashboard/warehouse/actions";
+import { deleteInventoryItems, updateInventoryItem, addInventoryItem, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories } from "@/app/dashboard/warehouse/actions";
 import { useFormStatus } from "react-dom";
 import { AdjustStockDialog } from "../adjust-stock-dialog";
 import { ItemDetailDrawer } from "../item-detail-drawer";
 import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../storage-locations-tab";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface InventoryItem {
     id: string;
@@ -27,6 +29,8 @@ interface InventoryItem {
     qualityCode: string | null;
     attributeCode: string | null;
     sizeCode: string | null;
+    image: string | null;
+    reservedQuantity: number;
 }
 
 interface Category {
@@ -53,6 +57,19 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isAdjustOpen, setIsAdjustOpen] = useState(false);
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
+    const [isBulkMoveOpen, setIsBulkMoveOpen] = useState(false);
+    const [isBulkCategoryOpen, setIsBulkCategoryOpen] = useState(false);
+    const [allCategories, setAllCategories] = useState<Category[]>([]);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const res = await getInventoryCategories();
+            if (res.data) setAllCategories(res.data as Category[]);
+        };
+        fetchCategories();
+    }, []);
 
     // Effect to open drawer if itemId is in URL
     useEffect(() => {
@@ -111,20 +128,21 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
     const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
     const handleDelete = async (ids: string[]) => {
-        if (!confirm(`Вы уверены, что хотите удалить ${ids.length} поз.?`)) return;
-
         setIsDeleting(true);
         try {
             const res = await deleteInventoryItems(ids);
             if (res?.success) {
+                toast(`Удалено позиций: ${ids.length}`, "success");
                 setSelectedIds(prev => prev.filter(id => !ids.includes(id)));
             } else {
-                alert(res?.error || "Ошибка при удалении");
+                toast(res?.error || "Ошибка при удалении", "error");
             }
-        } catch {
-            alert("Произошла ошибка");
+        } catch (error) {
+            console.error(error);
+            toast("Произошла ошибка", "error");
         } finally {
             setIsDeleting(false);
+            setIdsToDelete([]);
         }
     };
 
@@ -158,7 +176,7 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                             <Button
                                 variant="ghost"
                                 disabled={isDeleting}
-                                onClick={() => handleDelete(selectedIds)}
+                                onClick={() => setIdsToDelete(selectedIds)}
                                 className="h-10 w-10 p-0 text-rose-500 hover:text-white hover:bg-rose-500 rounded-xl transition-all"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -174,6 +192,82 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                     </Button>
                 </div>
             </div>
+
+            {/* Mass Actions Bar */}
+            {selectedIds.length > 0 && (
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[50] flex items-center gap-2 px-6 py-4 bg-slate-900 shadow-2xl rounded-[2.5rem] animate-in slide-in-from-bottom-20 duration-500 border border-slate-800/50 backdrop-blur-xl">
+                    <div className="flex items-center gap-2 border-r border-slate-800 pr-6 mr-2">
+                        <span className="w-6 h-6 flex items-center justify-center bg-indigo-600 rounded-full text-[10px] font-black text-white">{selectedIds.length}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Позиций выбрано</span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsBulkMoveOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all group"
+                        >
+                            <MapPin className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
+                            Переместить
+                        </button>
+                        <button
+                            onClick={() => setIsBulkCategoryOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all group"
+                        >
+                            <Package className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
+                            Категория
+                        </button>
+                        <button
+                            onClick={() => {
+                                const printWindow = window.open('', '_blank');
+                                if (printWindow) {
+                                    const itemsToPrint = items.filter(i => selectedIds.includes(i.id));
+                                    printWindow.document.write(`
+                                        <html>
+                                            <head>
+                                                <title>Печать этикеток</title>
+                                                <style>
+                                                    body { font-family: sans-serif; padding: 20px; }
+                                                    .label { border: 1px solid #ccc; padding: 10px; margin: 10px; width: 200px; display: inline-block; text-align: center; }
+                                                    .sku { font-weight: bold; font-family: monospace; font-size: 1.2rem; }
+                                                    .name { font-size: 0.8rem; margin-top: 5px; }
+                                                </style>
+                                            </head>
+                                            <body>
+                                                ${itemsToPrint.map(item => `
+                                                    <div class="label">
+                                                        <div class="sku">${item.sku || 'N/A'}</div>
+                                                        <div class="name">${item.name}</div>
+                                                    </div>
+                                                `).join('')}
+                                                <script>window.print();</script>
+                                            </body>
+                                        </html>
+                                    `);
+                                    printWindow.document.close();
+                                }
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all group"
+                        >
+                            <PlusSquare className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
+                            Этикетки
+                        </button>
+                        <button
+                            onClick={() => setIdsToDelete(selectedIds)}
+                            className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-rose-500 uppercase tracking-widest hover:bg-rose-500/10 rounded-xl transition-all"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            Удалить
+                        </button>
+                        <div className="w-px h-8 bg-slate-800 mx-2" />
+                        <button
+                            onClick={() => setSelectedIds([])}
+                            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-300 transition-all"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Modals */}
             {isAddOpen && (
@@ -192,6 +286,30 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                     onClose={() => {
                         setIsEditOpen(false);
                         setEditingItem(null);
+                    }}
+                />
+            )}
+
+            {isBulkMoveOpen && (
+                <BulkMoveDialog
+                    selectedIds={selectedIds}
+                    storageLocations={storageLocations}
+                    onClose={() => setIsBulkMoveOpen(false)}
+                    onSuccess={() => {
+                        setIsBulkMoveOpen(false);
+                        setSelectedIds([]);
+                    }}
+                />
+            )}
+
+            {isBulkCategoryOpen && (
+                <BulkCategoryDialog
+                    selectedIds={selectedIds}
+                    categories={allCategories}
+                    onClose={() => setIsBulkCategoryOpen(false)}
+                    onSuccess={() => {
+                        setIsBulkCategoryOpen(false);
+                        setSelectedIds([]);
                     }}
                 />
             )}
@@ -304,10 +422,14 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                         {/* Item Icon & Identity */}
                                         <div className="flex items-start gap-4 mb-6">
                                             <div className={cn(
-                                                "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500",
+                                                "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shrink-0",
                                                 isCritical ? "bg-rose-50 text-rose-500" : isLowStock ? "bg-amber-50 text-amber-500" : "bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500"
                                             )}>
-                                                <Package className="w-7 h-7" />
+                                                {item.image ? (
+                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <Package className="w-7 h-7" />
+                                                )}
                                             </div>
                                             <div className="flex-1 min-w-0 pr-6">
                                                 <h3 className="text-lg font-black text-slate-900 leading-tight line-clamp-2 transition-colors group-hover:text-indigo-600">
@@ -329,10 +451,15 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                                         "text-2xl font-black tabular-nums transition-colors",
                                                         isCritical ? "text-rose-600" : isLowStock ? "text-amber-600" : "text-slate-900"
                                                     )}>
-                                                        {item.quantity}
+                                                        {item.quantity - (item.reservedQuantity || 0)}
                                                     </span>
                                                     <span className="text-xs font-bold text-slate-400">{item.unit}</span>
                                                 </div>
+                                                {item.reservedQuantity > 0 && (
+                                                    <p className="text-[9px] font-bold text-slate-400 mt-0.5">
+                                                        ({item.quantity} всего, {item.reservedQuantity} бронь)
+                                                    </p>
+                                                )}
                                             </div>
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-1.5 mb-1">
@@ -394,7 +521,7 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                                 title="Удалить"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDelete([item.id]);
+                                                    setIdsToDelete([item.id]);
                                                 }}
                                             >
                                                 <Trash2 className="w-5 h-5" />
@@ -434,6 +561,16 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                     </div>
                 )}
             </div>
+            <ConfirmDialog
+                isOpen={idsToDelete.length > 0}
+                onClose={() => setIdsToDelete([])}
+                onConfirm={() => handleDelete(idsToDelete)}
+                title="Удаление позиций"
+                description={`Вы уверены, что хотите удалить ${idsToDelete.length} поз.? Это действие необратимо.`}
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isDeleting}
+            />
         </div>
     );
 }
@@ -452,17 +589,27 @@ function SubmitButton({ label = "Сохранить", pendingLabel = "Сохра
 }
 
 function AddItemDialogWrapper({ category, storageLocations, onClose }: { category: Category, storageLocations: StorageLocation[], onClose: () => void }) {
-    const [error, setError] = useState("");
+    const { toast } = useToast(); const [error, setError] = useState("");
     const [qualityCode, setQualityCode] = useState("");
     const [attributeCode, setAttributeCode] = useState("");
     const [sizeCode, setSizeCode] = useState("");
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     // SKU Sanitizer: Only A-Z, 0-9, and dashes allowed
     const sanitizeSku = (val: string) => {
         if (/[\u0400-\u04FF]/.test(val)) {
-            if (typeof window !== 'undefined') {
-                window.alert("Используйте только латиницу, цифры 0-9 и символ «-»");
-            }
+            toast("Используйте только латиницу, цифры 0-9 и символ «-»", "warning");
         }
         return val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
     };
@@ -585,6 +732,26 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
                     </div>
 
                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Изображение товара</label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                ) : (
+                                    <Package className="w-8 h-8 text-slate-200" />
+                                )}
+                            </div>
+                            <input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2"><MapPin className="w-3 h-3" /> Место хранения</label>
                         <select
                             name="storageLocationId"
@@ -616,15 +783,25 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
 function EditItemDialog({ item, category, storageLocations, onClose }: { item: InventoryItem, category: Category, storageLocations: StorageLocation[], onClose: () => void }) {
     const [error, setError] = useState("");
     const [qualityCode, setQualityCode] = useState(item.qualityCode || "");
-    const [attributeCode, setAttributeCode] = useState(item.attributeCode || "");
+    const { toast } = useToast(); const [attributeCode, setAttributeCode] = useState(item.attributeCode || "");
     const [sizeCode, setSizeCode] = useState(item.sizeCode || "");
+    const [imagePreview, setImagePreview] = useState<string | null>(item.image);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     // SKU Sanitizer: Only A-Z, 0-9, and dashes allowed
     const sanitizeSku = (val: string) => {
         if (/[\u0400-\u04FF]/.test(val)) {
-            if (typeof window !== 'undefined') {
-                window.alert("Используйте только латиницу, цифры 0-9 и символ «-»");
-            }
+            toast("Используйте только латиницу, цифры 0-9 и символ «-»", "warning");
         }
         return val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
     };
@@ -746,6 +923,27 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
                     </div>
 
                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Изображение товара</label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                ) : (
+                                    <Package className="w-8 h-8 text-slate-200" />
+                                )}
+                            </div>
+                            <input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer"
+                            />
+                            <input type="hidden" name="currentImage" value={item.image || ""} />
+                        </div>
+                    </div>
+
+                    <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2"><MapPin className="w-3 h-3" /> Место хранения</label>
                         <select
                             name="storageLocationId"
@@ -760,16 +958,161 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
                         <input name="location" defaultValue={item.location || ""} placeholder="Или укажите вручную..." className="w-full h-12 px-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 outline-none transition-all mt-2" />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Наличие текущее</label>
                             <input type="number" name="quantity" defaultValue={item.quantity} className="w-full h-12 px-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 outline-none transition-all disabled:opacity-50" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Забронировано</label>
+                            <input type="number" name="reservedQuantity" defaultValue={item.reservedQuantity} className="w-full h-12 px-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 outline-none transition-all" />
                         </div>
                     </div>
 
                     {error && <p className="text-rose-600 text-[10px] font-black uppercase tracking-widest bg-rose-50 p-3 rounded-xl">{error}</p>}
                     <SubmitButton />
                 </form>
+            </div>
+        </div>
+    );
+}
+
+function BulkMoveDialog({ selectedIds, storageLocations, onClose, onSuccess }: { selectedIds: string[], storageLocations: StorageLocation[], onClose: () => void, onSuccess: () => void }) {
+    const { toast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
+    const [targetLocationId, setTargetLocationId] = useState("");
+    const [comment, setComment] = useState("");
+
+    const handleMove = async () => {
+        if (!targetLocationId) return;
+        setIsLoading(true);
+        try {
+            const res = await bulkMoveInventoryItems(selectedIds, targetLocationId, comment);
+            if (res.success) {
+                toast(`Успешно перемещено позиций: ${selectedIds.length}`, "success");
+                onSuccess();
+            } else {
+                toast(res.error || "Ошибка при перемещении", "error");
+            }
+        } catch (error) {
+            toast("Произошла ошибка", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in" onClick={onClose} />
+            <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-8 animate-in zoom-in-95">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-xl font-black text-slate-900">Массовое перемещение</h2>
+                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Перемещение {selectedIds.length} позиций</p>
+                    </div>
+                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Целевой склад</label>
+                        <select
+                            value={targetLocationId}
+                            onChange={(e) => setTargetLocationId(e.target.value)}
+                            className="w-full h-12 px-4 rounded-xl border border-slate-100 bg-slate-50 text-sm font-bold outline-none focus:bg-white focus:border-indigo-500 transition-all cursor-pointer"
+                        >
+                            <option value="">Выберите склад...</option>
+                            {storageLocations.map(loc => (
+                                <option key={loc.id} value={loc.id}>{loc.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий</label>
+                        <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            className="w-full h-24 p-4 rounded-xl border border-slate-100 bg-slate-50 text-sm font-medium outline-none focus:bg-white focus:border-indigo-500 transition-all resize-none"
+                            placeholder="Причина перемещения..."
+                        />
+                    </div>
+
+                    <Button
+                        onClick={handleMove}
+                        disabled={!targetLocationId || isLoading}
+                        className="w-full h-12 bg-slate-900 text-white rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200"
+                    >
+                        {isLoading ? "Перемещение..." : "Подтвердить перемещение"}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function BulkCategoryDialog({ selectedIds, categories, onClose, onSuccess }: { selectedIds: string[], categories: Category[], onClose: () => void, onSuccess: () => void }) {
+    const { toast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
+    const [targetCategoryId, setTargetCategoryId] = useState("");
+
+    const handleUpdate = async () => {
+        if (!targetCategoryId) return;
+        setIsLoading(true);
+        try {
+            const res = await bulkUpdateInventoryCategory(selectedIds, targetCategoryId);
+            if (res.success) {
+                toast(`Категория изменена для ${selectedIds.length} позиций`, "success");
+                onSuccess();
+            } else {
+                toast(res.error || "Ошибка", "error");
+            }
+        } catch (error) {
+            toast("Произошла ошибка", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in" onClick={onClose} />
+            <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-8 animate-in zoom-in-95">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-xl font-black text-slate-900">Смена категории</h2>
+                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">{selectedIds.length} поз. выбрано</p>
+                    </div>
+                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Новая категория</label>
+                        <select
+                            value={targetCategoryId}
+                            onChange={(e) => setTargetCategoryId(e.target.value)}
+                            className="w-full h-12 px-4 rounded-xl border border-slate-100 bg-slate-50 text-sm font-bold outline-none focus:bg-white focus:border-indigo-500 transition-all cursor-pointer"
+                        >
+                            <option value="">Выберите категорию...</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <Button
+                        onClick={handleUpdate}
+                        disabled={!targetCategoryId || isLoading}
+                        className="w-full h-12 bg-slate-900 text-white rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200"
+                    >
+                        {isLoading ? "Обновление..." : "Сменить категорию"}
+                    </Button>
+                </div>
             </div>
         </div>
     );

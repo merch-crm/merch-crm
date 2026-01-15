@@ -30,6 +30,8 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface BulkActionsPanelProps {
     selectedIds: string[];
@@ -39,6 +41,8 @@ interface BulkActionsPanelProps {
 
 export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsPanelProps) {
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const { toast } = useToast();
 
     if (selectedIds.length === 0) return null;
 
@@ -47,7 +51,10 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await bulkUpdateOrderStatus(selectedIds, status as any);
         if (res.success) {
+            toast(`Статус обновлен для ${selectedIds.length} заказов`, "success");
             onClear();
+        } else {
+            toast(res.error || "Ошибка при обновлении", "error");
         }
         setIsProcessing(false);
     };
@@ -56,19 +63,31 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         setIsProcessing(true);
         const res = await bulkUpdateOrderPriority(selectedIds, priority);
         if (res.success) {
+            toast(`Приоритет обновлен для ${selectedIds.length} заказов`, "success");
             onClear();
+        } else {
+            toast(res.error || "Ошибка при обновлении", "error");
         }
         setIsProcessing(false);
     };
 
     const handleDelete = async () => {
-        if (!confirm(`Вы уверены, что хотите удалить ${selectedIds.length} заказов?`)) return;
         setIsProcessing(true);
-        const res = await bulkDeleteOrders(selectedIds);
-        if (res.success) {
-            onClear();
+        try {
+            const res = await bulkDeleteOrders(selectedIds);
+            if (res.success) {
+                toast(`Удалено ${selectedIds.length} заказов`, "success");
+                onClear();
+            } else {
+                toast(res.error || "Ошибка при удалении", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            toast("Произошла ошибка", "error");
+        } finally {
+            setIsProcessing(false);
+            setShowDeleteConfirm(false);
         }
-        setIsProcessing(false);
     };
 
     return (
@@ -150,7 +169,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     <button
                         title="Печать бланков"
                         className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
-                        onClick={() => alert("Печать бланков для " + selectedIds.length + " заказов")}
+                        onClick={() => toast(`Печать бланков для ${selectedIds.length} заказов...`, "info")}
                     >
                         <Printer className="w-5 h-5" />
                     </button>
@@ -158,7 +177,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     <button
                         title="Экспорт в Excel"
                         className="p-3 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
-                        onClick={() => alert("Экспорт данных...")}
+                        onClick={() => toast("Подготовка файла экспорта...", "info")}
                     >
                         <FileDown className="w-5 h-5" />
                     </button>
@@ -167,7 +186,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                         <button
                             title="Удалить выбранные"
                             className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
-                            onClick={handleDelete}
+                            onClick={() => setShowDeleteConfirm(true)}
                             disabled={isProcessing}
                         >
                             <Trash2 className="w-5 h-5" />
@@ -186,6 +205,17 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     </button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={handleDelete}
+                title="Удаление заказов"
+                description={`Вы уверены, что хотите удалить ${selectedIds.length} заказов? Это действие необратимо.`}
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isProcessing}
+            />
         </div>
     );
 }

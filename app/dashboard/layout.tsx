@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { ActivityTracker } from "@/components/layout/activity-tracker";
 
 export default async function DashboardLayout({
     children,
@@ -15,8 +16,6 @@ export default async function DashboardLayout({
         redirect("/login");
     }
 
-    // Fetch full user data with role and department info
-    // Fetch full user data with role and department info
     let userData = null;
     try {
         userData = await db.query.users.findFirst({
@@ -29,8 +28,6 @@ export default async function DashboardLayout({
     } catch (error) {
         console.error("Error loading user in layout:", error);
     }
-
-    console.log(`[DashboardLayout] User: ${userData?.email}, Avatar: ${userData?.avatar}`);
 
     if (!userData) {
         redirect("/login");
@@ -46,6 +43,7 @@ export default async function DashboardLayout({
 
     return (
         <div className="min-h-screen bg-[#f8f9fa]">
+            <ActivityTracker />
             <Navbar user={user} />
             <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}

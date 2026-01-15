@@ -7,7 +7,7 @@ dotenv.config({ path: resolve(process.cwd(), ".env.local") });
 async function main() {
     const { db } = await import("../lib/db");
     const { users, roles, departments } = await import("../lib/schema");
-    const { hashPassword } = await import("../lib/auth");
+    const { hashPassword } = await import("../lib/password");
     const { eq } = await import("drizzle-orm");
 
     console.log("Creating test employees...");

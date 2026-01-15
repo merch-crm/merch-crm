@@ -1,7 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import bcrypt from "bcryptjs";
-
 import { env } from "./env";
 
 const SECRET_KEY = env.JWT_SECRET_KEY;
@@ -32,14 +30,6 @@ export async function decrypt(input: string): Promise<Session> {
         algorithms: ["HS256"],
     });
     return payload as Session;
-}
-
-export async function hashPassword(password: string) {
-    return await bcrypt.hash(password, 10);
-}
-
-export async function comparePassword(password: string, hash: string) {
-    return await bcrypt.compare(password, hash);
 }
 
 export async function getSession(): Promise<Session | null> {

@@ -1,13 +1,20 @@
 import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers } from "./actions";
+import { getSession } from "@/lib/auth";
 // Auto-deploy trigger v1.1 - Restarting...
 import { WarehouseClient } from "./warehouse-client";
 
+export const dynamic = "force-dynamic";
 export default async function WarehousePage() {
     const { data: categoriesFromDb = [] } = await getInventoryCategories();
     const { data: items = [] } = await getInventoryItems();
     const { data: history = [] } = await getInventoryHistory();
+    console.log(`WarehousePage history count: ${history.length}`);
+    if (history.length > 0) {
+        console.log(`First item: ${history[0].type} for ${history[0].item.name}`);
+    }
     const { data: storageLocations = [] } = await getStorageLocations();
     const { data: users = [] } = await getAllUsers();
+    const session = await getSession();
 
     const desiredOrder = [
         "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
@@ -42,6 +49,7 @@ export default async function WarehousePage() {
                 history={history}
                 storageLocations={storageLocations}
                 users={users}
+                user={session}
             />
         </div>
     );

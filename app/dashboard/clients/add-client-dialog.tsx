@@ -1,20 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { addClient } from "./actions";
+import { useEffect, useState } from "react";
+import { Plus, X, User, Phone, Mail, Building2, MapPin, MessageSquare, Link as LinkIcon } from "lucide-react";
+import { addClient, getManagers } from "./actions";
+import { useToast } from "@/components/ui/toast";
 
 export function AddClientDialog({ variant = "default" }: { variant?: "default" | "minimal" }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        if (isOpen) {
+            getManagers().then(res => {
+                if (res.data) setManagers(res.data);
+            });
+        }
+    }, [isOpen]);
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
         const res = await addClient(formData);
         setLoading(false);
         if (res?.error) {
-            alert(res.error);
+            toast(res.error, "error");
         } else {
+            toast("Клиент успешно добавлен", "success");
             setIsOpen(false);
         }
     }
@@ -42,84 +54,201 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
     }
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div className="fixed inset-0 bg-black/30 transition-opacity" onClick={() => setIsOpen(false)} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div
+                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+                onClick={() => setIsOpen(false)}
+            />
 
-                <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 border border-slate-200">
-                    <div className="absolute top-0 right-0 pt-4 pr-4">
-                        <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
-                            <X className="h-6 w-6" />
-                        </button>
+            <div className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+                {/* Header */}
+                <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-50">
+                    <div>
+                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Новый клиент</h3>
+                        <p className="text-sm text-slate-500 font-medium">Заполните данные для CRM</p>
+                    </div>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all"
+                    >
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                {/* Form Content */}
+                <form action={handleSubmit} className="p-8 pt-6 space-y-6 overflow-y-auto">
+                    {/* Name Group */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <User className="w-3.5 h-3.5" /> Фамилия <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="lastName"
+                                required
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <User className="w-3.5 h-3.5" /> Имя <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="firstName"
+                                required
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
+                        </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-slate-900 mb-6">Новый клиент</h3>
-
-                    <form action={handleSubmit} className="space-y-5">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Фамилия <span className="text-red-500">*</span></label>
-                                <input type="text" name="lastName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Имя <span className="text-red-500">*</span></label>
-                                <input type="text" name="firstName" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
-                            </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                Отчество
+                            </label>
+                            <input
+                                type="text"
+                                name="patronymic"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Отчество</label>
-                            <input type="text" name="patronymic" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <Building2 className="w-3.5 h-3.5" /> Компания
+                            </label>
+                            <input
+                                type="text"
+                                name="company"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
                         </div>
+                    </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Компания</label>
-                            <input type="text" name="company" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
+                    {/* Contact Group */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <Phone className="w-3.5 h-3.5" /> Телефон <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="phone"
+                                required
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Телефон <span className="text-red-500">*</span></label>
-                            <input type="text" name="phone" required className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <Mail className="w-3.5 h-3.5" /> Email
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Telegram</label>
-                                <input type="text" name="telegram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" placeholder="@username" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Instagram</label>
-                                <input type="text" name="instagram" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" placeholder="insta_link" />
-                            </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                Telegram
+                            </label>
+                            <input
+                                type="text"
+                                name="telegram"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                placeholder="@username"
+                            />
                         </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                                <input type="email" name="email" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Город</label>
-                                <input type="text" name="city" className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
-                            </div>
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                Instagram
+                            </label>
+                            <input
+                                type="text"
+                                name="instagram"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                placeholder="insta_link"
+                            />
                         </div>
+                    </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Комментарии</label>
-                            <textarea name="comments" rows={3} className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2 border transition-all" />
+                    {/* New Fields */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <LinkIcon className="w-3.5 h-3.5" /> Ссылка на соцсеть
+                            </label>
+                            <input
+                                type="text"
+                                name="socialLink"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                placeholder="vk.com/..."
+                            />
                         </div>
-
-                        <div className="mt-6">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all"
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                Менеджер
+                            </label>
+                            <select
+                                name="managerId"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none appearance-none cursor-pointer"
                             >
-                                {loading ? "Сохранение..." : "Сохранить клиента"}
-                            </button>
+                                <option value="">Не назначен</option>
+                                {managers.map(m => (
+                                    <option key={m.id} value={m.id}>{m.name}</option>
+                                ))}
+                            </select>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <MapPin className="w-3.5 h-3.5" /> Город
+                            </label>
+                            <input
+                                type="text"
+                                name="city"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                Адрес
+                            </label>
+                            <input
+                                type="text"
+                                name="address"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <MessageSquare className="w-3.5 h-3.5" /> Комментарии
+                        </label>
+                        <textarea
+                            name="comments"
+                            rows={3}
+                            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none resize-none"
+                        />
+                    </div>
+
+                    <div className="pt-2">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full inline-flex justify-center rounded-2xl border border-transparent bg-indigo-600 py-4 px-4 text-base font-black text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                        >
+                            {loading ? "Сохранение..." : "Создать клиента"}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

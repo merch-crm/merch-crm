@@ -13,6 +13,7 @@ export function AddCategoryDialog() {
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState("package");
     const [selectedColor, setSelectedColor] = useState("indigo");
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const router = useRouter();
 
     const icons = [
@@ -41,10 +42,24 @@ export function AddCategoryDialog() {
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setIsPending(true);
-        setError(null);
 
         const formData = new FormData(event.currentTarget);
+        const name = formData.get("name") as string;
+        const prefix = formData.get("prefix") as string;
+
+        const newErrors: Record<string, string> = {};
+        if (!name || name.trim().length < 2) newErrors.name = "Введите название категории";
+        if (!prefix || prefix.trim().length < 2) newErrors.prefix = "Введите префикс артикула (напр. TS)";
+
+        if (Object.keys(newErrors).length > 0) {
+            setFieldErrors(newErrors);
+            return;
+        }
+
+        setIsPending(true);
+        setError(null);
+        setFieldErrors({});
+
         formData.set("icon", selectedIcon);
         formData.set("color", selectedColor);
         const result = await addInventoryCategory(formData);
@@ -91,38 +106,55 @@ export function AddCategoryDialog() {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8 pt-4 space-y-6">
-                            {error && (
-                                <div className="p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-2xl border border-rose-100 animate-in shake duration-500">
-                                    {error}
-                                </div>
-                            )}
+                        <form onSubmit={handleSubmit} noValidate className="p-8 pt-4 space-y-6">
 
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="col-span-2 space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Название категории</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                            Название категории <span className="text-rose-500 font-bold">*</span>
+                                        </label>
                                         <input
                                             name="name"
-                                            required
                                             placeholder="Футболки"
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white"
+                                            className={cn(
+                                                "w-full h-12 px-4 rounded-2xl border outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300",
+                                                fieldErrors.name
+                                                    ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                    : "border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50/50 hover:bg-white"
+                                            )}
+                                            onChange={() => setFieldErrors(prev => ({ ...prev, name: "" }))}
                                         />
+                                        {fieldErrors.name && (
+                                            <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                                {fieldErrors.name}
+                                            </p>
+                                        )}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Артикул</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                            Артикул <span className="text-rose-500 font-bold">*</span>
+                                        </label>
                                         <input
                                             name="prefix"
                                             placeholder="TS, HD..."
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white uppercase"
+                                            className={cn(
+                                                "w-full h-12 px-4 rounded-2xl border font-bold text-slate-900 placeholder:text-slate-300 uppercase outline-none transition-all",
+                                                fieldErrors.prefix
+                                                    ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                    : "border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50/50 hover:bg-white uppercase"
+                                            )}
                                             onInput={(e) => {
                                                 const val = e.currentTarget.value;
-                                                if (/[а-яА-ЯёЁ]/.test(val)) {
-                                                    alert("Используйте только латиницу, цифры 0-9 и символ «-»");
-                                                }
                                                 e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+                                                if (fieldErrors.prefix) setFieldErrors(prev => ({ ...prev, prefix: "" }));
                                             }}
                                         />
+                                        {fieldErrors.prefix && (
+                                            <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                                {fieldErrors.prefix}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 

@@ -19,7 +19,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { toggleTaskStatus, deleteTask, uploadTaskFile } from "./actions";
-import { useTransition, useRef } from "react";
+import { useTransition, useRef, useState } from "react";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface Attachment {
     id: string;
@@ -52,6 +54,8 @@ interface TaskDetailsDialogProps {
 
 export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     const [isPending, startTransition] = useTransition();
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const getPriorityConfig = (priority: string) => {
@@ -64,16 +68,25 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
 
     const handleToggle = () => {
         startTransition(async () => {
-            await toggleTaskStatus(task.id, task.status);
-            onClose();
+            const res = await toggleTaskStatus(task.id, task.status);
+            if (res.success) {
+                toast(task.status === "done" ? "Задача возвращена в работу" : "Задача выполнена", "success");
+                onClose();
+            } else {
+                toast(res.error || "Ошибка", "error");
+            }
         });
     };
 
     const handleDelete = () => {
-        if (!confirm("Вы уверены, что хотите удалить эту задачу?")) return;
         startTransition(async () => {
-            await deleteTask(task.id);
-            onClose();
+            const res = await deleteTask(task.id);
+            if (res.success) {
+                toast("Задача удалена", "success");
+                onClose();
+            } else {
+                toast(res.error || "Ошибка при удалении", "error");
+            }
         });
     };
 
@@ -86,7 +99,11 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
 
         startTransition(async () => {
             const res = await uploadTaskFile(task.id, formData);
-            if (res.error) alert(res.error);
+            if (res.error) {
+                toast(res.error, "error");
+            } else {
+                toast("Файл загружен", "success");
+            }
         });
     };
 
@@ -275,7 +292,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             {isDone ? "ВЕРНУТЬ В РАБОТУ" : "ОТМЕТИТЬ КАК ВЫПОЛНЕНО"}
                         </button>
                         <button
-                            onClick={handleDelete}
+                            onClick={() => setShowDeleteConfirm(true)}
                             disabled={isPending}
                             className="p-4 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all active:scale-[0.98] shadow-lg shadow-rose-200/50"
                         >
@@ -284,6 +301,17 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                     </div>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={handleDelete}
+                title="Удаление задачи"
+                description="Вы уверены, что хотите удалить эту задачу? Это действие необратимо."
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isPending}
+            />
         </div>
     );
 }

@@ -1,15 +1,33 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, auditLogs, departments, clients, orders } from "@/lib/schema";
-import { getSession, hashPassword } from "@/lib/auth";
+import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings } from "@/lib/schema";
+import { getSession } from "@/lib/auth";
+import { hashPassword } from "@/lib/password";
 import { eq, asc, desc, isNull, sql, and, inArray, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import os from "os";
+import fs from "fs";
+import path from "path";
+
+export interface BackupFile {
+    name: string;
+    size: number;
+    createdAt: string;
+}
 
 export async function getUsers(page = 1, limit = 20, search = "") {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
 
     try {
         const offset = (page - 1) * limit;
@@ -118,6 +136,15 @@ export async function createUser(formData: FormData) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может создавать сотрудников" };
+    }
+
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -160,6 +187,15 @@ export async function updateUserRole(userId: string, roleId: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может менять роли сотрудников" };
+    }
+
     try {
         await db.update(users)
             .set({ roleId })
@@ -177,6 +213,15 @@ export async function deleteUser(userId: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может удалять сотрудников" };
+    }
+
     try {
         await db.delete(users).where(eq(users.id, userId));
         revalidatePath("/dashboard/admin");
@@ -190,6 +235,15 @@ export async function deleteUser(userId: string) {
 export async function getAuditLogs(page = 1, limit = 20, search = "") {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может просматривать логи" };
+    }
 
     try {
         const offset = (page - 1) * limit;
@@ -458,6 +512,15 @@ export async function createRole(formData: FormData) {
 export async function deleteRole(roleId: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может удалять роли" };
+    }
 
     try {
         // Check if users are assigned to this role
@@ -756,9 +819,10 @@ export async function getSystemStats() {
         // 2. Database Stats
         let dbSize = 0;
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const dbSizeResult: any = await db.execute(sql`SELECT pg_database_size(current_database())`);
-            dbSize = parseInt(dbSizeResult[0]?.pg_database_size || "0");
+            // Drizzle returns raw rows; for pg_database_size we need to parse carefully
+            const dbSizeResult = await db.execute(sql`SELECT pg_database_size(current_database())`);
+            const rows = dbSizeResult.rows as any[];
+            dbSize = parseInt(rows[0]?.pg_database_size || "0");
         } catch (e) {
             console.error("Failed to get db size:", e);
         }
@@ -790,15 +854,70 @@ export async function getSystemStats() {
             console.error("Failed to get storage stats:", e);
         }
 
+
+        // Disk usage check (available space on host/container volume)
+        let diskStats = { total: 0, free: 0 };
+        try {
+            // fs.statfsSync is available in Node 18+
+            const stat = fs.statfsSync(process.cwd());
+            diskStats = {
+                total: Number(stat.bsize * stat.blocks),
+                free: Number(stat.bsize * stat.bfree)
+            };
+        } catch (e) {
+            console.error("Error fetching disk stats:", e);
+        }
+
+        // Auto-backup check
+        try {
+            const frequencySetting = await db.query.systemSettings.findFirst({
+                where: eq(systemSettings.key, "backup_frequency")
+            });
+            const lastBackupSetting = await db.query.systemSettings.findFirst({
+                where: eq(systemSettings.key, "last_backup_at")
+            });
+
+            const frequency = (frequencySetting?.value as string) || "none";
+            const lastBackupAt = lastBackupSetting?.value ? new Date(lastBackupSetting.value as string) : new Date(0);
+
+            let shouldBackup = false;
+            const now = new Date();
+            const diffMs = now.getTime() - lastBackupAt.getTime();
+
+            if (frequency === "daily" && diffMs > 24 * 60 * 60 * 1000) shouldBackup = true;
+            if (frequency === "weekly" && diffMs > 7 * 24 * 60 * 60 * 1000) shouldBackup = true;
+            if (frequency === "monthly" && diffMs > 30 * 24 * 60 * 60 * 1000) shouldBackup = true;
+
+            if (shouldBackup) {
+                console.log(`[Auto-Backup] Frequency: ${frequency}. Triggering backup...`);
+                // Update timestamp immediately to prevent concurrent triggers
+                await db.insert(systemSettings).values({
+                    key: "last_backup_at",
+                    value: now.toISOString(),
+                    updatedAt: now
+                }).onConflictDoUpdate({
+                    target: systemSettings.key,
+                    set: { value: now.toISOString(), updatedAt: now }
+                });
+
+                // Trigger actual backup (non-blocking for the stats request)
+                createDatabaseBackup().catch(err => console.error("Auto-backup failed:", err));
+            }
+        } catch (e) {
+            console.error("Error in auto-backup check:", e);
+        }
+
         return {
             data: {
                 server: {
-                    cpuLoad,
+                    // Normalize loadavg by the number of cores for better UI representation
+                    cpuLoad: cpuLoad.map(l => (l / os.cpus().length) * 10),
                     totalMem,
                     freeMem,
                     uptime,
                     platform: os.platform(),
                     arch: os.arch(),
+                    disk: diskStats
                 },
                 database: {
                     size: dbSize,
@@ -813,5 +932,442 @@ export async function getSystemStats() {
     } catch (error) {
         console.error("Error fetching system stats:", error);
         return { error: "Не удалось получить системные показатели" };
+    }
+}
+
+export async function clearAuditLogs() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может очищать логи" };
+    }
+
+    try {
+        await db.delete(auditLogs);
+
+        // Log this action as the last standing log
+        await db.insert(auditLogs).values({
+            userId: session.id,
+            action: "Логи аудита очищены",
+            entityType: "system",
+            entityId: session.id, // required field, using session.id as placeholder
+            createdAt: new Date()
+        });
+
+        revalidatePath("/dashboard/admin/audit");
+        return { success: true };
+    } catch (error) {
+        console.error("Error clearing audit logs:", error);
+        return { error: "Failed to clear audit logs" };
+    }
+}
+
+export async function checkSystemHealth() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const health: any = {
+        database: { status: "loading", latency: 0 },
+        storage: { status: "loading" },
+        env: { status: "loading", details: [] },
+        fs: { status: "loading" },
+        backup: { status: "loading" },
+        jwt: { status: "loading" },
+        timestamp: new Date().toISOString()
+    };
+
+    try {
+        // 1. Database Ping & Latency
+        const startDb = Date.now();
+        await db.execute(sql`SELECT 1`);
+        health.database.latency = Date.now() - startDb;
+        health.database.status = "ok";
+
+        // 2. Storage Check (S3)
+        try {
+            const { uploadFile, s3Client } = await import("@/lib/storage");
+            const testKey = `health-check-${Date.now()}.txt`;
+            await uploadFile(testKey, Buffer.from("health-check"), "text/plain");
+
+            // Delete the test file immediately
+            const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
+            const bucket = process.env.S3_BUCKET || process.env.REG_STORAGE_BUCKET || "";
+            await s3Client.send(new DeleteObjectCommand({
+                Bucket: bucket,
+                Key: testKey
+            }));
+
+            health.storage.status = "ok";
+        } catch (e) {
+            console.error("Storage health check failed:", e);
+            health.storage.status = "error";
+        }
+
+        // 3. Environment Check
+        const criticalVars = ["DATABASE_URL", "JWT_SECRET_KEY", "S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_ENDPOINT", "S3_BUCKET"];
+        const missing = criticalVars.filter(v => !process.env[v]);
+        health.env.status = missing.length === 0 ? "ok" : "warning";
+        health.env.details = missing;
+
+        // 4. File System Check
+        try {
+            const uploadDir = path.join(process.cwd(), "public", "uploads");
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            const testFile = path.join(uploadDir, ".write-test");
+            fs.writeFileSync(testFile, "test");
+            fs.unlinkSync(testFile);
+            health.fs.status = "ok";
+        } catch (e) {
+            console.error("FS check failed:", e);
+            health.fs.status = "error";
+        }
+
+        // 5. Backup Integrity Check
+        try {
+            const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+            if (fs.existsSync(backupDir)) {
+                const files = fs.readdirSync(backupDir).filter(f => f.endsWith(".json"));
+                if (files.length > 0) {
+                    const latest = files.sort().reverse()[0];
+                    const stats = fs.statSync(path.join(backupDir, latest));
+                    health.backup.status = stats.size > 1024 ? "ok" : "warning"; // At least 1KB
+                } else {
+                    health.backup.status = "none";
+                }
+            } else {
+                health.backup.status = "none";
+            }
+        } catch (e) {
+            health.backup.status = "error";
+        }
+
+        // 6. JWT Auth Check
+        try {
+            const { encrypt, decrypt } = await import("@/lib/auth");
+            const testPayload = { ...session, test: true };
+            const token = await encrypt(testPayload as any);
+            const decrypted = await decrypt(token);
+            health.jwt.status = decrypted.id === session.id ? "ok" : "error";
+        } catch (e) {
+            console.error("JWT check failed:", e);
+            health.jwt.status = "error";
+        }
+
+        return { data: health };
+    } catch (error) {
+        console.error("Health check error:", error);
+        return { error: "Ошибка при выполнении диагностики" };
+    }
+}
+
+export async function createDatabaseBackup() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        const backupData = {
+            version: "1.0",
+            timestamp: new Date().toISOString(),
+            data: {
+                users: await db.select().from(users),
+                roles: await db.select().from(roles),
+                departments: await db.select().from(departments),
+                clients: await db.select().from(clients),
+                orders: await db.select().from(orders),
+                inventoryCategories: await db.select().from(inventoryCategories),
+                inventoryItems: await db.select().from(inventoryItems),
+                storageLocations: await db.select().from(storageLocations),
+                tasks: await db.select().from(tasks),
+            }
+        };
+
+        const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+        if (!fs.existsSync(backupDir)) {
+            fs.mkdirSync(backupDir, { recursive: true });
+        }
+
+        const fileName = `backup_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+        const filePath = path.join(backupDir, fileName);
+
+        fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
+
+        await db.insert(auditLogs).values({
+            userId: session.id,
+            action: `Создана резервная копия БД: ${fileName}`,
+            entityType: "system",
+            entityId: session.id,
+            createdAt: new Date()
+        });
+
+        return { success: true, fileName };
+    } catch (error) {
+        console.error("Backup creation error:", error);
+        return { error: "Не удалось создать резервную копию" };
+    }
+}
+
+export async function getBackupsList() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+        if (!fs.existsSync(backupDir)) return { data: [] };
+
+        const files = fs.readdirSync(backupDir);
+        const backups = files
+            .filter((f: string) => f.endsWith(".json"))
+            .map((f: string) => {
+                const stats = fs.statSync(path.join(backupDir, f));
+                return {
+                    name: f,
+                    size: stats.size,
+                    createdAt: stats.birthtime.toISOString()
+                };
+            })
+            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return { data: backups as BackupFile[] };
+    } catch (error) {
+        return { error: "Не удалось получить список копий" };
+    }
+}
+
+export async function deleteBackupAction(fileName: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+        const filePath = path.join(backupDir, fileName);
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+
+            await db.insert(auditLogs).values({
+                userId: session.id,
+                action: `Удалена резервная копия: ${fileName}`,
+                entityType: "system",
+                entityId: session.id,
+                createdAt: new Date()
+            });
+
+            return { success: true };
+        }
+        return { error: "Файл не найден" };
+    } catch (error) {
+        return { error: "Ошибка при удалении" };
+    }
+}
+
+export async function getSystemSettings() {
+    const session = await getSession();
+    if (!session) return {
+        error: "Unauthorized"
+    };
+
+    try {
+        const settings = await db.select().from(systemSettings);
+        const settingsMap: Record<string, any> = {};
+        settings.forEach(s => {
+            settingsMap[s.key] = s.value;
+        });
+        return { data: settingsMap };
+    } catch (error) {
+        return {
+            error: "Failed to fetch settings"
+        };
+    }
+}
+
+export async function updateSystemSetting(key: string, value: any) {
+    const session = await getSession();
+    if (!session) return {
+        error: "Unauthorized"
+    };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return {
+            error: "Доступ запрещен"
+        };
+    }
+
+    try {
+        await db.insert(systemSettings).values({
+            key,
+            value,
+            updatedAt: new Date()
+        }).onConflictDoUpdate({
+            target: systemSettings.key,
+            set: { value, updatedAt: new Date() }
+        });
+
+        revalidatePath("/dashboard/admin/settings");
+        return { success: true };
+    } catch (error) {
+        console.error("Update setting error:", error);
+        return {
+            error: "Ошибка при обновлении настроек"
+        };
+    }
+}
+export async function clearRamAction() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        if (global.gc) {
+            global.gc();
+            return { success: true, message: "Сборщик мусора запущен успешно" };
+        } else {
+            return {
+                error: "Сборщик мусора недоступен. Запустите Node.js с флагом --expose-gc",
+                details: "Однако, некоторые внутренние буферы могут быть очищены при обращении к этой функции."
+            };
+        }
+    } catch (error) {
+        return { error: "Ошибка при очистке памяти" };
+    }
+}
+
+export async function restartServerAction() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        // Record the restart event in audit logs
+        await db.insert(auditLogs).values({
+            userId: session.id,
+            action: "SERVER_RESTART",
+            entityType: "SYSTEM",
+            entityId: "00000000-0000-0000-0000-000000000000",
+            details: { info: "Пользователь инициировал перезапуск сервера через панель управления" },
+            createdAt: new Date()
+        });
+
+        // Use setTimeout to allow the response to reach the client and logs to be saved
+        setTimeout(() => {
+            console.log("Server restart initiated by admin...");
+            process.exit(0); // Exit with success. Supervisor (pm2/docker) should restart it.
+        }, 1000);
+
+        return { success: true, message: "Перезапуск инициирован. Система будет недоступна 10-30 секунд." };
+    } catch (error) {
+        return { error: "Ошибка при инициализации перезапуска" };
+    }
+}
+
+export async function trackActivity() {
+    const session = await getSession();
+    if (!session) return;
+
+    await db.update(users)
+        .set({ lastActiveAt: new Date() })
+        .where(eq(users.id, session.id));
+}
+
+export async function getMonitoringStats() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        // 1. Get active sessions (users active in last 5 minutes)
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const activeUsers = await db.query.users.findMany({
+            where: sql`${users.lastActiveAt} > ${fiveMinutesAgo}`,
+            with: {
+                role: true,
+                department: true
+            },
+            limit: 10
+        });
+
+        // 2. Get activity stats (audit logs per hour for last 24h)
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const activityStats = await db.select({
+            hour: sql<number>`EXTRACT(HOUR FROM ${auditLogs.createdAt})`,
+            count: sql<number>`count(*)`
+        })
+            .from(auditLogs)
+            .where(sql`${auditLogs.createdAt} > ${twentyFourHoursAgo}`)
+            .groupBy(sql`EXTRACT(HOUR FROM ${auditLogs.createdAt})`)
+            .orderBy(sql`EXTRACT(HOUR FROM ${auditLogs.createdAt})`);
+
+        return {
+            activeUsers: activeUsers.map(u => ({
+                id: u.id,
+                name: u.name,
+                email: u.email,
+                avatar: u.avatar,
+                role: u.role?.name,
+                department: u.department?.name,
+                lastActiveAt: u.lastActiveAt
+            })),
+            activityStats: activityStats.map(s => ({
+                hour: parseInt(String(s.hour), 10),
+                count: parseInt(String(s.count), 10)
+            }))
+        };
+    } catch (error) {
+        console.error("Monitoring stats error:", error);
+        return { error: "Ошибка получения данных мониторинга" };
     }
 }

@@ -19,9 +19,10 @@ export const orderStatusEnum = pgEnum("order_status", [
     "production",
     "done",
     "shipped",
+    "cancelled",
 ]);
 
-export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out"]);
+export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer"]);
 
 export const taskStatusEnum = pgEnum("task_status", [
     "new",
@@ -42,6 +43,7 @@ export const notificationTypeEnum = pgEnum("notification_type", [
     "warning",
     "success",
     "error",
+    "transfer",
 ]);
 
 export const orderCategoryEnum = pgEnum("order_category", [
@@ -86,6 +88,7 @@ export const users = pgTable("users", {
     socialMax: text("social_max"),
     departmentLegacy: text("department_legacy"),
     departmentId: uuid("department_id").references(() => departments.id),
+    lastActiveAt: timestamp("last_active_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -104,6 +107,8 @@ export const clients = pgTable("clients", {
     city: text("city"),
     address: text("address"),
     comments: text("comments"),
+    socialLink: text("social_link"),
+    managerId: uuid("manager_id").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -133,6 +138,8 @@ export const inventoryItems = pgTable("inventory_items", {
     qualityCode: text("quality_code"),
     attributeCode: text("attribute_code"),
     sizeCode: text("size_code"),
+    image: text("image"),
+    reservedQuantity: integer("reserved_quantity").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -162,6 +169,7 @@ export const orderItems = pgTable("order_items", {
     description: text("description").notNull(),
     quantity: integer("quantity").notNull(),
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    inventoryId: uuid("inventory_id").references(() => inventoryItems.id),
 });
 
 // Inventory Transactions
@@ -174,6 +182,7 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     type: transactionTypeEnum("type").notNull(),
     reason: text("reason"),
     storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
+    fromStorageLocationId: uuid("from_storage_location_id").references(() => storageLocations.id),
     createdBy: uuid("created_by").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -222,6 +231,13 @@ export const auditLogs = pgTable("audit_logs", {
     entityId: uuid("entity_id").notNull(),
     details: jsonb("details"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// System Settings
+export const systemSettings = pgTable("system_settings", {
+    key: text("key").primaryKey(),
+    value: jsonb("value").notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 
@@ -322,6 +338,10 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
         fields: [orderItems.orderId],
         references: [orders.id],
     }),
+    inventoryItem: one(inventoryItems, {
+        fields: [orderItems.inventoryId],
+        references: [inventoryItems.id],
+    }),
 }));
 
 export const inventoryCategoriesRelations = relations(inventoryCategories, ({ many }) => ({
@@ -355,6 +375,10 @@ export const inventoryTransactionsRelations = relations(
         }),
         storageLocation: one(storageLocations, {
             fields: [inventoryTransactions.storageLocationId],
+            references: [storageLocations.id],
+        }),
+        fromStorageLocation: one(storageLocations, {
+            fields: [inventoryTransactions.fromStorageLocationId],
             references: [storageLocations.id],
         }),
     })
@@ -450,6 +474,20 @@ export const storageLocationsRelations = relations(storageLocations, ({ one, man
     stocks: many(inventoryStocks),
     transfersIn: many(inventoryTransfers, { relationName: "transfersIn" }),
     transfersOut: many(inventoryTransfers, { relationName: "transfersOut" }),
+}));
+
+export const clientsRelations = relations(clients, ({ one }) => ({
+    manager: one(users, {
+        fields: [clients.managerId],
+        references: [users.id],
+    }),
+}));
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+    user: one(users, {
+        fields: [auditLogs.userId],
+        references: [users.id],
+    }),
 }));
 
 

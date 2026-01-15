@@ -2,16 +2,21 @@
 
 import { StorageLocation } from "./storage-locations-tab";
 import { InventoryItem } from "./inventory-client";
+import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 import { Plus, X, MapPin, User, Building, Package, AlignLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { updateStorageLocation } from "./actions";
+import { updateStorageLocation, moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { ItemDetailDrawer } from "./item-detail-drawer";
+import { ArrowRightLeft } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
+    locations: StorageLocation[];
     location: StorageLocation | null;
     isOpen: boolean;
     onClose: () => void;
@@ -19,17 +24,34 @@ interface EditStorageLocationDialogProps {
 
 const ITEMS_PER_PAGE = 7;
 
-export function EditStorageLocationDialog({ users, location, isOpen, onClose }: EditStorageLocationDialogProps) {
-    const [error, setError] = useState("");
+export function EditStorageLocationDialog({ users, locations, location, isOpen, onClose }: EditStorageLocationDialogProps) {
+    const { toast } = useToast();
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+    const [transferItem, setTransferItem] = useState<InventoryItem | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     async function handleSubmit(formData: FormData) {
         if (!location) return;
+
+        const name = formData.get("name") as string;
+        const address = formData.get("address") as string;
+
+        const newErrors: Record<string, string> = {};
+        if (!name || name.trim().length < 2) newErrors.name = "Введите название склада";
+        if (!address || address.trim().length < 5) newErrors.address = "Введите полный адрес";
+
+        if (Object.keys(newErrors).length > 0) {
+            setFieldErrors(newErrors);
+            return;
+        }
+
+        setFieldErrors({});
         const res = await updateStorageLocation(location.id, formData);
         if (res?.error) {
-            setError(res.error);
+            toast(res.error, "error");
         } else {
+            toast("Склад успешно обновлен", "success");
             onClose();
         }
     }
@@ -66,18 +88,28 @@ export function EditStorageLocationDialog({ users, location, isOpen, onClose }: 
                 <div className="grid grid-cols-2 gap-8">
                     {/* Left Column - Edit Form */}
                     <div>
-                        <form action={handleSubmit} className="space-y-6">
+                        <form action={handleSubmit} noValidate className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                    <Building className="w-3 h-3" /> Название
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                    <Building className="w-3 h-3" /> Название <span className="text-rose-500 font-bold">*</span>
                                 </label>
                                 <input
                                     name="name"
-                                    required
                                     defaultValue={location.name}
                                     placeholder="Например: основной склад"
-                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    className={cn(
+                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                        fieldErrors.name
+                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
+                                            : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                    )}
+                                    onChange={() => setFieldErrors(prev => ({ ...prev, name: "" }))}
                                 />
+                                {fieldErrors.name && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                        {fieldErrors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -93,16 +125,26 @@ export function EditStorageLocationDialog({ users, location, isOpen, onClose }: 
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                    <MapPin className="w-3 h-3" /> Адрес
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                    <MapPin className="w-3 h-3" /> Адрес <span className="text-rose-500 font-bold">*</span>
                                 </label>
                                 <input
                                     name="address"
-                                    required
                                     defaultValue={location.address}
                                     placeholder="Улица, номер дома..."
-                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    className={cn(
+                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                        fieldErrors.address
+                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
+                                            : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                    )}
+                                    onChange={() => setFieldErrors(prev => ({ ...prev, address: "" }))}
                                 />
+                                {fieldErrors.address && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                        {fieldErrors.address}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -128,12 +170,6 @@ export function EditStorageLocationDialog({ users, location, isOpen, onClose }: 
                                 </div>
                             </div>
 
-                            {error && (
-                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 animate-in shake duration-500">
-                                    <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                                    <p className="text-rose-600 text-[10px] font-black uppercase tracking-widest">{error}</p>
-                                </div>
-                            )}
 
                             <SubmitButton />
                         </form>
@@ -156,19 +192,26 @@ export function EditStorageLocationDialog({ users, location, isOpen, onClose }: 
                                     <div
                                         key={item.id}
                                         onClick={() => setSelectedItem(item)}
-                                        className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all cursor-pointer"
+                                        className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all cursor-pointer group"
                                     >
                                         <div className="flex flex-col flex-1 min-w-0 mr-3">
-                                            <span className="text-xs font-bold text-slate-900">{item.name}</span>
+                                            <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">{item.name}</span>
                                             {item.sku && <span className="text-[10px] text-slate-400 font-mono mt-0.5">{item.sku}</span>}
-                                            {item.description && (
-                                                <span className="text-[10px] text-slate-500 mt-1 line-clamp-1">
-                                                    {item.description}
-                                                </span>
-                                            )}
                                         </div>
-                                        <div className="text-xs font-black text-slate-600 bg-white px-2.5 py-1 rounded-lg shadow-sm border border-slate-100 flex-shrink-0">
-                                            {item.quantity} {item.unit || "уп."}
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-xs font-black text-slate-600 bg-white px-2.5 py-1 rounded-lg shadow-sm border border-slate-100 flex-shrink-0">
+                                                {item.quantity} {item.unit || "уп."}
+                                            </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setTransferItem(item);
+                                                }}
+                                                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-sm transition-all shadow-sm"
+                                                title="Переместить на другой склад"
+                                            >
+                                                <ArrowRightLeft className="w-3.5 h-3.5" />
+                                            </button>
                                         </div>
                                     </div>
                                 ))
@@ -226,6 +269,15 @@ export function EditStorageLocationDialog({ users, location, isOpen, onClose }: 
                     onClose={() => setSelectedItem(null)}
                 />
             )}
+
+            {transferItem && location && (
+                <QuickTransferModal
+                    item={transferItem}
+                    currentLocationId={location.id}
+                    locations={locations}
+                    onClose={() => setTransferItem(null)}
+                />
+            )}
         </div>
     );
 }
@@ -244,6 +296,169 @@ function SubmitButton() {
                     Сохранение...
                 </div>
             ) : "Сохранить изменения"}
+        </Button>
+    );
+}
+
+function QuickTransferModal({ item, currentLocationId, locations, onClose }: {
+    item: InventoryItem;
+    currentLocationId: string;
+    locations: StorageLocation[];
+    onClose: () => void;
+}) {
+    const { toast } = useToast();
+    const router = useRouter();
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    async function handleTransfer(formData: FormData) {
+        const toLocationId = formData.get("toLocationId") as string;
+        const qty = parseInt(formData.get("quantity") as string);
+        const comment = formData.get("comment") as string;
+
+        const newErrors: Record<string, string> = {};
+
+        if (!toLocationId) {
+            newErrors.toLocationId = "Выберите склад получатель";
+        }
+
+        if (!qty || qty <= 0) {
+            newErrors.quantity = "Введите корректное количество";
+        } else if (qty > item.quantity) {
+            newErrors.quantity = `Максимально доступно: ${item.quantity}`;
+        }
+
+        if (!comment || comment.trim().length < 3) {
+            newErrors.comment = "Обязательно укажите причину перемещения";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setFieldErrors(newErrors);
+            return;
+        }
+
+        setFieldErrors({});
+        const res = await moveInventoryItem(formData);
+        if (res?.error) {
+            toast(res.error, "error");
+        } else {
+            toast(`Товар "${item.name}" успешно перемещен`, "success");
+            router.refresh();
+            onClose();
+        }
+    }
+
+    return (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+            <div
+                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200"
+                onClick={onClose}
+            />
+            <div className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl p-6 animate-in zoom-in-95 duration-200">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-black text-slate-900">Быстрое перемещение</h3>
+                    <button onClick={onClose} className="text-slate-400 hover:text-slate-900 transition-colors">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="mb-6 p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                    <div className="text-xs font-bold text-indigo-600 mb-1 font-mono uppercase tracking-widest">Товар</div>
+                    <div className="font-bold text-slate-900">{item.name}</div>
+                    <div className="text-[10px] text-slate-500 mt-1 flex justify-between">
+                        <span>Доступно: {item.quantity} {item.unit}</span>
+                    </div>
+                </div>
+
+                <form action={handleTransfer} noValidate className="space-y-4">
+                    <input type="hidden" name="itemId" value={item.id} />
+                    <input type="hidden" name="fromLocationId" value={currentLocationId} />
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                            Куда переместить <span className="text-rose-500 font-bold">*</span>
+                        </label>
+                        <select
+                            name="toLocationId"
+                            className={cn(
+                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-sm font-bold outline-none transition-all appearance-none cursor-pointer",
+                                fieldErrors.toLocationId
+                                    ? "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5 text-rose-900"
+                                    : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                            )}
+                        >
+                            <option value="">Выберите склад...</option>
+                            {locations.filter(l => l.id !== currentLocationId).map(l => (
+                                <option key={l.id} value={l.id}>{l.name}</option>
+                            ))}
+                        </select>
+                        {fieldErrors.toLocationId && (
+                            <div className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                {fieldErrors.toLocationId}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                            Количество <span className="text-rose-500 font-bold">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            name="quantity"
+                            min="1"
+                            max={item.quantity}
+                            placeholder="Кол-во..."
+                            className={cn(
+                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                fieldErrors.quantity
+                                    ? "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5 text-rose-900"
+                                    : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                            )}
+                        />
+                        {fieldErrors.quantity && (
+                            <div className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                {fieldErrors.quantity}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                            Комментарий <span className="text-rose-500 font-bold">*</span>
+                        </label>
+                        <input
+                            name="comment"
+                            placeholder="Причина перемещения..."
+                            className={cn(
+                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                fieldErrors.comment
+                                    ? "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5 text-rose-900"
+                                    : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                            )}
+                        />
+                        {fieldErrors.comment && (
+                            <div className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200 text-balance">
+                                {fieldErrors.comment}
+                            </div>
+                        )}
+                    </div>
+
+                    <TransferSubmitButton />
+                </form>
+            </div>
+        </div>
+    );
+}
+
+function TransferSubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button
+            type="submit"
+            disabled={pending}
+            className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all mt-2"
+        >
+            {pending ? "Перемещение..." : "Переместить"}
         </Button>
     );
 }

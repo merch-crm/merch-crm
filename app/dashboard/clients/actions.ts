@@ -8,6 +8,23 @@ import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 
 
+export async function getManagers() {
+    try {
+        const data = await db.query.users.findMany({
+            columns: {
+                id: true,
+                name: true,
+            },
+            orderBy: (users, { asc }) => [asc(users.name)],
+        });
+        return { data };
+    } catch (error) {
+        console.error("Error fetching managers:", error);
+        return { error: "Failed to fetch managers" };
+    }
+}
+
+
 export async function getClients() {
     try {
         const data = await db.select({
@@ -24,6 +41,8 @@ export async function getClients() {
             city: clients.city,
             address: clients.address,
             comments: clients.comments,
+            socialLink: clients.socialLink,
+            managerId: clients.managerId,
             createdAt: clients.createdAt,
             totalOrders: sql<number>`count(${orders.id})`,
             totalSpent: sql<number>`coalesce(sum(${orders.totalAmount}), 0)`,
@@ -56,6 +75,8 @@ export async function addClient(formData: FormData) {
     const city = formData.get("city") as string;
     const address = formData.get("address") as string;
     const comments = formData.get("comments") as string;
+    const socialLink = formData.get("socialLink") as string;
+    const managerId = formData.get("managerId") as string;
 
     if (!lastName || !firstName || !phone) {
         return { error: "Фамилия, Имя и Телефон обязательны" };
@@ -77,6 +98,8 @@ export async function addClient(formData: FormData) {
             city,
             address,
             comments,
+            socialLink,
+            managerId: managerId || null,
         }).returning();
 
         await logAction("Создан клиент", "client", newClient.id, { name: fullName });
@@ -105,6 +128,8 @@ export async function updateClient(clientId: string, formData: FormData) {
     const city = formData.get("city") as string;
     const address = formData.get("address") as string;
     const comments = formData.get("comments") as string;
+    const socialLink = formData.get("socialLink") as string;
+    const managerId = formData.get("managerId") as string;
 
     if (!lastName || !firstName || !phone) {
         return { error: "Фамилия, Имя и Телефон обязательны" };
@@ -134,6 +159,8 @@ export async function updateClient(clientId: string, formData: FormData) {
                 city,
                 address,
                 comments,
+                socialLink,
+                managerId: managerId || null,
             })
             .where(eq(clients.id, clientId));
 

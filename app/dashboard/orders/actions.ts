@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments } from "@/lib/schema";
+import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments, inventoryStocks } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, inArray, and, gte, lte, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
@@ -139,30 +139,21 @@ export async function createOrder(formData: FormData) {
                 orderId: newOrder.id,
                 description: item.description,
                 quantity: item.quantity,
-                price: String(item.price)
+                price: String(item.price),
+                inventoryId: item.inventoryId || null
             });
 
-            // Deduct from inventory if it's linked
+            // Reserve in inventory if it's linked
             if (item.inventoryId) {
-                // Deduct
                 const [invItem] = await db.select().from(inventoryItems).where(eq(inventoryItems.id, item.inventoryId));
                 if (invItem) {
                     await db.update(inventoryItems)
-                        .set({ quantity: invItem.quantity - item.quantity })
+                        .set({ reservedQuantity: (invItem.reservedQuantity || 0) + item.quantity })
                         .where(eq(inventoryItems.id, item.inventoryId));
 
-                    // Log transaction
-                    await db.insert(inventoryTransactions).values({
-                        itemId: item.inventoryId,
-                        changeAmount: -item.quantity,
-                        type: "out",
-                        reason: `Order #${newOrder.id}`,
-                        createdBy: session.id
-                    });
-
-                    await logAction("Списание", "inventory_item", item.inventoryId, {
-                        reason: `Order #${newOrder.id}`,
-                        quantity: -item.quantity
+                    await logAction("Резерв", "inventory_item", item.inventoryId, {
+                        reason: `Заказ #${newOrder.id.slice(0, 8)}`,
+                        quantity: item.quantity
                     });
                 }
             }
@@ -184,13 +175,89 @@ export async function createOrder(formData: FormData) {
 
 
 export async function updateOrderStatus(orderId: string, newStatus: (typeof orders.$inferInsert)["status"]) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
     try {
+        const order = await db.query.orders.findFirst({
+            where: eq(orders.id, orderId),
+            with: { items: { with: { inventoryItem: true } } }
+        }) as any;
+
+        if (!order) return { error: "Заказ не найден" };
+        const oldStatus = order.status;
+
+        if (oldStatus === newStatus) return { success: true };
+
+        // Stock Adjustment Logic
+        const deductionStatuses: string[] = ["shipped", "done"];
+        const oldStatusString = oldStatus as string || ""; // Ensure string
+        const isDeduction = deductionStatuses.includes(newStatus as string) && !deductionStatuses.includes(oldStatusString);
+        const isCancellation = ((newStatus as string) === "cancelled") && (oldStatusString !== "cancelled") && !deductionStatuses.includes(oldStatusString);
+
+        for (const item of order.items) {
+            if (item.inventoryId && item.inventoryItem) {
+                const qty = item.quantity;
+
+                if (isDeduction) {
+                    // Reduce reservation AND reduce physical quantity
+                    await db.update(inventoryItems)
+                        .set({
+                            reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty),
+                            quantity: Math.max(0, (item.inventoryItem.quantity || 0) - qty)
+                        })
+                        .where(eq(inventoryItems.id, item.inventoryId));
+
+                    // Sync with inventoryStocks (source of truth)
+                    if (item.inventoryItem.storageLocationId) {
+                        const [stock] = await db.select()
+                            .from(inventoryStocks)
+                            .where(and(
+                                eq(inventoryStocks.itemId, item.inventoryId),
+                                eq(inventoryStocks.storageLocationId, item.inventoryItem.storageLocationId)
+                            ));
+
+                        if (stock) {
+                            await db.update(inventoryStocks)
+                                .set({ quantity: Math.max(0, stock.quantity - qty) })
+                                .where(eq(inventoryStocks.id, stock.id));
+                        }
+                    }
+
+                    // Log transaction
+                    await db.insert(inventoryTransactions).values({
+                        itemId: item.inventoryId,
+                        changeAmount: -qty,
+                        type: "out",
+                        reason: `Отгрузка: Заказ #${orderId.slice(0, 8)}`,
+                        createdBy: session.id,
+                        storageLocationId: item.inventoryItem.storageLocationId
+                    });
+                } else if (isCancellation) {
+                    // Just release reservation
+                    await db.update(inventoryItems)
+                        .set({
+                            reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty)
+                        })
+                        .where(eq(inventoryItems.id, item.inventoryId));
+                }
+            }
+        }
+
         await db.update(orders).set({ status: newStatus }).where(eq(orders.id, orderId));
+
+
+        await logAction("Обновлен статус", "order", orderId, {
+            from: String(oldStatus),
+            to: String(newStatus)
+        });
+
         revalidatePath("/dashboard/orders");
-        // Also revalidate the specific order page
         revalidatePath(`/dashboard/orders/${orderId}`);
+        revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (error) {
+        console.error("Error updating order status:", error);
         return { error: "Failed to update status" };
     }
 }
@@ -211,13 +278,11 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
     if (!session) return { error: "Unauthorized" };
 
     try {
-        await db.update(orders).set({ status: newStatus }).where(inArray(orders.id, orderIds));
-
         for (const orderId of orderIds) {
-            await logAction("Обновлен статус (массово)", "order", orderId, {
-                status: newStatus
-            });
-            revalidatePath(`/dashboard/orders/${orderId}`);
+            const res = await updateOrderStatus(orderId, newStatus);
+            if (res.error) {
+                console.error(`Failed to update order ${orderId}: ${res.error}`);
+            }
         }
 
         revalidatePath("/dashboard/orders");
@@ -261,7 +326,7 @@ export async function bulkDeleteOrders(orderIds: string[]) {
         with: { role: true }
     });
 
-    if (user?.role?.name !== "administrator") {
+    if (user?.role?.name !== "Администратор") {
         return { error: "Доступ запрещен. Только администратор может удалять заказы." };
     }
 
@@ -299,6 +364,15 @@ export async function getOrderById(id: string) {
 export async function deleteOrder(orderId: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
+
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (user?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен. Только администратор может удалять заказы." };
+    }
 
     try {
         const orderToDelete = await db.query.orders.findFirst({

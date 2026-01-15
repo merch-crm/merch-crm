@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRightLeft, X, MapPin, Package, AlertCircle } from "lucide-react";
 import { InventoryItem } from "./inventory-client";
 import { StorageLocation } from "./storage-locations-tab";
@@ -16,6 +17,7 @@ interface MoveInventoryDialogProps {
 }
 
 export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogProps) {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState("");
     const [selectedItemId, setSelectedItemId] = useState("");
@@ -23,7 +25,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
     const [quantity, setQuantity] = useState("");
     const [comment, setComment] = useState("");
-    const [commentError, setCommentError] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     // Sync defaults if locations change
     if (locations.length > 0 && !fromLocationId) {
@@ -34,6 +36,38 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     }
 
     async function handleSubmit(formData: FormData) {
+        const itemId = formData.get("itemId") as string;
+        const fromLocId = formData.get("fromLocationId") as string;
+        const toLocId = formData.get("toLocationId") as string;
+        const qty = parseInt(formData.get("quantity") as string);
+        const commentValue = formData.get("comment") as string;
+
+        const newErrors: Record<string, string> = {};
+
+        if (!itemId) newErrors.itemId = "Выберите товар";
+        if (!fromLocId) newErrors.fromLocationId = "Выберите склад отправитель";
+        if (!toLocId) newErrors.toLocationId = "Выберите склад получатель";
+        if (fromLocId === toLocId) newErrors.toLocationId = "Склады должны быть разными";
+
+        if (!qty || qty <= 0) {
+            newErrors.quantity = "Введите количество";
+        } else {
+            const item = items.find(i => i.id === itemId);
+            if (item && qty > item.quantity) {
+                newErrors.quantity = `На складе всего ${item.quantity}`;
+            }
+        }
+
+        if (!commentValue || commentValue.trim().length < 3) {
+            newErrors.comment = "Обязательно укажите причину перемещения";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setFieldErrors(newErrors);
+            return;
+        }
+
+        setFieldErrors({});
         const res = await moveInventoryItem(formData);
         if (res?.error) {
             setError(res.error);
@@ -43,9 +77,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
             setSelectedItemId("");
             setQuantity("");
             setComment("");
-            // Reset to defaults
-            setFromLocationId(locations[0]?.id || "");
-            setToLocationId(locations[1]?.id || locations[0]?.id || "");
+            router.refresh();
         }
     }
 
@@ -79,26 +111,25 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </button>
                         </div>
 
-                        <form action={(formData) => {
-                            const comment = formData.get("comment") as string;
-                            if (!comment || !comment.trim()) {
-                                setCommentError(true);
-                                return;
-                            }
-                            setCommentError(false);
-                            handleSubmit(formData);
-                        }} className="space-y-6">
+                        <form action={handleSubmit} noValidate className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                    <Package className="w-3 h-3" /> Товар
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                    <Package className="w-3 h-3" /> Товар <span className="text-rose-500 font-bold">*</span>
                                 </label>
                                 <div className="relative group">
                                     <select
                                         name="itemId"
-                                        required
-                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        className={cn(
+                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            fieldErrors.itemId
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                        )}
                                         value={selectedItemId}
-                                        onChange={(e) => setSelectedItemId(e.target.value)}
+                                        onChange={(e) => {
+                                            setSelectedItemId(e.target.value);
+                                            setFieldErrors(prev => ({ ...prev, itemId: "" }));
+                                        }}
                                     >
                                         <option value="">Выберите товар...</option>
                                         {items.map((item) => (
@@ -108,82 +139,128 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                         ))}
                                     </select>
                                 </div>
+                                {fieldErrors.itemId && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                        {fieldErrors.itemId}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                        <MapPin className="w-3 h-3" /> Откуда
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                        <MapPin className="w-3 h-3" /> Откуда <span className="text-rose-500 font-bold">*</span>
                                     </label>
                                     <select
                                         name="fromLocationId"
-                                        required
-                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        className={cn(
+                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            fieldErrors.fromLocationId
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                        )}
                                         value={fromLocationId}
-                                        onChange={(e) => setFromLocationId(e.target.value)}
+                                        onChange={(e) => {
+                                            setFromLocationId(e.target.value);
+                                            setFieldErrors(prev => ({ ...prev, fromLocationId: "" }));
+                                        }}
                                     >
+                                        <option value="">Откуда...</option>
                                         {locations.map((loc) => (
                                             <option key={loc.id} value={loc.id}>
                                                 {loc.name}
                                             </option>
                                         ))}
                                     </select>
+                                    {fieldErrors.fromLocationId && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                            {fieldErrors.fromLocationId}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                        <MapPin className="w-3 h-3" /> Куда
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                        <MapPin className="w-3 h-3" /> Куда <span className="text-rose-500 font-bold">*</span>
                                     </label>
                                     <select
                                         name="toLocationId"
-                                        required
-                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        className={cn(
+                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            fieldErrors.toLocationId
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                        )}
                                         value={toLocationId}
-                                        onChange={(e) => setToLocationId(e.target.value)}
+                                        onChange={(e) => {
+                                            setToLocationId(e.target.value);
+                                            setFieldErrors(prev => ({ ...prev, toLocationId: "" }));
+                                        }}
                                     >
+                                        <option value="">Куда...</option>
                                         {locations.map((loc) => (
-                                            <option key={loc.id} value={loc.id} disabled={loc.id === fromLocationId}>
+                                            <option key={loc.id} value={loc.id}>
                                                 {loc.name}
                                             </option>
                                         ))}
                                     </select>
+                                    {fieldErrors.toLocationId && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                            {fieldErrors.toLocationId}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Количество</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                    Количество <span className="text-rose-500 font-bold">*</span>
+                                </label>
                                 <input
                                     type="number"
                                     name="quantity"
-                                    required
-                                    min="1"
                                     placeholder="0"
                                     value={quantity}
-                                    onChange={(e) => setQuantity(e.target.value)}
-                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    onChange={(e) => {
+                                        setQuantity(e.target.value);
+                                        setFieldErrors(prev => ({ ...prev, quantity: "" }));
+                                    }}
+                                    className={cn(
+                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                        fieldErrors.quantity
+                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                            : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                    )}
                                 />
+                                {fieldErrors.quantity && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
+                                        {fieldErrors.quantity}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="space-y-2 relative">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Комментарий <span className="text-rose-500 text-[10px] align-top">*</span></label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                    Комментарий <span className="text-rose-500 font-bold">*</span>
+                                </label>
                                 <input
                                     name="comment"
                                     placeholder="Причина перемещения..."
                                     className={cn(
-                                        "w-full h-14 px-5 rounded-2xl border text-sm font-bold focus:ring-4 outline-none transition-all",
-                                        commentError
+                                        "w-full h-14 px-5 rounded-2xl border text-sm font-bold outline-none transition-all focus:ring-4",
+                                        fieldErrors.comment
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
                                             : "border-slate-100 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500/5"
                                     )}
                                     value={comment}
                                     onChange={(e) => {
                                         setComment(e.target.value);
-                                        setCommentError(false);
+                                        setFieldErrors(prev => ({ ...prev, comment: "" }));
                                     }}
                                 />
-                                {commentError && (
-                                    <p className="absolute -bottom-5 left-1 text-[10px] font-bold text-rose-500 animate-in slide-in-from-top-1 fade-in duration-200">
-                                        Обязательно укажите причину перемещения
+                                {fieldErrors.comment && (
+                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                                        {fieldErrors.comment}
                                     </p>
                                 )}
                             </div>

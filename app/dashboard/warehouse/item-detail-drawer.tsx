@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft, Clock, BarChart3 } from "lucide-react";
+import { X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft, Clock, BarChart3, Check } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ import { InventoryItem } from "./inventory-client";
 // Local types for this component's data requirements
 interface ItemHistoryTransaction {
     id: string;
-    type: "in" | "out";
+    type: "in" | "out" | "transfer";
     changeAmount: number;
     reason: string | null;
     createdAt: Date;
@@ -62,53 +62,71 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
             />
 
             <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl animate-in slide-in-from-right duration-500 flex flex-col">
-                {/* Header */}
-                <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-100">
-                            <Package className="w-7 h-7" />
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">{item.name}</h2>
-                            <div className="flex items-center gap-3 mt-1.5">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{item.sku || "Без артикула"}</span>
-                                <Badge className={cn(
-                                    "px-2 py-0.5 text-[10px] font-black border-none",
-                                    item.quantity <= item.lowStockThreshold ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"
-                                )}>
-                                    {item.quantity} {item.unit} В СУММЕ
-                                </Badge>
-                            </div>
-                        </div>
-                    </div>
+                {/* Image Placeholder or Actual Image */}
+                <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                    {item.image ? (
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    ) : (
+                        <Package className="w-20 h-20 text-slate-200" />
+                    )}
                     <button
                         onClick={onClose}
-                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-white border border-slate-200 transition-all hover:shadow-md active:scale-95"
+                        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-white/80 backdrop-blur-md border border-white/50 shadow-xl transition-all hover:scale-110 active:scale-95 z-20"
                     >
                         <X className="h-6 w-6" />
                     </button>
                 </div>
 
+                {/* Header */}
+                <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-white relative">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-100 shrink-0">
+                            <Package className="w-7 h-7" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">{item.name}</h2>
+                            <div className="flex items-center gap-3 mt-1.5">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{item.sku || "Без артикула"}</span>
+                                <Badge className={cn(
+                                    "px-2 py-0.5 text-[10px] font-black border-none",
+                                    (item.quantity - (item.reservedQuantity || 0)) <= item.lowStockThreshold ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"
+                                )}>
+                                    {item.quantity - (item.reservedQuantity || 0)} {item.unit} ДОСТУПНО
+                                </Badge>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
                     {/* Primary Info Highlights */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-500 shadow-sm">
                                     <BarChart3 className="w-5 h-5" />
                                 </div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Мин. порог</span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Остаток</span>
                             </div>
-                            <div className="text-3xl font-black text-slate-900">{item.lowStockThreshold} <span className="text-sm text-slate-400 uppercase">{item.unit}</span></div>
+                            <div className="text-2xl font-black text-slate-900 leading-none">{item.quantity} <span className="text-[10px] text-slate-400 uppercase block mt-1">{item.unit}</span></div>
                         </div>
-                        <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
+                        <div className="bg-rose-50/50 rounded-[2rem] p-6 border border-rose-100/50">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-amber-500 shadow-sm">
-                                    <MapPin className="w-5 h-5" />
+                                <div className="w-10 h-10 rounded-xl bg-white border border-rose-100 flex items-center justify-center text-rose-500 shadow-sm">
+                                    <Clock className="w-5 h-5" />
                                 </div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Осн. локация</span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Бронь</span>
                             </div>
-                            <div className="text-xl font-bold text-slate-900">{item.location || "Не указано"}</div>
+                            <div className="text-2xl font-black text-rose-600 leading-none">{item.reservedQuantity || 0} <span className="text-[10px] text-rose-400 uppercase block mt-1">{item.unit}</span></div>
+                        </div>
+                        <div className="bg-emerald-50/50 rounded-[2rem] p-6 border border-emerald-100/50">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-500 shadow-sm">
+                                    <Check className="w-5 h-5 stroke-[3]" />
+                                </div>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Доступно</span>
+                            </div>
+                            <div className="text-2xl font-black text-emerald-600 leading-none">{item.quantity - (item.reservedQuantity || 0)} <span className="text-[10px] text-emerald-400 uppercase block mt-1">{item.unit}</span></div>
                         </div>
                     </div>
 
@@ -176,22 +194,23 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                             <div className="space-y-3">
                                 {history.map((t) => {
                                     const isIn = t.type === "in";
+                                    const isTransfer = t.type === "transfer";
                                     return (
                                         <div key={t.id} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-100 hover:border-slate-200 transition-all hover:bg-slate-50/30 group">
                                             <div className={cn(
                                                 "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0",
-                                                isIn ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100"
+                                                isTransfer ? "bg-indigo-50 text-indigo-600 border border-indigo-100" : (isIn ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100")
                                             )}>
-                                                {isIn ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownLeft className="w-5 h-5" />}
+                                                {isTransfer ? <ArrowUpRight className="w-5 h-5 opacity-50" /> : (isIn ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownLeft className="w-5 h-5" />)}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between mb-0.5">
                                                     <div className="text-sm font-black text-slate-900">
-                                                        {isIn ? "Приход" : "Расход"}
+                                                        {isTransfer ? "Перемещение" : (isIn ? "Приход" : "Расход")}
                                                         {t.storageLocation && <span className="ml-2 py-0.5 px-2 bg-slate-100 rounded text-[10px] text-slate-500 uppercase font-black">{t.storageLocation.name}</span>}
                                                     </div>
-                                                    <div className={cn("text-sm font-black", isIn ? "text-emerald-600" : "text-rose-600")}>
-                                                        {isIn ? "+" : "-"}{Math.abs(t.changeAmount)} {item.unit}
+                                                    <div className={cn("text-sm font-black", isTransfer ? "text-indigo-600" : (isIn ? "text-emerald-600" : "text-rose-600"))}>
+                                                        {isTransfer ? "" : (isIn ? "+" : "-")}{Math.abs(t.changeAmount)} {item.unit}
                                                     </div>
                                                 </div>
                                                 <div className="text-xs font-medium text-slate-500 truncate">{t.reason || "Без причины"}</div>

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getAuditLogs } from "../actions";
-import { Search, Activity, Calendar, Clock } from "lucide-react";
+import { getAuditLogs, clearAuditLogs } from "../actions";
+import { Search, Activity, Calendar, Clock, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Pagination } from "@/components/ui/pagination";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface AuditLog {
     id: string;
@@ -19,10 +21,12 @@ interface AuditLog {
     userId: string | null;
     user?: {
         name: string;
+        avatar?: string | null;
     } | null;
 }
 
-export function AuditLogsTable() {
+export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
+    const { toast } = useToast();
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -30,6 +34,8 @@ export function AuditLogsTable() {
     const [logs, setLogs] = useState<AuditLog[]>([]);
     const [totalLogs, setTotalLogs] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [clearing, setClearing] = useState(false);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const page = Number(searchParams.get("page")) || 1;
     const query = searchParams.get("search") || "";
@@ -51,6 +57,25 @@ export function AuditLogsTable() {
             setLoading(false);
         }
     }, [page, query]);
+
+    const handleClearLogs = async () => {
+        setClearing(true);
+        try {
+            const res = await clearAuditLogs();
+            if (res.success) {
+                toast("Логи успешно очищены", "success");
+                fetchLogs();
+            } else {
+                toast(res.error || "Ошибка при очистке логов", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            toast("Произошла ошибка", "error");
+        } finally {
+            setClearing(false);
+            setShowConfirmDialog(false);
+        }
+    };
 
     // Initial fetch and on params change
     useEffect(() => {
@@ -77,16 +102,40 @@ export function AuditLogsTable() {
 
     return (
         <div className="space-y-6">
-            <div className="relative max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <input
-                    type="text"
-                    placeholder="Поиск по логам..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
-                />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="relative max-w-md w-full">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <input
+                        type="text"
+                        placeholder="Поиск по логам..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
+                    />
+                </div>
+
+                {isAdmin && (
+                    <button
+                        onClick={() => setShowConfirmDialog(true)}
+                        disabled={clearing}
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-red-600 border border-red-100 rounded-lg font-bold hover:bg-red-50 hover:border-red-200 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                    >
+                        <Trash2 className="w-4.5 h-4.5" />
+                        {clearing ? "Очистка..." : "Очистить логи"}
+                    </button>
+                )}
             </div>
+
+            <ConfirmDialog
+                isOpen={showConfirmDialog}
+                onClose={() => setShowConfirmDialog(false)}
+                onConfirm={handleClearLogs}
+                title="Очистка логов аудита"
+                description="Вы уверены, что хотите очистить все логи аудита? Это действие необратимо."
+                confirmText="Очистить"
+                variant="destructive"
+                isLoading={clearing}
+            />
 
             <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
                 <div className="flex-1 overflow-x-auto">
@@ -132,10 +181,25 @@ export function AuditLogsTable() {
                                         <td className="px-6 py-4">
                                             {log.user ? (
                                                 <div className="flex items-center gap-2">
-                                                    <div className="h-6 w-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0">
-                                                        {(log.user?.name || "С")[0]}
+                                                    <div className="h-7 w-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
+                                                        {log.user.avatar ? (
+                                                            <>
+                                                                <span className="absolute inset-0 flex items-center justify-center">{(log.user?.name || "С")[0]}</span>
+                                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                <img
+                                                                    src={log.user.avatar}
+                                                                    alt={log.user.name}
+                                                                    className="w-full h-full object-cover relative z-10"
+                                                                    onError={(e) => {
+                                                                        (e.target as HTMLImageElement).style.opacity = '0';
+                                                                    }}
+                                                                />
+                                                            </>
+                                                        ) : (
+                                                            (log.user?.name || "С")[0]
+                                                        )}
                                                     </div>
-                                                    <span className="text-sm text-slate-900 truncate max-w-[150px]">{log.user?.name}</span>
+                                                    <span className="text-sm text-slate-900 truncate max-w-[150px] font-medium">{log.user?.name}</span>
                                                 </div>
                                             ) : (
                                                 <span className="text-slate-400 italic text-sm">Система</span>

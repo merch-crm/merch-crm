@@ -8,12 +8,15 @@ import {
     storageLocations,
     users,
     inventoryStocks,
-    inventoryTransfers
+    inventoryTransfers,
+    notifications
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import fs from "fs";
+import path from "path";
 
 export async function getInventoryCategories() {
     try {
@@ -58,7 +61,9 @@ export async function addInventoryCategory(formData: FormData) {
 
 export async function deleteInventoryCategory(id: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для удаления категории" };
+    }
 
     try {
         // First, unlink all items from this category (set categoryId to null)
@@ -68,6 +73,8 @@ export async function deleteInventoryCategory(id: string) {
 
         // Then delete the category
         await db.delete(inventoryCategories).where(eq(inventoryCategories.id, id));
+
+        await logAction("Удаление категории", "inventory_category", id, { id });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
@@ -142,6 +149,7 @@ export async function addInventoryItem(formData: FormData) {
     const qualityCode = formData.get("qualityCode") as string;
     const attributeCode = formData.get("attributeCode") as string;
     const sizeCode = formData.get("sizeCode") as string;
+    const imageFile = formData.get("image") as File;
 
     if (!name || isNaN(quantity)) {
         return { error: "Invalid data" };
@@ -158,6 +166,21 @@ export async function addInventoryItem(formData: FormData) {
                 }
             }
 
+            let imageUrl = null;
+            if (imageFile && imageFile.size > 0) {
+                const buffer = Buffer.from(await imageFile.arrayBuffer());
+                const filename = `item-${Date.now()}.jpg`;
+                const uploadDir = path.join(process.cwd(), "public/uploads/inventory");
+
+                if (!fs.existsSync(uploadDir)) {
+                    fs.mkdirSync(uploadDir, { recursive: true });
+                }
+
+                const filePath = path.join(uploadDir, filename);
+                fs.writeFileSync(filePath, buffer);
+                imageUrl = `/uploads/inventory/${filename}`;
+            }
+
             const [newItem] = await tx.insert(inventoryItems).values({
                 name,
                 sku: finalSku || null,
@@ -170,7 +193,9 @@ export async function addInventoryItem(formData: FormData) {
                 categoryId: categoryId || null,
                 qualityCode: qualityCode || null,
                 attributeCode: attributeCode || null,
-                sizeCode: sizeCode || null
+                sizeCode: sizeCode || null,
+                image: imageUrl,
+                reservedQuantity: 0
             }).returning();
 
             // Create stock record if location is selected
@@ -211,10 +236,14 @@ export async function addInventoryItem(formData: FormData) {
 
 export async function deleteInventoryItems(ids: string[]) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для удаления позиций" };
+    }
 
     try {
         await db.delete(inventoryItems).where(inArray(inventoryItems.id, ids));
+
+        await logAction("Удаление позиций", "inventory_item_bulk", ids.join(","), { count: ids.length, ids });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
@@ -241,6 +270,8 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const qualityCode = formData.get("qualityCode") as string;
     const attributeCode = formData.get("attributeCode") as string;
     const sizeCode = formData.get("sizeCode") as string;
+    const imageFile = formData.get("image") as File;
+    const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
 
     try {
         // Auto-generate SKU if components are provided
@@ -250,6 +281,21 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             if (cat?.prefix) {
                 finalSku = [cat.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
             }
+        }
+
+        let imageUrl = formData.get("currentImage") as string || null;
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const filename = `item-${Date.now()}.jpg`;
+            const uploadDir = path.join(process.cwd(), "public/uploads/inventory");
+
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            const filePath = path.join(uploadDir, filename);
+            fs.writeFileSync(filePath, buffer);
+            imageUrl = `/uploads/inventory/${filename}`;
         }
 
         await db.update(inventoryItems).set({
@@ -264,7 +310,9 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             storageLocationId: storageLocationId || null,
             qualityCode: qualityCode || null,
             attributeCode: attributeCode || null,
-            sizeCode: sizeCode || null
+            sizeCode: sizeCode || null,
+            image: imageUrl,
+            reservedQuantity
         }).where(eq(inventoryItems.id, id));
 
         revalidatePath("/dashboard/warehouse");
@@ -290,7 +338,8 @@ export async function getInventoryHistory() {
                         role: true
                     }
                 },
-                storageLocation: true
+                storageLocation: true,
+                fromStorageLocation: true
             },
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 50
@@ -540,7 +589,9 @@ export async function addStorageLocation(formData: FormData) {
 
 export async function deleteStorageLocation(id: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для удаления места хранения" };
+    }
 
     try {
         // Unlink items
@@ -549,6 +600,8 @@ export async function deleteStorageLocation(id: string) {
             .where(eq(inventoryItems.storageLocationId, id));
 
         await db.delete(storageLocations).where(eq(storageLocations.id, id));
+
+        await logAction("Удаление склада", "storage_location", id, { id });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
@@ -719,22 +772,37 @@ export async function moveInventoryItem(formData: FormData) {
                 createdBy: session.id
             });
 
-            // 6. Log Transactions (OUT from source, IN to target)
-            await tx.insert(inventoryTransactions).values({
-                itemId,
-                changeAmount: -quantity,
-                type: "out",
-                reason: logMessage,
-                createdBy: session.id
-            });
-
+            // 6. Log Transaction (Single record for transfer)
             await tx.insert(inventoryTransactions).values({
                 itemId,
                 changeAmount: quantity,
-                type: "in",
+                type: "transfer",
                 reason: logMessage,
+                storageLocationId: toLocationId,
+                fromStorageLocationId: fromLocationId,
                 createdBy: session.id
             });
+
+            // 7. Create Notifications for responsible users
+            // Get responsible users for both locations
+            const [fromLoc] = await tx.select({ responsibleUserId: storageLocations.responsibleUserId, name: storageLocations.name })
+                .from(storageLocations).where(eq(storageLocations.id, fromLocationId)).limit(1);
+            const [toLoc] = await tx.select({ responsibleUserId: storageLocations.responsibleUserId, name: storageLocations.name })
+                .from(storageLocations).where(eq(storageLocations.id, toLocationId)).limit(1);
+            const [item] = await tx.select({ name: inventoryItems.name }).from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
+
+            const usersToNotify = new Set<string>();
+            if (fromLoc?.responsibleUserId) usersToNotify.add(fromLoc.responsibleUserId);
+            if (toLoc?.responsibleUserId) usersToNotify.add(toLoc.responsibleUserId);
+
+            for (const userId of usersToNotify) {
+                await tx.insert(notifications).values({
+                    userId,
+                    title: "Перемещение товара",
+                    message: `Товар "${item?.name}" (${quantity} шт.) перемещен из "${fromLoc?.name}" в "${toLoc?.name}"`,
+                    type: "transfer",
+                });
+            }
         });
 
         revalidatePath("/dashboard/warehouse");
@@ -742,5 +810,122 @@ export async function moveInventoryItem(formData: FormData) {
     } catch (error: unknown) {
         console.error("Move error:", error);
         return { error: (error as Error).message || "Failed to move inventory" };
+    }
+}
+
+export async function deleteInventoryTransactions(ids: string[]) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        await db.delete(inventoryTransactions).where(inArray(inventoryTransactions.id, ids));
+
+        await logAction("Удаление записей истории", "inventory_transaction_bulk", ids.join(","), { count: ids.length });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting transactions:", error);
+        return { error: "Ошибка при удалении записей" };
+    }
+}
+
+export async function clearInventoryHistory() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        await db.delete(inventoryTransactions);
+        await logAction("Очистка истории инвентаря", "inventory_history", "all", {});
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (error) {
+        console.error("Error clearing inventory history:", error);
+        return { error: "Ошибка при очистке истории" };
+    }
+}
+
+export async function bulkMoveInventoryItems(ids: string[], toLocationId: string, comment?: string) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        await db.transaction(async (tx) => {
+            for (const id of ids) {
+                const [item] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, id)).limit(1);
+                if (!item) continue;
+
+                const fromLocationId = item.storageLocationId;
+                if (fromLocationId === toLocationId) continue;
+
+                // 1. Decrement old location if exists
+                if (fromLocationId) {
+                    await tx.update(inventoryStocks)
+                        .set({ quantity: sql`${inventoryStocks.quantity} - ${item.quantity}`, updatedAt: new Date() })
+                        .where(and(eq(inventoryStocks.itemId, id), eq(inventoryStocks.storageLocationId, fromLocationId)));
+                }
+
+                // 2. Increment new location or create
+                const [targetStock] = await tx.select().from(inventoryStocks).where(and(eq(inventoryStocks.itemId, id), eq(inventoryStocks.storageLocationId, toLocationId))).limit(1);
+                if (targetStock) {
+                    await tx.update(inventoryStocks)
+                        .set({ quantity: sql`${inventoryStocks.quantity} + ${item.quantity}`, updatedAt: new Date() })
+                        .where(eq(inventoryStocks.id, targetStock.id));
+                } else {
+                    await tx.insert(inventoryStocks).values({
+                        itemId: id,
+                        storageLocationId: toLocationId,
+                        quantity: item.quantity
+                    });
+                }
+
+                // 3. Update item main location
+                await tx.update(inventoryItems).set({ storageLocationId: toLocationId }).where(eq(inventoryItems.id, id));
+
+                // 4. Log transaction
+                await tx.insert(inventoryTransactions).values({
+                    itemId: id,
+                    changeAmount: item.quantity,
+                    type: "transfer",
+                    reason: `Массовое перемещение${comment ? `: ${comment}` : ""}`,
+                    storageLocationId: toLocationId,
+                    fromStorageLocationId: fromLocationId,
+                    createdBy: session.id,
+                });
+            }
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (error) {
+        console.error("Bulk move error:", error);
+        return { error: "Ошибка при массовом перемещении" };
+    }
+}
+
+export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: string) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        await db.update(inventoryItems)
+            .set({ categoryId: toCategoryId })
+            .where(inArray(inventoryItems.id, ids));
+
+        await logAction("Массовая смена категории", "inventory_item_bulk", ids.join(","), { count: ids.length, toCategoryId });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (error) {
+        console.error("Bulk category update error:", error);
+        return { error: "Ошибка при массовой смене категории" };
     }
 }

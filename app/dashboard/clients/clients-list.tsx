@@ -10,7 +10,7 @@ import {
     Trash2,
     ChevronDown
 } from "lucide-react";
-import { ClientDetailPopup } from "./client-detail-popup";
+import { ClientProfileDrawer } from "./client-profile-drawer";
 import { EditClientDialog } from "./edit-client-dialog";
 import { DeleteClientDialog } from "./delete-client-dialog";
 import { useSearchParams } from "next/navigation";
@@ -25,6 +25,9 @@ interface Client {
     phone: string;
     city: string | null;
     company: string | null;
+    comments: string | null;
+    socialLink: string | null;
+    managerId: string | null;
     totalOrders: number;
     totalSpent: number | string; // decimal string or number
     lastOrderDate: string | null;
@@ -283,6 +286,12 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         <ChevronDown className={`h-3 w-3 ${sortBy === "order_count" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
                                     </div>
                                 </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("last_order")}>
+                                    <div className="flex items-center gap-1">
+                                        Последний заказ
+                                        <ChevronDown className={`h-3 w-3 ${sortBy === "last_order" ? "text-indigo-600 opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
+                                    </div>
+                                </th>
                                 {showFinancials && (
                                     <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer group hover:text-slate-900 transition-colors" onClick={() => setSortBy("revenue")}>
                                         <div className="flex items-center gap-1">
@@ -326,6 +335,20 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             <span className="font-bold text-slate-900">{client.totalOrders || 0}</span>
                                             <span className="text-xs text-slate-400 font-medium uppercase tracking-tighter">заказов</span>
                                         </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        {client.lastOrderDate ? (
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium text-slate-700">
+                                                    {new Date(client.lastOrderDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                </span>
+                                                <span className="text-xs text-slate-400 font-medium">
+                                                    {Math.floor((Date.now() - new Date(client.lastOrderDate).getTime()) / (1000 * 60 * 60 * 24))} дн. назад
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-slate-400 italic">Нет заказов</span>
+                                        )}
                                     </td>
                                     {showFinancials && (
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
@@ -371,10 +394,17 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <p className="text-sm mt-1">Попробуйте изменить параметры поиска</p>
                     </div>
                 )}
-                <ClientDetailPopup
+                <ClientProfileDrawer
                     clientId={selectedClientId || ""}
                     isOpen={!!selectedClientId}
                     onClose={() => setSelectedClientId(null)}
+                    onEdit={() => {
+                        const client = clients.find(c => c.id === selectedClientId);
+                        if (client) {
+                            setEditingClient(client);
+                            setSelectedClientId(null);
+                        }
+                    }}
                     showFinancials={showFinancials}
                 />
 

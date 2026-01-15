@@ -13,6 +13,7 @@ import { InventoryItem, Category } from "./inventory-client";
 import { StorageLocation } from "./storage-locations-tab";
 import { Transaction } from "./history-table";
 import { WarehouseWidgets } from "./warehouse-widgets";
+import { Session } from "@/lib/auth";
 
 interface WarehouseClientProps {
     items: InventoryItem[];
@@ -20,9 +21,11 @@ interface WarehouseClientProps {
     history: Transaction[];
     storageLocations: StorageLocation[];
     users: { id: string; name: string }[];
+    user: Session | null;
 }
 
-export function WarehouseClient({ items, categories, history, storageLocations, users }: WarehouseClientProps) {
+export function WarehouseClient({ items, categories, history, storageLocations, users, user }: WarehouseClientProps) {
+    console.log(`WarehouseClient render: ${history.length} history items`);
     const [activeTab, setActiveTab] = useState<"inventory" | "storage" | "history">("inventory");
 
     return (
@@ -93,7 +96,10 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
                     </div>
                 ) : (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                        <HistoryTable transactions={history} />
+                        <HistoryTable
+                            transactions={history}
+                            isAdmin={user?.roleName === "Администратор"}
+                        />
                     </div>
                 )}
             </div>

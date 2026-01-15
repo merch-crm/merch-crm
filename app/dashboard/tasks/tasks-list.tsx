@@ -13,6 +13,8 @@ import { toggleTaskStatus, deleteTask } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
+import { useToast } from "@/components/ui/toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface Task {
     id: string;
@@ -38,6 +40,9 @@ interface TasksListProps {
 export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksListProps) {
     const [, startTransition] = useTransition();
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const { toast } = useToast();
 
     const getPriorityConfig = (priority: string) => {
         switch (priority) {
@@ -50,16 +55,35 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
     const handleToggle = (e: React.MouseEvent, taskId: string, status: string) => {
         e.stopPropagation();
         startTransition(async () => {
-            await toggleTaskStatus(taskId, status);
+            const res = await toggleTaskStatus(taskId, status);
+            if (res.success) {
+                toast(status === "done" ? "Задача выполнена" : "Задача возвращена в работу", "success");
+            }
         });
     };
 
     const handleDelete = (e: React.MouseEvent, taskId: string) => {
         e.stopPropagation();
-        if (!confirm("Вы уверены, что хотите удалить эту задачу?")) return;
-        startTransition(async () => {
-            await deleteTask(taskId);
-        });
+        setTaskToDelete(taskId);
+    };
+
+    const confirmDelete = async () => {
+        if (!taskToDelete) return;
+        setIsDeleting(true);
+        try {
+            const res = await deleteTask(taskToDelete);
+            if (res.success) {
+                toast("Задача удалена", "success");
+                setTaskToDelete(null);
+            } else {
+                toast(res.error || "Ошибка при удалении", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            toast("Произошла ошибка", "error");
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     if (tasks.length === 0) {
@@ -172,6 +196,17 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                     onClose={() => setSelectedTask(null)}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={!!taskToDelete}
+                onClose={() => setTaskToDelete(null)}
+                onConfirm={confirmDelete}
+                title="Удаление задачи"
+                description="Вы уверены, что хотите удалить эту задачу? Это действие необратимо."
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isDeleting}
+            />
         </>
     );
 }
