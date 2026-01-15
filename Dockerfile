@@ -41,6 +41,9 @@ WORKDIR /app
 RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list.d/debian.sources && \
     apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 
+# Install drizzle-kit to support migrations at runtime
+RUN npm install -g drizzle-kit
+
 ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
