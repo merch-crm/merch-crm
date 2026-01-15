@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { getSystemStats, checkSystemHealth, createDatabaseBackup, getBackupsList, deleteBackupAction, getSystemSettings, updateSystemSetting, clearRamAction, restartServerAction, getMonitoringStats } from "@/app/dashboard/admin/actions";
 import {
@@ -119,7 +120,6 @@ export function SystemStats() {
     }, [isRestarting]);
 
     const fetchStats = useCallback(async () => {
-        setLoading(true);
         const res = await getSystemStats();
         if (res.data) {
             setStats(res.data as StatsData);
@@ -185,7 +185,7 @@ export function SystemStats() {
     };
 
     useEffect(() => {
-        fetchStats();
+        setTimeout(() => fetchStats(), 0);
         const interval = setInterval(fetchStats, 15000);
         return () => clearInterval(interval);
     }, [fetchStats]);
@@ -234,8 +234,10 @@ export function SystemStats() {
 
     useEffect(() => {
         if (activeTab === "backups") {
-            fetchBackups();
-            fetchSettings();
+            setTimeout(() => {
+                fetchBackups();
+                fetchSettings();
+            }, 0);
         }
     }, [activeTab, fetchBackups, fetchSettings]);
 
@@ -486,9 +488,9 @@ export function SystemStats() {
                                                 {monitoringData.activeUsers.map((user) => (
                                                     <div key={user.id} className="flex items-center gap-3 min-w-fit pr-4 border-r border-slate-100 last:border-0">
                                                         <div className="relative">
-                                                            <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 overflow-hidden">
+                                                            <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 overflow-hidden relative">
                                                                 {user.avatar ? (
-                                                                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                                                                    <Image src={user.avatar} alt={user.name} fill className="object-cover" unoptimized />
                                                                 ) : (
                                                                     user.name?.[0]
                                                                 )}

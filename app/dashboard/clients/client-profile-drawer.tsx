@@ -87,7 +87,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
 
     useEffect(() => {
         if (isOpen && clientId) {
-            setLoading(true);
+            setTimeout(() => setLoading(true), 0);
             fetch(`/api/clients/${clientId}/profile`)
                 .then(res => res.json())
                 .then(data => {

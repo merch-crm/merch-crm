@@ -17,13 +17,16 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        setIsVisible(true);
+        const timerIn = setTimeout(() => setIsVisible(true), 10);
         const timer = setTimeout(() => {
             setIsVisible(false);
             setTimeout(onClose, 300); // Wait for fade out animation
         }, duration);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+            clearTimeout(timerIn);
+        };
     }, [duration, onClose]);
 
     const icons = {
