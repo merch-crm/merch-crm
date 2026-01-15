@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft, Clock, BarChart3, Check } from "lucide-react";
 import { format } from "date-fns";
@@ -65,7 +66,7 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                 {/* Image Placeholder or Actual Image */}
                 <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
                     {item.image ? (
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                     ) : (
                         <Package className="w-20 h-20 text-slate-200" />
                     )}
@@ -242,6 +243,6 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

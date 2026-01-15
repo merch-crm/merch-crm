@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -421,11 +422,11 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                         {/* Item Icon & Identity */}
                                         <div className="flex items-start gap-4 mb-6">
                                             <div className={cn(
-                                                "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shrink-0",
+                                                "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shrink-0 relative",
                                                 isCritical ? "bg-rose-50 text-rose-500" : isLowStock ? "bg-amber-50 text-amber-500" : "bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500"
                                             )}>
                                                 {item.image ? (
-                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                    <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                                                 ) : (
                                                     <Package className="w-7 h-7" />
                                                 )}
@@ -733,9 +734,9 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Изображение товара</label>
                         <div className="flex items-center gap-4">
-                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative">
                                 {imagePreview ? (
-                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                    <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
                                 ) : (
                                     <Package className="w-8 h-8 text-slate-200" />
                                 )}
@@ -924,9 +925,9 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Изображение товара</label>
                         <div className="flex items-center gap-4">
-                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative">
                                 {imagePreview ? (
-                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                    <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
                                 ) : (
                                     <Package className="w-8 h-8 text-slate-200" />
                                 )}
