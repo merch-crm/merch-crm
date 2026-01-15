@@ -82,12 +82,14 @@ export function ToastContainer() {
 
     if (!activeToast) return null;
 
+    const handleClose = () => setActiveToast(null);
+
     return (
         <Toast
             key={activeToast.id}
             message={activeToast.message}
             type={activeToast.type}
-            onClose={() => setActiveToast(null)}
+            onClose={handleClose}
         />
     );
 }

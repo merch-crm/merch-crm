@@ -10,13 +10,10 @@ import {
     Cpu,
     MemoryStick,
     RefreshCw,
-    CheckCircle2,
-    XCircle,
     Download,
     Trash2,
     History,
     FileJson,
-    Trash,
     Zap,
     Power,
     Users,
@@ -90,7 +87,7 @@ export function SystemStats() {
     const [creatingBackup, setCreatingBackup] = useState(false);
     const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
     const [settings, setSettings] = useState<Record<string, string | number | boolean | null>>({});
-    const [loadingSettings, setLoadingSettings] = useState(false);
+
     const [clearingRam, setClearingRam] = useState(false);
     const [restarting, setRestarting] = useState(false);
     const [isRestarting, setIsRestarting] = useState(false);
@@ -98,7 +95,7 @@ export function SystemStats() {
 
     // Monitoring state
     const [monitoringData, setMonitoringData] = useState<MonitoringData | null>(null);
-    const [loadingMonitoring, setLoadingMonitoring] = useState(false);
+
 
     // Poll server availability
     useEffect(() => {
@@ -112,7 +109,7 @@ export function SystemStats() {
                     // Server is back! Reload page to reset state and show fresh data
                     window.location.reload();
                 }
-            } catch (e) {
+            } catch {
                 // Still down, ignore
             }
         };
@@ -133,7 +130,6 @@ export function SystemStats() {
         setLoading(false);
 
         // Fetch monitoring data
-        setLoadingMonitoring(true);
         try {
             const start = performance.now();
             const monRes = await getMonitoringStats();
@@ -149,7 +145,6 @@ export function SystemStats() {
         } catch (e) {
             console.error(e);
         }
-        setLoadingMonitoring(false);
     }, []);
 
     const runDiagnostics = async () => {
@@ -164,16 +159,6 @@ export function SystemStats() {
         setDiagnosing(false);
     };
 
-    const fetchBackups = async () => {
-        setLoadingBackups(true);
-        const res = await getBackupsList();
-        if (res.data) {
-            setBackups(res.data as BackupFile[]);
-        } else if (res.error) {
-            toast(res.error, "error");
-        }
-        setLoadingBackups(false);
-    };
 
     const handleCreateBackup = async () => {
         setCreatingBackup(true);
@@ -231,21 +216,30 @@ export function SystemStats() {
         }
     };
 
+    const fetchSettings = useCallback(async () => {
+        const res = await getSystemSettings();
+        if (res.data) setSettings(res.data);
+    }, []);
+
+    const fetchBackups = useCallback(async () => {
+        setLoadingBackups(true);
+        const res = await getBackupsList();
+        if (res.data) {
+            setBackups(res.data as BackupFile[]);
+        } else if (res.error) {
+            toast(res.error, "error");
+        }
+        setLoadingBackups(false);
+    }, [toast]);
+
     useEffect(() => {
         if (activeTab === "backups") {
             fetchBackups();
             fetchSettings();
         }
-    }, [activeTab]);
+    }, [activeTab, fetchBackups, fetchSettings]);
 
-    const fetchSettings = async () => {
-        setLoadingSettings(true);
-        const res = await getSystemSettings();
-        if (res.data) setSettings(res.data);
-        setLoadingSettings(false);
-    };
-
-    const updateSetting = async (key: string, value: any) => {
+    const updateSetting = async (key: string, value: string | number | boolean | null) => {
         const res = await updateSystemSetting(key, value);
         if (res.success) {
             setSettings(prev => ({ ...prev, [key]: value }));
