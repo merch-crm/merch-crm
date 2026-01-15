@@ -623,22 +623,27 @@ export function SystemStats() {
                                 <CardContent>
                                     <div className="h-[150px] w-full flex items-end gap-1 pt-4">
                                         {[...Array(24)].map((_, i) => {
-                                            const hourStat = monitoringData.activityStats.find(s => s.hour === i);
+                                            const hourStat = monitoringData.activityStats.find(s => Number(s.hour) === i);
                                             const count = hourStat ? hourStat.count : 0;
                                             // Avoid division by zero
                                             const maxVal = Math.max(...monitoringData.activityStats.map(s => s.count), 0);
                                             const max = maxVal < 5 ? 10 : maxVal;
 
-                                            const height = Math.max((count / max) * 100, 5); // min 5% height
+                                            const height = Math.max((count / max) * 100, 5);
 
                                             return (
-                                                <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
+                                                <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative h-full justify-end">
                                                     <div
-                                                        className={cn("w-full bg-indigo-100 rounded-t-sm transition-all group-hover:bg-indigo-400", count > 0 && "bg-indigo-500")}
+                                                        className={cn(
+                                                            "w-full rounded-t-sm transition-all duration-300 group-hover:bg-indigo-400",
+                                                            count > 0 ? "bg-indigo-600 shadow-[0_0_10px_rgba(99,102,241,0.2)]" : "bg-slate-100/50"
+                                                        )}
                                                         style={{ height: `${height}%` }}
                                                     />
-                                                    <span className="text-[9px] text-slate-300 font-bold opacity-0 group-hover:opacity-100 absolute -top-6 bg-slate-800 text-white px-1.5 py-0.5 rounded">{count}</span>
-                                                    {i % 4 === 0 && <span className="text-[9px] text-slate-300 font-bold">{i}:00</span>}
+                                                    <span className="text-[9px] text-white font-black opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 px-2 py-1 rounded-lg z-10 shadow-xl pointer-events-none whitespace-nowrap">
+                                                        {count} {Math.abs(count % 10) === 1 && count % 100 !== 11 ? 'действие' : [2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100) ? 'действия' : 'действий'}
+                                                    </span>
+                                                    {i % 4 === 0 && <span className="text-[9px] text-slate-400 font-black mt-1">{i}:00</span>}
                                                 </div>
                                             )
                                         })}

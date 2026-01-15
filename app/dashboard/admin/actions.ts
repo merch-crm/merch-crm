@@ -1352,14 +1352,17 @@ export async function getMonitoringStats() {
 
         // 2. Get activity stats (audit logs per hour for last 24h)
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const activityStats = await db.select({
-            hour: sql<number>`EXTRACT(HOUR FROM ${auditLogs.createdAt})`,
-            count: sql<number>`count(*)`
-        })
-            .from(auditLogs)
-            .where(sql`${auditLogs.createdAt} > ${twentyFourHoursAgo}`)
-            .groupBy(sql`EXTRACT(HOUR FROM ${auditLogs.createdAt})`)
-            .orderBy(sql`EXTRACT(HOUR FROM ${auditLogs.createdAt})`);
+
+        // Use a more robust query for Postgres EXTRACT
+        const activityStatsResult = await db.execute(sql`
+            SELECT 
+                EXTRACT(HOUR FROM ${auditLogs.createdAt})::int as hour, 
+                count(*)::int as count 
+            FROM ${auditLogs} 
+            WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
+            GROUP BY 1 
+            ORDER BY 1
+        `);
 
         return {
             activeUsers: activeUsers.map(u => ({
@@ -1371,9 +1374,9 @@ export async function getMonitoringStats() {
                 department: u.department?.name,
                 lastActiveAt: u.lastActiveAt
             })),
-            activityStats: activityStats.map(s => ({
-                hour: parseInt(String(s.hour), 10),
-                count: parseInt(String(s.count), 10)
+            activityStats: (activityStatsResult.rows || []).map((s: any) => ({
+                hour: Number(s.hour),
+                count: Number(s.count)
             }))
         };
     } catch {
