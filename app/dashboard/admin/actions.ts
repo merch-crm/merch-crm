@@ -851,6 +851,7 @@ export async function getSystemStats() {
             orders: await fetchCount(orders),
             clients: await fetchCount(clients),
             auditLogs: await fetchCount(auditLogs),
+            inventoryItems: await fetchCount(inventoryItems),
         };
 
         // 3. Storage Stats (S3)
