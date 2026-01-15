@@ -13,7 +13,7 @@ export default async function DashboardLayout({
 }) {
     const session = await getSession();
     if (!session) {
-        redirect("/login");
+        redirect("/api/auth/logout");
     }
 
     let userData = null;
@@ -30,7 +30,7 @@ export default async function DashboardLayout({
     }
 
     if (!userData) {
-        redirect("/login");
+        redirect("/api/auth/logout");
     }
 
     const user = {
