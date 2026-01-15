@@ -81,6 +81,7 @@ export function SystemStats() {
     const [activeTab, setActiveTab] = useState<"stats" | "diagnostics" | "backups">("stats");
 
     // Diagnostics state
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [healthData, setHealthData] = useState<any>(null);
     const [diagnosing, setDiagnosing] = useState(false);
 

@@ -821,6 +821,7 @@ export async function getSystemStats() {
         try {
             // Drizzle returns raw rows; for pg_database_size we need to parse carefully
             const dbSizeResult = await db.execute(sql`SELECT pg_database_size(current_database())`);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rows = dbSizeResult.rows as any[];
             dbSize = parseInt(rows[0]?.pg_database_size || "0");
         } catch (e) {
@@ -972,6 +973,7 @@ export async function checkSystemHealth() {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const health: any = {
         database: { status: "loading", latency: 0 },
         storage: { status: "loading" },
@@ -1053,6 +1055,7 @@ export async function checkSystemHealth() {
         try {
             const { encrypt, decrypt } = await import("@/lib/auth");
             const testPayload = { ...session, test: true };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const token = await encrypt(testPayload as any);
             const decrypted = await decrypt(token);
             health.jwt.status = decrypted.id === session.id ? "ok" : "error";
