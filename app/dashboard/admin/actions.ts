@@ -1374,7 +1374,7 @@ export async function getMonitoringStats() {
                 department: u.department?.name,
                 lastActiveAt: u.lastActiveAt
             })),
-            activityStats: (activityStatsResult.rows || []).map((s: any) => ({
+            activityStats: (activityStatsResult.rows as unknown as Array<{ hour: number; count: number }> || []).map((s) => ({
                 hour: Number(s.hour),
                 count: Number(s.count)
             }))
