@@ -119,15 +119,26 @@ export function SystemStats() {
         return () => clearInterval(interval);
     }, [isRestarting]);
 
-    const fetchStats = useCallback(async () => {
-        const res = await getSystemStats();
-        if (res.data) {
-            setStats(res.data as StatsData);
-            setLastUpdated(new Date());
-        } else if (res.error) {
-            setError(res.error);
+    const fetchStats = useCallback(async (manual = false) => {
+        if (manual) {
+            setLoading(true);
+            setError(null);
         }
-        setLoading(false);
+
+        try {
+            const res = await getSystemStats();
+            if (res.data) {
+                setStats(res.data as StatsData);
+                setLastUpdated(new Date());
+            } else if (res.error) {
+                setError(res.error);
+            }
+        } catch (e) {
+            console.error("Fetch stats error:", e);
+            if (manual) setError("Ошибка сети или сервера");
+        } finally {
+            if (manual) setLoading(false);
+        }
 
         // Fetch monitoring data
         try {
@@ -333,7 +344,7 @@ export function SystemStats() {
                                 <p className="text-xs text-slate-600 font-medium">{lastUpdated.toLocaleTimeString()}</p>
                             </div>
                             <button
-                                onClick={fetchStats}
+                                onClick={() => fetchStats(true)}
                                 disabled={loading}
                                 className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50/30 transition-all active:scale-95 disabled:opacity-50">
                                 <RefreshCw className={cn("w-5 h-5", loading && "animate-spin")} />
@@ -418,65 +429,70 @@ export function SystemStats() {
                         </Card>
 
                         {/* Disk Space - 1 col */}
-                        {stats?.server.disk && (
-                            <Card className="border-slate-200/60 shadow-sm">
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                        <HardDrive size={14} /> Место на диске
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-slate-900">
-                                        {((1 - stats.server.disk.free / stats.server.disk.total) * 100).toFixed(1)}%
-                                    </div>
-                                    <div className="mt-2 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                        <div
-                                            className={
-                                                cn(
-                                                    "h-full transition-all duration-1000",
-                                                    (stats.server.disk.free / stats.server.disk.total) < 0.1 ? "bg-rose-500" : "bg-indigo-500"
-                                                )
-                                            }
-                                            style={{ width: `${((1 - stats.server.disk.free / stats.server.disk.total) * 100).toFixed(1)}%` }}
-                                        />
-                                    </div>
-                                    <p className="text-[10px] text-slate-500 mt-1 font-medium">
-                                        {formatSize(stats.server.disk.total - stats.server.disk.free)} из {formatSize(stats.server.disk.total)}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        )}
+                        <Card className="border-slate-200/60 shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <HardDrive size={14} /> Место на диске
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-slate-900">
+                                    {stats?.server.disk ? ((1 - stats.server.disk.free / stats.server.disk.total) * 100).toFixed(1) + '%' : '...'}
+                                </div>
+                                <div className="mt-2 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                    <div
+                                        className={
+                                            cn(
+                                                "h-full transition-all duration-1000",
+                                                stats?.server.disk && (stats.server.disk.free / stats.server.disk.total) < 0.1 ? "bg-rose-500" : "bg-indigo-500"
+                                            )
+                                        }
+                                        style={{ width: stats?.server.disk ? `${((1 - stats.server.disk.free / stats.server.disk.total) * 100).toFixed(1)}%` : '0%' }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-slate-500 mt-1 font-medium">
+                                    {stats?.server.disk ? `${formatSize(stats.server.disk.total - stats.server.disk.free)} из ${formatSize(stats.server.disk.total)}` : 'Загрузка...'}
+                                </p>
+                            </CardContent>
+                        </Card>
 
                         {/* API Performance - 1 col */}
-                        {monitoringData && (
-                            <Card className="border-slate-200/60 shadow-sm">
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                        <ActivityIcon size={14} /> Производительность API
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div
-                                        className={cn(
-                                            "text-2xl font-bold transition-all duration-300",
+                        <Card className="border-slate-200/60 shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <ActivityIcon size={14} /> Производительность API
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div
+                                    className={cn(
+                                        "text-2xl font-bold transition-all duration-300",
+                                        !monitoringData ? "text-slate-300" :
                                             monitoringData.performance < 200 ? "text-emerald-500" :
                                                 monitoringData.performance < 500 ? "text-amber-500" : "text-rose-500"
-                                        )}
-                                    >
-                                        {monitoringData.performance} ms
-                                    </div>
-                                    <p className="text-[10px] text-slate-500 mt-1 font-medium">
-                                        Среднее время ответа сервера
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        )}
+                                    )}
+                                >
+                                    {monitoringData ? `${monitoringData.performance} ms` : '...'}
+                                </div>
+                                <p className="text-[10px] text-slate-500 mt-1 font-medium">
+                                    Среднее время ответа сервера
+                                </p>
+                            </CardContent>
+                        </Card>
 
                         {/* Active Sessions - Spans remaining columns (2 cols on lg) */}
                         <Card className="border-slate-200/60 shadow-sm lg:col-span-2">
                             <CardContent className="p-0 h-full flex items-center">
                                 {/* Only show if we have data */}
-                                {monitoringData && (
+                                {!monitoringData ? (
+                                    <div className="w-full px-6 py-4 flex items-center gap-3 animate-pulse">
+                                        <div className="w-10 h-10 rounded-full bg-slate-100" />
+                                        <div className="space-y-2">
+                                            <div className="h-3 w-24 bg-slate-100 rounded" />
+                                            <div className="h-2 w-16 bg-slate-50 rounded" />
+                                        </div>
+                                    </div>
+                                ) : (
                                     <div className="w-full px-6 py-4">
                                         {monitoringData.activeUsers.length === 0 ? (
                                             <div className="flex items-center gap-3 text-slate-400">
@@ -604,25 +620,29 @@ export function SystemStats() {
                     </div>
 
                     {/* Activity Graph - Full Width in separate section now */}
-                    {monitoringData && (
-                        <div className="mt-6">
-                            {/* Activity Graph */}
-                            <Card className="border-slate-200/60 shadow-sm">
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <div className="space-y-1">
-                                        <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-                                            <BarChart3 size={18} className="text-indigo-500" />
-                                            Активность системы
-                                        </CardTitle>
-                                        <CardDescription className="text-xs font-bold uppercase tracking-wider text-slate-400">Действия за последние 24 часа</CardDescription>
-                                    </div>
-                                    <div className="text-2xl font-black text-indigo-600">
-                                        {monitoringData.activityStats.reduce((acc, curr) => acc + curr.count, 0)} <span className="text-xs font-bold text-slate-400 uppercase">действий</span>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="h-[150px] w-full flex items-end gap-1 pt-4">
-                                        {[...Array(24)].map((_, i) => {
+                    <div className="mt-6">
+                        {/* Activity Graph */}
+                        <Card className="border-slate-200/60 shadow-sm">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <div className="space-y-1">
+                                    <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+                                        <BarChart3 size={18} className="text-indigo-500" />
+                                        Активность системы
+                                    </CardTitle>
+                                    <CardDescription className="text-xs font-bold uppercase tracking-wider text-slate-400">Действия за последние 24 часа</CardDescription>
+                                </div>
+                                <div className="text-2xl font-black text-indigo-600">
+                                    {monitoringData ? monitoringData.activityStats.reduce((acc, curr) => acc + curr.count, 0) : '0'} <span className="text-xs font-bold text-slate-400 uppercase">действий</span>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-[150px] w-full flex items-end gap-1 pt-4">
+                                    {!monitoringData ? (
+                                        [...Array(24)].map((_, i) => (
+                                            <div key={i} className="flex-1 bg-slate-50 animate-pulse rounded-t-sm h-1/4" />
+                                        ))
+                                    ) : (
+                                        [...Array(24)].map((_, i) => {
                                             const hourStat = monitoringData.activityStats.find(s => Number(s.hour) === i);
                                             const count = hourStat ? hourStat.count : 0;
                                             // Avoid division by zero
@@ -646,12 +666,12 @@ export function SystemStats() {
                                                     {i % 4 === 0 && <span className="text-[9px] text-slate-400 font-black mt-1">{i}:00</span>}
                                                 </div>
                                             )
-                                        })}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    )}
+                                        })
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             )}
 
