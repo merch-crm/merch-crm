@@ -7,6 +7,7 @@ import { comparePassword } from "@/lib/password";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { logSecurityEvent } from "@/lib/security-logger";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function loginAction(prevState: any, formData: FormData) {
@@ -34,6 +35,15 @@ export async function loginAction(prevState: any, formData: FormData) {
                 entityId: 'system',
                 details: { email, reason: 'user_not_found' }
             });
+
+            // Log to security events
+            await logSecurityEvent({
+                eventType: "login_failed",
+                severity: "warning",
+                entityType: "auth",
+                details: { email, reason: 'user_not_found' }
+            });
+
             return { error: "Неверный email или пароль" };
         }
 
@@ -53,6 +63,17 @@ export async function loginAction(prevState: any, formData: FormData) {
                 entityId: user[0].id,
                 details: { email, reason: 'password_mismatch' }
             });
+
+            // Log to security events
+            await logSecurityEvent({
+                eventType: "login_failed",
+                userId: user[0].id,
+                severity: "warning",
+                entityType: "auth",
+                entityId: user[0].id,
+                details: { email, reason: 'password_mismatch' }
+            });
+
             return { error: "Неверный email или пароль" };
         }
 
@@ -89,6 +110,21 @@ export async function loginAction(prevState: any, formData: FormData) {
             secure: false, // process.env.NODE_ENV === "production", // Temprary disabled for HTTP access
             sameSite: "lax",
         });
+
+        // Log successful login to security events
+        await logSecurityEvent({
+            eventType: "login_success",
+            userId: user[0].id,
+            severity: "info",
+            entityType: "auth",
+            entityId: user[0].id,
+            details: {
+                email: user[0].email,
+                name: user[0].name,
+                role: role?.name
+            }
+        });
+
         console.log(`[Login] Cookie set, redirecting to dashboard...`);
     } catch (error) {
         console.error("[Login] Execution error:", error);

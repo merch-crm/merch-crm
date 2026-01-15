@@ -1,11 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings } from "@/lib/schema";
+import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { hashPassword } from "@/lib/password";
 import { eq, asc, desc, isNull, sql, and, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { logSecurityEvent } from "@/lib/security-logger";
 import os from "os";
 import fs from "fs";
 import path from "path";
@@ -1489,9 +1490,213 @@ export async function toggleMaintenanceMode(enabled: boolean) {
                 set: { value: enabled, updatedAt: new Date() }
             });
 
+        // Log maintenance mode toggle
+        await logSecurityEvent({
+            eventType: "maintenance_mode_toggle",
+            userId: session.id,
+            severity: "critical",
+            entityType: "system_settings",
+            details: {
+                enabled,
+                toggledBy: session.name
+            }
+        });
+
         return { success: true };
     } catch (error) {
         console.error("Maintenance mode error:", error);
         return { error: "Ошибка переключения режима" };
+    }
+}
+
+/**
+ * Get security events with filtering and pagination
+ */
+export async function getSecurityEvents({
+    page = 1,
+    limit = 50,
+    eventType,
+    severity,
+    userId,
+    startDate,
+    endDate
+}: {
+    page?: number;
+    limit?: number;
+    eventType?: string;
+    severity?: string;
+    userId?: string;
+    startDate?: Date;
+    endDate?: Date;
+} = {}) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        const offset = (page - 1) * limit;
+
+        // Build where conditions
+        const conditions = [];
+
+        if (eventType) {
+            conditions.push(eq(securityEvents.eventType, eventType as any));
+        }
+
+        if (severity) {
+            conditions.push(eq(securityEvents.severity, severity));
+        }
+
+        if (userId) {
+            conditions.push(eq(securityEvents.userId, userId));
+        }
+
+        if (startDate) {
+            conditions.push(gte(securityEvents.createdAt, startDate));
+        }
+
+        if (endDate) {
+            conditions.push(sql`${securityEvents.createdAt} <= ${endDate}`);
+        }
+
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+        // Get total count
+        const totalResult = await db
+            .select({ count: count() })
+            .from(securityEvents)
+            .where(whereClause);
+        const total = Number(totalResult[0]?.count || 0);
+
+        // Get events
+        const events = await db.query.securityEvents.findMany({
+            where: whereClause,
+            with: {
+                user: {
+                    columns: {
+                        id: true,
+                        name: true,
+                        email: true
+                    }
+                }
+            },
+            orderBy: [desc(securityEvents.createdAt)],
+            limit,
+            offset
+        });
+
+        return {
+            events: events.map(e => ({
+                id: e.id,
+                eventType: e.eventType,
+                severity: e.severity,
+                ipAddress: e.ipAddress,
+                userAgent: e.userAgent,
+                entityType: e.entityType,
+                entityId: e.entityId,
+                details: e.details,
+                createdAt: e.createdAt,
+                user: e.user ? {
+                    id: e.user.id,
+                    name: e.user.name,
+                    email: e.user.email
+                } : null
+            })),
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
+    } catch (error) {
+        console.error("Security events error:", error);
+        return { error: "Ошибка получения событий безопасности" };
+    }
+}
+
+/**
+ * Get security events summary for dashboard
+ */
+export async function getSecurityEventsSummary() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        // Get event counts by type
+        const eventCounts = await db
+            .select({
+                eventType: securityEvents.eventType,
+                severity: securityEvents.severity,
+                count: count()
+            })
+            .from(securityEvents)
+            .where(gte(securityEvents.createdAt, last24h))
+            .groupBy(securityEvents.eventType, securityEvents.severity);
+
+        // Calculate totals
+        const loginAttempts = eventCounts
+            .filter(e => e.eventType === 'login_success' || e.eventType === 'login_failed')
+            .reduce((sum, e) => sum + Number(e.count), 0);
+
+        const successfulLogins = eventCounts
+            .filter(e => e.eventType === 'login_success')
+            .reduce((sum, e) => sum + Number(e.count), 0);
+
+        const permissionChanges = eventCounts
+            .filter(e => e.eventType === 'role_change' || e.eventType === 'permission_change')
+            .reduce((sum, e) => sum + Number(e.count), 0);
+
+        const dataExports = eventCounts
+            .filter(e => e.eventType === 'data_export')
+            .reduce((sum, e) => sum + Number(e.count), 0);
+
+        const criticalEvents = eventCounts
+            .filter(e => e.severity === 'critical')
+            .reduce((sum, e) => sum + Number(e.count), 0);
+
+        // Get recent critical events
+        const recentCritical = await db.query.securityEvents.findMany({
+            where: and(
+                eq(securityEvents.severity, 'critical'),
+                gte(securityEvents.createdAt, last24h)
+            ),
+            with: {
+                user: {
+                    columns: {
+                        name: true,
+                        email: true
+                    }
+                }
+            },
+            orderBy: [desc(securityEvents.createdAt)],
+            limit: 5
+        });
+
+        return {
+            summary: {
+                loginAttempts,
+                successfulLogins,
+                failedLogins: loginAttempts - successfulLogins,
+                permissionChanges,
+                dataExports,
+                criticalEvents
+            },
+            recentCritical: recentCritical.map(e => ({
+                id: e.id,
+                eventType: e.eventType,
+                userName: e.user?.name || 'Unknown',
+                details: e.details,
+                createdAt: e.createdAt
+            }))
+        };
+    } catch (error) {
+        console.error("Security events summary error:", error);
+        return { error: "Ошибка получения сводки безопасности" };
     }
 }

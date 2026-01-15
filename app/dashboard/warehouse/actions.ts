@@ -9,7 +9,8 @@ import {
     users,
     inventoryStocks,
     inventoryTransfers,
-    notifications
+    notifications,
+    orderItems
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and } from "drizzle-orm";
@@ -235,14 +236,40 @@ export async function deleteInventoryItems(ids: string[]) {
     }
 
     try {
+        // 1. Check strict dependencies (Orders)
+        const itemsInOrders = await db.query.orderItems.findMany({
+            where: inArray(orderItems.inventoryId, ids),
+            columns: { inventoryId: true }
+        });
+
+        if (itemsInOrders.length > 0) {
+            return { error: "Нельзя удалить товары, которые используются в заказах" };
+        }
+
+        // 2. Check transactions history
+        const itemsWithHistory = await db.query.inventoryTransactions.findMany({
+            where: inArray(inventoryTransactions.itemId, ids),
+            columns: { itemId: true },
+            limit: 1
+        });
+
+        if (itemsWithHistory.length > 0) {
+            return { error: "Нельзя удалить товары, по которым были движения. Обнулите остаток, если товар больше не используется." };
+        }
+
+        // 3. Delete dependencies (Stocks)
+        await db.delete(inventoryStocks).where(inArray(inventoryStocks.itemId, ids));
+
+        // 4. Delete items
         await db.delete(inventoryItems).where(inArray(inventoryItems.id, ids));
 
         await logAction("Удаление позиций", "inventory_item_bulk", ids.join(","), { count: ids.length, ids });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
-        return { error: "Failed to delete items" };
+    } catch (e) {
+        console.error(e);
+        return { error: "Не удалось удалить выбранные позиции" };
     }
 }
 
@@ -580,19 +607,57 @@ export async function deleteStorageLocation(id: string) {
     }
 
     try {
-        // Unlink items
-        await db.update(inventoryItems)
-            .set({ storageLocationId: null })
-            .where(eq(inventoryItems.storageLocationId, id));
+        // 1. Check if there are any stocks with positive quantity
+        const activeStocks = await db.query.inventoryStocks.findMany({
+            where: and(
+                eq(inventoryStocks.storageLocationId, id),
+                sql`${inventoryStocks.quantity} > 0`
+            ),
+            limit: 1
+        });
 
-        await db.delete(storageLocations).where(eq(storageLocations.id, id));
+        if (activeStocks.length > 0) {
+            return { error: "Нельзя удалить склад, на котором числятся товары" };
+        }
 
-        await logAction("Удаление склада", "storage_location", id, { id });
+        await db.transaction(async (tx) => {
+            // 2. Clear Stocks (zero quantity records)
+            await tx.delete(inventoryStocks).where(eq(inventoryStocks.storageLocationId, id));
+
+            // 3. Nullify references in Transactions (History)
+            await tx.update(inventoryTransactions)
+                .set({ storageLocationId: null })
+                .where(eq(inventoryTransactions.storageLocationId, id));
+
+            await tx.update(inventoryTransactions)
+                .set({ fromStorageLocationId: null })
+                .where(eq(inventoryTransactions.fromStorageLocationId, id));
+
+            // 4. Nullify references in Transfers
+            await tx.update(inventoryTransfers)
+                .set({ fromLocationId: null })
+                .where(eq(inventoryTransfers.fromLocationId, id));
+
+            await tx.update(inventoryTransfers)
+                .set({ toLocationId: null })
+                .where(eq(inventoryTransfers.toLocationId, id));
+
+            // 5. Unlink items (Legacy check, primarily field update)
+            await tx.update(inventoryItems)
+                .set({ storageLocationId: null })
+                .where(eq(inventoryItems.storageLocationId, id));
+
+            // 6. Delete Location
+            await tx.delete(storageLocations).where(eq(storageLocations.id, id));
+
+            await logAction("Удаление склада", "storage_location", id, { id });
+        });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
-        return { error: "Failed to delete storage location" };
+    } catch (e) {
+        console.error(e);
+        return { error: "Failed to delete storage location. Ensure it is empty." };
     }
 }
 

@@ -46,6 +46,22 @@ export const notificationTypeEnum = pgEnum("notification_type", [
     "transfer",
 ]);
 
+export const securityEventTypeEnum = pgEnum("security_event_type", [
+    "login_success",
+    "login_failed",
+    "logout",
+    "password_change",
+    "email_change",
+    "profile_update",
+    "role_change",
+    "permission_change",
+    "data_export",
+    "record_delete",
+    "settings_change",
+    "maintenance_mode_toggle",
+    "system_error",
+]);
+
 export const orderCategoryEnum = pgEnum("order_category", [
     "print",
     "embroidery",
@@ -238,6 +254,20 @@ export const systemSettings = pgTable("system_settings", {
     key: text("key").primaryKey(),
     value: jsonb("value").notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Security Events
+export const securityEvents = pgTable("security_events", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").references(() => users.id),
+    eventType: securityEventTypeEnum("event_type").notNull(),
+    severity: text("severity").default("info").notNull(), // info, warning, critical
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    entityType: text("entity_type"), // user, order, client, etc.
+    entityId: uuid("entity_id"),
+    details: jsonb("details"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 
@@ -476,16 +506,24 @@ export const storageLocationsRelations = relations(storageLocations, ({ one, man
     transfersOut: many(inventoryTransfers, { relationName: "transfersOut" }),
 }));
 
-export const clientsRelations = relations(clients, ({ one }) => ({
+export const clientsRelations = relations(clients, ({ one, many }) => ({
     manager: one(users, {
         fields: [clients.managerId],
         references: [users.id],
     }),
+    orders: many(orders),
 }));
 
 export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
     user: one(users, {
         fields: [auditLogs.userId],
+        references: [users.id],
+    }),
+}));
+
+export const securityEventsRelations = relations(securityEvents, ({ one }) => ({
+    user: one(users, {
+        fields: [securityEvents.userId],
         references: [users.id],
     }),
 }));

@@ -208,20 +208,53 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
                         })
                         .where(eq(inventoryItems.id, item.inventoryId));
 
-                    // Sync with inventoryStocks (source of truth)
-                    if (item.inventoryItem.storageLocationId) {
-                        const [stock] = await db.select()
-                            .from(inventoryStocks)
+                    let sourceLocationId = item.inventoryItem.storageLocationId;
+
+                    // Improved Stock Deduction Strategy:
+                    // 1. Try default storageLocationId
+                    // 2. If valid and has stock, use it.
+                    // 3. If not, find ANY location with enough stock (descending quantity)
+
+                    let stockToDeduct = null;
+
+                    if (sourceLocationId) {
+                        const [s] = await db.select().from(inventoryStocks).where(and(
+                            eq(inventoryStocks.itemId, item.inventoryId),
+                            eq(inventoryStocks.storageLocationId, sourceLocationId)
+                        ));
+                        if (s && s.quantity >= qty) {
+                            stockToDeduct = s;
+                        }
+                    }
+
+                    if (!stockToDeduct) {
+                        // Fallback: Find best stock
+                        const [bestStock] = await db.select().from(inventoryStocks)
                             .where(and(
                                 eq(inventoryStocks.itemId, item.inventoryId),
-                                eq(inventoryStocks.storageLocationId, item.inventoryItem.storageLocationId)
-                            ));
+                                gte(inventoryStocks.quantity, qty) // Only those with enough
+                            ))
+                            .orderBy(desc(inventoryStocks.quantity))
+                            .limit(1);
 
-                        if (stock) {
-                            await db.update(inventoryStocks)
-                                .set({ quantity: Math.max(0, stock.quantity - qty) })
-                                .where(eq(inventoryStocks.id, stock.id));
+                        if (bestStock) {
+                            stockToDeduct = bestStock;
+                            sourceLocationId = bestStock.storageLocationId;
                         }
+                    }
+
+                    // Sync with inventoryStocks
+                    if (stockToDeduct) {
+                        await db.update(inventoryStocks)
+                            .set({ quantity: Math.max(0, stockToDeduct.quantity - qty) })
+                            .where(eq(inventoryStocks.id, stockToDeduct.id));
+                    } else {
+                        // CRITICAL: No physical stock found to deduct from, but we are shipping.
+                        // This creates a negative stock discrepancy if we don't handle it.
+                        // For now, we just log a warning or proceed with global deduction only (which we already did above).
+                        // Ideally, we might want to CREATE a negative stock entry or error out?
+                        // Let's assume global deduction is the minimum requirement, but audit log should warn.
+                        console.warn(`Order ${orderId}: Item ${item.inventoryId} shipped without sufficient physical stock record.`);
                     }
 
                     // Log transaction
@@ -231,7 +264,7 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
                         type: "out",
                         reason: `Отгрузка: Заказ #${orderId.slice(0, 8)}`,
                         createdBy: session.id,
-                        storageLocationId: item.inventoryItem.storageLocationId
+                        storageLocationId: sourceLocationId || null // Log where we took it from
                     });
                 } else if (isCancellation) {
                     // Just release reservation

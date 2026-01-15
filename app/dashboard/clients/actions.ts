@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients, orders, users } from "@/lib/schema";
+import { clients, orders, users, orderItems, inventoryItems } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { asc, desc, eq, sql, or, and, ilike } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
@@ -337,12 +337,40 @@ export async function deleteClient(clientId: string) {
 
         const clientToDelete = await db.query.clients.findFirst({
             where: eq(clients.id, clientId),
+            with: { orders: true } // Fetch orders to process them
         });
 
-        // Log before delete to preserve info
-        await logAction("Удален клиент", "client", clientId, { name: clientToDelete?.name });
+        if (clientToDelete && clientToDelete.orders.length > 0) {
+            const reservationStatuses = ["new", "design", "production"];
 
-        await db.delete(orders).where(eq(orders.clientId, clientId));
+            for (const order of clientToDelete.orders) {
+                // If the order has items reserved, release them
+                if (reservationStatuses.includes(order.status)) {
+                    // We need to fetch items for this order locally or import the logic
+                    // Since we can"t easily import releaseOrderReservation from another server action file without circular deps often,
+                    // we will inline the logic or use a shared helper if possible.
+                    // For now, inline the logic:
+                    const items = await db.query.orderItems.findMany({
+                        where: eq(orderItems.orderId, order.id),
+                        with: { inventoryItem: true }
+                    });
+
+                    for (const item of items) {
+                        if (item.inventoryId && item.inventoryItem) {
+                            await db.update(inventoryItems)
+                                .set({
+                                    reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - item.quantity)
+                                })
+                                .where(eq(inventoryItems.id, item.inventoryId));
+                        }
+                    }
+                }
+                // Log order deletion
+                await logAction("Удален заказ (из удаления клиента)", "order", order.id);
+            }
+            // Now delete orders
+            await db.delete(orders).where(eq(orders.clientId, clientId));
+        }
         await db.delete(clients).where(eq(clients.id, clientId));
 
         revalidatePath("/dashboard/clients");

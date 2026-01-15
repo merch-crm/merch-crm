@@ -1,49 +1,52 @@
 const { S3Client, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 
-async function test(accessKey, secretKey) {
+async function test(name, accessKeyId, secretAccessKey, endpoint, bucket, region) {
+    console.log(`\nTesting: ${name}`);
+    console.log(`Endpoint: ${endpoint}`);
+    console.log(`Key: ${accessKeyId}`);
+
     const client = new S3Client({
-        region: "ru-1",
-        endpoint: "https://s3.regru.cloud",
-        credentials: {
-            accessKeyId: accessKey,
-            secretAccessKey: secretKey,
-        },
-        forcePathStyle: true,
-        maxAttempts: 1
+        endpoint,
+        region,
+        credentials: { accessKeyId, secretAccessKey },
+        forcePathStyle: true
     });
 
-    console.log(`Testing AK: ${accessKey}, SK: ...${secretKey.slice(-5)}`);
-    const start = Date.now();
     try {
-        const command = new ListObjectsV2Command({
-            Bucket: "merch-crm-storage",
-            MaxKeys: 1
-        });
-        await client.send(command);
-        console.log("SUCCESS!");
+        const start = Date.now();
+        await client.send(new ListObjectsV2Command({ Bucket: bucket, MaxKeys: 1 }));
+        console.log(`✅ SUCCESS! Time: ${Date.now() - start}ms`);
         return true;
-    } catch (err) {
-        console.log(`FAILED with ${err.name}: ${err.message}`);
+    } catch (e) {
+        console.log(`❌ FAILED: ${e.name} - ${e.message}`);
         return false;
-    } finally {
-        console.log(`Duration: ${Date.now() - start}ms`);
     }
 }
 
-async function debug() {
-    const sk1 = "ZEFFxisDZZSojaasSmyLsnp9KhKCstviYelZFEfh"; // with 'l'
-    const sk2 = "ZEFFxisDZZSojaasSmyLsnp9KhKCstviYeIZFEfh"; // with 'I'
+async function run() {
+    const s3_id = process.env.S3_ACCESS_KEY;
+    const s3_key = process.env.S3_SECRET_KEY;
+    const s3_end = process.env.S3_ENDPOINT;
 
-    console.log("--- Batch 1: Secret with 'l' ---");
-    await test("S5GORAOOUWV81QDIOGMA", sk1);
-    await test("S5GORA00UWV81QDIOGMA", sk1);
+    const reg_id = process.env.REG_STORAGE_ACCESS_KEY;
+    const reg_key = process.env.REG_STORAGE_SECRET_KEY;
+    const reg_end = process.env.REG_STORAGE_ENDPOINT;
 
-    console.log("--- Batch 2: Secret with 'I' ---");
-    await test("S5GORAOOUWV81QDIOGMA", sk2);
-    await test("S5GORA00UWV81QDIOGMA", sk2);
+    const bucket = process.env.S3_BUCKET || "merch-crm-storage";
+    const region = "ru-1";
 
-    console.log("--- Batch 3: Try 19-char ID from old env ---");
-    await test("S5GORA0UWV81QDIOGMA", sk2);
+    // Possible combinations
+    // 1. Current S3 in .env
+    await test("S3 Config", s3_id, s3_key, s3_end, bucket, region);
+
+    // 2. Old REG Config in .env
+    await test("REG Config", reg_id, reg_key, reg_end, bucket, region);
+
+    // 3. S3 Keys with REG Endpoint
+    await test("S3 Keys + REG Endpoint", s3_id, s3_key, reg_end, bucket, region);
+
+    // 4. REG Keys with S3 Endpoint
+    await test("REG Keys + S3 Endpoint", reg_id, reg_key, s3_end, bucket, region);
 }
 
-debug();
+run().catch(console.error);
