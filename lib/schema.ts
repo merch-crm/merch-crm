@@ -136,6 +136,7 @@ export const inventoryCategories = pgTable("inventory_categories", {
     icon: text("icon"),
     color: text("color"),
     prefix: text("prefix"),
+    parentId: uuid("parent_id").references((): any => inventoryCategories.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -154,6 +155,7 @@ export const inventoryItems = pgTable("inventory_items", {
     qualityCode: text("quality_code"),
     attributeCode: text("attribute_code"),
     sizeCode: text("size_code"),
+    attributes: jsonb("attributes").default("{}"), // Гибкие характеристики (цвет, размер и т.д.)
     image: text("image"),
     reservedQuantity: integer("reserved_quantity").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -212,6 +214,7 @@ export const tasks = pgTable("tasks", {
     priority: taskPriorityEnum("priority").default("normal").notNull(),
     assignedToUserId: uuid("assigned_to_user_id").references(() => users.id),
     assignedToRoleId: uuid("assigned_to_role_id").references(() => roles.id),
+    assignedToDepartmentId: uuid("assigned_to_department_id").references(() => departments.id),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     dueDate: timestamp("due_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -267,6 +270,16 @@ export const securityEvents = pgTable("security_events", {
     entityType: text("entity_type"), // user, order, client, etc.
     entityId: uuid("entity_id"),
     details: jsonb("details"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Measurement Units
+export const measurementUnits = pgTable("measurement_units", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull().unique(), // шт, кг, м, etc.
+    fullName: text("full_name"), // Штуки, Килограммы, Метры
+    description: text("description"),
+    isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -389,8 +402,16 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     }),
 }));
 
-export const inventoryCategoriesRelations = relations(inventoryCategories, ({ many }) => ({
+export const inventoryCategoriesRelations = relations(inventoryCategories, ({ one, many }) => ({
     items: many(inventoryItems),
+    parent: one(inventoryCategories, {
+        fields: [inventoryCategories.parentId],
+        references: [inventoryCategories.id],
+        relationName: "categoryHierarchy"
+    }),
+    children: many(inventoryCategories, {
+        relationName: "categoryHierarchy"
+    }),
 }));
 
 export const inventoryItemsRelations = relations(inventoryItems, ({ one, many }) => ({
@@ -470,6 +491,10 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
     assignedToRole: one(roles, {
         fields: [tasks.assignedToRoleId],
         references: [roles.id],
+    }),
+    assignedToDepartment: one(departments, {
+        fields: [tasks.assignedToDepartmentId],
+        references: [departments.id],
     }),
     creator: one(users, {
         fields: [tasks.createdBy],

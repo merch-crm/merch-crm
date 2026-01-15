@@ -14,12 +14,25 @@ export default async function WarehousePage() {
     }
     const { data: storageLocations = [] } = await getStorageLocations();
     const { data: users = [] } = await getAllUsers();
+    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories } = await import("./actions");
+    let { data: measurementUnits = [] } = await getMeasurementUnits();
+
+    if (measurementUnits.length === 0) {
+        await seedMeasurementUnits();
+        const res = await getMeasurementUnits();
+        measurementUnits = res.data || [];
+    }
+
+    // Auto-seed system categories if missing
+    if (categoriesFromDb.length < 11) {
+        await seedSystemCategories();
+        const { data: refreshedCategories = [] } = await getInventoryCategories();
+        categoriesFromDb.splice(0, categoriesFromDb.length, ...refreshedCategories);
+    }
+
     const session = await getSession();
 
-    const desiredOrder = [
-        "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
-        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники"
-    ];
+    const desiredOrder = ["Одежда", "Упаковка", "Расходники"];
 
     const categories = [...categoriesFromDb].sort((a, b) => {
         const indexA = desiredOrder.indexOf(a.name);
@@ -31,6 +44,11 @@ export default async function WarehousePage() {
 
         return indexA - indexB;
     });
+
+    const finalItems = items.map(item => ({
+        ...item,
+        attributes: (item.attributes as Record<string, any>) || {},
+    }));
 
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
@@ -44,11 +62,12 @@ export default async function WarehousePage() {
             </div>
 
             <WarehouseClient
-                items={items}
+                items={finalItems as any}
                 categories={categories}
                 history={history}
                 storageLocations={storageLocations}
                 users={users}
+                measurementUnits={measurementUnits}
                 user={session}
             />
         </div>

@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Category } from "./inventory-client";
 
-export function AddCategoryDialog() {
+export function AddCategoryDialog({ categories, parentId, buttonText = "Добавить категорию" }: { categories: Category[], parentId?: string, buttonText?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState("package");
     const [selectedColor, setSelectedColor] = useState("indigo");
+    const [selectedParentId, setSelectedParentId] = useState<string>(parentId || "");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const router = useRouter();
 
@@ -62,6 +64,7 @@ export function AddCategoryDialog() {
 
         formData.set("icon", selectedIcon);
         formData.set("color", selectedColor);
+        formData.set("parentId", selectedParentId);
         const result = await addInventoryCategory(formData);
 
         if (result.error) {
@@ -81,7 +84,7 @@ export function AddCategoryDialog() {
                 className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
             >
                 <FolderPlus className="w-5 h-5" />
-                Добавить категорию
+                {buttonText}
             </Button>
 
             {isOpen && (
@@ -94,8 +97,12 @@ export function AddCategoryDialog() {
                     <div className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-hidden">
                         <div className="flex items-center justify-between p-8 pb-4">
                             <div>
-                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Новая категория</h1>
-                                <p className="text-sm text-slate-500">Создайте категорию для товаров</p>
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                                    {parentId ? "Новая подкатегория" : "Новая категория"}
+                                </h1>
+                                <p className="text-sm text-slate-500">
+                                    {parentId ? "Создайте подкатегорию для товаров" : "Создайте категорию для товаров"}
+                                </p>
                             </div>
                             <button
                                 type="button"
@@ -167,6 +174,24 @@ export function AddCategoryDialog() {
                                     />
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Родительская категория</label>
+                                    <select
+                                        value={selectedParentId}
+                                        onChange={(e) => setSelectedParentId(e.target.value)}
+                                        disabled={!!parentId}
+                                        className="w-full h-12 px-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <option value="">Основная категория (нет родителя)</option>
+                                        {categories
+                                            .filter(cat => !cat.parentId) // Only top-level as parents for now to avoid deep nesting complexity
+                                            .map(cat => (
+                                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-10">
                                     {/* Icon Selection */}
                                     <div className="space-y-3">
@@ -232,7 +257,7 @@ export function AddCategoryDialog() {
                                     disabled={isPending}
                                     className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-lg shadow-xl shadow-slate-200 transition-all active:scale-[0.98] disabled:opacity-50"
                                 >
-                                    {isPending ? "Создание..." : "Создать категорию"}
+                                    {isPending ? "Создание..." : (parentId ? "Создать подкатегорию" : "Создать категорию")}
                                 </button>
                             </div>
                         </form>

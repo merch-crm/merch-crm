@@ -7,7 +7,7 @@ import {
     Type,
     AlignLeft,
     User,
-    Shield,
+    Users,
     Calendar,
     Flag,
     Loader2,
@@ -20,20 +20,22 @@ interface User {
     name: string;
 }
 
-interface Role {
+interface Department {
     id: string;
     name: string;
+    color?: string | null;
 }
 
 interface CreateTaskDialogProps {
     users: User[];
-    roles: Role[];
+    departments: Department[];
 }
 
-export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
+export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [assignmentType, setAssignmentType] = useState<"user" | "department">("user");
     const [, startTransition] = useTransition();
     const router = useRouter();
 
@@ -152,34 +154,63 @@ export function CreateTaskDialog({ users, roles }: CreateTaskDialogProps) {
                     </div>
 
                     {/* Assignment */}
-                    <div className="space-y-1">
+                    <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Кому назначить?</label>
-                        <div className="grid grid-cols-2 gap-4">
+
+                        {/* Toggle Buttons */}
+                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+                            <button
+                                type="button"
+                                onClick={() => setAssignmentType("user")}
+                                className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "user"
+                                        ? "bg-white text-indigo-600 shadow-sm"
+                                        : "text-slate-500 hover:text-slate-700"
+                                    }`}
+                            >
+                                <User className="w-4 h-4" />
+                                Пользователю
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setAssignmentType("department")}
+                                className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "department"
+                                        ? "bg-white text-indigo-600 shadow-sm"
+                                        : "text-slate-500 hover:text-slate-700"
+                                    }`}
+                            >
+                                <Users className="w-4 h-4" />
+                                Отделу
+                            </button>
+                        </div>
+
+                        {/* Conditional Select */}
+                        {assignmentType === "user" ? (
                             <div className="relative">
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="assignedToUserId"
                                     className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
-                                    <option value="">Сотрудник</option>
+                                    <option value="">Выберите сотрудника</option>
                                     {users.map(u => (
                                         <option key={u.id} value={u.id}>{u.name}</option>
                                     ))}
                                 </select>
                             </div>
+                        ) : (
                             <div className="relative">
-                                <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
-                                    name="assignedToRoleId"
+                                    name="assignedToDepartmentId"
                                     className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
-                                    <option value="">Должность</option>
-                                    {roles.map(r => (
-                                        <option key={r.id} value={r.id}>{r.name}</option>
+                                    <option value="">Выберите отдел</option>
+                                    {departments.map(d => (
+                                        <option key={d.id} value={d.id}>{d.name}</option>
                                     ))}
                                 </select>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {error && (

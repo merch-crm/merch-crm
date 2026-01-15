@@ -18,19 +18,19 @@ export default async function TasksPage() {
 
     if (!userData) redirect("/login");
 
-    const [tasksRes, usersRes, rolesRes] = await Promise.all([
+    const [tasksRes, usersRes, departmentsRes] = await Promise.all([
         getTasks(),
         getUsers(),
-        getRoles()
+        db.query.departments.findMany()
     ]);
 
     return (
         <TasksClient
             initialTasks={tasksRes.data || []}
             users={usersRes.data || []}
-            roles={rolesRes.data || []}
+            departments={departmentsRes || []}
             currentUserId={userData.id}
-            currentUserRoleId={userData.roleId || ""}
+            currentUserDepartmentId={userData.departmentId}
         />
     );
 }

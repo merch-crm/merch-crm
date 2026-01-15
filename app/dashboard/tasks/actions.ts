@@ -18,7 +18,7 @@ export async function getTasks() {
         const allTasks = await db.query.tasks.findMany({
             with: {
                 assignedToUser: true,
-                assignedToRole: true,
+                assignedToDepartment: true,
                 creator: true,
                 attachments: true,
             },
@@ -45,6 +45,7 @@ export async function createTask(formData: FormData) {
     const priority = (formData.get("priority") as (typeof tasks.$inferInsert)["priority"]) || "normal";
     const assignedToUserId = formData.get("assignedToUserId") as string;
     const assignedToRoleId = formData.get("assignedToRoleId") as string;
+    const assignedToDepartmentId = formData.get("assignedToDepartmentId") as string;
     const dueDateStr = formData.get("dueDate") as string;
 
     if (!title) return { error: "Заголовок обязателен" };
@@ -56,6 +57,7 @@ export async function createTask(formData: FormData) {
             priority,
             assignedToUserId: assignedToUserId || null,
             assignedToRoleId: assignedToRoleId || null,
+            assignedToDepartmentId: assignedToDepartmentId || null,
             createdBy: session.id,
             dueDate: dueDateStr ? new Date(dueDateStr) : null,
             status: "new",
@@ -88,6 +90,10 @@ export async function updateTask(taskId: string, formData: FormData) {
     const dueDateStr = formData.get("dueDate") as string;
 
     try {
+        const oldTask = await db.query.tasks.findFirst({
+            where: eq(tasks.id, taskId)
+        });
+
         await db.update(tasks)
             .set({
                 title,
@@ -99,6 +105,9 @@ export async function updateTask(taskId: string, formData: FormData) {
                 dueDate: dueDateStr ? new Date(dueDateStr) : null,
             })
             .where(eq(tasks.id, taskId));
+
+        revalidatePath("/dashboard/tasks");
+        return { success: true };
 
         revalidatePath("/dashboard/tasks");
         return { success: true };

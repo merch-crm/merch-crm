@@ -10,7 +10,8 @@ import {
     inventoryStocks,
     inventoryTransfers,
     notifications,
-    orderItems
+    orderItems,
+    measurementUnits
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and } from "drizzle-orm";
@@ -22,9 +23,15 @@ import path from "path";
 
 export async function getInventoryCategories() {
     try {
-        const categories = await db.select().from(inventoryCategories).orderBy(desc(inventoryCategories.createdAt));
+        const categories = await db.query.inventoryCategories.findMany({
+            with: {
+                parent: true
+            },
+            orderBy: desc(inventoryCategories.createdAt)
+        });
         return { data: categories };
-    } catch {
+    } catch (error) {
+        console.error(error);
         return { error: "Failed to fetch inventory categories" };
     }
 }
@@ -39,6 +46,8 @@ export async function addInventoryCategory(formData: FormData) {
     const icon = formData.get("icon") as string;
     const color = formData.get("color") as string;
 
+    const parentId = formData.get("parentId") as string;
+
     if (!name) {
         return { error: "Name is required" };
     }
@@ -50,6 +59,7 @@ export async function addInventoryCategory(formData: FormData) {
             prefix: prefix || null,
             icon: icon || "package",
             color: color || "indigo",
+            parentId: parentId || null,
         }).returning();
 
         revalidatePath("/dashboard/warehouse");
@@ -94,6 +104,8 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
     const color = formData.get("color") as string;
     const prefix = formData.get("prefix") as string;
 
+    const parentId = formData.get("parentId") as string;
+
     if (!name) {
         return { error: "Name is required" };
     }
@@ -105,7 +117,8 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
                 description,
                 icon: icon || null,
                 color: color || null,
-                prefix: prefix || null
+                prefix: prefix || null,
+                parentId: parentId || null
             })
             .where(eq(inventoryCategories.id, id));
 
@@ -147,6 +160,15 @@ export async function addInventoryItem(formData: FormData) {
     const attributeCode = formData.get("attributeCode") as string;
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
+    const attributesStr = formData.get("attributes") as string;
+    let attributes = {};
+    if (attributesStr) {
+        try {
+            attributes = JSON.parse(attributesStr);
+        } catch (e) {
+            console.error("Failed to parse attributes JSON", e);
+        }
+    }
 
     if (!name || isNaN(quantity)) {
         return { error: "Invalid data" };
@@ -191,6 +213,7 @@ export async function addInventoryItem(formData: FormData) {
                 qualityCode: qualityCode || null,
                 attributeCode: attributeCode || null,
                 sizeCode: sizeCode || null,
+                attributes: attributes,
                 image: imageUrl,
                 reservedQuantity: 0
             }).returning();
@@ -305,6 +328,15 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
     const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
+    const attributesStr = formData.get("attributes") as string;
+    let attributes = {};
+    if (attributesStr) {
+        try {
+            attributes = JSON.parse(attributesStr);
+        } catch (e) {
+            console.error("Failed to parse attributes JSON", e);
+        }
+    }
 
     try {
         // Auto-generate SKU if components are provided
@@ -344,6 +376,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             qualityCode: qualityCode || null,
             attributeCode: attributeCode || null,
             sizeCode: sizeCode || null,
+            attributes: attributes,
             image: imageUrl,
             reservedQuantity
         }).where(eq(inventoryItems.id, id));
@@ -1023,5 +1056,128 @@ export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: s
             details: { count: ids.length, toCategoryId }
         });
         return { error: "Ошибка при массовой смене категории" };
+    }
+}
+
+// Measurement Units Actions
+export async function getMeasurementUnits() {
+    try {
+        const units = await db.query.measurementUnits.findMany({
+            where: eq(measurementUnits.isActive, true),
+            orderBy: measurementUnits.name
+        });
+        return { data: units };
+    } catch (error) {
+        console.error(error);
+        return { error: "Failed to fetch measurement units" };
+    }
+}
+
+export async function addMeasurementUnit(formData: FormData) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Недостаточно прав" };
+    }
+
+    const name = formData.get("name") as string;
+    const fullName = formData.get("fullName") as string;
+    const description = formData.get("description") as string;
+
+    if (!name) return { error: "Name is required" };
+
+    try {
+        await db.insert(measurementUnits).values({
+            name,
+            fullName,
+            description,
+        });
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch {
+        return { error: "Failed to add measurement unit" };
+    }
+}
+
+export async function seedMeasurementUnits() {
+    const defaultUnits = [
+        { name: "шт", fullName: "Штуки" },
+        { name: "м", fullName: "Метры" },
+        { name: "кг", fullName: "Килограммы" },
+        { name: "упак", fullName: "Упаковки" },
+        { name: "л", fullName: "Литры" },
+        { name: "пог.м", fullName: "Погонные метры" }
+    ];
+
+    try {
+        for (const unit of defaultUnits) {
+            const existing = await db.query.measurementUnits.findFirst({
+                where: eq(measurementUnits.name, unit.name)
+            });
+            if (!existing) {
+                await db.insert(measurementUnits).values(unit);
+            }
+        }
+        return { success: true };
+    } catch (error) {
+        console.error("Seed error:", error);
+        return { error: "Failed to seed units" };
+    }
+}
+
+// Restore System Categories
+export async function seedSystemCategories() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Недостаточно прав" };
+    }
+
+    const systemCategories = [
+        { name: "Футболки", description: null, icon: "shirt", color: "rose", prefix: "TS" },
+        { name: "Худи", description: null, icon: "hourglass", color: "indigo", prefix: "HD" },
+        { name: "Свитшот", description: null, icon: "layers", color: "violet", prefix: "SW" },
+        { name: "Лонгслив", description: null, icon: "shirt", color: "emerald", prefix: "LS" },
+        { name: "Анорак", description: null, icon: "wind", color: "cyan", prefix: "AN" },
+        { name: "Зип-худи", description: null, icon: "zap", color: "indigo", prefix: "ZH" },
+        { name: "Штаны", description: null, icon: "package", color: "slate", prefix: "PT" },
+        { name: "Поло", description: null, icon: "shirt", color: "cyan", prefix: "PL" },
+        { name: "Кепки", description: "Системная категория для кепок", icon: "box", color: "cyan", prefix: "CP" },
+        { name: "Упаковка", description: null, icon: "box", color: "amber", prefix: "PK" },
+        { name: "Расходники", description: null, icon: "scissors", color: "rose", prefix: "SP" },
+    ];
+
+    try {
+        let created = 0;
+        let existing = 0;
+
+        for (const category of systemCategories) {
+            const [found] = await db
+                .select()
+                .from(inventoryCategories)
+                .where(eq(inventoryCategories.name, category.name))
+                .limit(1);
+
+            if (!found) {
+                await db.insert(inventoryCategories).values({
+                    name: category.name,
+                    description: category.description,
+                    icon: category.icon,
+                    color: category.color,
+                    prefix: category.prefix,
+                    parentId: null,
+                });
+                created++;
+            } else {
+                existing++;
+            }
+        }
+
+        revalidatePath("/dashboard/warehouse");
+        return {
+            success: true,
+            message: `Создано категорий: ${created}, уже существовало: ${existing}`
+        };
+    } catch (error) {
+        console.error("Seed error:", error);
+        return { error: "Failed to seed categories" };
     }
 }

@@ -847,7 +847,7 @@ export function S3StorageManager() {
 
             {/* Preview Dialog */}
             <Dialog open={!!previewFile} onOpenChange={() => setPreviewFile(null)}>
-                <DialogContent className="sm:max-w-4xl rounded-[40px] border-none shadow-2xl p-0 bg-white overflow-hidden">
+                <DialogContent className="sm:max-w-4xl rounded-[40px] border-none shadow-2xl p-0 bg-white overflow-hidden [&>button]:hidden">
                     <div className="relative">
                         <div className="absolute top-6 right-6 z-50 flex gap-2">
                             <button

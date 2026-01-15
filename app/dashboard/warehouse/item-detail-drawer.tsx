@@ -167,6 +167,24 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                         )}
                     </div>
 
+                    {/* Attributes */}
+                    {item.attributes && Object.keys(item.attributes).length > 0 && (
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 px-1">
+                                <Info className="w-4 h-4 text-slate-400" />
+                                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Характеристики</h3>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {Object.entries(item.attributes).map(([key, value]) => (
+                                    <div key={key} className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-0.5">
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">{key}</span>
+                                        <span className="text-xs font-black text-slate-900">{value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Description */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 px-1">

@@ -20,6 +20,7 @@ export interface InventoryItem {
     location?: string | null;
     image?: string | null;
     reservedQuantity?: number;
+    attributes?: Record<string, any>;
 }
 
 export interface Category {
@@ -28,7 +29,10 @@ export interface Category {
     description: string | null;
     color: string | null;
     icon: string | null;
+    prefix?: string | null;
+    parentId?: string | null;
     items?: InventoryItem[];
+    parent?: Category | null;
 }
 
 interface InventoryClientProps {
@@ -46,9 +50,19 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
     const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
     const { toast } = useToast();
 
-    const itemsByCategory = categories.map(category => ({
+    const topLevelCategories = categories.filter(c => !c.parentId || c.parentId === "");
+    const subCategories = categories.filter(c => c.parentId && c.parentId !== "");
+
+    const itemsByCategory = topLevelCategories.map(category => ({
         ...category,
-        items: items.filter(item => item.categoryId === category.id)
+        items: items.filter(item => {
+            // Include items directly in this category
+            if (item.categoryId === category.id) return true;
+            // Also include items from ALL subcategories of this category for the count
+            const childIds = subCategories.filter(sc => sc.parentId === category.id).map(sc => sc.id);
+            return item.categoryId && childIds.includes(item.categoryId);
+        }),
+        children: subCategories.filter(sc => sc.parentId === category.id)
     }));
 
     const orphanedItems = items.filter(item => !item.categoryId);
@@ -107,6 +121,7 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                 <EditCategoryDialog
                     key={editingCategory.id}
                     category={editingCategory}
+                    categories={categories}
                     isOpen={isEditDialogOpen}
                     onClose={() => setIsEditDialogOpen(false)}
                 />
@@ -170,7 +185,7 @@ function CategoryCard({
     onEdit,
     onDelete,
 }: {
-    category: Category & { items: InventoryItem[] },
+    category: Category & { items: InventoryItem[], children?: Category[] },
     onEdit?: (cat: Category) => void,
     onDelete?: () => void,
 }) {
@@ -214,7 +229,7 @@ function CategoryCard({
 
     const SYSTEM_CATEGORIES = [
         "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
-        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники"
+        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники", "Без категории"
     ];
     const isSystem = SYSTEM_CATEGORIES.includes(category.name);
 
@@ -239,6 +254,11 @@ function CategoryCard({
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                {category.parent && (
+                                    <span className="text-indigo-400 group-hover:text-indigo-500 transition-colors">
+                                        {category.parent.name} /{" "}
+                                    </span>
+                                )}
                                 {category.items.length} позиций
                             </span>
                             {lowStockCount > 0 && (
@@ -273,15 +293,30 @@ function CategoryCard({
                 )}
             </div>
 
-            <div className="h-10">
-                {category.description ? (
+            <div className="h-10 overflow-hidden">
+                {category.children && category.children.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                        {category.children.slice(0, 3).map(child => (
+                            <span key={child.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500">
+                                {child.name}
+                            </span>
+                        ))}
+                        {category.children.length > 3 && (
+                            <span className="inline-flex items-center px-1.5 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-400">
+                                +{category.children.length - 3}
+                            </span>
+                        )}
+                    </div>
+                ) : category.description ? (
                     <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2">
                         {category.description}
                     </p>
                 ) : (
-                    <p className="text-[13px] text-slate-300 italic font-medium">
-                        Нет описания
-                    </p>
+                    !isOrphaned && (
+                        <p className="text-[13px] text-slate-300 italic font-medium">
+                            Нет подкатегорий
+                        </p>
+                    )
                 )}
             </div>
 

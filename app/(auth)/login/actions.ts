@@ -29,13 +29,6 @@ export async function loginAction(prevState: any, formData: FormData) {
 
         if (user.length === 0) {
             console.log(`[Login] User not found: ${email}`);
-            // Log failed login (user not found)
-            await db.insert(auditLogs).values({
-                action: 'login_failed',
-                entityType: 'auth',
-                entityId: 'system',
-                details: { email, reason: 'user_not_found' }
-            });
 
             // Log to security events
             await logSecurityEvent({
@@ -56,14 +49,6 @@ export async function loginAction(prevState: any, formData: FormData) {
 
         if (!passwordsMatch) {
             console.log(`[Login] Password mismatch for user: ${email}`);
-            // Log failed login (password mismatch)
-            await db.insert(auditLogs).values({
-                userId: user[0].id,
-                action: 'login_failed',
-                entityType: 'auth',
-                entityId: user[0].id,
-                details: { email, reason: 'password_mismatch' }
-            });
 
             // Log to security events
             await logSecurityEvent({

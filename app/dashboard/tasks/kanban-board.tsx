@@ -22,9 +22,9 @@ interface Task {
     status: string;
     priority: string;
     assignedToUserId?: string | null;
-    assignedToRoleId?: string | null;
+    assignedToDepartmentId?: string | null;
     assignedToUser?: { name: string } | null;
-    assignedToRole?: { name: string } | null;
+    assignedToDepartment?: { name: string } | null;
     dueDate?: Date | string | null;
     createdAt: Date | string;
 }
@@ -32,7 +32,7 @@ interface Task {
 interface KanbanBoardProps {
     tasks: Task[];
     currentUserId: string;
-    currentUserRoleId: string;
+    currentUserDepartmentId?: string | null;
 }
 
 const COLUMNS = [
@@ -43,7 +43,7 @@ const COLUMNS = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function KanbanBoard({ tasks, currentUserId, currentUserRoleId }: KanbanBoardProps) {
+export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: KanbanBoardProps) {
     const [, startTransition] = useTransition();
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
@@ -154,7 +154,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserRoleId }: KanbanB
                                                 <div className="flex items-center gap-2">
                                                     <div className={cn("h-2.5 w-2.5 rounded-full", priority.line)} title={priority.label} />
                                                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                                                        {task.assignedToRole ? "Групповое" : "Личное"}
+                                                        {task.assignedToDepartmentId ? "Отдел" : "Личное"}
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -175,7 +175,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserRoleId }: KanbanB
                                                         <User className="w-3.5 h-3.5 text-slate-400" />
                                                     </div>
                                                     <span className="text-[11px] font-black text-slate-600 truncate max-w-[120px]">
-                                                        {task.assignedToUser?.name || task.assignedToRole?.name || "Все"}
+                                                        {task.assignedToUser?.name || task.assignedToDepartment?.name || "Все"}
                                                     </span>
                                                 </div>
 

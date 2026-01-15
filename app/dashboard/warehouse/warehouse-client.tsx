@@ -21,10 +21,11 @@ interface WarehouseClientProps {
     history: Transaction[];
     storageLocations: StorageLocation[];
     users: { id: string; name: string }[];
+    measurementUnits: { id: string, name: string }[];
     user: Session | null;
 }
 
-export function WarehouseClient({ items, categories, history, storageLocations, users, user }: WarehouseClientProps) {
+export function WarehouseClient({ items, categories, history, storageLocations, users, measurementUnits, user }: WarehouseClientProps) {
     console.log(`WarehouseClient render: ${history.length} history items`);
     const [activeTab, setActiveTab] = useState<"inventory" | "storage" | "history">("inventory");
 
@@ -78,7 +79,7 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
                             <AddStorageLocationDialog users={users} />
                         </>
                     ) : activeTab === "inventory" ? (
-                        <AddCategoryDialog />
+                        <AddCategoryDialog categories={categories} />
                     ) : null}
                 </div>
             </div>

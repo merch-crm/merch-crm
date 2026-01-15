@@ -22,7 +22,20 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         }
     }
 
-    // Fetch items for this category
+    // Fetch subcategories for this category
+    const subCategoriesRaw = categoryId === "orphaned"
+        ? []
+        : await db
+            .select()
+            .from(inventoryCategories)
+            .where(eq(inventoryCategories.parentId, categoryId));
+
+    const subCategories = subCategoriesRaw.map(sc => ({
+        ...sc,
+        createdAt: sc.createdAt.toISOString()
+    }));
+
+    // Fetch items for this category (direct items)
     const itemsRaw = await db
         .select()
         .from(inventoryItems)
@@ -32,10 +45,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
                 : eq(inventoryItems.categoryId, categoryId)
         );
 
-    // Sanitize items for client component (ensure Dates are strings if needed, though Next handles top level)
     const items = itemsRaw.map(item => ({
         ...item,
         createdAt: item.createdAt.toISOString(),
+        attributes: (item.attributes as Record<string, string>) || {},
     }));
 
     // Fallback for orphaned
@@ -52,12 +65,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     // Fetch storage locations
     const locations = await db.select().from(storageLocations);
 
+    // Fetch measurement units
+    const { getMeasurementUnits } = await import("../actions");
+    const { data: units = [] } = await getMeasurementUnits();
+
     return (
         <div className="p-1">
             <CategoryDetailClient
-                category={finalCategory}
+                category={finalCategory as any}
+                subCategories={subCategories as any}
                 items={items}
                 storageLocations={locations}
+                measurementUnits={units}
             />
         </div>
     );

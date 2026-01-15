@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin } from "lucide-react";
+import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, Layers, ChevronRight, FolderOpen } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ import { ItemDetailDrawer } from "../item-detail-drawer";
 import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../storage-locations-tab";
 import { useToast } from "@/components/ui/toast";
+import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface InventoryItem {
@@ -32,6 +33,7 @@ interface InventoryItem {
     sizeCode: string | null;
     image: string | null;
     reservedQuantity: number;
+    attributes?: Record<string, any>;
 }
 
 interface Category {
@@ -39,15 +41,20 @@ interface Category {
     name: string;
     description: string | null;
     prefix: string | null;
+    parentId?: string | null;
+    color: string | null;
+    icon: string | null;
 }
 
 interface CategoryDetailClientProps {
     category: Category;
+    subCategories?: Category[];
     items: InventoryItem[];
     storageLocations?: StorageLocation[];
+    measurementUnits?: { id: string, name: string }[];
 }
 
-export function CategoryDetailClient({ category, items, storageLocations = [] }: CategoryDetailClientProps) {
+export function CategoryDetailClient({ category, subCategories = [], items, storageLocations = [], measurementUnits = [] }: CategoryDetailClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -150,21 +157,31 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5">
                     <button
                         onClick={() => router.back()}
-                        className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 shadow-sm hover:shadow-md transition-all active:scale-95 shrink-0"
+                        className="group w-12 h-12 rounded-full bg-white border border-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-all active:scale-95 shrink-0 shadow-sm"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                     </button>
 
-                    <div className="flex items-center gap-3">
-                        <div className="h-12 px-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
-                            <h1 className="text-lg font-black text-slate-900 tracking-tight">{category.name}</h1>
+                    <div>
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                            <span
+                                className="hover:text-indigo-600 cursor-pointer transition-colors flex items-center gap-1"
+                                onClick={() => router.push('/dashboard/warehouse')}
+                            >
+                                <Package className="w-3 h-3" />
+                                Склад
+                            </span>
+                            <span className="text-slate-300">/</span>
+                            <span>Просмотр категории</span>
                         </div>
-
-                        <div className="h-12 px-5 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-[11px] font-black uppercase tracking-widest shadow-sm border border-indigo-100/50 shrink-0 whitespace-nowrap">
-                            {items.length} позиций
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">{category.name}</h1>
+                            <div className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wide border border-slate-200/50 self-start mt-1">
+                                {items.length}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -182,6 +199,13 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>
+                    )}
+                    {category.id !== "orphaned" && (
+                        <AddCategoryDialog
+                            categories={allCategories}
+                            parentId={category.id}
+                            buttonText="Добавить подкатегорию"
+                        />
                     )}
                     <Button
                         onClick={() => setIsAddOpen(true)}
@@ -274,6 +298,7 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                 <AddItemDialogWrapper
                     category={category}
                     storageLocations={storageLocations}
+                    measurementUnits={measurementUnits}
                     onClose={() => setIsAddOpen(false)}
                 />
             )}
@@ -283,6 +308,7 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                     item={editingItem}
                     category={category}
                     storageLocations={storageLocations}
+                    measurementUnits={measurementUnits}
                     onClose={() => {
                         setIsEditOpen(false);
                         setEditingItem(null);
@@ -366,6 +392,40 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                     ))}
                 </div>
             </div>
+
+            {/* Subcategories Grid - Show if this is a parent category */}
+            {subCategories.length > 0 && (
+                <div className="space-y-6">
+                    <div className="flex items-center gap-4 px-2">
+                        <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Подкатегории</h2>
+                        <div className="h-px flex-1 bg-slate-100" />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-1">
+                        {subCategories.map((subcat) => (
+                            <div
+                                key={subcat.id}
+                                onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
+                                className="group bg-white border border-slate-200/60 rounded-3xl p-5 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:border-indigo-100 cursor-pointer flex items-center justify-between"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
+                                        <Layers className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-[14px] font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                                            {subcat.name}
+                                        </h4>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                            Подкатегория
+                                        </p>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Items Grid */}
             <div className="space-y-6">
@@ -588,12 +648,36 @@ function SubmitButton({ label = "Сохранить", pendingLabel = "Сохра
     );
 }
 
-function AddItemDialogWrapper({ category, storageLocations, onClose }: { category: Category, storageLocations: StorageLocation[], onClose: () => void }) {
+function AddItemDialogWrapper({ category, storageLocations, measurementUnits, onClose }: { category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], onClose: () => void }) {
     const { toast } = useToast(); const [error, setError] = useState("");
     const [qualityCode, setQualityCode] = useState("");
     const [attributeCode, setAttributeCode] = useState("");
     const [sizeCode, setSizeCode] = useState("");
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [attributes, setAttributes] = useState<Record<string, string>>({
+        "Цвет": "",
+        "Размер": "",
+        "Материал": ""
+    });
+
+    const handleAttributeChange = (key: string, value: string) => {
+        setAttributes(prev => ({ ...prev, [key]: value }));
+    };
+
+    const addCustomAttribute = () => {
+        const name = prompt("Название характеристики (например, Плотность):");
+        if (name && !attributes[name]) {
+            setAttributes(prev => ({ ...prev, [name]: "" }));
+        }
+    };
+
+    const removeAttribute = (key: string) => {
+        setAttributes(prev => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -624,6 +708,13 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
             setError("Артикул может содержать только латиницу, цифры и «-»");
             return;
         }
+
+        // Add attributes to form data
+        const cleanedAttributes = Object.fromEntries(
+            Object.entries(attributes).filter(([_, v]) => v.trim() !== "")
+        );
+        formData.append("attributes", JSON.stringify(cleanedAttributes));
+
         const res = await addInventoryItem(formData);
         if (res?.error) {
             setError(res.error);
@@ -714,10 +805,18 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ед. изм.</label>
                             <select name="unit" className="w-full h-12 px-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 transition-all">
-                                <option value="шт">Штуки (шт)</option>
-                                <option value="м">Метры (м)</option>
-                                <option value="кг">Килограммы (кг)</option>
-                                <option value="упак">Упаковки</option>
+                                {measurementUnits.length > 0 ? (
+                                    measurementUnits.map(unit => (
+                                        <option key={unit.id} value={unit.name}>{unit.name}</option>
+                                    ))
+                                ) : (
+                                    <>
+                                        <option value="шт">Штуки (шт)</option>
+                                        <option value="м">Метры (м)</option>
+                                        <option value="кг">Килограммы (кг)</option>
+                                        <option value="упак">Упаковки</option>
+                                    </>
+                                )}
                             </select>
                         </div>
                         <div className="space-y-1.5">
@@ -729,6 +828,41 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание</label>
                         <textarea name="description" className="w-full h-24 p-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all resize-none" />
+                    </div>
+
+                    <div className="space-y-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Характеристики</label>
+                            <button
+                                type="button"
+                                onClick={addCustomAttribute}
+                                className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700"
+                            >
+                                + Добавить свою
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3">
+                            {Object.entries(attributes).map(([key, value]) => (
+                                <div key={key} className="flex gap-2 items-end">
+                                    <div className="flex-1 space-y-1">
+                                        <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">{key}</label>
+                                        <input
+                                            value={value}
+                                            onChange={(e) => handleAttributeChange(key, e.target.value)}
+                                            placeholder={`Укажите ${key.toLowerCase()}...`}
+                                            className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white text-xs font-bold focus:border-indigo-500 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeAttribute(key)}
+                                        className="mb-1 p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -780,12 +914,35 @@ function AddItemDialogWrapper({ category, storageLocations, onClose }: { categor
     );
 }
 
-function EditItemDialog({ item, category, storageLocations, onClose }: { item: InventoryItem, category: Category, storageLocations: StorageLocation[], onClose: () => void }) {
+function EditItemDialog({ item, category, storageLocations, measurementUnits, onClose }: { item: InventoryItem, category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], onClose: () => void }) {
     const [error, setError] = useState("");
     const [qualityCode, setQualityCode] = useState(item.qualityCode || "");
     const { toast } = useToast(); const [attributeCode, setAttributeCode] = useState(item.attributeCode || "");
     const [sizeCode, setSizeCode] = useState(item.sizeCode || "");
     const [imagePreview, setImagePreview] = useState<string | null>(item.image);
+    const [attributes, setAttributes] = useState<Record<string, string>>(() => {
+        const defaults = { "Цвет": "", "Размер": "", "Материал": "" };
+        return { ...defaults, ...(item.attributes || {}) };
+    });
+
+    const handleAttributeChange = (key: string, value: string) => {
+        setAttributes(prev => ({ ...prev, [key]: value }));
+    };
+
+    const addCustomAttribute = () => {
+        const name = prompt("Название характеристики (например, Плотность):");
+        if (name && !attributes[name]) {
+            setAttributes(prev => ({ ...prev, [name]: "" }));
+        }
+    };
+
+    const removeAttribute = (key: string) => {
+        setAttributes(prev => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -816,6 +973,13 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
             setError("Артикул может содержать только латиницу, цифры и «-»");
             return;
         }
+
+        // Add attributes to form data
+        const cleanedAttributes = Object.fromEntries(
+            Object.entries(attributes).filter(([_, v]) => v.trim() !== "")
+        );
+        formData.append("attributes", JSON.stringify(cleanedAttributes));
+
         const res = await updateInventoryItem(item.id, formData);
         if (res?.error) {
             setError(res.error);
@@ -906,9 +1070,17 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ед. изм.</label>
                             <select name="unit" defaultValue={item.unit} className="w-full h-12 px-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 transition-all">
-                                <option value="шт">Штуки (шт)</option>
-                                <option value="м">Метры (м)</option>
-                                <option value="кг">Килограммы (кг)</option>
+                                {measurementUnits.length > 0 ? (
+                                    measurementUnits.map(unit => (
+                                        <option key={unit.id} value={unit.name}>{unit.name}</option>
+                                    ))
+                                ) : (
+                                    <>
+                                        <option value="шт">Штуки (шт)</option>
+                                        <option value="м">Метры (м)</option>
+                                        <option value="кг">Килограммы (кг)</option>
+                                    </>
+                                )}
                             </select>
                         </div>
                         <div className="space-y-1.5">
@@ -920,6 +1092,41 @@ function EditItemDialog({ item, category, storageLocations, onClose }: { item: I
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание</label>
                         <textarea name="description" defaultValue={item.description || ""} className="w-full h-24 p-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all resize-none" />
+                    </div>
+
+                    <div className="space-y-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Характеристики</label>
+                            <button
+                                type="button"
+                                onClick={addCustomAttribute}
+                                className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700"
+                            >
+                                + Добавить свою
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3">
+                            {Object.entries(attributes).map(([key, value]) => (
+                                <div key={key} className="flex gap-2 items-end">
+                                    <div className="flex-1 space-y-1">
+                                        <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">{key}</label>
+                                        <input
+                                            value={value}
+                                            onChange={(e) => handleAttributeChange(key, e.target.value)}
+                                            placeholder={`Укажите ${key.toLowerCase()}...`}
+                                            className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white text-xs font-bold focus:border-indigo-500 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeAttribute(key)}
+                                        className="mb-1 p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="space-y-1.5">

@@ -50,6 +50,37 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
+function translateErrorMessage(message: string): string {
+  if (!message) return "Неизвестная ошибка";
+
+  const rules = [
+    { rule: /Cannot read properties of undefined/, text: "Ошибка в коде: попытка чтения свойства у неопределенного объекта (undefined)" },
+    { rule: /Cannot read properties of null/, text: "Ошибка в коде: попытка чтения свойства у null-объекта" },
+    { rule: /relation.*does not exist/, text: "Ошибка базы данных: таблица или отношение не найдено" },
+    { rule: /syntax error/, text: "Ошибка базы данных: синтаксическая ошибка в SQL запросе" },
+    { rule: /ECONNREFUSED/, text: "Сбой подключения: сервер или база данных недоступны" },
+    { rule: /unique constraint/, text: "Конфликт данных: нарушение уникальности (дубликат)" },
+    { rule: /violates not-null constraint/, text: "Ошибка данных: обязательное поле не заполнено" },
+    { rule: /invalid input syntax/, text: "Ошибка данных: неверный формат входных значений" },
+    { rule: /drizzle-kit: not found/, text: "Системная ошибка: утилита миграций не найдена" },
+  ];
+
+  for (const { rule, text } of rules) {
+    if (rule.test(message)) return text;
+  }
+
+  return message;
+}
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
@@ -166,6 +197,7 @@ export function SystemStats() {
   const [restarting, setRestarting] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+  const [selectedError, setSelectedError] = useState<SecurityData['systemErrors'][0] | null>(null);
 
   // Monitoring state
   const [monitoringData, setMonitoringData] = useState<MonitoringData | null>(
@@ -1335,13 +1367,17 @@ export function SystemStats() {
                       </tr>
                     ) : (
                       securityData?.systemErrors.map((error) => (
-                        <tr key={error.id} className="hover:bg-rose-50/30 transition-colors group">
+                        <tr
+                          key={error.id}
+                          className="hover:bg-rose-50/50 transition-colors group cursor-pointer"
+                          onClick={() => setSelectedError(error)}
+                        >
                           <td className="px-6 py-4 max-w-md">
                             <div className="flex items-start gap-3">
                               <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500 animate-pulse" />
                               <div className="space-y-1">
                                 <p className="text-sm font-bold text-slate-900 leading-tight">
-                                  {error.message}
+                                  {translateErrorMessage(error.message)}
                                 </p>
                                 {error.path && (
                                   <p className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
@@ -2123,6 +2159,77 @@ export function SystemStats() {
         title="Перезагрузить сервер приложений?"
         description="Это действие прервет все активные сессии и сделает CRM недоступной на 10-30 секунд. Вы точно уверены?"
       />
+      {/* Error Details Dialog */}
+      <Dialog open={!!selectedError} onOpenChange={(open) => !open && setSelectedError(null)}>
+        <DialogContent className="max-w-2xl bg-white rounded-3xl p-0 overflow-hidden border-rose-100 shadow-2xl">
+          <div className="bg-rose-50/50 p-6 border-b border-rose-100 flex items-start gap-4">
+            <div className="p-3 bg-white rounded-xl shadow-sm text-rose-500 shrink-0">
+              <AlertTriangle size={24} />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-black text-slate-900">Детали ошибки</DialogTitle>
+              <DialogDescription className="text-slate-500 font-medium mt-1">
+                Техническая информация о сбое
+              </DialogDescription>
+            </div>
+          </div>
+
+          <div className="p-6 space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Сообщение (перевод)</label>
+              <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 text-rose-800 font-bold text-sm">
+                {selectedError && translateErrorMessage(selectedError.message)}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Оригинальное сообщение</label>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
+                {selectedError?.message}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Путь / Метод</label>
+                <div className="font-bold text-slate-700 text-sm">
+                  {selectedError?.method || "-"} {selectedError?.path || "-"}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Адрес</label>
+                <div className="font-bold text-slate-700 text-sm">
+                  {selectedError?.ipAddress || "Не определен"}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Критичность</label>
+                <div className={cn(
+                  "inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-tight",
+                  selectedError?.severity === "critical" ? "bg-rose-100 text-rose-600" : "bg-amber-100 text-amber-600"
+                )}>
+                  {selectedError?.severity === "critical" ? "Критическая" : "Предупреждение"}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Время возникновения</label>
+                <div className="font-bold text-slate-700 text-sm">
+                  {selectedError?.createdAt ? new Date(selectedError.createdAt).toLocaleString("ru-RU") : "-"}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+            <Button
+              onClick={() => setSelectedError(null)}
+              className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-sm font-bold rounded-xl"
+            >
+              Закрыть
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div >
   );
 }
