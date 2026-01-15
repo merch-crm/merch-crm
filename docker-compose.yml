@@ -9,6 +9,7 @@ services:
       - "3000"
     volumes:
       - ./uploads:/app/public/uploads
+      - ./local-storage:/app/local-storage
     env_file:
       - .env
     environment:
