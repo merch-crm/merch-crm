@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getStorageDetails, deleteS3FileAction, createS3FolderAction } from "@/app/dashboard/admin/actions";
+import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction } from "@/app/dashboard/admin/actions";
 import {
     HardDrive,
     RefreshCw,
@@ -16,7 +16,10 @@ import {
     Folder,
     FolderPlus,
     ChevronRight,
-    Home
+    Home,
+    Edit2,
+    CheckSquare,
+    Square
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -66,6 +69,18 @@ export function StorageManager() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");
     const [isCreating, setIsCreating] = useState(false);
+
+    // Rename Modal State
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [renamingKey, setRenamingKey] = useState<string | null>(null);
+    const [newName, setNewName] = useState("");
+    const [isRenaming, setIsRenaming] = useState(false);
+
+    // Multi-select State
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+    const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
+    const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
+    const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
 
     const fetchData = useCallback(async (manual = false, prefix = currentPrefix) => {
         if (manual) setLoading(true);
@@ -128,6 +143,74 @@ export function StorageManager() {
         }
     };
 
+    const handleRename = async () => {
+        if (!renamingKey || !newName.trim()) return;
+        setIsRenaming(true);
+        try {
+            const oldKey = renamingKey;
+            const isFolder = oldKey.endsWith("/");
+            const newKey = currentPrefix + newName.trim() + (isFolder ? "/" : "");
+
+            const res = await renameS3FileAction(oldKey, newKey);
+            if ("success" in res && res.success) {
+                toast(isFolder ? "Папка переименована" : "Файл переименован", "success");
+                setIsRenameModalOpen(false);
+                setRenamingKey(null);
+                setNewName("");
+                fetchData();
+            } else {
+                toast((res as { error?: string }).error || "Ошибка при переименовании", "error");
+            }
+        } catch {
+            toast("Ошибка сети", "error");
+        } finally {
+            setIsRenaming(false);
+        }
+    };
+
+    const handleDeleteMultiple = async () => {
+        if (selectedKeys.size === 0) return;
+        setIsDeletingMultiple(true);
+        try {
+            const keys = Array.from(selectedKeys);
+            const res = await deleteMultipleS3FilesAction(keys);
+            if ("success" in res && res.success) {
+                toast(`Удалено ${(res as { deleted?: number }).deleted || selectedKeys.size} объектов`, "success");
+                setSelectedKeys(new Set());
+                setIsMultiSelectMode(false);
+                setShowDeleteMultipleConfirm(false);
+                fetchData();
+            } else {
+                toast((res as { error?: string }).error || "Ошибка при удалении", "error");
+            }
+        } catch {
+            toast("Ошибка сети", "error");
+        } finally {
+            setIsDeletingMultiple(false);
+        }
+    };
+
+    const toggleSelection = (key: string) => {
+        const newSet = new Set(selectedKeys);
+        if (newSet.has(key)) {
+            newSet.delete(key);
+        } else {
+            newSet.add(key);
+        }
+        setSelectedKeys(newSet);
+    };
+
+    const selectAll = () => {
+        const allKeys = new Set<string>();
+        filteredFolders.forEach(f => allKeys.add(f));
+        filteredFiles.forEach(f => allKeys.add(f.key));
+        setSelectedKeys(allKeys);
+    };
+
+    const deselectAll = () => {
+        setSelectedKeys(new Set());
+    };
+
     const formatSize = (bytes: number) => {
         if (bytes === 0) return "0 B";
         const k = 1024;
@@ -139,6 +222,15 @@ export function StorageManager() {
     const navigateTo = (prefix: string) => {
         setCurrentPrefix(prefix);
         setSearchTerm("");
+        setSelectedKeys(new Set());
+        setIsMultiSelectMode(false);
+    };
+
+    const openRenameModal = (key: string) => {
+        setRenamingKey(key);
+        const name = key.replace(currentPrefix, "").replace("/", "");
+        setNewName(name);
+        setIsRenameModalOpen(true);
     };
 
     const breadcrumbs = currentPrefix.split("/").filter(Boolean);
@@ -236,6 +328,19 @@ export function StorageManager() {
                                             />
                                         </div>
                                         <button
+                                            onClick={() => {
+                                                setIsMultiSelectMode(!isMultiSelectMode);
+                                                if (isMultiSelectMode) setSelectedKeys(new Set());
+                                            }}
+                                            className={cn(
+                                                "p-2.5 rounded-2xl transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
+                                                isMultiSelectMode ? "bg-indigo-600 text-white" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                                            )}
+                                        >
+                                            <CheckSquare size={18} />
+                                            <span className="text-[10px] font-black uppercase">Выбор</span>
+                                        </button>
+                                        <button
                                             onClick={() => setIsCreateModalOpen(true)}
                                             className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
                                         >
@@ -245,12 +350,45 @@ export function StorageManager() {
                                     </div>
                                 </div>
 
+                                {/* Multi-select Actions Bar */}
+                                {isMultiSelectMode && selectedKeys.size > 0 && (
+                                    <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                        <div className="flex items-center gap-3">
+                                            <div className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-black">
+                                                {selectedKeys.size}
+                                            </div>
+                                            <span className="text-sm font-bold text-slate-700">выбрано</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={selectAll}
+                                                className="px-4 py-2 bg-white text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                            >
+                                                Выбрать все
+                                            </button>
+                                            <button
+                                                onClick={deselectAll}
+                                                className="px-4 py-2 bg-white text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                            >
+                                                Снять выбор
+                                            </button>
+                                            <button
+                                                onClick={() => setShowDeleteMultipleConfirm(true)}
+                                                className="px-4 py-2 bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-rose-700 transition-all flex items-center gap-2"
+                                            >
+                                                <Trash2 size={14} />
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Breadcrumbs */}
                                 <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 overflow-x-auto scrollbar-hide">
                                     <button
                                         onClick={() => navigateTo("")}
                                         className={cn(
-                                            "flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest",
+                                            "flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest shrink-0",
                                             currentPrefix === "" ? "bg-white text-indigo-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
@@ -295,6 +433,9 @@ export function StorageManager() {
                                     <table className="w-full text-left border-collapse">
                                         <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-50">
                                             <tr>
+                                                {isMultiSelectMode && (
+                                                    <th className="px-4 py-4 w-12"></th>
+                                                )}
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Наименование</th>
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Размер</th>
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Действия</th>
@@ -304,9 +445,36 @@ export function StorageManager() {
                                             {/* Render Folders */}
                                             {filteredFolders.map((folderPrefix) => {
                                                 const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
+                                                const isSelected = selectedKeys.has(folderPrefix);
                                                 return (
-                                                    <tr key={folderPrefix} className="hover:bg-indigo-50/30 transition-colors group cursor-pointer" onClick={() => navigateTo(folderPrefix)}>
-                                                        <td className="px-8 py-4">
+                                                    <tr
+                                                        key={folderPrefix}
+                                                        className={cn(
+                                                            "transition-colors group",
+                                                            isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
+                                                        )}
+                                                    >
+                                                        {isMultiSelectMode && (
+                                                            <td className="px-4 py-4">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        toggleSelection(folderPrefix);
+                                                                    }}
+                                                                    className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                                                                >
+                                                                    {isSelected ? (
+                                                                        <CheckSquare size={20} className="text-indigo-600" />
+                                                                    ) : (
+                                                                        <Square size={20} className="text-slate-300" />
+                                                                    )}
+                                                                </button>
+                                                            </td>
+                                                        )}
+                                                        <td
+                                                            className="px-8 py-4 cursor-pointer"
+                                                            onClick={() => !isMultiSelectMode && navigateTo(folderPrefix)}
+                                                        >
                                                             <div className="flex items-center gap-4">
                                                                 <div className="p-2.5 bg-amber-50 text-amber-500 rounded-xl group-hover:scale-110 transition-transform shadow-sm">
                                                                     <Folder size={18} fill="currentColor" fillOpacity={0.2} />
@@ -321,8 +489,34 @@ export function StorageManager() {
                                                             <span className="text-[10px] font-black text-slate-400 uppercase">---</span>
                                                         </td>
                                                         <td className="px-8 py-4">
-                                                            <div className="flex items-center justify-center">
-                                                                <ChevronRight size={16} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                {!isMultiSelectMode && (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                openRenameModal(folderPrefix);
+                                                                            }}
+                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            title="Переименовать"
+                                                                        >
+                                                                            <Edit2 size={16} />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setDeletingKey(folderPrefix);
+                                                                            }}
+                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                            title="Удалить"
+                                                                        >
+                                                                            <Trash2 size={16} />
+                                                                        </button>
+                                                                    </>
+                                                                )}
+                                                                {!isMultiSelectMode && (
+                                                                    <ChevronRight size={16} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                                                                )}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -332,8 +526,32 @@ export function StorageManager() {
                                             {/* Render Files */}
                                             {filteredFiles.map((file) => {
                                                 const name = file.key.replace(currentPrefix, "");
+                                                const isSelected = selectedKeys.has(file.key);
                                                 return (
-                                                    <tr key={file.key} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <tr
+                                                        key={file.key}
+                                                        className={cn(
+                                                            "transition-colors group",
+                                                            isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
+                                                        )}
+                                                    >
+                                                        {isMultiSelectMode && (
+                                                            <td className="px-4 py-4">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        toggleSelection(file.key);
+                                                                    }}
+                                                                    className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                                                                >
+                                                                    {isSelected ? (
+                                                                        <CheckSquare size={20} className="text-indigo-600" />
+                                                                    ) : (
+                                                                        <Square size={20} className="text-slate-300" />
+                                                                    )}
+                                                                </button>
+                                                            </td>
+                                                        )}
                                                         <td className="px-8 py-4">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="p-2.5 bg-slate-100 text-slate-400 rounded-xl group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors shadow-sm">
@@ -352,16 +570,30 @@ export function StorageManager() {
                                                         </td>
                                                         <td className="px-8 py-4">
                                                             <div className="flex items-center justify-center gap-2">
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setDeletingKey(file.key);
-                                                                    }}
-                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
-                                                                    title="Удалить"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
+                                                                {!isMultiSelectMode && (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                openRenameModal(file.key);
+                                                                            }}
+                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            title="Переименовать"
+                                                                        >
+                                                                            <Edit2 size={16} />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setDeletingKey(file.key);
+                                                                            }}
+                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                            title="Удалить"
+                                                                        >
+                                                                            <Trash2 size={16} />
+                                                                        </button>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -416,19 +648,31 @@ export function StorageManager() {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden transition-all hover:bg-indigo-600 group">
-                        <CardContent className="p-6">
-                            <div className="flex flex-col gap-4">
-                                <div className="p-4 bg-indigo-50 group-hover:bg-white/20 text-indigo-600 group-hover:text-white rounded-[24px] w-fit transition-colors">
-                                    <CloudUpload size={32} />
+                    <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                        <CardHeader className="pb-2">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                                    <Info size={20} />
                                 </div>
                                 <div>
-                                    <h4 className="text-lg font-black text-slate-900 group-hover:text-white transition-colors">Облачная структура</h4>
-                                    <p className="text-sm font-medium text-slate-500 group-hover:text-white/70 transition-colors leading-snug mt-1">
-                                        Используйте папки для организации ресурсов компании и разделения доступа.
-                                    </p>
+                                    <CardTitle className="text-base font-black text-slate-900">Возможности</CardTitle>
                                 </div>
                             </div>
+                        </CardHeader>
+                        <CardContent className="pt-2">
+                            <ul className="space-y-2">
+                                {[
+                                    "Создание папок для организации",
+                                    "Переименование файлов и папок",
+                                    "Массовое удаление объектов",
+                                    "Навигация по структуре"
+                                ].map((item, idx) => (
+                                    <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                                        <div className="w-1 h-1 bg-indigo-400 rounded-full" />
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
                         </CardContent>
                     </Card>
                 </div>
@@ -478,16 +722,72 @@ export function StorageManager() {
                 </DialogContent>
             </Dialog>
 
+            {/* Rename Dialog */}
+            <Dialog open={isRenameModalOpen} onOpenChange={setIsRenameModalOpen}>
+                <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                            <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                                <Edit2 size={24} />
+                            </div>
+                            Переименовать
+                        </DialogTitle>
+                        <DialogDescription className="text-sm font-medium text-slate-500">
+                            Введите новое имя для {renamingKey?.endsWith("/") ? "папки" : "файла"}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-6">
+                        <input
+                            type="text"
+                            placeholder="Новое имя..."
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleRename()}
+                            autoFocus
+                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-lg font-black text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
+                        />
+                    </div>
+                    <DialogFooter className="sm:justify-between gap-4">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setIsRenameModalOpen(false)}
+                            className="px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 py-6"
+                        >
+                            Отмена
+                        </Button>
+                        <Button
+                            onClick={handleRename}
+                            disabled={isRenaming || !newName.trim()}
+                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest py-6 shadow-lg shadow-amber-200"
+                        >
+                            {isRenaming ? "Переименование..." : "Переименовать"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {/* Delete Confirmation */}
             <ConfirmDialog
                 isOpen={!!deletingKey}
                 onClose={() => setDeletingKey(null)}
                 onConfirm={handleDelete}
-                title="Удалить файл из облака?"
-                description={`Вы собираетесь удалить "${deletingKey?.split('/').pop()}". Это действие необратимо и файл исчезнет навсегда.`}
-                confirmText="Удалить файл"
+                title="Удалить из облака?"
+                description={`Вы собираетесь удалить "${deletingKey?.split('/').pop() || deletingKey}". Это действие необратимо.`}
+                confirmText="Удалить"
                 variant="destructive"
                 isLoading={isDeleting}
+            />
+
+            {/* Delete Multiple Confirmation */}
+            <ConfirmDialog
+                isOpen={showDeleteMultipleConfirm}
+                onClose={() => setShowDeleteMultipleConfirm(false)}
+                onConfirm={handleDeleteMultiple}
+                title="Массовое удаление"
+                description={`Вы собираетесь удалить ${selectedKeys.size} объектов. Это действие необратимо и все выбранные файлы и папки будут удалены навсегда.`}
+                confirmText={`Удалить ${selectedKeys.size} объектов`}
+                variant="destructive"
+                isLoading={isDeletingMultiple}
             />
         </div>
     );

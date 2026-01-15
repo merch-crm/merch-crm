@@ -1811,6 +1811,61 @@ export async function createS3FolderAction(path: string) {
     }
 }
 
+// Local Storage Management Actions
+export async function getLocalStorageDetails(prefix?: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { listLocalFiles, getLocalStorageStats } = await import("@/lib/local-storage");
+        const stats = await getLocalStorageStats();
+        const content = await listLocalFiles(prefix || "");
+
+        return {
+            stats,
+            folders: content.folders,
+            files: content.files
+        };
+    } catch (e) {
+        console.error("Local storage details error:", e);
+        return { error: "Ошибка при получении данных локального хранилища" };
+    }
+}
+
+export async function createLocalFolderAction(folderPath: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { createLocalFolder } = await import("@/lib/local-storage");
+        const res = await createLocalFolder(folderPath);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Create local folder error:", e);
+        return { success: false, error: "Ошибка при создании папки" };
+    }
+}
+
+export async function deleteLocalFileAction(filePath: string) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const { deleteLocalFile } = await import("@/lib/local-storage");
+        const res = await deleteLocalFile(filePath);
+        if (res.success) {
+            revalidatePath("/dashboard/admin/storage");
+        }
+        return res;
+    } catch (e) {
+        console.error("Delete local file error:", e);
+        return { success: false, error: "Ошибка при удалении файла" };
+    }
+}
+
 export async function renameS3FileAction(oldKey: string, newKey: string) {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
