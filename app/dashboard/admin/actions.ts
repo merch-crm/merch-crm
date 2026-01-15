@@ -72,7 +72,7 @@ export async function getUsers(page = 1, limit = 20, search = "") {
             currentPage: page
         };
     } catch {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching users:");
         return { error: "Failed to fetch users" };
     }
 }
@@ -127,7 +127,7 @@ export async function getRoles() {
 
         return { data: sortedRoles };
     } catch {
-        console.error("Error fetching roles:", error);
+        console.error("Error fetching roles:");
         return { error: "Failed to fetch roles" };
     }
 }
@@ -178,7 +178,7 @@ export async function createUser(formData: FormData) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error creating user:", error);
+        console.error("Error creating user:");
         return { error: "Пользователь с таким email уже существует" };
     }
 }
@@ -204,7 +204,7 @@ export async function updateUserRole(userId: string, roleId: string) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error updating user role:", error);
+        console.error("Error updating user role:");
         return { error: "Failed to update user role" };
     }
 }
@@ -227,7 +227,7 @@ export async function deleteUser(userId: string) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error deleting user:", error);
+        console.error("Error deleting user:");
         return { error: "Failed to delete user" };
     }
 }
@@ -305,7 +305,7 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
             currentPage: page
         };
     } catch {
-        console.error("Error fetching audit logs:", error);
+        console.error("Error fetching audit logs:");
         return { error: "Failed to fetch audit logs" };
     }
 }
@@ -342,7 +342,7 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error updating role permissions:", error);
+        console.error("Error updating role permissions:");
     }
 }
 
@@ -387,7 +387,7 @@ export async function updateRole(roleId: string, formData: FormData) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error updating role:", error);
+        console.error("Error updating role:");
         return { error: "Роль с таким названием уже существует" };
     }
 }
@@ -445,7 +445,7 @@ export async function updateUser(userId: string, formData: FormData) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error updating user:", error);
+        console.error("Error updating user:");
         return { error: "Ошибка при обновлении данных пользователя. Возможно, такой email уже занят." };
     }
 }
@@ -504,7 +504,7 @@ export async function createRole(formData: FormData) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error creating role:", error);
+        console.error("Error creating role:");
         return { error: "Роль с таким названием уже существует" };
     }
 }
@@ -556,7 +556,7 @@ export async function deleteRole(roleId: string) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error deleting role:", error);
+        console.error("Error deleting role:");
         return { error: "Failed to delete role" };
     }
 }
@@ -619,7 +619,7 @@ export async function getDepartments() {
 
         return { data: dataWithCounts };
     } catch {
-        console.error("Error fetching departments:", error);
+        console.error("Error fetching departments:");
         return { error: "Failed to fetch departments" };
     }
 }
@@ -664,7 +664,7 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error creating department:", error);
+        console.error("Error creating department:");
         return { error: "Отдел с таким названием уже существует" };
     }
 }
@@ -696,7 +696,7 @@ export async function updateDepartment(deptId: string, formData: FormData) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error updating department:", error);
+        console.error("Error updating department:");
         return { error: "Failed to update department" };
     }
 }
@@ -734,7 +734,7 @@ export async function deleteDepartment(deptId: string) {
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch {
-        console.error("Error deleting department:", error);
+        console.error("Error deleting department:");
         return { error: "Failed to delete department" };
     }
 }
@@ -749,7 +749,7 @@ export async function getRolesByDepartment(departmentId: string) {
         });
         return { data: departmentRoles };
     } catch {
-        console.error("Error fetching department roles:", error);
+        console.error("Error fetching department roles:");
         return { error: "Failed to fetch department roles" };
     }
 }
@@ -791,7 +791,7 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
         revalidatePath("/dashboard/admin/roles");
         return { success: true };
     } catch {
-        console.error("Error updating role department:", error);
+        console.error("Error updating role department:");
         return { error: "Failed to update role department" };
     }
 }
@@ -930,7 +930,7 @@ export async function getSystemStats() {
             }
         };
     } catch {
-        console.error("Error fetching system stats:", error);
+        console.error("Error fetching system stats:");
         return { error: "Не удалось получить системные показатели" };
     }
 }
@@ -963,7 +963,7 @@ export async function clearAuditLogs() {
         revalidatePath("/dashboard/admin/audit");
         return { success: true };
     } catch {
-        console.error("Error clearing audit logs:", error);
+        console.error("Error clearing audit logs:");
         return { error: "Failed to clear audit logs" };
     }
 }
@@ -1063,7 +1063,7 @@ export async function checkSystemHealth() {
 
         return { data: health };
     } catch {
-        console.error("Health check error:", error);
+        console.error("Health check error:");
         return { error: "Ошибка при выполнении диагностики" };
     }
 }
@@ -1118,7 +1118,7 @@ export async function createDatabaseBackup() {
 
         return { success: true, fileName };
     } catch {
-        console.error("Backup creation error:", error);
+        console.error("Backup creation error:");
         return { error: "Не удалось создать резервную копию" };
     }
 }
@@ -1142,7 +1142,7 @@ export async function getBackupsList() {
                     createdAt: stats.birthtime.toISOString()
                 };
             })
-            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            .sort((a: BackupFile, b: BackupFile) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         return { data: backups as BackupFile[] };
     } catch {
@@ -1236,7 +1236,7 @@ export async function updateSystemSetting(key: string, value: string | number | 
         revalidatePath("/dashboard/admin/settings");
         return { success: true };
     } catch {
-        console.error("Update setting error:", error);
+        console.error("Update setting error:");
         return {
             error: "Ошибка при обновлении настроек"
         };
@@ -1367,7 +1367,7 @@ export async function getMonitoringStats() {
             }))
         };
     } catch {
-        console.error("Monitoring stats error:", error);
+        console.error("Monitoring stats error:");
         return { error: "Ошибка получения данных мониторинга" };
     }
 }

@@ -28,7 +28,7 @@ interface ActivityLog {
     user?: {
         name: string;
     } | null;
-    details?: any;
+    details?: unknown;
 }
 
 interface ClientProfile {
@@ -393,7 +393,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                         </div>
                                                         {log.details && (
                                                             <div className="mt-2 p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
-                                                                <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details, null, 2)}</pre>
+                                                                <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as string, null, 2)}</pre>
                                                             </div>
                                                         )}
                                                     </div>

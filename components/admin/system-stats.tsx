@@ -67,7 +67,7 @@ interface BackupFile {
 }
 
 interface MonitoringData {
-    activeUsers: any[];
+    activeUsers: Array<{ id: string; name: string; lastActiveAt: Date | null; avatar: string | null }>;
     activityStats: { hour: number; count: number }[];
     performance: number; // mock or calculated
 }
@@ -505,7 +505,7 @@ export function SystemStats() {
                                                             <p className="text-sm font-bold text-slate-800 truncate max-w-[120px]">{user.name}</p>
                                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Active {getTimeAgo(user.lastActiveAt)}</p>
+                                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Active {user.lastActiveAt ? getTimeAgo(user.lastActiveAt) : 'now'}</p>
                                                             </div>
                                                         </div>
                                                     </div>
