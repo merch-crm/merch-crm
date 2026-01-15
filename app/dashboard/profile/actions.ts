@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { orders, tasks, auditLogs } from "@/lib/schema";
 import { startOfMonth, endOfMonth } from "date-fns";
+import { logAction } from "@/lib/audit";
 import fs from "fs";
 import path from "path";
 import { promisify } from "util";
@@ -87,6 +88,10 @@ export async function updateProfile(formData: FormData) {
             .set(updateData)
             .where(eq(users.id, session.id));
 
+        await logAction("profile_update", "users", session.id, {
+            changedFields: Object.keys(updateData).filter(k => k !== 'avatar')
+        });
+
         revalidatePath("/dashboard/profile");
         // Revalidate layout to update header avatar if safe
         revalidatePath("/", "layout");
@@ -132,6 +137,8 @@ export async function updatePassword(formData: FormData) {
         await db.update(users)
             .set({ passwordHash: newHash })
             .where(eq(users.id, session.id));
+
+        await logAction("password_change", "users", session.id);
 
         return { success: true };
     } catch (error) {

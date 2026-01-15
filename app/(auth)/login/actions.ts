@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, departments } from "@/lib/schema";
+import { users, roles, departments, auditLogs } from "@/lib/schema";
 import { encrypt } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
 import { eq } from "drizzle-orm";
@@ -27,6 +27,13 @@ export async function loginAction(prevState: any, formData: FormData) {
 
         if (user.length === 0) {
             console.log(`[Login] User not found: ${email}`);
+            // Log failed login (user not found)
+            await db.insert(auditLogs).values({
+                action: 'login_failed',
+                entityType: 'auth',
+                entityId: 'system',
+                details: { email, reason: 'user_not_found' }
+            });
             return { error: "Неверный email или пароль" };
         }
 
@@ -38,8 +45,17 @@ export async function loginAction(prevState: any, formData: FormData) {
 
         if (!passwordsMatch) {
             console.log(`[Login] Password mismatch for user: ${email}`);
+            // Log failed login (password mismatch)
+            await db.insert(auditLogs).values({
+                userId: user[0].id,
+                action: 'login_failed',
+                entityType: 'auth',
+                entityId: user[0].id,
+                details: { email, reason: 'password_mismatch' }
+            });
             return { error: "Неверный email или пароль" };
         }
+
 
         console.log(`[Login] Password matched, creating session...`);
         // Create session

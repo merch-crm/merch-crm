@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { getSystemStats, checkSystemHealth, createDatabaseBackup, getBackupsList, deleteBackupAction, getSystemSettings, updateSystemSetting, clearRamAction, restartServerAction, getMonitoringStats } from "@/app/dashboard/admin/actions";
+import { getSystemStats, checkSystemHealth, createDatabaseBackup, getBackupsList, deleteBackupAction, getSystemSettings, updateSystemSetting, clearRamAction, restartServerAction, getMonitoringStats, getSecurityStats, toggleMaintenanceMode } from "@/app/dashboard/admin/actions";
 import {
     Activity,
     Database,
@@ -19,7 +19,11 @@ import {
     Power,
     Users,
     BarChart3,
-    Activity as ActivityIcon
+    Activity as ActivityIcon,
+    Shield,
+    Lock,
+    AlertTriangle,
+    UserCog
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -78,6 +82,28 @@ interface MonitoringData {
     performance: number;
 }
 
+interface SecurityData {
+    failedLogins: Array<{
+        id: string;
+        email: string;
+        reason: string;
+        createdAt: Date;
+    }>;
+    sensitiveActions: Array<{
+        id: string;
+        user: string;
+        action: string;
+        details: Record<string, unknown> | null;
+        createdAt: Date;
+    }>;
+    systemErrors: Array<{
+        id: string;
+        message: string;
+        createdAt: Date;
+    }>;
+    maintenanceMode: boolean;
+}
+
 
 
 export function SystemStats() {
@@ -86,11 +112,9 @@ export function SystemStats() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-    const [activeTab, setActiveTab] = useState<"stats" | "diagnostics" | "backups">("stats");
+    const [activeTab, setActiveTab] = useState<"monitoring" | "diagnostics" | "backups">("monitoring");
 
-    // Diagnostics state
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [healthData, setHealthData] = useState<any>(null);
+    const [healthData, setHealthData] = useState<HealthData | null>(null);
     const [diagnosing, setDiagnosing] = useState(false);
 
     // Backups state
@@ -98,6 +122,10 @@ export function SystemStats() {
     const [loadingBackups, setLoadingBackups] = useState(false);
     const [creatingBackup, setCreatingBackup] = useState(false);
     const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
+
+    // Security state
+    const [securityData, setSecurityData] = useState<SecurityData | null>(null);
+    const [togglingMaintenance, setTogglingMaintenance] = useState(false);
     const [settings, setSettings] = useState<Record<string, string | number | boolean | null>>({});
 
     const [clearingRam, setClearingRam] = useState(false);
@@ -170,6 +198,34 @@ export function SystemStats() {
         }
     }, []);
 
+    const fetchSecurityData = useCallback(async () => {
+        try {
+            const res = await getSecurityStats();
+            if (res.failedLogins) {
+                setSecurityData(res as SecurityData);
+            }
+        } catch {
+            console.error("Fetch security error");
+        }
+    }, []);
+
+    const handleToggleMaintenance = async (enabled: boolean) => {
+        setTogglingMaintenance(true);
+        try {
+            const res = await toggleMaintenanceMode(enabled);
+            if (res.success) {
+                toast(`Режим обслуживания ${enabled ? 'включен' : 'выключен'}`, "success");
+                fetchSecurityData();
+            } else {
+                toast(res.error || "Ошибка", "error");
+            }
+        } catch {
+            toast("Ошибка сети", "error");
+        } finally {
+            setTogglingMaintenance(false);
+        }
+    };
+
     const runDiagnostics = async () => {
         setDiagnosing(true);
         const res = await checkSystemHealth();
@@ -212,6 +268,12 @@ export function SystemStats() {
         const interval = setInterval(fetchStats, 5000);
         return () => clearInterval(interval);
     }, [fetchStats]);
+
+    useEffect(() => {
+        if (activeTab === "monitoring") {
+            fetchSecurityData();
+        }
+    }, [activeTab, fetchSecurityData]);
 
     const handleClearRam = async () => {
         setClearingRam(true);
@@ -320,12 +382,12 @@ export function SystemStats() {
                 </div>
                 <div className="flex bg-slate-100/80 p-1 rounded-xl mx-auto sm:mx-0">
                     <button
-                        onClick={() => setActiveTab("stats")}
+                        onClick={() => setActiveTab("monitoring")}
                         className={cn(
                             "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
-                            activeTab === "stats" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                            activeTab === "monitoring" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
                         )}>
-                        Ресурсы
+                        Мониторинг
                     </button>
                     <button
                         onClick={() => setActiveTab("diagnostics")}
@@ -346,7 +408,7 @@ export function SystemStats() {
                 </div>
             </div>
 
-            {activeTab === "stats" && (
+            {activeTab === "monitoring" && (
                 <div className="space-y-6 animate-in fade-in duration-300">
                     <div className="flex items-center justify-between px-1">
                         <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest ">Живой поток данных</div>
@@ -640,20 +702,24 @@ export function SystemStats() {
                     {/* Activity Graph - Full Width in separate section now */}
                     <div className="mt-6">
                         {/* Activity Graph */}
-                        <Card className="border-slate-200/60 shadow-sm">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                            <CardHeader className="flex flex-row items-center justify-between pb-6 pt-7 px-8 bg-white border-b border-slate-50">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-                                        <BarChart3 size={18} className="text-indigo-500" />
-                                        Активность системы
-                                    </CardTitle>
-                                    <CardDescription className="text-xs font-bold uppercase tracking-wider text-slate-400">Действия за последние 24 часа</CardDescription>
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-indigo-50 text-indigo-500 rounded-lg">
+                                            <BarChart3 size={18} />
+                                        </div>
+                                        <CardTitle className="text-base font-bold text-slate-800">
+                                            Активность системы
+                                        </CardTitle>
+                                    </div>
+                                    <CardDescription className="text-[10px] font-black uppercase tracking-widest text-slate-400">Действия за последние 24 часа</CardDescription>
                                 </div>
                                 <div className="text-2xl font-black text-indigo-600">
-                                    {monitoringData ? monitoringData.activityStats.reduce((acc, curr) => acc + curr.count, 0) : '0'} <span className="text-xs font-bold text-slate-400 uppercase">действий</span>
+                                    {monitoringData ? monitoringData.activityStats.reduce((acc, curr) => acc + curr.count, 0) : '0'} <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">действий</span>
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-6">
+                            <CardContent className="space-y-6 pt-8 px-8">
                                 {/* Bar Chart */}
                                 <div className="space-y-2">
                                     <div className="h-[120px] w-full flex items-end gap-1 px-1">
@@ -673,7 +739,7 @@ export function SystemStats() {
 
                                                 return (
                                                     <div key={i} className="flex-1 group relative h-full flex flex-col justify-end">
-                                                        <div className="w-full flex flex-col-reverse justify-end overflow-hidden rounded-t-sm" style={{ height: `${totalHeight}%` }}>
+                                                        <div className="w-full flex flex-col-reverse justify-end overflow-hidden rounded-t-[4px] bg-slate-50/50" style={{ height: `${totalHeight}%` }}>
                                                             {hourStats.length > 0 ? hourStats.map((stat, idx) => (
                                                                 <div
                                                                     key={idx}
@@ -750,6 +816,205 @@ export function SystemStats() {
                                 )}
                             </CardContent>
                         </Card>
+                    </div>
+
+                    {/* Security & Logging merged from separate tab */}
+                    <div className="mt-8 pt-8 border-t border-slate-100">
+                        <div className="flex items-center gap-2 mb-6 px-1">
+                            <div className="h-6 w-1 bg-indigo-500 rounded-full" />
+                            <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Безопасность и аудит</h5>
+                        </div>
+
+                        <div className="space-y-8">
+                            {/* Security Section Header */}
+                            <div className="px-1">
+                                <h4 className="text-lg font-black text-slate-800">Безопасность</h4>
+                                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Режим обслуживания и фильтрация входа</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Maintenance Mode */}
+                                <Card className="border-slate-100 shadow-sm overflow-hidden bg-white rounded-[32px] border">
+                                    <CardHeader className="pb-4">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl">
+                                                    <Shield size={20} />
+                                                </div>
+                                                <div>
+                                                    <CardTitle className="text-base font-bold text-slate-900">Режим обслуживания</CardTitle>
+                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Ограничение доступа к системе</p>
+                                                </div>
+                                            </div>
+                                            <div className={cn(
+                                                "px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider",
+                                                securityData?.maintenanceMode
+                                                    ? "bg-rose-50 text-rose-600"
+                                                    : "bg-emerald-50 text-emerald-600"
+                                            )}>
+                                                {securityData?.maintenanceMode ? "Активен" : "Выключен"}
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-2 pb-6">
+                                        <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100/50">
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-bold text-slate-800">Maintenance Mode</p>
+                                                <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-[320px]">
+                                                    При активации доступ к CRM будет разрешен только администраторам.
+                                                </p>
+                                            </div>
+                                            <button
+                                                onClick={() => handleToggleMaintenance(!securityData?.maintenanceMode)}
+                                                disabled={togglingMaintenance}
+                                                className={cn(
+                                                    "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                                                    securityData?.maintenanceMode ? "bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]" : "bg-slate-200"
+                                                )}
+                                            >
+                                                <span
+                                                    className={cn(
+                                                        "pointer-events-none block h-6 w-6 rounded-full bg-white shadow-md ring-0 transition-transform duration-300",
+                                                        securityData?.maintenanceMode ? "translate-x-7" : "translate-x-1"
+                                                    )}
+                                                />
+                                            </button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Failed Logins */}
+                                <Card className="border-slate-100 shadow-sm overflow-hidden bg-white rounded-[32px] border">
+                                    <CardHeader className="pb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-rose-50 text-rose-600 rounded-2xl">
+                                                <Lock size={20} />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="text-base font-bold text-slate-900">Попытки входа (24ч)</CardTitle>
+                                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Мониторинг безопасности доступа</p>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="p-0">
+                                        {securityData?.failedLogins.length === 0 ? (
+                                            <div className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
+                                                Атак не обнаружено
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-slate-50">
+                                                {securityData?.failedLogins.map(login => (
+                                                    <div key={login.id} className="p-5 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="p-2.5 bg-rose-50 text-rose-500 rounded-xl">
+                                                                <AlertTriangle size={16} />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-bold text-slate-900">{login.email}</p>
+                                                                <p className="text-xs text-slate-400 font-medium">
+                                                                    {login.reason === 'password_mismatch' ? 'Неверный пароль' : 'Пользователь не найден'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-[10px] font-black text-slate-300 uppercase">{getTimeAgo(login.createdAt)} назад</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Action Log Section Header */}
+                            <div className="px-1 pt-4">
+                                <h4 className="text-lg font-black text-slate-800">Лог действий</h4>
+                                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Аудит чувствительных событий системы</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Audit Feed */}
+                                <Card className="border-slate-100 shadow-sm overflow-hidden flex flex-col h-full bg-white rounded-[32px] border">
+                                    <CardHeader className="pb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl">
+                                                <UserCog size={20} />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="text-base font-bold text-slate-900">Критические изменения</CardTitle>
+                                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Лог за последние 24 часа</p>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="p-0 flex-1 overflow-auto max-h-[400px]">
+                                        {securityData?.sensitiveActions.length === 0 ? (
+                                            <div className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
+                                                Действий не зафиксировано
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-slate-50">
+                                                {securityData?.sensitiveActions.map(log => (
+                                                    <div key={log.id} className="p-5 hover:bg-slate-50/50 transition-colors group">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <div className="flex items-center gap-3">
+                                                                <span className={cn(
+                                                                    "text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-tight",
+                                                                    log.action === 'password_change' ? "bg-indigo-50 text-indigo-600" :
+                                                                        log.action === 'email_change' ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"
+                                                                )}>
+                                                                    {log.action === 'password_change' ? 'Пароль' :
+                                                                        log.action === 'email_change' ? 'Email' : 'Профиль'}
+                                                                </span>
+                                                                <span className="text-sm font-bold text-slate-900">{log.user}</span>
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-slate-300 group-hover:text-slate-500 uppercase transition-colors">{getTimeAgo(log.createdAt)}</span>
+                                                        </div>
+                                                        <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                                                            {log.action === 'password_change' ? 'Смена пароля в личном кабинете' :
+                                                                log.action === 'email_change' ? 'Смена адреса электронной почты' :
+                                                                    `Обновление информации профиля`}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+
+                                {/* System Errors */}
+                                <Card className="border-rose-100 shadow-sm overflow-hidden bg-rose-50/5 rounded-[32px] border">
+                                    <CardHeader className="pb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-sm shadow-rose-200">
+                                                <AlertTriangle size={20} />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="text-base font-bold text-rose-950">Системные ошибки</CardTitle>
+                                                <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mt-0.5">Критические сбои</p>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="p-0">
+                                        {securityData?.systemErrors.length === 0 ? (
+                                            <div className="py-12 text-center text-emerald-600 font-black text-[10px] uppercase tracking-widest">
+                                                Ошибок не выявлено
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-rose-100/30">
+                                                {securityData?.systemErrors.map(error => (
+                                                    <div key={error.id} className="p-5 flex items-start gap-4 hover:bg-rose-100/20 transition-colors">
+                                                        <div className="mt-1.5 h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                                                        <div className="flex-1">
+                                                            <p className="text-[11px] font-bold text-rose-950 leading-relaxed truncate">{error.message}</p>
+                                                            <p className="text-[9px] text-rose-500/80 font-black uppercase mt-1 tracking-wider">{getTimeAgo(error.createdAt)} назад</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -1181,6 +1446,7 @@ export function SystemStats() {
                 )
             }
 
+
             <ConfirmDialog
                 isOpen={showRestartConfirm}
                 onClose={() => setShowRestartConfirm(false)}
@@ -1188,6 +1454,6 @@ export function SystemStats() {
                 title="Перезагрузить сервер приложений?"
                 description="Это действие прервет все активные сессии и сделает CRM недоступной на 10-30 секунд. Вы точно уверены?"
             />
-        </div >
+        </div>
     );
 }

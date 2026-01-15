@@ -2,13 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { Plus, X, User, Phone, Mail, Building2, MapPin, MessageSquare, Link as LinkIcon } from "lucide-react";
-import { addClient, getManagers } from "./actions";
+import { addClient, getManagers, checkClientDuplicates } from "./actions";
 import { useToast } from "@/components/ui/toast";
+
+interface DuplicateClient {
+    id: string;
+    lastName: string;
+    firstName: string;
+    phone: string;
+}
 
 export function AddClientDialog({ variant = "default" }: { variant?: "default" | "minimal" }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
+    const [duplicates, setDuplicates] = useState<DuplicateClient[]>([]);
+    const [ignoreDuplicates, setIgnoreDuplicates] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -21,15 +30,49 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
+        if (ignoreDuplicates) {
+            formData.append("ignoreDuplicates", "true");
+        }
         const res = await addClient(formData);
         setLoading(false);
         if (res?.error) {
-            toast(res.error, "error");
+            if (res.duplicates) {
+                setDuplicates(res.duplicates);
+                toast("Найдены похожие клиенты", "warning");
+            } else {
+                toast(res.error, "error");
+            }
         } else {
             toast("Клиент успешно добавлен", "success");
             setIsOpen(false);
+            setDuplicates([]);
+            setIgnoreDuplicates(false);
         }
     }
+
+    const checkDuplicates = async (data: { phone?: string, email?: string, lastName?: string, firstName?: string }) => {
+        const res = await checkClientDuplicates(data);
+        if (res.data) {
+            setDuplicates(res.data as DuplicateClient[]);
+        }
+    };
+
+    // Simple debounce for inputs
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const form = e.target.form;
+        if (!form) return;
+
+        const lastName = (form.elements.namedItem("lastName") as HTMLInputElement).value;
+        const firstName = (form.elements.namedItem("firstName") as HTMLInputElement).value;
+        const phone = (form.elements.namedItem("phone") as HTMLInputElement).value;
+        const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+
+        if (phone.length > 5 || email.length > 5 || (lastName.length > 2 && firstName.length > 2)) {
+            checkDuplicates({ phone, email, lastName, firstName });
+        } else {
+            setDuplicates([]);
+        }
+    };
 
     if (!isOpen) {
         if (variant === "minimal") {
@@ -87,6 +130,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 type="text"
                                 name="lastName"
                                 required
+                                onChange={handleInputChange}
                                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
@@ -98,6 +142,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 type="text"
                                 name="firstName"
                                 required
+                                onChange={handleInputChange}
                                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
@@ -136,6 +181,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 type="text"
                                 name="phone"
                                 required
+                                onChange={handleInputChange}
                                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
@@ -146,6 +192,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                             <input
                                 type="email"
                                 name="email"
+                                onChange={handleInputChange}
                                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
@@ -238,6 +285,40 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                             className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none resize-none"
                         />
                     </div>
+
+                    {duplicates.length > 0 && (
+                        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
+                            <div className="flex items-center gap-2 text-amber-800 font-black text-xs uppercase tracking-wider">
+                                <Plus className="w-4 h-4 rotate-45" />
+                                Найдены похожие клиенты ({duplicates.length})
+                            </div>
+                            <div className="space-y-2">
+                                {duplicates.map(dup => (
+                                    <div key={dup.id} className="flex items-center justify-between bg-white/50 p-2 rounded-xl border border-amber-200/50">
+                                        <div className="text-xs font-bold text-slate-700">
+                                            {dup.lastName} {dup.firstName} ({dup.phone})
+                                        </div>
+                                        <a
+                                            href={`/dashboard/clients?id=${dup.id}`}
+                                            target="_blank"
+                                            className="text-[10px] font-black text-indigo-600 uppercase hover:underline"
+                                        >
+                                            Открыть
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                            <label className="flex items-center gap-3 cursor-pointer pt-1">
+                                <input
+                                    type="checkbox"
+                                    checked={ignoreDuplicates}
+                                    onChange={(e) => setIgnoreDuplicates(e.target.checked)}
+                                    className="w-4 h-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                                />
+                                <span className="text-xs font-bold text-amber-900">Всё равно создать этого клиента</span>
+                            </label>
+                        </div>
+                    )}
 
                     <div className="pt-2">
                         <button

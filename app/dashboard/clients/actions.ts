@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { clients, orders, users } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { asc, desc, eq, sql } from "drizzle-orm";
+import { asc, desc, eq, sql, or, and, ilike } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 
@@ -60,6 +60,41 @@ export async function getClients() {
     }
 }
 
+export async function checkClientDuplicates(data: { phone?: string, email?: string, lastName?: string, firstName?: string }) {
+    try {
+        const conditions = [];
+
+        if (data.phone) {
+            const phoneDigits = data.phone.replace(/\D/g, "");
+            if (phoneDigits.length >= 6) { // Min 6 digits to check
+                conditions.push(sql`regexp_replace(${clients.phone}, '\\D', '', 'g') LIKE ${'%' + phoneDigits + '%'}`);
+            }
+        }
+
+        if (data.email && data.email.trim().length > 3) {
+            conditions.push(ilike(clients.email, data.email.trim()));
+        }
+
+        if (data.lastName && data.firstName && data.lastName.trim().length > 1 && data.firstName.trim().length > 1) {
+            conditions.push(and(
+                ilike(clients.lastName, data.lastName.trim()),
+                ilike(clients.firstName, data.firstName.trim())
+            ));
+        }
+
+        if (conditions.length === 0) return { data: [] };
+
+        const duplicates = await db.select().from(clients)
+            .where(or(...conditions))
+            .limit(5);
+
+        return { data: duplicates };
+    } catch (error) {
+        console.error("Error checking duplicates:", error);
+        return { error: "Ошибка при проверке дубликатов" };
+    }
+}
+
 export async function addClient(formData: FormData) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
@@ -77,12 +112,24 @@ export async function addClient(formData: FormData) {
     const comments = formData.get("comments") as string;
     const socialLink = formData.get("socialLink") as string;
     const managerId = formData.get("managerId") as string;
+    const ignoreDuplicates = formData.get("ignoreDuplicates") === "true";
 
     if (!lastName || !firstName || !phone) {
         return { error: "Фамилия, Имя и Телефон обязательны" };
     }
 
     try {
+        // Final duplicate check before insert
+        if (!ignoreDuplicates) {
+            const dupRes = await checkClientDuplicates({ phone, email, lastName, firstName });
+            if (dupRes.data && dupRes.data.length > 0) {
+                return {
+                    error: "Похожий клиент уже существует",
+                    duplicates: dupRes.data
+                };
+            }
+        }
+
         const fullName = [lastName, firstName, patronymic].filter(Boolean).join(" ");
 
         const [newClient] = await db.insert(clients).values({

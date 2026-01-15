@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { hashPassword } from "@/lib/password";
-import { eq, asc, desc, isNull, sql, and, inArray, count } from "drizzle-orm";
+import { eq, asc, desc, isNull, sql, and, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import os from "os";
 import fs from "fs";
@@ -1402,5 +1402,96 @@ export async function getMonitoringStats() {
     } catch {
         console.error("Monitoring stats error:");
         return { error: "Ошибка получения данных мониторинга" };
+    }
+}
+
+export async function getSecurityStats() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        // 1. Failed Logins
+        const failedLogins = await db.query.auditLogs.findMany({
+            where: and(
+                eq(auditLogs.action, 'login_failed'),
+                gte(auditLogs.createdAt, last24h)
+            ),
+            orderBy: [desc(auditLogs.createdAt)],
+            limit: 20
+        });
+
+        // 2. Sensitive Actions (Password, Email, Profile)
+        const sensitiveActions = await db.query.auditLogs.findMany({
+            where: and(
+                sql`${auditLogs.action} IN ('password_change', 'email_change', 'profile_update')`,
+                gte(auditLogs.createdAt, last24h)
+            ),
+            with: {
+                user: true
+            },
+            orderBy: [desc(auditLogs.createdAt)],
+            limit: 50
+        });
+
+        // 3. System Errors
+        const systemErrors = await db.query.auditLogs.findMany({
+            where: and(
+                eq(auditLogs.action, 'system_error'),
+                gte(auditLogs.createdAt, last24h)
+            ),
+            orderBy: [desc(auditLogs.createdAt)],
+            limit: 20
+        });
+
+        // 4. Maintenance Mode Status
+        const maintenanceSetting = await db.query.systemSettings.findFirst({
+            where: eq(systemSettings.key, 'maintenance_mode')
+        });
+
+        return {
+            failedLogins: failedLogins.map(l => ({
+                id: l.id,
+                email: (l.details as Record<string, unknown>)?.email as string || 'Unknown',
+                reason: (l.details as Record<string, unknown>)?.reason as string || 'Unknown',
+                createdAt: l.createdAt
+            })),
+            sensitiveActions: sensitiveActions.map(l => ({
+                id: l.id,
+                user: l.user?.name || 'Unknown',
+                action: l.action,
+                details: l.details,
+                createdAt: l.createdAt
+            })),
+            systemErrors: systemErrors.map(l => ({
+                id: l.id,
+                message: (l.details as Record<string, unknown>)?.message as string || l.action,
+                createdAt: l.createdAt
+            })),
+            maintenanceMode: maintenanceSetting?.value === true
+        };
+    } catch (error) {
+        console.error("Security stats error:", error);
+        return { error: "Ошибка получения данных безопасности" };
+    }
+}
+
+export async function toggleMaintenanceMode(enabled: boolean) {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+
+    try {
+        await db.insert(systemSettings)
+            .values({ key: 'maintenance_mode', value: enabled, updatedAt: new Date() })
+            .onConflictDoUpdate({
+                target: [systemSettings.key],
+                set: { value: enabled, updatedAt: new Date() }
+            });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Maintenance mode error:", error);
+        return { error: "Ошибка переключения режима" };
     }
 }
