@@ -138,7 +138,6 @@ export function CategoryDetailClient({ category, items, storageLocations = [] }:
                 toast(res?.error || "Ошибка при удалении", "error");
             }
         } catch {
-            console.error(error);
             toast("Произошла ошибка", "error");
         } finally {
             setIsDeleting(false);

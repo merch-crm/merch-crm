@@ -331,9 +331,19 @@ export async function bulkDeleteOrders(orderIds: string[]) {
     }
 
     try {
-        for (const orderId of orderIds) {
-            await logAction("Удален заказ (массово)", "order", orderId);
+        const ordersToDelete = await db.query.orders.findMany({
+            where: inArray(orders.id, orderIds)
+        });
+
+        const reservationStatuses = ["new", "design", "production"];
+
+        for (const order of ordersToDelete) {
+            if (reservationStatuses.includes(order.status)) {
+                await releaseOrderReservation(order.id);
+            }
+            await logAction("Удален заказ (массово)", "order", order.id);
         }
+
         await db.delete(orders).where(inArray(orders.id, orderIds));
         revalidatePath("/dashboard/orders");
         return { success: true };
@@ -380,15 +390,40 @@ export async function deleteOrder(orderId: string) {
             with: { client: true }
         });
 
-        await logAction("Удален заказ", "order", orderId, {
-            name: `Заказ #${orderId.slice(0, 8)} (${orderToDelete?.client?.name || "неизвестного клиента"})`
-        });
-        await db.delete(orders).where(eq(orders.id, orderId));
+        if (orderToDelete) {
+            // If order is in a state where items are reserved, release them
+            const reservationStatuses = ["new", "design", "production"];
+            if (reservationStatuses.includes(orderToDelete.status)) {
+                await releaseOrderReservation(orderId);
+            }
+
+            await logAction("Удален заказ", "order", orderId, {
+                name: `Заказ #${orderId.slice(0, 8)} (${orderToDelete?.client?.name || "неизвестного клиента"})`
+            });
+            await db.delete(orders).where(eq(orders.id, orderId));
+        }
         revalidatePath("/dashboard/orders");
         return { success: true };
     } catch (error) {
         console.error("Error deleting order:", error);
         return { error: "Failed to delete order" };
+    }
+}
+
+async function releaseOrderReservation(orderId: string) {
+    const items = await db.query.orderItems.findMany({
+        where: eq(orderItems.orderId, orderId),
+        with: { inventoryItem: true }
+    });
+
+    for (const item of items) {
+        if (item.inventoryId && item.inventoryItem) {
+            await db.update(inventoryItems)
+                .set({
+                    reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - item.quantity)
+                })
+                .where(eq(inventoryItems.id, item.inventoryId));
+        }
     }
 }
 

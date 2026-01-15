@@ -391,11 +391,11 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                             </div>
                                                             <p className="text-[10px] font-bold text-slate-500">{log.user?.name || "Система"}</p>
                                                         </div>
-                                                        {log.details && (
+                                                        {log.details ? (
                                                             <div className="mt-2 p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
-                                                                <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as string, null, 2)}</pre>
+                                                                <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as Record<string, unknown>, null, 2)}</pre>
                                                             </div>
-                                                        )}
+                                                        ) : null}
                                                     </div>
                                                 </div>
                                             ))}

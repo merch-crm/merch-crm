@@ -71,7 +71,6 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                 toast(result.error || "Ошибка при удалении", "error");
             }
         } catch {
-            console.error(error);
             toast("Произошла ошибка", "error");
         } finally {
             setIsDeleting(false);
