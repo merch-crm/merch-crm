@@ -1,52 +1,65 @@
-const { S3Client, ListObjectsV2Command } = require("@aws-sdk/client-s3");
+const { S3Client, ListBucketsCommand, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const path = require("path");
+const fs = require("fs");
 
-async function test(name, accessKeyId, secretAccessKey, endpoint, bucket, region) {
-    console.log(`\nTesting: ${name}`);
-    console.log(`Endpoint: ${endpoint}`);
-    console.log(`Key: ${accessKeyId}`);
+// Load .env.local or .env
+const envPath = fs.existsSync(".env.local") ? ".env.local" : ".env";
+require('dotenv').config({ path: envPath });
+
+async function debugS3() {
+    console.log("=== S3 Debugger ===");
+    console.log(`Using credentials from: ${envPath}`);
+    console.log(`S3_ENDPOINT: ${process.env.S3_ENDPOINT}`);
+    console.log(`S3_REGION: ${process.env.S3_REGION}`);
+    console.log(`S3_BUCKET: ${process.env.S3_BUCKET}`);
+    console.log(`S3_ACCESS_KEY: ${process.env.S3_ACCESS_KEY ? "***Present***" : "MISSING"}`);
+    console.log(`S3_SECRET_KEY: ${process.env.S3_SECRET_KEY ? "***Present***" : "MISSING"}`);
+
+    if (!process.env.S3_ACCESS_KEY || !process.env.S3_SECRET_KEY) {
+        console.error("❌ CRITICAL: Missing Access Key or Secret Key");
+        return;
+    }
 
     const client = new S3Client({
-        endpoint,
-        region,
-        credentials: { accessKeyId, secretAccessKey },
-        forcePathStyle: true
+        region: "ru-1",
+        endpoint: "https://s3.regru.cloud", // Try official endpoint
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_KEY,
+        },
+        forcePathStyle: true,
     });
 
     try {
-        const start = Date.now();
-        await client.send(new ListObjectsV2Command({ Bucket: bucket, MaxKeys: 1 }));
-        console.log(`✅ SUCCESS! Time: ${Date.now() - start}ms`);
-        return true;
+        console.log("\n1. Testing ListBuckets (Connectivity check)...");
+        const buckets = await client.send(new ListBucketsCommand({}));
+        console.log("✅ Connection Successful! Buckets found:", buckets.Buckets?.map(b => b.Name).join(", "));
     } catch (e) {
-        console.log(`❌ FAILED: ${e.name} - ${e.message}`);
-        return false;
+        console.error("❌ ListBuckets Failed:", e.message);
+        // console.error("Full Error:", e); // Avoid circular JSON
+        return;
+    }
+
+    try {
+        console.log("\n2. Testing Write Permission (Upload)...");
+        const testKey = `debug-test-${Date.now()}.txt`;
+        await client.send(new PutObjectCommand({
+            Bucket: process.env.S3_BUCKET,
+            Key: testKey,
+            Body: "Debug Test",
+        }));
+        console.log(`✅ Upload Successful: ${testKey}`);
+
+        console.log("\n3. Testing Delete Permission (Delete)...");
+        await client.send(new DeleteObjectCommand({
+            Bucket: process.env.S3_BUCKET,
+            Key: testKey,
+        }));
+        console.log("✅ Delete Successful");
+
+    } catch (e) {
+        console.error("❌ Write/Delete Operations Failed:", e.message);
     }
 }
 
-async function run() {
-    const s3_id = process.env.S3_ACCESS_KEY;
-    const s3_key = process.env.S3_SECRET_KEY;
-    const s3_end = process.env.S3_ENDPOINT;
-
-    const reg_id = process.env.REG_STORAGE_ACCESS_KEY;
-    const reg_key = process.env.REG_STORAGE_SECRET_KEY;
-    const reg_end = process.env.REG_STORAGE_ENDPOINT;
-
-    const bucket = process.env.S3_BUCKET || "merch-crm-storage";
-    const region = "ru-1";
-
-    // Possible combinations
-    // 1. Current S3 in .env
-    await test("S3 Config", s3_id, s3_key, s3_end, bucket, region);
-
-    // 2. Old REG Config in .env
-    await test("REG Config", reg_id, reg_key, reg_end, bucket, region);
-
-    // 3. S3 Keys with REG Endpoint
-    await test("S3 Keys + REG Endpoint", s3_id, s3_key, reg_end, bucket, region);
-
-    // 4. REG Keys with S3 Endpoint
-    await test("REG Keys + S3 Endpoint", reg_id, reg_key, s3_end, bucket, region);
-}
-
-run().catch(console.error);
+debugS3();
