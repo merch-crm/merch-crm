@@ -48,7 +48,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     const items = itemsRaw.map(item => ({
         ...item,
         createdAt: item.createdAt.toISOString(),
-        attributes: (item.attributes as Record<string, string>) || {},
+        attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},
     }));
 
     // Fallback for orphaned
@@ -72,9 +72,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     return (
         <div className="p-1">
             <CategoryDetailClient
-                category={finalCategory as any}
-                subCategories={subCategories as any}
-                items={items}
+                category={finalCategory as unknown as import("./category-detail-client").Category}
+                subCategories={subCategories as unknown as import("./category-detail-client").Category[]}
+                items={items as unknown as import("./category-detail-client").InventoryItem[]}
                 storageLocations={locations}
                 measurementUnits={units}
             />

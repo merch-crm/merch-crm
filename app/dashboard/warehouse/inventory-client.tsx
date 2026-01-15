@@ -20,7 +20,7 @@ export interface InventoryItem {
     location?: string | null;
     image?: string | null;
     reservedQuantity?: number;
-    attributes?: Record<string, any>;
+    attributes?: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface Category {

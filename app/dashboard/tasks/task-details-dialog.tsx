@@ -230,7 +230,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         ].map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id as any)}
+                                onClick={() => setActiveTab(tab.id as "details" | "checklist" | "comments" | "history")}
                                 className={cn(
                                     "px-6 py-4 text-sm font-black transition-all border-b-2 whitespace-nowrap",
                                     activeTab === tab.id

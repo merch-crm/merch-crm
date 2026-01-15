@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { startOfMonth, endOfMonth } from "date-fns";
+
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 
@@ -90,10 +90,6 @@ export async function updateTask(taskId: string, formData: FormData) {
     const dueDateStr = formData.get("dueDate") as string;
 
     try {
-        const oldTask = await db.query.tasks.findFirst({
-            where: eq(tasks.id, taskId)
-        });
-
         await db.update(tasks)
             .set({
                 title,

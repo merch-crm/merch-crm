@@ -47,7 +47,7 @@ export default async function WarehousePage() {
 
     const finalItems = items.map(item => ({
         ...item,
-        attributes: (item.attributes as Record<string, any>) || {},
+        attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},
     }));
 
     return (
@@ -62,7 +62,7 @@ export default async function WarehousePage() {
             </div>
 
             <WarehouseClient
-                items={finalItems as any}
+                items={finalItems as unknown as import("./inventory-client").InventoryItem[]}
                 categories={categories}
                 history={history}
                 storageLocations={storageLocations}

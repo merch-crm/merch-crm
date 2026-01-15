@@ -9,6 +9,7 @@ import {
     jsonb,
     boolean,
     date,
+    AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -136,7 +137,7 @@ export const inventoryCategories = pgTable("inventory_categories", {
     icon: text("icon"),
     color: text("color"),
     prefix: text("prefix"),
-    parentId: uuid("parent_id").references((): any => inventoryCategories.id, { onDelete: "set null" }),
+    parentId: uuid("parent_id").references((): AnyPgColumn => inventoryCategories.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

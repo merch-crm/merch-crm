@@ -4,7 +4,7 @@ import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getTasks } from "./actions";
-import { getRoles, getUsers } from "../admin/actions";
+import { getUsers } from "../admin/actions";
 import { TasksClient } from "./tasks-client";
 
 export default async function TasksPage() {

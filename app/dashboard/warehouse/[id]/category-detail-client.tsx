@@ -17,7 +17,7 @@ import { useToast } from "@/components/ui/toast";
 import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-interface InventoryItem {
+export interface InventoryItem {
     id: string;
     name: string;
     sku: string | null;
@@ -33,10 +33,10 @@ interface InventoryItem {
     sizeCode: string | null;
     image: string | null;
     reservedQuantity: number;
-    attributes?: Record<string, any>;
+    attributes?: Record<string, string | number | boolean | null | undefined>;
 }
 
-interface Category {
+export interface Category {
     id: string;
     name: string;
     description: string | null;
