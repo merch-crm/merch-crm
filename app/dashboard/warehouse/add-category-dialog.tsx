@@ -24,11 +24,6 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const router = useRouter();
 
-    useEffect(() => {
-        if (!iconManuallySelected && categoryName) {
-            setSelectedIcon(getIconNameFromName(categoryName));
-        }
-    }, [categoryName, iconManuallySelected]);
 
     const colors = COLORS;
 
@@ -118,7 +113,13 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                             required
                                             placeholder="Напр. Футболки"
                                             autoFocus
-                                            onChange={(e) => setCategoryName(e.target.value)}
+                                            onChange={(e) => {
+                                                const name = e.target.value;
+                                                setCategoryName(name);
+                                                if (!iconManuallySelected && name) {
+                                                    setSelectedIcon(getIconNameFromName(name));
+                                                }
+                                            }}
                                             className={cn(
                                                 "w-full h-14 px-6 rounded-[20px] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-lg",
                                                 fieldErrors.name

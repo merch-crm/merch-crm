@@ -125,23 +125,24 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isAdjustMenuOpen, setIsAdjustMenuOpen] = useState(false);
 
+    const [prevInitialItem, setPrevInitialItem] = useState(initialItem);
+
     // Sync state with props when server-side data refreshes (e.g. after quantity update)
-    useEffect(() => {
-        // Only update if something meaningful changed to avoid cascading renders
-        if (JSON.stringify(item) !== JSON.stringify(initialItem)) {
-            setItem(initialItem);
-            if (!isEditing) {
-                setEditData({
-                    name: initialItem.name,
-                    sku: initialItem.sku || "",
-                    description: initialItem.description || "",
-                    unit: initialItem.unit,
-                    lowStockThreshold: initialItem.lowStockThreshold || 0,
-                    attributes: initialItem.attributes || {}
-                });
-            }
+    // Using the "adjusting state during render" pattern to avoid lint warnings and cascading renders
+    if (JSON.stringify(initialItem) !== JSON.stringify(prevInitialItem)) {
+        setPrevInitialItem(initialItem);
+        setItem(initialItem);
+        if (!isEditing) {
+            setEditData({
+                name: initialItem.name,
+                sku: initialItem.sku || "",
+                description: initialItem.description || "",
+                unit: initialItem.unit,
+                lowStockThreshold: initialItem.lowStockThreshold || 0,
+                attributes: initialItem.attributes || {}
+            });
         }
-    }, [initialItem, isEditing, item]);
+    }
 
     useEffect(() => {
         async function fetchData() {
