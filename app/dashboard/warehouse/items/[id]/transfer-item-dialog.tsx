@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, MapPin, AlertCircle, ArrowRight } from "lucide-react";
+import { X, AlertCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";
 import { useToast } from "@/components/ui/toast";

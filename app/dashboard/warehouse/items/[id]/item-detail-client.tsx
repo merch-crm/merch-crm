@@ -92,7 +92,7 @@ const VALUE_LABELS: Record<string, string> = {
     sewing: "Пошив"
 };
 
-const ITEM_TYPE_CONFIG: Record<string, { name: string, icon: any, color: string }> = {
+const ITEM_TYPE_CONFIG: Record<string, { name: string, icon: typeof Shirt, color: string }> = {
     clothing: { name: "Одежда", icon: Shirt, color: "bg-blue-500 text-white" },
     packaging: { name: "Упаковка", icon: Box, color: "bg-amber-500 text-white" },
     consumables: { name: "Расходники", icon: Wrench, color: "bg-emerald-500 text-white" }
