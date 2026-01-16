@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, createElement } from "react";
+import { useState, createElement } from "react";
 import { X, FolderPlus, Package, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addInventoryCategory } from "./actions";
