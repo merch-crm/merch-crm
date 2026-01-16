@@ -66,7 +66,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
                         <p className="text-lg font-bold text-slate-900">
                             {client.lastName} {client.firstName} {client.patronymic || ""}
                         </p>
-                        <p className="text-xs text-red-600 font-bold mt-2 italic">
+                        <p className="text-xs text-red-600 font-bold mt-2">
                             Это действие нельзя отменить. Все данные клиента будут безвозвратно удалены.
                         </p>
                     </div>

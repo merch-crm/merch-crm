@@ -70,6 +70,12 @@ export const orderCategoryEnum = pgEnum("order_category", [
     "other"
 ]);
 
+export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
+    "clothing",
+    "packaging",
+    "consumables"
+]);
+
 // Roles
 export const roles = pgTable("roles", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -138,6 +144,8 @@ export const inventoryCategories = pgTable("inventory_categories", {
     color: text("color"),
     prefix: text("prefix"),
     parentId: uuid("parent_id").references((): AnyPgColumn => inventoryCategories.id, { onDelete: "set null" }),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -147,6 +155,7 @@ export const inventoryItems = pgTable("inventory_items", {
     name: text("name").notNull(),
     sku: text("sku").unique(),
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
+    itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
     unit: text("unit").default("шт").notNull(), // pcs, meters, etc.
     lowStockThreshold: integer("low_stock_threshold").default(5).notNull(),

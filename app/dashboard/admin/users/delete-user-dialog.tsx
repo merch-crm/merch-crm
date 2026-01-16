@@ -61,7 +61,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                     <div className="bg-slate-50 rounded-lg p-4 mb-6 border border-slate-100">
                         <p className="text-sm font-bold text-slate-700 mb-1">Сотрудник:</p>
                         <p className="text-lg font-bold text-slate-900">{user.name}</p>
-                        <p className="text-xs text-red-600 font-bold mt-2 italic">
+                        <p className="text-xs text-red-600 font-bold mt-2">
                             Это действие нельзя отменить. Доступ будет немедленно прекращен.
                         </p>
                     </div>

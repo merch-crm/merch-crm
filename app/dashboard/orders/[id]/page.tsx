@@ -167,7 +167,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
                             <div className="pt-4 border-t border-slate-100">
                                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Адрес доставки</div>
-                                <div className="flex items-start text-sm text-slate-600 italic">
+                                <div className="flex items-start text-sm text-slate-600">
                                     <MapPin className="w-4 h-4 mr-3 text-slate-300 shrink-0" />
                                     {order.client.address || "Адрес не указан"}
                                 </div>

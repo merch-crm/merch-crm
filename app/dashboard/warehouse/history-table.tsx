@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useRouter } from "next/navigation";
 
 export interface Transaction {
     id: string;
@@ -21,6 +22,7 @@ export interface Transaction {
     reason: string | null;
     createdAt: Date;
     item: {
+        id: string;
         name: string;
         unit: string;
         sku: string | null;
@@ -49,6 +51,7 @@ interface HistoryTableProps {
 }
 
 export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
+    const router = useRouter();
     const { toast } = useToast();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -327,14 +330,17 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             </div>
                                         </td>
                                         <td className="pl-6 pr-2 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                            <div
+                                                className="flex items-center gap-3 cursor-pointer group/item hover:opacity-80 transition-all"
+                                                onClick={() => router.push(`/dashboard/warehouse/items/${t.item.id}`)}
+                                            >
+                                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-500 transition-colors">
                                                     <Package className="w-4 h-4" />
                                                 </div>
                                                 <div className="max-w-[300px]">
-                                                    <div className="text-sm font-bold text-slate-900 truncate tracking-tight">{t.item.name}</div>
+                                                    <div className="text-sm font-bold text-slate-900 truncate tracking-tight group-hover/item:text-indigo-600 transition-colors">{t.item.name}</div>
                                                     {t.item.sku && (
-                                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">{t.item.sku}</div>
+                                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">Арт.: {t.item.sku}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -358,7 +364,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-slate-400 italic">Склад не указан</span>
+                                                <span className="text-xs text-slate-400">Склад не указан</span>
                                             )}
                                         </td>
                                         <td className="pl-2 pr-6 py-4 whitespace-nowrap text-center">

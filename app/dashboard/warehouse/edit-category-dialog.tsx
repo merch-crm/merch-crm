@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { X, Shirt, Package, Layers, Zap, Scissors, Box, Hourglass, Wind, Tag, ShoppingBag, Check, Trash2, Plus } from "lucide-react";
+import { useState, createElement, useEffect } from "react";
+import { X, Package, Check, Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
 
 import { updateInventoryCategory, deleteInventoryCategory, addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { Category } from "./inventory-client";
+import { CategorySelect } from "./category-select";
+import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS, getIconGroupForIcon } from "./category-utils";
 
 interface EditCategoryDialogProps {
     category: Category & { prefix?: string | null };
@@ -21,30 +23,15 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState(() => {
         if (category.icon) return category.icon;
-
-        // Fallback mapping to match card appearance
-        const name = category.name.toLowerCase();
-        if (name.includes("футболк")) return "shirt";
-        if (name.includes("худи")) return "hourglass";
-        if (name.includes("свитшот")) return "layers";
-        if (name.includes("лонгслив")) return "shirt";
-        if (name.includes("анорак")) return "wind";
-        if (name.includes("зип")) return "zap";
-        if (name.includes("штаны")) return "package";
-        if (name.includes("поло")) return "shirt";
-        if (name.includes("упаковка")) return "box";
-        if (name.includes("расходники")) return "scissors";
-
-        return "package";
+        return getIconNameFromName(category.name);
     });
     const [selectedColor, setSelectedColor] = useState(category.color || "indigo");
     const [selectedParentId, setSelectedParentId] = useState(category.parentId || "");
-    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [subToDelete, setSubToDelete] = useState<string | null>(null);
+    const [showIcons, setShowIcons] = useState(false);
+    const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
 
-    // Subcategory management state
-    const [isAddingSub, setIsAddingSub] = useState(false);
-    const [newSubName, setNewSubName] = useState("");
-    const [newSubPrefix, setNewSubPrefix] = useState("");
     const [subPending, setSubPending] = useState(false);
 
     const router = useRouter();
@@ -75,83 +62,40 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         }
     }
 
-    async function handleDelete() {
-        if (!deleteConfirm) {
-            setDeleteConfirm(true);
-            return;
-        }
-
+    async function handleDeleteCategory() {
         setIsPending(true);
         const result = await deleteInventoryCategory(category.id);
         if (result?.error) {
             setError(result.error);
             setIsPending(false);
+            setShowDeleteModal(false);
         } else {
+            setShowDeleteModal(false);
             onClose();
             setIsPending(false);
             router.refresh();
         }
     }
 
-    async function handleAddSubcategory() {
-        if (!newSubName || !newSubPrefix) return;
-        setSubPending(true);
-
-        const formData = new FormData();
-        formData.set("name", newSubName);
-        formData.set("prefix", newSubPrefix);
-        formData.set("parentId", category.id);
-        // Default visuals
-        formData.set("icon", "package");
-        formData.set("color", "slate");
-
-        const result = await addInventoryCategory(formData);
-        if (result.success) {
-            setNewSubName("");
-            setNewSubPrefix("");
-            setIsAddingSub(false);
-            router.refresh();
-        } else {
-            alert("Ошибка при создании: " + (result.error || "Неизвестная ошибка"));
-        }
-        setSubPending(false);
-    }
 
     async function handleDeleteSubcategory(subId: string) {
-        if (!confirm("Удалить эту подкатегорию?")) return;
+        setSubToDelete(subId);
+    }
+
+    async function confirmDeleteSub() {
+        if (!subToDelete) return;
         setSubPending(true);
-        const result = await deleteInventoryCategory(subId);
+        const result = await deleteInventoryCategory(subToDelete);
         if (result.success) {
             router.refresh();
         } else {
             alert("Ошибка при удалении");
         }
         setSubPending(false);
+        setSubToDelete(null);
     }
 
-    const icons = [
-        { name: "shirt", icon: Shirt, label: "Одежда" },
-        { name: "package", icon: Package, label: "Коробка" },
-        { name: "layers", icon: Layers, label: "Стопка" },
-        { name: "zap", icon: Zap, label: "Молния" },
-        { name: "scissors", icon: Scissors, label: "Расходники" },
-        { name: "box", icon: Box, label: "Куб" },
-        { name: "hourglass", icon: Hourglass, label: "Время" },
-        { name: "wind", icon: Wind, label: "Анорак" },
-        { name: "tag", icon: Tag, label: "Бирка" },
-        { name: "shopping-bag", icon: ShoppingBag, label: "Пакет" },
-    ];
-
-    const colors = [
-        { name: "indigo", class: "bg-indigo-500" },
-        { name: "rose", class: "bg-rose-500" },
-        { name: "emerald", class: "bg-emerald-500" },
-        { name: "amber", class: "bg-amber-500" },
-        { name: "violet", class: "bg-violet-600" },
-        { name: "cyan", class: "bg-cyan-500" },
-        { name: "slate", class: "bg-slate-600" },
-        { name: "orange", class: "bg-orange-500" },
-    ];
+    const colors = COLORS;
 
     if (!isOpen) return null;
 
@@ -162,275 +106,392 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-hidden max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between p-8 pb-4">
+            <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[90vh] flex flex-col">
+                <div className="flex items-center justify-between p-10 pb-6 shrink-0">
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Редактировать категорию</h1>
-                        <p className="text-sm text-slate-500">Измените информацию о категории</p>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                            <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center", getColorStyles(selectedColor))}>
+                                {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-6 h-6" })}
+                            </div>
+                            Редактировать
+                        </h1>
+                        <p className="text-slate-500 mt-1 font-medium">Настройка категории: <span className="text-indigo-600 font-bold">{category.name}</span></p>
                     </div>
                     <button
                         type="button"
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50 transition-all"
+                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
                         onClick={onClose}
                     >
-                        <X className="h-5 w-5" />
+                        <X className="h-6 w-6" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 pt-4 flex flex-col h-full">
+                <form id="edit-category-form" onSubmit={handleSubmit} className="px-8 py-3 flex flex-col overflow-y-auto custom-scrollbar overflow-x-visible">
                     {error && (
                         <div className="mb-6 p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-2xl border border-rose-100 animate-in shake duration-500">
                             {error}
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-6">
-                        {/* LEFT COLUMN: Main Settings */}
-                        <div className={cn("space-y-5", isParentCategory ? "lg:col-span-5" : "lg:col-span-8 lg:col-start-3")}>
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="col-span-2 space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Название категории</label>
+                    <div className={cn(
+                        "grid gap-x-6 gap-y-2 mb-2",
+                        isParentCategory ? "grid-cols-2" : "grid-cols-1"
+                    )}>
+                        {/* LEFT COLUMN: All Category Information */}
+                        <div className={cn(isParentCategory ? "col-span-1" : "col-span-1", "space-y-2")}>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2 col-span-2">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Название категории</label>
                                     <input
                                         name="name"
                                         required
                                         defaultValue={category.name}
-                                        placeholder="Футболки"
-                                        className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white"
+                                        placeholder="Напр. Футболки"
+                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                     />
                                 </div>
+
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Артикул</label>
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Артикул</label>
                                     <input
                                         name="prefix"
                                         defaultValue={category.prefix || ""}
                                         placeholder="TS"
-                                        className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white uppercase text-center"
+                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center tracking-widest uppercase"
                                         onInput={(e) => {
                                             const val = e.currentTarget.value;
-                                            if (/[а-яА-ЯёЁ]/.test(val)) {
-                                                alert("Используйте только латиницу, цифры 0-9 и символ «-»");
-                                            }
-                                            e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+                                            if (/[а-яА-ЯёЁ]/.test(val)) alert("Используйте латиницу");
+                                            e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '');
                                         }}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
+                                    <input
+                                        type="number"
+                                        name="sortOrder"
+                                        defaultValue={category.sortOrder || 0}
+                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание</label>
-                                <textarea
-                                    name="description"
-                                    defaultValue={category.description || ""}
-                                    placeholder="Краткое описание..."
-                                    className="w-full min-h-[50px] p-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white"
-                                />
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Описание (опционально)</label>
+                                    <textarea
+                                        name="description"
+                                        defaultValue={category.description || ""}
+                                        placeholder="Краткое описание для сайта или склада..."
+                                        className="w-full min-h-[80px] p-5 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Визуальное оформление</label>
+                                    <div className="p-4 bg-white rounded-[1.25rem] border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3 shrink-0">
+                                                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm", selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300")}>
+                                                    {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-5 h-5" })}
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-black text-slate-400 tracking-widest block leading-none mb-1 uppercase">ИКОНКА</span>
+                                                    <span className="text-[11px] font-bold text-slate-700 block leading-none truncate max-w-[70px]">
+                                                        {ICONS.find(i => i.name === selectedIcon)?.label || "Не выбрана"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowIcons(!showIcons);
+                                                    if (!showIcons && selectedIcon) {
+                                                        setExpandedGroupId(getIconGroupForIcon(selectedIcon)?.id || ICON_GROUPS[0].id);
+                                                    }
+                                                }}
+                                                className="h-8 px-3 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 text-[9px] font-black tracking-widest text-slate-500 shrink-0 shadow-sm active:scale-95"
+                                            >
+                                                {showIcons ? "СВЕРНУТЬ" : "ВЫБРАТЬ"}
+                                                <ChevronDown className={cn("w-2.5 h-2.5 transition-transform", showIcons && "rotate-180")} />
+                                            </button>
+                                        </div>
+
+                                        <div className="space-y-3 pt-1">
+                                            <span className="text-[10px] font-black text-slate-400 tracking-widest block uppercase">Цвет карточки</span>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {colors.map((color) => {
+                                                    const isSelected = selectedColor === color.name;
+                                                    return (
+                                                        <button
+                                                            key={color.name}
+                                                            type="button"
+                                                            onClick={() => setSelectedColor(color.name)}
+                                                            className={cn(
+                                                                "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90 shadow-sm",
+                                                                color.class,
+                                                                isSelected ? "ring-2 ring-offset-2 ring-slate-300 scale-110" : "hover:scale-110 opacity-80 hover:opacity-100"
+                                                            )}
+                                                        >
+                                                            {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[4]" />}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {category.parentId && (
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Родительская категория</label>
-                                    <select
-                                        value={selectedParentId}
-                                        onChange={(e) => setSelectedParentId(e.target.value)}
-                                        className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white appearance-none cursor-pointer"
-                                    >
-                                        <option value="">Основная категория (нет родителя)</option>
-                                        {categories
-                                            .filter(cat => cat.id !== category.id && !cat.parentId)
-                                            .map(cat => (
-                                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                            ))
-                                        }
-                                    </select>
+                            {/* Icon Selection Panel (Overlays or expands below) */}
+                            {showIcons && (
+                                <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {ICON_GROUPS.map((group) => {
+                                            const isExpanded = expandedGroupId === group.id;
+                                            return (
+                                                <div key={group.id} className="space-y-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setExpandedGroupId(isExpanded ? null : group.id)}
+                                                        className={cn(
+                                                            "w-full flex items-center justify-between h-12 px-5 rounded-xl transition-all border",
+                                                            isExpanded
+                                                                ? "bg-white border-slate-200 text-slate-900 shadow-sm"
+                                                                : "bg-transparent border-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600 hover:border-slate-100"
+                                                        )}
+                                                    >
+                                                        <span className="text-[11px] font-black tracking-[0.15em] uppercase">{group.label}</span>
+                                                        <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", isExpanded && "rotate-180")} />
+                                                    </button>
+
+                                                    {isExpanded && (
+                                                        <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
+                                                            {group.icons.map((item) => {
+                                                                const Icon = item.icon;
+                                                                const isSelected = selectedIcon === item.name;
+                                                                return (
+                                                                    <button
+                                                                        key={item.name}
+                                                                        type="button"
+                                                                        onClick={() => setSelectedIcon(item.name)}
+                                                                        className={cn(
+                                                                            "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 border active:scale-95 group",
+                                                                            isSelected
+                                                                                ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200 scale-110"
+                                                                                : "bg-white border-slate-50 text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                                                                        )}
+                                                                        title={item.label}
+                                                                    >
+                                                                        <Icon className={cn("w-5 h-5", isSelected ? "scale-110" : "group-hover:scale-110")} />
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-6 pt-2">
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Иконка</label>
-                                    <div className="grid grid-cols-5 gap-2">
-                                        {icons.map((item) => {
-                                            const Icon = item.icon;
-                                            const isSelected = selectedIcon === item.name;
-                                            return (
-                                                <button
-                                                    key={item.name}
-                                                    type="button"
-                                                    onClick={() => setSelectedIcon(item.name)}
-                                                    className={cn(
-                                                        "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 border active:scale-95 group",
-                                                        isSelected
-                                                            ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200"
-                                                            : "bg-white border-slate-100 text-slate-400 hover:border-slate-200 hover:bg-slate-50"
-                                                    )}
-                                                >
-                                                    <Icon className={cn("w-3.5 h-3.5", isSelected ? "scale-110" : "group-hover:scale-110")} />
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
+                            {category.parentId && (
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Родительская категория</label>
+                                    <CategorySelect
+                                        categories={categories}
+                                        value={selectedParentId}
+                                        onChange={setSelectedParentId}
+                                        excludeId={category.id}
+                                        placeholder="Выберите родителя..."
+                                    />
                                 </div>
-
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Цвет оформления</label>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {colors.map((color) => {
-                                            const isSelected = selectedColor === color.name;
-                                            return (
-                                                <button
-                                                    key={color.name}
-                                                    type="button"
-                                                    onClick={() => setSelectedColor(color.name)}
-                                                    className={cn(
-                                                        "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90",
-                                                        color.class,
-                                                        isSelected ? "ring-2 ring-offset-2 ring-slate-200" : "hover:scale-110"
-                                                    )}
-                                                >
-                                                    {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* RIGHT COLUMN: Subcategories */}
+
+                        {/* RIGHT COLUMN: Subcategories (Only for main categories) */}
                         {isParentCategory && (
-                            <div className="lg:col-span-7 flex flex-col bg-slate-50/50 rounded-3xl border border-slate-100/80 p-5 h-full relative overflow-hidden">
-                                <div className="flex items-center justify-between mb-4 px-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                        Подкатегории ({subCategories.length})
+                            <div className="col-span-1 border-l border-slate-100 pl-6 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-black text-slate-400 tracking-widest flex items-center gap-2 uppercase">
+                                        ПОДКАТЕГОРИИ
+                                        <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full text-[9px] font-black">{subCategories.length}</span>
                                     </label>
-                                    {!isAddingSub && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsAddingSub(true)}
-                                            className="text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all text-[10px] font-bold"
-                                        >
-                                            <Plus className="w-3 h-3" />
-                                            ДОБАВИТЬ
-                                        </button>
-                                    )}
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto min-h-[200px] pr-1 -mr-1">
-                                    <div className="space-y-3">
-                                        {subCategories.length > 0 ? (
-                                            <div className="grid grid-cols-4 gap-2">
-                                                {subCategories.map(sub => (
-                                                    <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-white rounded-xl border border-slate-100 transition-all hover:border-indigo-200 hover:shadow-md hover:shadow-slate-100 hover:-translate-y-0.5 aspect-[5/4]">
+                                <div className="space-y-2 max-h-[580px] overflow-y-auto pr-2 -mr-2 scroll-smooth custom-scrollbar">
+                                    <style jsx global>{`
+                                        .custom-scrollbar::-webkit-scrollbar {
+                                            width: 4px;
+                                        }
+                                        .custom-scrollbar::-webkit-scrollbar-track {
+                                            background: transparent;
+                                        }
+                                        .custom-scrollbar::-webkit-scrollbar-thumb {
+                                            background: #e2e8f0;
+                                            border-radius: 20px;
+                                        }
+                                        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                                            background: #cbd5e1;
+                                        }
+                                    `}</style>
+                                    {subCategories.length > 0 ? (
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {subCategories.map(sub => {
+                                                const IconComponent = getCategoryIcon(sub);
+                                                const colorStyle = getColorStyles(sub.color);
+                                                return (
+                                                    <div key={sub.id} className="group relative flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-100 transition-all hover:border-indigo-200 aspect-square">
                                                         <button
                                                             type="button"
                                                             disabled={subPending}
                                                             onClick={() => handleDeleteSubcategory(sub.id)}
-                                                            className="absolute top-1 right-1 p-1 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all opacity-0 group-hover:opacity-100"
+                                                            className="absolute top-2 right-2 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                                             title="Удалить подкатегорию"
                                                         >
-                                                            <Trash2 className="w-3 h-3" />
+                                                            <Trash2 className="w-4 h-4" />
                                                         </button>
 
-                                                        <div className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shadow-sm mb-1.5 group-hover:text-indigo-500 group-hover:border-indigo-100 transition-colors">
-                                                            <Package className="w-3 h-3" />
+                                                        <div className={cn(
+                                                            "w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-3 transition-all shrink-0",
+                                                            colorStyle
+                                                        )}>
+                                                            {createElement(IconComponent, { className: "w-7 h-7" })}
                                                         </div>
 
-                                                        <div className="w-full text-center">
-                                                            <div className="text-[10px] font-bold text-slate-700 truncate w-full px-0.5 mb-px leading-tight">{sub.name}</div>
-                                                            <div className="text-[8px] font-black text-slate-400 uppercase tracking-wider bg-slate-50 px-1 py-px rounded inline-block">
-                                                                {sub.prefix || "-"}
-                                                            </div>
+                                                        <div className="w-full text-center overflow-hidden">
+                                                            <div className="text-[12px] font-bold text-slate-700 truncate w-full px-1 leading-tight">{sub.name}</div>
                                                         </div>
                                                     </div>
-                                                ))}
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="h-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-slate-200/50 rounded-3xl text-slate-400 gap-3 opacity-60">
+                                            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                                <Package className="w-8 h-8 text-slate-200" />
                                             </div>
-                                        ) : !isAddingSub && (
-                                            <div className="h-full flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-slate-200/50 rounded-2xl text-slate-400 gap-2 opacity-60">
-                                                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                                    <Package className="w-6 h-6 text-slate-300" />
-                                                </div>
-                                                <span className="text-xs font-medium">Нет подкатегорий</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                            <span className="text-sm font-bold tracking-tight">Нет подкатегорий</span>
+                                        </div>
+                                    )}
 
-                                {isAddingSub && (
-                                    <div className="mt-auto pt-3 border-t border-slate-100/50 animate-in slide-in-from-bottom-2">
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-900 mb-2 px-1 opacity-80">
-                                            <div className="w-1 h-1 rounded-full bg-indigo-500" />
-                                            НОВАЯ ПОДКАТЕГОРИЯ
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="col-span-2">
-                                                <input
-                                                    autoFocus
-                                                    placeholder="Название..."
-                                                    value={newSubName}
-                                                    onChange={(e) => setNewSubName(e.target.value)}
-                                                    className="w-full h-9 px-3 rounded-lg border border-indigo-200 bg-white text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:font-normal"
-                                                />
-                                            </div>
-                                            <div>
-                                                <input
-                                                    placeholder="Код"
-                                                    value={newSubPrefix}
-                                                    onChange={(e) => {
-                                                        const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-                                                        setNewSubPrefix(val);
-                                                    }}
-                                                    className="w-full h-9 px-3 rounded-lg border border-indigo-200 bg-white text-xs font-bold text-slate-700 uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:font-normal placeholder:normal-case text-center tracking-widest"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-end gap-2 pt-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsAddingSub(false)}
-                                                className="px-3 py-1.5 text-[10px] font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all"
-                                            >
-                                                ОТМЕНА
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={handleAddSubcategory}
-                                                disabled={!newSubName || !newSubPrefix || subPending}
-                                                className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-[10px] font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-md shadow-indigo-200 active:scale-95"
-                                            >
-                                                {subPending ? "..." : "СОЗДАТЬ"}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
+                                </div>
                             </div>
                         )}
                     </div>
+                </form>
 
-                    <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
+                <div className="p-10 border-t border-slate-100 flex items-center justify-between shrink-0 bg-white rounded-b-[3rem]">
+                    <button
+                        type="button"
+                        onClick={() => setShowDeleteModal(true)}
+                        className="h-14 px-8 rounded-2xl flex items-center gap-2.5 text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg bg-white text-rose-500 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 hover:text-rose-600 shadow-slate-100/50"
+                    >
+                        <Trash2 className="w-5 h-5" />
+                        УДАЛИТЬ КАТЕГОРИЮ
+                    </button>
+
+                    <div className="flex items-center gap-5">
                         <button
                             type="button"
-                            onClick={handleDelete}
-                            disabled={isPending}
-                            className={cn(
-                                "h-12 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border shadow-sm",
-                                deleteConfirm
-                                    ? "bg-rose-500 border-rose-500 text-white shadow-rose-200"
-                                    : "bg-white border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-100 hover:bg-rose-50"
-                            )}
+                            onClick={onClose}
+                            className="h-14 px-10 rounded-2xl text-slate-500 text-xs font-black tracking-widest hover:bg-slate-100 transition-all active:scale-95"
                         >
-                            <Trash2 className="w-4 h-4" />
-                            {deleteConfirm ? "Подтвердить удаление" : "Удалить категорию"}
+                            ОТМЕНА
                         </button>
-
                         <button
+                            form="edit-category-form"
                             type="submit"
                             disabled={isPending}
-                            className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-sm shadow-xl shadow-slate-200 transition-all active:scale-[0.98] disabled:opacity-50"
+                            className="h-14 px-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50"
                         >
-                            {isPending ? "Сохранение..." : "Сохранить изменения"}
+                            {isPending ? "СОХРАНЕНИЕ..." : "СОХРАНИТЬ ИЗМЕНЕНИЯ"}
                         </button>
                     </div>
-                </form>
+                </div>
+                {/* Custom Delete Confirmation Modal */}
+                {subToDelete && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <div
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+                            onClick={() => setSubToDelete(null)}
+                        />
+                        <div className="relative w-full max-w-[340px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 fade-in duration-200">
+                            <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-5 text-rose-500">
+                                <Trash2 className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-lg font-black text-slate-900 mb-2 uppercase tracking-tight">Удалить подкатегорию?</h3>
+                            <p className="text-sm font-medium text-slate-400 leading-relaxed mb-8">Это действие нельзя будет отменить. Подкатегория будет полностью удалена из базы.</p>
+
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    type="button"
+                                    onClick={confirmDeleteSub}
+                                    disabled={subPending}
+                                    className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-100 disabled:opacity-50"
+                                >
+                                    {subPending ? "УДАЛЕНИЕ..." : "ДА, УДАЛИТЬ"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSubToDelete(null)}
+                                    className="w-full h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95"
+                                >
+                                    ОТМЕНА
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {/* Main Category Delete Confirmation Modal */}
+                {showDeleteModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <div
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+                            onClick={() => setShowDeleteModal(false)}
+                        />
+                        <div className="relative w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 text-center animate-in zoom-in-95 fade-in duration-200">
+                            <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-500 shadow-sm">
+                                <Trash2 className="w-10 h-10" />
+                            </div>
+                            <h3 className="text-xl font-black text-slate-900 mb-3 uppercase tracking-tight">Удалить категорию?</h3>
+                            <p className="text-sm font-bold text-slate-500 leading-relaxed mb-2">
+                                Вы собираетесь удалить категорию <span className="text-slate-800">«{category.name}»</span>.
+                            </p>
+                            <p className="text-xs font-medium text-slate-400 leading-relaxed mb-8">
+                                {isParentCategory && subCategories.length > 0
+                                    ? "Все вложенные подкатегории будут откреплены, но не удалены. Товары станут без категории."
+                                    : "Действие необратимо. Товары этой категории станут 'Без категории'."}
+                            </p>
+
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleDeleteCategory}
+                                    disabled={isPending}
+                                    className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isPending ? (
+                                        "УДАЛЕНИЕ..."
+                                    ) : (
+                                        <>
+                                            ПОДТВЕРДИТЬ УДАЛЕНИЕ
+                                        </>
+                                    )}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95"
+                                >
+                                    ОТМЕНА
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -87,7 +87,7 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                         <div>
                             <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">{item.name}</h2>
                             <div className="flex items-center gap-3 mt-1.5">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{item.sku || "Без артикула"}</span>
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Арт.: {item.sku || "Без артикула"}</span>
                                 <Badge className={cn(
                                     "px-2 py-0.5 text-[10px] font-black border-none",
                                     (item.quantity - (item.reservedQuantity || 0)) <= item.lowStockThreshold ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"
@@ -150,7 +150,7 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                                             </div>
                                             <div>
                                                 <div className="text-sm font-black text-slate-900">{stock.storageLocation?.name || "Неизвестный склад"}</div>
-                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter italic">Обновлено {format(new Date(stock.updatedAt), "d MMM, HH:mm", { locale: ru })}</div>
+                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Обновлено {format(new Date(stock.updatedAt), "d MMM, HH:mm", { locale: ru })}</div>
                                             </div>
                                         </div>
                                         <div className="bg-slate-50 px-4 py-2 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
@@ -161,7 +161,7 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-center italic text-slate-400 text-sm font-medium">
+                            <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-center text-slate-400 text-sm font-medium">
                                 Данные о распределении отсутствуют. Используйте перемещение или корректировку складского остатка.
                             </div>
                         )}

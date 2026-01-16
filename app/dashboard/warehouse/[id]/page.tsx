@@ -7,8 +7,9 @@ import { CategoryDetailClient } from "./category-detail-client";
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: categoryId } = await params;
 
-    // Fetch category info
+    // Fetch category info and its parent if exists
     let category = null;
+    let parentCategory = null;
     if (categoryId !== "orphaned") {
         const [found] = await db
             .select()
@@ -19,6 +20,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
 
         if (!category) {
             notFound();
+        }
+
+        if (category.parentId) {
+            const [parent] = await db
+                .select()
+                .from(inventoryCategories)
+                .where(eq(inventoryCategories.id, category.parentId))
+                .limit(1);
+            parentCategory = parent;
         }
     }
 
@@ -35,17 +45,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         createdAt: sc.createdAt.toISOString()
     }));
 
-    // Fetch items for this category (direct items)
-    const itemsRaw = await db
-        .select()
-        .from(inventoryItems)
-        .where(
-            categoryId === "orphaned"
-                ? isNull(inventoryItems.categoryId)
-                : eq(inventoryItems.categoryId, categoryId)
-        );
+    // Fetch items (global search: 10 items from all categories as requested)
+    const { getInventoryItems } = await import("../actions");
+    const { data: allItems = [] } = await getInventoryItems();
 
-    const items = itemsRaw.map(item => ({
+    // Limit to 10 for performance and requirement
+    const items = allItems.slice(0, 10).map(item => ({
         ...item,
         createdAt: item.createdAt.toISOString(),
         attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},
@@ -63,20 +68,20 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     };
 
     // Fetch storage locations
-    const locations = await db.select().from(storageLocations);
-
-    // Fetch measurement units
-    const { getMeasurementUnits } = await import("../actions");
+    const { getStorageLocations, getMeasurementUnits } = await import("../actions");
+    const { data: locations = [] } = await getStorageLocations();
     const { data: units = [] } = await getMeasurementUnits();
+
 
     return (
         <div className="p-1">
             <CategoryDetailClient
-                category={finalCategory as unknown as import("./category-detail-client").Category}
-                subCategories={subCategories as unknown as import("./category-detail-client").Category[]}
-                items={items as unknown as import("./category-detail-client").InventoryItem[]}
-                storageLocations={locations}
-                measurementUnits={units}
+                category={finalCategory as any}
+                parentCategory={parentCategory ? { ...parentCategory, createdAt: parentCategory.createdAt.toISOString() } : undefined as any}
+                subCategories={subCategories as any}
+                items={items as any}
+                storageLocations={locations as any}
+                measurementUnits={units as any}
             />
         </div>
     );

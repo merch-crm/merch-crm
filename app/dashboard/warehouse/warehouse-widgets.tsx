@@ -35,7 +35,7 @@ export function WarehouseWidgets({ items }: WarehouseWidgetsProps) {
                         criticalItems.map((item) => (
                             <Link
                                 key={item.id}
-                                href={`/dashboard/warehouse/${item.categoryId || "orphaned"}?itemId=${item.id}`}
+                                href={`/dashboard/warehouse/items/${item.id}`}
                                 className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 hover:border-rose-200 hover:bg-rose-50/30 transition-all group"
                             >
                                 <div className="flex items-center gap-3">

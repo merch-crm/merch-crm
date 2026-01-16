@@ -166,7 +166,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                 {fetchingRoles ? (
                                     <div className="py-4 text-center text-slate-400 text-[11px] font-bold uppercase animate-pulse">Загрузка ролей...</div>
                                 ) : roles.length === 0 ? (
-                                    <div className="py-4 text-center text-slate-400 text-xs italic">Нет созданных ролей</div>
+                                    <div className="py-4 text-center text-slate-400 text-xs">Нет созданных ролей</div>
                                 ) : (
                                     <div className="grid grid-cols-1 gap-1">
                                         {roles.map(role => {

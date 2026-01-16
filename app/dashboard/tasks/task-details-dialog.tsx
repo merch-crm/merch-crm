@@ -290,9 +290,9 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             <span className="text-base font-black text-slate-900">
                                                 {task.dueDate ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru }) : "Срок не установлен"}
                                             </span>
-                                            <span className="text-sm font-medium text-slate-400 italic">
+                                            <div className="text-sm text-slate-400">
                                                 {task.dueDate ? `Осталось совсем немного` : "Без привязки ко времени"}
-                                            </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -538,6 +538,6 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                 variant="destructive"
                 isLoading={isPending}
             />
-        </div>
+        </div >
     );
 }

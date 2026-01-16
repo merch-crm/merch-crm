@@ -272,7 +272,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                             ) : (
                                                 <div
                                                     onClick={() => setIsEditingComments(true)}
-                                                    className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-sm text-slate-600 italic whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
+                                                    className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-sm text-slate-600 whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
                                                 >
                                                     {client.comments || "Нет комментариев"}
                                                     <div className="mt-2 text-[10px] text-slate-300 font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">Нажмите, чтобы редактировать</div>

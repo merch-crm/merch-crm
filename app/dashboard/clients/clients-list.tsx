@@ -347,7 +347,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                 </span>
                                             </div>
                                         ) : (
-                                            <span className="text-xs text-slate-400 italic">Нет заказов</span>
+                                            <span className="text-xs text-slate-400">Нет заказов</span>
                                         )}
                                     </td>
                                     {showFinancials && (

@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Minus, X, AlertCircle, Package, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import { Plus, Minus, X, AlertCircle, Package, MapPin, RefreshCw } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
+import { StorageLocationSelect } from "@/components/ui/storage-location-select";
+
 
 interface AdjustStockDialogProps {
     item: {
@@ -16,29 +19,54 @@ interface AdjustStockDialogProps {
         storageLocationId?: string | null;
     };
     locations: StorageLocation[];
+    itemStocks?: { storageLocationId: string, quantity: number }[];
     onClose: () => void;
+    initialType?: "in" | "out" | "set";
 }
 
-export function AdjustStockDialog({ item, locations, onClose }: AdjustStockDialogProps) {
-    const [amount, setAmount] = useState<number>(1);
-    const [type, setType] = useState<"in" | "out">("in");
-    const [selectedLocationId, setSelectedLocationId] = useState<string>(item.storageLocationId || (locations.length > 0 ? locations[0].id : ""));
+
+export function AdjustStockDialog({ item, locations, itemStocks, onClose, initialType = "in" }: AdjustStockDialogProps) {
+
+    const [amount, setAmount] = useState<number>(initialType === "set" ? item.quantity : 1);
+    const [type, setType] = useState<"in" | "out" | "set">(initialType);
+    const [selectedLocationId, setSelectedLocationId] = useState<string>(item.storageLocationId || "");
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
+    // Sync selected location when locations are loaded
+    useEffect(() => {
+        if (!selectedLocationId && Array.isArray(locations) && locations.length > 0) {
+            setSelectedLocationId(locations[0].id);
+        }
+    }, [locations, selectedLocationId]);
+
+
+    const currentStockOnLocation = Array.isArray(itemStocks)
+        ? itemStocks.find(s => s.storageLocationId === selectedLocationId)?.quantity ?? 0
+        : 0;
+
+    const selectedLocationName = Array.isArray(locations)
+        ? locations.find(l => l.id === selectedLocationId)?.name || "Склад не выбран"
+        : "Загрузка складов...";
+
+
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (amount <= 0) return;
-        if (locations.length > 0 && !selectedLocationId) {
+        if (Array.isArray(locations) && locations.length > 0 && !selectedLocationId) {
             setError("Выберите склад");
             return;
         }
+
 
         setIsSubmitting(true);
         setError("");
 
         try {
+            // @ts-ignore - type "set" is handled in action now
             const res = await adjustInventoryStock(item.id, amount, type, reason, selectedLocationId);
             if (res.success) {
                 onClose();
@@ -78,18 +106,22 @@ export function AdjustStockDialog({ item, locations, onClose }: AdjustStockDialo
 
                 <form onSubmit={handleSubmit} className="p-8 pt-4 space-y-6">
                     {/* Current Stock Indicator */}
-                    <div className="bg-slate-50 rounded-2xl p-4 flex items-center justify-between border border-slate-100">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Текущий остаток</span>
-                        <span className="text-lg font-black text-slate-900">{item.quantity} {item.unit}</span>
+                    <div className="bg-indigo-50/50 rounded-2xl p-5 flex items-center justify-between border border-indigo-100/50">
+                        <div className="space-y-1">
+                            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">Текущий остаток</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase truncate max-w-[150px] block">{selectedLocationName}</span>
+                        </div>
+                        <span className="text-2xl font-black text-slate-900">{selectedLocationId ? currentStockOnLocation : item.quantity} <span className="text-sm text-slate-400 uppercase">{item.unit}</span></span>
                     </div>
 
+
                     {/* Type Selector */}
-                    <div className="grid grid-cols-2 gap-3 p-1 bg-slate-100 rounded-2xl">
+                    <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-2xl">
                         <button
                             type="button"
-                            onClick={() => setType("in")}
+                            onClick={() => { setType("in"); setAmount(1); }}
                             className={cn(
-                                "flex items-center justify-center gap-2 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
+                                "flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
                                 type === "in"
                                     ? "bg-white text-emerald-600 shadow-sm"
                                     : "text-slate-400 hover:text-slate-600"
@@ -100,9 +132,9 @@ export function AdjustStockDialog({ item, locations, onClose }: AdjustStockDialo
                         </button>
                         <button
                             type="button"
-                            onClick={() => setType("out")}
+                            onClick={() => { setType("out"); setAmount(1); }}
                             className={cn(
-                                "flex items-center justify-center gap-2 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
+                                "flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
                                 type === "out"
                                     ? "bg-white text-rose-600 shadow-sm"
                                     : "text-slate-400 hover:text-slate-600"
@@ -111,37 +143,45 @@ export function AdjustStockDialog({ item, locations, onClose }: AdjustStockDialo
                             <Minus className="w-4 h-4" />
                             Расход
                         </button>
+                        <button
+                            type="button"
+                            onClick={() => { setType("set"); setAmount(item.quantity); }}
+                            className={cn(
+                                "flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                                type === "set"
+                                    ? "bg-white text-indigo-600 shadow-sm"
+                                    : "text-slate-400 hover:text-slate-600"
+                            )}
+                        >
+                            <RefreshCw className="w-4 h-4" />
+                            Корр.
+                        </button>
                     </div>
 
                     {/* Warehouse Selector */}
-                    {locations.length > 0 && (
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                <MapPin className="w-3 h-3" /> Склад
-                            </label>
-                            <select
-                                value={selectedLocationId}
-                                onChange={(e) => setSelectedLocationId(e.target.value)}
-                                className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-                            >
-                                <option value="">Выберите склад...</option>
-                                {locations.map((loc) => (
-                                    <option key={loc.id} value={loc.id}>
-                                        {loc.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <MapPin className="w-3 h-3" /> Выберите склад
+                        </label>
+                        <StorageLocationSelect
+                            value={selectedLocationId}
+                            onChange={setSelectedLocationId}
+                            options={Array.isArray(locations) ? locations : []}
+                        />
+                    </div>
+
+
 
                     {/* Amount Input */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Количество</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                            {type === "set" ? "Новый остаток" : "Количество"}
+                        </label>
                         <div className="relative">
                             <input
                                 type="number"
                                 required
-                                min="1"
+                                min="0"
                                 value={amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
                                 className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all"

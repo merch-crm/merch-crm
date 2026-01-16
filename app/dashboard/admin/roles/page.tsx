@@ -160,7 +160,7 @@ export default function AdminRolesPage() {
                                                 </span>
                                             ))
                                         ) : (
-                                            <span className="text-[11px] text-slate-400 italic">Нет настроенных прав</span>
+                                            <span className="text-[11px] text-slate-400">Нет настроенных прав</span>
                                         )}
                                         {(Object.keys(role.permissions || {}).length || 0) > 3 && (
                                             <span className="text-[10px] text-slate-400 font-bold px-1 py-0.5">

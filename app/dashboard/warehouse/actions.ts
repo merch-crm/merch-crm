@@ -27,7 +27,11 @@ export async function getInventoryCategories() {
             with: {
                 parent: true
             },
-            orderBy: desc(inventoryCategories.createdAt)
+            orderBy: [
+                sql`CASE WHEN ${inventoryCategories.sortOrder} = 0 THEN 1 ELSE 0 END ASC`,
+                sql`${inventoryCategories.sortOrder} ASC`,
+                desc(inventoryCategories.createdAt)
+            ]
         });
         return { data: categories };
     } catch (error) {
@@ -38,7 +42,9 @@ export async function getInventoryCategories() {
 
 export async function addInventoryCategory(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для добавления категории" };
+    }
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
@@ -47,6 +53,8 @@ export async function addInventoryCategory(formData: FormData) {
     const color = formData.get("color") as string;
 
     const parentId = formData.get("parentId") as string;
+    const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
+    const isActive = formData.get("isActive") === "on" || formData.get("isActive") === "true";
 
     if (!name) {
         return { error: "Name is required" };
@@ -60,6 +68,8 @@ export async function addInventoryCategory(formData: FormData) {
             icon: icon || "package",
             color: color || "indigo",
             parentId: parentId || null,
+            sortOrder,
+            isActive,
         }).returning();
 
         revalidatePath("/dashboard/warehouse");
@@ -76,6 +86,16 @@ export async function deleteInventoryCategory(id: string) {
     }
 
     try {
+        // Check for subcategories
+        const subcategories = await db.query.inventoryCategories.findMany({
+            where: eq(inventoryCategories.parentId, id),
+            limit: 1
+        });
+
+        if (subcategories.length > 0) {
+            return { error: "Нельзя удалить категорию, у которой есть подкатегории. Сначала удалите или переместите их." };
+        }
+
         // First, unlink all items from this category (set categoryId to null)
         await db.update(inventoryItems)
             .set({ categoryId: null })
@@ -95,7 +115,9 @@ export async function deleteInventoryCategory(id: string) {
 
 export async function updateInventoryCategory(id: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для изменения категории" };
+    }
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
@@ -105,6 +127,8 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
     const prefix = formData.get("prefix") as string;
 
     const parentId = formData.get("parentId") as string;
+    const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
+    const isActive = formData.get("isActive") === "on" || formData.get("isActive") === "true";
 
     if (!name) {
         return { error: "Name is required" };
@@ -118,7 +142,9 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
                 icon: icon || null,
                 color: color || null,
                 prefix: prefix || null,
-                parentId: parentId || null
+                parentId: parentId || null,
+                sortOrder,
+                isActive
             })
             .where(eq(inventoryCategories.id, id));
 
@@ -142,10 +168,32 @@ export async function getInventoryItems() {
     }
 }
 
+export async function getInventoryItem(id: string) {
+    try {
+        const item = await db.query.inventoryItems.findFirst({
+            where: eq(inventoryItems.id, id),
+            with: {
+                category: {
+                    with: {
+                        parent: true
+                    }
+                },
+                storageLocation: true
+            }
+        });
+        return { data: item };
+    } catch {
+        return { error: "Failed to fetch item" };
+    }
+}
+
 export async function addInventoryItem(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для добавления товаров" };
+    }
 
+    const itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables" || "clothing";
     const name = formData.get("name") as string;
     const sku = formData.get("sku") as string;
     const quantity = parseInt(formData.get("quantity") as string);
@@ -153,7 +201,8 @@ export async function addInventoryItem(formData: FormData) {
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
     const categoryId = formData.get("categoryId") as string;
     const description = formData.get("description") as string;
-    const location = formData.get("location") as string;
+    const locationName = formData.get("location") as string;
+
     const storageLocationId = formData.get("storageLocationId") as string;
 
     const qualityCode = formData.get("qualityCode") as string;
@@ -161,13 +210,22 @@ export async function addInventoryItem(formData: FormData) {
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
     const attributesStr = formData.get("attributes") as string;
-    let attributes = {};
+    let attributes: any = {};
     if (attributesStr) {
         try {
             attributes = JSON.parse(attributesStr);
         } catch (e) {
             console.error("Failed to parse attributes JSON", e);
         }
+    }
+
+    // Merge type-specific attributes
+    if (itemType === "packaging") {
+        attributes.width = formData.get("width");
+        attributes.height = formData.get("height");
+        attributes.depth = formData.get("depth");
+    } else if (itemType === "consumables") {
+        attributes.department = formData.get("department");
     }
 
     if (!name || isNaN(quantity)) {
@@ -205,10 +263,12 @@ export async function addInventoryItem(formData: FormData) {
                 sku: finalSku || null,
                 quantity,
                 unit,
+                itemType: itemType || "clothing",
                 lowStockThreshold,
                 description,
-                location,
+                location: locationName,
                 storageLocationId: storageLocationId || null,
+
                 categoryId: categoryId || null,
                 qualityCode: qualityCode || null,
                 attributeCode: attributeCode || null,
@@ -311,8 +371,11 @@ export async function deleteInventoryItems(ids: string[]) {
 
 export async function updateInventoryItem(id: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для изменения товаров" };
+    }
 
+    const itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables" || "clothing";
     const name = formData.get("name") as string;
     const sku = formData.get("sku") as string;
     const unit = formData.get("unit") as string;
@@ -320,8 +383,9 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
     const categoryId = formData.get("categoryId") as string;
     const description = formData.get("description") as string;
-    const location = formData.get("location") as string;
+    const locationName = formData.get("location") as string;
     const storageLocationId = formData.get("storageLocationId") as string;
+
 
     const qualityCode = formData.get("qualityCode") as string;
     const attributeCode = formData.get("attributeCode") as string;
@@ -329,13 +393,22 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const imageFile = formData.get("image") as File;
     const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
     const attributesStr = formData.get("attributes") as string;
-    let attributes = {};
+    let attributes: any = {};
     if (attributesStr) {
         try {
             attributes = JSON.parse(attributesStr);
         } catch (e) {
             console.error("Failed to parse attributes JSON", e);
         }
+    }
+
+    // Merge type-specific attributes
+    if (itemType === "packaging") {
+        attributes.width = formData.get("width");
+        attributes.height = formData.get("height");
+        attributes.depth = formData.get("depth");
+    } else if (itemType === "consumables") {
+        attributes.department = formData.get("department");
     }
 
     try {
@@ -367,12 +440,14 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             name,
             sku: finalSku || null,
             unit,
+            itemType: itemType || "clothing",
             quantity,
             lowStockThreshold,
             categoryId: categoryId || null,
             description,
-            location,
+            location: locationName,
             storageLocationId: storageLocationId || null,
+
             qualityCode: qualityCode || null,
             attributeCode: attributeCode || null,
             sizeCode: sizeCode || null,
@@ -421,21 +496,52 @@ export async function getInventoryHistory() {
     }
 }
 
-export async function adjustInventoryStock(itemId: string, amount: number, type: "in" | "out", reason: string, storageLocationId?: string) {
+export async function adjustInventoryStock(itemId: string, amount: number, type: "in" | "out" | "set", reason: string, storageLocationId?: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
-            // 1. Get current item for its categoryId and name
+            // 1. Get current item
             const [item] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
             if (!item) throw new Error("Item not found");
 
-            const netChange = amount * (type === "in" ? 1 : -1);
-            const newTotalQuantity = item.quantity + netChange;
-            if (newTotalQuantity < 0) throw new Error("Insufficient total stock");
+            let netChange = 0;
+            let effectiveType: "in" | "out" = "in";
 
-            // 2. If storageLocationId is provided, manage per-warehouse stock
+            // If Type is SET, we need to calculate netChange based on target
+            if (type === "set") {
+                let currentQty = 0;
+
+                if (storageLocationId) {
+                    const [existingStock] = await tx
+                        .select()
+                        .from(inventoryStocks)
+                        .where(and(
+                            eq(inventoryStocks.itemId, itemId),
+                            eq(inventoryStocks.storageLocationId, storageLocationId)
+                        ))
+                        .limit(1);
+                    currentQty = existingStock?.quantity || 0;
+                } else {
+                    currentQty = item.quantity;
+                }
+
+                netChange = amount - currentQty;
+                effectiveType = netChange >= 0 ? "in" : "out";
+            } else {
+                netChange = amount * (type === "in" ? 1 : -1);
+                effectiveType = type;
+            }
+
+            // Skip if no change (for set)
+            if (netChange === 0 && type === "set") return;
+
+            // Update item total
+            const newTotalQuantity = item.quantity + netChange;
+            if (newTotalQuantity < 0) throw new Error("Insufficient total stock (result would be negative)");
+
+            // 2. Manage per-warehouse stock
             if (storageLocationId) {
                 const [existingStock] = await tx
                     .select()
@@ -454,53 +560,51 @@ export async function adjustInventoryStock(itemId: string, amount: number, type:
                         .set({ quantity: newStockQuantity, updatedAt: new Date() })
                         .where(eq(inventoryStocks.id, existingStock.id));
                 } else {
-                    // Lazy Migration: If no stock entry exists, but item is ostensibly at this location in legacy field
-                    // or if it's a new stock at a new location.
-                    let initialQuantity = 0;
-                    if (item.storageLocationId === storageLocationId) {
-                        initialQuantity = item.quantity;
-                    }
-
-                    const finalStockQuantity = initialQuantity + netChange;
-                    if (finalStockQuantity < 0) throw new Error("Insufficient stock at this location");
+                    const newStockQuantity = netChange; // Assuming starting from 0 if not exists
+                    if (newStockQuantity < 0) throw new Error("Insufficient stock at this location to reduce");
 
                     await tx.insert(inventoryStocks).values({
                         itemId,
                         storageLocationId,
-                        quantity: finalStockQuantity
+                        quantity: newStockQuantity
                     });
                 }
             }
 
-            // 3. Update global item quantity (cached sum of all warehouses)
+            // 3. Update global item quantity
             await tx.update(inventoryItems)
                 .set({ quantity: newTotalQuantity })
                 .where(eq(inventoryItems.id, itemId));
 
-            // 4. Log transaction with location info
+            // 4. Log transaction
             await tx.insert(inventoryTransactions).values({
                 itemId,
                 changeAmount: netChange,
-                type,
-                reason,
+                type: effectiveType,
+                reason: type === "set" ? `Корректировка (Set): ${reason}` : reason,
                 storageLocationId: storageLocationId || null,
                 createdBy: session.id,
             });
 
-            // 5. Log audit action
-            await logAction(type === "in" ? "Поставка" : "Списание", "inventory_item", itemId, {
-                name: item.name,
-                amount,
-                reason,
-                storageLocationId,
-                newTotalQuantity
-            });
+            // 5. Log audit
+            await logAction(
+                type === "set" ? "Корректировка" : (effectiveType === "in" ? "Поставка" : "Списание"),
+                "inventory_item",
+                itemId,
+                {
+                    name: item.name,
+                    amount: Math.abs(netChange),
+                    reason,
+                    storageLocationId,
+                    newTotalQuantity
+                }
+            );
         });
 
         revalidatePath("/dashboard/warehouse");
-        // Revalidate category page if needed
-        const [item] = await db.select({ catId: inventoryItems.categoryId }).from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
-        if (item?.catId) revalidatePath(`/dashboard/warehouse/${item.catId}`);
+        revalidatePath(`/dashboard/warehouse/items/${itemId}`);
+        const [refetchedItem] = await db.select({ catId: inventoryItems.categoryId }).from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
+        if (refetchedItem?.catId) revalidatePath(`/dashboard/warehouse/${refetchedItem.catId}`);
 
         return { success: true };
     } catch (error: unknown) {
@@ -511,6 +615,99 @@ export async function adjustInventoryStock(itemId: string, amount: number, type:
             details: { itemId, amount, type, reason, storageLocationId }
         });
         return { error: (error as Error).message || "Failed to adjust stock" };
+    }
+}
+
+export async function transferInventoryStock(itemId: string, fromLocationId: string, toLocationId: string, amount: number, reason: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    if (amount <= 0) return { error: "Invalid amount" };
+    if (fromLocationId === toLocationId) return { error: "Source and destination must be different" };
+
+    try {
+        await db.transaction(async (tx) => {
+            // Source
+            const [sourceStock] = await tx
+                .select()
+                .from(inventoryStocks)
+                .where(and(
+                    eq(inventoryStocks.itemId, itemId),
+                    eq(inventoryStocks.storageLocationId, fromLocationId)
+                ))
+                .limit(1);
+
+            if (!sourceStock || sourceStock.quantity < amount) {
+                throw new Error("Недостаточно остатка на складе отправителе");
+            }
+
+            // Dest
+            const [destStock] = await tx
+                .select()
+                .from(inventoryStocks)
+                .where(and(
+                    eq(inventoryStocks.itemId, itemId),
+                    eq(inventoryStocks.storageLocationId, toLocationId)
+                ))
+                .limit(1);
+
+            // Update Source
+            const newSourceQty = sourceStock.quantity - amount;
+            await tx.update(inventoryStocks)
+                .set({ quantity: newSourceQty, updatedAt: new Date() })
+                .where(eq(inventoryStocks.id, sourceStock.id));
+
+            // Update Dest
+            if (destStock) {
+                await tx.update(inventoryStocks)
+                    .set({ quantity: destStock.quantity + amount, updatedAt: new Date() })
+                    .where(eq(inventoryStocks.id, destStock.id));
+            } else {
+                await tx.insert(inventoryStocks).values({
+                    itemId,
+                    storageLocationId: toLocationId,
+                    quantity: amount
+                });
+            }
+
+            // Log
+            // Out from Source (using "transfer" type if DB supports, or "out")
+            // Assuming "transfer" is valid logic or we just rely on reasoning.
+            // Using "out" and "in" pair to be safe with existing types if unsure about enum. 
+            // Better to match schema. Code used string before. 
+            // Let's use "out" from source and "in" to dest with reason linking them.
+
+            await tx.insert(inventoryTransactions).values({
+                itemId,
+                changeAmount: -amount,
+                type: "transfer", // Using transfer type as intended for moves
+                reason: `Перемещение в другой склад. Причина: ${reason}`,
+                storageLocationId: fromLocationId,
+                createdBy: session.id,
+            });
+
+            await tx.insert(inventoryTransactions).values({
+                itemId,
+                changeAmount: amount,
+                type: "transfer",
+                reason: `Перемещение из другого склада. Причина: ${reason}`,
+                storageLocationId: toLocationId,
+                createdBy: session.id,
+            });
+
+            await logAction("Перемещение", "inventory_item", itemId, {
+                from: fromLocationId,
+                to: toLocationId,
+                amount,
+                reason
+            });
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        revalidatePath(`/dashboard/warehouse/items/${itemId}`);
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message || "Failed to transfer stock" };
     }
 }
 

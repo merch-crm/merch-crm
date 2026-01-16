@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { getCategoryIcon, getColorStyles } from "./category-utils";
 
 export interface InventoryItem {
     id: string;
@@ -31,6 +32,8 @@ export interface Category {
     icon: string | null;
     prefix?: string | null;
     parentId?: string | null;
+    sortOrder?: number | null;
+    isActive?: boolean | null;
     items?: InventoryItem[];
     parent?: Category | null;
 }
@@ -50,8 +53,21 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
     const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
     const { toast } = useToast();
 
-    const topLevelCategories = categories.filter(c => !c.parentId || c.parentId === "");
-    const subCategories = categories.filter(c => c.parentId && c.parentId !== "");
+    const topLevelCategories = categories
+        .filter(c => !c.parentId || c.parentId === "")
+        .sort((a, b) => {
+            const vA = a.sortOrder === 0 ? 999999 : (a.sortOrder || 999999);
+            const vB = b.sortOrder === 0 ? 999999 : (b.sortOrder || 999999);
+            return vA - vB;
+        });
+
+    const subCategories = categories
+        .filter(c => c.parentId && c.parentId !== "")
+        .sort((a, b) => {
+            const vA = a.sortOrder === 0 ? 999999 : (a.sortOrder || 999999);
+            const vB = b.sortOrder === 0 ? 999999 : (b.sortOrder || 999999);
+            return vA - vB;
+        });
 
     const itemsByCategory = topLevelCategories.map(category => ({
         ...category,
@@ -141,43 +157,6 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
     );
 }
 
-// Map category names to icons
-
-
-// Map category names to icons
-const getCategoryIcon = (category: Partial<Category>) => {
-    // If explicit icon is set, use it
-    if (category.icon) {
-        const icons: Record<string, typeof Package> = {
-            "shirt": Shirt,
-            "package": Package,
-            "layers": Layers,
-            "zap": Zap,
-            "scissors": Scissors,
-            "box": Box,
-            "hourglass": Hourglass,
-            "wind": Wind,
-        };
-        return icons[category.icon] || Package;
-    }
-
-    // Fallback to name-based mapping
-    const iconMap: Record<string, typeof Package> = {
-        "Футболки": Shirt,
-        "Худи": Hourglass,
-        "Свитшот": Layers,
-        "Лонгслив": Shirt,
-        "Анорак": Wind,
-        "Зип-худи": Zap,
-        "Штаны": Package,
-        "Поло": Shirt,
-        "Кепки": Box,
-        "Упаковка": Box,
-        "Расходники": Scissors,
-    };
-    return iconMap[category.name || ""] || Package;
-};
-
 import { createElement } from "react";
 
 function CategoryCard({
@@ -193,33 +172,6 @@ function CategoryCard({
     const lowStockCount = category.items.filter((i) => (i.quantity - (i.reservedQuantity || 0)) <= i.lowStockThreshold).length;
     const IconComponent = getCategoryIcon(category);
     const isOrphaned = category.id === "orphaned";
-
-    // Helper for color styles
-    const getColorStyles = (color: string | null | undefined) => {
-        const c = color || "slate";
-        const styles: Record<string, string> = {
-            "slate": "bg-slate-100/80 text-slate-600",
-            "red": "bg-red-100/80 text-red-600",
-            "orange": "bg-orange-100/80 text-orange-600",
-            "amber": "bg-amber-100/80 text-amber-600",
-            "yellow": "bg-yellow-100/80 text-yellow-600",
-            "lime": "bg-lime-100/80 text-lime-600",
-            "green": "bg-green-100/80 text-green-600",
-            "emerald": "bg-emerald-100/80 text-emerald-600",
-            "teal": "bg-teal-100/80 text-teal-600",
-            "cyan": "bg-cyan-100/80 text-cyan-600",
-            "sky": "bg-sky-100/80 text-sky-600",
-            "blue": "bg-blue-100/80 text-blue-600",
-            "indigo": "bg-indigo-100/80 text-indigo-600",
-            "violet": "bg-violet-100/80 text-violet-600",
-            "purple": "bg-purple-100/80 text-purple-600",
-            "fuchsia": "bg-fuchsia-100/80 text-fuchsia-600",
-            "pink": "bg-pink-100/80 text-pink-600",
-            "rose": "bg-rose-100/80 text-rose-600",
-        };
-        return styles[c] || styles["slate"];
-    };
-
     const colorStyle = getColorStyles(category.color);
 
     const handleDelete = async (e: React.MouseEvent) => {
@@ -253,7 +205,7 @@ function CategoryCard({
                             {category.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                            <span className="text-[11px] font-bold text-slate-400 tracking-widest">
                                 {category.parent && (
                                     <span className="text-indigo-400 group-hover:text-indigo-500 transition-colors">
                                         {category.parent.name} /{" "}
@@ -262,7 +214,7 @@ function CategoryCard({
                                 {category.items.length} позиций
                             </span>
                             {lowStockCount > 0 && (
-                                <Badge className="bg-rose-50 text-rose-600 border-none px-1.5 py-0 text-[9px] font-black uppercase pointer-events-none">
+                                <Badge className="bg-rose-50 text-rose-600 border-none px-1.5 py-0 text-[9px] font-black pointer-events-none">
                                     {lowStockCount} Крит.
                                 </Badge>
                             )}
@@ -293,19 +245,21 @@ function CategoryCard({
                 )}
             </div>
 
-            <div className="h-10 overflow-hidden">
+            <div className="min-h-[2.5rem]">
                 {category.children && category.children.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                        {category.children.slice(0, 3).map(child => (
-                            <span key={child.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500">
+                        {category.children.map(child => (
+                            <span
+                                key={child.id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/dashboard/warehouse/${child.id}`);
+                                }}
+                                className="inline-flex items-center px-2 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 transition-colors cursor-pointer"
+                            >
                                 {child.name}
                             </span>
                         ))}
-                        {category.children.length > 3 && (
-                            <span className="inline-flex items-center px-1.5 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-400">
-                                +{category.children.length - 3}
-                            </span>
-                        )}
                     </div>
                 ) : category.description ? (
                     <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2">
@@ -313,7 +267,7 @@ function CategoryCard({
                     </p>
                 ) : (
                     !isOrphaned && (
-                        <p className="text-[13px] text-slate-300 italic font-medium">
+                        <p className="text-[13px] text-slate-300 font-medium">
                             Нет подкатегорий
                         </p>
                     )
@@ -321,7 +275,7 @@ function CategoryCard({
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t border-slate-50">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-600 transition-colors">
+                <span className="text-[11px] font-black tracking-[0.2em] text-slate-400 group-hover:text-indigo-600 transition-colors">
                     Подробнее
                 </span>
                 <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
