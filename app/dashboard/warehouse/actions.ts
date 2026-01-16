@@ -210,7 +210,7 @@ export async function addInventoryItem(formData: FormData) {
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
     const attributesStr = formData.get("attributes") as string;
-    let attributes: any = {};
+    let attributes: Record<string, unknown> = {};
     if (attributesStr) {
         try {
             attributes = JSON.parse(attributesStr);
@@ -393,7 +393,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const imageFile = formData.get("image") as File;
     const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
     const attributesStr = formData.get("attributes") as string;
-    let attributes: any = {};
+    let attributes: Record<string, unknown> = {};
     if (attributesStr) {
         try {
             attributes = JSON.parse(attributesStr);
@@ -706,8 +706,8 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "Failed to transfer stock" };
+    } catch (error: unknown) {
+        return { error: (error as Error).message || "Failed to transfer stock" };
     }
 }
 

@@ -1,10 +1,10 @@
 import {
-    Shirt, Package, Layers, Zap, Scissors, Box, Hourglass, Wind, Tag,
+    Shirt, Package, Layers, Zap, Scissors, Box, Hourglass, Tag,
     ShoppingBag, Footprints, GraduationCap,
     Baby, Crown, User, Users, Gem, Handbag, Glasses,
     Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, ClipboardList,
     Pencil, Brush, Ruler, Hammer, Wrench, Eraser, PenTool, Pipette,
-    Palette, Printer, FlaskConical, StickyNote, Paintbrush,
+    Palette, Printer, FlaskConical,
     Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
     Eye, LifeBuoy, Check, Plus
 } from "lucide-react";

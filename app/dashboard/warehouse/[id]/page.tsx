@@ -1,8 +1,9 @@
 import { db } from "@/lib/db";
-import { inventoryCategories, inventoryItems, storageLocations } from "@/lib/schema";
-import { eq, isNull } from "drizzle-orm";
+import { inventoryCategories } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { CategoryDetailClient } from "./category-detail-client";
+import { CategoryDetailClient, Category, InventoryItem } from "./category-detail-client";
+import { StorageLocation } from "../storage-locations-tab";
 
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: categoryId } = await params;
@@ -76,12 +77,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     return (
         <div className="p-1">
             <CategoryDetailClient
-                category={finalCategory as any}
-                parentCategory={parentCategory ? { ...parentCategory, createdAt: parentCategory.createdAt.toISOString() } : undefined as any}
-                subCategories={subCategories as any}
-                items={items as any}
-                storageLocations={locations as any}
-                measurementUnits={units as any}
+                category={finalCategory as unknown as Category}
+                parentCategory={parentCategory ? { ...parentCategory, createdAt: parentCategory.createdAt.toISOString() } as unknown as Category : undefined}
+                subCategories={subCategories as unknown as Category[]}
+                items={items as unknown as InventoryItem[]}
+                storageLocations={locations as unknown as StorageLocation[]}
+                measurementUnits={units as { id: string, name: string }[]}
             />
         </div>
     );

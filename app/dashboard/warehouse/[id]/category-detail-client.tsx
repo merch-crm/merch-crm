@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Package, Hash, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, Layers, ChevronRight, Copy, Download, ChevronDown, Tag } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Package, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Copy, Download, ChevronDown, Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,6 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { createElement } from "react";
 import { getCategoryIcon, getColorStyles } from "../category-utils";
 import { UnitSelect } from "@/components/ui/unit-select";
-import { getIconNameFromName } from "../category-utils";
 
 
 export interface InventoryItem {
@@ -79,7 +78,6 @@ export function CategoryDetailClient({
     measurementUnits = []
 }: CategoryDetailClientProps) {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isDeleting, setIsDeleting] = useState(false);
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
@@ -514,7 +512,7 @@ export function CategoryDetailClient({
                             return (
                                 <button
                                     key={f.id}
-                                    onClick={() => setFilterStatus(f.id as any)}
+                                    onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                     className={cn(
                                         "px-6 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all",
                                         isActive
