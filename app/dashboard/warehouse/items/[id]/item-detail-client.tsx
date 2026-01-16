@@ -43,8 +43,36 @@ interface ItemStock {
     storageLocation: { name: string } | null;
 }
 
+export interface InventoryItem {
+    id: string;
+    name: string;
+    sku: string | null;
+    quantity: number;
+    unit: string;
+    lowStockThreshold: number;
+    description: string | null;
+    location: string | null;
+    storageLocationId: string | null;
+    image: string | null;
+    reservedQuantity: number;
+    itemType: "clothing" | "packaging" | "consumables";
+    categoryId: string | null;
+    qualityCode: string | null;
+    attributeCode: string | null;
+    sizeCode: string | null;
+    attributes: Record<string, string | number | boolean | null | undefined>;
+    category?: {
+        id: string;
+        name: string;
+        parent?: {
+            id: string;
+            name: string;
+        } | null;
+    } | null;
+}
+
 interface ItemDetailClientProps {
-    item: any;
+    item: InventoryItem;
     storageLocations: StorageLocation[];
     measurementUnits: { id: string, name: string }[];
 }
@@ -64,7 +92,7 @@ const VALUE_LABELS: Record<string, string> = {
     sewing: "Пошив"
 };
 
-const ITEM_TYPE_CONFIG: Record<string, any> = {
+const ITEM_TYPE_CONFIG: Record<string, { name: string, icon: any, color: string }> = {
     clothing: { name: "Одежда", icon: Shirt, color: "bg-blue-500 text-white" },
     packaging: { name: "Упаковка", icon: Box, color: "bg-amber-500 text-white" },
     consumables: { name: "Расходники", icon: Wrench, color: "bg-emerald-500 text-white" }
@@ -97,20 +125,23 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isAdjustMenuOpen, setIsAdjustMenuOpen] = useState(false);
 
-    // Sync state with props when server-side data refreshes
+    // Sync state with props when server-side data refreshes (e.g. after quantity update)
     useEffect(() => {
-        setItem(initialItem);
-        if (!isEditing) {
-            setEditData({
-                name: initialItem.name,
-                sku: initialItem.sku || "",
-                description: initialItem.description || "",
-                unit: initialItem.unit,
-                lowStockThreshold: initialItem.lowStockThreshold || 0,
-                attributes: initialItem.attributes || {}
-            });
+        // Only update if something meaningful changed to avoid cascading renders
+        if (JSON.stringify(item) !== JSON.stringify(initialItem)) {
+            setItem(initialItem);
+            if (!isEditing) {
+                setEditData({
+                    name: initialItem.name,
+                    sku: initialItem.sku || "",
+                    description: initialItem.description || "",
+                    unit: initialItem.unit,
+                    lowStockThreshold: initialItem.lowStockThreshold || 0,
+                    attributes: initialItem.attributes || {}
+                });
+            }
         }
-    }, [initialItem]);
+    }, [initialItem, isEditing, item]);
 
     useEffect(() => {
         async function fetchData() {
@@ -487,7 +518,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                     <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">{ATTRIBUTE_LABELS[key] || key}</span>
                                                     {key === "department" ? (
                                                         <select
-                                                            value={editData.attributes[key] || ""}
+                                                            value={(editData.attributes[key] as string) || ""}
                                                             onChange={e => setEditData({ ...editData, attributes: { ...editData.attributes, [key]: e.target.value } })}
                                                             className="text-sm font-black text-slate-900 bg-transparent border-none outline-none cursor-pointer appearance-none"
                                                         >
@@ -498,7 +529,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                         </select>
                                                     ) : (
                                                         <input
-                                                            value={editData.attributes[key] || ""}
+                                                            value={(editData.attributes[key] as string | number) || ""}
                                                             onChange={e => setEditData({ ...editData, attributes: { ...editData.attributes, [key]: e.target.value } })}
                                                             className="text-sm font-black text-slate-900 bg-transparent border-none outline-none w-full"
                                                             placeholder="..."

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Shirt, Hourglass, Wind, Layers, Zap, Scissors, Box, Pencil, ChevronRight, Trash2 } from "lucide-react";
+import { Package, Pencil, ChevronRight, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";

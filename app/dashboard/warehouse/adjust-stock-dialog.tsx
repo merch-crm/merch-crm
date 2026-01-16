@@ -66,7 +66,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
         setError("");
 
         try {
-            // @ts-ignore - type "set" is handled in action now
+
             const res = await adjustInventoryStock(item.id, amount, type, reason, selectedLocationId);
             if (res.success) {
                 onClose();

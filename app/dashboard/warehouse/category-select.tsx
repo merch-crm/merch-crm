@@ -47,7 +47,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
         setSearchQuery("");
     };
 
-    const SelectedIcon = selectedCategory ? getCategoryIcon(selectedCategory) : Package;
+    const iconComponent = selectedCategory ? getCategoryIcon(selectedCategory) : Package;
 
     return (
         <div className="relative" ref={containerRef}>
@@ -68,7 +68,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                                 "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm transition-colors",
                                 getColorStyles(selectedCategory?.color)
                             )}>
-                                <SelectedIcon className="w-4 h-4" />
+                                {createElement(iconComponent, { className: "w-4 h-4" })}
                             </div>
                             <span className="font-bold text-slate-900">{selectedCategory?.name}</span>
                         </>

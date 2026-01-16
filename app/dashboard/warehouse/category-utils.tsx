@@ -6,7 +6,7 @@ import {
     Pencil, Brush, Ruler, Hammer, Wrench, Eraser, PenTool, Pipette,
     Palette, Printer, FlaskConical,
     Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
-    Eye, LifeBuoy, Check, Plus
+    Eye
 } from "lucide-react";
 import { Category } from "./inventory-client";
 

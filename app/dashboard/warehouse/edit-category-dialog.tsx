@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, createElement, useEffect } from "react";
-import { X, Package, Check, Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, createElement } from "react";
+import { X, Package, Check, Trash2, ChevronDown } from "lucide-react";
 
-import { updateInventoryCategory, deleteInventoryCategory, addInventoryCategory } from "./actions";
+import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
