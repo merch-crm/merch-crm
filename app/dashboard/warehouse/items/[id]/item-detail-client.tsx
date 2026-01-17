@@ -73,7 +73,7 @@ export interface InventoryItem {
     qualityCode: string | null;
     attributeCode: string | null;
     sizeCode: string | null;
-    attributes: Record<string, string | number | boolean | null | undefined>;
+    attributes: Record<string, unknown>;
     category?: {
         id: string;
         name: string;
@@ -99,6 +99,12 @@ export interface Category {
         id: string;
         name: string;
     } | null;
+}
+
+interface ThumbnailSettings {
+    x: number;
+    y: number;
+    scale: number;
 }
 
 interface ItemDetailClientProps {
@@ -388,6 +394,18 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [fullscreenIndex, closeFullscreen, navigateFullscreen]);
 
+
+    const isClothing = item.itemType === "clothing" || item.category?.name.toLowerCase().includes("одежда") || item.category?.parent?.name.toLowerCase().includes("одежда");
+
+    const parentCategory = item.category?.parent;
+    const currentCategory = item.category;
+
+    const [isThumbnailEditing, setIsThumbnailEditing] = useState(false);
+    const [thumbnailSettings, setThumbnailSettings] = useState<ThumbnailSettings>(() => {
+        const attrs = initialItem.attributes as Record<string, unknown> | null;
+        return (attrs?.thumbnailSettings as unknown as ThumbnailSettings) || { x: 50, y: 50, scale: 1 };
+    });
+
     // Sync state with props when server-side data refreshes (e.g. after quantity update)
     if (JSON.stringify(initialItem) !== JSON.stringify(prevInitialItem)) {
         setPrevInitialItem(initialItem);
@@ -407,22 +425,15 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
             setAttributeCode(initialItem.attributeCode || "");
             setSizeCode(initialItem.sizeCode || "");
             setActiveImage(initialItem.image);
+
+            const attrs = initialItem.attributes as Record<string, unknown> | null;
+            if (attrs?.thumbnailSettings) {
+                setThumbnailSettings(attrs.thumbnailSettings as unknown as ThumbnailSettings);
+            } else {
+                setThumbnailSettings({ x: 50, y: 50, scale: 1 });
+            }
         }
     }
-
-    const isClothing = item.itemType === "clothing" || item.category?.name.toLowerCase().includes("одежда") || item.category?.parent?.name.toLowerCase().includes("одежда");
-
-    const parentCategory = item.category?.parent;
-    const currentCategory = item.category;
-
-    const [isThumbnailEditing, setIsThumbnailEditing] = useState(false);
-    const [thumbnailSettings, setThumbnailSettings] = useState<{ x: number; y: number; scale: number }>({ x: 50, y: 50, scale: 1 });
-
-    useEffect(() => {
-        if (item.attributes?.thumbnailSettings) {
-            setThumbnailSettings(item.attributes.thumbnailSettings as any);
-        }
-    }, [item.attributes]);
 
     const skuPreview = currentCategory?.prefix
         ? [currentCategory.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-")
@@ -1396,22 +1407,22 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Цвет</span>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full border-2 border-white shadow-md ring-1 ring-slate-200/50" style={{ backgroundColor: CLOTHING_COLORS.find(c => c.name === (editData.attributes["Цвет"] || item.attributes?.["Цвет"]))?.hex || "#f1f5f9" }} />
-                                                <span className="text-lg font-black text-slate-900 leading-none">{editData.attributes["Цвет"] || item.attributes?.["Цвет"] || "—"}</span>
+                                                <span className="text-lg font-black text-slate-900 leading-none">{(editData.attributes["Цвет"] || item.attributes?.["Цвет"] || "—") as string}</span>
                                             </div>
                                         </div>
                                         <div className="p-6 bg-gradient-to-br from-white to-slate-50/50 rounded-3xl border border-slate-200/60 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Размер</span>
-                                            <span className="text-lg font-black text-slate-900 leading-none">{editData.attributes["Размер"] || item.attributes?.["Размер"] || "—"}</span>
+                                            <span className="text-lg font-black text-slate-900 leading-none">{(editData.attributes["Размер"] || item.attributes?.["Размер"] || "—") as string}</span>
                                         </div>
 
                                         <div className="p-6 bg-gradient-to-br from-white to-slate-50/50 rounded-3xl border border-slate-200/60 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Материал</span>
-                                            <span className="text-lg font-black text-slate-900 leading-none">{editData.attributes["Материал"] || item.attributes?.["Материал"] || "—"}</span>
+                                            <span className="text-lg font-black text-slate-900 leading-none">{(editData.attributes["Материал"] || item.attributes?.["Материал"] || "—") as string}</span>
                                         </div>
 
                                         <div className="p-6 bg-gradient-to-br from-white to-slate-50/50 rounded-3xl border border-slate-200/60 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Качество</span>
-                                            <span className="text-lg font-black text-slate-900 leading-none">{editData.attributes["Качество"] || item.attributes?.["Качество"] || "—"}</span>
+                                            <span className="text-lg font-black text-slate-900 leading-none">{(editData.attributes["Качество"] || item.attributes?.["Качество"] || "—") as string}</span>
                                         </div>
                                     </div>
                                 )}
@@ -1574,8 +1585,8 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                             </div>
                         ) : history.length > 0 ? (
                             <div className="space-y-4">
-                                {history.slice((historyPage - 1) * historyPerPage, historyPage * historyPerPage).map((t) => {
-                                    const getTransactionDisplay = (t: any) => {
+                                {history.slice((historyPage - 1) * historyPerPage, historyPage * historyPerPage).map((t: ItemHistoryTransaction) => {
+                                    const getTransactionDisplay = (t: ItemHistoryTransaction) => {
                                         const reason = (t.reason || "").toLowerCase();
 
                                         if (t.type === "transfer") {
@@ -1866,7 +1877,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                     attributes: {
                                                         ...currentAttrs,
                                                         thumbnailSettings: thumbnailSettings
-                                                    } as any
+                                                    }
                                                 };
                                             });
                                             setIsThumbnailEditing(false);
