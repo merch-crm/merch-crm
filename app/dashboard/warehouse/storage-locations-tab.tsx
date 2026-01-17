@@ -14,6 +14,7 @@ export interface StorageLocation {
     address: string;
     responsibleUserId: string | null;
     description?: string | null;
+    isSystem: boolean;
     responsibleUser?: {
         name: string;
     } | null;
@@ -113,12 +114,14 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                     >
                                         <Pencil className="w-4 h-4" />
                                     </button>
-                                    <button
-                                        onClick={(e) => handleDeleteClick(e, loc.id, loc.name)}
-                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    {!loc.isSystem && (
+                                        <button
+                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name)}
+                                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

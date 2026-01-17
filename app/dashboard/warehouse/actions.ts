@@ -939,6 +939,7 @@ export async function getStorageLocations() {
                 address: storageLocations.address,
                 description: storageLocations.description,
                 responsibleUserId: storageLocations.responsibleUserId,
+                isSystem: storageLocations.isSystem,
                 createdAt: storageLocations.createdAt,
                 responsibleUser: {
                     id: users.id,
@@ -1048,6 +1049,14 @@ export async function deleteStorageLocation(id: string) {
     }
 
     try {
+        const location = await db.query.storageLocations.findFirst({
+            where: eq(storageLocations.id, id)
+        });
+
+        if (location?.isSystem) {
+            return { error: "Нельзя удалить системное место хранения" };
+        }
+
         // 1. Check if there are any stocks with positive quantity
         const activeStocks = await db.query.inventoryStocks.findMany({
             where: and(

@@ -264,6 +264,7 @@ export const storageLocations = pgTable("storage_locations", {
     address: text("address").notNull(),
     description: text("description"),
     responsibleUserId: uuid("responsible_user_id").references(() => users.id),
+    isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
