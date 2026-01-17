@@ -2,6 +2,8 @@
 
 import { useState, createElement } from "react";
 import { X, Package, Check, Trash2, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
@@ -106,7 +108,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[90vh] flex flex-col">
+            <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
                 <div className="flex items-center justify-between p-10 pb-6 shrink-0">
                     <div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
@@ -141,23 +143,23 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div className={cn(isParentCategory ? "col-span-1" : "col-span-1", "space-y-2")}>
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="space-y-2 col-span-2">
-                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Название категории</label>
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Название категории</label>
                                     <input
                                         name="name"
                                         required
                                         defaultValue={category.name}
                                         placeholder="Напр. Футболки"
-                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Артикул</label>
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Артикул</label>
                                     <input
                                         name="prefix"
                                         defaultValue={category.prefix || ""}
                                         placeholder="TS"
-                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center tracking-widest uppercase"
+                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center tracking-widest uppercase"
                                         onInput={(e) => {
                                             const val = e.currentTarget.value;
                                             if (/[а-яА-ЯёЁ]/.test(val)) alert("Используйте латиницу");
@@ -166,33 +168,36 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
                                     <input
                                         type="number"
                                         name="sortOrder"
                                         defaultValue={category.sortOrder || 0}
-                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
+                                        className="w-full h-14 px-6 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center h-12 px-4"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Описание (опционально)</label>
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Описание (опционально)</label>
                                     <textarea
                                         name="description"
                                         defaultValue={category.description || ""}
                                         placeholder="Краткое описание для сайта или склада..."
-                                        className="w-full min-h-[80px] p-5 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
+                                        className="w-full min-h-[80px] p-5 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed p-5 min-h-[80px]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Визуальное оформление</label>
-                                    <div className="p-4 bg-white rounded-[1.25rem] border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center">
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Визуальное оформление</label>
+                                    <div className="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center p-4 bg-white">
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="flex items-center gap-3 shrink-0">
-                                                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm", selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300")}>
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm",
+                                                    selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300"
+                                                )}>
                                                     {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-5 h-5" })}
                                                 </div>
                                                 <div>
@@ -397,102 +402,103 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <button
                             type="button"
                             onClick={onClose}
-                            className="h-14 px-10 rounded-2xl text-slate-500 text-xs font-black tracking-widest hover:bg-slate-100 transition-all active:scale-95"
+                            className="h-14 px-10 rounded-2xl text-slate-500 text-sm font-bold hover:bg-slate-100 transition-all active:scale-95"
                         >
-                            ОТМЕНА
+                            Отмена
                         </button>
-                        <button
+                        <SubmitButton
                             form="edit-category-form"
-                            type="submit"
-                            disabled={isPending}
-                            className="h-14 px-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50"
-                        >
-                            {isPending ? "СОХРАНЕНИЕ..." : "СОХРАНИТЬ ИЗМЕНЕНИЯ"}
-                        </button>
+                            label="Сохранить изменения"
+                            pendingLabel="Сохранение..."
+                        />
                     </div>
                 </div>
                 {/* Custom Delete Confirmation Modal */}
-                {subToDelete && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <div
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
-                            onClick={() => setSubToDelete(null)}
-                        />
-                        <div className="relative w-full max-w-[340px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 fade-in duration-200">
-                            <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-5 text-rose-500">
-                                <Trash2 className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-lg font-black text-slate-900 mb-2 uppercase tracking-tight">Удалить подкатегорию?</h3>
-                            <p className="text-sm font-medium text-slate-400 leading-relaxed mb-8">Это действие нельзя будет отменить. Подкатегория будет полностью удалена из базы.</p>
+                {
+                    subToDelete && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                            <div
+                                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+                                onClick={() => setSubToDelete(null)}
+                            />
+                            <div className="relative w-full max-w-[340px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 fade-in duration-200">
+                                <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-5 text-rose-500">
+                                    <Trash2 className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-lg font-black text-slate-900 mb-2 uppercase tracking-tight">Удалить подкатегорию?</h3>
+                                <p className="text-sm font-medium text-slate-400 leading-relaxed mb-8">Это действие нельзя будет отменить. Подкатегория будет полностью удалена из базы.</p>
 
-                            <div className="flex flex-col gap-3">
-                                <button
-                                    type="button"
-                                    onClick={confirmDeleteSub}
-                                    disabled={subPending}
-                                    className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-100 disabled:opacity-50"
-                                >
-                                    {subPending ? "УДАЛЕНИЕ..." : "ДА, УДАЛИТЬ"}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setSubToDelete(null)}
-                                    className="w-full h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95"
-                                >
-                                    ОТМЕНА
-                                </button>
+                                <div className="flex flex-col gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={confirmDeleteSub}
+                                        disabled={subPending}
+                                        className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-100 disabled:opacity-50"
+                                    >
+                                        {subPending ? "УДАЛЕНИЕ..." : "ДА, УДАЛИТЬ"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubToDelete(null)}
+                                        className="w-full h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95"
+                                    >
+                                        ОТМЕНА
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
                 {/* Main Category Delete Confirmation Modal */}
-                {showDeleteModal && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <div
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
-                            onClick={() => setShowDeleteModal(false)}
-                        />
-                        <div className="relative w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 text-center animate-in zoom-in-95 fade-in duration-200">
-                            <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-500 shadow-sm">
-                                <Trash2 className="w-10 h-10" />
-                            </div>
-                            <h3 className="text-xl font-black text-slate-900 mb-3 uppercase tracking-tight">Удалить категорию?</h3>
-                            <p className="text-sm font-bold text-slate-500 leading-relaxed mb-2">
-                                Вы собираетесь удалить категорию <span className="text-slate-800">«{category.name}»</span>.
-                            </p>
-                            <p className="text-xs font-medium text-slate-400 leading-relaxed mb-8">
-                                {isParentCategory && subCategories.length > 0
-                                    ? "Все вложенные подкатегории будут откреплены, но не удалены. Товары станут без категории."
-                                    : "Действие необратимо. Товары этой категории станут 'Без категории'."}
-                            </p>
+                {
+                    showDeleteModal && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                            <div
+                                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+                                onClick={() => setShowDeleteModal(false)}
+                            />
+                            <div className="relative w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 text-center animate-in zoom-in-95 fade-in duration-200">
+                                <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-500 shadow-sm">
+                                    <Trash2 className="w-10 h-10" />
+                                </div>
+                                <h3 className="text-xl font-black text-slate-900 mb-3 uppercase tracking-tight">Удалить категорию?</h3>
+                                <p className="text-sm font-bold text-slate-500 leading-relaxed mb-2">
+                                    Вы собираетесь удалить категорию <span className="text-slate-800">«{category.name}»</span>.
+                                </p>
+                                <p className="text-xs font-medium text-slate-400 leading-relaxed mb-8">
+                                    {isParentCategory && subCategories.length > 0
+                                        ? "Все вложенные подкатегории будут откреплены, но не удалены. Товары станут без категории."
+                                        : "Действие необратимо. Товары этой категории станут 'Без категории'."}
+                                </p>
 
-                            <div className="flex flex-col gap-3">
-                                <button
-                                    type="button"
-                                    onClick={handleDeleteCategory}
-                                    disabled={isPending}
-                                    className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
-                                >
-                                    {isPending ? (
-                                        "УДАЛЕНИЕ..."
-                                    ) : (
-                                        <>
-                                            ПОДТВЕРДИТЬ УДАЛЕНИЕ
-                                        </>
-                                    )}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowDeleteModal(false)}
-                                    className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95"
-                                >
-                                    ОТМЕНА
-                                </button>
+                                <div className="flex flex-col gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={handleDeleteCategory}
+                                        disabled={isPending}
+                                        className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {isPending ? (
+                                            "Удаление..."
+                                        ) : (
+                                            <>
+                                                Подтвердить удаление
+                                            </>
+                                        )}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDeleteModal(false)}
+                                        className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95"
+                                    >
+                                        ОТМЕНА
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>
-        </div>
+                    )
+                }
+            </div >
+        </div >
     );
 }

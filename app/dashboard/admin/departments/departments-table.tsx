@@ -36,7 +36,19 @@ export function DepartmentsTable() {
     const fetchDepartments = (isInitial = true) => {
         if (isInitial) setLoading(true);
         getDepartments().then(res => {
-            if (res.data) setDepartments(res.data as Department[]);
+            console.log('getDepartments response:', res);
+            if (res.error) {
+                console.error('Error loading departments:', res.error);
+            }
+            if (res.data) {
+                console.log('Departments loaded:', res.data.length);
+                setDepartments(res.data as Department[]);
+            } else {
+                console.warn('No departments data in response');
+            }
+            if (isInitial) setLoading(false);
+        }).catch(err => {
+            console.error('Failed to fetch departments:', err);
             if (isInitial) setLoading(false);
         });
     };

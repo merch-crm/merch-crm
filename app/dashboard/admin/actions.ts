@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { hashPassword } from "@/lib/password";
-import { eq, asc, desc, isNull, sql, and, inArray, count, gte } from "drizzle-orm";
+import { eq, asc, desc, isNull, sql, and, or, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logSecurityEvent } from "@/lib/security-logger";
 import os from "os";
@@ -256,8 +256,39 @@ export async function deleteUser(userId: string) {
         return { error: "Только администратор может удалять сотрудников" };
     }
 
+    if (userId === session.id) {
+        return { error: "Вы не можете удалить самого себя" };
+    }
+
     try {
+        // Check for dependencies to avoid DB errors
+        const [managedClients, createdOrders, userTasks] = await Promise.all([
+            db.query.clients.findFirst({ where: eq(clients.managerId, userId) }),
+            db.query.orders.findFirst({ where: eq(orders.createdBy, userId) }),
+            db.query.tasks.findFirst({
+                where: or(
+                    eq(tasks.assignedToUserId, userId),
+                    eq(tasks.createdBy, userId)
+                )
+            }),
+        ]);
+
+        if (managedClients || createdOrders || userTasks) {
+            return {
+                error: "Нельзя удалить сотрудника, у которого есть история действий (заказы, клиенты или задачи). Пожалуйста, сначала передайте его дела другому сотруднику."
+            };
+        }
+
         await db.delete(users).where(eq(users.id, userId));
+
+        await logSecurityEvent({
+            eventType: "record_delete",
+            severity: "warning",
+            entityType: "user",
+            entityId: userId,
+            details: { deletedBy: session.id }
+        });
+
         revalidatePath("/dashboard/admin");
         return { success: true };
     } catch (error) {
@@ -267,8 +298,8 @@ export async function deleteUser(userId: string) {
             method: "deleteUser",
             details: { userId }
         });
-        console.error("Error deleting user:");
-        return { error: "Failed to delete user" };
+        console.error("Error deleting user:", error);
+        return { error: "Ошибка при удалении пользователя. Возможно, он связан с другими записями." };
     }
 }
 
@@ -420,6 +451,14 @@ export async function updateRole(roleId: string, formData: FormData) {
     }
 
     try {
+        const role = await db.query.roles.findFirst({
+            where: eq(roles.id, roleId)
+        });
+
+        if (role?.isSystem && name !== role.name) {
+            return { error: "Нельзя переименовать системную роль, так как на её название завязаны проверки в коде" };
+        }
+
         await db.update(roles)
             .set({
                 name,
@@ -639,38 +678,11 @@ export async function deleteRole(roleId: string) {
 }
 
 export async function getDepartments() {
-    const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
     try {
         // 1. Fetch all departments with current users
         const allDepts = await db.query.departments.findMany({
             with: { users: true }
         });
-
-        // 2. Fetch users who have a department name but no departmentId (legacy/unsynced data)
-        const unsyncedUsers = await db.query.users.findMany({
-            where: isNull(users.departmentId)
-        });
-
-        if (unsyncedUsers.length > 0) {
-            console.log(`Found ${unsyncedUsers.length} unsynced users. Attempting to link...`);
-            const deptMap = new Map(allDepts.map((d) => [d.name.toLowerCase(), d.id]));
-
-            for (const user of unsyncedUsers) {
-                if (user.departmentLegacy) {
-                    const deptId = deptMap.get(user.departmentLegacy.toLowerCase());
-                    if (deptId) {
-                        await db.update(users)
-                            .set({ departmentId: deptId })
-                            .where(eq(users.id, user.id));
-                    }
-                }
-            }
-
-            // Re-fetch to get accurate counts after sync
-            return getDepartments();
-        }
 
         // Custom sort order based on priority
         const deptPriority: Record<string, number> = {

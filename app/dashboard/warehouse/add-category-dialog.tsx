@@ -3,6 +3,7 @@
 import { useState, createElement } from "react";
 import { X, FolderPlus, Package, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -79,7 +80,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                         onClick={() => setIsOpen(false)}
                     />
 
-                    <div className="relative w-full max-w-6xl bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
+                    <div className="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
                         <div className="flex items-center justify-between p-10 pb-6 shrink-0">
                             <div>
                                 <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
@@ -153,21 +154,21 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
+                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
                                         <input
                                             type="number"
                                             name="sortOrder"
                                             defaultValue={0}
-                                            className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
                                         />
                                     </div>
 
                                     <div className="space-y-2 col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Описание</label>
+                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Описание</label>
                                         <textarea
                                             name="description"
                                             placeholder="Краткое описание для сайта..."
-                                            className="w-full min-h-[140px] p-6 rounded-[24px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
+                                            className="w-full min-h-[140px] p-5 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
                                         />
                                     </div>
                                 </div>
@@ -176,7 +177,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                 <div className="space-y-8">
                                     {parentId && (
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Родительская категория</label>
+                                            <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Родительская категория</label>
                                             <CategorySelect
                                                 categories={categories}
                                                 value={selectedParentId}
@@ -187,14 +188,14 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                         </div>
                                     )}
 
-                                    <div className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8 min-h-[220px] flex flex-col justify-center">
+                                    <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-6 min-h-[220px] flex flex-col justify-center">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-5">
                                                 <div className={cn("w-16 h-16 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm", selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300")}>
                                                     {createElement(getCategoryIcon({ icon: selectedIcon, name: categoryName }), { className: "w-8 h-8" })}
                                                 </div>
                                                 <div>
-                                                    <span className="text-[10px] font-black text-slate-400 tracking-widest block leading-none mb-1.5 uppercase">ИКОНКА</span>
+                                                    <span className="text-xs font-black text-slate-400 tracking-widest block leading-none mb-1.5 uppercase">ИКОНКА</span>
                                                     <span className="text-[14px] font-bold text-slate-700 block leading-none">
                                                         {ICONS.find(i => i.name === selectedIcon)?.label || "Не выбрана"}
                                                     </span>
@@ -211,9 +212,9 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                                 className="h-12 px-6 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-500 group active:scale-95 shadow-sm"
                                             >
                                                 {showIcons ? (
-                                                    <>СВЕРНУТЬ <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600" /></>
+                                                    <>Свернуть <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600" /></>
                                                 ) : (
-                                                    <>ВЫБРАТЬ <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600" /></>
+                                                    <>Выбрать <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600" /></>
                                                 )}
                                             </button>
                                         </div>
@@ -308,14 +309,12 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                         </form>
 
                         <div className="shrink-0 p-10 border-t border-slate-100 bg-slate-50/10 rounded-b-[3rem]">
-                            <button
-                                type="submit"
+                            <SubmitButton
                                 form="add-category-form"
-                                disabled={isPending}
-                                className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50"
-                            >
-                                {isPending ? "СОЗДАНИЕ..." : (parentId ? "СОЗДАТЬ ПОДКАТЕГОРИЮ" : "СОЗДАТЬ КАТЕГОРИЮ")}
-                            </button>
+                                label={parentId ? "Создать подкатегорию" : "Создать категорию"}
+                                pendingLabel="Создание..."
+                                className="w-full"
+                            />
                         </div>
                     </div>
                 </div>

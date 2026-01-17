@@ -175,12 +175,15 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Характеристики</h3>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                {Object.entries(item.attributes).map(([key, value]) => (
-                                    <div key={key} className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-0.5">
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">{key}</span>
-                                        <span className="text-xs font-black text-slate-900">{value}</span>
-                                    </div>
-                                ))}
+                                {Object.entries(item.attributes || {}).map(([key, value]) => {
+                                    if (key === "thumbnailSettings" || typeof value === "object") return null;
+                                    return (
+                                        <div key={key} className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-0.5">
+                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">{key}</span>
+                                            <span className="text-xs font-black text-slate-900">{value as any}</span>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
@@ -215,30 +218,42 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                                     const isIn = t.type === "in";
                                     const isTransfer = t.type === "transfer";
                                     return (
-                                        <div key={t.id} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-100 hover:border-slate-200 transition-all hover:bg-slate-50/30 group">
-                                            <div className={cn(
-                                                "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0",
-                                                isTransfer ? "bg-indigo-50 text-indigo-600 border border-indigo-100" : (isIn ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100")
-                                            )}>
-                                                {isTransfer ? <ArrowUpRight className="w-5 h-5 opacity-50" /> : (isIn ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownLeft className="w-5 h-5" />)}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center justify-between mb-0.5">
-                                                    <div className="text-sm font-black text-slate-900">
-                                                        {isTransfer ? "Перемещение" : (isIn ? "Приход" : "Расход")}
-                                                        {t.storageLocation && <span className="ml-2 py-0.5 px-2 bg-slate-100 rounded text-[10px] text-slate-500 uppercase font-black">{t.storageLocation.name}</span>}
+                                        <div key={t.id} className="flex flex-col gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-100 hover:border-indigo-100 transition-all hover:bg-slate-50/30 group">
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0",
+                                                    isTransfer ? "bg-indigo-50 text-indigo-600 border border-indigo-100" : (isIn ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100")
+                                                )}>
+                                                    {isTransfer ? <ArrowUpRight className="w-5 h-5 opacity-50" /> : (isIn ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownLeft className="w-5 h-5" />)}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between mb-0.5">
+                                                        <div className="text-sm font-black text-slate-900 uppercase tracking-tighter">
+                                                            {isTransfer ? "Перемещение" : (isIn ? "Приход" : "Расход")}
+                                                        </div>
+                                                        <div className={cn("text-sm font-black", isTransfer ? "text-indigo-600" : (isIn ? "text-emerald-600" : "text-rose-600"))}>
+                                                            {isTransfer ? "" : (isIn ? "+" : "-")}{Math.abs(t.changeAmount)} {item.unit}
+                                                        </div>
                                                     </div>
-                                                    <div className={cn("text-sm font-black", isTransfer ? "text-indigo-600" : (isIn ? "text-emerald-600" : "text-rose-600"))}>
-                                                        {isTransfer ? "" : (isIn ? "+" : "-")}{Math.abs(t.changeAmount)} {item.unit}
+                                                    <div className="text-xs font-medium text-slate-500 truncate">{t.reason || "Без причины"}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center justify-between pt-3 border-t border-slate-50">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Склад:</div>
+                                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-slate-50 rounded-lg border border-slate-100">
+                                                        <MapPin className="w-2.5 h-2.5 text-indigo-400" />
+                                                        <span className="text-[10px] font-black text-slate-600 uppercase">{t.storageLocation?.name || "—"}</span>
                                                     </div>
                                                 </div>
-                                                <div className="text-xs font-medium text-slate-500 truncate">{t.reason || "Без причины"}</div>
-                                            </div>
-                                            <div className="text-right shrink-0">
-                                                <div className="text-[10px] font-bold text-slate-900">{t.creator?.name || "Сист."}</div>
-                                                <div className="text-[9px] font-bold text-slate-400 mt-0.5">{format(new Date(t.createdAt), "d MMM, HH:mm", { locale: ru })}</div>
+                                                <div className="text-right">
+                                                    <div className="text-[9px] font-black text-slate-900 uppercase">{t.creator?.name || "Сист."}</div>
+                                                    <div className="text-[9px] font-bold text-slate-400">{format(new Date(t.createdAt), "d MMM, HH:mm", { locale: ru })}</div>
+                                                </div>
                                             </div>
                                         </div>
+
                                     );
                                 })}
                             </div>

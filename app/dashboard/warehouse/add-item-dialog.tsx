@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, X, Package, Ruler, Hash, BarChart3, Folder, Shirt, Box, Wrench, ArrowLeft, ChevronRight } from "lucide-react";
+import { Plus, X, Package, Ruler, Hash, BarChart3, Folder, Shirt, Box, Wrench, ArrowLeft, ChevronRight, Image as ImageIcon, AlertTriangle } from "lucide-react";
 import { addInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UnitSelect } from "@/components/ui/unit-select";
+import { AttributeSelector } from "./attribute-selector";
 
 const UNIT_OPTIONS = [
     { id: "kg", name: "КГ" },
@@ -71,6 +72,12 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
     const [sizeCode, setSizeCode] = useState("");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+    // New state for attribute values
+    const [selectedColor, setSelectedColor] = useState("");
+    const [selectedMaterial, setSelectedMaterial] = useState("");
+    const [selectedSize, setSelectedSize] = useState("");
+    const [selectedQuality, setSelectedQuality] = useState("");
+
     const selectedCategory = initialCategories.find(c => c.id === selectedCategoryId);
 
     const sanitizeSku = (val: string) => val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
@@ -88,6 +95,10 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
         setSizeCode("");
         setFieldErrors({});
         setSelectedCategoryId("");
+        setSelectedColor("");
+        setSelectedMaterial("");
+        setSelectedSize("");
+        setSelectedQuality("");
     };
 
     async function clientAction(formData: FormData) {
@@ -106,6 +117,19 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
         setFieldErrors({});
         // Append itemType as it might not be in form naturally if not an input
         formData.append("itemType", itemType);
+
+        // Add selected attributes as JSON
+        if (itemType === "clothing") {
+            const attributes: Record<string, string> = {};
+            if (selectedQuality) attributes["Качество"] = selectedQuality;
+            if (selectedColor) attributes["Цвет"] = selectedColor;
+            if (selectedMaterial) attributes["Материал"] = selectedMaterial;
+            if (selectedSize) attributes["Размер"] = selectedSize;
+
+            if (Object.keys(attributes).length > 0) {
+                formData.append("attributes", JSON.stringify(attributes));
+            }
+        }
 
         const res = await addInventoryItem(formData);
         if (res?.error) {
@@ -170,6 +194,9 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                         key={t.id}
                                         onClick={() => {
                                             setItemType(t.id);
+                                            if (t.id === "clothing") {
+                                                setSelectedUnit("ШТ");
+                                            }
                                             setStep("details");
                                         }}
                                         className="group flex items-center gap-6 p-6 rounded-3xl border border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50/50 transition-all text-left"
@@ -277,28 +304,62 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
 
                                     {/* Type Specific Fields */}
                                     {itemType === "clothing" && selectedCategory?.prefix && (
-                                        <div className="p-5 bg-indigo-50/50 rounded-3xl border border-indigo-100 space-y-4 animate-in fade-in slide-in-from-top-2">
-                                            <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Составной артикул</label>
-                                            <div className="grid grid-cols-3 gap-3">
-                                                <div className="space-y-1.5">
-                                                    <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Качество</label>
-                                                    <input name="qualityCode" value={qualityCode} onChange={(e) => setQualityCode(sanitizeSku(e.target.value))} placeholder="FT" className="w-full h-10 px-3 rounded-xl border border-indigo-100 bg-white text-xs font-bold focus:border-indigo-500 outline-none uppercase" />
-                                                </div>
-                                                <div className="space-y-1.5">
-                                                    <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Цвет</label>
-                                                    <input name="attributeCode" value={attributeCode} onChange={(e) => setAttributeCode(sanitizeSku(e.target.value))} placeholder="BLK" className="w-full h-10 px-3 rounded-xl border border-indigo-100 bg-white text-xs font-bold focus:border-indigo-500 outline-none uppercase" />
-                                                </div>
-                                                <div className="space-y-1.5">
-                                                    <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Размер</label>
-                                                    <input name="sizeCode" value={sizeCode} onChange={(e) => setSizeCode(sanitizeSku(e.target.value))} placeholder="L" className="w-full h-10 px-3 rounded-xl border border-indigo-100 bg-white text-xs font-bold focus:border-indigo-500 outline-none uppercase" />
-                                                </div>
-                                            </div>
+                                        <div className="p-5 bg-indigo-50/50 rounded-3xl border border-indigo-100 space-y-6 animate-in fade-in slide-in-from-top-2">
+                                            <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Характеристики одежды</label>
+
+                                            <AttributeSelector
+                                                type="quality"
+                                                value={selectedQuality}
+                                                onChange={(name, code) => {
+                                                    setSelectedQuality(name);
+                                                    setQualityCode(code);
+                                                }}
+                                                onCodeChange={setQualityCode}
+                                                allowCustom={false}
+                                            />
+
+                                            <AttributeSelector
+                                                type="color"
+                                                value={selectedColor}
+                                                onChange={(name, code) => {
+                                                    setSelectedColor(name);
+                                                    setAttributeCode(code);
+                                                }}
+                                                onCodeChange={setAttributeCode}
+                                                allowCustom={true}
+                                            />
+
+                                            <AttributeSelector
+                                                type="material"
+                                                value={selectedMaterial}
+                                                onChange={(name, code) => {
+                                                    setSelectedMaterial(name);
+                                                }}
+                                                allowCustom={true}
+                                            />
+
+                                            <AttributeSelector
+                                                type="size"
+                                                value={selectedSize}
+                                                onChange={(name, code) => {
+                                                    setSelectedSize(name);
+                                                    setSizeCode(code);
+                                                }}
+                                                onCodeChange={setSizeCode}
+                                                allowCustom={false}
+                                            />
+
                                             {skuPreview && (
                                                 <div className="pt-2 border-t border-indigo-100 flex items-center justify-between">
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Превью:</span>
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Превью артикула:</span>
                                                     <span className="text-sm font-black text-indigo-600 font-mono tracking-wider">{skuPreview}</span>
                                                 </div>
                                             )}
+
+                                            {/* Hidden inputs to pass values to form */}
+                                            <input type="hidden" name="qualityCode" value={qualityCode} />
+                                            <input type="hidden" name="attributeCode" value={attributeCode} />
+                                            <input type="hidden" name="sizeCode" value={sizeCode} />
                                         </div>
                                     )}
 
@@ -334,12 +395,11 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                         </div>
                                     )}
 
-                                    {/* Inventory Controls */}
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-4">
                                         <div className="space-y-2.5">
                                             <label className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                                                 <BarChart3 className="w-3.5 h-3.5" />
-                                                Наличие
+                                                Начальное наличие
                                             </label>
                                             <input
                                                 type="number"
@@ -350,16 +410,58 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                                             />
                                         </div>
-                                        <div className="space-y-2.5">
-                                            <label className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
-                                                Мин. порог
-                                            </label>
-                                            <input
-                                                type="number"
-                                                name="lowStockThreshold"
-                                                defaultValue="5"
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
-                                            />
+
+                                        <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50/50 rounded-[2rem] border border-slate-100">
+                                            <div className="space-y-2.5">
+                                                <label className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest ml-1">
+                                                    <AlertTriangle className="w-3.5 h-3.5" />
+                                                    Склад пустой (≤)
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="criticalStockThreshold"
+                                                    defaultValue="0"
+                                                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-rose-500 focus:ring-4 focus:ring-rose-500/5 transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <label className="flex items-center gap-2 text-[10px] font-black text-amber-500 uppercase tracking-widest ml-1">
+                                                    <Package className="w-3.5 h-3.5" />
+                                                    Заканчивается (≤)
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="lowStockThreshold"
+                                                    defaultValue="10"
+                                                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-amber-500 focus:ring-4 focus:ring-amber-500/5 transition-all outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Media */}
+                                    <div className="space-y-4">
+                                        <label className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                                            <ImageIcon className="w-3.5 h-3.5" />
+                                            Фотографии
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Лицевая (Основное)</label>
+                                                <input type="file" name="image" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Со спины</label>
+                                                <input type="file" name="imageBack" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Сбоку</label>
+                                                <input type="file" name="imageSide" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Детали (до 2-х фото)</label>
+                                                <input type="file" name="imageDetails" accept="image/*" multiple className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                            </div>
                                         </div>
                                     </div>
 

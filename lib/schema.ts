@@ -76,6 +76,15 @@ export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
     "consumables"
 ]);
 
+export const inventoryAttributes = pgTable("inventory_attributes", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    type: text("type").notNull(), // 'color' or 'material'
+    name: text("name").notNull(),
+    value: text("value").notNull(), // Code: 'BLK', 'KUL' etc
+    meta: jsonb("meta"), // { hex: '#...' } for colors
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Roles
 export const roles = pgTable("roles", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -158,7 +167,8 @@ export const inventoryItems = pgTable("inventory_items", {
     itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
     unit: text("unit").default("шт").notNull(), // pcs, meters, etc.
-    lowStockThreshold: integer("low_stock_threshold").default(5).notNull(),
+    lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
+    criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
     location: text("location"),
     storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
@@ -166,7 +176,10 @@ export const inventoryItems = pgTable("inventory_items", {
     attributeCode: text("attribute_code"),
     sizeCode: text("size_code"),
     attributes: jsonb("attributes").default("{}"), // Гибкие характеристики (цвет, размер и т.д.)
-    image: text("image"),
+    image: text("image"), // Лицевая сторона (основное фото)
+    imageBack: text("image_back"),
+    imageSide: text("image_side"),
+    imageDetails: jsonb("image_details").default("[]"), // Детали (массив строк)
     reservedQuantity: integer("reserved_quantity").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });

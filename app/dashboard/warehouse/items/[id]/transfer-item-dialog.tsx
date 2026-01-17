@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, AlertCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";
 import { useToast } from "@/components/ui/toast";
+
+import { LocationSelect } from "../../location-select";
 
 interface TransferItemDialogProps {
     item: {
@@ -28,6 +30,13 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
 
     // Filter available source locations (where stock > 0)
     // We might need to fetch this or rely on passed props. 
@@ -67,58 +76,54 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden">
-                <div className="p-8 pb-4 flex items-center justify-between">
+            <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-visible">
+                <div className="p-10 pb-4 flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-black text-slate-900 tracking-tight">Перемещение</h2>
                         <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-bold text-slate-500 truncate max-w-[300px]">{item.name}</span>
+                            <span className="text-xs font-bold text-slate-400 truncate max-w-[300px]">{item.name}</span>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50 transition-all"
+                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
                     >
-                        <X className="h-5 w-5" />
+                        <X className="h-6 w-6" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 pt-4 space-y-6">
-                    <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-end">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Откуда</label>
-                            <select
+                <form onSubmit={handleSubmit} className="p-10 pt-4 space-y-8">
+                    <div className="flex items-end gap-3">
+                        <div className="flex-1 space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Откуда</label>
+                            <LocationSelect
+                                locations={locations}
                                 value={fromLocationId}
-                                onChange={(e) => setFromLocationId(e.target.value)}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-100 bg-slate-50 text-xs font-bold focus:bg-white focus:border-indigo-500 outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Склад...</option>
-                                {locations.map(l => (
-                                    <option key={l.id} value={l.id} disabled={l.id === toLocationId}>{l.name}</option>
-                                ))}
-                            </select>
+                                onChange={setFromLocationId}
+                                excludeId={toLocationId}
+                                placeholder="Склад..."
+                            />
                         </div>
 
-                        <div className="pb-3 text-slate-300">
-                            <ArrowRight className="w-5 h-5" />
+                        <div className="shrink-0 mb-1.5 text-slate-300">
+                            <div className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center">
+                                <ArrowRight className="w-4 h-4" />
+                            </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Куда</label>
-                            <select
+                        <div className="flex-1 space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Куда</label>
+                            <LocationSelect
+                                locations={locations}
                                 value={toLocationId}
-                                onChange={(e) => setToLocationId(e.target.value)}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-100 bg-slate-50 text-xs font-bold focus:bg-white focus:border-indigo-500 outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Склад...</option>
-                                {locations.map(l => (
-                                    <option key={l.id} value={l.id} disabled={l.id === fromLocationId}>{l.name}</option>
-                                ))}
-                            </select>
+                                onChange={setToLocationId}
+                                excludeId={fromLocationId}
+                                placeholder="Склад..."
+                            />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 pt-2">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Количество</label>
                         <div className="relative">
                             <input
@@ -127,14 +132,14 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                                 min="1"
                                 value={amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
-                                className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all"
+                                className="w-full h-14 pl-5 pr-16 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
-                            <span className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-slate-400">{item.unit}</span>
+                            <span className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-slate-400 pointer-events-none">{item.unit}</span>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Причина (опционально)</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Причина</label>
                         <input
                             type="text"
                             value={reason}

@@ -16,6 +16,7 @@ export interface InventoryItem {
     quantity: number;
     unit: string;
     lowStockThreshold: number;
+    criticalStockThreshold: number;
     categoryId: string | null;
     description?: string | null;
     location?: string | null;
@@ -78,7 +79,10 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
             const childIds = subCategories.filter(sc => sc.parentId === category.id).map(sc => sc.id);
             return item.categoryId && childIds.includes(item.categoryId);
         }),
-        children: subCategories.filter(sc => sc.parentId === category.id)
+        children: subCategories.filter(sc => sc.parentId === category.id).map(sc => ({
+            ...sc,
+            items: items.filter(i => i.categoryId === sc.id)
+        }))
     }));
 
     const orphanedItems = items.filter(item => !item.categoryId);
@@ -169,10 +173,28 @@ function CategoryCard({
     onDelete?: () => void,
 }) {
     const router = useRouter();
-    const lowStockCount = category.items.filter((i) => (i.quantity - (i.reservedQuantity || 0)) <= i.lowStockThreshold).length;
     const IconComponent = getCategoryIcon(category);
     const isOrphaned = category.id === "orphaned";
     const colorStyle = getColorStyles(category.color);
+
+    const isClothing = category.name.toLowerCase().includes("одежда") || (category.parent?.name || "").toLowerCase().includes("одежда");
+    const itemsForStatus = category.items;
+    const hasCritical = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.criticalStockThreshold || 0));
+    const hasLow = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.lowStockThreshold || 10));
+
+    let statusLabel = "СКЛАД ПОЛОН";
+    let statusStyles = "bg-emerald-50 text-emerald-600 border-emerald-100";
+    let dotStyle = "bg-emerald-500";
+
+    if (hasCritical) {
+        statusLabel = "СКЛАД ПУСТОЙ";
+        statusStyles = "bg-rose-50 text-rose-600 border-rose-100";
+        dotStyle = "bg-rose-500 animate-pulse";
+    } else if (hasLow) {
+        statusLabel = "ЗАКАНЧИВАЕТСЯ";
+        statusStyles = "bg-amber-50 text-amber-600 border-amber-100";
+        dotStyle = "bg-amber-500";
+    }
 
     const handleDelete = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -190,40 +212,32 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-4"
+            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5 overflow-hidden"
         >
-            <div className="flex items-start justify-between">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+
+            <div className="flex items-start justify-between relative z-10">
                 <div className="flex items-center gap-4">
                     <div className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg shadow-slate-100 group-hover:shadow-indigo-100",
                         colorStyle
                     )}>
-                        {createElement(IconComponent, { className: "w-6 h-6" })}
+                        {createElement(IconComponent, { className: "w-7 h-7" })}
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">
+                        <h3 className="text-lg font-black text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight leading-tight">
                             {category.name}
                         </h3>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[11px] font-bold text-slate-400 tracking-widest">
-                                {category.parent && (
-                                    <span className="text-indigo-400 group-hover:text-indigo-500 transition-colors">
-                                        {category.parent.name} /{" "}
-                                    </span>
-                                )}
-                                {category.items.length} позиций
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[11px] font-bold text-slate-400 tracking-widest uppercase">
+                                {category.items.length} ПОЗИЦИЙ
                             </span>
-                            {lowStockCount > 0 && (
-                                <Badge className="bg-rose-50 text-rose-600 border-none px-1.5 py-0 text-[9px] font-black pointer-events-none">
-                                    {lowStockCount} Крит.
-                                </Badge>
-                            )}
                         </div>
                     </div>
                 </div>
 
                 {!isOrphaned && (
-                    <div className="flex items-center gap-1 transition-opacity duration-300">
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -233,52 +247,56 @@ function CategoryCard({
                         >
                             <Pencil className="w-4 h-4" />
                         </button>
-                        {!isSystem && (
-                            <button
-                                onClick={handleDelete}
-                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        )}
                     </div>
                 )}
             </div>
 
-            <div className="min-h-[2.5rem]">
+            <div className="min-h-[3rem] relative z-10">
                 {category.children && category.children.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                        {category.children.map(child => (
-                            <span
-                                key={child.id}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    router.push(`/dashboard/warehouse/${child.id}`);
-                                }}
-                                className="inline-flex items-center px-2 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 transition-colors cursor-pointer"
-                            >
-                                {child.name}
-                            </span>
-                        ))}
+                    <div className="flex flex-wrap gap-2">
+                        {category.children.map(child => {
+                            const childItems = child.items || [];
+                            const hasChildCritical = childItems.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.criticalStockThreshold || 0));
+                            const hasChildLow = childItems.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.lowStockThreshold || 10));
+
+                            return (
+                                <span
+                                    key={child.id}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/dashboard/warehouse/${child.id}`);
+                                    }}
+                                    className={cn(
+                                        "inline-flex items-center px-3 py-1.5 rounded-xl border text-[10px] font-black transition-all cursor-pointer uppercase tracking-tight",
+                                        hasChildCritical
+                                            ? "bg-rose-50 border-rose-100 text-rose-500 hover:bg-rose-100 hover:border-rose-200"
+                                            : hasChildLow
+                                                ? "bg-amber-50 border-amber-100 text-amber-500 hover:bg-amber-100 hover:border-amber-200"
+                                                : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-white hover:text-indigo-600 hover:border-indigo-200 hover:shadow-sm"
+                                    )}
+                                >
+                                    {child.name}
+                                </span>
+                            );
+                        })}
                     </div>
                 ) : category.description ? (
-                    <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2">
+                    <p className="text-[13px] text-slate-400 font-medium leading-relaxed line-clamp-2">
                         {category.description}
                     </p>
                 ) : (
-                    !isOrphaned && (
-                        <p className="text-[13px] text-slate-300 font-medium">
-                            Нет подкатегорий
-                        </p>
-                    )
+                    <div className="flex items-center gap-2 text-slate-300">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                        <span className="text-[11px] font-bold uppercase tracking-widest">Основная категория</span>
+                    </div>
                 )}
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-50">
-                <span className="text-[11px] font-black tracking-[0.2em] text-slate-400 group-hover:text-indigo-600 transition-colors">
-                    Подробнее
-                </span>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+            <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-auto relative z-10">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-indigo-600 transition-colors">Перейти</span>
+                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all transform group-hover:rotate-[360deg] duration-500">
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
             </div>
         </div>
     );

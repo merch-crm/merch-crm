@@ -33,12 +33,12 @@ export function UnitSelect({ value, onChange, options, className, name }: UnitSe
                     <button
                         type="button"
                         className={cn(
-                            "inline-flex items-center gap-1 text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 transition-colors outline-none",
+                            "flex items-center justify-between gap-2 px-3 h-10 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all outline-none",
                             className
                         )}
                     >
-                        {value || "Выберите"}
-                        <ChevronDown className="w-3 h-3 opacity-60" />
+                        <span className="truncate">{value || "Выберите"}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent

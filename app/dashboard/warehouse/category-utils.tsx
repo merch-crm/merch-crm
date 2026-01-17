@@ -153,3 +153,31 @@ export const getColorStyles = (color: string | null | undefined) => {
     };
     return styles[c] || styles["slate"];
 };
+
+export const CLOTHING_COLORS = [
+    { name: "Белый", code: "WHT", hex: "#FFFFFF" },
+    { name: "Черный", code: "BLK", hex: "#000000" },
+    { name: "Молочный", code: "MILK", hex: "#F5F5DC" },
+    { name: "Шоколад", code: "CHOC", hex: "#7B3F00" },
+    { name: "Графит", code: "GRAF", hex: "#383838" },
+    { name: "Баблгам", code: "BUB", hex: "#FFC1CC" },
+];
+
+export const CLOTHING_SIZES = [
+    { name: "Kids", code: "KDS" },
+    { name: "S", code: "S" },
+    { name: "M", code: "M" },
+    { name: "S-M", code: "SM" },
+    { name: "L", code: "L" },
+    { name: "XL", code: "XL" },
+];
+
+export const CLOTHING_QUALITIES = [
+    { name: "Base", code: "BS" },
+    { name: "Premium", code: "PRM" },
+];
+
+export const CLOTHING_MATERIALS = [
+    { name: "Кулирка", code: "KUL" },
+    { name: "Френч-терри", code: "FT" },
+];

@@ -1,14 +1,15 @@
 import { notFound } from "next/navigation";
-import { getInventoryItem, getStorageLocations, getMeasurementUnits } from "../../actions";
+import { getInventoryItem, getStorageLocations, getMeasurementUnits, getInventoryCategories } from "../../actions";
 import { ItemDetailClient } from "./item-detail-client";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: itemId } = await params;
 
-    const [itemRes, locationsRes, unitsRes] = await Promise.all([
+    const [itemRes, locationsRes, unitsRes, categoriesRes] = await Promise.all([
         getInventoryItem(itemId),
         getStorageLocations(),
-        getMeasurementUnits()
+        getMeasurementUnits(),
+        getInventoryCategories()
     ]);
 
     if (itemRes.error || !itemRes.data) {
@@ -19,6 +20,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     const processedItem = JSON.parse(JSON.stringify(itemRes.data));
     const processedLocations = JSON.parse(JSON.stringify(locationsRes.data || []));
     const processedUnits = JSON.parse(JSON.stringify(unitsRes.data || []));
+    const processedCategories = JSON.parse(JSON.stringify(categoriesRes.data || []));
 
 
     return (
@@ -27,6 +29,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 item={processedItem}
                 storageLocations={processedLocations}
                 measurementUnits={processedUnits}
+                categories={processedCategories}
             />
         </div>
     );

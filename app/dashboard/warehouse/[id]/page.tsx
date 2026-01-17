@@ -46,12 +46,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         createdAt: sc.createdAt.toISOString()
     }));
 
-    // Fetch items (global search: 10 items from all categories as requested)
+    // Fetch items for this specific category
     const { getInventoryItems } = await import("../actions");
     const { data: allItems = [] } = await getInventoryItems();
 
-    // Limit to 10 for performance and requirement
-    const items = allItems.slice(0, 10).map(item => ({
+    // Filter items by current category
+    const categoryItems = categoryId === "orphaned"
+        ? allItems.filter(item => !item.categoryId)
+        : allItems.filter(item => item.categoryId === categoryId);
+
+    const items = categoryItems.map(item => ({
         ...item,
         createdAt: item.createdAt.toISOString(),
         attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},

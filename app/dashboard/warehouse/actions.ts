@@ -11,7 +11,8 @@ import {
     inventoryTransfers,
     notifications,
     orderItems,
-    measurementUnits
+    measurementUnits,
+    inventoryAttributes
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and } from "drizzle-orm";
@@ -20,6 +21,80 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import fs from "fs";
 import path from "path";
+import sharp from "sharp";
+
+// Helper to sanitize folder/file names
+function sanitizeFileName(name: string): string {
+    return name.replace(/[^a-zA-Z0-9а-яА-ЯёЁ0-9 \-\.]/g, "_").trim();
+}
+
+// Helper: Build category hierarchy path
+async function getCategoryPath(categoryId: string | null): Promise<string> {
+    if (!categoryId) return "Uncategorized";
+
+    // Use raw SQL or iterative query to get path. 
+    // Since we need to traverse up, simple iteration is safest without recursive CTE.
+    const paths: string[] = [];
+    let currentId: string | null = categoryId;
+    let depth = 0;
+
+    while (currentId && depth < 10) {
+        depth++;
+        const category: { id: string; name: string; parentId: string | null } | undefined = await db.query.inventoryCategories.findFirst({
+            where: eq(inventoryCategories.id, currentId),
+            columns: { id: true, name: true, parentId: true }
+        });
+
+        if (!category) break;
+
+        paths.unshift(sanitizeFileName(category.name));
+        currentId = category.parentId;
+    }
+
+    return paths.join("/");
+}
+
+async function saveFile(file: File | null, directoryPath: string): Promise<string | null> {
+    if (!file || file.size === 0) return null;
+
+    let buffer: Buffer = Buffer.from(await file.arrayBuffer());
+    const MAX_SIZE = 700 * 1024; // 700KB
+    let extension = path.extname(file.name) || ".jpg";
+
+    // Compress if larger than 700KB or if it is an image that we want to standardize
+    if (file.type.startsWith("image/") && buffer.length > MAX_SIZE) {
+        try {
+            buffer = await sharp(buffer as any)
+                .rotate() // Auto-rotate based on EXIF
+                .resize(1920, 1920, {
+                    fit: 'inside',
+                    withoutEnlargement: true
+                })
+                .jpeg({ quality: 80, mozjpeg: true })
+                .toBuffer();
+
+            extension = ".jpg";
+        } catch (e) {
+            console.error("Compression failed, saving original file:", e);
+        }
+    }
+
+    const filename = `item-${Date.now()}-${Math.random().toString(36).substring(7)}${extension}`;
+
+    // Base is always public/SKU/...
+    const relativePath = path.join("SKU", directoryPath);
+    const uploadDir = path.join(process.cwd(), "public", relativePath);
+
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filePath = path.join(uploadDir, filename);
+    fs.writeFileSync(filePath, buffer);
+
+    // Return web-accessible path
+    return `/${relativePath}/${filename}`;
+}
 
 export async function getInventoryCategories() {
     try {
@@ -61,16 +136,32 @@ export async function addInventoryCategory(formData: FormData) {
     }
 
     try {
-        await db.insert(inventoryCategories).values({
-            name,
-            description,
-            prefix: prefix || null,
-            icon: icon || "package",
-            color: color || "indigo",
-            parentId: parentId || null,
-            sortOrder,
-            isActive,
-        }).returning();
+        await db.transaction(async (tx) => {
+            const [newCategory] = await tx.insert(inventoryCategories).values({
+                name,
+                description,
+                prefix: prefix || null,
+                icon: icon || "package",
+                color: color || "indigo",
+                parentId: parentId || null,
+                sortOrder,
+                isActive,
+            }).returning();
+
+            // Create folder structure
+            let parentPath = "";
+            if (parentId) {
+                // Must resolve parent path. Helper uses db, but that's fine for reading existing parents.
+                parentPath = await getCategoryPath(parentId);
+            }
+
+            const categoryDir = path.join("SKU", parentPath, sanitizeFileName(name));
+            const fullPath = path.join(process.cwd(), "public", categoryDir);
+
+            if (!fs.existsSync(fullPath)) {
+                fs.mkdirSync(fullPath, { recursive: true });
+            }
+        });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
@@ -134,6 +225,10 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         return { error: "Name is required" };
     }
 
+    if (parentId === id) {
+        return { error: "Категория не может быть своим собственным родителем" };
+    }
+
     try {
         await db.update(inventoryCategories)
             .set({
@@ -163,7 +258,8 @@ export async function getInventoryItems() {
             orderBy: desc(inventoryItems.createdAt)
         });
         return { data: items };
-    } catch {
+    } catch (error) {
+        console.error("DEBUG: getInventoryItems error", error);
         return { error: "Failed to fetch inventory items" };
     }
 }
@@ -198,7 +294,8 @@ export async function addInventoryItem(formData: FormData) {
     const sku = formData.get("sku") as string;
     const quantity = parseInt(formData.get("quantity") as string);
     const unit = formData.get("unit") as string;
-    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
+    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
+    const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
     const categoryId = formData.get("categoryId") as string;
     const description = formData.get("description") as string;
     const locationName = formData.get("location") as string;
@@ -243,19 +340,28 @@ export async function addInventoryItem(formData: FormData) {
                 }
             }
 
-            let imageUrl = null;
-            if (imageFile && imageFile.size > 0) {
-                const buffer = Buffer.from(await imageFile.arrayBuffer());
-                const filename = `item-${Date.now()}.jpg`;
-                const uploadDir = path.join(process.cwd(), "public/uploads/inventory");
+            // Prepare folder path: CategoryPath / ItemName
+            const categoryPath = await getCategoryPath(categoryId);
+            const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
 
-                if (!fs.existsSync(uploadDir)) {
-                    fs.mkdirSync(uploadDir, { recursive: true });
-                }
+            // Ensure folder exists
+            const fullItemPath = path.join(process.cwd(), "public", "SKU", itemFolderPath);
+            if (!fs.existsSync(fullItemPath)) {
+                fs.mkdirSync(fullItemPath, { recursive: true });
+            }
 
-                const filePath = path.join(uploadDir, filename);
-                fs.writeFileSync(filePath, buffer);
-                imageUrl = `/uploads/inventory/${filename}`;
+            const imageBackFile = formData.get("imageBack") as File;
+            const imageSideFile = formData.get("imageSide") as File;
+            const imageDetailsFiles = formData.getAll("imageDetails") as File[];
+
+            const imageUrl = await saveFile(imageFile, itemFolderPath);
+            const imageBackUrl = await saveFile(imageBackFile, itemFolderPath);
+            const imageSideUrl = await saveFile(imageSideFile, itemFolderPath);
+
+            const imageDetailsUrls: string[] = [];
+            for (const file of imageDetailsFiles) {
+                const url = await saveFile(file, itemFolderPath);
+                if (url) imageDetailsUrls.push(url);
             }
 
             const [newItem] = await tx.insert(inventoryItems).values({
@@ -265,6 +371,7 @@ export async function addInventoryItem(formData: FormData) {
                 unit,
                 itemType: itemType || "clothing",
                 lowStockThreshold,
+                criticalStockThreshold,
                 description,
                 location: locationName,
                 storageLocationId: storageLocationId || null,
@@ -275,6 +382,9 @@ export async function addInventoryItem(formData: FormData) {
                 sizeCode: sizeCode || null,
                 attributes: attributes,
                 image: imageUrl,
+                imageBack: imageBackUrl,
+                imageSide: imageSideUrl,
+                imageDetails: imageDetailsUrls,
                 reservedQuantity: 0
             }).returning();
 
@@ -375,12 +485,16 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         return { error: "Недостаточно прав для изменения товаров" };
     }
 
-    const itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables" || "clothing";
+    let itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables";
+    if (!["clothing", "packaging", "consumables"].includes(itemType)) {
+        itemType = "clothing";
+    }
     const name = formData.get("name") as string;
     const sku = formData.get("sku") as string;
     const unit = formData.get("unit") as string;
     const quantity = parseInt(formData.get("quantity") as string);
-    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
+    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
+    const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
     const categoryId = formData.get("categoryId") as string;
     const description = formData.get("description") as string;
     const locationName = formData.get("location") as string;
@@ -421,20 +535,48 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             }
         }
 
-        let imageUrl = formData.get("currentImage") as string || null;
-        if (imageFile && imageFile.size > 0) {
-            const buffer = Buffer.from(await imageFile.arrayBuffer());
-            const filename = `item-${Date.now()}.jpg`;
-            const uploadDir = path.join(process.cwd(), "public/uploads/inventory");
+        // Prepare folder path: CategoryPath / ItemName
+        const categoryPath = await getCategoryPath(categoryId);
+        const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
 
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-
-            const filePath = path.join(uploadDir, filename);
-            fs.writeFileSync(filePath, buffer);
-            imageUrl = `/uploads/inventory/${filename}`;
+        const fullItemPath = path.join(process.cwd(), "public", "SKU", itemFolderPath);
+        if (!fs.existsSync(fullItemPath)) {
+            fs.mkdirSync(fullItemPath, { recursive: true });
         }
+
+        const imageBackFile = formData.get("imageBack") as File;
+        const imageSideFile = formData.get("imageSide") as File;
+        const imageDetailsFiles = formData.getAll("imageDetails") as File[];
+
+        // Handle Image Back
+        let imageBackUrl = formData.get("currentImageBack") as string || null;
+        const newImageBackUrl = await saveFile(imageBackFile, itemFolderPath);
+        if (newImageBackUrl) imageBackUrl = newImageBackUrl;
+
+        // Handle Image Side
+        let imageSideUrl = formData.get("currentImageSide") as string || null;
+        const newImageSideUrl = await saveFile(imageSideFile, itemFolderPath);
+        if (newImageSideUrl) imageSideUrl = newImageSideUrl;
+
+        // Handle Image Details
+        // ... (existing comments) ...
+        let imageDetailsUrls: string[] = [];
+        const currentImageDetailsStr = formData.get("currentImageDetails") as string;
+        if (currentImageDetailsStr) {
+            try {
+                imageDetailsUrls = JSON.parse(currentImageDetailsStr);
+            } catch { }
+        }
+
+        // ... (existing comments) ...
+        for (const file of imageDetailsFiles) {
+            const url = await saveFile(file, itemFolderPath);
+            if (url) imageDetailsUrls.push(url);
+        }
+
+        let imageUrl = formData.get("currentImage") as string || null;
+        const newImageUrl = await saveFile(imageFile, itemFolderPath);
+        if (newImageUrl) imageUrl = newImageUrl;
 
         await db.update(inventoryItems).set({
             name,
@@ -443,6 +585,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             itemType: itemType || "clothing",
             quantity,
             lowStockThreshold,
+            criticalStockThreshold,
             categoryId: categoryId || null,
             description,
             location: locationName,
@@ -453,6 +596,9 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             sizeCode: sizeCode || null,
             attributes: attributes,
             image: imageUrl,
+            imageBack: imageBackUrl,
+            imageSide: imageSideUrl,
+            imageDetails: imageDetailsUrls,
             reservedQuantity
         }).where(eq(inventoryItems.id, id));
 
@@ -466,7 +612,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             method: "updateInventoryItem",
             details: { id, name, sku, quantity }
         });
-        return { error: "Failed to update item" };
+        return { error: `Ошибка при обновлении: ${(error as any).message || "Неизвестная ошибка"}` };
     }
 }
 
@@ -491,7 +637,8 @@ export async function getInventoryHistory() {
             limit: 50
         });
         return { data: history };
-    } catch {
+    } catch (error) {
+        console.error("DEBUG: getInventoryHistory error", error);
         return { error: "Failed to fetch inventory history" };
     }
 }
@@ -708,6 +855,37 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         return { success: true };
     } catch (error: unknown) {
         return { error: (error as Error).message || "Failed to transfer stock" };
+    }
+}
+
+export async function getInventoryAttributes() {
+    try {
+        const attrs = await db.query.inventoryAttributes.findMany({
+            orderBy: desc(inventoryAttributes.createdAt)
+        });
+        return { data: attrs };
+    } catch {
+        return { error: "Failed to fetch inventory attributes" };
+    }
+}
+
+export async function createInventoryAttribute(type: string, name: string, value: string, meta?: any) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const [newAttr] = await db.insert(inventoryAttributes).values({
+            type,
+            name,
+            value,
+            meta
+        }).returning();
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true, data: newAttr };
+    } catch (e) {
+        console.error(e);
+        return { error: "Failed to create attribute" };
     }
 }
 

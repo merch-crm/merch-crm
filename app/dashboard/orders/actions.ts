@@ -115,61 +115,60 @@ export async function createOrder(formData: FormData) {
     }
 
     try {
-        // Transaction would be better here, but Drizzle pg driver transaction support depends on exact setup
-        // For now executing sequentially
+        await db.transaction(async (tx) => {
+            // 1. Create Order
+            const [newOrder] = await tx.insert(orders).values({
+                clientId,
+                status: "new",
+                priority,
+                deadline,
+                createdBy: session.id,
+                totalAmount: "0",
+            }).returning();
 
-        // 1. Create Order
-        const [newOrder] = await db.insert(orders).values({
-            clientId,
-            status: "new",
-            priority,
-            deadline,
-            createdBy: session.id,
-            totalAmount: "0", // Calculate later
-        }).returning();
-        // Fetch client for logging
-        const client = await db.query.clients.findFirst({
-            where: eq(clients.id, clientId),
-        });
-
-        await logAction("Создан заказ", "order", newOrder.id, {
-            name: `Заказ для ${client?.name || "неизвестного клиента"}`,
-            orderNumber: `#${newOrder.id.slice(0, 8)}`
-        });
-
-        // 2. Create Order Items & Deduct Inventory
-        let totalAmount = 0;
-
-        for (const item of items) {
-            // item: { inventoryId, quantity, price, description }
-            await db.insert(orderItems).values({
-                orderId: newOrder.id,
-                description: item.description,
-                quantity: item.quantity,
-                price: String(item.price),
-                inventoryId: item.inventoryId || null
+            // Fetch client for logging
+            const client = await tx.query.clients.findFirst({
+                where: eq(clients.id, clientId),
             });
 
-            // Reserve in inventory if it's linked
-            if (item.inventoryId) {
-                const [invItem] = await db.select().from(inventoryItems).where(eq(inventoryItems.id, item.inventoryId));
-                if (invItem) {
-                    await db.update(inventoryItems)
-                        .set({ reservedQuantity: (invItem.reservedQuantity || 0) + item.quantity })
-                        .where(eq(inventoryItems.id, item.inventoryId));
+            await logAction("Создан заказ", "order", newOrder.id, {
+                name: `Заказ для ${client?.name || "неизвестного клиента"}`,
+                orderNumber: `#${newOrder.id.slice(0, 8)}`
+            });
 
-                    await logAction("Резерв", "inventory_item", item.inventoryId, {
-                        reason: `Заказ #${newOrder.id.slice(0, 8)}`,
-                        quantity: item.quantity
-                    });
+            // 2. Create Order Items & Deduct Inventory
+            let totalAmount = 0;
+
+            for (const item of items) {
+                await tx.insert(orderItems).values({
+                    orderId: newOrder.id,
+                    description: item.description,
+                    quantity: item.quantity,
+                    price: String(item.price),
+                    inventoryId: item.inventoryId || null
+                });
+
+                // Reserve in inventory if it's linked
+                if (item.inventoryId) {
+                    const [invItem] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, item.inventoryId));
+                    if (invItem) {
+                        await tx.update(inventoryItems)
+                            .set({ reservedQuantity: (invItem.reservedQuantity || 0) + item.quantity })
+                            .where(eq(inventoryItems.id, item.inventoryId));
+
+                        await logAction("Резерв", "inventory_item", item.inventoryId, {
+                            reason: `Заказ #${newOrder.id.slice(0, 8)}`,
+                            quantity: item.quantity
+                        });
+                    }
                 }
+
+                totalAmount += (item.quantity * item.price);
             }
 
-            totalAmount += (item.quantity * item.price);
-        }
-
-        // Update total
-        await db.update(orders).set({ totalAmount: String(totalAmount) }).where(eq(orders.id, newOrder.id));
+            // Update total
+            await tx.update(orders).set({ totalAmount: String(totalAmount) }).where(eq(orders.id, newOrder.id));
+        });
 
         revalidatePath("/dashboard/orders");
         revalidatePath("/dashboard/admin/warehouse"); // Update warehouse counts
@@ -192,110 +191,101 @@ export async function updateOrderStatus(orderId: string, newStatus: (typeof orde
     if (!session) return { error: "Unauthorized" };
 
     try {
-        const order = await db.query.orders.findFirst({
-            where: eq(orders.id, orderId),
-            with: { items: { with: { inventoryItem: true } } }
-        });
+        await db.transaction(async (tx) => {
+            const order = await tx.query.orders.findFirst({
+                where: eq(orders.id, orderId),
+                with: { items: { with: { inventoryItem: true } } }
+            });
 
-        if (!order) return { error: "Заказ не найден" };
-        const oldStatus = order.status;
+            if (!order) throw new Error("Заказ не найден");
+            const oldStatus = order.status;
 
-        if (oldStatus === newStatus) return { success: true };
+            if (oldStatus === newStatus) return;
 
-        // Stock Adjustment Logic
-        const deductionStatuses: string[] = ["shipped", "done"];
-        const oldStatusString = oldStatus as string || ""; // Ensure string
-        const isDeduction = deductionStatuses.includes(newStatus as string) && !deductionStatuses.includes(oldStatusString);
-        const isCancellation = ((newStatus as string) === "cancelled") && (oldStatusString !== "cancelled") && !deductionStatuses.includes(oldStatusString);
+            // Stock Adjustment Logic
+            const deductionStatuses: string[] = ["shipped", "done"];
+            const oldStatusString = oldStatus as string || ""; // Ensure string
+            const isDeduction = deductionStatuses.includes(newStatus as string) && !deductionStatuses.includes(oldStatusString);
+            const isCancellation = ((newStatus as string) === "cancelled") && (oldStatusString !== "cancelled") && !deductionStatuses.includes(oldStatusString);
 
-        for (const item of order.items) {
-            if (item.inventoryId && item.inventoryItem) {
-                const qty = item.quantity;
+            for (const item of order.items) {
+                if (item.inventoryId && item.inventoryItem) {
+                    const qty = item.quantity;
 
-                if (isDeduction) {
-                    // Reduce reservation AND reduce physical quantity
-                    await db.update(inventoryItems)
-                        .set({
-                            reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty),
-                            quantity: Math.max(0, (item.inventoryItem.quantity || 0) - qty)
-                        })
-                        .where(eq(inventoryItems.id, item.inventoryId));
+                    if (isDeduction) {
+                        // Reduce reservation AND reduce physical quantity
+                        await tx.update(inventoryItems)
+                            .set({
+                                reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty),
+                                quantity: Math.max(0, (item.inventoryItem.quantity || 0) - qty)
+                            })
+                            .where(eq(inventoryItems.id, item.inventoryId));
 
-                    let sourceLocationId = item.inventoryItem.storageLocationId;
+                        let sourceLocationId = item.inventoryItem.storageLocationId;
 
-                    // Improved Stock Deduction Strategy:
-                    // 1. Try default storageLocationId
-                    // 2. If valid and has stock, use it.
-                    // 3. If not, find ANY location with enough stock (descending quantity)
+                        let stockToDeduct = null;
 
-                    let stockToDeduct = null;
-
-                    if (sourceLocationId) {
-                        const [s] = await db.select().from(inventoryStocks).where(and(
-                            eq(inventoryStocks.itemId, item.inventoryId),
-                            eq(inventoryStocks.storageLocationId, sourceLocationId)
-                        ));
-                        if (s && s.quantity >= qty) {
-                            stockToDeduct = s;
-                        }
-                    }
-
-                    if (!stockToDeduct) {
-                        // Fallback: Find best stock
-                        const [bestStock] = await db.select().from(inventoryStocks)
-                            .where(and(
+                        if (sourceLocationId) {
+                            const [s] = await tx.select().from(inventoryStocks).where(and(
                                 eq(inventoryStocks.itemId, item.inventoryId),
-                                gte(inventoryStocks.quantity, qty) // Only those with enough
-                            ))
-                            .orderBy(desc(inventoryStocks.quantity))
-                            .limit(1);
-
-                        if (bestStock) {
-                            stockToDeduct = bestStock;
-                            sourceLocationId = bestStock.storageLocationId;
+                                eq(inventoryStocks.storageLocationId, sourceLocationId)
+                            ));
+                            if (s && s.quantity >= qty) {
+                                stockToDeduct = s;
+                            }
                         }
-                    }
 
-                    // Sync with inventoryStocks
-                    if (stockToDeduct) {
-                        await db.update(inventoryStocks)
-                            .set({ quantity: Math.max(0, stockToDeduct.quantity - qty) })
-                            .where(eq(inventoryStocks.id, stockToDeduct.id));
-                    } else {
-                        // CRITICAL: No physical stock found to deduct from, but we are shipping.
-                        // This creates a negative stock discrepancy if we don't handle it.
-                        // For now, we just log a warning or proceed with global deduction only (which we already did above).
-                        // Ideally, we might want to CREATE a negative stock entry or error out?
-                        // Let's assume global deduction is the minimum requirement, but audit log should warn.
-                        console.warn(`Order ${orderId}: Item ${item.inventoryId} shipped without sufficient physical stock record.`);
-                    }
+                        if (!stockToDeduct) {
+                            // Fallback: Find best stock
+                            const [bestStock] = await tx.select().from(inventoryStocks)
+                                .where(and(
+                                    eq(inventoryStocks.itemId, item.inventoryId),
+                                    gte(inventoryStocks.quantity, qty)
+                                ))
+                                .orderBy(desc(inventoryStocks.quantity))
+                                .limit(1);
 
-                    // Log transaction
-                    await db.insert(inventoryTransactions).values({
-                        itemId: item.inventoryId,
-                        changeAmount: -qty,
-                        type: "out",
-                        reason: `Отгрузка: Заказ #${orderId.slice(0, 8)}`,
-                        createdBy: session.id,
-                        storageLocationId: sourceLocationId || null // Log where we took it from
-                    });
-                } else if (isCancellation) {
-                    // Just release reservation
-                    await db.update(inventoryItems)
-                        .set({
-                            reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty)
-                        })
-                        .where(eq(inventoryItems.id, item.inventoryId));
+                            if (bestStock) {
+                                stockToDeduct = bestStock;
+                                sourceLocationId = bestStock.storageLocationId;
+                            }
+                        }
+
+                        // Sync with inventoryStocks
+                        if (stockToDeduct) {
+                            await tx.update(inventoryStocks)
+                                .set({ quantity: Math.max(0, stockToDeduct.quantity - qty) })
+                                .where(eq(inventoryStocks.id, stockToDeduct.id));
+                        } else {
+                            console.warn(`Order ${orderId}: Item ${item.inventoryId} shipped without sufficient physical stock record.`);
+                        }
+
+                        // Log transaction
+                        await tx.insert(inventoryTransactions).values({
+                            itemId: item.inventoryId,
+                            changeAmount: -qty,
+                            type: "out",
+                            reason: `Отгрузка: Заказ #${orderId.slice(0, 8)}`,
+                            createdBy: session.id,
+                            storageLocationId: sourceLocationId || null
+                        });
+                    } else if (isCancellation) {
+                        // Just release reservation
+                        await tx.update(inventoryItems)
+                            .set({
+                                reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - qty)
+                            })
+                            .where(eq(inventoryItems.id, item.inventoryId));
+                    }
                 }
             }
-        }
 
-        await db.update(orders).set({ status: newStatus }).where(eq(orders.id, orderId));
+            await tx.update(orders).set({ status: newStatus }).where(eq(orders.id, orderId));
 
-
-        await logAction("Обновлен статус", "order", orderId, {
-            from: String(oldStatus),
-            to: String(newStatus)
+            await logAction("Обновлен статус", "order", orderId, {
+                from: String(oldStatus),
+                to: String(newStatus)
+            });
         });
 
         revalidatePath("/dashboard/orders");
