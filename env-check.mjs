@@ -1,1 +1,0 @@
-import { db } from "./lib/db.ts"; console.log(mdfind -name .env | grep merch-crmdb);

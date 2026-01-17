@@ -1,0 +1,27 @@
+
+> merch-crm@0.1.0 lint
+> eslint
+
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/warehouse/[id]/category-detail-client.tsx
+   910:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/warehouse/[id]/category-detail-client.tsx:910:13
+  908 |         const parts = [subCatName, qualName, colName, szName].filter(Boolean);
+  909 |         if (parts.length > 0) {
+> 910 |             setItemName(parts.join(" "));
+      |             ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  911 |         }
+  912 |     }, [selectedSubcategoryId, qualityCode, attributeCode, sizeCode, isClothingCategory, subCategories]);
+  913 |  react-hooks/set-state-in-effect
+   952:11  warning  'skuPreview' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  1171:56  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+
+✖ 3 problems (1 error, 2 warnings)
+

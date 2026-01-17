@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, AlertCircle, ArrowRight } from "lucide-react";
+import { X, AlertCircle, ArrowRight, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";
@@ -132,9 +132,26 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                                 min="1"
                                 value={amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
-                                className="w-full h-14 pl-5 pr-16 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="w-full h-14 pl-5 pr-24 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
-                            <span className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-slate-400 pointer-events-none">{item.unit}</span>
+                            <span className="absolute right-12 top-1/2 -translate-y-1/2 font-bold text-slate-400 pointer-events-none">{item.unit}</span>
+
+                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+                                <button
+                                    type="button"
+                                    onClick={() => setAmount(prev => prev + 1)}
+                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                >
+                                    <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setAmount(prev => Math.max(1, prev - 1))}
+                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                >
+                                    <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                </button>
+                            </div>
                         </div>
                     </div>
 

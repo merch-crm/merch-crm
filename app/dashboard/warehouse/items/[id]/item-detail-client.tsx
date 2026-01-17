@@ -6,7 +6,7 @@ import {
     X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft,
     Clock, ArrowLeft, Edit3, Trash2,
     Download, Save, RefreshCcw, Plus, Minus,
-    MoveHorizontal, ChevronDown, Shirt, Box, Wrench,
+    MoveHorizontal, ChevronDown, ChevronUp, Shirt, Box, Wrench,
     Image as ImageIcon, ChevronLeft, ChevronRight, Check
 } from "lucide-react";
 import { format } from "date-fns";
@@ -212,14 +212,26 @@ function CustomFileInput({
 
 function getAllItemImages(item: InventoryItem) {
     const images: { src: string; label: string }[] = [];
-    if (item.image) images.push({ src: item.image, label: "Лицевая сторона" });
-    if (item.imageBack) images.push({ src: item.imageBack, label: "Со спины" });
-    if (item.imageSide) images.push({ src: item.imageSide, label: "Сбоку" });
-    if (item.imageDetails && item.imageDetails.length > 0) {
+    const seenUrls = new Set<string>();
+
+    // Helper function to add unique image
+    const addUniqueImage = (src: string | null | undefined, label: string) => {
+        if (src && !seenUrls.has(src)) {
+            images.push({ src, label });
+            seenUrls.add(src);
+        }
+    };
+
+    addUniqueImage(item.image, "Лицевая сторона");
+    addUniqueImage(item.imageBack, "Со спины");
+    addUniqueImage(item.imageSide, "Сбоку");
+
+    if (item.imageDetails && Array.isArray(item.imageDetails) && item.imageDetails.length > 0) {
         item.imageDetails.forEach((img: string, idx: number) => {
-            images.push({ src: img, label: `Детали ${idx + 1}` });
+            addUniqueImage(img, `Детали ${idx + 1}`);
         });
     }
+
     return images;
 }
 
@@ -1436,6 +1448,9 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                         // Skip attributes shown in premium cards
                                         if (isClothing && ["Цвет", "Размер", "Материал", "Качество"].includes(key)) return null;
 
+                                        // Skip density and material attributes
+                                        if (["density", "material"].includes(key)) return null;
+
                                         if (isEditing && ATTRIBUTE_LABELS[key]) {
                                             return (
                                                 <div key={key} className="px-5 py-4 bg-indigo-50/30 border border-indigo-100 rounded-[2rem] flex flex-col gap-1.5 min-w-[180px] focus-within:border-indigo-500 transition-all">
@@ -1479,23 +1494,40 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
 
 
                             <div className="pt-10 border-t border-slate-100">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="w-5 h-5 text-indigo-500" />
-                                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Хранение</h3>
-                                    </div>
-                                    <div className="flex items-center gap-6 bg-slate-50 border border-slate-100 px-6 py-2.5 rounded-[22px] shadow-sm">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <MapPin className="w-5 h-5 text-indigo-500" />
+                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Хранение</h3>
+                                </div>
+
+                                <div className="flex flex-wrap items-center justify-between gap-6 bg-slate-50 border border-slate-100 px-6 py-4 rounded-[22px] shadow-sm mb-8 w-full">
+                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Настройки статуса</span>
+
+                                    <div className="flex items-center gap-6">
                                         <div className="flex items-center gap-3">
                                             <span className="text-[11px] font-black text-rose-500 uppercase tracking-widest leading-none">Пусто:</span>
                                             {isEditing ? (
-                                                <div className="relative">
-                                                    <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-rose-400">≤</span>
+                                                <div className="relative group/input">
+                                                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-rose-400">≤</span>
                                                     <input
                                                         type="number"
                                                         value={editData.criticalStockThreshold}
                                                         onChange={e => setEditData({ ...editData, criticalStockThreshold: parseInt(e.target.value) || 0 })}
-                                                        className="w-12 h-7 pl-4 pr-1 text-[11px] font-black bg-white border border-rose-200 text-rose-600 rounded-lg outline-none focus:border-rose-400 transition-all text-center shadow-sm"
+                                                        className="w-[88px] h-9 pl-5 pr-8 text-[11px] font-black bg-white border border-rose-200 text-rose-600 rounded-xl outline-none focus:border-rose-400 transition-all text-center shadow-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                     />
+                                                    <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col">
+                                                        <button
+                                                            onClick={() => setEditData({ ...editData, criticalStockThreshold: (editData.criticalStockThreshold || 0) + 1 })}
+                                                            className="w-5 h-3.5 flex items-center justify-center text-rose-300 hover:text-rose-600 hover:bg-rose-50 rounded-t transition-colors"
+                                                        >
+                                                            <ChevronUp className="w-2.5 h-2.5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditData({ ...editData, criticalStockThreshold: Math.max(0, (editData.criticalStockThreshold || 0) - 1) })}
+                                                            className="w-5 h-3.5 flex items-center justify-center text-rose-300 hover:text-rose-600 hover:bg-rose-50 rounded-b transition-colors"
+                                                        >
+                                                            <ChevronDown className="w-2.5 h-2.5" />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <div className="px-3 py-1 bg-white border border-rose-100 text-rose-600 text-[11px] font-black rounded-lg shadow-sm">
@@ -1507,14 +1539,28 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                         <div className="flex items-center gap-3">
                                             <span className="text-[11px] font-black text-amber-500 uppercase tracking-widest leading-none">Мало:</span>
                                             {isEditing ? (
-                                                <div className="relative">
-                                                    <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-amber-400">≤</span>
+                                                <div className="relative group/input">
+                                                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-amber-400">≤</span>
                                                     <input
                                                         type="number"
                                                         value={editData.lowStockThreshold}
                                                         onChange={e => setEditData({ ...editData, lowStockThreshold: parseInt(e.target.value) || 0 })}
-                                                        className="w-12 h-7 pl-4 pr-1 text-[11px] font-black bg-white border border-amber-200 text-amber-600 rounded-lg outline-none focus:border-amber-400 transition-all text-center shadow-sm"
+                                                        className="w-[88px] h-9 pl-5 pr-8 text-[11px] font-black bg-white border border-amber-200 text-amber-600 rounded-xl outline-none focus:border-amber-400 transition-all text-center shadow-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                     />
+                                                    <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col">
+                                                        <button
+                                                            onClick={() => setEditData({ ...editData, lowStockThreshold: (editData.lowStockThreshold || 0) + 1 })}
+                                                            className="w-5 h-3.5 flex items-center justify-center text-amber-300 hover:text-amber-600 hover:bg-amber-50 rounded-t transition-colors"
+                                                        >
+                                                            <ChevronUp className="w-2.5 h-2.5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditData({ ...editData, lowStockThreshold: Math.max(0, (editData.lowStockThreshold || 0) - 1) })}
+                                                            className="w-5 h-3.5 flex items-center justify-center text-amber-300 hover:text-amber-600 hover:bg-amber-50 rounded-b transition-colors"
+                                                        >
+                                                            <ChevronDown className="w-2.5 h-2.5" />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <div className="px-3 py-1 bg-white border border-amber-100 text-amber-600 text-[11px] font-black rounded-lg shadow-sm">

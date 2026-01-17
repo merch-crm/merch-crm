@@ -54,6 +54,8 @@ async function getCategoryPath(categoryId: string | null): Promise<string> {
     return paths.join("/");
 }
 
+import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
+
 async function saveFile(file: File | null, directoryPath: string): Promise<string | null> {
     if (!file || file.size === 0) return null;
 
@@ -81,9 +83,10 @@ async function saveFile(file: File | null, directoryPath: string): Promise<strin
 
     const filename = `item-${Date.now()}-${Math.random().toString(36).substring(7)}${extension}`;
 
-    // Base is always public/SKU/...
+    // Path in local-storage (persisted)
+    // Structure: local-storage/SKU/Category/Item/filename.jpg
     const relativePath = path.join("SKU", directoryPath);
-    const uploadDir = path.join(process.cwd(), "public", relativePath);
+    const uploadDir = path.join(LOCAL_STORAGE_ROOT, relativePath);
 
     if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
@@ -92,8 +95,8 @@ async function saveFile(file: File | null, directoryPath: string): Promise<strin
     const filePath = path.join(uploadDir, filename);
     fs.writeFileSync(filePath, buffer);
 
-    // Return web-accessible path
-    return `/${relativePath}/${filename}`;
+    // Return API-accessible path
+    return `/api/storage/local/${relativePath}/${filename}`;
 }
 
 export async function getInventoryCategories() {

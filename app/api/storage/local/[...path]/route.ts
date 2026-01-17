@@ -9,11 +9,19 @@ export async function GET(
     { params }: { params: Promise<{ path: string[] }> }
 ) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") {
+    if (!session) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const { path: pathParts } = await params;
+
+    // Allow access to SKU and avatars for all logged in users.
+    // Other folders might remain restricted to Admin.
+    const isPublicFolder = ["SKU", "avatars"].includes(pathParts[0]);
+
+    if (!isPublicFolder && session.roleName !== "Администратор") {
+        return new NextResponse("Forbidden", { status: 403 });
+    }
     const relativePath = pathParts.join("/");
     const fullPath = path.join(LOCAL_STORAGE_ROOT, relativePath);
 

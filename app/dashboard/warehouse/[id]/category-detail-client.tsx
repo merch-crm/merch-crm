@@ -351,6 +351,7 @@ export function CategoryDetailClient({
                     category={category}
                     storageLocations={storageLocations}
                     measurementUnits={measurementUnits}
+                    subCategories={subCategories}
                     onClose={() => setIsAddOpen(false)}
                 />
             )}
@@ -360,6 +361,7 @@ export function CategoryDetailClient({
                     category={category}
                     storageLocations={storageLocations}
                     measurementUnits={measurementUnits}
+                    subCategories={subCategories}
                     initialData={duplicatingItem} // Pass the item to copy
                     onClose={() => setDuplicatingItem(null)}
                 />
@@ -695,13 +697,13 @@ export function CategoryDetailClient({
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className={cn(
-                                                            "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 overflow-hidden shrink-0 relative",
+                                                            "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden shrink-0 relative",
                                                             isCritical ? "bg-rose-50 text-rose-500" : isLowStock ? "bg-amber-50 text-amber-500" : "bg-slate-50 text-slate-400 group-hover:bg-indigo-100 group-hover:text-indigo-600"
                                                         )}>
                                                             {item.image ? (
                                                                 <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                                                             ) : (
-                                                                <Package className="w-6 h-6" />
+                                                                <Package className="w-5 h-5" />
                                                             )}
                                                         </div>
                                                         <div className="min-w-0">
@@ -852,11 +854,20 @@ export function CategoryDetailClient({
     );
 }
 
-function AddItemDialogWrapper({ category, storageLocations, measurementUnits, onClose, initialData }: { category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], onClose: () => void, initialData?: InventoryItem }) {
-    const { toast } = useToast(); const [error, setError] = useState("");
+function AddItemDialogWrapper({ category, storageLocations, measurementUnits, subCategories, onClose, initialData }: { category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], subCategories?: Category[], onClose: () => void, initialData?: InventoryItem }) {
+    const { toast } = useToast();
+    const [step, setStep] = useState(1);
+    const [validationError, setValidationError] = useState("");
+
+    // Form States
+    const [itemName, setItemName] = useState(initialData?.name || "");
+    const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(initialData?.categoryId === category.id ? "" : (initialData?.categoryId || ""));
+
+    // SKU / Attributes
     const [qualityCode, setQualityCode] = useState(initialData?.qualityCode || "");
     const [attributeCode, setAttributeCode] = useState(initialData?.attributeCode || "");
     const [sizeCode, setSizeCode] = useState(initialData?.sizeCode || "");
+
     const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
     const [selectedUnit, setSelectedUnit] = useState(initialData?.unit || "шт");
     const [selectedLocationId, setSelectedLocationId] = useState(initialData?.storageLocationId || "");
@@ -875,11 +886,31 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, on
         return { ...defaults, ...fromItem };
     });
 
-    const [showCustomColor, setShowCustomColor] = useState(false);
-    const [customColorHex, setCustomColorHex] = useState("#6366f1");
-    const [customColorName, setCustomColorName] = useState("");
-
     const isClothingCategory = category.name.toLowerCase().includes("одежда");
+
+    // Auto-generate Name Effect
+    useEffect(() => {
+        if (!isClothingCategory && !subCategories?.length) return;
+
+        // Don't overwrite if editing existing item initially, unless user changes something?
+        // Actually for "New Item" we want auto-gen. For "Copy" we might want it too if they change params.
+        // Let's just generate it if any dependency changes.
+
+        const subCatName = subCategories?.find(c => c.id === selectedSubcategoryId)?.name || "";
+        const qualName = CLOTHING_QUALITIES.find(q => q.code === qualityCode)?.name || "";
+        const colName = CLOTHING_COLORS.find(c => c.code === attributeCode)?.name || "";
+        const szName = CLOTHING_SIZES.find(s => s.code === sizeCode)?.name || "";
+
+        // Only auto-update if we have at least one part selected to avoid clearing manual input unnecessarily
+        // OR if it's a new item (no initialData).
+        // If it's a copy, we might want to respect the copied name until they change something.
+
+        const parts = [subCatName, qualName, colName, szName].filter(Boolean);
+        if (parts.length > 0) {
+            // eslint-disable-next-line
+            setItemName(parts.join(" "));
+        }
+    }, [selectedSubcategoryId, qualityCode, attributeCode, sizeCode, isClothingCategory, subCategories]);
 
     const handleAttributeChange = (key: string, value: string) => {
         setAttributes(prev => ({ ...prev, [key]: value }));
@@ -919,15 +950,16 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, on
         return val.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
     };
 
-    const skuPreview = category.prefix
-        ? [category.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-")
-        : "";
-
     async function handleSubmit(formData: FormData) {
         const skuValue = formData.get("sku") as string;
         if (skuValue && /[^a-zA-Z0-9-]/.test(skuValue)) {
-            setError("Артикул может содержать только латиницу, цифры и «-»");
+            setValidationError("Артикул может содержать только латиницу, цифры и «-»");
             return;
+        }
+
+        // Ensure categoryId is set to subcategory if selected
+        if (selectedSubcategoryId) {
+            formData.set("categoryId", selectedSubcategoryId);
         }
 
         // Add attributes to form data
@@ -936,62 +968,210 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, on
         );
         formData.append("attributes", JSON.stringify(cleanedAttributes));
 
+        // Ensure name is passed (it might be controlled state now)
+        formData.set("name", itemName);
+
         const res = await addInventoryItem(formData);
         if (res?.error) {
-            setError(res.error);
+            setValidationError(res.error);
         } else {
             onClose();
         }
     }
 
+    const nextStep = () => {
+        if (step === 1) {
+            if (!itemName.trim()) {
+                setValidationError("Название товара должно быть заполнено");
+                return;
+            }
+        }
+        setValidationError("");
+        setStep(s => Math.min(s + 1, 3));
+    };
+    const prevStep = () => setStep(s => Math.max(s - 1, 1));
+
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in" onClick={onClose} />
-            <div className="relative w-full max-w-6xl bg-white rounded-[3rem] shadow-2xl border border-white/20 animate-in zoom-in-95 overflow-hidden flex flex-col max-h-[95vh]">
+            <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="px-10 py-10 border-b border-slate-100 flex items-center justify-between shrink-0 bg-gradient-to-r from-white via-white to-slate-50/50">
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-[24px] bg-slate-900 flex items-center justify-center text-white shadow-[0_15px_30px_-5px_rgba(0,0,0,0.2)] rotate-3">
-                            <Plus className="w-8 h-8 -rotate-3" />
+                <div className="px-8 py-8 border-b border-slate-100 flex items-center justify-between shrink-0 bg-gradient-to-r from-white via-white to-slate-50/50">
+                    <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 rounded-[20px] bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-200">
+                            <Plus className="w-7 h-7" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1.5">
                                 {initialData ? "Копирование товара" : "Новый товар"}
                             </h2>
-                            <p className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em]">
-                                {initialData ? `На основе: ${initialData.name}` : `Добавление в категорию: ${category.name}`}
+                            <p className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] flex items-center gap-2">
+                                {category.name} <span className="w-1 h-1 rounded-full bg-slate-300" /> Шаг {step} из 3
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all active:scale-95"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50 border border-slate-100 hover:bg-white hover:border-slate-200 hover:shadow-sm transition-all active:scale-95"
                     >
-                        <X className="h-6 w-6" />
+                        <X className="h-5 w-5" />
                     </button>
                 </div>
 
-                <form id="add-item-form" action={handleSubmit} className="p-10 flex-1 overflow-y-auto custom-scrollbar">
+                {/* Step Progress Bar */}
+                <div className="h-1 w-full bg-slate-50 flex">
+                    <div className={cn("h-full bg-indigo-600 transition-all duration-500 ease-out", step === 1 ? "w-1/3" : step === 2 ? "w-2/3" : "w-full")} />
+                </div>
+
+                <form id="add-item-form" action={handleSubmit} className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
                     <input type="hidden" name="categoryId" value={category.id} />
 
-                    <div className="grid grid-cols-12 gap-10">
-                        {/* COLUMN 1: Basic Info */}
-                        <div className="col-span-4 space-y-8">
+                    <div className="p-8 flex-1">
+                        {/* STEP 1: Basic Info & Constructor */}
+                        <div className={cn("space-y-8 animate-in fade-in slide-in-from-right-4 duration-300", step === 1 ? "block" : "hidden")}>
+
+                            {/* Subcategory Selection */}
+                            {subCategories && subCategories.length > 0 && (
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Подкатегория</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {subCategories.map(sub => (
+                                            <button
+                                                key={sub.id}
+                                                type="button"
+                                                onClick={() => setSelectedSubcategoryId(cur => cur === sub.id ? "" : sub.id)}
+                                                className={cn(
+                                                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border",
+                                                    selectedSubcategoryId === sub.id
+                                                        ? "bg-slate-900 text-white border-slate-900 shadow-md"
+                                                        : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                )}
+                                            >
+                                                {sub.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Clothing Constructor (Moved here) */}
+                            {isClothingCategory && (
+                                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-6">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                            <Tag className="w-4 h-4" />
+                                        </div>
+                                        <span className="text-sm font-black text-slate-700 uppercase tracking-wide">Конструктор</span>
+                                    </div>
+
+                                    {/* Quality Selection */}
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Качество</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {CLOTHING_QUALITIES.map(q => (
+                                                <button
+                                                    key={q.code}
+                                                    type="button"
+                                                    onClick={() => setQualityCode(q.code)}
+                                                    className={cn(
+                                                        "px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border uppercase",
+                                                        qualityCode === q.code
+                                                            ? "bg-indigo-600 border-indigo-600 text-white"
+                                                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
+                                                    )}
+                                                >
+                                                    {q.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Color Selection */}
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Цвет</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {CLOTHING_COLORS.map(c => (
+                                                <button
+                                                    key={c.code}
+                                                    type="button"
+                                                    onClick={() => setAttributeCode(c.code)}
+                                                    className={cn(
+                                                        "flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all",
+                                                        attributeCode === c.code
+                                                            ? "bg-white border-indigo-500 ring-2 ring-indigo-500/10 shadow-sm"
+                                                            : "bg-white border-slate-200 hover:border-indigo-200"
+                                                    )}
+                                                >
+                                                    <div className="w-3 h-3 rounded-full border border-slate-200" style={{ backgroundColor: c.hex }} />
+                                                    <span className="text-[10px] font-bold text-slate-700">{c.name}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Size Selection */}
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Размер</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {CLOTHING_SIZES.map(s => (
+                                                <button
+                                                    key={s.code}
+                                                    type="button"
+                                                    onClick={() => setSizeCode(s.code)}
+                                                    className={cn(
+                                                        "w-10 h-8 rounded-lg text-[10px] font-bold transition-all border flex items-center justify-center",
+                                                        sizeCode === s.code
+                                                            ? "bg-indigo-600 border-indigo-600 text-white"
+                                                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
+                                                    )}
+                                                >
+                                                    {s.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Calculated SKU Preview */}
+                                    {category.prefix && (
+                                        <div className="pt-4 border-t border-slate-200/50 flex items-center justify-between">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">Артикул (Preview)</span>
+                                            <span className="font-mono text-sm font-black text-indigo-600 tracking-wider bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
+                                                {[category.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-")}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Generated Name & Inputs */}
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Название товара</label>
+                                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Название товара</label>
                                     <input
                                         name="name"
-                                        defaultValue={initialData ? `${initialData.name} (Копия)` : ""}
+                                        value={itemName}
+                                        onChange={(e) => setItemName(e.target.value)}
                                         required
-                                        placeholder="Напр. Футболка Oversize"
-                                        className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                        placeholder="Название сформируется автоматически..."
+                                        className="w-full h-16 px-6 rounded-[20px] border-2 border-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-black text-2xl text-slate-900 placeholder:text-slate-300 bg-slate-50/30 hover:bg-white"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Ед. измерения</label>
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Артикул (SKU)</label>
+                                        <input
+                                            name="sku"
+                                            placeholder="Авто-генерация"
+                                            value={category.prefix ? [category.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-") : undefined}
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none font-mono font-bold text-slate-900 tracking-wider placeholder:text-slate-300 bg-white"
+                                            onInput={(e) => {
+                                                e.currentTarget.value = sanitizeSku(e.currentTarget.value);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Ед. измерения</label>
                                         <UnitSelect
                                             name="unit"
                                             value={selectedUnit}
@@ -1006,345 +1186,193 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, on
                                             ]}
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Крит. порог</label>
-                                        <input
-                                            type="number"
-                                            name="lowStockThreshold"
-                                            defaultValue={initialData?.lowStockThreshold || "5"}
-                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
-                                        />
-                                    </div>
                                 </div>
 
-                                {isClothingCategory && (
-                                    <div className="p-6 bg-indigo-50/30 rounded-3xl border border-indigo-100 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Размер</label>
-                                            <div className="flex flex-wrap gap-2">
-                                                {CLOTHING_SIZES.map(s => (
-                                                    <button
-                                                        key={s.name}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setSizeCode(s.code);
-                                                            handleAttributeChange("Размер", s.name);
-                                                        }}
-                                                        className={cn(
-                                                            "h-9 px-4 rounded-xl text-xs font-bold transition-all border",
-                                                            attributes["Размер"] === s.name ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
-                                                        )}
-                                                    >
-                                                        {s.name}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Качество</label>
-                                            <div className="flex gap-2">
-                                                {CLOTHING_QUALITIES.map(q => (
-                                                    <button
-                                                        key={q.name}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setQualityCode(q.code);
-                                                            handleAttributeChange("Качество", q.name);
-                                                        }}
-                                                        className={cn(
-                                                            "flex-1 h-10 rounded-xl text-xs font-bold transition-all border",
-                                                            attributes["Качество"] === q.name ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
-                                                        )}
-                                                    >
-                                                        {q.name}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Цвет</label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                {CLOTHING_COLORS.map(c => (
-                                                    <button
-                                                        key={c.name}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setAttributeCode(c.code);
-                                                            handleAttributeChange("Цвет", c.name);
-                                                            setShowCustomColor(false);
-                                                        }}
-                                                        className={cn(
-                                                            "flex items-center gap-2 p-2 rounded-xl border transition-all",
-                                                            attributes["Цвет"] === c.name ? "bg-white border-indigo-300 ring-2 ring-indigo-500/10" : "bg-white/50 border-slate-100 hover:border-slate-200"
-                                                        )}
-                                                    >
-                                                        <div className="w-5 h-5 rounded-full border border-slate-200 shadow-sm shrink-0" style={{ backgroundColor: c.hex }} />
-                                                        <span className="text-[10px] font-bold text-slate-600 truncate">{c.name}</span>
-                                                    </button>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowCustomColor(true)}
-                                                    className={cn(
-                                                        "flex items-center justify-center gap-2 p-2 rounded-xl border transition-all border-dashed",
-                                                        showCustomColor ? "bg-indigo-50 border-indigo-300 text-indigo-600" : "bg-white/30 border-slate-200 text-slate-400 hover:bg-white hover:border-slate-300"
-                                                    )}
-                                                >
-                                                    <Plus className="w-4 h-4" />
-                                                    <span className="text-[10px] font-bold">Свой</span>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {showCustomColor && (
-                                            <div className="p-4 bg-white rounded-2xl border border-indigo-100 shadow-sm space-y-4 animate-in slide-in-from-top-2 duration-300">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Новый цвет</span>
-                                                    <button type="button" onClick={() => setShowCustomColor(false)} className="text-slate-400 hover:text-slate-600"><X className="w-3 h-3" /></button>
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <div className="flex gap-3">
-                                                        <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0">
-                                                            <input
-                                                                type="color"
-                                                                className="absolute inset-0 w-[150%] h-[150%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
-                                                                value={customColorHex}
-                                                                onChange={(e) => setCustomColorHex(e.target.value)}
-                                                            />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Название цвета..."
-                                                            className="flex-1 h-10 px-3 text-xs font-bold rounded-xl border border-slate-200 focus:border-indigo-500 outline-none"
-                                                            value={customColorName}
-                                                            onChange={(e) => setCustomColorName(e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            if (customColorName) {
-                                                                handleAttributeChange("Цвет", customColorName);
-                                                                setAttributeCode(customColorName.substring(0, 3).toUpperCase());
-                                                                setShowCustomColor(false);
-                                                            }
-                                                        }}
-                                                        className="w-full h-9 bg-indigo-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95"
-                                                    >
-                                                        Применить цвет
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Описание (опционально)</label>
+                                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание</label>
                                     <textarea
                                         name="description"
                                         defaultValue={initialData?.description || ""}
-                                        placeholder="Укажите детали товара..."
-                                        className="w-full min-h-[180px] p-6 rounded-[24px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
+                                        placeholder="Опишите товар..."
+                                        className="w-full h-32 p-5 rounded-[20px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all font-medium text-sm resize-none"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        {/* COLUMN 2: SKU & Visuals */}
-                        <div className="col-span-4 space-y-8">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Артикул (Manual / Custom)</label>
-                                <input
-                                    name="sku"
-                                    placeholder="Оставьте пустым для авто-SKU"
-                                    className="w-full h-14 px-6 rounded-[20px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-mono font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white tracking-widest uppercase"
-                                    onInput={(e) => {
-                                        e.currentTarget.value = sanitizeSku(e.currentTarget.value);
-                                    }}
-                                />
-                            </div>
-
-                            {category.prefix && (
-                                <div className="p-8 bg-indigo-50/40 rounded-[2rem] border border-indigo-100 space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Конструктор SKU</label>
-                                        <span className="text-[9px] font-black text-indigo-300 uppercase bg-white px-2 py-0.5 rounded border border-indigo-100">Префикс: {category.prefix}</span>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Качество</label>
-                                            <input
-                                                name="qualityCode"
-                                                value={qualityCode}
-                                                onChange={(e) => setQualityCode(sanitizeSku(e.target.value))}
-                                                placeholder="FT"
-                                                className="w-full h-11 px-3 rounded-xl border border-indigo-200/50 bg-white text-xs font-black focus:border-indigo-500 outline-none uppercase text-center"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Цвет</label>
-                                            <input
-                                                name="attributeCode"
-                                                value={attributeCode}
-                                                onChange={(e) => setAttributeCode(sanitizeSku(e.target.value))}
-                                                placeholder="BLK"
-                                                className="w-full h-11 px-3 rounded-xl border border-indigo-200/50 bg-white text-xs font-black focus:border-indigo-500 outline-none uppercase text-center"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Размер</label>
-                                            <input
-                                                name="sizeCode"
-                                                value={sizeCode}
-                                                onChange={(e) => setSizeCode(sanitizeSku(e.target.value))}
-                                                placeholder="XL"
-                                                className="w-full h-11 px-3 rounded-xl border border-indigo-200/50 bg-white text-xs font-black focus:border-indigo-500 outline-none uppercase text-center"
-                                            />
-                                        </div>
-                                    </div>
-                                    {skuPreview && (
-                                        <div className="pt-4 border-t border-indigo-100 flex flex-col gap-2">
-                                            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest text-center">Итоговый артикул</span>
-                                            <div className="bg-indigo-600 text-white py-3 px-4 rounded-xl text-center font-mono font-black tracking-widest text-lg shadow-lg shadow-indigo-200 animate-in zoom-in-95">
-                                                {skuPreview}
+                        {/* STEP 2: Media & Attributes -> Now mostly Media + Custom Attributes */}
+                        <div className={cn("space-y-8 animate-in fade-in slide-in-from-right-4 duration-300", step === 2 ? "block" : "hidden")}>
+                            <div className="grid grid-cols-12 gap-8">
+                                {/* Left: Image Upload */}
+                                <div className="col-span-12 md:col-span-5 space-y-4">
+                                    <div className="aspect-square rounded-[2rem] bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center relative overflow-hidden group hover:border-indigo-400 hover:bg-indigo-50/30 transition-all cursor-pointer">
+                                        {imagePreview ? (
+                                            <>
+                                                <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <p className="text-white text-xs font-bold uppercase tracking-widest">Изменить</p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-3 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                                                <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+                                                    <Download className="w-8 h-8" />
+                                                </div>
+                                                <span className="text-xs font-black uppercase tracking-widest">Загрузить фото</span>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            <div className="space-y-4">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Визуализация</label>
-                                <div className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-24 h-24 rounded-3xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative group">
-                                            {imagePreview ? (
-                                                <Image src={imagePreview} alt="Preview" fill className="object-cover transition-transform group-hover:scale-110" unoptimized />
-                                            ) : (
-                                                <Package className="w-10 h-10 text-slate-200" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1 space-y-3">
-                                            <span className="text-[11px] font-black text-slate-600 block leading-tight">Загрузите фото товара</span>
-                                            <p className="text-[10px] text-slate-400 font-medium italic">Поддерживаются JPG, PNG до 5MB</p>
-                                            <input
-                                                type="file"
-                                                id="add-item-image"
-                                                name="image"
-                                                accept="image/*"
-                                                onChange={handleImageChange}
-                                                className="hidden"
-                                            />
-                                            <label
-                                                htmlFor="add-item-image"
-                                                className="inline-flex h-10 px-5 rounded-full bg-slate-900 text-white text-[10px] font-black tracking-widest items-center cursor-pointer hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
-                                            >
-                                                Выбрать файл
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* COLUMN 3: Inventory & Details */}
-                        <div className="col-span-4 space-y-8">
-                            <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 space-y-6">
-                                <div className="space-y-4">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2"><MapPin className="w-3 h-3" /> Размещение и Остаток</label>
-                                    <StorageLocationSelect
-                                        name="storageLocationId"
-                                        value={selectedLocationId}
-                                        onChange={setSelectedLocationId}
-                                        options={storageLocations}
-                                        placeholder="Выберите склад..."
-                                    />
-                                    <input
-                                        name="location"
-                                        defaultValue={initialData?.location || ""}
-                                        placeholder="Точное место (полка, ряд...)"
-                                        className="w-full h-12 px-5 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 bg-white"
-                                    />
-                                    <div className="pt-2">
-                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Начальное количество</label>
+                                        )}
                                         <input
-                                            type="number"
-                                            name="quantity"
-                                            defaultValue={initialData?.quantity || "0"}
-                                            className="w-full h-14 px-6 rounded-[20px] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-black text-slate-900 text-center text-xl"
+                                            type="file"
+                                            name="image"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
                                         />
                                     </div>
+                                    <p className="text-center text-[10px] text-slate-400 font-medium">
+                                        Поддерживаются JPG, PNG (макс. 5MB)
+                                    </p>
                                 </div>
-                            </div>
 
-                            <div className="space-y-4 pt-2">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Доп. Характеристики</label>
-                                    <button
-                                        type="button"
-                                        onClick={addCustomAttribute}
-                                        className="h-8 px-3 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-1.5"
-                                    >
-                                        <Plus className="w-3 h-3" /> ДОБАВИТЬ
-                                    </button>
-                                </div>
-                                <div className="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
-                                    {Object.entries(attributes).map(([key, value]) => (
-                                        <div key={key} className="flex gap-2 items-end animate-in slide-in-from-right-2 duration-300">
-                                            <div className="flex-1 space-y-1.5">
-                                                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">{key}</label>
-                                                <input
-                                                    value={value}
-                                                    onChange={(e) => handleAttributeChange(key, e.target.value)}
-                                                    placeholder={`Значение...`}
-                                                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-xs font-bold focus:border-indigo-500 outline-none transition-all"
-                                                />
+                                {/* Right: Attributes */}
+                                <div className="col-span-12 md:col-span-7 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Доп. Характеристики</label>
+                                        <button
+                                            type="button"
+                                            onClick={addCustomAttribute}
+                                            className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded-lg hover:bg-indigo-100 transition-colors"
+                                        >
+                                            <Plus className="w-3 h-3" /> Добавить
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                                        {Object.entries(attributes).map(([key, value]) => (
+                                            <div key={key} className="flex gap-2 items-center group">
+                                                <div className="flex-1 bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 focus-within:border-indigo-500 focus-within:bg-white transition-all">
+                                                    <span className="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">{key}</span>
+                                                    <input
+                                                        value={value}
+                                                        onChange={(e) => handleAttributeChange(key, e.target.value)}
+                                                        className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none p-0 border-none h-auto placeholder:font-normal"
+                                                        placeholder="Значение..."
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeAttribute(key)}
+                                                    className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeAttribute(key)}
-                                                className="mb-1 p-2.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                    {Object.keys(attributes).length === 0 && (
-                                        <div className="py-8 text-center border-2 border-dashed border-slate-100 rounded-[2rem] text-slate-300 text-[10px] font-black uppercase tracking-widest">
-                                            Нет характеристик
-                                        </div>
-                                    )}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {/* STEP 3: Stock & Save */}
+                        <div className={cn("space-y-8 animate-in fade-in slide-in-from-right-4 duration-300 h-full flex flex-col", step === 3 ? "block" : "hidden")}>
+                            <div className="space-y-6">
+                                <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 space-y-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                            <MapPin className="w-4 h-4" />
+                                        </div>
+                                        <span className="text-sm font-black text-slate-900 tracking-tight">Размещение</span>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <StorageLocationSelect
+                                            name="storageLocationId"
+                                            value={selectedLocationId}
+                                            onChange={setSelectedLocationId}
+                                            options={storageLocations}
+                                            placeholder="Выберите склад..."
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                name="location"
+                                                defaultValue={initialData?.location || ""}
+                                                placeholder="Точное место (полка, ряд...)"
+                                                className="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none font-bold text-slate-700 bg-white transition-all text-sm"
+                                            />
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                                <Package className="w-4 h-4" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Начальный остаток</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                defaultValue={initialData?.quantity || "0"}
+                                                className="w-full h-16 rounded-[20px] bg-white border-2 border-emerald-100 focus:border-emerald-500 outline-none font-black text-3xl text-center text-emerald-600 transition-all"
+                                            />
+                                            <span className="absolute right-4 bottom-4 text-[10px] font-bold text-emerald-300 uppercase">ШТ</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Мин. остаток</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                name="lowStockThreshold"
+                                                defaultValue={initialData?.lowStockThreshold || "5"}
+                                                className="w-full h-16 rounded-[20px] bg-white border-2 border-rose-100 focus:border-rose-500 outline-none font-black text-3xl text-center text-rose-600 transition-all"
+                                            />
+                                            <span className="absolute right-4 bottom-4 text-[10px] font-bold text-rose-300 uppercase">Alert</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {validationError && (
+                                <div className="mt-auto p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 animate-in shake duration-500">
+                                    <div className="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm">
+                                        <X className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-rose-600 text-xs font-bold leading-tight">{validationError}</p>
+                                </div>
+                            )}
+                        </div>
+
                     </div>
 
-                    {error && (
-                        <div className="mt-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 animate-in shake duration-500">
-                            <div className="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-rose-200">
-                                <X className="w-4 h-4" />
-                            </div>
-                            <p className="text-rose-600 text-[11px] font-black uppercase tracking-widest leading-tight">{error}</p>
-                        </div>
-                    )}
-                </form>
+                    {/* Footer Actions */}
+                    <div className="p-6 border-t border-slate-100 bg-white flex items-center justify-between gap-4 mt-auto">
+                        <button
+                            type="button"
+                            onClick={step === 1 ? onClose : prevStep}
+                            className="h-12 px-6 rounded-xl text-slate-500 font-bold hover:bg-slate-50 transition-colors text-xs uppercase tracking-wider"
+                        >
+                            {step === 1 ? "Отмена" : "Назад"}
+                        </button>
 
-                <div className="p-10 border-t border-slate-100 flex items-center justify-end shrink-0 bg-slate-50/10 gap-5">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="h-14 px-10 rounded-2xl text-slate-500 text-xs font-black tracking-widest hover:bg-slate-100 transition-all active:scale-95"
-                    >
-                        ОТМЕНА
-                    </button>
-                    <SubmitButton
-                        label={initialData ? "Копировать товар" : "Добавить товар"}
-                        pendingLabel={initialData ? "Копирование..." : "Добавление..."}
-                    />
-                </div>
+                        {step < 3 ? (
+                            <button
+                                type="button"
+                                onClick={nextStep}
+                                className="h-12 px-8 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-wider shadow-lg shadow-slate-200 flex items-center gap-2"
+                            >
+                                Далее <ChevronRight className="w-4 h-4" />
+                            </button>
+                        ) : (
+                            <SubmitButton
+                                label={initialData ? "Сохранить изменения" : "Создать товар"}
+                                pendingLabel="Сохранение..."
+                                className="w-auto px-8 h-12 text-xs uppercase tracking-wider"
+                            />
+                        )}
+                    </div>
+                </form>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRightLeft, X, MapPin, Package, AlertCircle } from "lucide-react";
+import { ArrowRightLeft, X, MapPin, Package, AlertCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { InventoryItem } from "./inventory-client";
 import { StorageLocation } from "./storage-locations-tab";
 import { Button } from "@/components/ui/button";
@@ -216,22 +216,40 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
                                     Количество <span className="text-rose-500 font-bold">*</span>
                                 </label>
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    placeholder="0"
-                                    value={quantity}
-                                    onChange={(e) => {
-                                        setQuantity(e.target.value);
-                                        setFieldErrors(prev => ({ ...prev, quantity: "" }));
-                                    }}
-                                    className={cn(
-                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
-                                        fieldErrors.quantity
-                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                            : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
-                                    )}
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        placeholder="0"
+                                        value={quantity}
+                                        onChange={(e) => {
+                                            setQuantity(e.target.value);
+                                            setFieldErrors(prev => ({ ...prev, quantity: "" }));
+                                        }}
+                                        className={cn(
+                                            "w-full h-14 pl-5 pr-14 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                                            fieldErrors.quantity
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
+                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                        )}
+                                    />
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                        >
+                                            <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                        >
+                                            <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                        </button>
+                                    </div>
+                                </div>
                                 {fieldErrors.quantity && (
                                     <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
                                         {fieldErrors.quantity}
