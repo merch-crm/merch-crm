@@ -118,7 +118,6 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                         key={category.id}
                         category={category}
                         onEdit={handleEditCategory}
-                        onDelete={() => setCategoryToDelete(category)}
                     />
                 ))}
 
@@ -165,20 +164,14 @@ import { createElement } from "react";
 function CategoryCard({
     category,
     onEdit,
-    onDelete,
 }: {
     category: Category & { items: InventoryItem[], children?: Category[] },
     onEdit?: (cat: Category) => void,
-    onDelete?: () => void,
 }) {
     const router = useRouter();
     const IconComponent = getCategoryIcon(category);
     const isOrphaned = category.id === "orphaned";
     const colorStyle = getColorStyles(category.color);
-
-    const itemsForStatus = category.items;
-    const hasCritical = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.criticalStockThreshold || 0));
-    const hasLow = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.lowStockThreshold || 10));
 
     // Эти переменные были удалены из-за того, что они не использовались в текущем дизайне карточки.
     // В будущем их можно будет вернуть для индикации статуса склада на главной странице.

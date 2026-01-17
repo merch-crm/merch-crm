@@ -415,13 +415,6 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
     const parentCategory = item.category?.parent;
     const currentCategory = item.category;
 
-    const [showCustomColor, setShowCustomColor] = useState(false);
-    const [customColorHex, setCustomColorHex] = useState("#6366f1");
-    const [customColorName, setCustomColorName] = useState("");
-
-    const [showCustomMaterial, setShowCustomMaterial] = useState(false);
-    const [customMaterialName, setCustomMaterialName] = useState("");
-
     const [isThumbnailEditing, setIsThumbnailEditing] = useState(false);
     const [thumbnailSettings, setThumbnailSettings] = useState<{ x: number; y: number; scale: number }>({ x: 50, y: 50, scale: 1 });
 
@@ -1335,7 +1328,6 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                         type="button"
                                                         onClick={() => {
                                                             handleAttributeChange("Материал", m.name);
-                                                            setShowCustomMaterial(false);
                                                         }}
                                                         className={cn(
                                                             "h-10 px-6 rounded-xl text-sm font-bold transition-all border shadow-sm",
@@ -1381,7 +1373,6 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                         onClick={() => {
                                                             handleAttributeChange("Цвет", c.name);
                                                             setAttributeCode(c.code);
-                                                            setShowCustomColor(false);
                                                         }}
                                                         className={cn(
                                                             "flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all shadow-sm",
