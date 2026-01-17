@@ -4,6 +4,8 @@ description: Startup routine to initialize SSH tunnel to remote Docker DB and st
 
 // turbo-all
 
+> **ВАЖНОЕ ПРАВИЛО:** Всегда используйте этот workflow или скрипт `./dev.sh` для работы. Это гарантирует подключение к актуальной базе данных на сервере. Прямой запуск `npm run dev` может привести к работе с пустой локальной базой и потере данных.
+
 1. Clean up existing tunnels and clear port 5432.
 ```bash
 lsof -ti:5432 | xargs kill -9 2>/dev/null || true
