@@ -64,7 +64,7 @@ async function saveFile(file: File | null, directoryPath: string): Promise<strin
     // Compress if larger than 700KB or if it is an image that we want to standardize
     if (file.type.startsWith("image/") && buffer.length > MAX_SIZE) {
         try {
-            buffer = await sharp(buffer as any)
+            buffer = await sharp(buffer)
                 .rotate() // Auto-rotate based on EXIF
                 .resize(1920, 1920, {
                     fit: 'inside',
@@ -137,7 +137,7 @@ export async function addInventoryCategory(formData: FormData) {
 
     try {
         await db.transaction(async (tx) => {
-            const [newCategory] = await tx.insert(inventoryCategories).values({
+            await tx.insert(inventoryCategories).values({
                 name,
                 description,
                 prefix: prefix || null,
@@ -146,7 +146,7 @@ export async function addInventoryCategory(formData: FormData) {
                 parentId: parentId || null,
                 sortOrder,
                 isActive,
-            }).returning();
+            });
 
             // Create folder structure
             let parentPath = "";
@@ -612,7 +612,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             method: "updateInventoryItem",
             details: { id, name, sku, quantity }
         });
-        return { error: `Ошибка при обновлении: ${(error as any).message || "Неизвестная ошибка"}` };
+        return { error: `Ошибка при обновлении: ${error instanceof Error ? error.message : "Неизвестная ошибка"}` };
     }
 }
 
@@ -869,7 +869,7 @@ export async function getInventoryAttributes() {
     }
 }
 
-export async function createInventoryAttribute(type: string, name: string, value: string, meta?: any) {
+export async function createInventoryAttribute(type: string, name: string, value: string, meta?: Record<string, unknown>) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 

@@ -13,7 +13,6 @@ import { getIconNameFromName, getColorStyles, ICONS, COLORS, ICON_GROUPS, getIco
 
 export function AddCategoryDialog({ categories, parentId, buttonText = "Добавить категорию" }: { categories: Category[], parentId?: string, buttonText?: string }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState("");
     const [iconManuallySelected, setIconManuallySelected] = useState(false);
@@ -44,7 +43,6 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
             return;
         }
 
-        setIsPending(true);
         setError(null);
         setFieldErrors({});
 
@@ -55,10 +53,8 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
 
         if (result.error) {
             setError(result.error);
-            setIsPending(false);
         } else {
             setIsOpen(false);
-            setIsPending(false);
             router.refresh();
         }
     }

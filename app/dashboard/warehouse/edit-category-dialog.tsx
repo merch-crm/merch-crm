@@ -2,7 +2,6 @@
 
 import { useState, createElement } from "react";
 import { X, Package, Check, Trash2, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";

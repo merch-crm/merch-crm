@@ -180,7 +180,7 @@ export function ItemDetailDrawer({ item, onClose }: ItemDetailDrawerProps) {
                                     return (
                                         <div key={key} className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-0.5">
                                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">{key}</span>
-                                            <span className="text-xs font-black text-slate-900">{value as any}</span>
+                                            <span className="text-xs font-black text-slate-900">{String(value)}</span>
                                         </div>
                                     );
                                 })}

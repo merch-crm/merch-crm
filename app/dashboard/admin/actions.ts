@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { hashPassword } from "@/lib/password";
-import { eq, asc, desc, isNull, sql, and, or, inArray, count, gte } from "drizzle-orm";
+import { eq, asc, desc, sql, and, or, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logSecurityEvent } from "@/lib/security-logger";
 import os from "os";

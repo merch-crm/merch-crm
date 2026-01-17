@@ -11,7 +11,6 @@ import { SubmitButton } from "../submit-button";
 import { deleteInventoryItems, updateInventoryItem, addInventoryItem, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories, deleteInventoryCategory } from "@/app/dashboard/warehouse/actions";
 import { EditCategoryDialog } from "../edit-category-dialog";
 import { CategorySelect } from "../category-select";
-import { useFormStatus } from "react-dom";
 import { AdjustStockDialog } from "../adjust-stock-dialog";
 import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../storage-locations-tab";
@@ -85,7 +84,6 @@ export function CategoryDetailClient({
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
     const [adjustingItem, setAdjustingItem] = useState<InventoryItem | null>(null);
     const [duplicatingItem, setDuplicatingItem] = useState<InventoryItem | null>(null); // New state for copy
-    const [viewingItem, setViewingItem] = useState<InventoryItem | null>(null);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isAdjustOpen, setIsAdjustOpen] = useState(false);
     const [isAddOpen, setIsAddOpen] = useState(false);

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, ChevronRight, Trash2 } from "lucide-react";
+import { Pencil, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getCategoryIcon, getColorStyles } from "./category-utils";

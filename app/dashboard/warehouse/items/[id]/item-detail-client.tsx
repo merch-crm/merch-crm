@@ -85,11 +85,27 @@ export interface InventoryItem {
     } | null;
 }
 
+export interface Category {
+    id: string;
+    name: string;
+    description?: string | null;
+    icon?: string | null;
+    color?: string | null;
+    prefix?: string | null;
+    parentId?: string | null;
+    sortOrder: number;
+    isActive: boolean;
+    parent?: {
+        id: string;
+        name: string;
+    } | null;
+}
+
 interface ItemDetailClientProps {
     item: InventoryItem;
     storageLocations: StorageLocation[];
     measurementUnits: { id: string, name: string }[];
-    categories: any[];
+    categories: Category[];
 }
 
 const ATTRIBUTE_LABELS: Record<string, string> = {
@@ -188,7 +204,7 @@ function CustomFileInput({
     );
 }
 
-function getAllItemImages(item: any) {
+function getAllItemImages(item: InventoryItem) {
     const images: { src: string; label: string }[] = [];
     if (item.image) images.push({ src: item.image, label: "Лицевая сторона" });
     if (item.imageBack) images.push({ src: item.imageBack, label: "Со спины" });
@@ -202,7 +218,7 @@ function getAllItemImages(item: any) {
 }
 
 interface PhotoGalleryProps {
-    item: any;
+    item: InventoryItem;
     onImageClick: (index: number) => void;
 }
 

@@ -332,7 +332,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             <AttributeSelector
                                                 type="material"
                                                 value={selectedMaterial}
-                                                onChange={(name, code) => {
+                                                onChange={(name) => {
                                                     setSelectedMaterial(name);
                                                 }}
                                                 allowCustom={true}

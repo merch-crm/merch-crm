@@ -12,19 +12,27 @@ interface AttributeSelectorProps {
     allowCustom?: boolean;
 }
 
+interface DbAttribute {
+    id: string;
+    type: string;
+    name: string;
+    value: string;
+    meta: Record<string, any> | null;
+}
+
 export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");
     const [isSaving, setIsSaving] = useState(false);
 
-    const [dbAttributes, setDbAttributes] = useState<any[]>([]);
+    const [dbAttributes, setDbAttributes] = useState<DbAttribute[]>([]);
 
     useEffect(() => {
         const fetchAttrs = async () => {
             const res = await getInventoryAttributes();
             if (res.data) {
-                setDbAttributes(res.data.filter((a: any) => a.type === type));
+                setDbAttributes((res.data as DbAttribute[]).filter(a => a.type === type));
             }
         };
         fetchAttrs();
@@ -93,7 +101,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 value === c.name ? "bg-white border-indigo-400 ring-4 ring-indigo-500/10" : "bg-white/50 border-slate-100 hover:border-slate-200"
                             )}
                         >
-                            <div className="w-6 h-6 rounded-full border border-slate-200 shadow-sm shrink-0" style={{ backgroundColor: (c as any).hex }} />
+                            <div className="w-6 h-6 rounded-full border border-slate-200 shadow-sm shrink-0" style={{ backgroundColor: 'hex' in c ? (c as { name: string; code: string; hex: string }).hex : undefined }} />
                             <span className="text-[10px] font-bold text-slate-600 truncate w-full text-center">{c.name}</span>
                         </button>
                     ))}
