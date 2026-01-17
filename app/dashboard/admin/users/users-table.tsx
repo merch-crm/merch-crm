@@ -16,6 +16,7 @@ interface User {
     roleId: string | null;
     departmentId: string | null;
     department?: string | null;
+    isSystem?: boolean;
     role?: {
         name: string;
     } | null;
@@ -182,12 +183,14 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 >
                                                     <Edit className="w-4 h-4" />
                                                 </button>
-                                                <button
-                                                    onClick={() => setDeletingUser(user)}
-                                                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg transition-all"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                                {!user.isSystem && (
+                                                    <button
+                                                        onClick={() => setDeletingUser(user)}
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg transition-all"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

@@ -260,6 +260,14 @@ export async function deleteUser(userId: string) {
         return { error: "Вы не можете удалить самого себя" };
     }
 
+    const userToDelete = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+    });
+
+    if (userToDelete?.isSystem) {
+        return { error: "Нельзя удалить системного пользователя" };
+    }
+
     try {
         // Check for dependencies to avoid DB errors
         const [managedClients, createdOrders, userTasks] = await Promise.all([
@@ -647,7 +655,7 @@ export async function deleteRole(roleId: string) {
             where: eq(roles.id, roleId)
         });
 
-        if (role?.name === "Администратор") {
+        if (role?.isSystem) {
             return { error: "Нельзя удалить системную роль" };
         }
 
@@ -825,6 +833,10 @@ export async function deleteDepartment(deptId: string) {
         const dept = await db.query.departments.findFirst({
             where: eq(departments.id, deptId)
         });
+
+        if (dept?.isSystem) {
+            return { error: "Нельзя удалить системный отдел" };
+        }
 
         await db.delete(departments).where(eq(departments.id, deptId));
 

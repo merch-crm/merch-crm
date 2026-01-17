@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
 
+/**
+ * Compatibility route for old avatar paths like /uploads/avatars/filename.jpg
+ * Redirects or serves them from the new local-storage/avatars location.
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ filename: string }> }
@@ -15,9 +19,11 @@ export async function GET(
     }
 
     try {
+        // Try to find the file in the new local-storage location
         const filePath = path.join(LOCAL_STORAGE_ROOT, "avatars", filename);
 
         if (!fs.existsSync(filePath)) {
+            console.log(`[LegacyAvatarRoute] File not found: ${filePath}`);
             return new NextResponse("File not found", { status: 404 });
         }
 
@@ -35,7 +41,7 @@ export async function GET(
             },
         });
     } catch (error) {
-        console.error("Error serving avatar:", error);
+        console.error("Error serving legacy avatar:", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

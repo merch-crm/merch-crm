@@ -187,6 +187,14 @@ export async function deleteInventoryCategory(id: string) {
             return { error: "Нельзя удалить категорию, у которой есть подкатегории. Сначала удалите или переместите их." };
         }
 
+        const category = await db.query.inventoryCategories.findFirst({
+            where: eq(inventoryCategories.id, id)
+        });
+
+        if (category?.isSystem) {
+            return { error: "Нельзя удалить системную категорию" };
+        }
+
         // First, unlink all items from this category (set categoryId to null)
         await db.update(inventoryItems)
             .set({ categoryId: null })

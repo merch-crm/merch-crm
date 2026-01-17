@@ -136,13 +136,14 @@ export default function AdminRolesPage() {
                                         <h3 className="text-lg font-bold text-slate-900 truncate tracking-tight group-hover:text-indigo-600 transition-colors">
                                             {role.name}
                                         </h3>
-                                        <div className="mt-0.5">
-                                            {role.department ? (
-                                                <span className={`text-[10px] font-bold uppercase tracking-widest text-indigo-500`}>
+                                        <div className="mt-0.5 flex items-center gap-2">
+                                            {role.isSystem && (
+                                                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-slate-100 text-slate-500 rounded">System</span>
+                                            )}
+                                            {role.department && (
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-500">
                                                     {role.department.name}
                                                 </span>
-                                            ) : (
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Системная роль</span>
                                             )}
                                         </div>
                                     </div>

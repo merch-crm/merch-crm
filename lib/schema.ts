@@ -102,6 +102,7 @@ export const departments = pgTable("departments", {
     description: text("description"),
     color: text("color").default("indigo"),
     isActive: boolean("is_active").default(true).notNull(),
+    isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -121,6 +122,7 @@ export const users = pgTable("users", {
     departmentLegacy: text("department_legacy"),
     departmentId: uuid("department_id").references(() => departments.id),
     lastActiveAt: timestamp("last_active_at"),
+    isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -155,6 +157,7 @@ export const inventoryCategories = pgTable("inventory_categories", {
     parentId: uuid("parent_id").references((): AnyPgColumn => inventoryCategories.id, { onDelete: "set null" }),
     sortOrder: integer("sort_order").default(0).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
+    isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

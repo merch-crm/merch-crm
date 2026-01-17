@@ -12,6 +12,7 @@ interface Department {
     name: string;
     description: string | null;
     color: string | null;
+    isSystem: boolean;
     userCount?: number;
 }
 
@@ -137,15 +138,17 @@ export function DepartmentsTable() {
                                         >
                                             <Settings2 className="w-4 h-4" />
                                         </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDeleteClick(dept);
-                                            }}
-                                            className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-xl hover:bg-white shadow-sm"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                        {!dept.isSystem && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteClick(dept);
+                                                }}
+                                                className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-xl hover:bg-white shadow-sm"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
