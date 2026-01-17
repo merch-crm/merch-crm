@@ -176,35 +176,12 @@ function CategoryCard({
     const isOrphaned = category.id === "orphaned";
     const colorStyle = getColorStyles(category.color);
 
-    const isClothing = category.name.toLowerCase().includes("одежда") || (category.parent?.name || "").toLowerCase().includes("одежда");
     const itemsForStatus = category.items;
     const hasCritical = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.criticalStockThreshold || 0));
     const hasLow = itemsForStatus.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.lowStockThreshold || 10));
 
-    let statusLabel = "СКЛАД ПОЛОН";
-    let statusStyles = "bg-emerald-50 text-emerald-600 border-emerald-100";
-    let dotStyle = "bg-emerald-500";
-
-    if (hasCritical) {
-        statusLabel = "СКЛАД ПУСТОЙ";
-        statusStyles = "bg-rose-50 text-rose-600 border-rose-100";
-        dotStyle = "bg-rose-500 animate-pulse";
-    } else if (hasLow) {
-        statusLabel = "ЗАКАНЧИВАЕТСЯ";
-        statusStyles = "bg-amber-50 text-amber-600 border-amber-100";
-        dotStyle = "bg-amber-500";
-    }
-
-    const handleDelete = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (onDelete) onDelete();
-    };
-
-    const SYSTEM_CATEGORIES = [
-        "Футболки", "Худи", "Свитшот", "Лонгслив", "Анорак",
-        "Зип-худи", "Штаны", "Поло", "Кепки", "Упаковка", "Расходники", "Без категории"
-    ];
-    const isSystem = SYSTEM_CATEGORIES.includes(category.name);
+    // Эти переменные были удалены из-за того, что они не использовались в текущем дизайне карточки.
+    // В будущем их можно будет вернуть для индикации статуса склада на главной странице.
 
     return (
         <div

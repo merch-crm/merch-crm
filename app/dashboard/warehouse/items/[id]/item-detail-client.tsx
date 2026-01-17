@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft,
-    Clock, BarChart3, ArrowLeft, Edit3, Trash2,
+    Clock, ArrowLeft, Edit3, Trash2,
     Download, Save, RefreshCcw, Plus, Minus,
     MoveHorizontal, ChevronDown, Shirt, Box, Wrench,
-    Image as ImageIcon, ChevronLeft, ChevronRight, Check, AlertTriangle, AlertCircle
+    Image as ImageIcon, ChevronLeft, ChevronRight, Check
 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -363,18 +363,18 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
         setFullscreenIndex(index);
     };
 
-    const closeFullscreen = () => {
+    const closeFullscreen = useCallback(() => {
         setFullscreenIndex(null);
-    };
+    }, []);
 
-    const navigateFullscreen = (direction: "prev" | "next") => {
+    const navigateFullscreen = useCallback((direction: "prev" | "next") => {
         if (fullscreenIndex === null) return;
         if (direction === "prev" && fullscreenIndex > 0) {
             setFullscreenIndex(fullscreenIndex - 1);
         } else if (direction === "next" && fullscreenIndex < allImages.length - 1) {
             setFullscreenIndex(fullscreenIndex + 1);
         }
-    };
+    }, [fullscreenIndex, allImages.length]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -386,7 +386,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [fullscreenIndex, allImages.length]);
+    }, [fullscreenIndex, closeFullscreen, navigateFullscreen]);
 
     // Sync state with props when server-side data refreshes (e.g. after quantity update)
     if (JSON.stringify(initialItem) !== JSON.stringify(prevInitialItem)) {

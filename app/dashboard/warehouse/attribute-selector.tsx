@@ -17,7 +17,7 @@ interface DbAttribute {
     type: string;
     name: string;
     value: string;
-    meta: Record<string, any> | null;
+    meta: Record<string, unknown> | null;
 }
 
 export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true }: AttributeSelectorProps) {
