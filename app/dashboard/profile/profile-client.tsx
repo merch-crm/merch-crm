@@ -89,22 +89,22 @@ interface ScheduleTask {
 export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">("profile");
+
+    // Initialize tab from URL
+    const tabParam = searchParams.get("p");
+    const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">(
+        (tabParam && ["profile", "settings", "statistics", "schedule"].includes(tabParam))
+            ? tabParam as "profile" | "settings" | "statistics" | "schedule"
+            : "profile"
+    );
+
     const [statsData, setStatsData] = useState<StatisticsData | null>(null);
     const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
     const [loading, setLoading] = useState(false);
 
-    // Persist tab in URL
-    useEffect(() => {
-        const tab = searchParams.get("p");
-        if (tab && ["profile", "settings", "statistics", "schedule"].includes(tab)) {
-            setActiveTab(tab as "profile" | "settings" | "statistics" | "schedule");
-            if (tab === "statistics" && !statsData) fetchStats();
-            if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
-        }
-    }, [searchParams]);
-
     const fetchStats = async () => {
+        // Defer to avoid synchronous setState warning
+        await new Promise(resolve => setTimeout(resolve, 0));
         setLoading(true);
         const res = await getUserStatistics();
         if (res.data) setStatsData(res.data);
@@ -112,11 +112,22 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     };
 
     const fetchSchedule = async () => {
+        await new Promise(resolve => setTimeout(resolve, 0));
         setLoading(true);
         const res = await getUserSchedule();
         if (res.data) setScheduleData(res.data);
         setLoading(false);
     };
+
+    // Auto-fetch data when tab changes or initially
+    useEffect(() => {
+        if (activeTab === "statistics" && !statsData) {
+            setTimeout(() => fetchStats(), 0);
+        }
+        if (activeTab === "schedule" && scheduleData.length === 0) {
+            setTimeout(() => fetchSchedule(), 0);
+        }
+    }, [activeTab, statsData, scheduleData.length]);
 
     const onTabChange = (tab: "profile" | "settings" | "statistics" | "schedule") => {
         setActiveTab(tab);

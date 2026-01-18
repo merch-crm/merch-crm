@@ -3,7 +3,7 @@
 import { LayoutGrid, History, MapPin, Plus, Book } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { InventoryClient } from "./inventory-client";
 import { HistoryTable } from "./history-table";
@@ -33,15 +33,14 @@ interface WarehouseClientProps {
 export function WarehouseClient({ items, categories, history, storageLocations, users, user, attributes, attributeTypes }: WarehouseClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [activeTab, setActiveTab] = useState<"inventory" | "storage" | "history" | "dictionary">("inventory");
 
-    // Persist tab state in URL
-    useEffect(() => {
-        const tab = searchParams.get("tab");
-        if (tab && ["inventory", "storage", "history", "dictionary"].includes(tab)) {
-            setActiveTab(tab as "inventory" | "storage" | "history" | "dictionary");
-        }
-    }, [searchParams]);
+    // Initialize tab from URL
+    const tabParam = searchParams.get("tab");
+    const [activeTab, setActiveTab] = useState<"inventory" | "storage" | "history" | "dictionary">(
+        (tabParam && ["inventory", "storage", "history", "dictionary"].includes(tabParam))
+            ? tabParam as "inventory" | "storage" | "history" | "dictionary"
+            : "inventory"
+    );
 
     const handleTabChange = (tab: "inventory" | "storage" | "history" | "dictionary") => {
         setActiveTab(tab);

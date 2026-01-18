@@ -15,7 +15,6 @@ import { TaskAnalytics } from "./task-analytics";
 import { TaskDetailsDialog } from "./task-details-dialog";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 interface Task {
     id: string;
@@ -52,22 +51,22 @@ export function TasksClient({ initialTasks, users, departments, currentUserId, c
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeTab, setActiveTab] = useState("all"); // all, my, role
-    const [view, setView] = useState<'kanban' | 'calendar' | 'analytics'>('kanban');
+
+    // Initialize from URL params
+    const initialTab = searchParams.get("tab");
+    const initialView = searchParams.get("view");
+
+    const [activeTab, setActiveTab] = useState(
+        initialTab && ["all", "my", "role"].includes(initialTab) ? initialTab : "all"
+    );
+    const [view, setView] = useState<'kanban' | 'calendar' | 'analytics'>(
+        initialView && ['kanban', 'calendar', 'analytics'].includes(initialView)
+            ? initialView as 'kanban' | 'calendar' | 'analytics'
+            : 'kanban'
+    );
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-    // Persist state in URL
-    useEffect(() => {
-        const tab = searchParams.get("tab");
-        const v = searchParams.get("view");
 
-        if (tab && ["all", "my", "role"].includes(tab)) {
-            setActiveTab(tab);
-        }
-        if (v && ['kanban', 'calendar', 'analytics'].includes(v as any)) {
-            setView(v as any);
-        }
-    }, [searchParams]);
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
@@ -76,12 +75,7 @@ export function TasksClient({ initialTasks, users, departments, currentUserId, c
         router.replace(`?${params.toString()}`, { scroll: false });
     };
 
-    const handleViewChange = (v: 'kanban' | 'calendar' | 'analytics') => {
-        setView(v);
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("view", v);
-        router.replace(`?${params.toString()}`, { scroll: false });
-    };
+
 
     const filteredTasks = initialTasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

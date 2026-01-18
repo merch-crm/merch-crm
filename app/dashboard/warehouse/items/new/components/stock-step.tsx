@@ -2,9 +2,7 @@
 
 import { MapPin, AlertTriangle, CheckCircle2, Box, Shirt, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Category } from "../../../inventory-client";
-import { StorageLocation } from "../../../storage-locations-tab";
-import { ItemFormData } from "../../../types";
+import { Category, StorageLocation, ItemFormData } from "../../../types";
 
 interface StockStepProps {
     category: Category;

@@ -978,9 +978,12 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
 
         const parts = [brandName, subCatName, qualName, colName, szName].filter(Boolean);
         if (parts.length > 0) {
-            setItemName(parts.join(" "));
+            const nextName = parts.join(" ");
+            if (nextName !== itemName) {
+                setTimeout(() => setItemName(nextName), 0);
+            }
         }
-    }, [selectedSubcategoryId, qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes]);
+    }, [selectedSubcategoryId, qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes, itemName]);
 
     const [addingAttr, setAddingAttr] = useState<{ type: string, name: string, hex: string } | null>(null);
 
@@ -1810,11 +1813,14 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
         const colName = currentColors.find(c => c.code === attributeCode)?.name || "";
         const szName = currentSizes.find(s => s.code === sizeCode)?.name || "";
 
-        const parts = [brandName, subCatName, qualName, colName, szName].filter(Boolean);
+        const parts = [brandName, subCatName, matName, qualName, colName, szName].filter(Boolean);
         if (parts.length > 0) {
-            setItemName(parts.join(" "));
+            const nextName = parts.join(" ");
+            if (nextName !== itemName) {
+                setTimeout(() => setItemName(nextName), 0);
+            }
         }
-    }, [qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes, selectedSubcategoryId]);
+    }, [qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes, selectedSubcategoryId, itemName]);
 
     const handleAttributeChange = (key: string, value: string) => {
         setAttributes(prev => ({ ...prev, [key]: value }));

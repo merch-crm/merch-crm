@@ -46,3 +46,24 @@ export interface ItemFormData {
     imageDetailsPreviews?: string[];
     [key: string]: unknown;
 }
+
+export interface Category {
+    id: string;
+    name: string;
+    description: string | null;
+    prefix: string | null;
+    parentId?: string | null;
+    color: string | null;
+    icon: string | null;
+}
+
+export interface StorageLocation {
+    id: string;
+    name: string;
+    address?: string | null;
+    description?: string | null;
+    userId?: string | null;
+    responsibleUserId?: string | null;
+    isSystem?: boolean;
+    createdAt?: Date;
+}
