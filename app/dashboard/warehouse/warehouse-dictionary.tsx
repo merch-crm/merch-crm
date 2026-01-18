@@ -282,20 +282,22 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
         setNewItemName(attr.name);
 
         // Robust meta parsing
-        let meta: any = attr.meta;
+        let meta: unknown = attr.meta;
         if (typeof meta === 'string') {
-            try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+            try { meta = JSON.parse(meta); } catch { meta = {}; }
         } else if (!meta) {
             meta = {};
         }
 
-        setNewItemFemName(meta?.fem || "");
-        setNewItemNeutName(meta?.neut || "");
+        const typedMeta = meta as { fem?: string; neut?: string; hex?: string; showInName?: boolean; showInSku?: boolean };
+
+        setNewItemFemName(typedMeta?.fem || "");
+        setNewItemNeutName(typedMeta?.neut || "");
         setNewItemCode(attr.value);
         setIsCodeManuallyEdited(true);
-        setNewItemColorHex(meta?.hex || "#000000");
-        setShowInName(meta?.showInName ?? true);
-        setShowInSku(meta?.showInSku ?? true);
+        setNewItemColorHex(typedMeta?.hex || "#000000");
+        setShowInName(typedMeta?.showInName ?? true);
+        setShowInSku(typedMeta?.showInSku ?? true);
         setError("");
         setIsValueDialogOpen(true);
     }

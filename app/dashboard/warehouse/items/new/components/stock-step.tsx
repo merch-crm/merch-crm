@@ -14,6 +14,7 @@ import {
     Minus,
     Check
 } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, ItemFormData } from "../../../types";
 import { AddStorageLocationDialog } from "../../../add-storage-location-dialog";
@@ -135,10 +136,12 @@ export function StockStep({
                                 </div>
                                 <div className="w-24 h-24 rounded-2xl bg-white/10 p-1.5 backdrop-blur-sm border border-white/20 shrink-0 shadow-2xl relative transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
                                     {formData.imagePreview ? (
-                                        <img
+                                        <Image
                                             src={formData.imagePreview}
                                             alt=""
-                                            className="w-full h-full object-cover rounded-[10px] shadow-inner"
+                                            fill
+                                            className="object-cover rounded-[10px] shadow-inner"
+                                            unoptimized
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center opacity-40">

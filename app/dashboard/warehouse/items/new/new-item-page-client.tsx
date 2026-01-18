@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, RotateCcw, AlertCircle, Package, Shirt } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
@@ -14,8 +14,6 @@ import { StockStep } from "./components/stock-step";
 import { StepFooter } from "./components/step-footer";
 import { InventoryAttribute, AttributeType, ItemFormData, Category, StorageLocation } from "../../types";
 import { useToast } from "../../../../../components/ui/toast";
-import { getCategoryIcon, getColorStyles } from "../../category-utils";
-import { createElement } from "react";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -46,122 +44,144 @@ export function NewItemPageClient({
     // 2: Basic Info
     // 3: Media
     // 4: Stock
-    const [step, setStep] = useState(0);
-    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-    const [validationError, setValidationError] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isInitialized, setIsInitialized] = useState(false);
+    // State with lazy initialization
+    const [step, setStep] = useState(() => {
+        if (typeof window === 'undefined') return 0;
 
-    // Form state settings
-    const [formData, setFormData] = useState<ItemFormData>({
-        // Step 2: Basic Info
-        subcategoryId: "",
-        brandCode: "",
-        qualityCode: "",
-        materialCode: "",
-        attributeCode: "",
-        sizeCode: "",
-        itemName: "",
-        sku: "",
-        unit: "шт",
-        description: "",
-        width: "",
-        height: "",
-        depth: "",
-        department: "",
-
-        // Step 3: Media
-        imageFile: null as File | null,
-        imageBackFile: null as File | null,
-        imageSideFile: null as File | null,
-        imageDetailsFiles: [] as File[],
-
-        imagePreview: null as string | null,
-        imageBackPreview: null as string | null,
-        imageSidePreview: null as string | null,
-        imageDetailsPreviews: [] as string[],
-        thumbSettings: { zoom: 1, x: 0, y: 0 },
-
-        // Step 4: Stock
-        storageLocationId: "",
-        quantity: "0",
-        criticalStockThreshold: "0",
-        lowStockThreshold: "10",
-        attributes: {} as Record<string, string>
-    });
-
-    const [isSavingDraft, setIsSavingDraft] = useState(false);
-
-    // Draft key for localStorage
-    const DRAFT_KEY = "merch_crm_new_item_draft";
-
-    const updateFormData = (updates: Partial<ItemFormData>) => {
-        setFormData(prev => ({ ...prev, ...updates }));
-    };
-
-    // Unified Initialization: Load draft OR initial params
-    useEffect(() => {
-        if (isInitialized) return;
-
-        // 1. Check for initial params from URL (Highest priority)
+        // 1. Initial params from URL
         if (initialCategoryId || initialSubcategoryId) {
-            if (initialCategoryId) {
-                const cat = categories.find(c => c.id === initialCategoryId);
-                if (cat) {
-                    setSelectedCategory(cat);
-
-                    const hasSubs = categories.some(c => c.parentId === cat.id);
-
-                    if (initialSubcategoryId) {
-                        setFormData(prev => ({ ...prev, subcategoryId: initialSubcategoryId }));
-                        setStep(2); // Have both -> jump to basic info
-                    } else if (hasSubs) {
-                        setStep(1); // Have category but it has subs -> go to subcat selection
-                    } else {
-                        setStep(2); // Have category and no subs -> jump to basic info
-                    }
-
-                    setIsInitialized(true);
-                    return;
+            // If we have initial category/subcategory, we usually jump to basic info (step 2)
+            // unless the initial category has subcategories and no subcategory is provided.
+            const catIdToFind = initialSubcategoryId
+                ? categories.find(c => c.id === initialSubcategoryId)?.parentId
+                : initialCategoryId;
+            const cat = catIdToFind ? categories.find(c => c.id === catIdToFind) : null;
+            if (cat) {
+                const hasSubs = categories.some(c => c.parentId === cat.id);
+                if (hasSubs && !initialSubcategoryId) {
+                    return 0; // Stay on category selection if parent has subs but no sub is selected
                 }
             }
+            return 2; // Jump to basic info
         }
 
-        // 2. Load draft if no initial params
-        const saved = localStorage.getItem(DRAFT_KEY);
+        // 2. Draft
+        const saved = localStorage.getItem("merch_crm_new_item_draft");
+        if (saved) {
+            try { return JSON.parse(saved).step || 0; } catch { return 0; }
+        }
+        return 0;
+    });
+
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(() => {
+        if (typeof window === 'undefined') return null;
+
+        // 1. Initial params
+        const catIdToFind = initialSubcategoryId
+            ? categories.find(c => c.id === initialSubcategoryId)?.parentId
+            : initialCategoryId;
+
+        if (catIdToFind) {
+            return categories.find(c => c.id === catIdToFind) || null;
+        }
+
+        // 2. Draft
+        const saved = localStorage.getItem("merch_crm_new_item_draft");
+        if (saved) {
+            try {
+                const draft = JSON.parse(saved);
+                if (draft.selectedCategoryId) {
+                    return categories.find(c => c.id === draft.selectedCategoryId) || null;
+                }
+            } catch { return null; }
+        }
+        return null;
+    });
+
+    const [formData, setFormData] = useState<ItemFormData>(() => {
+        const defaultData: ItemFormData = {
+            subcategoryId: "",
+            brandCode: "",
+            qualityCode: "",
+            materialCode: "",
+            attributeCode: "",
+            sizeCode: "",
+            itemName: "",
+            sku: "",
+            unit: "шт",
+            description: "",
+            width: "",
+            height: "",
+            depth: "",
+            department: "",
+            imageFile: null,
+            imageBackFile: null,
+            imageSideFile: null,
+            imageDetailsFiles: [],
+            imagePreview: null,
+            imageBackPreview: null,
+            imageSidePreview: null,
+            imageDetailsPreviews: [],
+            thumbSettings: { zoom: 1, x: 0, y: 0 },
+            storageLocationId: "",
+            quantity: "0",
+            criticalStockThreshold: "0",
+            lowStockThreshold: "10",
+            attributes: {}
+        };
+
+        if (typeof window === 'undefined') return defaultData;
+
+        // 1. Initial params
+        if (initialSubcategoryId) {
+            const subCat = categories.find(c => c.id === initialSubcategoryId);
+            const isClothing = subCat?.name.toLowerCase().includes("одежда");
+            return {
+                ...defaultData,
+                subcategoryId: initialSubcategoryId,
+                unit: isClothing ? "шт" : "шт"
+            };
+        } else if (initialCategoryId) {
+            const cat = categories.find(c => c.id === initialCategoryId);
+            const isClothing = cat?.name.toLowerCase().includes("одежда");
+            return {
+                ...defaultData,
+                unit: isClothing ? "шт" : "шт"
+            };
+        }
+
+        // 2. Draft
+        const saved = localStorage.getItem("merch_crm_new_item_draft");
         if (saved) {
             try {
                 const draft = JSON.parse(saved);
                 if (draft.formData) {
-                    setFormData(prev => ({
-                        ...prev,
+                    return {
+                        ...defaultData,
                         ...draft.formData,
-                        // Files cannot be restored from JSON
-                        imageFile: null,
-                        imageBackFile: null,
-                        imageSideFile: null,
-                        imageDetailsFiles: [],
-                        imagePreview: null,
-                        imageBackPreview: null,
-                        imageSidePreview: null,
+                        // Clear files/previews as they cannot be serialized
+                        imageFile: null, imageBackFile: null, imageSideFile: null,
+                        imageDetailsFiles: [], imagePreview: null,
+                        imageBackPreview: null, imageSidePreview: null,
                         imageDetailsPreviews: []
-                    }));
-                    if (draft.step) setStep(draft.step);
-                    if (draft.selectedCategoryId) {
-                        const cat = categories.find(c => c.id === draft.selectedCategoryId);
-                        if (cat) setSelectedCategory(cat);
-                    }
+                    };
                 }
-            } catch (e) {
-                console.error("Failed to load draft:", e);
-            }
+            } catch { return defaultData; }
         }
-        setIsInitialized(true);
-    }, [initialCategoryId, initialSubcategoryId, categories, isInitialized, formData.subcategoryId]);
+
+        return defaultData;
+    });
+
+    const [validationError, setValidationError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const updateFormData = (updates: Partial<ItemFormData>) => {
+        setFormData(prev => ({ ...prev, ...updates }));
+        if (validationError) setValidationError("");
+    };
 
     // Save draft on changes
     useEffect(() => {
-        setTimeout(() => setIsSavingDraft(true), 0);
         const timer = setTimeout(() => {
             const dataToSave = {
                 formData: {
@@ -178,21 +198,17 @@ export function NewItemPageClient({
                 step,
                 selectedCategoryId: selectedCategory?.id
             };
-            localStorage.setItem(DRAFT_KEY, JSON.stringify(dataToSave));
-            setIsSavingDraft(false);
+            localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
         }, 1000); // Debounce saving
 
         return () => clearTimeout(timer);
     }, [formData, step, selectedCategory]);
 
     const clearDraft = () => {
-        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem("merch_crm_new_item_draft");
     };
 
-    // Clear validation error when relevant data changes
-    useEffect(() => {
-        setValidationError("");
-    }, [selectedCategory, formData.subcategoryId]);
+
 
     const handleReset = () => {
         clearDraft();
@@ -232,64 +248,7 @@ export function NewItemPageClient({
         toast("Форма сброшена", "info");
     };
 
-    // Initialize from URL params
-    useEffect(() => {
-        if (isInitialized) return;
-        if (!categories.length) return;
 
-        setTimeout(() => {
-            if (initialSubcategoryId) {
-                const sub = categories.find(c => c.id === initialSubcategoryId);
-                if (sub && sub.parentId) {
-                    const parent = categories.find(c => c.id === sub.parentId);
-                    if (parent) {
-                        setSelectedCategory(parent);
-                        setFormData(prev => ({
-                            ...prev,
-                            subcategoryId: sub.id,
-                            unit: parent.name.toLowerCase().includes("одежда") ? "шт" : prev.unit
-                        }));
-                        setStep(2); // Skip straight to Basic Info
-                        setIsInitialized(true);
-                        return;
-                    }
-                }
-            }
-
-            if (initialCategoryId) {
-                const cat = categories.find(c => c.id === initialCategoryId);
-                if (cat) {
-                    if (cat.parentId) {
-                        // It's a subcategory passed as categoryId
-                        const parent = categories.find(c => c.id === cat.parentId);
-                        if (parent) {
-                            setSelectedCategory(parent);
-                            setFormData(prev => ({
-                                ...prev,
-                                subcategoryId: cat.id,
-                                unit: parent.name.toLowerCase().includes("одежда") ? "шт" : prev.unit
-                            }));
-                            setStep(2);
-                            setIsInitialized(true);
-                        }
-                    } else {
-                        // Top level category
-                        setSelectedCategory(cat);
-                        setFormData(prev => ({
-                            ...prev,
-                            unit: cat.name.toLowerCase().includes("одежда") ? "шт" : prev.unit
-                        }));
-                        // Check if we need subcategory selection
-                        setStep(0); // Always start at 0 if top level
-                        setIsInitialized(true);
-                    }
-                }
-            } else {
-                // If no initial params, we consider it initialized (either from draft or empty)
-                setIsInitialized(true);
-            }
-        }, 0);
-    }, [initialCategoryId, initialSubcategoryId, categories, isInitialized]);
 
     const subCategories = selectedCategory
         ? categories.filter(c => c.parentId === selectedCategory.id)
@@ -578,16 +537,11 @@ export function NewItemPageClient({
                         <div className="flex items-center justify-between gap-3 w-full">
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-[14px] bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-                                    <div className={cn(
-                                        "w-2 h-2 rounded-full",
-                                        isSavingDraft ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
-                                    )} />
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                 </div>
                                 <div>
                                     <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Черновик</div>
-                                    <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">
-                                        {isSavingDraft ? "Сохранение..." : "Сохранено"}
-                                    </div>
+                                    <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">Сохранено</div>
                                 </div>
                             </div>
 

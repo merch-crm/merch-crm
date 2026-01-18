@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Trash2, Move, Plus, Images, RotateCcw, RefreshCcw } from "lucide-react";
+import { Trash2, Plus, Images, RotateCcw, RefreshCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StepFooter } from "./step-footer";
 import { ItemFormData } from "../../../types";
@@ -25,7 +25,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
     useEffect(() => {
         if (!containerRef.current) return;
         const resizeObserver = new ResizeObserver((entries) => {
-            for (let entry of entries) {
+            for (const entry of entries) {
                 setContainerDims({ w: entry.contentRect.width, h: entry.contentRect.height });
             }
         });
@@ -78,13 +78,14 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
         if (newX !== x || newY !== y) {
             updateFormData({
                 thumbSettings: {
-                    ...thumbSettings,
+                    zoom: thumbSettings.zoom,
                     x: newX,
                     y: newY
                 }
             });
         }
-    }, [maxBounds, thumbSettings.x, thumbSettings.y, updateFormData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [maxBounds, thumbSettings.x, thumbSettings.y, thumbSettings.zoom, updateFormData]);
 
     const handleFileProcessing = async (file: File) => {
         setIsProcessing(true);

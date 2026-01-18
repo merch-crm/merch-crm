@@ -2,33 +2,26 @@
 
 import React from "react";
 import {
-    LayoutGrid,
     Scale,
-    AlignLeft,
-    Plus,
-    ChevronDown,
     Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { InventoryItem, Category, AttributeType, InventoryAttribute } from "../../../types";
-import { Badge } from "@/components/ui/badge";
+import { InventoryItem, AttributeType, InventoryAttribute, MeasurementUnit } from "../../../types";
 
 interface ItemGeneralInfoProps {
     item: InventoryItem;
     isEditing: boolean;
-    categories: Category[];
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
-    measurementUnits: any[];
-    editData: any;
-    onUpdateField: (field: string, value: any) => void;
+    measurementUnits: MeasurementUnit[];
+    editData: InventoryItem;
+    onUpdateField: (field: string, value: string | number | null) => void;
     onUpdateAttribute: (key: string, value: string) => void;
 }
 
 export function ItemGeneralInfo({
     item,
     isEditing,
-    categories,
     attributeTypes,
     allAttributes,
     measurementUnits,
@@ -145,7 +138,7 @@ export function ItemGeneralInfo({
                                         </select>
                                     ) : (
                                         <p className="text-xs font-bold text-slate-900">
-                                            {selectedAttr ? selectedAttr.name : (currentValue || "—")}
+                                            {selectedAttr ? selectedAttr.name : (typeof currentValue === 'string' ? currentValue : "—")}
                                         </p>
                                     )}
                                 </div>

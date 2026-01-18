@@ -8,18 +8,20 @@ import { useState } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
 import { InventoryItem } from "./inventory-client";
 
+
 export interface StorageLocation {
     id: string;
     name: string;
-    address: string;
-    responsibleUserId: string | null;
+    address?: string | null;
+    responsibleUserId?: string | null;
     description?: string | null;
-    isSystem: boolean;
+    isSystem?: boolean;
     responsibleUser?: {
         name: string;
     } | null;
     items?: InventoryItem[];
 }
+
 
 interface StorageLocationsTabProps {
     locations: StorageLocation[];
@@ -122,7 +124,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                     </button>
                                     {!loc.isSystem && (
                                         <button
-                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem)}
+                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
                                             className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[14px] transition-all"
                                         >
                                             <Trash2 className="w-4 h-4" />

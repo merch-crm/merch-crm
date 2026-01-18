@@ -621,7 +621,7 @@ export function CategoryDetailClient({
                                                                         className="object-cover"
                                                                         unoptimized
                                                                         style={(() => {
-                                                                            const settings = (item as any).thumbnailSettings as ThumbnailSettings;
+                                                                            const settings = item.thumbnailSettings;
                                                                             if (!settings) return {};
                                                                             return {
                                                                                 transform: `scale(${settings.zoom || 1}) translate(${settings.x ?? 0}%, ${settings.y ?? 0}%)`

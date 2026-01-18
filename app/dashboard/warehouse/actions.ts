@@ -748,7 +748,12 @@ export async function deleteInventoryItemImage(itemId: string, type: "front" | "
 
         if (!item) return { error: "Товар не найден" };
 
-        let updateData: any = {};
+        const updateData: {
+            image?: string | null;
+            imageBack?: string | null;
+            imageSide?: string | null;
+            imageDetails?: string[] | null;
+        } = {};
         if (type === "front") updateData.image = null;
         else if (type === "back") updateData.imageBack = null;
         else if (type === "side") updateData.imageSide = null;

@@ -22,7 +22,7 @@ interface ItemHeaderProps {
     onDownload: () => void;
 }
 
-const ITEM_TYPE_CONFIG: Record<string, { name: string, icon: any, color: string }> = {
+const ITEM_TYPE_CONFIG: Record<string, { name: string, icon: React.ElementType, color: string }> = {
     clothing: { name: "Одежда", icon: Package, color: "bg-blue-500 text-white" },
     packaging: { name: "Упаковка", icon: Package, color: "bg-amber-500 text-white" },
     consumables: { name: "Расходники", icon: Package, color: "bg-emerald-500 text-white" }

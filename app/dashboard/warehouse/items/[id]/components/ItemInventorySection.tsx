@@ -3,12 +3,9 @@
 import React from "react";
 import {
     Package,
-    ChevronRight,
-    ArrowRightLeft,
     PlusCircle,
     AlertTriangle,
     Warehouse,
-    TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InventoryItem, ItemStock, StorageLocation } from "../../../types";
@@ -20,8 +17,8 @@ interface ItemInventorySectionProps {
     stocks: ItemStock[];
     storageLocations: StorageLocation[];
     isEditing: boolean;
-    editData: any;
-    onUpdateField: (field: string, value: any) => void;
+    editData: InventoryItem;
+    onUpdateField: (field: string, value: string | number) => void;
     onAdjustStock: (locationId?: string) => void;
     onTransferStock: (fromLocationId: string) => void;
 }

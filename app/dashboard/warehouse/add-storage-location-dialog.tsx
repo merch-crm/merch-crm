@@ -21,6 +21,7 @@ export function AddStorageLocationDialog({ users, trigger }: AddStorageLocationD
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 

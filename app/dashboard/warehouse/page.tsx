@@ -25,7 +25,7 @@ export default async function WarehousePage() {
     }
 
     // Get attribute types (no auto-seeding as function doesn't exist)
-    let { data: attributeTypes = [] } = await getInventoryAttributeTypes();
+    const { data: attributeTypes = [] } = await getInventoryAttributeTypes();
 
     // Auto-seed system categories if empty or orphans detected or missing linguistic data
     const hasOrphanedSubs = categoriesFromDb.some(c => ["Футболки", "Кепки"].includes(c.name) && !c.parentId);

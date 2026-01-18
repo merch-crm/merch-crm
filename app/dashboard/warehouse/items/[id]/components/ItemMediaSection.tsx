@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ImageIcon, RefreshCcw, Trash2, ZoomIn, ZoomOut, Move, ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InventoryItem, ThumbnailSettings } from "../../../types";
 
@@ -13,7 +13,6 @@ interface ItemMediaSectionProps {
     onImageChange: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
     onImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
     thumbnailSettings?: ThumbnailSettings | null;
-    onUpdateThumbnailSettings?: (settings: ThumbnailSettings) => void;
 }
 
 export function ItemMediaSection({
@@ -21,44 +20,11 @@ export function ItemMediaSection({
     isEditing,
     onImageChange,
     onImageRemove,
-    thumbnailSettings,
-    onUpdateThumbnailSettings
+    thumbnailSettings
 }: ItemMediaSectionProps) {
-    const [isThumbnailMode, setIsThumbnailMode] = useState(false);
-    const [activeImage, setActiveImage] = useState<string | null>(item.image);
-    const [zoom, setZoom] = useState(1);
-    const [pan, setPan] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-    const containerRef = React.useRef<HTMLDivElement>(null);
-    const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-    React.useEffect(() => {
-        if (!containerRef.current) return;
-        const resizeObserver = new ResizeObserver((entries) => {
-            for (let entry of entries) {
-                setContainerSize({
-                    width: entry.contentRect.width,
-                    height: entry.contentRect.height
-                });
-            }
-        });
-        resizeObserver.observe(containerRef.current);
-        return () => resizeObserver.disconnect();
-    }, []);
-
     const allImages = getAllItemImages(item);
-
-    // Sync zoom/pan with thumbnailSettings on load or image change
-    React.useEffect(() => {
-        if (!isThumbnailMode && activeImage === item.image && thumbnailSettings) {
-            setZoom(thumbnailSettings.zoom || 1);
-            setPan({ x: thumbnailSettings.x || 0, y: thumbnailSettings.y || 0 });
-        } else if (!isThumbnailMode) {
-            setZoom(1);
-            setPan({ x: 0, y: 0 });
-        }
-    }, [activeImage, thumbnailSettings, isThumbnailMode, item.image]);
+    const [fullscreen, setFullscreen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     function getAllItemImages(item: InventoryItem) {
         const images: { src: string; label: string, type: string, index?: number }[] = [];
@@ -72,38 +38,6 @@ export function ItemMediaSection({
         }
         return images;
     }
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (zoom <= 1 && !isThumbnailMode) return;
-        setIsDragging(true);
-        // Start position in pixels, but pan is stored in percentage
-        const currentPanX = (pan.x / 100) * containerSize.width;
-        const currentPanY = (pan.y / 100) * containerSize.height;
-        setStartPos({ x: e.clientX - currentPanX, y: e.clientY - currentPanY });
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging || containerSize.width === 0) return;
-
-        const deltaX = e.clientX - startPos.x;
-        const deltaY = e.clientY - startPos.y;
-
-        // Convert back to percentage, accounting for zoom since scale happens before translate in the formula
-        let newX = (deltaX / containerSize.width) * 100 / zoom;
-        let newY = (deltaY / containerSize.height) * 100 / zoom;
-
-        // Simple clamping for percentage
-        const limit = (zoom - 1) * 50;
-        newX = Math.max(-limit, Math.min(limit, newX));
-        newY = Math.max(-limit, Math.min(limit, newY));
-
-        setPan({ x: newX, y: newY });
-    };
-
-    const handleMouseUp = () => setIsDragging(false);
-
-    const [fullscreen, setFullscreen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
 
     const openFullscreen = (src: string) => {
         const idx = allImages.findIndex(img => img.src === src);
@@ -157,7 +91,7 @@ export function ItemMediaSection({
                                             className="hidden"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
-                                                if (file) onImageChange(file, img.type as any, img.index);
+                                                if (file) onImageChange(file, img.type as "front" | "back" | "side" | "details", img.index);
                                             }}
                                         />
                                         <RefreshCcw className="w-4 h-4" />
@@ -165,7 +99,7 @@ export function ItemMediaSection({
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            onImageRemove(img.type as any, img.index);
+                                            onImageRemove(img.type as "front" | "back" | "side" | "details", img.index);
                                         }}
                                         className="p-3 bg-white rounded-2xl text-rose-500 shadow-xl hover:scale-110 transition-transform"
                                     >

@@ -128,18 +128,20 @@ export function BasicInfoStep({
                 if (!attr) return code;
 
                 // Robust meta parsing
-                let meta: any = attr.meta;
+                let meta: unknown = attr.meta;
                 if (typeof meta === 'string') {
-                    try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+                    try { meta = JSON.parse(meta); } catch { meta = {}; }
                 } else if (!meta) {
                     meta = {};
                 }
 
-                // Check visibility
-                if (meta?.showInName === false) return null;
+                const typedMeta = meta as { showInName?: boolean; fem?: string; neut?: string };
 
-                if (targetGender === "feminine" && meta?.fem) return meta.fem;
-                if (targetGender === "neuter" && meta?.neut) return meta.neut;
+                // Check visibility
+                if (typedMeta?.showInName === false) return null;
+
+                if (targetGender === "feminine" && typedMeta?.fem) return typedMeta.fem;
+                if (targetGender === "neuter" && typedMeta?.neut) return typedMeta.neut;
 
                 return attr.name;
             };

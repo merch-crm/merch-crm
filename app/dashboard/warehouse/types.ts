@@ -88,6 +88,11 @@ export interface ItemStock {
     storageLocation: { name: string } | null;
 }
 
+export interface MeasurementUnit {
+    id: string;
+    name: string;
+}
+
 export interface InventoryItem {
     id: string;
     name: string;

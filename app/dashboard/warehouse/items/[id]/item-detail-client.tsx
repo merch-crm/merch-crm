@@ -1,19 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect, useCallback } from "react";
-import {
-    X, Package, MapPin, Info, ArrowUpRight, ArrowDownLeft,
-    Clock, ArrowLeft, Edit3, Trash2,
-    Download, Save, RefreshCcw, Plus, Minus,
-    MoveHorizontal, ChevronDown, ChevronUp, Shirt, Box, Wrench,
-    Image as ImageIcon, ChevronLeft, ChevronRight, Check, Pencil
-} from "lucide-react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import React, { useState, useEffect } from "react";
+import { ChevronRight, Save, RotateCcw, Image as ImageIcon, Trash2, Box, Package, AlertTriangle, Info, History as HistoryIcon, Plus, Minus, Move, RefreshCcw, Edit3, Download, MapPin, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { createElement } from "react";
 import {
     getItemHistory, getItemStocks, updateInventoryItem,
     deleteInventoryItems, deleteInventoryItemImage
@@ -24,14 +15,7 @@ import { useToast } from "@/components/ui/toast";
 import { AdjustStockDialog } from "../../adjust-stock-dialog";
 import { TransferItemDialog } from "./transfer-item-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { UnitSelect } from "@/components/ui/unit-select";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
     InventoryItem,
@@ -62,7 +46,6 @@ export function ItemDetailClient({
     item: initialItem,
     storageLocations,
     measurementUnits,
-    categories,
     attributeTypes,
     allAttributes
 }: ItemDetailClientProps) {
@@ -71,7 +54,6 @@ export function ItemDetailClient({
     const [item, setItem] = useState(initialItem);
     const [history, setHistory] = useState<ItemHistoryTransaction[]>([]);
     const [stocks, setStocks] = useState<ItemStock[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     // Support state
     const [isEditing, setIsEditing] = useState(false);
@@ -82,13 +64,13 @@ export function ItemDetailClient({
         unit: initialItem.unit,
         lowStockThreshold: initialItem.lowStockThreshold || 10,
         criticalStockThreshold: initialItem.criticalStockThreshold || 0,
-        attributes: initialItem.attributes || {},
+        attributes: (initialItem.attributes as Record<string, string>) || {},
         categoryId: initialItem.categoryId || "",
         qualityCode: initialItem.qualityCode || "",
         attributeCode: initialItem.attributeCode || "",
         sizeCode: initialItem.sizeCode || "",
-        materialCode: (initialItem as any).materialCode || "",
-        brandCode: (initialItem as any).brandCode || "",
+        materialCode: initialItem.materialCode || "",
+        brandCode: initialItem.brandCode || "",
         thumbnailSettings: initialItem.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
     });
     const [isSaving, setIsSaving] = useState(false);
@@ -189,13 +171,13 @@ export function ItemDetailClient({
                 unit: initialItem.unit,
                 lowStockThreshold: initialItem.lowStockThreshold || 10,
                 criticalStockThreshold: initialItem.criticalStockThreshold || 0,
-                attributes: initialItem.attributes || {},
+                attributes: (initialItem.attributes as Record<string, string>) || {},
                 categoryId: initialItem.categoryId || "",
                 qualityCode: initialItem.qualityCode || "",
                 attributeCode: initialItem.attributeCode || "",
                 sizeCode: initialItem.sizeCode || "",
-                materialCode: (initialItem as any).materialCode || "",
-                brandCode: (initialItem as any).brandCode || "",
+                materialCode: initialItem.materialCode || "",
+                brandCode: initialItem.brandCode || "",
                 thumbnailSettings: initialItem.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
             });
         }
@@ -204,13 +186,12 @@ export function ItemDetailClient({
     const handleAttributeChange = (key: string, value: string) => {
         setEditData(prev => ({
             ...prev,
-            attributes: { ...prev.attributes, [key]: value }
+            attributes: { ...prev.attributes, [key]: value } as Record<string, string>
         }));
     };
 
     useEffect(() => {
         async function fetchData() {
-            setIsLoading(true);
             const [historyRes, stocksRes] = await Promise.all([
                 getItemHistory(item.id),
                 getItemStocks(item.id)
@@ -218,8 +199,6 @@ export function ItemDetailClient({
 
             if (historyRes.data) setHistory(historyRes.data as ItemHistoryTransaction[]);
             if (stocksRes.data) setStocks(stocksRes.data as ItemStock[]);
-
-            setIsLoading(false);
         }
         fetchData();
     }, [item.id, item.quantity]);
@@ -300,7 +279,7 @@ export function ItemDetailClient({
         }
     };
 
-    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => {
+    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details") => {
         if (type === "front") setNewImageFile(file);
         if (type === "back") setNewImageBackFile(file);
         if (type === "side") setNewImageSideFile(file);
@@ -312,7 +291,7 @@ export function ItemDetailClient({
         }
 
         if (file) {
-            simulateUpload(type as any, file.name);
+            simulateUpload(type, file.name);
         }
     };
 
@@ -322,7 +301,7 @@ export function ItemDetailClient({
             if (res.success) {
                 toast("Изображение удалено", "success");
                 // Update local state for immediate feedback
-                setItem(prev => {
+                setItem((prev: InventoryItem) => {
                     const newItem = { ...prev };
                     if (type === "front") newItem.image = null;
                     else if (type === "back") newItem.imageBack = null;
@@ -343,15 +322,6 @@ export function ItemDetailClient({
             toast("Ошибка соединения с сервером", "error");
         }
     };
-
-    const [activeSection, setActiveSection] = useState("overview");
-
-    const sections = [
-        { id: "overview", title: "Обзор", desc: "Основные данные и SKU", icon: Info },
-        { id: "media", title: "Галерея", desc: "Фото и медиа", icon: ImageIcon },
-        { id: "inventory", title: "Склад", desc: "Остатки и хранение", icon: MapPin },
-        { id: "history", title: "История", desc: "Лог изменений", icon: Clock },
-    ];
 
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20">
@@ -542,11 +512,10 @@ export function ItemDetailClient({
                             <ItemGeneralInfo
                                 item={item}
                                 isEditing={isEditing}
-                                categories={categories}
                                 attributeTypes={attributeTypes}
                                 allAttributes={allAttributes}
                                 measurementUnits={measurementUnits}
-                                editData={editData}
+                                editData={editData as unknown as InventoryItem}
                                 onUpdateField={(field, value) => setEditData(prev => ({ ...prev, [field]: value }))}
                                 onUpdateAttribute={handleAttributeChange}
                             />
@@ -569,7 +538,6 @@ export function ItemDetailClient({
                                 onImageChange={handleImageUpdate}
                                 onImageRemove={handleImageRemove}
                                 thumbnailSettings={editData.thumbnailSettings}
-                                onUpdateThumbnailSettings={(settings: ThumbnailSettings) => setEditData(prev => ({ ...prev, thumbnailSettings: settings }))}
                             />
                         </section>
 
@@ -589,13 +557,13 @@ export function ItemDetailClient({
                                 stocks={stocks}
                                 storageLocations={storageLocations}
                                 isEditing={isEditing}
-                                editData={editData}
+                                editData={editData as unknown as InventoryItem}
                                 onUpdateField={(field, value) => setEditData(prev => ({ ...prev, [field]: value }))}
                                 onAdjustStock={(locId) => {
                                     setSelectedLocationForAdjust(locId || null);
                                     setAdjustType("set");
                                 }}
-                                onTransferStock={(fromLocId) => {
+                                onTransferStock={() => {
                                     setShowTransfer(true);
                                 }}
                             />
@@ -627,9 +595,9 @@ export function ItemDetailClient({
                         ...item,
                         storageLocationId: selectedLocationForAdjust || item.storageLocationId
                     }}
-                    locations={storageLocations as any}
+                    locations={storageLocations}
                     itemStocks={stocks}
-                    initialType={adjustType as any}
+                    initialType={adjustType}
                     onClose={() => {
                         setAdjustType(null);
                         setSelectedLocationForAdjust(null);
@@ -641,7 +609,7 @@ export function ItemDetailClient({
             {showTransfer && (
                 <TransferItemDialog
                     item={item}
-                    locations={storageLocations as any}
+                    locations={storageLocations}
                     onClose={() => {
                         setShowTransfer(false);
                         router.refresh();

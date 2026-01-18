@@ -130,7 +130,7 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                                 </label>
                                 <input
                                     name="address"
-                                    defaultValue={location.address}
+                                    defaultValue={location.address || ""}
                                     placeholder="Улица, номер дома..."
                                     className={cn(
                                         "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold outline-none transition-all",
