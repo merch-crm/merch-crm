@@ -24,6 +24,16 @@ export function AddUserDialog({ onSuccess }: { onSuccess: () => void }) {
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
+
     const handleRoleChange = (roleId: string) => {
         setSelectedRoleId(roleId);
         const role = roles.find(r => r.id === roleId);

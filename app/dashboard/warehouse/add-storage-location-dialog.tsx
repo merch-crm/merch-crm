@@ -45,7 +45,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
             >
                 <Plus className="w-5 h-5" />
                 Создать место хранения
@@ -57,7 +57,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
+                    <div className="relative w-full max-w-lg bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div>
                                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Новое место хранения</h2>
@@ -65,7 +65,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all hover:rotate-90"
+                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[14px] bg-slate-50 transition-all hover:rotate-90"
                             >
                                 <X className="h-6 w-6" />
                             </button>
@@ -80,7 +80,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                                     name="name"
                                     placeholder="Например: основной склад"
                                     className={cn(
-                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                        "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold outline-none transition-all",
                                         fieldErrors.name
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
                                             : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -101,7 +101,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                                 <input
                                     name="description"
                                     placeholder="Например: для хранения расходников"
-                                    className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    className="w-full h-14 px-5 rounded-[14px] border border-slate-100 bg-slate-50 text-sm font-bold focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
                                 />
                             </div>
 
@@ -113,7 +113,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                                     name="address"
                                     placeholder="Улица, номер дома..."
                                     className={cn(
-                                        "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all",
+                                        "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold outline-none transition-all",
                                         fieldErrors.address
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
                                             : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -134,7 +134,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
                                 <div className="relative group">
                                     <select
                                         name="responsibleUserId"
-                                        className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                                        className="w-full h-14 px-5 rounded-[14px] border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                                     >
                                         <option value="">Не назначен</option>
                                         {users.map((user) => (
@@ -151,7 +151,7 @@ export function AddStorageLocationDialog({ users }: AddStorageLocationDialogProp
 
 
                             {error && (
-                                <div className="p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-2 animate-in slide-in-from-top-2">
+                                <div className="p-3 rounded-[14px] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-2 animate-in slide-in-from-top-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                                     {error}
                                 </div>
@@ -172,7 +172,7 @@ function SubmitButton() {
         <Button
             type="submit"
             disabled={pending}
-            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
+            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
         >
             {pending ? (
                 <div className="flex items-center gap-2">

@@ -33,7 +33,7 @@ export function UnitSelect({ value, onChange, options, className, name }: UnitSe
                     <button
                         type="button"
                         className={cn(
-                            "flex items-center justify-between gap-2 px-3 h-10 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all outline-none",
+                            "flex items-center justify-between gap-2 px-3 h-10 rounded-[14px] border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all outline-none",
                             className
                         )}
                     >
@@ -42,7 +42,7 @@ export function UnitSelect({ value, onChange, options, className, name }: UnitSe
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="min-w-[120px] bg-[#444444] border-none rounded-[1.25rem] p-1.5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
+                    className="min-w-[120px] bg-[#444444] border-none rounded-[14px] p-1.5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
                     align="start"
                     sideOffset={8}
                 >
@@ -54,7 +54,7 @@ export function UnitSelect({ value, onChange, options, className, name }: UnitSe
                                     key={option.id}
                                     onClick={() => onChange(option.name)}
                                     className={cn(
-                                        "flex items-center justify-between px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer outline-none border-none",
+                                        "flex items-center justify-between px-4 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer outline-none border-none",
                                         isSelected
                                             ? "bg-[#5086ec] text-white"
                                             : "text-white/80 hover:bg-white/10 focus:bg-white/10 hover:text-white focus:text-white"

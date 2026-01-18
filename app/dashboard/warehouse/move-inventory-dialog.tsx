@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRightLeft, X, MapPin, Package, AlertCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { InventoryItem } from "./inventory-client";
@@ -26,6 +26,17 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
     const [quantity, setQuantity] = useState("");
     const [comment, setComment] = useState("");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    // Lock scroll when open
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
 
     // Sync defaults if locations change
     if (locations.length > 0 && !fromLocationId) {
@@ -85,7 +96,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 transition-all"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 transition-all"
             >
                 <ArrowRightLeft className="w-5 h-5" />
                 Переместить позиции
@@ -94,10 +105,10 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div
-                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
+                        className="fixed inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
+                    <div className="relative w-full max-w-lg bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div>
                                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Перемещение</h2>
@@ -105,7 +116,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all hover:rotate-90"
+                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[14px] bg-slate-50 transition-all hover:rotate-90"
                             >
                                 <X className="h-6 w-6" />
                             </button>
@@ -120,7 +131,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     <select
                                         name="itemId"
                                         className={cn(
-                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.itemId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                 : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -154,7 +165,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     <select
                                         name="fromLocationId"
                                         className={cn(
-                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.fromLocationId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                 : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -186,7 +197,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     <select
                                         name="toLocationId"
                                         className={cn(
-                                            "w-full h-14 px-5 rounded-2xl border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
+                                            "w-full h-14 px-5 rounded-[14px] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.toLocationId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                 : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -227,7 +238,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             setFieldErrors(prev => ({ ...prev, quantity: "" }));
                                         }}
                                         className={cn(
-                                            "w-full h-14 pl-5 pr-14 rounded-2xl border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                                            "w-full h-14 pl-5 pr-14 rounded-[14px] border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                                             fieldErrors.quantity
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                 : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
@@ -237,14 +248,14 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                         <button
                                             type="button"
                                             onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[14px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
                                         >
                                             <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[14px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
                                         >
                                             <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
                                         </button>
@@ -265,7 +276,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                     name="comment"
                                     placeholder="Причина перемещения..."
                                     className={cn(
-                                        "w-full h-14 px-5 rounded-2xl border text-sm font-bold outline-none transition-all focus:ring-4",
+                                        "w-full h-14 px-5 rounded-[14px] border text-sm font-bold outline-none transition-all focus:ring-4",
                                         fieldErrors.comment
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
                                             : "border-slate-100 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500/5"
@@ -284,7 +295,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </div>
 
                             {error && (
-                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 animate-in shake duration-500">
+                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-[14px] flex items-center gap-3 animate-in shake duration-500">
                                     <AlertCircle className="w-5 h-5 text-rose-500" />
                                     <p className="text-rose-600 text-xs font-bold">{error}</p>
                                 </div>
@@ -305,7 +316,7 @@ function SubmitButton() {
         <Button
             type="submit"
             disabled={pending}
-            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
+            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
         >
             {pending ? (
                 <div className="flex items-center gap-2">

@@ -39,6 +39,16 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
+
     if (!isOpen || !client) return null;
 
     async function handleSubmit(formData: FormData) {

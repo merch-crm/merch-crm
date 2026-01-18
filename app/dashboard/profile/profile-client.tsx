@@ -17,6 +17,8 @@ import { PlusCircle, Send, Loader2 } from "lucide-react";
 import { getUserStatistics, getUserSchedule } from "./actions";
 import { StatisticsView } from "./statistics-view";
 import { ScheduleView } from "./schedule-view";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 interface UserProfile {
     id: string;
@@ -85,10 +87,22 @@ interface ScheduleTask {
 }
 
 export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">("profile");
     const [statsData, setStatsData] = useState<StatisticsData | null>(null);
     const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
     const [loading, setLoading] = useState(false);
+
+    // Persist tab in URL
+    useEffect(() => {
+        const tab = searchParams.get("p");
+        if (tab && ["profile", "settings", "statistics", "schedule"].includes(tab)) {
+            setActiveTab(tab as any);
+            if (tab === "statistics" && !statsData) fetchStats();
+            if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
+        }
+    }, [searchParams]);
 
     const fetchStats = async () => {
         setLoading(true);
@@ -106,6 +120,9 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
     const onTabChange = (tab: "profile" | "settings" | "statistics" | "schedule") => {
         setActiveTab(tab);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("p", tab);
+        router.replace(`?${params.toString()}`, { scroll: false });
         if (tab === "statistics" && !statsData) fetchStats();
         if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
     };

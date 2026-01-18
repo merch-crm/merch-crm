@@ -18,10 +18,10 @@ export function WarehouseWidgets({ items }: WarehouseWidgetsProps) {
     return (
         <div className="mb-2">
             {/* Widget 1: Critical Stock */}
-            <div className="bg-white/70 backdrop-blur-sm border border-slate-200/60 rounded-[32px] p-6 flex flex-col gap-6">
+            <div className="bg-white/70 backdrop-blur-sm border border-slate-200/60 rounded-[14px] p-6 flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500">
+                        <div className="w-10 h-10 rounded-[14px] bg-rose-50 flex items-center justify-center text-rose-500">
                             <AlertTriangle className="w-5 h-5" />
                         </div>
                         <div>
@@ -39,10 +39,10 @@ export function WarehouseWidgets({ items }: WarehouseWidgetsProps) {
                                 <Link
                                     key={item.id}
                                     href={`/dashboard/warehouse/items/${item.id}`}
-                                    className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 hover:border-rose-200 hover:bg-rose-50/30 transition-all group"
+                                    className="flex items-center justify-between p-4 bg-slate-50/50 rounded-[14px] border border-slate-100 hover:border-rose-200 hover:bg-rose-50/30 transition-all group"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:border-rose-200 transition-colors shrink-0">
+                                        <div className="w-8 h-8 rounded-[14px] bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:border-rose-200 transition-colors shrink-0">
                                             <Package className="w-4 h-4" />
                                         </div>
                                         <div className="flex flex-col min-w-0">
@@ -53,7 +53,7 @@ export function WarehouseWidgets({ items }: WarehouseWidgetsProps) {
 
                                     <div className="flex-1 flex justify-center px-4">
                                         <span className={cn(
-                                            "text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md shrink-0",
+                                            "text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[14px] shrink-0",
                                             isCritical ? "bg-rose-500 text-white shadow-sm shadow-rose-100" : "bg-amber-400 text-white shadow-sm shadow-amber-100"
                                         )}>
                                             {isCritical ? "склад пустой" : "заканчивается"}
@@ -70,7 +70,7 @@ export function WarehouseWidgets({ items }: WarehouseWidgetsProps) {
                             );
                         })
                     ) : (
-                        <div className="col-span-full py-8 flex flex-col items-center justify-center text-slate-400 bg-emerald-50/30 rounded-2xl border border-dashed border-emerald-100">
+                        <div className="col-span-full py-8 flex flex-col items-center justify-center text-slate-400 bg-emerald-50/30 rounded-[14px] border border-dashed border-emerald-100">
                             <TrendingUp className="w-8 h-8 text-emerald-400 mb-2" />
                             <span className="text-[11px] font-black uppercase tracking-widest">Все товары в достаточном количестве</span>
                         </div>

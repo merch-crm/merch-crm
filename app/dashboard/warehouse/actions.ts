@@ -12,11 +12,13 @@ import {
     notifications,
     orderItems,
     measurementUnits,
-    inventoryAttributes
+    inventoryAttributes,
+    inventoryAttributeTypes
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, sql, inArray, and } from "drizzle-orm";
+import { desc, eq, sql, inArray, and, asc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
+import { comparePassword } from "@/lib/password";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import fs from "fs";
@@ -134,6 +136,10 @@ export async function addInventoryCategory(formData: FormData) {
     const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
     const isActive = formData.get("isActive") === "on" || formData.get("isActive") === "true";
 
+    const gender = formData.get("gender") as string || "masculine";
+    const singularName = formData.get("singularName") as string;
+    const pluralName = formData.get("pluralName") as string;
+
     if (!name) {
         return { error: "Name is required" };
     }
@@ -149,6 +155,9 @@ export async function addInventoryCategory(formData: FormData) {
                 parentId: parentId || null,
                 sortOrder,
                 isActive,
+                gender,
+                singularName,
+                pluralName
             });
 
             // Create folder structure
@@ -164,6 +173,12 @@ export async function addInventoryCategory(formData: FormData) {
             if (!fs.existsSync(fullPath)) {
                 fs.mkdirSync(fullPath, { recursive: true });
             }
+
+            await tx.insert(inventoryTransactions).values({
+                type: "attribute_change",
+                reason: `Создана категория: ${name}`,
+                createdBy: session?.id,
+            });
         });
 
         revalidatePath("/dashboard/warehouse");
@@ -173,13 +188,33 @@ export async function addInventoryCategory(formData: FormData) {
     }
 }
 
-export async function deleteInventoryCategory(id: string) {
+export async function deleteInventoryCategory(id: string, password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
         return { error: "Недостаточно прав для удаления категории" };
     }
 
     try {
+        const category = await db.query.inventoryCategories.findFirst({
+            where: eq(inventoryCategories.id, id)
+        });
+
+        if (!category) return { error: "Категория не найдена" };
+
+        if (category.isSystem) {
+            if (session.roleName !== "Администратор") {
+                return { error: "Только администратор может удалять системные данные" };
+            }
+            if (!password) {
+                return { error: "Для удаления системной категории требуется пароль администратора" };
+            }
+
+            const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+            if (!user || !(await comparePassword(password, user.passwordHash))) {
+                return { error: "Неверный пароль администратора" };
+            }
+        }
+
         // Check for subcategories
         const subcategories = await db.query.inventoryCategories.findMany({
             where: eq(inventoryCategories.parentId, id),
@@ -190,14 +225,6 @@ export async function deleteInventoryCategory(id: string) {
             return { error: "Нельзя удалить категорию, у которой есть подкатегории. Сначала удалите или переместите их." };
         }
 
-        const category = await db.query.inventoryCategories.findFirst({
-            where: eq(inventoryCategories.id, id)
-        });
-
-        if (category?.isSystem) {
-            return { error: "Нельзя удалить системную категорию" };
-        }
-
         // First, unlink all items from this category (set categoryId to null)
         await db.update(inventoryItems)
             .set({ categoryId: null })
@@ -206,11 +233,18 @@ export async function deleteInventoryCategory(id: string) {
         // Then delete the category
         await db.delete(inventoryCategories).where(eq(inventoryCategories.id, id));
 
-        await logAction("Удаление категории", "inventory_category", id, { id });
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Удалена категория: ${category.name}`,
+            createdBy: session?.id,
+        });
+
+        await logAction("Удаление категории", "inventory_category", id, { id, isSystem: category.isSystem });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch {
+    } catch (e) {
+        console.error(e);
         return { error: "Failed to delete category" };
     }
 }
@@ -232,6 +266,10 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
     const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
     const isActive = formData.get("isActive") === "on" || formData.get("isActive") === "true";
 
+    const gender = formData.get("gender") as string || "masculine";
+    const singularName = formData.get("singularName") as string;
+    const pluralName = formData.get("pluralName") as string;
+
     if (!name) {
         return { error: "Name is required" };
     }
@@ -250,9 +288,18 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
                 prefix: prefix || null,
                 parentId: parentId || null,
                 sortOrder,
-                isActive
+                isActive,
+                gender,
+                singularName,
+                pluralName
             })
             .where(eq(inventoryCategories.id, id));
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Изменена категория: ${name}`,
+            createdBy: session?.id,
+        });
 
         revalidatePath("/dashboard/warehouse");
         return { success: true };
@@ -314,6 +361,7 @@ export async function addInventoryItem(formData: FormData) {
     const storageLocationId = formData.get("storageLocationId") as string;
 
     const qualityCode = formData.get("qualityCode") as string;
+    const materialCode = formData.get("materialCode") as string;
     const attributeCode = formData.get("attributeCode") as string;
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
@@ -341,25 +389,19 @@ export async function addInventoryItem(formData: FormData) {
     }
 
     try {
-        await db.transaction(async (tx) => {
+        const newItem = await db.transaction(async (tx) => {
             // Auto-generate SKU if components are provided
             let finalSku = sku;
-            if (categoryId && (qualityCode || attributeCode || sizeCode)) {
+            if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode)) {
                 const [cat] = await tx.select().from(inventoryCategories).where(eq(inventoryCategories.id, categoryId)).limit(1);
                 if (cat?.prefix) {
-                    finalSku = [cat.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                    finalSku = [cat.prefix, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
                 }
             }
 
             // Prepare folder path: CategoryPath / ItemName
             const categoryPath = await getCategoryPath(categoryId);
             const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
-
-            // Ensure folder exists
-            const fullItemPath = path.join(process.cwd(), "public", "SKU", itemFolderPath);
-            if (!fs.existsSync(fullItemPath)) {
-                fs.mkdirSync(fullItemPath, { recursive: true });
-            }
 
             const imageBackFile = formData.get("imageBack") as File;
             const imageSideFile = formData.get("imageSide") as File;
@@ -389,6 +431,7 @@ export async function addInventoryItem(formData: FormData) {
 
                 categoryId: categoryId || null,
                 qualityCode: qualityCode || null,
+                materialCode: materialCode || null,
                 attributeCode: attributeCode || null,
                 sizeCode: sizeCode || null,
                 attributes: attributes,
@@ -415,7 +458,7 @@ export async function addInventoryItem(formData: FormData) {
                 type: "in",
                 reason: "Initial stock",
                 storageLocationId: storageLocationId || null,
-                createdBy: session.id,
+                createdBy: session?.id,
             });
 
             await logAction("Поставка", "inventory_item", newItem.id, {
@@ -424,11 +467,17 @@ export async function addInventoryItem(formData: FormData) {
                 sku: finalSku,
                 storageLocationId
             });
+            return newItem;
         });
 
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
-        return { success: true };
+        // Return the new item ID
+        // Note: We need to extract newItem from the transaction scope or query it.
+        // Actually, newItem is defined inside the transaction callback. We can't access it here easily unless we return it from the transaction.
+        // But the transaction is awaited.
+        // Let's modify the transaction to return the newItem.
+        return { success: true, id: newItem.id };
     } catch (error) {
         await logError({
             error,
@@ -513,6 +562,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
 
 
     const qualityCode = formData.get("qualityCode") as string;
+    const materialCode = formData.get("materialCode") as string;
     const attributeCode = formData.get("attributeCode") as string;
     const sizeCode = formData.get("sizeCode") as string;
     const imageFile = formData.get("image") as File;
@@ -539,21 +589,16 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     try {
         // Auto-generate SKU if components are provided
         let finalSku = sku;
-        if (categoryId && (qualityCode || attributeCode || sizeCode)) {
+        if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode)) {
             const [cat] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.id, categoryId)).limit(1);
             if (cat?.prefix) {
-                finalSku = [cat.prefix, qualityCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                finalSku = [cat.prefix, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
             }
         }
 
         // Prepare folder path: CategoryPath / ItemName
         const categoryPath = await getCategoryPath(categoryId);
         const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
-
-        const fullItemPath = path.join(process.cwd(), "public", "SKU", itemFolderPath);
-        if (!fs.existsSync(fullItemPath)) {
-            fs.mkdirSync(fullItemPath, { recursive: true });
-        }
 
         const imageBackFile = formData.get("imageBack") as File;
         const imageSideFile = formData.get("imageSide") as File;
@@ -603,6 +648,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             storageLocationId: storageLocationId || null,
 
             qualityCode: qualityCode || null,
+            materialCode: materialCode || null,
             attributeCode: attributeCode || null,
             sizeCode: sizeCode || null,
             attributes: attributes,
@@ -741,7 +787,7 @@ export async function adjustInventoryStock(itemId: string, amount: number, type:
                 type: effectiveType,
                 reason: type === "set" ? `Корректировка (Set): ${reason}` : reason,
                 storageLocationId: storageLocationId || null,
-                createdBy: session.id,
+                createdBy: session?.id,
             });
 
             // 5. Log audit
@@ -841,7 +887,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
                 type: "transfer", // Using transfer type as intended for moves
                 reason: `Перемещение в другой склад. Причина: ${reason}`,
                 storageLocationId: fromLocationId,
-                createdBy: session.id,
+                createdBy: session?.id,
             });
 
             await tx.insert(inventoryTransactions).values({
@@ -850,7 +896,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
                 type: "transfer",
                 reason: `Перемещение из другого склада. Причина: ${reason}`,
                 storageLocationId: toLocationId,
-                createdBy: session.id,
+                createdBy: session?.id,
             });
 
             await logAction("Перемещение", "inventory_item", itemId, {
@@ -874,9 +920,72 @@ export async function getInventoryAttributes() {
         const attrs = await db.query.inventoryAttributes.findMany({
             orderBy: desc(inventoryAttributes.createdAt)
         });
+
+        console.log("=== GET ATTRIBUTES DEBUG ===");
+        console.log(`Total attributes: ${attrs.length}`);
+        if (attrs.length > 0) {
+            console.log("Sample attribute (first):");
+            console.log("  ID:", attrs[0].id);
+            console.log("  Name:", attrs[0].name);
+            console.log("  Meta:", JSON.stringify(attrs[0].meta, null, 2));
+        }
+        console.log("============================");
+
         return { data: attrs };
     } catch {
         return { error: "Failed to fetch inventory attributes" };
+    }
+}
+
+export async function deleteInventoryAttribute(id: string) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        // 1. Get the attribute info first
+        const [attr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id));
+        if (!attr) return { error: "Атрибут не найден" };
+
+        // 2. Check if it's used in any inventory items
+        // Map attribute types to column names
+        const typeToColumn: Record<string, any> = {
+            'color': inventoryItems.attributeCode,
+            'material': inventoryItems.materialCode,
+            'brand': inventoryItems.brandCode,
+            'size': inventoryItems.sizeCode,
+            'quality': inventoryItems.qualityCode
+        };
+
+        const checkColumn = typeToColumn[attr.type.toLowerCase()];
+
+        if (checkColumn) {
+            const [usage] = await db
+                .select({ id: inventoryItems.id })
+                .from(inventoryItems)
+                .where(eq(checkColumn, attr.value))
+                .limit(1);
+
+            if (usage) {
+                return { error: "Этот атрибут используется в товарах и не может быть удален" };
+            }
+        }
+
+        // 3. Delete
+        await db.delete(inventoryAttributes).where(eq(inventoryAttributes.id, id));
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Удален атрибут: ${attr.name} (${attr.value})`,
+            createdBy: session?.id,
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (error) {
+        console.error("Delete attribute error:", error);
+        return { error: "Не удалось удалить атрибут" };
     }
 }
 
@@ -885,6 +994,14 @@ export async function createInventoryAttribute(type: string, name: string, value
     if (!session) return { error: "Unauthorized" };
 
     try {
+        console.log("=== CREATE ATTRIBUTE DEBUG ===");
+        console.log("Type:", type);
+        console.log("Name:", name);
+        console.log("Value:", value);
+        console.log("Meta:", JSON.stringify(meta, null, 2));
+        console.log("Meta keys:", meta ? Object.keys(meta) : 'null');
+        console.log("==============================");
+
         const [newAttr] = await db.insert(inventoryAttributes).values({
             type,
             name,
@@ -893,10 +1010,252 @@ export async function createInventoryAttribute(type: string, name: string, value
         }).returning();
 
         revalidatePath("/dashboard/warehouse");
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Добавлен атрибут: ${name} (${value}) в раздел ${type}`,
+            createdBy: session?.id,
+        });
+
         return { success: true, data: newAttr };
     } catch (e) {
         console.error(e);
         return { error: "Failed to create attribute" };
+    }
+}
+
+export async function updateInventoryAttribute(id: string, name: string, value: string, meta?: Record<string, unknown>) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        // 1. Get the old attribute data
+        const [oldAttr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id));
+        if (!oldAttr) return { error: "Атрибут не найден" };
+
+        console.log("=== UPDATE ATTRIBUTE DEBUG ===");
+        console.log("Attribute ID:", id);
+        console.log("Old meta:", JSON.stringify(oldAttr.meta, null, 2));
+        console.log("New meta:", JSON.stringify(meta, null, 2));
+        console.log("Meta keys:", meta ? Object.keys(meta) : 'null');
+        console.log("==============================");
+
+        // 2. Update the attribute
+        await db.update(inventoryAttributes).set({
+            name,
+            value,
+            meta
+        }).where(eq(inventoryAttributes.id, id));
+
+        // 3. If the code (value) OR visibility settings changed, update all items using this attribute
+        const oldShowInSku = (oldAttr.meta as any)?.showInSku ?? true;
+        const newShowInSku = (meta as any)?.showInSku ?? true;
+
+        if (oldAttr.value !== value || oldShowInSku !== newShowInSku) {
+            const typeToColumn: Record<string, any> = {
+                'color': inventoryItems.attributeCode,
+                'material': inventoryItems.materialCode,
+                'brand': inventoryItems.brandCode,
+                'size': inventoryItems.sizeCode,
+                'quality': inventoryItems.qualityCode
+            };
+
+            const checkColumn = typeToColumn[oldAttr.type.toLowerCase()];
+
+            if (checkColumn) {
+                // Find all items using the old code (or current code if only meta changed)
+                const affectedItems = await db
+                    .select()
+                    .from(inventoryItems)
+                    .where(eq(checkColumn, oldAttr.value));
+
+                // Need all attributes to correctly check visibility of OTHER components during regeneration
+                const allAttrs = await db.select().from(inventoryAttributes);
+
+                const getAttrVisibility = (type: string, code: string | null) => {
+                    if (!code) return false;
+                    // If it's the attribute we are currently updating, use the NEW meta/value
+                    if (type === oldAttr.type && code === value) {
+                        return newShowInSku;
+                    }
+                    // Otherwise look up in DB
+                    const a = allAttrs.find(attr => attr.type === type && attr.value === code);
+                    return (a?.meta as any)?.showInSku ?? true;
+                };
+
+                // Update each item with the new code and regenerate SKU
+                for (const item of affectedItems) {
+                    const updates: any = {};
+
+                    // Update the specific code field if it changed
+                    if (oldAttr.value !== value) {
+                        if (oldAttr.type.toLowerCase() === 'color') updates.attributeCode = value;
+                        else if (oldAttr.type.toLowerCase() === 'material') updates.materialCode = value;
+                        else if (oldAttr.type.toLowerCase() === 'brand') updates.brandCode = value;
+                        else if (oldAttr.type.toLowerCase() === 'size') updates.sizeCode = value;
+                        else if (oldAttr.type.toLowerCase() === 'quality') updates.qualityCode = value;
+                    }
+
+                    // Regenerate SKU if this is a clothing item with category prefix
+                    if (item.categoryId) {
+                        const [cat] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.id, item.categoryId)).limit(1);
+                        if (cat?.prefix) {
+                            // Use updated values
+                            const brandCode = oldAttr.type.toLowerCase() === 'brand' ? value : item.brandCode;
+                            const qualityCode = oldAttr.type.toLowerCase() === 'quality' ? value : item.qualityCode;
+                            const materialCode = oldAttr.type.toLowerCase() === 'material' ? value : item.materialCode;
+                            const attributeCode = oldAttr.type.toLowerCase() === 'color' ? value : item.attributeCode;
+                            const sizeCode = oldAttr.type.toLowerCase() === 'size' ? value : item.sizeCode;
+
+                            const skuParts: string[] = [];
+                            skuParts.push(cat.prefix); // Prefix always shown
+
+                            if (getAttrVisibility('brand', brandCode)) skuParts.push(brandCode!);
+                            if (getAttrVisibility('quality', qualityCode)) skuParts.push(qualityCode!);
+                            if (getAttrVisibility('material', materialCode)) skuParts.push(materialCode!);
+                            if (getAttrVisibility('color', attributeCode)) skuParts.push(attributeCode!);
+                            if (getAttrVisibility('size', sizeCode)) skuParts.push(sizeCode!);
+
+                            updates.sku = skuParts.join("-").toUpperCase();
+                        }
+                    }
+
+                    // Apply updates
+                    await db.update(inventoryItems)
+                        .set(updates)
+                        .where(eq(inventoryItems.id, item.id));
+                }
+
+            }
+        }
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Изменен атрибут: ${name} (${value})`,
+            createdBy: session?.id,
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { error: "Failed to update attribute" };
+    }
+}
+
+export async function regenerateAllItemSKUs() {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        // Get all data needed
+        const items = await db.select().from(inventoryItems);
+        const allAttributes = await db.select().from(inventoryAttributes);
+        const allCategories = await db.select().from(inventoryCategories);
+        const allTypes = await db.select().from(inventoryAttributeTypes).orderBy(inventoryAttributeTypes.sortOrder, inventoryAttributeTypes.createdAt);
+        const customTypes = allTypes.filter(t => !["brand", "quality", "material", "size", "color"].includes(t.slug));
+
+        let updatedCount = 0;
+
+        for (const item of items) {
+            if (!item.categoryId) continue;
+
+            const cat = allCategories.find(c => c.id === item.categoryId);
+            if (!cat) continue;
+
+            // 1. Generate SKU
+            // Only for categories with prefix
+            // 1. Generate SKU
+            // Only for categories with prefix
+            let newSku = item.sku;
+            if (cat.prefix) {
+                const shouldShowInSku = (type: string, code: string | null) => {
+                    if (!code) return false;
+                    const attr = allAttributes.find(a => a.type === type && a.value === code);
+                    return (attr?.meta as any)?.showInSku ?? true;
+                };
+
+                const skuParts: string[] = [];
+                skuParts.push(cat.prefix);
+
+                if (shouldShowInSku('brand', item.brandCode)) skuParts.push(item.brandCode!);
+                if (shouldShowInSku('quality', item.qualityCode)) skuParts.push(item.qualityCode!);
+                if (shouldShowInSku('material', item.materialCode)) skuParts.push(item.materialCode!);
+                if (shouldShowInSku('color', item.attributeCode)) skuParts.push(item.attributeCode!); // color
+                if (shouldShowInSku('size', item.sizeCode)) skuParts.push(item.sizeCode!);
+
+                // Custom Types SKU
+                customTypes.forEach(t => {
+                    const code = (item.attributes as any)?.[t.slug];
+                    if (code && shouldShowInSku(t.slug, code)) {
+                        skuParts.push(code);
+                    }
+                });
+
+                newSku = skuParts.join("-").toUpperCase();
+            }
+
+            // 2. Generate Name
+            const getAttrName = (type: string, code: string | null) => {
+                if (!code) return null;
+                const attr = allAttributes.find(a => a.type === type && a.value === code);
+                // Check visibility
+                if (attr && (attr.meta as any)?.showInName === false) return null;
+                return attr?.name || code;
+            };
+
+            const brandName = getAttrName("brand", item.brandCode);
+            const colorName = getAttrName("color", item.attributeCode);
+            const sizeName = getAttrName("size", item.sizeCode);
+            const qualityName = getAttrName("quality", item.qualityCode);
+            // Note: Material logic could be added here if we want it in name
+
+            // Note: We deliberately INCLUDE "Base" quality in the name now (unless hidden in dictionary)
+            const nameParts = [
+                cat.name,
+                brandName,
+                qualityName,
+                colorName,
+                sizeName
+            ].filter(Boolean);
+
+            // Custom Types Name
+            customTypes.forEach(t => {
+                const code = (item.attributes as any)?.[t.slug];
+                const name = getAttrName(t.slug, code);
+                if (name) nameParts.push(name);
+            });
+
+            const newName = nameParts.join(" ");
+
+            // Update if SKU or Name changed
+            if (newSku !== item.sku || newName !== item.name) {
+                await db.update(inventoryItems)
+                    .set({
+                        sku: newSku,
+                        name: newName
+                    })
+                    .where(eq(inventoryItems.id, item.id));
+                updatedCount++;
+            }
+        }
+
+        await logAction(
+            "Массовое обновление SKU и имен",
+            "inventory_items",
+            "bulk",
+            { updatedCount, totalItems: items.length }
+        );
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true, updatedCount, totalItems: items.length };
+    } catch (e) {
+        console.error(e);
+        return { error: "Не удалось обновить данные" };
     }
 }
 
@@ -964,7 +1323,10 @@ export async function getStorageLocations() {
                         quantity: inventoryStocks.quantity,
                         unit: inventoryItems.unit,
                         sku: inventoryItems.sku,
-                        categoryName: inventoryCategories.name
+                        categoryId: inventoryItems.categoryId,
+                        categoryName: inventoryCategories.name,
+                        categorySingularName: inventoryCategories.singularName,
+                        categoryPluralName: inventoryCategories.pluralName
                     })
                     .from(inventoryStocks)
                     .innerJoin(inventoryItems, eq(inventoryStocks.itemId, inventoryItems.id))
@@ -1045,7 +1407,7 @@ export async function addStorageLocation(formData: FormData) {
     }
 }
 
-export async function deleteStorageLocation(id: string) {
+export async function deleteStorageLocation(id: string, password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
         return { error: "Недостаточно прав для удаления места хранения" };
@@ -1056,8 +1418,20 @@ export async function deleteStorageLocation(id: string) {
             where: eq(storageLocations.id, id)
         });
 
-        if (location?.isSystem) {
-            return { error: "Нельзя удалить системное место хранения" };
+        if (!location) return { error: "Место хранения не найдено" };
+
+        if (location.isSystem) {
+            if (session.roleName !== "Администратор") {
+                return { error: "Только администратор может удалять системные места хранения" };
+            }
+            if (!password) {
+                return { error: "Для удаления системного места хранения требуется пароль администратора" };
+            }
+
+            const [admin] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+            if (!admin || !(await comparePassword(password, admin.passwordHash))) {
+                return { error: "Неверный пароль администратора" };
+            }
         }
 
         // 1. Check if there are any stocks with positive quantity
@@ -1103,7 +1477,7 @@ export async function deleteStorageLocation(id: string) {
             // 6. Delete Location
             await tx.delete(storageLocations).where(eq(storageLocations.id, id));
 
-            await logAction("Удаление склада", "storage_location", id, { id });
+            await logAction("Удаление склада", "storage_location", id, { id, isSystem: location.isSystem });
         });
 
         revalidatePath("/dashboard/warehouse");
@@ -1269,7 +1643,7 @@ export async function moveInventoryItem(formData: FormData) {
                 toLocationId,
                 quantity,
                 comment,
-                createdBy: session.id
+                createdBy: session?.id
             });
 
             // 6. Log Transaction (Single record for transfer)
@@ -1280,7 +1654,7 @@ export async function moveInventoryItem(formData: FormData) {
                 reason: logMessage,
                 storageLocationId: toLocationId,
                 fromStorageLocationId: fromLocationId,
-                createdBy: session.id
+                createdBy: session?.id
             });
 
             // 7. Create Notifications for responsible users
@@ -1410,7 +1784,7 @@ export async function bulkMoveInventoryItems(ids: string[], toLocationId: string
                     reason: `Массовое перемещение${comment ? `: ${comment}` : ""}`,
                     storageLocationId: toLocationId,
                     fromStorageLocationId: fromLocationId,
-                    createdBy: session.id,
+                    createdBy: session?.id,
                 });
             }
         });
@@ -1526,53 +1900,290 @@ export async function seedSystemCategories() {
         return { error: "Недостаточно прав" };
     }
 
-    const systemCategories = [
-        { name: "Футболки", description: null, icon: "shirt", color: "rose", prefix: "TS" },
-        { name: "Худи", description: null, icon: "hourglass", color: "indigo", prefix: "HD" },
-        { name: "Свитшот", description: null, icon: "layers", color: "violet", prefix: "SW" },
-        { name: "Лонгслив", description: null, icon: "shirt", color: "emerald", prefix: "LS" },
-        { name: "Анорак", description: null, icon: "wind", color: "cyan", prefix: "AN" },
-        { name: "Зип-худи", description: null, icon: "zap", color: "indigo", prefix: "ZH" },
-        { name: "Штаны", description: null, icon: "package", color: "slate", prefix: "PT" },
-        { name: "Поло", description: null, icon: "shirt", color: "cyan", prefix: "PL" },
-        { name: "Кепки", description: "Системная категория для кепок", icon: "box", color: "cyan", prefix: "CP" },
-        { name: "Упаковка", description: null, icon: "box", color: "amber", prefix: "PK" },
-        { name: "Расходники", description: null, icon: "scissors", color: "rose", prefix: "SP" },
-    ];
-
     try {
-        let created = 0;
-        let existing = 0;
+        // 1. Ensure Top Level Categories
+        const topLevel = [
+            { name: "Одежда", icon: "shirt", color: "indigo", description: "Одежда и текстильные изделия" },
+            { name: "Упаковка", icon: "box", color: "amber", description: "Упаковочные материалы" },
+            { name: "Расходники", icon: "scissors", color: "rose", description: "Расходные материалы для производства" },
+        ];
 
-        for (const category of systemCategories) {
-            const [found] = await db
-                .select()
-                .from(inventoryCategories)
-                .where(eq(inventoryCategories.name, category.name))
-                .limit(1);
+        const topLevelMap: Record<string, string> = {};
 
+        for (const cat of topLevel) {
+            let [found] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.name, cat.name)).limit(1);
             if (!found) {
-                await db.insert(inventoryCategories).values({
-                    name: category.name,
-                    description: category.description,
-                    icon: category.icon,
-                    color: category.color,
-                    prefix: category.prefix,
-                    parentId: null,
-                });
+                const [newCat] = await db.insert(inventoryCategories).values({
+                    name: cat.name,
+                    icon: cat.icon,
+                    color: cat.color,
+                    description: cat.description,
+                    parentId: null
+                }).returning();
+                found = newCat;
+            }
+            topLevelMap[cat.name] = found.id;
+        }
+
+        const clothingId = topLevelMap["Одежда"];
+
+        // 2. Define Subcategories with linguistic rules
+        const subCategories = [
+            { name: "Футболка", icon: "shirt", color: "rose", prefix: "TS", parentId: clothingId, singularName: "Футболка", pluralName: "Футболки", gender: "feminine" },
+            { name: "Худи", icon: "hourglass", color: "indigo", prefix: "HD", parentId: clothingId, singularName: "Худи", pluralName: "Худи", gender: "neuter" },
+            { name: "Свитшот", icon: "layers", color: "violet", prefix: "SW", parentId: clothingId, singularName: "Свитшот", pluralName: "Свитшоты", gender: "masculine" },
+            { name: "Лонгслив", icon: "shirt", color: "emerald", prefix: "LS", parentId: clothingId, singularName: "Лонгслив", pluralName: "Лонгсливы", gender: "masculine" },
+            { name: "Анорак", icon: "wind", color: "cyan", prefix: "AN", parentId: clothingId, singularName: "Анорак", pluralName: "Анораки", gender: "masculine" },
+            { name: "Зип-худи", icon: "zap", color: "indigo", prefix: "ZH", parentId: clothingId, singularName: "Зип-худи", pluralName: "Зип-худи", gender: "neuter" },
+            { name: "Штаны", icon: "package", color: "slate", prefix: "PT", parentId: clothingId, singularName: "Штаны", pluralName: "Штаны", gender: "masculine" }, // Plural only usually, but masculine adjectives fit best
+            { name: "Поло", icon: "shirt", color: "cyan", prefix: "PL", parentId: clothingId, singularName: "Поло", pluralName: "Поло", gender: "neuter" },
+            { name: "Кепка", icon: "box", color: "cyan", prefix: "CP", parentId: clothingId, singularName: "Кепка", pluralName: "Кепки", gender: "feminine" },
+        ];
+
+        let created = 0;
+        let updated = 0;
+
+        for (const sub of subCategories) {
+            const [found] = await db.select()
+                .from(inventoryCategories)
+                .where(sql`${inventoryCategories.name} = ${sub.name} OR ${inventoryCategories.name} = ${sub.pluralName}`)
+                .limit(1);
+            if (!found) {
+                await db.insert(inventoryCategories).values(sub);
                 created++;
             } else {
-                existing++;
+                // Update missing linguistic fields or incorrect parent
+                const needsUpdate = found.singularName !== sub.singularName || found.pluralName !== sub.pluralName || found.gender !== sub.gender || found.parentId !== sub.parentId;
+                if (needsUpdate) {
+                    await db.update(inventoryCategories)
+                        .set({
+                            singularName: sub.singularName,
+                            pluralName: sub.pluralName,
+                            gender: sub.gender,
+                            parentId: sub.parentId
+                        })
+                        .where(eq(inventoryCategories.id, found.id));
+                    updated++;
+                }
+            }
+        }
+
+        // 3. Cleanup: Delete empty plural orphans created by mistake
+        const pluralDuplicates = ["Футболки", "Кепки"];
+        for (const name of pluralDuplicates) {
+            const [found] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.name, name)).limit(1);
+            if (found && !found.parentId) {
+                // Check if they have items before deleting
+                const [item] = await db.select().from(inventoryItems).where(eq(inventoryItems.categoryId, found.id)).limit(1);
+                if (!item) {
+                    await db.delete(inventoryCategories).where(eq(inventoryCategories.id, found.id));
+                }
             }
         }
 
         revalidatePath("/dashboard/warehouse");
         return {
             success: true,
-            message: `Создано категорий: ${created}, уже существовало: ${existing}`
+            message: `Создано: ${created}, Обновлено: ${updated}, Очищено дублей`
         };
     } catch (error) {
         console.error("Seed error:", error);
         return { error: "Failed to seed categories" };
+    }
+}
+
+export async function seedSystemAttributes() {
+    const session = await getSession();
+    if (!session || session.roleName !== "Администратор") {
+        return { error: "Недостаточно прав" };
+    }
+
+    const systemAttrs = [
+        // Brands
+        { type: "brand", name: "Muse Wear", value: "MSW" },
+
+        // Colors
+        { type: "color", name: "Белый", value: "WHT", meta: { hex: "#FFFFFF" } },
+        { type: "color", name: "Черный", value: "BLK", meta: { hex: "#000000" } },
+        { type: "color", name: "Молочный", value: "MILK", meta: { hex: "#F5F5DC" } },
+        { type: "color", name: "Шоколад", value: "CHOC", meta: { hex: "#7B3F00" } },
+        { type: "color", name: "Графит", value: "GRAF", meta: { hex: "#383838" } },
+        { type: "color", name: "Баблгам", value: "BUB", meta: { hex: "#FFC1CC" } },
+
+        // Sizes
+        { type: "size", name: "Kids", value: "KDS" },
+        { type: "size", name: "S", value: "S" },
+        { type: "size", name: "M", value: "M" },
+        { type: "size", name: "S-M", value: "SM" },
+        { type: "size", name: "L", value: "L" },
+        { type: "size", name: "XL", value: "XL" },
+
+        // Materials
+        { type: "material", name: "Кулирка", value: "KUL" },
+        { type: "material", name: "Френч-терри", value: "FT" },
+
+        // Quality
+        { type: "quality", name: "Base", value: "BS" },
+        { type: "quality", name: "Premium", value: "PRM" },
+    ];
+
+    try {
+        for (const attr of systemAttrs) {
+            const existing = await db.query.inventoryAttributes.findFirst({
+                where: and(
+                    eq(inventoryAttributes.type, attr.type),
+                    eq(inventoryAttributes.value, attr.value)
+                )
+            });
+            if (!existing) {
+                await db.insert(inventoryAttributes).values(attr);
+            }
+        }
+        return { success: true };
+    } catch (error) {
+        console.error("Seed attributes error:", error);
+        return { error: "Failed to seed attributes" };
+    }
+}
+
+// Attribute Types Management
+export async function getInventoryAttributeTypes() {
+    try {
+        const types = await db.select().from(inventoryAttributeTypes)
+            .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt));
+        return { data: types };
+    } catch {
+        return { error: "Failed to fetch attribute types" };
+    }
+}
+
+export async function createInventoryAttributeType(name: string, slug: string, categoryId?: string, isSystem: boolean = false) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        // Slug generation/cleaning
+        const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9_]/g, "_");
+
+        await db.insert(inventoryAttributeTypes).values({
+            name,
+            slug: cleanSlug,
+            categoryId: categoryId || null,
+            isSystem
+        });
+        revalidatePath("/dashboard/warehouse");
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Создан тип атрибута: ${name} (${cleanSlug})`,
+            createdBy: session?.id,
+        });
+
+        return { success: true };
+    } catch {
+        return { error: "Не удалось создать раздел (возможно, такой код уже существует)" };
+    }
+}
+
+export async function deleteInventoryAttributeType(id: string, password?: string) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { error: "Недостаточно прав" };
+    }
+
+    try {
+        const [type] = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
+        if (!type) return { error: "Тип не найден" };
+
+        const isAdmin = session.roleName === "Администратор";
+
+        if (type.isSystem) {
+            if (!isAdmin) {
+                return { error: "Системные разделы может удалять только Администратор" };
+            }
+            if (!password) {
+                return { error: "Для удаления системного раздела требуется пароль администратора" };
+            }
+
+            const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+            if (!user || !(await comparePassword(password, user.passwordHash))) {
+                return { error: "Неверный пароль администратора" };
+            }
+        }
+
+        // Check availability
+        const [hasAttrs] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.type, type.slug)).limit(1);
+        if (hasAttrs) return { error: "В этом разделе есть записи. Сначала удалите их." };
+
+        await db.delete(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Удален тип атрибута: ${type.name}`,
+            createdBy: session?.id,
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch {
+        return { error: "Не удалось удалить раздел" };
+    }
+}
+
+
+export async function updateInventoryAttributeType(id: string, name: string, categoryId: string | null, isSystem: boolean = false) {
+    const session = await getSession();
+    try {
+        await db.update(inventoryAttributeTypes)
+            .set({ name, categoryId, isSystem })
+            .where(eq(inventoryAttributeTypes.id, id));
+
+        await db.insert(inventoryTransactions).values({
+            type: "attribute_change",
+            reason: `Изменен тип атрибута: ${name}`,
+            createdBy: session?.id,
+        });
+
+        revalidatePath("/dashboard/warehouse");
+        return { success: true };
+    } catch (e) {
+        console.error("Update Type Error", e);
+        return { error: "Не удалось обновить раздел" };
+    }
+}
+
+export async function seedSystemAttributeTypes() {
+    // Find Clothing category ID
+    const [clothingCategory] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.name, "Одежда")).limit(1);
+
+    const defaults = [
+        { slug: "brand", name: "Бренды", isSystem: true, sortOrder: 1, categoryId: clothingCategory?.id },
+        { slug: "color", name: "Цвета", isSystem: true, sortOrder: 2, categoryId: clothingCategory?.id },
+        { slug: "size", name: "Размеры", isSystem: true, sortOrder: 3, categoryId: clothingCategory?.id },
+        { slug: "material", name: "Материалы", isSystem: true, sortOrder: 4, categoryId: clothingCategory?.id },
+        { slug: "quality", name: "Качество", isSystem: true, sortOrder: 5, categoryId: clothingCategory?.id },
+    ];
+
+    try {
+        for (const def of defaults) {
+            const [existing] = await db.select().from(inventoryAttributeTypes)
+                .where(eq(inventoryAttributeTypes.slug, def.slug))
+                .limit(1);
+
+            if (!existing) {
+                await db.insert(inventoryAttributeTypes).values(def);
+            } else if (!existing.categoryId && def.categoryId) {
+                // Link existing system type to category if missing
+                await db.update(inventoryAttributeTypes)
+                    .set({ categoryId: def.categoryId })
+                    .where(eq(inventoryAttributeTypes.id, existing.id));
+            }
+        }
+        return { success: true };
+    } catch (e) {
+        console.error("Seed Types Error", e);
+        return { error: "Failed to seed types" };
     }
 }

@@ -48,7 +48,7 @@ function SubmitButton() {
         <Button
             type="submit"
             disabled={pending}
-            className="w-full bg-[#6366f1] hover:bg-[#5558dd] text-white rounded-2xl font-bold h-14 text-base shadow-xl shadow-indigo-500/20 transition-all active:scale-[0.98] mt-4"
+            className="w-full bg-[#6366f1] hover:bg-[#5558dd] text-white rounded-[14px] font-bold h-14 text-base shadow-xl shadow-indigo-500/20 transition-all active:scale-[0.98] mt-4"
         >
             {pending ? "Сохранение..." : "Добавить в базу"}
         </Button>
@@ -143,7 +143,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95"
             >
                 <Plus className="w-5 h-5" />
                 Добавить товар
@@ -156,7 +156,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                         onClick={resetDialog}
                     />
 
-                    <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 animate-in zoom-in-95 fade-in duration-300 overflow-hidden">
+                    <div className="relative w-full max-w-xl bg-white rounded-[14px] shadow-2xl border border-slate-100 animate-in zoom-in-95 fade-in duration-300 overflow-hidden">
                         {/* Header */}
                         <div className="flex items-center justify-between p-8 pb-4">
                             <div className="flex items-center gap-4">
@@ -199,9 +199,9 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             }
                                             setStep("details");
                                         }}
-                                        className="group flex items-center gap-6 p-6 rounded-3xl border border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50/50 transition-all text-left"
+                                        className="group flex items-center gap-6 p-6 rounded-[14px] border border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50/50 transition-all text-left"
                                     >
-                                        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-110 duration-500", t.color)}>
+                                        <div className={cn("w-14 h-14 rounded-[14px] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-110 duration-500", t.color)}>
                                             <t.icon className="w-7 h-7" />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -229,7 +229,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             name="name"
                                             autoFocus
                                             className={cn(
-                                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all placeholder:text-slate-400",
+                                                "w-full h-12 px-4 rounded-[14px] border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all placeholder:text-slate-400",
                                                 fieldErrors.name
                                                     ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                     : "border-slate-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500"
@@ -253,7 +253,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                             <input
                                                 type="text"
                                                 name="sku"
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none placeholder:text-slate-400"
+                                                className="w-full h-12 px-4 rounded-[14px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none placeholder:text-slate-400"
                                                 placeholder="Авто"
                                                 onInput={(e) => {
                                                     e.currentTarget.value = sanitizeSku(e.currentTarget.value);
@@ -289,7 +289,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                                 setFieldErrors(prev => ({ ...prev, categoryId: "" }));
                                             }}
                                             className={cn(
-                                                "w-full h-12 px-4 rounded-xl border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all appearance-none cursor-pointer",
+                                                "w-full h-12 px-4 rounded-[14px] border bg-slate-50 text-slate-900 font-bold text-sm outline-none transition-all appearance-none cursor-pointer",
                                                 fieldErrors.categoryId
                                                     ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                     : "border-slate-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500"
@@ -304,7 +304,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
 
                                     {/* Type Specific Fields */}
                                     {itemType === "clothing" && selectedCategory?.prefix && (
-                                        <div className="p-5 bg-indigo-50/50 rounded-3xl border border-indigo-100 space-y-6 animate-in fade-in slide-in-from-top-2">
+                                        <div className="p-5 bg-indigo-50/50 rounded-[14px] border border-indigo-100 space-y-6 animate-in fade-in slide-in-from-top-2">
                                             <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Характеристики одежды</label>
 
                                             <AttributeSelector
@@ -364,29 +364,29 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                     )}
 
                                     {itemType === "packaging" && (
-                                        <div className="p-5 bg-amber-50/50 rounded-3xl border border-amber-100 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                        <div className="p-5 bg-amber-50/50 rounded-[14px] border border-amber-100 space-y-4 animate-in fade-in slide-in-from-top-2">
                                             <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest ml-1">Характеристики упаковки</label>
                                             <div className="grid grid-cols-3 gap-3">
                                                 <div className="space-y-1.5">
                                                     <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Ширина (см)</label>
-                                                    <input type="number" name="width" className="w-full h-10 px-3 rounded-xl border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
+                                                    <input type="number" name="width" className="w-full h-10 px-3 rounded-[14px] border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Высота (см)</label>
-                                                    <input type="number" name="height" className="w-full h-10 px-3 rounded-xl border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
+                                                    <input type="number" name="height" className="w-full h-10 px-3 rounded-[14px] border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Глубина (см)</label>
-                                                    <input type="number" name="depth" className="w-full h-10 px-3 rounded-xl border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
+                                                    <input type="number" name="depth" className="w-full h-10 px-3 rounded-[14px] border border-amber-100 bg-white text-xs font-bold focus:border-amber-500 outline-none" />
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
                                     {itemType === "consumables" && (
-                                        <div className="p-5 bg-emerald-50/50 rounded-3xl border border-emerald-100 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                        <div className="p-5 bg-emerald-50/50 rounded-[14px] border border-emerald-100 space-y-4 animate-in fade-in slide-in-from-top-2">
                                             <label className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">Область применения</label>
-                                            <select name="department" className="w-full h-11 px-4 rounded-xl border border-emerald-100 bg-white text-sm font-bold focus:border-emerald-500 outline-none">
+                                            <select name="department" className="w-full h-11 px-4 rounded-[14px] border border-emerald-100 bg-white text-sm font-bold focus:border-emerald-500 outline-none">
                                                 <option value="">Все отделы</option>
                                                 <option value="printing">Печать</option>
                                                 <option value="embroidery">Вышивка</option>
@@ -407,11 +407,11 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                                 defaultValue="0"
                                                 min="0"
                                                 required
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                                className="w-full h-12 px-4 rounded-[14px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50/50 rounded-[2rem] border border-slate-100">
+                                        <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50/50 rounded-[14px] border border-slate-100">
                                             <div className="space-y-2.5">
                                                 <label className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest ml-1">
                                                     <AlertTriangle className="w-3.5 h-3.5" />
@@ -421,7 +421,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                                     type="number"
                                                     name="criticalStockThreshold"
                                                     defaultValue="0"
-                                                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-rose-500 focus:ring-4 focus:ring-rose-500/5 transition-all outline-none"
+                                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-rose-500 focus:ring-4 focus:ring-rose-500/5 transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2.5">
@@ -433,7 +433,7 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                                     type="number"
                                                     name="lowStockThreshold"
                                                     defaultValue="10"
-                                                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-amber-500 focus:ring-4 focus:ring-amber-500/5 transition-all outline-none"
+                                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-bold text-xs focus:border-amber-500 focus:ring-4 focus:ring-amber-500/5 transition-all outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -448,25 +448,25 @@ export function AddItemDialog({ initialCategories }: AddItemDialogProps) {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Лицевая (Основное)</label>
-                                                <input type="file" name="image" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                                <input type="file" name="image" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-[14px] file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Со спины</label>
-                                                <input type="file" name="imageBack" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                                <input type="file" name="imageBack" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-[14px] file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Сбоку</label>
-                                                <input type="file" name="imageSide" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                                <input type="file" name="imageSide" accept="image/*" className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-[14px] file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Детали (до 2-х фото)</label>
-                                                <input type="file" name="imageDetails" accept="image/*" multiple className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
+                                                <input type="file" name="imageDetails" accept="image/*" multiple className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-[14px] file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-all cursor-pointer" />
                                             </div>
                                         </div>
                                     </div>
 
                                     {error && (
-                                        <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-[11px] font-black uppercase tracking-wider">
+                                        <div className="p-4 rounded-[14px] bg-rose-50 border border-rose-100 text-rose-600 text-[11px] font-black uppercase tracking-wider">
                                             {error}
                                         </div>
                                     )}

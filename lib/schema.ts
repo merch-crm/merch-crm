@@ -23,7 +23,6 @@ export const orderStatusEnum = pgEnum("order_status", [
     "cancelled",
 ]);
 
-export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer"]);
 
 export const taskStatusEnum = pgEnum("task_status", [
     "new",
@@ -82,6 +81,16 @@ export const inventoryAttributes = pgTable("inventory_attributes", {
     name: text("name").notNull(),
     value: text("value").notNull(), // Code: 'BLK', 'KUL' etc
     meta: jsonb("meta"), // { hex: '#...' } for colors
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    slug: text("slug").notNull().unique(), // 'brand', 'color', 'custom_type'
+    name: text("name").notNull(), // 'Бренд', 'Цвет', 'Мой тип'
+    isSystem: boolean("is_system").default(false).notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    categoryId: uuid("category_id").references(() => inventoryCategories.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -158,6 +167,9 @@ export const inventoryCategories = pgTable("inventory_categories", {
     sortOrder: integer("sort_order").default(0).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
     isSystem: boolean("is_system").default(false).notNull(),
+    gender: text("gender").default("masculine").notNull(), // 'masculine', 'feminine', 'neuter'
+    singularName: text("singular_name"),
+    pluralName: text("plural_name"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -176,6 +188,8 @@ export const inventoryItems = pgTable("inventory_items", {
     location: text("location"),
     storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
     qualityCode: text("quality_code"),
+    materialCode: text("material_code"),
+    brandCode: text("brand_code"),
     attributeCode: text("attribute_code"),
     sizeCode: text("size_code"),
     attributes: jsonb("attributes").default("{}"), // Гибкие характеристики (цвет, размер и т.д.)
@@ -217,12 +231,13 @@ export const orderItems = pgTable("order_items", {
 });
 
 // Inventory Transactions
+export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change"]);
+
 export const inventoryTransactions = pgTable("inventory_transactions", {
     id: uuid("id").defaultRandom().primaryKey(),
     itemId: uuid("item_id")
-        .references(() => inventoryItems.id)
-        .notNull(),
-    changeAmount: integer("change_amount").notNull(),
+        .references(() => inventoryItems.id),
+    changeAmount: integer("change_amount").notNull().default(0),
     type: transactionTypeEnum("type").notNull(),
     reason: text("reason"),
     storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),

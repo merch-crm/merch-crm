@@ -14,6 +14,8 @@ import { CalendarView } from "./calendar-view";
 import { TaskAnalytics } from "./task-analytics";
 import { TaskDetailsDialog } from "./task-details-dialog";
 import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 interface Task {
     id: string;
@@ -47,10 +49,39 @@ interface TasksClientProps {
 }
 
 export function TasksClient({ initialTasks, users, departments, currentUserId, currentUserDepartmentId }: TasksClientProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState("all"); // all, my, role
     const [view, setView] = useState<'kanban' | 'calendar' | 'analytics'>('kanban');
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+    // Persist state in URL
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        const v = searchParams.get("view");
+
+        if (tab && ["all", "my", "role"].includes(tab)) {
+            setActiveTab(tab);
+        }
+        if (v && ['kanban', 'calendar', 'analytics'].includes(v as any)) {
+            setView(v as any);
+        }
+    }, [searchParams]);
+
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", tab);
+        router.replace(`?${params.toString()}`, { scroll: false });
+    };
+
+    const handleViewChange = (v: 'kanban' | 'calendar' | 'analytics') => {
+        setView(v);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("view", v);
+        router.replace(`?${params.toString()}`, { scroll: false });
+    };
 
     const filteredTasks = initialTasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -111,7 +142,7 @@ export function TasksClient({ initialTasks, users, departments, currentUserId, c
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
+                                onClick={() => handleTabChange(tab.id)}
                                 className={cn(
                                     "flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap",
                                     activeTab === tab.id

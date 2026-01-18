@@ -5,7 +5,7 @@ import { users, roles, auditLogs, departments, clients, orders, inventoryCategor
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { hashPassword } from "@/lib/password";
+import { hashPassword, comparePassword } from "@/lib/password";
 import { eq, asc, desc, sql, and, or, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logSecurityEvent } from "@/lib/security-logger";
@@ -243,7 +243,7 @@ export async function updateUserRole(userId: string, roleId: string) {
     }
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteUser(userId: string, password?: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -265,7 +265,14 @@ export async function deleteUser(userId: string) {
     });
 
     if (userToDelete?.isSystem) {
-        return { error: "Нельзя удалить системного пользователя" };
+        if (!password) {
+            return { error: "Для удаления системного пользователя требуется пароль администратора" };
+        }
+
+        const [admin] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+        if (!admin || !(await comparePassword(password, admin.passwordHash))) {
+            return { error: "Неверный пароль администратора" };
+        }
     }
 
     try {
@@ -294,7 +301,7 @@ export async function deleteUser(userId: string) {
             severity: "warning",
             entityType: "user",
             entityId: userId,
-            details: { deletedBy: session.id }
+            details: { deletedBy: session.id, isSystem: userToDelete?.isSystem }
         });
 
         revalidatePath("/dashboard/admin");
@@ -627,7 +634,7 @@ export async function createRole(formData: FormData) {
     }
 }
 
-export async function deleteRole(roleId: string) {
+export async function deleteRole(roleId: string, password?: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -656,7 +663,14 @@ export async function deleteRole(roleId: string) {
         });
 
         if (role?.isSystem) {
-            return { error: "Нельзя удалить системную роль" };
+            if (!password) {
+                return { error: "Для удаления системной роли требуется пароль администратора" };
+            }
+
+            const [admin] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+            if (!admin || !(await comparePassword(password, admin.passwordHash))) {
+                return { error: "Неверный пароль администратора" };
+            }
         }
 
         await db.delete(roles).where(eq(roles.id, roleId));
@@ -667,7 +681,7 @@ export async function deleteRole(roleId: string) {
             action: `Удаление роли: ${role?.name || roleId}`,
             entityType: "role",
             entityId: roleId,
-            details: { name: role?.name }
+            details: { name: role?.name, isSystem: role?.isSystem }
         });
 
         revalidatePath("/dashboard/admin/roles");
@@ -815,7 +829,7 @@ export async function updateDepartment(deptId: string, formData: FormData) {
     }
 }
 
-export async function deleteDepartment(deptId: string) {
+export async function deleteDepartment(deptId: string, password?: string) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -835,7 +849,14 @@ export async function deleteDepartment(deptId: string) {
         });
 
         if (dept?.isSystem) {
-            return { error: "Нельзя удалить системный отдел" };
+            if (!password) {
+                return { error: "Для удаления системного отдела требуется пароль администратора" };
+            }
+
+            const [admin] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
+            if (!admin || !(await comparePassword(password, admin.passwordHash))) {
+                return { error: "Неверный пароль администратора" };
+            }
         }
 
         await db.delete(departments).where(eq(departments.id, deptId));
@@ -846,7 +867,7 @@ export async function deleteDepartment(deptId: string) {
             action: `Удаление отдела: ${dept?.name || deptId}`,
             entityType: "department",
             entityId: deptId,
-            details: { name: dept?.name }
+            details: { name: dept?.name, isSystem: dept?.isSystem }
         });
 
         revalidatePath("/dashboard/admin");

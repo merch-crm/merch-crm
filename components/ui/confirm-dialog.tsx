@@ -20,6 +20,8 @@ interface ConfirmDialogProps {
     cancelText?: string;
     variant?: "default" | "destructive";
     isLoading?: boolean;
+    isConfirmDisabled?: boolean;
+    children?: React.ReactNode;
 }
 
 export function ConfirmDialog({
@@ -31,7 +33,9 @@ export function ConfirmDialog({
     confirmText = "Подтвердить",
     cancelText = "Отмена",
     variant = "default",
-    isLoading = false
+    isLoading = false,
+    isConfirmDisabled = false,
+    children
 }: ConfirmDialogProps) {
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -42,6 +46,7 @@ export function ConfirmDialog({
                         {description}
                     </DialogDescription>
                 </DialogHeader>
+                {children}
                 <DialogFooter className="gap-2 sm:gap-0">
                     <Button
                         variant="ghost"
@@ -53,7 +58,7 @@ export function ConfirmDialog({
                     <Button
                         variant={variant}
                         onClick={onConfirm}
-                        disabled={isLoading}
+                        disabled={isLoading || isConfirmDisabled}
                     >
                         {isLoading ? "Загрузка..." : confirmText}
                     </Button>

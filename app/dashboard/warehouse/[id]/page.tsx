@@ -78,6 +78,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     const { data: units = [] } = await getMeasurementUnits();
 
 
+    const { getSession } = await import("@/lib/auth");
+    const session = await getSession();
+
     return (
         <div className="p-1">
             <CategoryDetailClient
@@ -87,6 +90,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
                 items={items as unknown as InventoryItem[]}
                 storageLocations={locations as unknown as StorageLocation[]}
                 measurementUnits={units as { id: string, name: string }[]}
+                user={session}
             />
         </div>
     );

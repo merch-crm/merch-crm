@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, User, Building2, Trash2, Pencil } from "lucide-react";
+import { MapPin, User, Building2, Trash2, Pencil, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { deleteStorageLocation } from "./actions";
@@ -30,21 +30,27 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     const [editingLocation, setEditingLocation] = useState<StorageLocation | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [deleteName, setDeleteName] = useState<string | null>(null);
+    const [deleteIsSystem, setDeleteIsSystem] = useState(false);
+    const [deletePassword, setDeletePassword] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const handleDeleteClick = (e: React.MouseEvent, id: string, name: string) => {
+    const handleDeleteClick = (e: React.MouseEvent, id: string, name: string, isSystem: boolean) => {
         e.stopPropagation();
         setDeleteId(id);
         setDeleteName(name);
+        setDeleteIsSystem(isSystem);
+        setDeletePassword("");
     };
 
     const handleConfirmDelete = async () => {
         if (!deleteId) return;
         setIsDeleting(true);
-        await deleteStorageLocation(deleteId);
+        await deleteStorageLocation(deleteId, deletePassword);
         setIsDeleting(false);
         setDeleteId(null);
         setDeleteName(null);
+        setDeleteIsSystem(false);
+        setDeletePassword("");
     };
 
     const handleEdit = (e: React.MouseEvent, loc: StorageLocation) => {
@@ -54,8 +60,8 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     if (locations.length === 0) {
         return (
-            <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[3rem] border border-dashed border-slate-200">
-                <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mb-6 text-slate-300 shadow-sm">
+            <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[14px] border border-dashed border-slate-200">
+                <div className="w-20 h-20 bg-white rounded-[14px] flex items-center justify-center mb-6 text-slate-300 shadow-sm">
                     <MapPin className="w-10 h-10" />
                 </div>
                 <h2 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">Места хранения не найдены</h2>
@@ -84,12 +90,12 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                         <div
                             key={loc.id}
                             onClick={() => setEditingLocation(loc)}
-                            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5"
+                            className="group relative bg-white border border-slate-200/60 rounded-[14px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
-                                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                                        "w-12 h-12 rounded-[14px] flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
                                         isBrak ? "bg-rose-50 text-rose-500" : isMain ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"
                                     )}>
                                         <Building2 className="w-6 h-6" />
@@ -110,14 +116,14 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                 <div className="flex items-center gap-1 transition-opacity duration-300">
                                     <button
                                         onClick={(e) => handleEdit(e, loc)}
-                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[14px] transition-all"
                                     >
                                         <Pencil className="w-4 h-4" />
                                     </button>
                                     {!loc.isSystem && (
                                         <button
-                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name)}
-                                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem)}
+                                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[14px] transition-all"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -126,11 +132,11 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-2xl border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
+                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-[14px] border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
                                     <MapPin className="w-4 h-4 text-slate-400" />
                                     <span className="text-xs font-bold text-slate-600 truncate">{loc.address}</span>
                                 </div>
-                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-2xl border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
+                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-[14px] border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
                                     <User className="w-4 h-4 text-slate-400" />
                                     <span className="text-xs font-black text-slate-900 truncate">{loc.responsibleUser?.name || "Не назначен"}</span>
                                 </div>
@@ -139,23 +145,37 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                             {/* Storage categories dots */}
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {(() => {
-                                    const grouped = loc.items?.reduce((acc: Record<string, number>, item: InventoryItem) => {
+                                    const grouped = loc.items?.reduce((acc: Record<string, { count: number, singular: string | null, plural: string | null, name: string }>, item: InventoryItem) => {
                                         if (item.quantity > 0) {
-                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                            const cat = (item as any).categoryName || "Прочее";
-                                            acc[cat] = (acc[cat] || 0) + item.quantity;
+                                            const catId = item.categoryId || "other";
+                                            const catName = item.categoryName || "Прочее";
+                                            const singular = item.categorySingularName || null;
+                                            const plural = item.categoryPluralName || null;
+
+                                            if (!acc[catId]) {
+                                                acc[catId] = { count: 0, singular, plural, name: catName };
+                                            }
+                                            acc[catId].count += item.quantity;
                                         }
                                         return acc;
                                     }, {}) || {};
 
-                                    const categories = Object.entries(grouped);
-                                    if (categories.length === 0) return null;
+                                    const categoriesList = Object.entries(grouped);
+                                    if (categoriesList.length === 0) return null;
 
-                                    return categories.slice(0, 3).map(([category, count]) => (
-                                        <Badge key={category} className="bg-white border-slate-100 text-[10px] font-bold text-slate-500 hover:text-indigo-600 transition-colors pointer-events-none">
-                                            {category}: {count}
-                                        </Badge>
-                                    ));
+                                    return categoriesList.slice(0, 3).map(([catId, data]) => {
+                                        let displayName = data.name;
+                                        if (data.count === 1 && data.singular) {
+                                            displayName = data.singular;
+                                        } else if (data.count > 1 && data.plural) {
+                                            displayName = data.plural;
+                                        }
+                                        return (
+                                            <Badge key={catId} className="bg-white border-slate-100 text-[10px] font-bold text-slate-500 hover:text-indigo-600 transition-colors pointer-events-none">
+                                                {displayName}: {data.count}
+                                            </Badge>
+                                        );
+                                    });
                                 })()}
                             </div>
                         </div>
@@ -170,8 +190,8 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setDeleteId(null)}
                     />
-                    <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 text-center">
-                        <div className="w-20 h-20 bg-rose-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-rose-500">
+                    <div className="relative w-full max-w-md bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 text-center">
+                        <div className="w-20 h-20 bg-rose-50 rounded-[14px] flex items-center justify-center mx-auto mb-6 text-rose-500">
                             <Trash2 className="w-10 h-10" />
                         </div>
 
@@ -186,17 +206,40 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                             Это действие нельзя отменить.
                         </p>
 
+                        {deleteIsSystem && (
+                            <div className="mb-6 p-4 bg-rose-50 rounded-[14px] border border-rose-100">
+                                <div className="flex items-center gap-2 text-rose-600 mb-3">
+                                    <Lock className="w-4 h-4" />
+                                    <span className="text-xs font-black uppercase tracking-wider">Системная защита</span>
+                                </div>
+                                <p className="text-xs font-bold text-rose-500/80 mb-3">
+                                    Это системное место хранения. Для подтверждения удаления введите ваш пароль администратора.
+                                </p>
+                                <input
+                                    type="password"
+                                    value={deletePassword}
+                                    onChange={(e) => setDeletePassword(e.target.value)}
+                                    placeholder="Пароль администратора"
+                                    className="w-full h-11 px-4 rounded-lg border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                    autoFocus
+                                />
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-4">
                             <button
-                                onClick={() => setDeleteId(null)}
-                                className="h-14 rounded-2xl font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                                onClick={() => {
+                                    setDeleteId(null);
+                                    setDeletePassword("");
+                                }}
+                                className="h-14 rounded-[14px] font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                             >
                                 Отмена
                             </button>
                             <button
                                 onClick={handleConfirmDelete}
-                                disabled={isDeleting}
-                                className="h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                disabled={isDeleting || (deleteIsSystem && !deletePassword.trim())}
+                                className="h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-[14px] font-black shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {isDeleting ? (
                                     <>

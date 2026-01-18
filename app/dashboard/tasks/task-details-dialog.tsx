@@ -24,7 +24,7 @@ import {
     deleteTask,
     uploadTaskFile,
 } from "./actions";
-import { useTransition, useRef, useState } from "react";
+import { useTransition, useRef, useState, useEffect } from "react";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
@@ -84,6 +84,16 @@ interface TaskDetailsDialogProps {
 
 export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     const [isPending, startTransition] = useTransition();
+
+    // Lock scroll on mount
+    useEffect(() => {
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = originalStyle;
+        };
+    }, []);
+
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [activeTab, setActiveTab] = useState<'details' | 'checklist' | 'comments' | 'history'>('details');
     const [newComment, setNewComment] = useState("");

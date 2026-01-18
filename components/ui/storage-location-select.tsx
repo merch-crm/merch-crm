@@ -37,7 +37,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                     <button
                         type="button"
                         className={cn(
-                            "w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50 flex items-center justify-between group hover:border-indigo-500/30 hover:bg-white transition-all outline-none",
+                            "w-full h-14 px-5 rounded-[14px] border border-slate-100 bg-slate-50 flex items-center justify-between group hover:border-indigo-500/30 hover:bg-white transition-all outline-none",
                             className
                         )}
                     >
@@ -54,7 +54,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="w-[var(--radix-dropdown-menu-trigger-width)] bg-[#444444] border-none rounded-[1.5rem] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
+                    className="w-[var(--radix-dropdown-menu-trigger-width)] bg-[#444444] border-none rounded-[14px] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
                     align="start"
                     sideOffset={8}
                 >
@@ -67,7 +67,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                                         key={option.id}
                                         onClick={() => onChange(option.id)}
                                         className={cn(
-                                            "flex items-center justify-between px-4 py-3.5 rounded-xl text-[12px] font-black uppercase tracking-wider transition-all cursor-pointer outline-none border-none",
+                                            "flex items-center justify-between px-4 py-3.5 rounded-[14px] text-[12px] font-black uppercase tracking-wider transition-all cursor-pointer outline-none border-none",
                                             isSelected
                                                 ? "bg-[#5086ec] text-white"
                                                 : "text-white/80 hover:bg-white/10 focus:bg-white/10 hover:text-white focus:text-white"

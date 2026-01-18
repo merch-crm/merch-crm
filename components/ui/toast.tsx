@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type ToastType = "success" | "error" | "info" | "warning";
+export type ToastType = "success" | "error" | "info" | "warning" | "destructive";
 
 interface ToastProps {
     message: string;
@@ -32,6 +32,7 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
     const icons = {
         success: <CheckCircle className="w-5 h-5 text-emerald-500" />,
         error: <AlertCircle className="w-5 h-5 text-rose-500" />,
+        destructive: <AlertCircle className="w-5 h-5 text-rose-500" />,
         warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
         info: <Info className="w-5 h-5 text-indigo-500" />,
     };
@@ -39,6 +40,7 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
     const styles = {
         success: "border-emerald-100 bg-emerald-50/50 text-emerald-900",
         error: "border-rose-100 bg-rose-50/50 text-rose-900",
+        destructive: "border-rose-100 bg-rose-50/50 text-rose-900",
         warning: "border-amber-100 bg-amber-50/50 text-amber-900",
         info: "border-indigo-100 bg-indigo-50/50 text-indigo-900",
     };

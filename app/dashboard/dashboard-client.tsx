@@ -129,7 +129,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             </div>
 
             {/* Welcome Banner */}
-            <Card className="p-10 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-xl bg-white relative overflow-hidden group">
+            <Card className="p-10 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[14px] bg-white relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="relative z-10">
 
@@ -146,12 +146,12 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             {/* Stats Grid - 4 Columns Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((item) => (
-                    <Card key={item.name} className="p-7 border-none shadow-[0_8px_30px_rgb(0,0,0,0.02)] rounded-xl bg-white flex flex-col justify-between h-48 hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-all duration-300 group">
+                    <Card key={item.name} className="p-7 border-none shadow-[0_8px_30px_rgb(0,0,0,0.02)] rounded-[14px] bg-white flex flex-col justify-between h-48 hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-all duration-300 group">
                         <div className="flex justify-between items-start">
-                            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center ${item.color} text-white shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition-transform duration-300`}>
+                            <div className={`h-14 w-14 rounded-[14px] flex items-center justify-center ${item.color} text-white shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition-transform duration-300`}>
                                 <item.icon className="h-7 w-7" />
                             </div>
-                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${item.isNegative ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-[14px] ${item.isNegative ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
                                 <TrendingUp className={cn("h-3 w-3", item.isNegative && "rotate-180")} />
                                 <span className="text-[10px] font-black uppercase tracking-wider">
                                     {item.change}
@@ -175,7 +175,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {actions.map((action) => (
                         <Link key={action.name} href={action.href} className="group">
-                            <Card className="h-56 border-none shadow-[0_8px_30px_rgb(0,0,0,0.02)] rounded-xl bg-white flex flex-col items-center justify-center gap-6 transition-all hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer relative overflow-hidden text-center p-6">
+                            <Card className="h-56 border-none shadow-[0_8px_30px_rgb(0,0,0,0.02)] rounded-[14px] bg-white flex flex-col items-center justify-center gap-6 transition-all hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer relative overflow-hidden text-center p-6">
                                 <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-indigo-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className={`relative z-10 h-20 w-20 rounded-full flex items-center justify-center text-white ${action.color} shadow-2xl shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-500`}>
                                     <action.icon className="h-10 w-10" />

@@ -7,20 +7,24 @@ import { SubmitButton } from "./submit-button";
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Session } from "@/lib/auth";
+import { Lock } from "lucide-react";
 
 import { Category } from "./inventory-client";
 import { CategorySelect } from "./category-select";
 import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS, getIconGroupForIcon } from "./category-utils";
 
 interface EditCategoryDialogProps {
-    category: Category & { prefix?: string | null };
+    category: Category & { prefix?: string | null, isSystem?: boolean };
     categories: Category[];
     isOpen: boolean;
     onClose: () => void;
+    user: Session | null;
 }
 
-export function EditCategoryDialog({ category, categories, isOpen, onClose }: EditCategoryDialogProps) {
+export function EditCategoryDialog({ category, categories, isOpen, onClose, user }: EditCategoryDialogProps) {
     const [isPending, setIsPending] = useState(false);
+    const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState(() => {
         if (category.icon) return category.icon;
@@ -65,11 +69,12 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
     async function handleDeleteCategory() {
         setIsPending(true);
-        const result = await deleteInventoryCategory(category.id);
+        const result = await deleteInventoryCategory(category.id, deletePassword);
         if (result?.error) {
             setError(result.error);
             setIsPending(false);
             setShowDeleteModal(false);
+            setDeletePassword(""); // Clear password on error
         } else {
             setShowDeleteModal(false);
             onClose();
@@ -107,11 +112,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
+            <div className="relative w-full max-w-4xl bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
                 <div className="flex items-center justify-between p-10 pb-6 shrink-0">
                     <div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                            <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center", getColorStyles(selectedColor))}>
+                            <div className={cn("w-10 h-10 rounded-[14px] flex items-center justify-center", getColorStyles(selectedColor))}>
                                 {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-6 h-6" })}
                             </div>
                             Редактировать
@@ -120,7 +125,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </div>
                     <button
                         type="button"
-                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
+                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[14px] bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
                         onClick={onClose}
                     >
                         <X className="h-6 w-6" />
@@ -129,7 +134,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 <form id="edit-category-form" onSubmit={handleSubmit} className="px-8 py-3 flex flex-col overflow-y-auto custom-scrollbar overflow-x-visible">
                     {error && (
-                        <div className="mb-6 p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-2xl border border-rose-100 animate-in shake duration-500">
+                        <div className="mb-6 p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-[14px] border border-rose-100 animate-in shake duration-500">
                             {error}
                         </div>
                     )}
@@ -148,8 +153,60 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         required
                                         defaultValue={category.name}
                                         placeholder="Напр. Футболки"
-                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                        className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                     />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 col-span-2">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Единственное число</label>
+                                        <input
+                                            name="singularName"
+                                            defaultValue={category.singularName || ""}
+                                            placeholder="Напр. Футболка"
+                                            className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Множественное число</label>
+                                        <input
+                                            name="pluralName"
+                                            defaultValue={(category as any).pluralName || ""}
+                                            placeholder="Напр. Футболки"
+                                            className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 col-span-2">
+                                    <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Грамматический род</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[
+                                            { id: 'masculine', label: 'Мужской (он)', hint: 'Белый' },
+                                            { id: 'feminine', label: 'Женский (она)', hint: 'Белая' },
+                                            { id: 'neuter', label: 'Средний (оно)', hint: 'Белое' }
+                                        ].map((g) => (
+                                            <label key={g.id} className={cn(
+                                                "relative flex flex-col items-center justify-center p-3 rounded-[14px] border-2 cursor-pointer transition-all",
+                                                (category.gender === g.id || (!category.gender && g.id === 'masculine'))
+                                                    ? "border-indigo-500 bg-indigo-50/50"
+                                                    : "border-slate-100 bg-slate-50/30 hover:bg-slate-50 hover:border-slate-200"
+                                            )}>
+                                                <input
+                                                    type="radio"
+                                                    name="gender"
+                                                    value={g.id}
+                                                    defaultChecked={category.gender === g.id || (!category.gender && g.id === 'masculine')}
+                                                    className="sr-only"
+                                                />
+                                                <span className={cn(
+                                                    "text-[10px] font-black uppercase tracking-wider mb-1",
+                                                    (category.gender === g.id || (!category.gender && g.id === 'masculine')) ? "text-indigo-600" : "text-slate-400"
+                                                )}>{g.label}</span>
+                                                <span className="text-[12px] font-bold text-slate-500">{g.hint}</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -158,7 +215,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         name="prefix"
                                         defaultValue={category.prefix || ""}
                                         placeholder="TS"
-                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center tracking-widest uppercase"
+                                        className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center tracking-widest uppercase"
                                         onInput={(e) => {
                                             const val = e.currentTarget.value;
                                             if (/[а-яА-ЯёЁ]/.test(val)) alert("Используйте латиницу");
@@ -172,7 +229,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         type="number"
                                         name="sortOrder"
                                         defaultValue={category.sortOrder || 0}
-                                        className="w-full h-14 px-6 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center h-12 px-4"
+                                        className="w-full h-14 px-6 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center h-12 px-4"
                                     />
                                 </div>
                             </div>
@@ -184,13 +241,13 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         name="description"
                                         defaultValue={category.description || ""}
                                         placeholder="Краткое описание для сайта или склада..."
-                                        className="w-full min-h-[80px] p-5 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed p-5 min-h-[80px]"
+                                        className="w-full min-h-[80px] p-5 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed p-5 min-h-[80px]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Визуальное оформление</label>
-                                    <div className="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center p-4 bg-white">
+                                    <div className="p-4 bg-white rounded-[14px] border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center p-4 bg-white">
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="flex items-center gap-3 shrink-0">
                                                 <div className={cn(
@@ -249,7 +306,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                             {/* Icon Selection Panel (Overlays or expands below) */}
                             {showIcons && (
-                                <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
+                                <div className="p-8 bg-slate-50/50 rounded-[14px] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {ICON_GROUPS.map((group) => {
                                             const isExpanded = expandedGroupId === group.id;
@@ -259,7 +316,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                                         type="button"
                                                         onClick={() => setExpandedGroupId(isExpanded ? null : group.id)}
                                                         className={cn(
-                                                            "w-full flex items-center justify-between h-12 px-5 rounded-xl transition-all border",
+                                                            "w-full flex items-center justify-between h-12 px-5 rounded-[14px] transition-all border",
                                                             isExpanded
                                                                 ? "bg-white border-slate-200 text-slate-900 shadow-sm"
                                                                 : "bg-transparent border-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600 hover:border-slate-100"
@@ -270,7 +327,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                                     </button>
 
                                                     {isExpanded && (
-                                                        <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
+                                                        <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-[14px] shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
                                                             {group.icons.map((item) => {
                                                                 const Icon = item.icon;
                                                                 const isSelected = selectedIcon === item.name;
@@ -347,12 +404,12 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                                 const IconComponent = getCategoryIcon(sub);
                                                 const colorStyle = getColorStyles(sub.color);
                                                 return (
-                                                    <div key={sub.id} className="group relative flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-100 transition-all hover:border-indigo-200 aspect-square">
+                                                    <div key={sub.id} className="group relative flex flex-col items-center justify-center p-4 bg-white rounded-[14px] border border-slate-100 transition-all hover:border-indigo-200 aspect-square">
                                                         <button
                                                             type="button"
                                                             disabled={subPending}
                                                             onClick={() => handleDeleteSubcategory(sub.id)}
-                                                            className="absolute top-2 right-2 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                            className="absolute top-2 right-2 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-[14px] transition-all opacity-0 group-hover:opacity-100"
                                                             title="Удалить подкатегорию"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
@@ -373,7 +430,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                             })}
                                         </div>
                                     ) : (
-                                        <div className="h-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-slate-200/50 rounded-3xl text-slate-400 gap-3 opacity-60">
+                                        <div className="h-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-slate-200/50 rounded-[14px] text-slate-400 gap-3 opacity-60">
                                             <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm">
                                                 <Package className="w-8 h-8 text-slate-200" />
                                             </div>
@@ -387,11 +444,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </div>
                 </form>
 
-                <div className="p-10 border-t border-slate-100 flex items-center justify-between shrink-0 bg-white rounded-b-[3rem]">
+                <div className="p-10 border-t border-slate-100 flex items-center justify-between shrink-0 bg-white rounded-b-[14px]">
                     <button
                         type="button"
                         onClick={() => setShowDeleteModal(true)}
-                        className="h-14 px-8 rounded-2xl flex items-center gap-2.5 text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg bg-white text-rose-500 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 hover:text-rose-600 shadow-slate-100/50"
+                        className="h-14 px-8 rounded-[14px] flex items-center gap-2.5 text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg bg-white text-rose-500 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 hover:text-rose-600 shadow-slate-100/50"
                     >
                         <Trash2 className="w-5 h-5" />
                         УДАЛИТЬ КАТЕГОРИЮ
@@ -401,7 +458,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <button
                             type="button"
                             onClick={onClose}
-                            className="h-14 px-10 rounded-2xl text-slate-500 text-sm font-bold hover:bg-slate-100 transition-all active:scale-95"
+                            className="h-14 px-10 rounded-[14px] text-slate-500 text-sm font-bold hover:bg-slate-100 transition-all active:scale-95"
                         >
                             Отмена
                         </button>
@@ -420,7 +477,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
                                 onClick={() => setSubToDelete(null)}
                             />
-                            <div className="relative w-full max-w-[340px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 fade-in duration-200">
+                            <div className="relative w-full max-w-[340px] bg-white rounded-[14px] shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 fade-in duration-200">
                                 <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-5 text-rose-500">
                                     <Trash2 className="w-8 h-8" />
                                 </div>
@@ -432,14 +489,14 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         type="button"
                                         onClick={confirmDeleteSub}
                                         disabled={subPending}
-                                        className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-100 disabled:opacity-50"
+                                        className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-[14px] font-black text-[11px] tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-100 disabled:opacity-50"
                                     >
                                         {subPending ? "УДАЛЕНИЕ..." : "ДА, УДАЛИТЬ"}
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setSubToDelete(null)}
-                                        className="w-full h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl font-black text-[11px] tracking-widest transition-all active:scale-95"
+                                        className="w-full h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-[14px] font-black text-[11px] tracking-widest transition-all active:scale-95"
                                     >
                                         ОТМЕНА
                                     </button>
@@ -456,7 +513,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
                                 onClick={() => setShowDeleteModal(false)}
                             />
-                            <div className="relative w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 text-center animate-in zoom-in-95 fade-in duration-200">
+                            <div className="relative w-full max-w-[400px] bg-white rounded-[14px] shadow-2xl border border-slate-100 p-10 text-center animate-in zoom-in-95 fade-in duration-200">
                                 <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-500 shadow-sm">
                                     <Trash2 className="w-10 h-10" />
                                 </div>
@@ -464,31 +521,55 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 <p className="text-sm font-bold text-slate-500 leading-relaxed mb-2">
                                     Вы собираетесь удалить категорию <span className="text-slate-800">«{category.name}»</span>.
                                 </p>
-                                <p className="text-xs font-medium text-slate-400 leading-relaxed mb-8">
+                                <p className="text-xs font-medium text-slate-400 leading-relaxed mb-6">
                                     {isParentCategory && subCategories.length > 0
                                         ? "Все вложенные подкатегории будут откреплены, но не удалены. Товары станут без категории."
                                         : "Действие необратимо. Товары этой категории станут 'Без категории'."}
                                 </p>
 
+                                {category.isSystem && (
+                                    <div className="mb-8 space-y-4 p-5 bg-rose-50/50 rounded-[14px] border border-rose-100 ring-4 ring-rose-50/30">
+                                        <div className="flex items-center gap-2 text-rose-600 mb-3">
+                                            <Lock className="w-4 h-4" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest">Системная защита</span>
+                                        </div>
+                                        <p className="text-[11px] font-bold text-rose-500/80 leading-relaxed mb-4 text-left">
+                                            Эта категория является системной. Для её удаления необходимо подтверждение паролем администратора.
+                                        </p>
+                                        <input
+                                            type="password"
+                                            value={deletePassword}
+                                            onChange={(e) => setDeletePassword(e.target.value)}
+                                            placeholder="Введите ваш пароль"
+                                            className="w-full h-12 px-4 rounded-xl border-2 border-rose-100 focus:outline-none focus:border-rose-300 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                            autoFocus
+                                        />
+                                    </div>
+                                )}
+
                                 <div className="flex flex-col gap-3">
                                     <button
                                         type="button"
                                         onClick={handleDeleteCategory}
-                                        disabled={isPending}
-                                        className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                                        disabled={isPending || (category.isSystem && !deletePassword.trim())}
+                                        className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-[14px] font-black text-xs tracking-widest transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
                                         {isPending ? (
                                             "Удаление..."
                                         ) : (
                                             <>
+                                                {category.isSystem && <Lock className="w-4 h-4 mr-1" />}
                                                 Подтвердить удаление
                                             </>
                                         )}
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setShowDeleteModal(false)}
-                                        className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl font-black text-xs tracking-widest transition-all active:scale-95"
+                                        onClick={() => {
+                                            setShowDeleteModal(false);
+                                            setDeletePassword("");
+                                        }}
+                                        className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-[14px] font-black text-xs tracking-widest transition-all active:scale-95"
                                     >
                                         ОТМЕНА
                                     </button>

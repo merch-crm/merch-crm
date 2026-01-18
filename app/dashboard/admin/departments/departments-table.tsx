@@ -66,8 +66,8 @@ export function DepartmentsTable() {
         setDeleteDialogOpen(true);
     };
 
-    const handleDeleteConfirm = async (id: string) => {
-        const res = await deleteDepartment(id);
+    const handleDeleteConfirm = async (id: string, password?: string) => {
+        const res = await deleteDepartment(id, password);
         if (res.error) {
             alert(res.error);
         } else {

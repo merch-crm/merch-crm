@@ -50,6 +50,16 @@ export function CreateOrderDialog() {
     }, [isOpen]);
 
     useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
         const timer = setTimeout(async () => {
             if (searchQuery.length >= 2) {
                 setIsSearching(true);

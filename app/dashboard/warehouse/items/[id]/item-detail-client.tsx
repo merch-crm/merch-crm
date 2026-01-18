@@ -7,7 +7,7 @@ import {
     Clock, ArrowLeft, Edit3, Trash2,
     Download, Save, RefreshCcw, Plus, Minus,
     MoveHorizontal, ChevronDown, ChevronUp, Shirt, Box, Wrench,
-    Image as ImageIcon, ChevronLeft, ChevronRight, Check
+    Image as ImageIcon, ChevronLeft, ChevronRight, Check, Pencil
 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -36,7 +36,7 @@ import {
 
 interface ItemHistoryTransaction {
     id: string;
-    type: "in" | "out" | "transfer";
+    type: "in" | "out" | "transfer" | "attribute_change";
     changeAmount: number;
     reason: string | null;
     createdAt: Date;
@@ -102,9 +102,9 @@ export interface Category {
 }
 
 interface ThumbnailSettings {
+    zoom: number;
     x: number;
     y: number;
-    scale: number;
 }
 
 interface ItemDetailClientProps {
@@ -414,8 +414,9 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
 
     const [isThumbnailEditing, setIsThumbnailEditing] = useState(false);
     const [thumbnailSettings, setThumbnailSettings] = useState<ThumbnailSettings>(() => {
-        const attrs = initialItem.attributes as Record<string, unknown> | null;
-        return (attrs?.thumbnailSettings as unknown as ThumbnailSettings) || { x: 50, y: 50, scale: 1 };
+        const defaultSettings = { zoom: 1, x: 0, y: 0 };
+        const saved = (initialItem.attributes as any)?.thumbnailSettings;
+        return saved ? { ...defaultSettings, ...saved } : defaultSettings;
     });
 
     // Sync state with props when server-side data refreshes (e.g. after quantity update)
@@ -438,11 +439,11 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
             setSizeCode(initialItem.sizeCode || "");
             setActiveImage(initialItem.image);
 
-            const attrs = initialItem.attributes as Record<string, unknown> | null;
-            if (attrs?.thumbnailSettings) {
-                setThumbnailSettings(attrs.thumbnailSettings as unknown as ThumbnailSettings);
+            const saved = (initialItem.attributes as any)?.thumbnailSettings;
+            if (saved) {
+                setThumbnailSettings({ zoom: 1, x: 0, y: 0, ...saved });
             } else {
-                setThumbnailSettings({ x: 50, y: 50, scale: 1 });
+                setThumbnailSettings({ zoom: 1, x: 0, y: 0 });
             }
         }
     }
@@ -793,8 +794,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                         fill
                                         className="object-cover transition-all duration-700 group-hover:scale-105"
                                         style={{
-                                            objectPosition: `50% ${thumbnailSettings.y}%`,
-                                            transform: `scale(${thumbnailSettings.scale}) translate(${(thumbnailSettings.x - 50) * (thumbnailSettings.scale - 1)}%, 0)`
+                                            transform: `scale(${thumbnailSettings.zoom}) translate(${thumbnailSettings.x}%, ${thumbnailSettings.y}%)`
                                         }}
                                         unoptimized
                                     />
@@ -1671,6 +1671,15 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                             };
                                         }
 
+                                        if (t.type === "attribute_change") {
+                                            return {
+                                                label: "Изменение свойств",
+                                                color: "text-amber-600",
+                                                bg: "bg-amber-50",
+                                                icon: <Pencil className="w-6 h-6" />
+                                            };
+                                        }
+
                                         return {
                                             label: "Списание",
                                             color: "text-rose-600",
@@ -1718,8 +1727,14 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
                                                 <div className="border-l border-slate-100/80 pl-8">
                                                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block mb-1">Кол-во</span>
                                                     <div className={cn("text-lg font-black tabular-nums whitespace-nowrap", display.color)}>
-                                                        {isTransfer ? "" : (isIn ? "+" : "-")}{Math.abs(t.changeAmount)}
-                                                        <span className="text-[10px] font-bold uppercase ml-1.5 opacity-40">{item.unit}</span>
+                                                        {t.type === "attribute_change" ? (
+                                                            <span className="text-sm">Обновление</span>
+                                                        ) : (
+                                                            <>
+                                                                {isTransfer ? "" : (isIn ? "+" : "-")}{Math.abs(t.changeAmount)}
+                                                                <span className="text-[10px] font-bold uppercase ml-1.5 opacity-40">{item.unit}</span>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </div>
 
@@ -1822,119 +1837,87 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
             }
 
             {isThumbnailEditing && (
-                <div className="fixed inset-0 z-[99999] bg-black/80 flex items-center justify-center p-4 animate-in fade-in duration-200 backdrop-blur-sm">
-                    <div className="bg-white p-6 rounded-[2rem] max-w-2xl w-full animate-in zoom-in-95 duration-200 relative shadow-2xl overflow-hidden">
-                        <button
-                            onClick={() => setIsThumbnailEditing(false)}
-                            className="absolute top-5 right-5 p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors z-10"
-                        >
-                            <X className="w-5 h-5 text-slate-500" />
-                        </button>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* Left Column: Preview */}
-                            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner">
-                                <Image
-                                    src={activeImage || item.image || ""}
-                                    alt="Thumbnail Preview"
-                                    fill
-                                    className="object-cover transition-all duration-100 ease-linear pointer-events-none select-none"
-                                    style={{
-                                        objectPosition: `50% ${thumbnailSettings.y}%`,
-                                        transform: `scale(${thumbnailSettings.scale}) translate(${(thumbnailSettings.x - 50) * (thumbnailSettings.scale - 1)}%, 0)`
-                                    }}
-                                    unoptimized
-                                />
-
-                                {/* Reference Grid */}
-                                <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-20 pointer-events-none border border-black/10 rounded-2xl">
-                                    <div className="border-r border-b border-black/10" />
-                                    <div className="border-r border-b border-black/10" />
-                                    <div className="border-b border-black/10" />
-                                    <div className="border-r border-b border-black/10" />
-                                    <div className="border-r border-b border-black/10" />
-                                    <div className="border-b border-black/10" />
-                                    <div className="border-r border-black/10" />
-                                    <div className="border-r border-black/10" />
-                                    <div></div>
-                                </div>
+                <div className="fixed inset-0 z-[99999] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in" onClick={() => setIsThumbnailEditing(false)}>
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-sm p-6 space-y-6 animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] leading-none mb-1">Миниатюра</h4>
+                                <p className="text-[9px] text-slate-400 font-medium italic">Как товар будет виден в общем списке</p>
                             </div>
-
-                            {/* Right Column: Controls */}
-                            <div className="flex flex-col justify-center space-y-6">
-                                <div className="space-y-1 pr-8">
-                                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest">Миниатюра</h3>
-                                    <p className="text-sm text-slate-400 font-medium leading-tight">Настройте расположение миниатюры.</p>
-                                </div>
-
-                                <div className="space-y-6">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                            <span>Горизонталь</span>
-                                            <span className="bg-slate-100 px-2 py-1 rounded-md text-[9px] text-slate-600">{thumbnailSettings.x}%</span>
-                                        </div>
-                                        <input
-                                            type="range"
-                                            min="0" max="100"
-                                            value={thumbnailSettings.x}
-                                            onChange={e => setThumbnailSettings(prev => ({ ...prev, x: Number(e.target.value) }))}
-                                            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                            <span>Вертикаль</span>
-                                            <span className="bg-slate-100 px-2 py-1 rounded-md text-[9px] text-slate-600">{thumbnailSettings.y}%</span>
-                                        </div>
-                                        <input
-                                            type="range"
-                                            min="0" max="100"
-                                            value={thumbnailSettings.y}
-                                            onChange={e => setThumbnailSettings(prev => ({ ...prev, y: Number(e.target.value) }))}
-                                            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                            <span>Масштаб</span>
-                                            <span className="bg-slate-100 px-2 py-1 rounded-md text-[9px] text-slate-600">{thumbnailSettings.scale}x</span>
-                                        </div>
-                                        <input
-                                            type="range"
-                                            min="1" max="3" step="0.1"
-                                            value={thumbnailSettings.scale}
-                                            onChange={e => setThumbnailSettings(prev => ({ ...prev, scale: Number(e.target.value) }))}
-                                            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="pt-4 mt-auto">
-                                    <Button
-                                        onClick={() => {
-                                            setEditData(prev => {
-                                                const currentAttrs = (prev.attributes && typeof prev.attributes === 'object' && !Array.isArray(prev.attributes))
-                                                    ? prev.attributes
-                                                    : {};
-                                                return {
-                                                    ...prev,
-                                                    attributes: {
-                                                        ...currentAttrs,
-                                                        thumbnailSettings: thumbnailSettings
-                                                    }
-                                                };
-                                            });
-                                            setIsThumbnailEditing(false);
-                                            toast("Настройки миниатюры сохранены", "success");
+                            <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200/50 shadow-sm relative shrink-0">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm relative">
+                                    <Image
+                                        src={activeImage || item.image || ""}
+                                        alt="Preview"
+                                        fill
+                                        className="object-cover"
+                                        unoptimized
+                                        style={{
+                                            transform: `scale(${thumbnailSettings.zoom}) translate(${thumbnailSettings.x}%, ${thumbnailSettings.y}%)`
                                         }}
-                                        className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-indigo-200 active:scale-[0.98] transition-all"
-                                    >
-                                        Применить
-                                    </Button>
+                                    />
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="space-y-5 py-2">
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Масштаб</span>
+                                    <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{Math.round(thumbnailSettings.zoom * 100)}%</span>
+                                </div>
+                                <input type="range" min="1" max="5" step="0.05" value={thumbnailSettings.zoom} onChange={e => setThumbnailSettings(prev => ({ ...prev, zoom: parseFloat(e.target.value) }))} className="w-full accent-indigo-600" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center px-1">
+                                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Ось X</span>
+                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{thumbnailSettings.x}%</span>
+                                    </div>
+                                    <input type="range" min="-100" max="100" step="1" value={thumbnailSettings.x} onChange={e => setThumbnailSettings(prev => ({ ...prev, x: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center px-1">
+                                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Ось Y</span>
+                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{thumbnailSettings.y}%</span>
+                                    </div>
+                                    <input type="range" min="-100" max="100" step="1" value={thumbnailSettings.y} onChange={e => setThumbnailSettings(prev => ({ ...prev, y: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setThumbnailSettings({ zoom: 1, x: 0, y: 0 })}
+                                className="flex-1 h-12 rounded-2xl border-2 border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all"
+                            >
+                                Сброс
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditData(prev => {
+                                        const currentAttrs = (prev.attributes && typeof prev.attributes === 'object' && !Array.isArray(prev.attributes))
+                                            ? prev.attributes
+                                            : {};
+                                        return {
+                                            ...prev,
+                                            attributes: {
+                                                ...currentAttrs,
+                                                thumbnailSettings: thumbnailSettings
+                                            }
+                                        };
+                                    });
+                                    setIsThumbnailEditing(false);
+                                    toast("Настройки миниатюры сохранены", "success");
+                                }}
+                                className="flex-[2] h-12 bg-slate-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+                            >
+                                Готово
+                            </button>
                         </div>
                     </div>
                 </div>

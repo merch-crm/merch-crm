@@ -37,8 +37,8 @@ export default function AdminRolesPage() {
         fetchRoles();
     }, []);
 
-    const handleDeleteRole = async (id: string) => {
-        const res = await deleteRole(id);
+    const handleDeleteRole = async (id: string, password?: string) => {
+        const res = await deleteRole(id, password);
         if (res.error) {
             alert(res.error);
         } else {

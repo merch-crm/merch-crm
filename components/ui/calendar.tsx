@@ -41,11 +41,11 @@ function Calendar({
                 week: "flex w-full mt-1",
                 day: cn(
                     buttonVariants({ variant: "ghost" }),
-                    "h-9 w-9 p-0 font-bold aria-selected:opacity-100 hover:bg-slate-100 rounded-md transition-colors w-full text-slate-900"
+                    "h-9 w-9 p-0 font-bold aria-selected:opacity-100 hover:bg-slate-100 rounded-[14px] transition-colors w-full text-slate-900"
                 ),
                 day_button: "h-9 w-9 p-0 font-bold w-full flex items-center justify-center text-inherit",
-                range_start: "bg-indigo-600 text-white rounded-l-md",
-                range_end: "bg-indigo-600 text-white rounded-r-md",
+                range_start: "bg-indigo-600 text-white rounded-l-[14px]",
+                range_end: "bg-indigo-600 text-white rounded-r-[14px]",
                 selected: "bg-indigo-600 text-white hover:bg-indigo-600 hover:text-white focus:bg-indigo-600 focus:text-white",
                 today: "bg-slate-100 text-indigo-600 font-black",
                 outside: "text-slate-300 opacity-50",

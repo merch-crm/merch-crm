@@ -63,7 +63,7 @@ export function LocationSelect({
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full h-12 px-5 rounded-xl border flex items-center justify-between outline-none text-left transition-all",
+                    "w-full h-12 px-5 rounded-[14px] border flex items-center justify-between outline-none text-left transition-all",
                     isOpen
                         ? "border-indigo-500 bg-white ring-4 ring-indigo-500/5"
                         : "border-slate-100 bg-slate-50/80 hover:bg-white hover:border-slate-200",
@@ -83,14 +83,14 @@ export function LocationSelect({
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-[100] bg-white rounded-2xl border border-slate-100 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-full left-0 right-0 mt-1 z-[100] bg-white rounded-[14px] border border-slate-100 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                     <div className="p-2 border-b border-slate-50 bg-slate-50/30">
                         <input
                             autoFocus
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Поиск склада..."
-                            className="w-full h-10 px-4 rounded-lg bg-white border border-slate-100 focus:outline-none focus:border-indigo-200 text-xs font-bold transition-all"
+                            className="w-full h-10 px-4 rounded-[14px] bg-white border border-slate-100 focus:outline-none focus:border-indigo-200 text-xs font-bold transition-all"
                         />
                     </div>
 
@@ -104,7 +104,7 @@ export function LocationSelect({
                                         type="button"
                                         onClick={() => handleSelect(loc.id)}
                                         className={cn(
-                                            "w-full flex items-center justify-between px-4 py-3 rounded-xl mb-0.5 transition-colors",
+                                            "w-full flex items-center justify-between px-4 py-3 rounded-[14px] mb-0.5 transition-colors",
                                             isSelected
                                                 ? "bg-indigo-600 text-white"
                                                 : "text-slate-600 hover:bg-slate-50"

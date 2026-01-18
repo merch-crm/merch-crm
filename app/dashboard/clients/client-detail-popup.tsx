@@ -41,6 +41,16 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
         }
     }, [isOpen, clientId, refreshKey]);
 
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
+
     const handleSaveComments = async () => {
         setIsSavingComments(true);
         const res = await updateClientComments(clientId, tempComments);

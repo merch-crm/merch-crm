@@ -32,9 +32,10 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
     const [error, setError] = useState("");
 
     useEffect(() => {
+        const originalStyle = window.getComputedStyle(document.body).overflow;
         document.body.style.overflow = 'hidden';
         return () => {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = originalStyle;
         };
     }, []);
 

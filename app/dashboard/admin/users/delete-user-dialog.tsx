@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { deleteUser } from "../actions";
-import { Loader2, AlertTriangle, X } from "lucide-react";
+import { Loader2, AlertTriangle, X, Lock } from "lucide-react";
 
 interface DeleteUserDialogProps {
-    user: { id: string; name: string } | null;
+    user: { id: string; name: string; isSystem?: boolean } | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -14,6 +14,19 @@ interface DeleteUserDialogProps {
 export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUserDialogProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [password, setPassword] = useState("");
+
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            setPassword("");
+            setError("");
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
 
     const handleDelete = async () => {
         if (!user) return;
@@ -22,15 +35,17 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
         setError("");
 
         try {
-            const result = await deleteUser(user.id);
+            const result = await deleteUser(user.id, password);
             if (result.error) {
                 setError(result.error);
+                setPassword("");
             } else {
                 onSuccess();
                 onClose();
             }
         } catch {
             setError("Произошла ошибка при удалении");
+            setPassword("");
         } finally {
             setIsLoading(false);
         }
@@ -66,6 +81,26 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         </p>
                     </div>
 
+                    {user.isSystem && (
+                        <div className="mb-6 p-4 bg-rose-50 rounded-lg border border-rose-100">
+                            <div className="flex items-center gap-2 text-rose-600 mb-3">
+                                <Lock className="w-4 h-4" />
+                                <span className="text-xs font-black uppercase tracking-wider">Системная защита</span>
+                            </div>
+                            <p className="text-xs font-bold text-rose-500/80 mb-3">
+                                Это системный пользователь. Для подтверждения удаления введите ваш пароль администратора.
+                            </p>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Пароль администратора"
+                                className="w-full h-11 px-4 rounded-lg border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                autoFocus
+                            />
+                        </div>
+                    )}
+
                     {error && (
                         <div className="bg-rose-50 text-rose-600 text-sm p-3 rounded-md border border-rose-100 mb-4 text-center font-bold">
                             {error}
@@ -82,7 +117,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         </button>
                         <button
                             onClick={handleDelete}
-                            disabled={isLoading}
+                            disabled={isLoading || (user.isSystem && !password.trim())}
                             className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-3 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
                         >
                             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}

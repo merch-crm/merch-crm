@@ -1,4 +1,4 @@
-import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers } from "./actions";
+import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers, getInventoryAttributes } from "./actions";
 import { getSession } from "@/lib/auth";
 // Auto-deploy trigger v1.1 - Restarting...
 import { WarehouseClient } from "./warehouse-client";
@@ -10,11 +10,12 @@ export default async function WarehousePage() {
     const { data: history = [] } = await getInventoryHistory();
     console.log(`WarehousePage history count: ${history.length}`);
     if (history.length > 0) {
-        console.log(`First item: ${history[0].type} for ${history[0].item.name}`);
+        console.log(`First item: ${history[0].type} for ${history[0].item?.name || 'N/A'}`);
     }
     const { data: storageLocations = [] } = await getStorageLocations();
     const { data: users = [] } = await getAllUsers();
-    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories } = await import("./actions");
+    const { data: attributes = [] } = await getInventoryAttributes();
+    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories, seedSystemAttributes, seedSystemAttributeTypes, getInventoryAttributeTypes } = await import("./actions");
     let { data: measurementUnits = [] } = await getMeasurementUnits();
 
     if (measurementUnits.length === 0) {
@@ -23,11 +24,29 @@ export default async function WarehousePage() {
         measurementUnits = res.data || [];
     }
 
-    // Auto-seed system categories if missing
-    if (categoriesFromDb.length < 11) {
+    // Auto-seed system types if empty
+    let { data: attributeTypes = [] } = await getInventoryAttributeTypes();
+    if (attributeTypes.length === 0) {
+        await seedSystemAttributeTypes();
+        const res = await getInventoryAttributeTypes();
+        attributeTypes = res.data || [];
+    }
+
+    // Auto-seed system categories if empty or orphans detected or missing linguistic data
+    const hasOrphanedSubs = categoriesFromDb.some(c => ["Футболки", "Кепки"].includes(c.name) && !c.parentId);
+    const missingLinguistic = categoriesFromDb.some(c => ["Футболка", "Худи", "Свитшот"].includes(c.name) && (!c.singularName || !c.pluralName));
+
+    if (categoriesFromDb.length === 0 || hasOrphanedSubs || missingLinguistic) {
         await seedSystemCategories();
         const { data: refreshedCategories = [] } = await getInventoryCategories();
         categoriesFromDb.splice(0, categoriesFromDb.length, ...refreshedCategories);
+    }
+
+    // Auto-seed system attributes if empty
+    if (attributes.length === 0) {
+        await seedSystemAttributes();
+        const { data: refreshedAttrs = [] } = await getInventoryAttributes();
+        attributes.splice(0, attributes.length, ...refreshedAttrs);
     }
 
     const session = await getSession();
@@ -67,8 +86,9 @@ export default async function WarehousePage() {
                 history={history}
                 storageLocations={storageLocations}
                 users={users}
-
                 user={session}
+                attributes={attributes}
+                attributeTypes={attributeTypes}
             />
         </div>
     );

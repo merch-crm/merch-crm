@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     X,
@@ -38,6 +38,16 @@ export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) 
     const [assignmentType, setAssignmentType] = useState<"user" | "department">("user");
     const [, startTransition] = useTransition();
     const router = useRouter();
+
+    useEffect(() => {
+        if (isOpen) {
+            const originalStyle = window.getComputedStyle(document.body).overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalStyle;
+            };
+        }
+    }, [isOpen]);
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -163,8 +173,8 @@ export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) 
                                 type="button"
                                 onClick={() => setAssignmentType("user")}
                                 className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "user"
-                                        ? "bg-white text-indigo-600 shadow-sm"
-                                        : "text-slate-500 hover:text-slate-700"
+                                    ? "bg-white text-indigo-600 shadow-sm"
+                                    : "text-slate-500 hover:text-slate-700"
                                     }`}
                             >
                                 <User className="w-4 h-4" />
@@ -174,8 +184,8 @@ export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) 
                                 type="button"
                                 onClick={() => setAssignmentType("department")}
                                 className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "department"
-                                        ? "bg-white text-indigo-600 shadow-sm"
-                                        : "text-slate-500 hover:text-slate-700"
+                                    ? "bg-white text-indigo-600 shadow-sm"
+                                    : "text-slate-500 hover:text-slate-700"
                                     }`}
                             >
                                 <Users className="w-4 h-4" />

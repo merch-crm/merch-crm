@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
+import { Session } from "@/lib/auth";
 
 export interface InventoryItem {
     id: string;
@@ -20,8 +21,19 @@ export interface InventoryItem {
     description?: string | null;
     location?: string | null;
     image?: string | null;
+    imageBack?: string | null;
+    imageSide?: string | null;
+    imageDetails?: string[] | null;
     reservedQuantity?: number;
+    qualityCode?: string | null;
+    materialCode?: string | null;
+    attributeCode?: string | null;
+    sizeCode?: string | null;
+    storageLocationId?: string | null;
     attributes?: Record<string, string | number | boolean | null | undefined>;
+    categoryName?: string;
+    categorySingularName?: string | null;
+    categoryPluralName?: string | null;
 }
 
 export interface Category {
@@ -34,6 +46,10 @@ export interface Category {
     parentId?: string | null;
     sortOrder?: number | null;
     isActive?: boolean | null;
+    isSystem?: boolean;
+    gender?: string;
+    singularName?: string | null;
+    pluralName?: string | null;
     items?: InventoryItem[];
     parent?: Category | null;
 }
@@ -41,12 +57,13 @@ export interface Category {
 interface InventoryClientProps {
     items: InventoryItem[];
     categories: Category[];
+    user: Session | null;
 }
 
 import { EditCategoryDialog } from "./edit-category-dialog";
 import { deleteInventoryCategory } from "./actions";
 
-export function InventoryClient({ items, categories }: InventoryClientProps) {
+export function InventoryClient({ items, categories, user }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -142,6 +159,7 @@ export function InventoryClient({ items, categories }: InventoryClientProps) {
                     categories={categories}
                     isOpen={isEditDialogOpen}
                     onClose={() => setIsEditDialogOpen(false)}
+                    user={user}
                 />
             )}
 
@@ -181,14 +199,14 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group relative bg-white border border-slate-200/60 rounded-[32px] p-6 transition-all duration-300 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5 overflow-hidden"
+            className="group relative bg-white border border-slate-200/60 rounded-[14px] p-6 transition-all duration-300 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5 overflow-hidden"
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
 
             <div className="flex items-start justify-between relative z-10">
                 <div className="flex items-center gap-4">
                     <div className={cn(
-                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg shadow-slate-100 group-hover:shadow-indigo-100",
+                        "w-14 h-14 rounded-[14px] flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg shadow-slate-100 group-hover:shadow-indigo-100",
                         colorStyle
                     )}>
                         {createElement(IconComponent, { className: "w-7 h-7" })}
@@ -212,7 +230,7 @@ function CategoryCard({
                                 e.stopPropagation();
                                 if (onEdit) onEdit(category);
                             }}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[14px] transition-all"
                         >
                             <Pencil className="w-4 h-4" />
                         </button>
@@ -236,7 +254,7 @@ function CategoryCard({
                                         router.push(`/dashboard/warehouse/${child.id}`);
                                     }}
                                     className={cn(
-                                        "inline-flex items-center px-3 py-1.5 rounded-xl border text-[10px] font-black transition-all cursor-pointer uppercase tracking-tight",
+                                        "inline-flex items-center px-3 py-1.5 rounded-[14px] border text-[10px] font-black transition-all cursor-pointer uppercase tracking-tight",
                                         hasChildCritical
                                             ? "bg-rose-50 border-rose-100 text-rose-500 hover:bg-rose-100 hover:border-rose-200"
                                             : hasChildLow
