@@ -1,9 +1,11 @@
 "use client";
 
-import { Upload, Trash2, Move } from "lucide-react";
+import { useState } from "react";
+import { Trash2, Move, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemFormData } from "../../../types";
 import Image from "next/image";
+import { compressImage } from "@/lib/image-processing";
 
 interface MediaStepProps {
     formData: ItemFormData;
@@ -13,179 +15,248 @@ interface MediaStepProps {
 }
 
 export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaStepProps) {
-    // Helper to generate preview URL
-    const createPreview = (file: File) => {
-        return URL.createObjectURL(file);
-    };
+    const [isProcessing, setIsProcessing] = useState(false);
 
-    // Handlers needed for each file input type
-    const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            updateFormData({
-                imageFile: file,
-                imagePreview: createPreview(file)
-            });
+    const thumbSettings = (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 };
+
+    const handleFileProcessing = async (file: File) => {
+        setIsProcessing(true);
+        try {
+            const result = await compressImage(file, { maxSizeMB: 1, type: "image/jpeg" });
+            setIsProcessing(false);
+            return result;
+        } catch (error) {
+            console.error("Compression error:", error);
+            setIsProcessing(false);
+            return null;
         }
     };
 
-    const handleBackImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMainImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            updateFormData({
-                imageBackFile: file,
-                imageBackPreview: createPreview(file)
-            });
+            const processed = await handleFileProcessing(file);
+            if (processed) {
+                updateFormData({
+                    imageFile: processed.file,
+                    imagePreview: processed.preview
+                });
+            }
         }
     };
 
-    const handleSideImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleBackImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            updateFormData({
-                imageSideFile: file,
-                imageSidePreview: createPreview(file)
-            });
+            const processed = await handleFileProcessing(file);
+            if (processed) {
+                updateFormData({
+                    imageBackFile: processed.file,
+                    imageBackPreview: processed.preview
+                });
+            }
         }
     };
 
-    const handleDetailsImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSideImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const processed = await handleFileProcessing(file);
+            if (processed) {
+                updateFormData({
+                    imageSideFile: processed.file,
+                    imageSidePreview: processed.preview
+                });
+            }
+        }
+    };
+
+    const handleDetailsImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
         if (files.length > 0) {
-            // Append new files to existing ones or replace? Usually append is nicer for multiple inputs.
-            // But here we keep it simple: append.
-            const newFiles = [...(formData.imageDetailsFiles || []), ...files];
-            const newPreviews = [...(formData.imageDetailsPreviews || []), ...files.map(createPreview)];
+            setIsProcessing(true);
+            const processedFiles = [];
+            const processedPreviews = [];
+
+            for (const file of files) {
+                const result = await handleFileProcessing(file);
+                if (result) {
+                    processedFiles.push(result.file);
+                    processedPreviews.push(result.preview);
+                }
+            }
 
             updateFormData({
-                imageDetailsFiles: newFiles,
-                imageDetailsPreviews: newPreviews
+                imageDetailsFiles: [...(formData.imageDetailsFiles || []), ...processedFiles],
+                imageDetailsPreviews: [...(formData.imageDetailsPreviews || []), ...processedPreviews]
             });
+            setIsProcessing(false);
         }
     };
 
-    const removeMainImage = () => {
-        updateFormData({ imageFile: null, imagePreview: null });
+    const updateThumb = (updates: Partial<{ zoom: number, x: number, y: number }>) => {
+        updateFormData({
+            thumbSettings: { ...thumbSettings, ...updates }
+        });
     };
 
-    const removeBackImage = () => {
-        updateFormData({ imageBackFile: null, imageBackPreview: null });
-    };
-
-    const removeSideImage = () => {
-        updateFormData({ imageSideFile: null, imageSidePreview: null });
-    };
+    const removeMainImage = () => updateFormData({ imageFile: null, imagePreview: null });
+    const removeBackImage = () => updateFormData({ imageBackFile: null, imageBackPreview: null });
+    const removeSideImage = () => updateFormData({ imageSideFile: null, imageSidePreview: null });
 
     const removeDetailImage = (index: number) => {
         const newFiles = [...(formData.imageDetailsFiles || [])];
         const newPreviews = [...(formData.imageDetailsPreviews || [])];
-
         newFiles.splice(index, 1);
         newPreviews.splice(index, 1);
-
-        updateFormData({
-            imageDetailsFiles: newFiles,
-            imageDetailsPreviews: newPreviews
-        });
+        updateFormData({ imageDetailsFiles: newFiles, imageDetailsPreviews: newPreviews });
     };
 
     return (
-        <div className="flex flex-col min-h-full">
-            <div className="flex-1 p-8 lg:p-12">
-                <div className="max-w-5xl mx-auto space-y-12">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Галерея фотографий</h2>
-                            <p className="text-slate-500 font-medium mt-1">Загрузите качественные изображения для карточки товара</p>
+        <div className="flex flex-col h-full overflow-hidden bg-white">
+            <div className="flex-1 flex flex-col p-5 min-h-0">
+                {/* Header Area */}
+                <div className="flex items-center justify-between mb-4 shrink-0">
+                    <div>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none uppercase tracking-widest">Галерея фотографий</h2>
+                        <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1 opacity-60">Визуализация карточки товара</p>
+                    </div>
+                    {isProcessing && (
+                        <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 animate-pulse">
+                            <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
+                            <span className="text-[9px] font-black uppercase tracking-widest text-indigo-600">Сжатие...</span>
                         </div>
-                    </div>
+                    )}
+                </div>
 
-                    {/* Main Projections Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <ImageUploadZone
-                            label="Лицевая сторона"
-                            preview={formData.imagePreview ?? null}
-                            onChange={handleMainImageChange}
-                            onRemove={removeMainImage}
-                            required
-                            hint="Главное фото"
-                        />
-                        <ImageUploadZone
-                            label="Вид со спины"
-                            preview={formData.imageBackPreview ?? null}
-                            onChange={handleBackImageChange}
-                            onRemove={removeBackImage}
-                        />
-                        <ImageUploadZone
-                            label="Детализация"
-                            preview={formData.imageSidePreview ?? null}
-                            onChange={handleSideImageChange}
-                            onRemove={removeSideImage}
-                        />
-                    </div>
+                {/* Unified Single Block Container */}
+                <div className="flex-1 bg-white rounded-[24px] border border-slate-200/80 flex flex-col min-h-0 overflow-hidden">
+                    <div className="flex-1 flex min-h-0 divide-x divide-slate-100">
+                        {/* LEFT: MAIN PHOTO */}
+                        <div className="w-[40%] flex flex-col p-6 min-h-0 bg-slate-50/20">
+                            <div className="flex items-center justify-between mb-4 shrink-0">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Лицевая сторона *</span>
+                                {formData.imagePreview && (
+                                    <button onClick={removeMainImage} className="text-[9px] font-black text-rose-500 uppercase tracking-widest hover:text-rose-600">Удалить</button>
+                                )}
+                            </div>
 
-                    {/* Details Gallery */}
-                    <div className="pt-10 border-t border-slate-100">
-                        <div className="flex items-center justify-between mb-8">
-                            <div>
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Галерея деталей</h3>
-                                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-tight">До 10 дополнительных фотографий с разных ракурсов</p>
+                            <div className="flex-1 flex flex-col min-h-0">
+                                <div className={cn(
+                                    "relative flex-1 rounded-[24px] overflow-hidden border-2 border-dashed transition-all group",
+                                    formData.imagePreview ? "border-slate-200 bg-white" : "border-slate-200 bg-white shadow-inner hover:border-indigo-400 hover:bg-slate-50"
+                                )}>
+                                    {formData.imagePreview ? (
+                                        <Image src={formData.imagePreview} alt="Main" fill className="object-cover" />
+                                    ) : (
+                                        <label className="absolute inset-0 flex flex-col items-center justify-center gap-4 cursor-pointer text-slate-300">
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleMainImageChange} />
+                                            <div className="w-14 h-14 rounded-[20px] bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-110 group-hover:bg-white transition-all">
+                                                <Plus className="w-7 h-7" />
+                                            </div>
+                                            <div className="text-center">
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] block mb-1">Загрузить</span>
+                                                <span className="text-[8px] font-bold opacity-40 uppercase">JPG, PNG до 5МБ</span>
+                                            </div>
+                                        </label>
+                                    )}
+                                </div>
+
+                                {formData.imagePreview && (
+                                    <div className="mt-4 pt-4 border-t border-slate-200 shrink-0">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-16 h-16 rounded-[14px] bg-white border border-slate-200 overflow-hidden relative shrink-0 shadow-sm">
+                                                <div className="absolute inset-0" style={{ transform: `scale(${thumbSettings.zoom}) translate(${thumbSettings.x}%, ${thumbSettings.y}%)` }}>
+                                                    <Image src={formData.imagePreview} alt="" fill className="object-cover" />
+                                                </div>
+                                            </div>
+                                            <div className="flex-1 space-y-4">
+                                                <div className="space-y-1">
+                                                    <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-slate-400">
+                                                        <span>Масштаб</span>
+                                                        <span className="text-indigo-600">{Math.round(thumbSettings.zoom * 100)}%</span>
+                                                    </div>
+                                                    <input type="range" min="1" max="3" step="0.1" value={thumbSettings.zoom} onChange={(e) => updateThumb({ zoom: parseFloat(e.target.value) })} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-indigo-600 cursor-pointer" />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">X</span>
+                                                        <input type="range" min="-50" max="50" step="1" value={thumbSettings.x} onChange={(e) => updateThumb({ x: parseInt(e.target.value) })} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-slate-400 cursor-pointer" />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Y</span>
+                                                        <input type="range" min="-50" max="50" step="1" value={thumbSettings.y} onChange={(e) => updateThumb({ y: parseInt(e.target.value) })} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-slate-400 cursor-pointer" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                            {/* Existing Details */}
-                            {formData.imageDetailsPreviews?.map((preview: string, idx: number) => (
-                                <div key={idx} className="relative aspect-square rounded-[14px] overflow-hidden border border-slate-200 group shadow-sm hover:shadow-lg transition-all">
-                                    <Image src={preview} alt="" fill className="object-cover" />
-                                    <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
-                                        <button
-                                            onClick={() => removeDetailImage(idx)}
-                                            className="w-10 h-10 bg-white/20 hover:bg-rose-500 rounded-[14px] text-white backdrop-blur-md transition-all flex items-center justify-center border border-white/20"
-                                        >
-                                            <Trash2 className="w-5 h-5" />
-                                        </button>
+                        {/* RIGHT: STORYBOARD & GALLERY */}
+                        <div className="flex-1 flex flex-col min-h-0 bg-white p-6">
+                            <div className="flex-1 flex flex-col min-h-0 space-y-6">
+                                {/* Storyboard Row */}
+                                <div className="space-y-3 shrink-0">
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-1">Ракурсы и раскадровка</span>
+                                    <div className="grid grid-cols-2 gap-6 h-[160px]">
+                                        <CompactDropzone label="Вид со спины" preview={formData.imageBackPreview ?? null} onChange={handleBackImageChange} onRemove={removeBackImage} />
+                                        <CompactDropzone label="Детализация / Бок" preview={formData.imageSidePreview ?? null} onChange={handleSideImageChange} onRemove={removeSideImage} />
                                     </div>
                                 </div>
-                            ))}
 
-                            {/* Add Button */}
-                            {(!formData.imageDetailsPreviews || formData.imageDetailsPreviews.length < 10) && (
-                                <label className="aspect-square rounded-[14px] border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all cursor-pointer flex flex-col items-center justify-center gap-3 group text-slate-400 hover:text-indigo-600">
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={handleDetailsImagesChange}
-                                    />
-                                    <div className="w-12 h-12 rounded-[14px] bg-white group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-all shadow-sm border border-slate-100">
-                                        <Upload className="w-5 h-5" />
+                                {/* Detail Gallery Row */}
+                                <div className="space-y-3 flex-1 flex flex-col min-h-0">
+                                    <div className="flex items-center justify-between px-1 shrink-0">
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Галерея деталей</span>
+                                        <span className="text-[9px] font-black text-slate-300">{(formData.imageDetailsPreviews?.length || 0)}/10</span>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Добавить</span>
-                                </label>
-                            )}
+                                    <div className="flex-1 overflow-y-auto">
+                                        <div className="flex flex-wrap gap-3">
+                                            {formData.imageDetailsPreviews?.map((preview: string, idx: number) => (
+                                                <div key={idx} className="relative w-[80px] h-[80px] rounded-[14px] overflow-hidden border border-slate-100 shadow-sm group hover:scale-[1.02] transition-transform">
+                                                    <Image src={preview} alt="" fill className="object-cover" />
+                                                    <button onClick={() => removeDetailImage(idx)} className="absolute inset-0 bg-rose-500/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {(!formData.imageDetailsPreviews || formData.imageDetailsPreviews.length < 10) && (
+                                                <label className="w-[80px] h-[80px] rounded-[14px] border-2 border-dashed border-slate-100 bg-slate-50/50 hover:border-indigo-400 hover:bg-white transition-all cursor-pointer flex flex-col items-center justify-center gap-1 group">
+                                                    <input type="file" multiple accept="image/*" className="hidden" onChange={handleDetailsImagesChange} />
+                                                    <div className="w-7 h-7 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                                        <Plus className="w-3.5 h-3.5 text-slate-400" />
+                                                    </div>
+                                                    <span className="text-[8px] font-black uppercase text-slate-300">Добавить</span>
+                                                </label>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Sticky Actions Footer */}
-            <div className="sticky bottom-0 bg-white/80 backdrop-blur-md border-t border-slate-100 p-6 z-30">
-                <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <button
-                        onClick={onBack}
-                        className="px-6 h-12 rounded-[14px] text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
-                    >
-                        Назад
-                    </button>
+            {/* Sticky Footer */}
+            <div className="bg-white border-t border-slate-100 p-4 shrink-0 px-10">
+                <div className="flex items-center justify-between">
+                    <button onClick={onBack} className="px-6 py-2.5 rounded-xl text-slate-400 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">Назад</button>
                     <button
                         onClick={onNext}
-                        className="px-10 h-12 bg-slate-900 text-white rounded-[14px] font-black text-xs uppercase tracking-widest hover:bg-black shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center gap-2"
+                        disabled={!formData.imagePreview || isProcessing}
+                        className={cn(
+                            "px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3",
+                            (!formData.imagePreview || isProcessing)
+                                ? "bg-slate-100 text-slate-300 cursor-not-allowed"
+                                : "bg-slate-900 text-white hover:bg-black shadow-xl shadow-slate-200/50"
+                        )}
                     >
                         Продолжить
-                        <Move className="w-4 h-4 rotate-180" />
+                        <Move className="w-3.5 h-3.5 rotate-180" />
                     </button>
                 </div>
             </div>
@@ -193,66 +264,30 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
     );
 }
 
-function ImageUploadZone({
-    label,
-    preview,
-    onChange,
-    onRemove,
-    required,
-    hint
-}: {
-    label: string,
-    preview: string | null,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onRemove: () => void,
-    required?: boolean,
-    hint?: string
-}) {
+function CompactDropzone({ label, preview, onChange, onRemove }: { label: string, preview: string | null, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, onRemove: () => void }) {
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between px-1">
-                <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        {label} {required && <span className="text-rose-500">*</span>}
-                    </span>
-                    {hint && <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter mt-0.5">{hint}</span>}
-                </div>
+        <div className="flex flex-col min-h-0 space-y-2 flex-1">
+            <div className="flex items-center justify-between px-1 shrink-0">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">{label}</span>
                 {preview && (
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            onRemove();
-                        }}
-                        className="text-[9px] font-black text-rose-500 hover:text-rose-600 uppercase tracking-widest transition-colors"
-                    >
-                        Удалить
-                    </button>
+                    <button onClick={(e) => { e.preventDefault(); onRemove(); }} className="text-[8px] font-black text-rose-500 uppercase tracking-widest hover:text-rose-600">Удалить</button>
                 )}
             </div>
-
             <div className={cn(
-                "aspect-[4/5] rounded-[14px] border-2 border-dashed transition-all relative overflow-hidden group cursor-pointer",
-                preview
-                    ? "border-slate-100 bg-slate-50 shadow-inner"
-                    : "border-slate-200 hover:border-slate-400 hover:bg-slate-50"
+                "relative flex-1 rounded-[20px] overflow-hidden border-2 border-dashed transition-all group",
+                preview ? "border-slate-100 bg-white shadow-sm ring-1 ring-slate-100" : "border-slate-100 bg-slate-50/50 hover:border-indigo-300 hover:bg-white"
             )}>
                 {preview ? (
-                    <Image src={preview} alt="Preview" fill className="object-cover" />
+                    <Image src={preview} alt={label} fill className="object-cover" />
                 ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-300 group-hover:text-slate-900 transition-colors">
-                        <div className="w-12 h-12 rounded-[14px] bg-slate-50 group-hover:bg-slate-100 flex items-center justify-center transition-colors">
-                            <Upload className="w-6 h-6" />
+                    <label className="absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer text-slate-300">
+                        <input type="file" accept="image/*" className="hidden" onChange={onChange} />
+                        <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-white transition-all">
+                            <Plus className="w-4 h-4" />
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">Загрузить</span>
-                    </div>
+                        <span className="text-[8px] font-black uppercase text-slate-400">Загрузить</span>
+                    </label>
                 )}
-                <input
-                    type="file"
-                    accept="image/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={onChange}
-                    onClick={(e) => (e.target as HTMLInputElement).value = ""} // Allow re-selecting same file
-                />
             </div>
         </div>
     );

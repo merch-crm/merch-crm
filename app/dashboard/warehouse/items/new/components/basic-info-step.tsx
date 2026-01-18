@@ -189,30 +189,30 @@ export function BasicInfoStep({
     ]);
 
     return (
-        <div className="flex flex-col min-h-full">
-            <div className="flex-1 p-8 lg:p-12">
-                <div className="max-w-5xl mx-auto space-y-12">
+        <div className="flex flex-col min-h-0 h-full overflow-hidden">
+            <div className="flex-1 p-6 lg:p-10 overflow-y-auto">
+                <div className="max-w-5xl mx-auto space-y-8">
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Основная информация</h2>
-                            <p className="text-slate-500 font-medium mt-1">Заполните ключевые характеристики вашей позиции</p>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Основная информация</h2>
+                            <p className="text-slate-500 text-xs font-medium mt-1">Заполните ключевые характеристики вашей позиции</p>
                         </div>
                         <div className="hidden md:flex flex-col items-end">
-                            <div className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">Категория</div>
-                            <div className="px-3 py-1 bg-slate-100 rounded-[14px] text-xs font-bold text-slate-600 border border-slate-200">
+                            <div className="text-[9px] font-black text-slate-900 uppercase tracking-widest mb-1 opacity-40">Категория</div>
+                            <div className="px-3 py-1 bg-slate-50 rounded-full text-[10px] font-bold text-slate-600 border border-slate-200/60 uppercase tracking-wider">
                                 {category.name} {formData.subcategoryId && " / " + subCategories.find(s => s.id === formData.subcategoryId)?.name}
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         {/* Attributes / Main Info */}
-                        <div className="lg:col-span-8 space-y-10">
+                        <div className="lg:col-span-8 space-y-8">
                             {isClothing ? (
                                 <div className="space-y-6">
                                     {/* Brand & Quality Group */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <AttributeSelector
                                             type="brand"
                                             value={formData.brandCode || ""}
@@ -392,12 +392,12 @@ export function BasicInfoStep({
                         </div>
 
                         {/* Right Sidebar - SKU Preview & Description */}
-                        <div className="lg:col-span-4 space-y-10">
+                        <div className="lg:col-span-4 space-y-8">
                             {isClothing && (
-                                <div className="p-6 bg-white rounded-[14px] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
+                                <div className="p-6 bg-white rounded-[20px] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
                                     <div className="flex items-center justify-between">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Превью позиции</label>
-                                        <div className="px-2 py-0.5 bg-emerald-500 rounded-[14px] text-[9px] font-black uppercase text-white">Auto</div>
+                                        <div className="px-2 py-0.5 bg-emerald-500 rounded-full text-[9px] font-black uppercase text-white">Auto</div>
                                     </div>
 
                                     <div className="space-y-4">
@@ -409,28 +409,28 @@ export function BasicInfoStep({
 
                                         <div className="space-y-1">
                                             <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Артикул (SKU)</div>
-                                            <div className="text-lg font-mono font-black tracking-wider break-all text-slate-900">
+                                            <div className="text-lg font-mono font-black tracking-wider break-all text-slate-900 uppercase">
                                                 {formData.sku || '---'}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-                                        Характеристики генерируются автоматически на основе выбранных параметров
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-relaxed opacity-60">
+                                        Генерация данных в реальном времени
                                     </p>
                                 </div>
                             )}
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
                                     <Info className="w-4 h-4" />
-                                    Описание (Необязательно)
+                                    Описание
                                 </label>
                                 <textarea
                                     value={formData.description || ""}
                                     onChange={(e) => updateFormData({ description: e.target.value })}
-                                    className="w-full h-[260px] p-6 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner"
-                                    placeholder="Особенности кроя, советы по уходу или детали упаковки..."
+                                    className="w-full h-[180px] p-5 rounded-[20px] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner"
+                                    placeholder="Особенности кроя, советы по уходу..."
                                 />
                             </div>
                         </div>
@@ -439,24 +439,24 @@ export function BasicInfoStep({
             </div>
 
             {/* Sticky Actions Footer */}
-            <div className="sticky bottom-0 bg-white/80 backdrop-blur-md border-t border-slate-100 p-6 z-30">
+            <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4 z-30">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className="px-6 h-12 rounded-[14px] text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
+                        className="px-6 h-11 rounded-[14px] text-slate-400 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
                     >
                         Назад
                     </button>
                     <div className="flex items-center gap-6">
                         {validationError && (
-                            <div className="hidden sm:flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-2 rounded-[14px] border border-rose-100 animate-in fade-in slide-in-from-right-4">
-                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                                <span className="text-[10px] font-black uppercase tracking-widest leading-none">{validationError}</span>
+                            <div className="hidden sm:flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100 animate-in fade-in slide-in-from-right-4">
+                                <span className="w-1 h-1 rounded-full bg-rose-500 animate-pulse" />
+                                <span className="text-[9px] font-black uppercase tracking-widest leading-none">{validationError}</span>
                             </div>
                         )}
                         <button
                             onClick={onNext}
-                            className="px-10 h-12 bg-slate-900 text-white rounded-[14px] font-black text-xs uppercase tracking-widest hover:bg-black shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center gap-2"
+                            className="px-8 h-11 bg-slate-900 text-white rounded-[16px] font-black text-[10px] uppercase tracking-widest hover:bg-black shadow-lg shadow-slate-200/50 transition-all active:scale-95 flex items-center gap-2"
                         >
                             Далее
                         </button>

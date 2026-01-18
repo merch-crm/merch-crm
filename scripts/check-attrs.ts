@@ -1,6 +1,5 @@
-
-import { db } from './lib/db';
-import { inventoryAttributes } from './lib/schema';
+import { db } from '../lib/db';
+import { inventoryAttributes } from '../lib/schema';
 import { eq } from 'drizzle-orm';
 
 async function check() {

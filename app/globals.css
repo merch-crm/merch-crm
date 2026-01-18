@@ -113,10 +113,9 @@ body {
   @apply antialiased selection:bg-indigo-500/20 selection:text-indigo-600 dark:selection:text-indigo-400;
 }
 
-/* Custom Scrollbar for Bento feel */
+/* Custom Scrollbar - Premium Studio feel */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -124,11 +123,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-200 dark:bg-zinc-800 rounded-full;
+  background-color: #0f172a; /* slate-900 */
+  border-radius: 20px;
+  border: 3.5px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-zinc-300 dark:bg-zinc-700;
+  background-color: #475569; /* slate-600 */
+  border: 3px solid transparent;
 }
 
 /* react-day-picker custom styles */

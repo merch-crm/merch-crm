@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, RotateCcw } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { addInventoryItem } from "../../actions";
@@ -159,6 +159,11 @@ export function NewItemPageClient({
         localStorage.removeItem(DRAFT_KEY);
     };
 
+    // Clear validation error when relevant data changes
+    useEffect(() => {
+        setValidationError("");
+    }, [selectedCategory, formData.subcategoryId]);
+
     const handleReset = () => {
         clearDraft();
         setStep(0);
@@ -265,6 +270,7 @@ export function NewItemPageClient({
 
     const handleCategorySelect = (category: Category) => {
         setSelectedCategory(category);
+        setValidationError("");
 
         // Reset form
         setFormData(prev => ({
@@ -281,6 +287,7 @@ export function NewItemPageClient({
     };
 
     const handleSubCategorySelect = (subCategory: Category) => {
+        setValidationError("");
         updateFormData({ subcategoryId: subCategory.id });
         setStep(2);
     };
@@ -297,16 +304,27 @@ export function NewItemPageClient({
     };
 
     const validateStep = (currentStep: number): boolean => {
-        setValidationError("");
+        if (currentStep === 0) {
+            if (!selectedCategory) {
+                setValidationError("Выберите категорию");
+                return false;
+            }
+            const currentSubCategories = categories.filter(c => c.parentId === selectedCategory.id);
+            if (currentSubCategories.length > 0 && !formData.subcategoryId) {
+                setValidationError("Выберите подкатегорию");
+                return false;
+            }
+        }
+
         const isClothing = selectedCategory?.name.toLowerCase().includes("одежда");
 
         if (currentStep === 2) {
-            if (isClothing) {
-                if (hasSubCategories && !formData.subcategoryId) {
-                    setValidationError("Выберите подкатегорию");
-                    return false;
-                }
+            if (hasSubCategories && !formData.subcategoryId) {
+                setValidationError("Выберите подкатегорию");
+                return false;
+            }
 
+            if (isClothing) {
                 if (!formData.brandCode) {
                     setValidationError("Выберите бренд");
                     return false;
@@ -420,9 +438,9 @@ export function NewItemPageClient({
     const currentStepIndex = step;
 
     return (
-        <div className="h-[calc(100vh-100px)] flex gap-4 p-4 -m-4">
+        <div className="h-[calc(100vh-140px)] flex gap-6 overflow-hidden">
             {/* Sidebar (Vertical Studio Navigation) */}
-            <aside className="w-[300px] bg-white border border-slate-200 rounded-[14px] flex flex-col shrink-0 relative z-20 h-full shadow-lg shadow-slate-200/50 overflow-hidden">
+            <aside className="w-[310px] bg-white border border-slate-200 rounded-[20px] flex flex-col shrink-0 relative z-20 h-full shadow-xl shadow-slate-200/60 overflow-hidden">
                 <div className="p-7 shrink-0">
                     <button
                         onClick={handleBack}
@@ -440,7 +458,7 @@ export function NewItemPageClient({
                     </p>
                 </div>
 
-                <div className="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
+                <div className="flex-1 px-4 space-y-1 overflow-y-auto">
                     {steps.map((s, idx) => {
                         const isActive = currentStepIndex === s.id;
                         const isCompleted = currentStepIndex > s.id;
@@ -452,8 +470,23 @@ export function NewItemPageClient({
                             <button
                                 key={idx}
                                 onClick={() => {
-                                    if (s.id < currentStepIndex || validateStep(currentStepIndex)) {
+                                    if (s.id === currentStepIndex) return;
+
+                                    if (s.id < currentStepIndex) {
                                         setStep(s.id);
+                                        setValidationError("");
+                                    } else {
+                                        // When clicking ahead, validate current step
+                                        if (validateStep(currentStepIndex)) {
+                                            // Additionally, if jumping to step 3 or 4, validate step 2
+                                            if (s.id > 2 && currentStepIndex < 2) {
+                                                if (validateStep(2)) {
+                                                    setStep(s.id);
+                                                }
+                                            } else {
+                                                setStep(s.id);
+                                            }
+                                        }
                                     }
                                 }}
                                 className={cn(
@@ -516,12 +549,18 @@ export function NewItemPageClient({
                 </div>
             </aside>
 
-            <main className="flex-1 overflow-y-auto no-scrollbar relative">
-                <div className="relative z-10 min-h-full flex flex-col">
-                    <div className="w-full">
-                        <div className="bg-white rounded-[14px] shadow-2xl shadow-slate-200/40 border border-slate-200/60 overflow-hidden flex flex-col">
+            <main className="flex-1 overflow-hidden relative h-full">
+                <div className="relative z-10 h-full flex flex-col">
+                    <div className="w-full h-full">
+                        <div className="bg-white rounded-[20px] shadow-xl shadow-slate-200/60 border border-slate-200/60 overflow-hidden flex flex-col h-full">
                             {step === 0 && (
                                 <div className="flex flex-col">
+                                    {validationError && (
+                                        <div className="mx-8 mt-8 p-4 bg-rose-50 border border-rose-100 rounded-[14px] flex items-center gap-3 text-rose-600 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <AlertCircle className="w-5 h-5" />
+                                            <span className="text-sm font-black uppercase tracking-widest">{validationError}</span>
+                                        </div>
+                                    )}
                                     <CategorySelector
                                         categories={topLevelCategories}
                                         onSelect={handleCategorySelect}
@@ -549,7 +588,10 @@ export function NewItemPageClient({
                                             ) : (
                                                 <div className="px-10 pb-10">
                                                     <button
-                                                        onClick={() => setStep(2)}
+                                                        onClick={() => {
+                                                            setValidationError("");
+                                                            setStep(2);
+                                                        }}
                                                         className="w-full p-6 rounded-[14px] border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all text-slate-400 hover:text-indigo-600 font-bold flex flex-col items-center gap-2"
                                                     >
                                                         <span>В этой категории нет подкатегорий</span>
