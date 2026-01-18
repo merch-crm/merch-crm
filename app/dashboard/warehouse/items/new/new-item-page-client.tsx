@@ -5,18 +5,19 @@ import { useRouter } from "next/navigation";
 import { Check, LayoutGrid, Package, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, InventoryAttribute, AttributeType, ItemFormData } from "../../types";
-import { SelectionStep } from "./components/selection-step";
+import { CategorySelector } from "./components/category-selector";
 import { BasicInfoStep } from "./components/basic-info-step";
 import { MediaStep } from "./components/media-step";
 import { StockStep } from "./components/stock-step";
-import { addInventoryItem } from "@/app/actions/inventory-actions";
-import { useToast } from "@/components/ui/use-toast";
+import { addInventoryItem } from "../../actions";
+import { useToast } from "../../../../../components/ui/toast";
 
 interface NewItemPageClientProps {
     categories: Category[];
     storageLocations: StorageLocation[];
-    attributes: InventoryAttribute[];
+    dynamicAttributes: InventoryAttribute[];
     attributeTypes: AttributeType[];
+    measurementUnits?: { id: string; name: string }[];
     initialCategoryId?: string;
     initialSubcategoryId?: string;
 }
@@ -24,8 +25,9 @@ interface NewItemPageClientProps {
 export function NewItemPageClient({
     categories,
     storageLocations,
-    attributes: allAttributes,
+    dynamicAttributes,
     attributeTypes,
+    measurementUnits = [],
     initialCategoryId,
     initialSubcategoryId
 }: NewItemPageClientProps) {
@@ -92,7 +94,7 @@ export function NewItemPageClient({
                         }
                     }, 0);
                 }
-            } catch (e) { console.error(e); }
+            } catch (error) { console.error(error); }
         }
     }, [initialCategoryId, initialSubcategoryId, categories]);
 
@@ -122,7 +124,7 @@ export function NewItemPageClient({
                     if (parent) {
                         setSelectedCategory(parent);
                         setFormData(prev => ({ ...prev, subcategoryId: sub.id, unit: parent.name.toLowerCase().includes("одежда") ? "шт" : prev.unit }));
-                        setStep(1); // Set correctly
+                        setStep(1);
                         setIsInitialized(true);
                         return;
                     }
@@ -182,7 +184,7 @@ export function NewItemPageClient({
             } else {
                 toast({ title: "Ошибка", description: res.error || "Ошибка", variant: "destructive" });
             }
-        } catch (_e) {
+        } catch {
             toast({ title: "Ошибка", description: "Ошибка", variant: "destructive" });
         } finally { setIsSubmitting(false); }
     };
@@ -211,7 +213,7 @@ export function NewItemPageClient({
                 </div>
             </div>
             <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
-                {step === 0 && <SelectionStep categories={topLevelCategories} onSelect={handleCategorySelect} selectedId={selectedCategory?.id || ""} />}
+                {step === 0 && <CategorySelector categories={topLevelCategories} onSelect={handleCategorySelect} selectedCategoryId={selectedCategory?.id || ""} />}
                 {step === 1 && selectedCategory && (
                     <BasicInfoStep
                         category={selectedCategory}
@@ -220,9 +222,9 @@ export function NewItemPageClient({
                         updateFormData={updateFormData}
                         onNext={handleNext}
                         onBack={handleBack}
-                        dynamicAttributes={allAttributes}
+                        dynamicAttributes={dynamicAttributes}
                         attributeTypes={attributeTypes}
-                        measurementUnits={[]}
+                        measurementUnits={measurementUnits}
                         validationError={validationError}
                     />
                 )}
@@ -230,7 +232,7 @@ export function NewItemPageClient({
                 {step === 3 && selectedCategory && (
                     <StockStep
                         category={selectedCategory}
-                        storageLocations={storageLocations}
+                        storageLocations={storageLocations as any}
                         formData={formData}
                         updateFormData={updateFormData}
                         onSubmit={handleSubmit}
