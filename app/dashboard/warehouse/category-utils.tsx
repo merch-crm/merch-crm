@@ -166,8 +166,8 @@ export const CLOTHING_COLORS = [
 export const CLOTHING_SIZES = [
     { name: "Kids", code: "KDS" },
     { name: "S", code: "S" },
-    { name: "M", code: "M" },
     { name: "S-M", code: "SM" },
+    { name: "M", code: "M" },
     { name: "L", code: "L" },
     { name: "XL", code: "XL" },
 ];

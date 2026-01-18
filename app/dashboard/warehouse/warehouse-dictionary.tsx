@@ -280,13 +280,22 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
         setTargetTypeSlug(attr.type);
         setEditingAttribute(attr);
         setNewItemName(attr.name);
-        setNewItemFemName((attr.meta as { fem?: string })?.fem || "");
-        setNewItemNeutName((attr.meta as { neut?: string })?.neut || "");
+
+        // Robust meta parsing
+        let meta: any = attr.meta;
+        if (typeof meta === 'string') {
+            try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+        } else if (!meta) {
+            meta = {};
+        }
+
+        setNewItemFemName(meta?.fem || "");
+        setNewItemNeutName(meta?.neut || "");
         setNewItemCode(attr.value);
         setIsCodeManuallyEdited(true);
-        setNewItemColorHex((attr.meta as { hex?: string })?.hex || "#000000");
-        setShowInName((attr.meta as { showInName?: boolean })?.showInName ?? true);
-        setShowInSku((attr.meta as { showInSku?: boolean })?.showInSku ?? true);
+        setNewItemColorHex(meta?.hex || "#000000");
+        setShowInName(meta?.showInName ?? true);
+        setShowInSku(meta?.showInSku ?? true);
         setError("");
         setIsValueDialogOpen(true);
     }
@@ -535,7 +544,19 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {filteredTypes.map(type => {
-                            const typeAttributes = attributes.filter(a => a.type === type.slug);
+                            let typeAttributes = attributes.filter(a => a.type === type.slug);
+
+                            if (type.slug === "size") {
+                                const sizeOrder = ["kids", "s", "s-m", "m", "l", "xl"];
+                                typeAttributes = [...typeAttributes].sort((a, b) => {
+                                    const indexA = sizeOrder.indexOf(a.name.toLowerCase());
+                                    const indexB = sizeOrder.indexOf(b.name.toLowerCase());
+                                    if (indexA === -1 && indexB === -1) return a.name.localeCompare(b.name);
+                                    if (indexA === -1) return 1;
+                                    if (indexB === -1) return -1;
+                                    return indexA - indexB;
+                                });
+                            }
 
 
                             return (
@@ -821,103 +842,135 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
 
             {/* Add/Edit Value Dialog */}
             <Dialog open={isValueDialogOpen} onOpenChange={setIsValueDialogOpen}>
-                <DialogContent className="sm:max-w-[425px] z-[9999]" style={{ zIndex: 9999 }}>
-                    <DialogHeader>
-                        <DialogTitle>{editingAttribute ? "Редактировать значение" : "Добавить значение"}</DialogTitle>
-                        <DialogDescription>
+                <DialogContent className="sm:max-w-[425px] z-[9999] overflow-hidden flex flex-col max-h-[90vh] p-0 gap-0" style={{ zIndex: 9999 }}>
+                    <DialogHeader className="p-6 pb-2 shrink-0">
+                        <DialogTitle className="text-xl font-black">{editingAttribute ? "Редактировать значение" : "Добавить значение"}</DialogTitle>
+                        <DialogDescription className="text-xs">
                             Для характеристики: <span className="font-bold text-indigo-600">{attributeTypes.find(t => t.slug === targetTypeSlug)?.name}</span>
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4 py-2">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700">Название</label>
-                                <input
-                                    value={newItemName}
-                                    onChange={e => {
-                                        const val = e.target.value;
-                                        setNewItemName(val);
-                                        if (!isCodeManuallyEdited) {
-                                            setNewItemCode(transliterateToSku(val));
-                                        }
-                                    }}
-                                    placeholder="Синий"
-                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700">Код (SKU)</label>
-                                <input
-                                    value={newItemCode}
-                                    onChange={e => {
-                                        setNewItemCode(e.target.value.toUpperCase());
-                                        setIsCodeManuallyEdited(true);
-                                    }}
-                                    placeholder="BLU"
-                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono uppercase transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-                        </div>
 
-                        {targetTypeSlug === "color" && (
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700">Цвет (HEX)</label>
-                                <div className="flex items-center gap-3">
-                                    <input type="color" value={newItemColorHex} onChange={e => setNewItemColorHex(e.target.value)} className="w-11 h-11 p-1 rounded-[12px] border border-slate-200 cursor-pointer" />
+                    <div className="flex-1 overflow-y-auto px-6 py-2">
+                        <div className="space-y-3.5">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Название</label>
                                     <input
-                                        value={newItemColorHex}
-                                        onChange={e => setNewItemColorHex(e.target.value)}
-                                        className="w-full h-11 px-4 rounded-[14px] border border-slate-200 font-mono uppercase focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400"
+                                        value={newItemName}
+                                        onChange={e => {
+                                            const val = e.target.value;
+                                            setNewItemName(val);
+                                            if (!isCodeManuallyEdited) {
+                                                setNewItemCode(transliterateToSku(val));
+                                            }
+                                        }}
+                                        placeholder="Синий"
+                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400 text-sm font-bold"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Код (SKU)</label>
+                                    <input
+                                        value={newItemCode}
+                                        onChange={e => {
+                                            setNewItemCode(e.target.value.toUpperCase());
+                                            setIsCodeManuallyEdited(true);
+                                        }}
+                                        placeholder="BLU"
+                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono uppercase transition-all placeholder:text-slate-400 text-sm font-bold"
                                     />
                                 </div>
                             </div>
-                        )}
 
-                        <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-indigo-600/60">Женский род (она)</label>
-                                <input
-                                    value={newItemFemName}
-                                    onChange={e => setNewItemFemName(e.target.value)}
-                                    placeholder="Напр. Белая"
-                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-300"
+                            {targetTypeSlug === "color" && (
+                                <div className="space-y-1.5 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Цвет (HEX)</label>
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative w-10 h-10 shrink-0">
+                                            <input
+                                                type="color"
+                                                value={newItemColorHex}
+                                                onChange={e => setNewItemColorHex(e.target.value)}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                            />
+                                            <div
+                                                className="w-full h-full rounded-xl border border-white shadow-sm ring-1 ring-slate-200"
+                                                style={{ backgroundColor: newItemColorHex }}
+                                            />
+                                        </div>
+                                        <input
+                                            value={newItemColorHex}
+                                            onChange={e => setNewItemColorHex(e.target.value)}
+                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 font-mono uppercase focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400 text-sm font-bold bg-white"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 space-y-3">
+                                <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Склонения (для авто-имени)</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Она (жен.)</label>
+                                        <input
+                                            value={newItemFemName}
+                                            onChange={e => setNewItemFemName(e.target.value)}
+                                            placeholder="Белая"
+                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-300 text-sm font-medium bg-white"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Оно (ср.)</label>
+                                        <input
+                                            value={newItemNeutName}
+                                            onChange={e => setNewItemNeutName(e.target.value)}
+                                            placeholder="Белое"
+                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-300 text-sm font-medium bg-white"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2.5 px-1">
+                                <Switch
+                                    checked={showInName}
+                                    onChange={setShowInName}
+                                    label="В названии"
+                                    description="Добавлять это значение в авто-имя товара"
+                                />
+                                <Switch
+                                    checked={showInSku}
+                                    onChange={setShowInSku}
+                                    label="В SKU"
+                                    description="Использовать код в генераторе артикулов"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-indigo-600/60">Средний род (оно)</label>
-                                <input
-                                    value={newItemNeutName}
-                                    onChange={e => setNewItemNeutName(e.target.value)}
-                                    placeholder="Напр. Белое"
-                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
 
-                        <div className="space-y-4 pt-1">
-                            <Switch
-                                checked={showInName}
-                                onChange={setShowInName}
-                                label="Показывать в названии товара"
-                            />
-                            <Switch
-                                checked={showInSku}
-                                onChange={setShowInSku}
-                                label="Участвует в формировании SKU"
-                            />
+                            {error && <div className="text-rose-500 text-[11px] font-bold bg-rose-50 px-3 py-2 rounded-xl border border-rose-100">{error}</div>}
                         </div>
-
-                        {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
                     </div>
-                    <DialogFooter className="flex justify-between sm:justify-between">
+
+                    <DialogFooter className="p-6 pt-2 shrink-0 flex flex-row items-center justify-between border-t border-slate-100 bg-slate-50/50">
                         {editingAttribute ? (
-                            <button onClick={() => setAttributeToDelete(editingAttribute)} className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1">
+                            <button
+                                onClick={() => setAttributeToDelete(editingAttribute)}
+                                className="h-10 px-3 text-rose-500 hover:bg-rose-50 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-colors"
+                            >
                                 <Trash className="w-4 h-4" /> Удалить
                             </button>
-                        ) : <div></div>}
+                        ) : <div />}
                         <div className="flex gap-2">
-                            <button onClick={() => setIsValueDialogOpen(false)} className="px-4 py-2 text-slate-500 hover:text-slate-900 text-sm font-bold">Отмена</button>
-                            <button onClick={handleValueSave} disabled={isSaving} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-600/10">
+                            <button
+                                onClick={() => setIsValueDialogOpen(false)}
+                                className="h-10 px-4 text-slate-500 hover:text-slate-900 text-xs font-black uppercase tracking-widest"
+                            >
+                                Отмена
+                            </button>
+                            <button
+                                onClick={handleValueSave}
+                                disabled={isSaving}
+                                className="h-10 px-6 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
+                            >
                                 {isSaving && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
                                 Сохранить
                             </button>

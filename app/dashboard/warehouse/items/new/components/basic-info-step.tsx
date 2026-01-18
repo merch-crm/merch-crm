@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
-import { Package, Hash, Ruler, Info, Wrench } from "lucide-react";
+import { useEffect, createElement } from "react";
+import { Package, Hash, Ruler, Info, Wrench, ClipboardList } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
+import { cn } from "@/lib/utils";
+import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "../../../attribute-selector";
 import { Category } from "../../../inventory-client";
 import { InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
+import { getCategoryIcon, getColorStyles } from "../../../category-utils";
 
 
 
@@ -122,17 +125,23 @@ export function BasicInfoStep({
             // Item Name Generation
             const getAttrName = (type: string, code?: string) => {
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
-                // Check visibility
-                if (attr && (attr.meta as { showInName?: boolean })?.showInName === false) return null;
+                if (!attr) return code;
 
-                if (attr) {
-                    const meta = attr.meta as { fem?: string; neut?: string } | null;
-                    if (targetGender === "feminine" && meta?.fem) return meta.fem;
-                    if (targetGender === "neuter" && meta?.neut) return meta.neut;
-                    return attr.name;
+                // Robust meta parsing
+                let meta: any = attr.meta;
+                if (typeof meta === 'string') {
+                    try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+                } else if (!meta) {
+                    meta = {};
                 }
 
-                return code;
+                // Check visibility
+                if (meta?.showInName === false) return null;
+
+                if (targetGender === "feminine" && meta?.fem) return meta.fem;
+                if (targetGender === "neuter" && meta?.neut) return meta.neut;
+
+                return attr.name;
             };
 
             const brandName = getAttrName("brand", formData.brandCode);
@@ -189,26 +198,46 @@ export function BasicInfoStep({
     ]);
 
     return (
-        <div className="flex flex-col min-h-0 h-full overflow-hidden">
-            <div className="flex-1 p-6 lg:p-10 overflow-y-auto">
-                <div className="max-w-5xl mx-auto space-y-8">
+        <div className="flex flex-col h-full min-h-0">
+            <div className="flex-1 p-10 overflow-y-auto min-h-0">
+                <div className="max-w-6xl mx-auto space-y-10">
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Основная информация</h2>
-                            <p className="text-slate-500 text-xs font-medium mt-1">Заполните ключевые характеристики вашей позиции</p>
-                        </div>
-                        <div className="hidden md:flex flex-col items-end">
-                            <div className="text-[9px] font-black text-slate-900 uppercase tracking-widest mb-1 opacity-40">Категория</div>
-                            <div className="px-3 py-1 bg-slate-50 rounded-full text-[10px] font-bold text-slate-600 border border-slate-200/60 uppercase tracking-wider">
-                                {category.name} {formData.subcategoryId && " / " + subCategories.find(s => s.id === formData.subcategoryId)?.name}
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                                <ClipboardList className="w-6 h-6 text-white" />
                             </div>
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Основная информация</h2>
+                                <p className="text-[11px] text-slate-500 font-bold uppercase tracking-widest opacity-60">Заполните ключевые характеристики вашей позиции</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[14px] border border-slate-100/50 shadow-sm">
+                            {(() => {
+                                const sub = subCategories.find(s => s.id === formData.subcategoryId);
+                                const displayCategory = sub || category;
+
+                                return (
+                                    <>
+                                        <div className={cn("w-10 h-10 rounded-[10px] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
+                                            {createElement(getCategoryIcon(displayCategory), { className: "w-5 h-5" })}
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{category.name}</div>
+                                            <div className="text-sm font-black text-slate-900 leading-none">{sub ? sub.name : "Общая"}</div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                         {/* Attributes / Main Info */}
-                        <div className="lg:col-span-8 space-y-8">
+                        <div className="lg:col-span-8 space-y-10">
+
+
                             {isClothing ? (
                                 <div className="space-y-6">
                                     {/* Brand & Quality Group */}
@@ -216,13 +245,25 @@ export function BasicInfoStep({
                                         <AttributeSelector
                                             type="brand"
                                             value={formData.brandCode || ""}
-                                            onChange={(name, code) => updateFormData({ brandCode: code })}
+                                            onChange={(name, code) => {
+                                                const currentAttrs = formData.attributes || {};
+                                                updateFormData({
+                                                    brandCode: code,
+                                                    attributes: { ...currentAttrs, "Бренд": name }
+                                                });
+                                            }}
                                         />
 
                                         <AttributeSelector
                                             type="quality"
                                             value={formData.qualityCode || ""}
-                                            onChange={(name, code) => updateFormData({ qualityCode: code })}
+                                            onChange={(name, code) => {
+                                                const currentAttrs = formData.attributes || {};
+                                                updateFormData({
+                                                    qualityCode: code,
+                                                    attributes: { ...currentAttrs, "Качество": name }
+                                                });
+                                            }}
                                             onCodeChange={(code) => updateFormData({ qualityCode: code })}
                                         />
                                     </div>
@@ -231,14 +272,26 @@ export function BasicInfoStep({
                                     <AttributeSelector
                                         type="material"
                                         value={formData.materialCode || ""}
-                                        onChange={(name, code) => updateFormData({ materialCode: code })}
+                                        onChange={(name, code) => {
+                                            const currentAttrs = formData.attributes || {};
+                                            updateFormData({
+                                                materialCode: code,
+                                                attributes: { ...currentAttrs, "Материал": name }
+                                            });
+                                        }}
                                         allowCustom={true}
                                     />
 
                                     <AttributeSelector
                                         type="size"
                                         value={formData.sizeCode || ""}
-                                        onChange={(name, code) => updateFormData({ sizeCode: code })}
+                                        onChange={(name, code) => {
+                                            const currentAttrs = formData.attributes || {};
+                                            updateFormData({
+                                                sizeCode: code,
+                                                attributes: { ...currentAttrs, "Размер": name }
+                                            });
+                                        }}
                                         onCodeChange={(code) => updateFormData({ sizeCode: code })}
                                         allowCustom={true}
                                     />
@@ -248,7 +301,13 @@ export function BasicInfoStep({
                                     <AttributeSelector
                                         type="color"
                                         value={formData.attributeCode || ""}
-                                        onChange={(name, code) => updateFormData({ attributeCode: code })}
+                                        onChange={(name, code) => {
+                                            const currentAttrs = formData.attributes || {};
+                                            updateFormData({
+                                                attributeCode: code,
+                                                attributes: { ...currentAttrs, "Цвет": name }
+                                            });
+                                        }}
                                         onCodeChange={(code) => updateFormData({ attributeCode: code })}
                                         allowCustom={true}
                                     />
@@ -276,8 +335,8 @@ export function BasicInfoStep({
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-8">
-                                    <div className="space-y-4">
+                                <div className="space-y-10">
+                                    <div className="space-y-6">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
                                             <Package className="w-3.5 h-3.5" />
                                             Название позиции
@@ -392,7 +451,7 @@ export function BasicInfoStep({
                         </div>
 
                         {/* Right Sidebar - SKU Preview & Description */}
-                        <div className="lg:col-span-4 space-y-8">
+                        <div className="lg:col-span-4 space-y-10">
                             {isClothing && (
                                 <div className="p-6 bg-white rounded-[20px] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
                                     <div className="flex items-center justify-between">
@@ -437,32 +496,11 @@ export function BasicInfoStep({
                     </div>
                 </div>
             </div>
-
-            {/* Sticky Actions Footer */}
-            <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4 z-30">
-                <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <button
-                        onClick={onBack}
-                        className="px-6 h-11 rounded-[14px] text-slate-400 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
-                    >
-                        Назад
-                    </button>
-                    <div className="flex items-center gap-6">
-                        {validationError && (
-                            <div className="hidden sm:flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100 animate-in fade-in slide-in-from-right-4">
-                                <span className="w-1 h-1 rounded-full bg-rose-500 animate-pulse" />
-                                <span className="text-[9px] font-black uppercase tracking-widest leading-none">{validationError}</span>
-                            </div>
-                        )}
-                        <button
-                            onClick={onNext}
-                            className="px-8 h-11 bg-slate-900 text-white rounded-[16px] font-black text-[10px] uppercase tracking-widest hover:bg-black shadow-lg shadow-slate-200/50 transition-all active:scale-95 flex items-center gap-2"
-                        >
-                            Далее
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <StepFooter
+                onBack={onBack}
+                onNext={onNext}
+                validationError={validationError}
+            />
         </div>
     );
 }

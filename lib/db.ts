@@ -8,7 +8,14 @@ const pool = new Pool({
     connectionString: connectionString,
     // Standard SSL config. Reg.ru typically uses valid certificates.
     // If they use self-signed, user can add sslmode=no-verify to the connection string.
-    ssl: (connectionString && (connectionString.includes('localhost') || connectionString.includes('127.0.0.1') || connectionString.includes('@db') || connectionString.includes('sslmode=disable'))) ? false : { rejectUnauthorized: false },
+    ssl: (
+        connectionString && (
+            connectionString.includes('localhost') ||
+            connectionString.includes('127.0.0.1') ||
+            connectionString.includes('@db') ||
+            connectionString.includes('sslmode=disable')
+        )
+    ) || process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,

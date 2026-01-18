@@ -9,7 +9,7 @@ import { Plus, X, MapPin, User, Building, Package, AlignLeft, ChevronLeft, Chevr
 import { Button } from "@/components/ui/button";
 import { updateStorageLocation, moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
-import { ItemDetailDrawer } from "./item-detail-drawer";
+
 import { ArrowRightLeft } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -263,12 +263,7 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                 </div>
             </div>
 
-            {selectedItem && (
-                <ItemDetailDrawer
-                    item={selectedItem}
-                    onClose={() => setSelectedItem(null)}
-                />
-            )}
+
 
             {transferItem && location && (
                 <QuickTransferModal

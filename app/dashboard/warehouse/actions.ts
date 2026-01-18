@@ -33,15 +33,13 @@ function sanitizeFileName(name: string): string {
 
 // Helper: Build category hierarchy path
 async function getCategoryPath(categoryId: string | null): Promise<string> {
-    if (!categoryId) return "Uncategorized";
+    if (!categoryId || categoryId === "") return "Uncategorized";
 
-    // Use raw SQL or iterative query to get path. 
-    // Since we need to traverse up, simple iteration is safest without recursive CTE.
     const paths: string[] = [];
     let currentId: string | null = categoryId;
     let depth = 0;
 
-    while (currentId && depth < 10) {
+    while (currentId && currentId !== "" && depth < 10) {
         depth++;
         const category: { id: string; name: string; parentId: string | null } | undefined = await db.query.inventoryCategories.findFirst({
             where: eq(inventoryCategories.id, currentId),
@@ -355,24 +353,45 @@ export async function addInventoryItem(formData: FormData) {
     const unit = formData.get("unit") as string;
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
     const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
-    const categoryId = formData.get("categoryId") as string;
+    const categoryIdRaw = formData.get("categoryId") as string;
+    const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
     const description = formData.get("description") as string;
     const locationName = formData.get("location") as string;
 
-    const storageLocationId = formData.get("storageLocationId") as string;
+    const storageLocationIdRaw = formData.get("storageLocationId") as string;
+    const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
 
-    const qualityCode = formData.get("qualityCode") as string;
-    const materialCode = formData.get("materialCode") as string;
-    const attributeCode = formData.get("attributeCode") as string;
-    const sizeCode = formData.get("sizeCode") as string;
+    const qualityCodeRaw = formData.get("qualityCode") as string;
+    const qualityCode = qualityCodeRaw || null;
+
+    const materialCodeRaw = formData.get("materialCode") as string;
+    const materialCode = materialCodeRaw || null;
+
+    const attributeCodeRaw = formData.get("attributeCode") as string;
+    const attributeCode = attributeCodeRaw || null;
+
+    const sizeCodeRaw = formData.get("sizeCode") as string;
+    const sizeCode = sizeCodeRaw || null;
+
+    const brandCodeRaw = formData.get("brandCode") as string;
+    const brandCode = brandCodeRaw || null;
     const imageFile = formData.get("image") as File;
     const attributesStr = formData.get("attributes") as string;
+    const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
     let attributes: Record<string, unknown> = {};
+    let thumbnailSettings = null;
     if (attributesStr) {
         try {
             attributes = JSON.parse(attributesStr);
         } catch (e) {
             console.error("Failed to parse attributes JSON", e);
+        }
+    }
+    if (thumbnailSettingsStr) {
+        try {
+            thumbnailSettings = JSON.parse(thumbnailSettingsStr);
+        } catch (e) {
+            console.error("Failed to parse thumbnailSettings JSON", e);
         }
     }
 
@@ -390,24 +409,29 @@ export async function addInventoryItem(formData: FormData) {
     }
 
     try {
+        console.log("Starting transaction for new item:", { name, finalSku: sku });
         const newItem = await db.transaction(async (tx) => {
             // Auto-generate SKU if components are provided
             let finalSku = sku;
-            if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode)) {
+            if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode || brandCode)) {
+                console.log("Generating SKU from codes:", { qualityCode, materialCode, attributeCode, sizeCode, brandCode });
                 const [cat] = await tx.select().from(inventoryCategories).where(eq(inventoryCategories.id, categoryId)).limit(1);
                 if (cat?.prefix) {
-                    finalSku = [cat.prefix, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                    finalSku = [cat.prefix, brandCode, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                    console.log("Generated SKU:", finalSku);
                 }
             }
 
             // Prepare folder path: CategoryPath / ItemName
             const categoryPath = await getCategoryPath(categoryId);
-            const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
+            const itemFolderPath = path.join(categoryPath, sanitizeFileName(name || "unnamed"));
+            console.log("Item folder path:", itemFolderPath);
 
             const imageBackFile = formData.get("imageBack") as File;
             const imageSideFile = formData.get("imageSide") as File;
             const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
+            console.log("Saving files...");
             const imageUrl = await saveFile(imageFile, itemFolderPath);
             const imageBackUrl = await saveFile(imageBackFile, itemFolderPath);
             const imageSideUrl = await saveFile(imageSideFile, itemFolderPath);
@@ -417,8 +441,10 @@ export async function addInventoryItem(formData: FormData) {
                 const url = await saveFile(file, itemFolderPath);
                 if (url) imageDetailsUrls.push(url);
             }
+            console.log("Files saved, URLs:", { imageUrl, imageDetailsCount: imageDetailsUrls.length });
 
-            const [newItem] = await tx.insert(inventoryItems).values({
+            console.log("Inserting item into database...");
+            const [insertedItem] = await tx.insert(inventoryItems).values({
                 name,
                 sku: finalSku || null,
                 quantity,
@@ -433,28 +459,33 @@ export async function addInventoryItem(formData: FormData) {
                 categoryId: categoryId || null,
                 qualityCode: qualityCode || null,
                 materialCode: materialCode || null,
+                brandCode: brandCode || null,
                 attributeCode: attributeCode || null,
                 sizeCode: sizeCode || null,
                 attributes: attributes,
+                thumbnailSettings: thumbnailSettings || attributes.thumbnailSettings || null,
                 image: imageUrl,
                 imageBack: imageBackUrl,
                 imageSide: imageSideUrl,
                 imageDetails: imageDetailsUrls,
                 reservedQuantity: 0
             }).returning();
+            console.log("Item inserted, ID:", insertedItem.id);
 
             // Create stock record if location is selected
             if (storageLocationId) {
+                console.log("Creating stock record in storageLocationId:", storageLocationId);
                 await tx.insert(inventoryStocks).values({
-                    itemId: newItem.id,
+                    itemId: insertedItem.id,
                     storageLocationId,
                     quantity
                 });
             }
 
             // Log transaction
+            console.log("Logging transaction...");
             await tx.insert(inventoryTransactions).values({
-                itemId: newItem.id,
+                itemId: insertedItem.id,
                 changeAmount: quantity,
                 type: "in",
                 reason: "Initial stock",
@@ -462,13 +493,15 @@ export async function addInventoryItem(formData: FormData) {
                 createdBy: session?.id,
             });
 
-            await logAction("Поставка", "inventory_item", newItem.id, {
+            console.log("Audit log...");
+            await logAction("Поставка", "inventory_item", insertedItem.id, {
                 name,
                 quantity,
                 sku: finalSku,
                 storageLocationId
             });
-            return newItem;
+
+            return insertedItem;
         });
 
         revalidatePath("/dashboard/warehouse");
@@ -480,13 +513,14 @@ export async function addInventoryItem(formData: FormData) {
         // Let's modify the transaction to return the newItem.
         return { success: true, id: newItem.id };
     } catch (error) {
+        console.error("ADD ITEM ERROR:", error);
         await logError({
             error,
             path: "/dashboard/warehouse",
             method: "addInventoryItem",
             details: { name, sku, quantity, storageLocationId, categoryId }
         });
-        return { error: "Failed to add item" };
+        return { error: error instanceof Error ? error.message : "Failed to add item" };
     }
 }
 
@@ -556,18 +590,32 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const quantity = parseInt(formData.get("quantity") as string);
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
     const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
-    const categoryId = formData.get("categoryId") as string;
+    const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
+
+    const categoryIdRaw = formData.get("categoryId") as string;
+    const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
+
+    const storageLocationIdRaw = formData.get("storageLocationId") as string;
+    const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
+
+    const qualityCodeRaw = formData.get("qualityCode") as string;
+    const qualityCode = qualityCodeRaw || null;
+
+    const materialCodeRaw = formData.get("materialCode") as string;
+    const materialCode = materialCodeRaw || null;
+
+    const attributeCodeRaw = formData.get("attributeCode") as string;
+    const attributeCode = attributeCodeRaw || null;
+
+    const sizeCodeRaw = formData.get("sizeCode") as string;
+    const sizeCode = sizeCodeRaw || null;
+
+    const brandCodeRaw = formData.get("brandCode") as string;
+    const brandCode = brandCodeRaw || null;
+
     const description = formData.get("description") as string;
     const locationName = formData.get("location") as string;
-    const storageLocationId = formData.get("storageLocationId") as string;
 
-
-    const qualityCode = formData.get("qualityCode") as string;
-    const materialCode = formData.get("materialCode") as string;
-    const attributeCode = formData.get("attributeCode") as string;
-    const sizeCode = formData.get("sizeCode") as string;
-    const imageFile = formData.get("image") as File;
-    const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
     const attributesStr = formData.get("attributes") as string;
     let attributes: Record<string, unknown> = {};
     if (attributesStr) {
@@ -575,6 +623,16 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             attributes = JSON.parse(attributesStr);
         } catch (e) {
             console.error("Failed to parse attributes JSON", e);
+        }
+    }
+
+    const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
+    let thumbnailSettings = null;
+    if (thumbnailSettingsStr) {
+        try {
+            thumbnailSettings = JSON.parse(thumbnailSettingsStr);
+        } catch (e) {
+            console.error("Failed to parse thumbnailSettings JSON", e);
         }
     }
 
@@ -588,35 +646,35 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     }
 
     try {
+        console.log("UPDATING ITEM ID:", id);
+
+        const imageFile = formData.get("image") as File;
+
         // Auto-generate SKU if components are provided
         let finalSku = sku;
-        if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode)) {
+        if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode || brandCode)) {
             const [cat] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.id, categoryId)).limit(1);
             if (cat?.prefix) {
-                finalSku = [cat.prefix, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                finalSku = [cat.prefix, brandCode, qualityCode, materialCode, attributeCode, sizeCode].filter(Boolean).join("-").toUpperCase();
+                console.log("REGENERATED SKU:", finalSku);
             }
         }
 
-        // Prepare folder path: CategoryPath / ItemName
         const categoryPath = await getCategoryPath(categoryId);
-        const itemFolderPath = path.join(categoryPath, sanitizeFileName(name));
+        const itemFolderPath = path.join(categoryPath, sanitizeFileName(name || "unnamed"));
 
         const imageBackFile = formData.get("imageBack") as File;
         const imageSideFile = formData.get("imageSide") as File;
         const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
-        // Handle Image Back
         let imageBackUrl = formData.get("currentImageBack") as string || null;
         const newImageBackUrl = await saveFile(imageBackFile, itemFolderPath);
         if (newImageBackUrl) imageBackUrl = newImageBackUrl;
 
-        // Handle Image Side
         let imageSideUrl = formData.get("currentImageSide") as string || null;
         const newImageSideUrl = await saveFile(imageSideFile, itemFolderPath);
         if (newImageSideUrl) imageSideUrl = newImageSideUrl;
 
-        // Handle Image Details
-        // ... (existing comments) ...
         let imageDetailsUrls: string[] = [];
         const currentImageDetailsStr = formData.get("currentImageDetails") as string;
         if (currentImageDetailsStr) {
@@ -625,7 +683,6 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             } catch { }
         }
 
-        // ... (existing comments) ...
         for (const file of imageDetailsFiles) {
             const url = await saveFile(file, itemFolderPath);
             if (url) imageDetailsUrls.push(url);
@@ -635,7 +692,8 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const newImageUrl = await saveFile(imageFile, itemFolderPath);
         if (newImageUrl) imageUrl = newImageUrl;
 
-        await db.update(inventoryItems).set({
+        console.log("EXECUTING DB UPDATE...");
+        const result = await db.update(inventoryItems).set({
             name,
             sku: finalSku || null,
             unit,
@@ -643,16 +701,17 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             quantity,
             lowStockThreshold,
             criticalStockThreshold,
-            categoryId: categoryId || null,
+            categoryId,
             description,
             location: locationName,
-            storageLocationId: storageLocationId || null,
-
-            qualityCode: qualityCode || null,
-            materialCode: materialCode || null,
-            attributeCode: attributeCode || null,
-            sizeCode: sizeCode || null,
-            attributes: attributes,
+            storageLocationId,
+            qualityCode,
+            materialCode,
+            brandCode,
+            attributeCode,
+            sizeCode,
+            attributes: attributes || {},
+            thumbnailSettings: thumbnailSettings,
             image: imageUrl,
             imageBack: imageBackUrl,
             imageSide: imageSideUrl,
@@ -660,10 +719,12 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             reservedQuantity
         }).where(eq(inventoryItems.id, id));
 
+        console.log("UPDATE SUCCESSFUL. Lines affected:", result.rowCount);
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
     } catch (error) {
+        console.error("UPDATE ITEM ERROR:", error);
         await logError({
             error,
             path: `/dashboard/warehouse/item/${id}`,
@@ -671,6 +732,40 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             details: { id, name, sku, quantity }
         });
         return { error: `Ошибка при обновлении: ${error instanceof Error ? error.message : "Неизвестная ошибка"}` };
+    }
+}
+
+export async function deleteInventoryItemImage(itemId: string, type: "front" | "back" | "side" | "details", index?: number) {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { error: "Недостаточно прав для удаления изображений" };
+    }
+
+    try {
+        const item = await db.query.inventoryItems.findFirst({
+            where: eq(inventoryItems.id, itemId)
+        });
+
+        if (!item) return { error: "Товар не найден" };
+
+        let updateData: any = {};
+        if (type === "front") updateData.image = null;
+        else if (type === "back") updateData.imageBack = null;
+        else if (type === "side") updateData.imageSide = null;
+        else if (type === "details" && typeof index === "number") {
+            const currentDetails = [...(item.imageDetails as string[] || [])];
+            currentDetails.splice(index, 1);
+            updateData.imageDetails = currentDetails;
+        }
+
+        await db.update(inventoryItems).set(updateData).where(eq(inventoryItems.id, itemId));
+
+        revalidatePath("/dashboard/warehouse");
+        revalidatePath(`/dashboard/warehouse/items/${itemId}`);
+        return { success: true };
+    } catch (error) {
+        console.error("DEBUG: deleteInventoryItemImage error", error);
+        return { error: "Ошибка при удалении изображения" };
     }
 }
 
@@ -1000,15 +1095,16 @@ export async function createInventoryAttribute(type: string, name: string, value
         console.log("Type:", type);
         console.log("Name:", name);
         console.log("Value:", value);
-        console.log("Meta:", JSON.stringify(meta, null, 2));
-        console.log("Meta keys:", meta ? Object.keys(meta) : 'null');
+        console.log("Meta (received):", JSON.stringify(meta, null, 2));
+        console.log("Has fem:", meta && typeof meta === 'object' && 'fem' in meta);
+        console.log("Has neut:", meta && typeof meta === 'object' && 'neut' in meta);
         console.log("==============================");
 
         const [newAttr] = await db.insert(inventoryAttributes).values({
             type,
             name,
             value,
-            meta
+            meta: meta || null
         }).returning();
 
         revalidatePath("/dashboard/warehouse");
@@ -1040,15 +1136,16 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
         console.log("=== UPDATE ATTRIBUTE DEBUG ===");
         console.log("Attribute ID:", id);
         console.log("Old meta:", JSON.stringify(oldAttr.meta, null, 2));
-        console.log("New meta:", JSON.stringify(meta, null, 2));
-        console.log("Meta keys:", meta ? Object.keys(meta) : 'null');
+        console.log("New meta (received):", JSON.stringify(meta, null, 2));
+        console.log("Has fem:", meta && typeof meta === 'object' && 'fem' in meta);
+        console.log("Has neut:", meta && typeof meta === 'object' && 'neut' in meta);
         console.log("==============================");
 
         // 2. Update the attribute
         await db.update(inventoryAttributes).set({
             name,
             value,
-            meta
+            meta: meta || null // Ensure we pass null if meta is undefined
         }).where(eq(inventoryAttributes.id, id));
 
         // 3. If the code (value) OR visibility settings changed, update all items using this attribute
@@ -2165,36 +2262,3 @@ export async function updateInventoryAttributeType(id: string, name: string, cat
     }
 }
 
-export async function seedSystemAttributeTypes() {
-    // Find Clothing category ID
-    const [clothingCategory] = await db.select().from(inventoryCategories).where(eq(inventoryCategories.name, "Одежда")).limit(1);
-
-    const defaults = [
-        { slug: "brand", name: "Бренды", isSystem: true, sortOrder: 1, categoryId: clothingCategory?.id },
-        { slug: "color", name: "Цвета", isSystem: true, sortOrder: 2, categoryId: clothingCategory?.id },
-        { slug: "size", name: "Размеры", isSystem: true, sortOrder: 3, categoryId: clothingCategory?.id },
-        { slug: "material", name: "Материалы", isSystem: true, sortOrder: 4, categoryId: clothingCategory?.id },
-        { slug: "quality", name: "Качество", isSystem: true, sortOrder: 5, categoryId: clothingCategory?.id },
-    ];
-
-    try {
-        for (const def of defaults) {
-            const [existing] = await db.select().from(inventoryAttributeTypes)
-                .where(eq(inventoryAttributeTypes.slug, def.slug))
-                .limit(1);
-
-            if (!existing) {
-                await db.insert(inventoryAttributeTypes).values(def);
-            } else if (!existing.categoryId && def.categoryId) {
-                // Link existing system type to category if missing
-                await db.update(inventoryAttributeTypes)
-                    .set({ categoryId: def.categoryId })
-                    .where(eq(inventoryAttributeTypes.id, existing.id));
-            }
-        }
-        return { success: true };
-    } catch (e) {
-        console.error("Seed Types Error", e);
-        return { error: "Failed to seed types" };
-    }
-}

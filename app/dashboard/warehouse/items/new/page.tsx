@@ -16,12 +16,13 @@ export default async function NewItemPage({
     const { categoryId, subcategoryId } = await searchParams;
 
     // Загружаем все необходимые данные параллельно
-    const [categoriesRes, locationsRes, unitsRes, attributesRes, typesRes] = await Promise.all([
+    const [categoriesRes, locationsRes, unitsRes, attributesRes, typesRes, usersRes] = await Promise.all([
         getInventoryCategories(),
         getStorageLocations(),
         getMeasurementUnits(),
         getInventoryAttributes(),
-        getInventoryAttributeTypes()
+        getInventoryAttributeTypes(),
+        import("../../actions").then(m => m.getAllUsers())
     ]);
 
     const categories = categoriesRes.data || [];
@@ -29,6 +30,7 @@ export default async function NewItemPage({
     const measurementUnits = unitsRes.data || [];
     const dynamicAttributes = attributesRes.data || [];
     const attributeTypes = typesRes.data || [];
+    const users = usersRes.data || [];
 
     return (
         <NewItemPageClient
@@ -37,6 +39,7 @@ export default async function NewItemPage({
             measurementUnits={measurementUnits}
             dynamicAttributes={dynamicAttributes}
             attributeTypes={attributeTypes}
+            users={users}
             initialCategoryId={categoryId}
             initialSubcategoryId={subcategoryId}
         />

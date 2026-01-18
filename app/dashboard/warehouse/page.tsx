@@ -15,7 +15,7 @@ export default async function WarehousePage() {
     const { data: storageLocations = [] } = await getStorageLocations();
     const { data: users = [] } = await getAllUsers();
     const { data: attributes = [] } = await getInventoryAttributes();
-    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories, seedSystemAttributes, seedSystemAttributeTypes, getInventoryAttributeTypes } = await import("./actions");
+    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories, seedSystemAttributes, getInventoryAttributeTypes } = await import("./actions");
     let { data: measurementUnits = [] } = await getMeasurementUnits();
 
     if (measurementUnits.length === 0) {
@@ -24,13 +24,8 @@ export default async function WarehousePage() {
         measurementUnits = res.data || [];
     }
 
-    // Auto-seed system types if empty
+    // Get attribute types (no auto-seeding as function doesn't exist)
     let { data: attributeTypes = [] } = await getInventoryAttributeTypes();
-    if (attributeTypes.length === 0) {
-        await seedSystemAttributeTypes();
-        const res = await getInventoryAttributeTypes();
-        attributeTypes = res.data || [];
-    }
 
     // Auto-seed system categories if empty or orphans detected or missing linguistic data
     const hasOrphanedSubs = categoriesFromDb.some(c => ["Футболки", "Кепки"].includes(c.name) && !c.parentId);

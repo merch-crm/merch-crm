@@ -197,6 +197,7 @@ export const inventoryItems = pgTable("inventory_items", {
     imageBack: text("image_back"),
     imageSide: text("image_side"),
     imageDetails: jsonb("image_details").default("[]"), // Детали (массив строк)
+    thumbnailSettings: jsonb("thumbnail_settings"),
     reservedQuantity: integer("reserved_quantity").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });

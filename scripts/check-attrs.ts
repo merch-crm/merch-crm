@@ -1,17 +1,16 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 import { db } from '../lib/db';
 import { inventoryAttributes } from '../lib/schema';
 import { eq } from 'drizzle-orm';
 
-async function check() {
-    try {
-        const attrs = await db.select().from(inventoryAttributes);
-        attrs.forEach(a => {
-            console.log(`Attr: ${a.name}, Meta Type: ${typeof a.meta}, Meta: ${JSON.stringify(a.meta)}`);
-        });
-    } catch (e) {
-        console.error(e);
-    }
-    process.exit(0);
+async function main() {
+    const attrs = await db.select().from(inventoryAttributes);
+    console.log("Found attributes:", attrs.length);
+
+    attrs.forEach(a => {
+        console.log(`- ${a.name} (${a.value}): Meta = ${JSON.stringify(a.meta)}`);
+    });
 }
 
-check();
+main().catch(console.error);

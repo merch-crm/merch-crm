@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
-import { CLOTHING_COLORS, CLOTHING_QUALITIES } from "./category-utils";
+import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
 
 interface AttributeSelectorProps {
     type: string;
@@ -26,6 +26,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");
     const [searchQuery, setSearchQuery] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     const [dbAttributes, setDbAttributes] = useState<DbAttribute[]>([]);
@@ -48,11 +49,34 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         : type === "quality" ? CLOTHING_QUALITIES
             : [];
 
-    // For non-color types, use database as the primary source
+    const sizeOrder = ["kids", "s", "s-m", "m", "l", "xl"]; // Updated size order
+    const sortSizes = (options: { name: string; code: string }[]) => {
+        return [...options].sort((a, b) => {
+            const indexA = sizeOrder.indexOf(a.name.toLowerCase());
+            const indexB = sizeOrder.indexOf(b.name.toLowerCase());
+            if (indexA === -1 && indexB === -1) return a.name.localeCompare(b.name);
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+    };
+
     let allOptions: { name: string; code: string; hex?: string }[] = [];
 
-    if (!["quality", "color"].includes(type)) {
-        // Use only database attributes for these types (brand, material, size, custom...)
+    if (type === "size") {
+        // Merge static sizes with DB ones and sort
+        allOptions = [...CLOTHING_SIZES];
+        dbAttributes.forEach(dbAttr => {
+            if (!allOptions.some(opt => opt.name.toLowerCase() === dbAttr.name.toLowerCase())) {
+                allOptions.push({
+                    name: dbAttr.name,
+                    code: dbAttr.value
+                });
+            }
+        });
+        allOptions = sortSizes(allOptions);
+    } else if (!["quality", "color"].includes(type)) {
+        // Use only database attributes for these types (brand, material, custom...)
         allOptions = dbAttributes.map(dbAttr => ({
             name: dbAttr.name,
             code: dbAttr.value
@@ -393,20 +417,25 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 type="text"
                                 placeholder={`Поиск...`}
                                 value={searchQuery}
+                                onFocus={() => setIsFocused(true)}
+                                // Delay blur to allow click event on options to fire
+                                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full h-12 px-5 rounded-[14px] border border-slate-100 bg-slate-50 text-[11px] font-bold placeholder:text-slate-300 focus:bg-white focus:border-slate-200 focus:ring-4 focus:ring-slate-900/5 outline-none transition-all uppercase tracking-wider"
                             />
-                            {searchQuery.length > 0 && (
+                            {(isFocused || searchQuery.length > 0) && (
                                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[14px] border border-slate-200 shadow-2xl z-[100] max-h-[220px] overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
                                     {filteredOptions.length > 0 ? (
                                         filteredOptions.map(b => (
                                             <button
                                                 key={b.name}
                                                 type="button"
+                                                onMouseDown={(e) => e.preventDefault()} // Prevent blur on click
                                                 onClick={() => {
                                                     onChange(b.name, b.code);
                                                     if (onCodeChange) onCodeChange(b.code);
                                                     setSearchQuery("");
+                                                    setIsFocused(false);
                                                 }}
                                                 className="w-full px-5 py-3 text-left hover:bg-slate-50 border-b border-slate-50 last:border-none transition-colors"
                                             >

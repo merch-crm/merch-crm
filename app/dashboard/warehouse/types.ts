@@ -69,3 +69,67 @@ export interface StorageLocation {
     isSystem?: boolean;
     createdAt?: Date;
 }
+
+export interface ItemHistoryTransaction {
+    id: string;
+    type: "in" | "out" | "transfer" | "attribute_change";
+    changeAmount: number;
+    reason: string | null;
+    createdAt: Date;
+    creator: { name: string } | null;
+    storageLocation: { name: string } | null;
+}
+
+export interface ItemStock {
+    id: string;
+    quantity: number;
+    updatedAt: Date;
+    storageLocationId: string;
+    storageLocation: { name: string } | null;
+}
+
+export interface InventoryItem {
+    id: string;
+    name: string;
+    sku: string | null;
+    quantity: number;
+    unit: string;
+    lowStockThreshold: number;
+    criticalStockThreshold: number;
+    description: string | null;
+    location: string | null;
+    storageLocationId: string | null;
+    image: string | null;
+    imageBack: string | null;
+    imageSide: string | null;
+    imageDetails: string[];
+    reservedQuantity: number;
+    itemType: "clothing" | "packaging" | "consumables";
+    categoryId: string | null;
+    qualityCode: string | null;
+    attributeCode: string | null;
+    sizeCode: string | null;
+    brandCode: string | null;
+    materialCode: string | null;
+    attributes: Record<string, unknown>;
+    thumbnailSettings?: ThumbnailSettings | null;
+    category?: {
+        id: string;
+        name: string;
+        prefix?: string | null;
+        color?: string | null;
+        icon?: string | null;
+        parent?: {
+            id: string;
+            name: string;
+            color?: string | null;
+            icon?: string | null;
+        } | null;
+    } | null;
+}
+
+export interface ThumbnailSettings {
+    zoom: number;
+    x: number;
+    y: number;
+}
