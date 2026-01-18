@@ -73,9 +73,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     };
 
     // Fetch storage locations
-    const { getStorageLocations, getMeasurementUnits } = await import("../actions");
+    const { getStorageLocations } = await import("../actions");
     const { data: locations = [] } = await getStorageLocations();
-    const { data: units = [] } = await getMeasurementUnits();
 
 
     const { getSession } = await import("@/lib/auth");
@@ -89,9 +88,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
                 subCategories={subCategories as unknown as Category[]}
                 items={items as unknown as InventoryItem[]}
                 storageLocations={locations as unknown as StorageLocation[]}
-                measurementUnits={units as { id: string, name: string }[]}
                 user={session}
             />
         </div>
     );
 }
+
