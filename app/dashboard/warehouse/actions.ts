@@ -1201,13 +1201,22 @@ export async function regenerateAllItemSKUs() {
                 newSku = skuParts.join("-").toUpperCase();
             }
 
+            const targetGender = cat.gender || "masculine";
+
             // 2. Generate Name
             const getAttrName = (type: string, code: string | null) => {
                 if (!code) return null;
                 const attr = allAttributes.find(a => a.type === type && a.value === code);
                 // Check visibility
                 if (attr && (attr.meta as { showInName?: boolean })?.showInName === false) return null;
-                return attr?.name || code;
+
+                if (attr) {
+                    const meta = attr.meta as { fem?: string; neut?: string } | null;
+                    if (targetGender === "feminine" && meta?.fem) return meta.fem;
+                    if (targetGender === "neuter" && meta?.neut) return meta.neut;
+                    return attr.name;
+                }
+                return code;
             };
 
             const brandName = getAttrName("brand", item.brandCode);

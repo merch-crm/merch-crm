@@ -139,10 +139,12 @@ export function BasicInfoStep({
             const colorName = getAttrName("color", formData.attributeCode);
             const sizeName = getAttrName("size", formData.sizeCode);
             const qualityName = getAttrName("quality", formData.qualityCode);
+            const materialName = getAttrName("material", formData.materialCode);
 
             const nameParts = [
                 baseName,
                 brandName,
+                materialName,
                 qualityName,
                 colorName,
                 sizeName

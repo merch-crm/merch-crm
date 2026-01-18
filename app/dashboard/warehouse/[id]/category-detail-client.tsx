@@ -73,6 +73,8 @@ export interface Category {
     parentId?: string | null;
     color: string | null;
     icon: string | null;
+    gender?: 'masculine' | 'feminine' | 'neuter' | string;
+    singularName?: string | null;
 }
 
 interface CategoryDetailClientProps {
@@ -1805,15 +1807,38 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
         const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))];
         const currentSizes = [...CLOTHING_SIZES, ...dynamicAttributes.filter(a => a.type === 'size').map(a => ({ name: a.name, code: a.value }))];
 
-        // Find subcategory name from either selectedSubcategoryId or parent's subCategories
-        const subCatName = subCategories?.find(c => c.id === selectedSubcategoryId)?.name || "";
-        const qualName = currentQualities.find(q => q.code === qualityCode)?.name || "";
-        const matName = currentMaterials.find(m => m.code === materialCode)?.name || "";
-        const brandName = currentBrands.find(b => b.code === brandCode)?.name || "";
-        const colName = currentColors.find(c => c.code === attributeCode)?.name || "";
-        const szName = currentSizes.find(s => s.code === sizeCode)?.name || "";
+        // Determine target gender from active category
+        const activeCat = subCategories?.find(c => c.id === selectedSubcategoryId) || category;
+        const targetGender = activeCat?.gender || "masculine";
+        const baseName = activeCat?.singularName || activeCat?.name || "";
 
-        const parts = [brandName, subCatName, matName, qualName, colName, szName].filter(Boolean);
+        // Helper to get attribute name with gender consideration
+        const getAttrValue = (typeSlug: string, code: string | null) => {
+            if (!code) return null;
+
+            // For system types, we might have predefined lists, but we also check dynamicAttributes
+            const attr = dynamicAttributes.find(a => a.type === typeSlug && a.value === code);
+
+            if (attr) {
+                // Check visibility
+                if ((attr.meta as { showInName?: boolean })?.showInName === false) return null;
+
+                const meta = attr.meta as { fem?: string; neut?: string } | null;
+                if (targetGender === "feminine" && meta?.fem) return meta.fem;
+                if (targetGender === "neuter" && meta?.neut) return meta.neut;
+                return attr.name;
+            }
+
+            return code;
+        };
+
+        const qualName = getAttrValue("quality", qualityCode);
+        const brandName = getAttrValue("brand", brandCode);
+        const colName = getAttrValue("color", attributeCode);
+        const szName = getAttrValue("size", sizeCode);
+        const matName = getAttrValue("material", materialCode);
+
+        const parts = [brandName, baseName, matName, qualName, colName, szName].filter(Boolean);
         if (parts.length > 0) {
             const nextName = parts.join(" ");
             if (nextName !== itemName) {

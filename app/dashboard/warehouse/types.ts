@@ -55,6 +55,8 @@ export interface Category {
     parentId?: string | null;
     color: string | null;
     icon: string | null;
+    gender?: 'masculine' | 'feminine' | 'neuter' | string;
+    singularName?: string | null;
 }
 
 export interface StorageLocation {

@@ -18,3 +18,7 @@
   - Update the URL using `router.replace('?tab=...', { scroll: false })` when the user switches tabs.
   - Initialize `useState` from the URL parameters on component mount or using a lazy initializer.
 - **Purpose**: This ensures that when the user refreshes the page or shares a link, they remain on the exact same view/tab they were previously on.
+
+## UI Integrity during Refactoring
+- **Rule**: Technical refactoring or bug fixing must NEVER alter the established UI design.
+- **Constraint**: If a component's code is rewritten to resolve linting or type errors, every CSS class, Tailwind utility, and layout structure must be preserved or meticulously reconstructed to match the original "Premium" aesthetic.
