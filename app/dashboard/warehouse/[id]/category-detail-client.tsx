@@ -989,44 +989,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
 
     const [addingAttr, setAddingAttr] = useState<{ type: string, name: string, hex: string } | null>(null);
 
-    const handleAddDynamicAttribute = async () => {
-        if (!addingAttr || !addingAttr.name) return;
 
-        const { type, name, hex } = addingAttr;
-        let meta = {};
-        if (type === 'color') {
-            meta = { hex: hex || "#CCCCCC" };
-        }
-
-        const code = name.replace(/\s+/g, '').substring(0, 5).toUpperCase();
-        const res = await createInventoryAttribute(type, name, code, meta);
-        if (res.success) {
-            toast("Характеристика добавлена", "success");
-            onRefreshAttributes();
-            setAddingAttr(null);
-        } else {
-            toast(res.error || "Не удалось добавить характеристику", "error");
-        }
-    };
-
-    const handleAttributeChange = (key: string, value: string) => {
-        setAttributes(prev => ({ ...prev, [key]: value }));
-    };
-
-    const addCustomAttribute = () => {
-        const name = prompt("Название характеристики (например, Плотность):");
-        if (name && !attributes[name]) {
-            setAttributes(prev => ({ ...prev, [name]: "" }));
-        }
-    };
-
-    const removeAttribute = (key: string) => {
-        setAttributes(prev => {
-            const next = { ...prev };
-            delete next[key];
-            return next;
-        });
-    };
 
     const handleSwapImage = (type: 'back' | 'side' | 'detail', index?: number) => {
         const currentMain = imagePreview;
@@ -1801,11 +1764,6 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
     useEffect(() => {
         if (!isClothingCategory) return;
 
-        const currentQualities = [...CLOTHING_QUALITIES, ...dynamicAttributes.filter(a => a.type === 'quality').map(a => ({ name: a.name, code: a.value }))];
-        const currentMaterials = [...CLOTHING_MATERIALS, ...dynamicAttributes.filter(a => a.type === 'material').map(a => ({ name: a.name, code: a.value }))];
-        const currentBrands = dynamicAttributes.filter(a => a.type === 'brand').map(a => ({ name: a.name, code: a.value }));
-        const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))];
-        const currentSizes = [...CLOTHING_SIZES, ...dynamicAttributes.filter(a => a.type === 'size').map(a => ({ name: a.name, code: a.value }))];
 
         // Determine target gender from active category
         const activeCat = subCategories?.find(c => c.id === selectedSubcategoryId) || category;
@@ -1845,26 +1803,12 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
                 setTimeout(() => setItemName(nextName), 0);
             }
         }
-    }, [qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes, selectedSubcategoryId, itemName]);
+    }, [qualityCode, attributeCode, sizeCode, materialCode, brandCode, isClothingCategory, subCategories, dynamicAttributes, selectedSubcategoryId, itemName, category]);
 
     const handleAttributeChange = (key: string, value: string) => {
         setAttributes(prev => ({ ...prev, [key]: value }));
     };
 
-    const addCustomAttribute = () => {
-        const name = prompt("Название характеристики (например, Плотность):");
-        if (name && !attributes[name]) {
-            setAttributes(prev => ({ ...prev, [name]: "" }));
-        }
-    };
-
-    const removeAttribute = (key: string) => {
-        setAttributes(prev => {
-            const next = { ...prev };
-            delete next[key];
-            return next;
-        });
-    };
 
     const handleSwapImage = (type: 'back' | 'side' | 'detail', index?: number) => {
         const currentMain = imagePreview;

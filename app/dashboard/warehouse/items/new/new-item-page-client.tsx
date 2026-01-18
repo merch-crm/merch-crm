@@ -349,8 +349,10 @@ export function NewItemPageClient({
                 if (img) submitFormData.append("imageDetails", img);
             });
 
-            const attributes = { ...formData.attributes };
-            (attributes as any).thumbnailSettings = formData.thumbSettings;
+            const attributes: Record<string, unknown> = {
+                ...formData.attributes,
+                thumbnailSettings: formData.thumbSettings
+            };
             submitFormData.append("attributes", JSON.stringify(attributes));
 
             const result = await addInventoryItem(submitFormData);
@@ -360,7 +362,7 @@ export function NewItemPageClient({
                 setIsSubmitting(false);
             } else {
                 clearDraft();
-                toast({ title: "Успех", description: "Позиция создана" });
+                toast("Позиция создана", "success");
                 router.push(result?.id ? `/dashboard/warehouse/items/${result.id}` : "/dashboard/warehouse");
                 router.refresh();
             }
@@ -484,7 +486,7 @@ export function NewItemPageClient({
                                                 <div className="flex items-center gap-3 mb-2">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                                                     <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">
-                                                        Выберите подкатегорию для "{selectedCategory.name}"
+                                                        Выберите подкатегорию для &quot;{selectedCategory.name}&quot;
                                                     </h3>
                                                 </div>
                                             </div>
@@ -539,7 +541,7 @@ export function NewItemPageClient({
                             {step === 4 && selectedCategory && (
                                 <StockStep
                                     category={selectedCategory}
-                                    storageLocations={storageLocations as any}
+                                    storageLocations={storageLocations}
                                     formData={formData}
                                     updateFormData={updateFormData}
                                     onSubmit={handleSubmit}
