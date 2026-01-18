@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { addInventoryItem } from "../../actions";
@@ -157,6 +157,44 @@ export function NewItemPageClient({
 
     const clearDraft = () => {
         localStorage.removeItem(DRAFT_KEY);
+    };
+
+    const handleReset = () => {
+        clearDraft();
+        setStep(0);
+        setSelectedCategory(null);
+        setValidationError("");
+        setFormData({
+            subcategoryId: "",
+            brandCode: "",
+            qualityCode: "",
+            materialCode: "",
+            attributeCode: "",
+            sizeCode: "",
+            itemName: "",
+            sku: "",
+            unit: "шт",
+            description: "",
+            width: "",
+            height: "",
+            depth: "",
+            department: "",
+            imageFile: null,
+            imageBackFile: null,
+            imageSideFile: null,
+            imageDetailsFiles: [],
+            imagePreview: null,
+            imageBackPreview: null,
+            imageSidePreview: null,
+            imageDetailsPreviews: [],
+            thumbSettings: { zoom: 1, x: 0, y: 0 },
+            storageLocationId: "",
+            quantity: "0",
+            criticalStockThreshold: "0",
+            lowStockThreshold: "10",
+            attributes: {}
+        });
+        toast("Форма сброшена", "info");
     };
 
     // Initialize from URL params
@@ -451,19 +489,29 @@ export function NewItemPageClient({
                 </div>
 
                 <div className="p-6 pb-8 shrink-0 border-t border-slate-100 bg-slate-50/30">
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-[14px] bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-                            <div className={cn(
-                                "w-2 h-2 rounded-full",
-                                isSavingDraft ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
-                            )} />
-                        </div>
-                        <div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Черновик</div>
-                            <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">
-                                {isSavingDraft ? "Сохранение..." : "Сохранено"}
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-[14px] bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                                <div className={cn(
+                                    "w-2 h-2 rounded-full",
+                                    isSavingDraft ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+                                )} />
+                            </div>
+                            <div>
+                                <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Черновик</div>
+                                <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">
+                                    {isSavingDraft ? "Сохранение..." : "Сохранено"}
+                                </div>
                             </div>
                         </div>
+
+                        <button
+                            onClick={handleReset}
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-100 transition-all text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 group"
+                        >
+                            <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
+                            Начать заново
+                        </button>
                     </div>
                 </div>
             </aside>

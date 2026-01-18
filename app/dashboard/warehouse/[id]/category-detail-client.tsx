@@ -989,8 +989,29 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
 
     const [addingAttr, setAddingAttr] = useState<{ type: string, name: string, hex: string } | null>(null);
 
+    const handleAddDynamicAttribute = async () => {
+        if (!addingAttr || !addingAttr.name) return;
 
+        const { type, name, hex } = addingAttr;
+        let meta = {};
+        if (type === 'color') {
+            meta = { hex: hex || "#CCCCCC" };
+        }
 
+        const code = name.replace(/\s+/g, '').substring(0, 5).toUpperCase();
+        const res = await createInventoryAttribute(type, name, code, meta);
+        if (res.success) {
+            toast("Характеристика добавлена", "success");
+            onRefreshAttributes();
+            setAddingAttr(null);
+        } else {
+            toast(res.error || "Не удалось добавить характеристику", "error");
+        }
+    };
+
+    const handleAttributeChange = (key: string, value: string) => {
+        setAttributes(prev => ({ ...prev, [key]: value }));
+    };
     const handleSwapImage = (type: 'back' | 'side' | 'detail', index?: number) => {
         const currentMain = imagePreview;
         if (type === 'back') {
