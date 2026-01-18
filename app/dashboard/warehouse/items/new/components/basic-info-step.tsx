@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Package, Hash, Ruler, Folder, Shirt, Info, Wrench, Box } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Package, Hash, Ruler, Info, Wrench } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
 import { AttributeSelector } from "../../../attribute-selector";
 
@@ -50,8 +49,6 @@ export function BasicInfoStep({
             t.categoryId === category.id ||
             (formData.subcategoryId && t.categoryId === formData.subcategoryId);
     });
-
-    const [skuPreview, setSkuPreview] = useState("");
 
     const transliterate = (text: string) => {
         const map: Record<string, string> = {
@@ -110,7 +107,6 @@ export function BasicInfoStep({
             if (generatedSku !== formData.sku) {
                 updateFormData({ sku: generatedSku });
             }
-            setSkuPreview(generatedSku);
 
             const activeCat = formData.subcategoryId ? subCategories.find(c => c.id === formData.subcategoryId) : category;
             const targetGender = activeCat?.gender || "masculine";

@@ -24,6 +24,16 @@ import { getCategoryIcon, getColorStyles, CLOTHING_COLORS, CLOTHING_SIZES, CLOTH
 import { UnitSelect } from "@/components/ui/unit-select";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Session } from "@/lib/auth";
+import { type InferSelectModel } from "drizzle-orm";
+import { inventoryAttributes } from "@/lib/schema";
+
+type InventoryAttribute = InferSelectModel<typeof inventoryAttributes>;
+
+interface ThumbnailSettings {
+    zoom: number;
+    x: number;
+    y: number;
+}
 
 
 export interface InventoryItem {
@@ -48,7 +58,7 @@ export interface InventoryItem {
     imageSide: string | null;
     imageDetails: string[] | null;
     reservedQuantity: number;
-    attributes?: Record<string, string | number | boolean | null | undefined>;
+    attributes?: Record<string, unknown>;
     category?: {
         name: string;
         prefix: string | null;
@@ -101,7 +111,7 @@ export function CategoryDetailClient({
     const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
     const { toast } = useToast();
 
-    const [dynamicAttributes, setDynamicAttributes] = useState<any[]>([]);
+    const [dynamicAttributes, setDynamicAttributes] = useState<InventoryAttribute[]>([]);
 
     const fetchAttributes = async () => {
         const res = await getInventoryAttributes();
@@ -729,7 +739,7 @@ export function CategoryDetailClient({
                                                                     className="object-cover transition-transform duration-300"
                                                                     unoptimized
                                                                     style={item.attributes?.thumbnailSettings ? {
-                                                                        transform: `scale(${(item.attributes.thumbnailSettings as any).zoom || 1}) translate(${(item.attributes.thumbnailSettings as any).x || 0}%, ${(item.attributes.thumbnailSettings as any).y || 0}%)`
+                                                                        transform: `scale(${(item.attributes.thumbnailSettings as ThumbnailSettings).zoom || 1}) translate(${(item.attributes.thumbnailSettings as ThumbnailSettings).x || 0}%, ${(item.attributes.thumbnailSettings as ThumbnailSettings).y || 0}%)`
                                                                     } : undefined}
                                                                 />
                                                             ) : (
@@ -885,7 +895,7 @@ export function CategoryDetailClient({
     );
 }
 
-function AddItemDialogWrapper({ category, storageLocations, measurementUnits, subCategories, onClose, initialData, dynamicAttributes, onRefreshAttributes }: { category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], subCategories?: Category[], onClose: () => void, initialData?: InventoryItem, dynamicAttributes: any[], onRefreshAttributes: () => void }) {
+function AddItemDialogWrapper({ category, storageLocations, measurementUnits, subCategories, onClose, initialData, dynamicAttributes, onRefreshAttributes }: { category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], subCategories?: Category[], onClose: () => void, initialData?: InventoryItem, dynamicAttributes: InventoryAttribute[], onRefreshAttributes: () => void }) {
     const { toast } = useToast();
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -914,9 +924,9 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
     const [imageDetailsPreviews, setImageDetailsPreviews] = useState<string[]>(initialData?.imageDetails || []);
     const [selectedUnit, setSelectedUnit] = useState(initialData?.unit || "шт");
     const [selectedLocationId, setSelectedLocationId] = useState(initialData?.storageLocationId || "");
-    const [thumbSettings, setThumbSettings] = useState(() => {
+    const [thumbSettings, setThumbSettings] = useState<ThumbnailSettings>(() => {
         const defaultSettings = { zoom: 1, x: 0, y: 0 };
-        const saved = initialData?.attributes?.thumbnailSettings as any;
+        const saved = initialData?.attributes?.thumbnailSettings as ThumbnailSettings | undefined;
         return saved ? { ...defaultSettings, ...saved } : defaultSettings;
     });
     const [showThumbAdjuster, setShowThumbAdjuster] = useState(false);
@@ -956,7 +966,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
         const currentQualities = [...CLOTHING_QUALITIES, ...dynamicAttributes.filter(a => a.type === 'quality').map(a => ({ name: a.name, code: a.value }))];
         const currentMaterials = [...CLOTHING_MATERIALS, ...dynamicAttributes.filter(a => a.type === 'material').map(a => ({ name: a.name, code: a.value }))];
         const currentBrands = dynamicAttributes.filter(a => a.type === 'brand').map(a => ({ name: a.name, code: a.value }));
-        const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as any)?.hex || "#CCCCCC" }))];
+        const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))];
         const currentSizes = [...CLOTHING_SIZES, ...dynamicAttributes.filter(a => a.type === 'size').map(a => ({ name: a.name, code: a.value }))];
 
         const subCatName = subCategories?.find(c => c.id === selectedSubcategoryId)?.name || "";
@@ -1080,10 +1090,10 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
         formData.set("sizeCode", sizeCode);
 
         // Add attributes to form data
-        const cleanedAttributes = Object.fromEntries(
+        const cleanedAttributes: Record<string, unknown> = Object.fromEntries(
             Object.entries(attributes).filter(([, v]) => v.trim() !== "")
         );
-        (cleanedAttributes as any).thumbnailSettings = thumbSettings;
+        cleanedAttributes.thumbnailSettings = thumbSettings;
         formData.append("attributes", JSON.stringify(cleanedAttributes));
 
         // Ensure name is passed (it might be controlled state now)
@@ -1350,7 +1360,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
                                                     </button>
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-2">
-                                                    {[...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as any)?.hex || "#CCCCCC" }))].map(c => (
+                                                    {[...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))].map(c => (
                                                         <button
                                                             key={c.code}
                                                             type="button"
@@ -1496,7 +1506,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
                                                                         onChange={e => {
                                                                             const newZoom = parseFloat(e.target.value);
                                                                             const maxOffset = ((newZoom - 1) / newZoom) * 50;
-                                                                            setThumbSettings((prev: any) => ({
+                                                                            setThumbSettings((prev) => ({
                                                                                 ...prev,
                                                                                 zoom: newZoom,
                                                                                 x: Math.max(-maxOffset, Math.min(maxOffset, prev.x)),
@@ -1518,7 +1528,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
                                                                             max={((thumbSettings.zoom - 1) / thumbSettings.zoom) * 50}
                                                                             step="0.5"
                                                                             value={thumbSettings.x}
-                                                                            onChange={e => setThumbSettings((prev: any) => ({ ...prev, x: parseFloat(e.target.value) }))}
+                                                                            onChange={e => setThumbSettings((prev) => ({ ...prev, x: parseFloat(e.target.value) }))}
                                                                             className="w-full accent-indigo-600 h-2"
                                                                         />
                                                                     </div>
@@ -1533,7 +1543,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
                                                                             max={((thumbSettings.zoom - 1) / thumbSettings.zoom) * 50}
                                                                             step="0.5"
                                                                             value={thumbSettings.y}
-                                                                            onChange={e => setThumbSettings((prev: any) => ({ ...prev, y: parseFloat(e.target.value) }))}
+                                                                            onChange={e => setThumbSettings((prev) => ({ ...prev, y: parseFloat(e.target.value) }))}
                                                                             className="w-full accent-indigo-600 h-2"
                                                                         />
                                                                     </div>
@@ -1736,7 +1746,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
     );
 }
 
-function EditItemDialog({ item, category, storageLocations, measurementUnits, onClose, dynamicAttributes, onRefreshAttributes, subCategories }: { item: InventoryItem, category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], onClose: () => void, dynamicAttributes: any[], onRefreshAttributes: () => void, subCategories: Category[] }) {
+function EditItemDialog({ item, category, storageLocations, measurementUnits, onClose, dynamicAttributes, onRefreshAttributes, subCategories }: { item: InventoryItem, category: Category, storageLocations: StorageLocation[], measurementUnits: { id: string, name: string }[], onClose: () => void, dynamicAttributes: InventoryAttribute[], onRefreshAttributes: () => void, subCategories: Category[] }) {
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -1759,9 +1769,9 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
     const [selectedUnit, setSelectedUnit] = useState(item.unit || "шт");
     const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(item.categoryId || "");
     const [selectedLocationId, setSelectedLocationId] = useState(item.storageLocationId || "");
-    const [thumbSettings, setThumbSettings] = useState(() => {
+    const [thumbSettings, setThumbSettings] = useState<ThumbnailSettings>(() => {
         const defaultSettings = { zoom: 1, x: 0, y: 0 };
-        const saved = item.attributes?.thumbnailSettings as any;
+        const saved = item.attributes?.thumbnailSettings as ThumbnailSettings | undefined;
         return saved ? { ...defaultSettings, ...saved } : defaultSettings;
     });
     const [showThumbAdjuster, setShowThumbAdjuster] = useState(false);
@@ -1789,7 +1799,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
         const currentQualities = [...CLOTHING_QUALITIES, ...dynamicAttributes.filter(a => a.type === 'quality').map(a => ({ name: a.name, code: a.value }))];
         const currentMaterials = [...CLOTHING_MATERIALS, ...dynamicAttributes.filter(a => a.type === 'material').map(a => ({ name: a.name, code: a.value }))];
         const currentBrands = dynamicAttributes.filter(a => a.type === 'brand').map(a => ({ name: a.name, code: a.value }));
-        const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as any)?.hex || "#CCCCCC" }))];
+        const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))];
         const currentSizes = [...CLOTHING_SIZES, ...dynamicAttributes.filter(a => a.type === 'size').map(a => ({ name: a.name, code: a.value }))];
 
         // Find subcategory name from either selectedSubcategoryId or parent's subCategories
@@ -1947,10 +1957,10 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
         formData.set("sizeCode", sizeCode);
 
         // Add attributes to form data
-        const cleanedAttributes = Object.fromEntries(
+        const cleanedAttributes: Record<string, unknown> = Object.fromEntries(
             Object.entries(attributes).filter(([, v]) => v.trim() !== "")
         );
-        (cleanedAttributes as any).thumbnailSettings = thumbSettings;
+        cleanedAttributes.thumbnailSettings = thumbSettings;
         formData.append("attributes", JSON.stringify(cleanedAttributes));
 
         // Add images from state (important for swapped images)
@@ -2285,7 +2295,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
                                                 </div>
                                             )}
                                             <div className="grid grid-cols-3 gap-2">
-                                                {[...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as any)?.hex || "#CCCCCC" }))].map(c => (
+                                                {[...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))].map(c => (
                                                     <button
                                                         key={c.name}
                                                         type="button"
@@ -2455,7 +2465,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
                                                                                 <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Масштаб</span>
                                                                                 <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{Math.round(thumbSettings.zoom * 100)}%</span>
                                                                             </div>
-                                                                            <input type="range" min="1" max="5" step="0.05" value={thumbSettings.zoom} onChange={e => setThumbSettings((prev: any) => ({ ...prev, zoom: parseFloat(e.target.value) }))} className="w-full accent-indigo-600" />
+                                                                            <input type="range" min="1" max="5" step="0.05" value={thumbSettings.zoom} onChange={e => setThumbSettings((prev) => ({ ...prev, zoom: parseFloat(e.target.value) }))} className="w-full accent-indigo-600" />
                                                                         </div>
 
                                                                         <div className="grid grid-cols-2 gap-6">
@@ -2464,7 +2474,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
                                                                                     <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Ось X</span>
                                                                                     <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{thumbSettings.x}%</span>
                                                                                 </div>
-                                                                                <input type="range" min="-100" max="100" step="1" value={thumbSettings.x} onChange={e => setThumbSettings((prev: any) => ({ ...prev, x: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
+                                                                                <input type="range" min="-100" max="100" step="1" value={thumbSettings.x} onChange={e => setThumbSettings((prev) => ({ ...prev, x: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
                                                                             </div>
 
                                                                             <div className="space-y-3">
@@ -2472,7 +2482,7 @@ function EditItemDialog({ item, category, storageLocations, measurementUnits, on
                                                                                     <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Ось Y</span>
                                                                                     <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{thumbSettings.y}%</span>
                                                                                 </div>
-                                                                                <input type="range" min="-100" max="100" step="1" value={thumbSettings.y} onChange={e => setThumbSettings((prev: any) => ({ ...prev, y: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
+                                                                                <input type="range" min="-100" max="100" step="1" value={thumbSettings.y} onChange={e => setThumbSettings((prev) => ({ ...prev, y: parseInt(e.target.value) }))} className="w-full accent-indigo-600" />
                                                                             </div>
                                                                         </div>
                                                                     </div>

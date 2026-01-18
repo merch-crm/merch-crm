@@ -98,7 +98,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     useEffect(() => {
         const tab = searchParams.get("p");
         if (tab && ["profile", "settings", "statistics", "schedule"].includes(tab)) {
-            setActiveTab(tab as any);
+            setActiveTab(tab as "profile" | "settings" | "statistics" | "schedule");
             if (tab === "statistics" && !statsData) fetchStats();
             if (tab === "schedule" && scheduleData.length === 0) fetchSchedule();
         }

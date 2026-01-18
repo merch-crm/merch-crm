@@ -17,6 +17,7 @@ import {
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and, asc } from "drizzle-orm";
+import { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getSession } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
 import { logAction } from "@/lib/audit";
@@ -950,7 +951,8 @@ export async function deleteInventoryAttribute(id: string) {
 
         // 2. Check if it's used in any inventory items
         // Map attribute types to column names
-        const typeToColumn: Record<string, any> = {
+        // Map attribute types to column names
+        const typeToColumn: Record<string, AnyPgColumn> = {
             'color': inventoryItems.attributeCode,
             'material': inventoryItems.materialCode,
             'brand': inventoryItems.brandCode,
@@ -1050,11 +1052,11 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
         }).where(eq(inventoryAttributes.id, id));
 
         // 3. If the code (value) OR visibility settings changed, update all items using this attribute
-        const oldShowInSku = (oldAttr.meta as any)?.showInSku ?? true;
-        const newShowInSku = (meta as any)?.showInSku ?? true;
+        const oldShowInSku = (oldAttr.meta as { showInSku?: boolean })?.showInSku ?? true;
+        const newShowInSku = (meta as { showInSku?: boolean })?.showInSku ?? true;
 
         if (oldAttr.value !== value || oldShowInSku !== newShowInSku) {
-            const typeToColumn: Record<string, any> = {
+            const typeToColumn: Record<string, AnyPgColumn> = {
                 'color': inventoryItems.attributeCode,
                 'material': inventoryItems.materialCode,
                 'brand': inventoryItems.brandCode,

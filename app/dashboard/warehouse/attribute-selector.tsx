@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
-import { CLOTHING_COLORS, CLOTHING_MATERIALS, CLOTHING_SIZES, CLOTHING_QUALITIES } from "./category-utils";
+import { CLOTHING_COLORS, CLOTHING_QUALITIES } from "./category-utils";
 
 interface AttributeSelectorProps {
     type: string;

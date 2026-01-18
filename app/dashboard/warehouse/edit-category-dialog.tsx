@@ -22,7 +22,7 @@ interface EditCategoryDialogProps {
     user: Session | null;
 }
 
-export function EditCategoryDialog({ category, categories, isOpen, onClose, user }: EditCategoryDialogProps) {
+export function EditCategoryDialog({ category, categories, isOpen, onClose, user: _user }: EditCategoryDialogProps) {
     const [isPending, setIsPending] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
