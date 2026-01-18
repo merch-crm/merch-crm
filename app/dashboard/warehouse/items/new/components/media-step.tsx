@@ -3,6 +3,7 @@
 import { Upload, Trash2, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemFormData } from "../../../types";
+import Image from "next/image";
 
 interface MediaStepProps {
     formData: ItemFormData;
@@ -137,7 +138,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                             {/* Existing Details */}
                             {formData.imageDetailsPreviews?.map((preview: string, idx: number) => (
                                 <div key={idx} className="relative aspect-square rounded-[14px] overflow-hidden border border-slate-200 group shadow-sm hover:shadow-lg transition-all">
-                                    <img src={preview} alt="" className="w-full h-full object-cover" />
+                                    <Image src={preview} alt="" fill className="object-cover" />
                                     <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
                                         <button
                                             onClick={() => removeDetailImage(idx)}
@@ -236,7 +237,7 @@ function ImageUploadZone({
                     : "border-slate-200 hover:border-slate-400 hover:bg-slate-50"
             )}>
                 {preview ? (
-                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                    <Image src={preview} alt="Preview" fill className="object-cover" />
                 ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-300 group-hover:text-slate-900 transition-colors">
                         <div className="w-12 h-12 rounded-[14px] bg-slate-50 group-hover:bg-slate-100 flex items-center justify-center transition-colors">
