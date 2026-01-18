@@ -8,14 +8,14 @@ import {
     Warehouse,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { InventoryItem, ItemStock, StorageLocation } from "../../../types";
+import { InventoryItem, ItemStock } from "../../../types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface ItemInventorySectionProps {
     item: InventoryItem;
     stocks: ItemStock[];
-    storageLocations: StorageLocation[];
+
     isEditing: boolean;
     editData: InventoryItem;
     onUpdateField: (field: string, value: string | number) => void;
@@ -26,7 +26,7 @@ interface ItemInventorySectionProps {
 export function ItemInventorySection({
     item,
     stocks,
-    storageLocations,
+
     isEditing,
     editData,
     onUpdateField,

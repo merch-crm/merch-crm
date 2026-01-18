@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { ChevronRight, Save, RotateCcw, Image as ImageIcon, Trash2, Box, Package, AlertTriangle, Info, History as HistoryIcon, Plus, Minus, Move, RefreshCcw, Edit3, Download, MapPin, Clock } from "lucide-react";
+import { Image as ImageIcon, Trash2, Package, RefreshCcw, Edit3, Download, Info, MapPin, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,9 +25,9 @@ import {
     StorageLocation,
     AttributeType,
     InventoryAttribute,
-    ThumbnailSettings
+
 } from "../../types";
-import { ItemHeader } from "./components/ItemHeader";
+
 import { ItemMediaSection } from "./components/ItemMediaSection";
 import { ItemGeneralInfo } from "./components/ItemGeneralInfo";
 import { ItemInventorySection } from "./components/ItemInventorySection";
@@ -555,7 +555,7 @@ export function ItemDetailClient({
                             <ItemInventorySection
                                 item={item}
                                 stocks={stocks}
-                                storageLocations={storageLocations}
+
                                 isEditing={isEditing}
                                 editData={editData as unknown as InventoryItem}
                                 onUpdateField={(field, value) => setEditData(prev => ({ ...prev, [field]: value }))}

@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Package, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Copy, Download, ChevronDown, Tag } from "lucide-react";
+import { Package, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, ChevronDown, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { SubmitButton } from "../submit-button";
-import { deleteInventoryItems, updateInventoryItem, addInventoryItem, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories, deleteInventoryCategory, getInventoryAttributes, createInventoryAttribute } from "@/app/dashboard/warehouse/actions";
+
+import { deleteInventoryItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories, deleteInventoryCategory } from "@/app/dashboard/warehouse/actions";
 import { EditCategoryDialog } from "../edit-category-dialog";
 import { CategorySelect } from "../category-select";
 import { AdjustStockDialog } from "../adjust-stock-dialog";
@@ -20,12 +20,9 @@ import { useToast } from "@/components/ui/toast";
 import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { createElement } from "react";
-import { getCategoryIcon, getColorStyles, CLOTHING_COLORS, CLOTHING_SIZES, CLOTHING_QUALITIES, CLOTHING_MATERIALS } from "../category-utils";
-import { UnitSelect } from "@/components/ui/unit-select";
+import { getCategoryIcon, getColorStyles } from "../category-utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Session } from "@/lib/auth";
-import { type InferSelectModel } from "drizzle-orm";
-import { inventoryAttributes } from "@/lib/schema";
 
 import type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute } from "../types";
 export type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute };
@@ -36,7 +33,6 @@ interface CategoryDetailClientProps {
     subCategories?: Category[];
     items: InventoryItem[];
     storageLocations?: StorageLocation[];
-    measurementUnits?: { id: string, name: string }[];
     user: Session | null;
 }
 
@@ -46,7 +42,6 @@ export function CategoryDetailClient({
     subCategories = [],
     items,
     storageLocations = [],
-    measurementUnits = [],
     user
 }: CategoryDetailClientProps) {
     const router = useRouter();
@@ -62,18 +57,10 @@ export function CategoryDetailClient({
     const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
     const { toast } = useToast();
 
-    const [dynamicAttributes, setDynamicAttributes] = useState<InventoryAttribute[]>([]);
-
-    const fetchAttributes = async () => {
-        const res = await getInventoryAttributes();
-        if (res.data) setDynamicAttributes(res.data);
-    };
-
     useEffect(() => {
         const init = async () => {
             const res = await getInventoryCategories();
             if (res.data) setAllCategories(res.data as Category[]);
-            await fetchAttributes();
         };
         init();
     }, []);

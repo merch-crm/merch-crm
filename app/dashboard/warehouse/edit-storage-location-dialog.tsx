@@ -27,7 +27,6 @@ const ITEMS_PER_PAGE = 7;
 export function EditStorageLocationDialog({ users, locations, location, isOpen, onClose }: EditStorageLocationDialogProps) {
     const { toast } = useToast();
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
     const [transferItem, setTransferItem] = useState<InventoryItem | null>(null);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -191,7 +190,6 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                                 currentItems.map((item) => (
                                     <div
                                         key={item.id}
-                                        onClick={() => setSelectedItem(item)}
                                         className="flex items-center justify-between p-3 bg-slate-50 rounded-[14px] border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all cursor-pointer group"
                                     >
                                         <div className="flex flex-col flex-1 min-w-0 mr-3">
