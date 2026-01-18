@@ -971,7 +971,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
 
         const subCatName = subCategories?.find(c => c.id === selectedSubcategoryId)?.name || "";
         const qualName = currentQualities.find(q => q.code === qualityCode)?.name || "";
-        const matName = currentMaterials.find(m => m.code === materialCode)?.name || "";
+
         const brandName = currentBrands.find(b => b.code === brandCode)?.name || "";
         const colName = currentColors.find(c => c.code === attributeCode)?.name || "";
         const szName = currentSizes.find(s => s.code === sizeCode)?.name || "";

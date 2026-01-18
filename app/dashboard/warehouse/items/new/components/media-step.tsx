@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Image as ImageIcon, Upload, X, Trash2, Move } from "lucide-react";
+import { Upload, X, Trash2, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MediaStepProps {

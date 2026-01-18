@@ -69,12 +69,10 @@ export function BasicInfoStep({
         if (isClothing) {
             // Ищем префикс выбранной подкатегории или текущей категории
             let prefix = category.prefix;
-            let subCatName = "";
 
             if (formData.subcategoryId) {
                 const subCat = subCategories.find(c => c.id === formData.subcategoryId);
                 if (subCat?.prefix) prefix = subCat.prefix;
-                if (subCat?.name) subCatName = subCat.name;
             }
 
             // SKU Generation
@@ -171,7 +169,12 @@ export function BasicInfoStep({
         subCategories,
         dynamicAttributes,
         formData.attributes,
-        attributeTypes
+        attributeTypes,
+        category,
+        customTypes,
+        formData.itemName,
+        formData.sku,
+        updateFormData
     ]);
 
     return (

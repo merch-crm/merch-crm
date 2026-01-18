@@ -415,7 +415,7 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
     const [isThumbnailEditing, setIsThumbnailEditing] = useState(false);
     const [thumbnailSettings, setThumbnailSettings] = useState<ThumbnailSettings>(() => {
         const defaultSettings = { zoom: 1, x: 0, y: 0 };
-        const saved = (initialItem.attributes as any)?.thumbnailSettings;
+        const saved = (initialItem.attributes as Record<string, unknown> | null)?.thumbnailSettings as ThumbnailSettings | undefined;
         return saved ? { ...defaultSettings, ...saved } : defaultSettings;
     });
 
@@ -439,9 +439,9 @@ export function ItemDetailClient({ item: initialItem, storageLocations, measurem
             setSizeCode(initialItem.sizeCode || "");
             setActiveImage(initialItem.image);
 
-            const saved = (initialItem.attributes as any)?.thumbnailSettings;
+            const saved = (initialItem.attributes as Record<string, unknown> | null)?.thumbnailSettings as ThumbnailSettings | undefined;
             if (saved) {
-                setThumbnailSettings({ zoom: 1, x: 0, y: 0, ...saved });
+                setThumbnailSettings(saved);
             } else {
                 setThumbnailSettings({ zoom: 1, x: 0, y: 0 });
             }

@@ -16,7 +16,7 @@ import {
     inventoryAttributeTypes
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, sql, inArray, and, asc } from "drizzle-orm";
+import { desc, eq, sql, inArray, and, asc, type InferInsertModel } from "drizzle-orm";
 import { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getSession } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
@@ -1084,12 +1084,12 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
                     }
                     // Otherwise look up in DB
                     const a = allAttrs.find(attr => attr.type === type && attr.value === code);
-                    return (a?.meta as any)?.showInSku ?? true;
+                    return (a?.meta as { showInSku?: boolean })?.showInSku ?? true;
                 };
 
                 // Update each item with the new code and regenerate SKU
                 for (const item of affectedItems) {
-                    const updates: any = {};
+                    const updates: Partial<InferInsertModel<typeof inventoryItems>> = {};
 
                     // Update the specific code field if it changed
                     if (oldAttr.value !== value) {
@@ -1178,7 +1178,7 @@ export async function regenerateAllItemSKUs() {
                 const shouldShowInSku = (type: string, code: string | null) => {
                     if (!code) return false;
                     const attr = allAttributes.find(a => a.type === type && a.value === code);
-                    return (attr?.meta as any)?.showInSku ?? true;
+                    return (attr?.meta as { showInSku?: boolean })?.showInSku ?? true;
                 };
 
                 const skuParts: string[] = [];
@@ -1192,7 +1192,7 @@ export async function regenerateAllItemSKUs() {
 
                 // Custom Types SKU
                 customTypes.forEach(t => {
-                    const code = (item.attributes as any)?.[t.slug];
+                    const code = (item.attributes as Record<string, unknown>)?.[t.slug] as string;
                     if (code && shouldShowInSku(t.slug, code)) {
                         skuParts.push(code);
                     }
@@ -1206,7 +1206,7 @@ export async function regenerateAllItemSKUs() {
                 if (!code) return null;
                 const attr = allAttributes.find(a => a.type === type && a.value === code);
                 // Check visibility
-                if (attr && (attr.meta as any)?.showInName === false) return null;
+                if (attr && (attr.meta as { showInName?: boolean })?.showInName === false) return null;
                 return attr?.name || code;
             };
 
@@ -1227,7 +1227,7 @@ export async function regenerateAllItemSKUs() {
 
             // Custom Types Name
             customTypes.forEach(t => {
-                const code = (item.attributes as any)?.[t.slug];
+                const code = (item.attributes as Record<string, unknown>)?.[t.slug] as string;
                 const name = getAttrName(t.slug, code);
                 if (name) nameParts.push(name);
             });

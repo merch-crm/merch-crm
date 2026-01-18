@@ -22,7 +22,7 @@ interface EditCategoryDialogProps {
     user: Session | null;
 }
 
-export function EditCategoryDialog({ category, categories, isOpen, onClose, user: _user }: EditCategoryDialogProps) {
+export function EditCategoryDialog({ category, categories, isOpen, onClose }: EditCategoryDialogProps) {
     const [isPending, setIsPending] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -171,7 +171,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose, user
                                         <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Множественное число</label>
                                         <input
                                             name="pluralName"
-                                            defaultValue={(category as any).pluralName || ""}
+                                            defaultValue={(category as Category & { pluralName?: string }).pluralName || ""}
                                             placeholder="Напр. Футболки"
                                             className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                         />

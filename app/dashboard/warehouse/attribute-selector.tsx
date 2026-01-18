@@ -49,7 +49,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
             : [];
 
     // For non-color types, use database as the primary source
-    let allOptions: any[] = [];
+    let allOptions: { name: string; code: string; hex?: string }[] = [];
 
     if (!["quality", "color"].includes(type)) {
         // Use only database attributes for these types (brand, material, size, custom...)
@@ -68,7 +68,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 allOptions.push({
                     name: dbAttr.name,
                     code: dbAttr.value,
-                    hex: dbAttr.meta?.hex || "#000000"
+                    hex: (dbAttr.meta as { hex?: string })?.hex || "#000000"
                 });
             }
         });
