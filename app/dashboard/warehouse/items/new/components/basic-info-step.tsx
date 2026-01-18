@@ -6,7 +6,7 @@ import { UnitSelect } from "@/components/ui/unit-select";
 import { AttributeSelector } from "../../../attribute-selector";
 import { Category } from "../../../inventory-client";
 
-interface InventoryAttribute {
+export interface InventoryAttribute {
     id: string;
     type: string;
     value: string;
@@ -14,7 +14,15 @@ interface InventoryAttribute {
     meta?: Record<string, unknown> | null;
 }
 
-interface ItemFormData {
+export interface AttributeType {
+    id: string;
+    name: string;
+    slug: string;
+    type: string;
+    categoryId?: string | null;
+}
+
+export interface ItemFormData {
     subcategoryId?: string;
     brandCode?: string;
     qualityCode?: string;
@@ -48,7 +56,7 @@ interface BasicInfoStepProps {
     subCategories: Category[];
     measurementUnits: MeasurementUnit[];
     dynamicAttributes: InventoryAttribute[];
-    attributeTypes: any[]; // Keep any for now if complex, or fix if known
+    attributeTypes: AttributeType[];
     formData: ItemFormData;
     updateFormData: (updates: Partial<ItemFormData>) => void;
     onNext: () => void;
@@ -107,7 +115,7 @@ export function BasicInfoStep({
             const shouldShowInSku = (type: string, code?: string) => {
                 if (!code) return false;
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
-                return (attr?.meta as any)?.showInSku ?? true;
+                return (attr?.meta as { showInSku?: boolean })?.showInSku ?? true;
             };
 
             const skuParts: string[] = [];
@@ -120,7 +128,7 @@ export function BasicInfoStep({
             if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode!);
 
             // Add custom attributes to SKU
-            customTypes.forEach((type: any) => {
+            customTypes.forEach((type: AttributeType) => {
                 const code = formData.attributes?.[type.slug];
                 if (code && shouldShowInSku(type.slug, code)) {
                     skuParts.push(code);
@@ -142,7 +150,7 @@ export function BasicInfoStep({
             const getAttrName = (type: string, code?: string) => {
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 // Check visibility
-                if (attr && (attr.meta as any)?.showInName === false) return null;
+                if (attr && (attr.meta as { showInName?: boolean })?.showInName === false) return null;
 
                 if (attr) {
                     const meta = attr.meta as any;
@@ -168,7 +176,7 @@ export function BasicInfoStep({
             ].filter(Boolean);
 
             // Add Custom Attributes to Name
-            customTypes.forEach((type: any) => {
+            customTypes.forEach((type: AttributeType) => {
                 const code = formData.attributes?.[type.slug];
                 if (code) {
                     const name = getAttrName(type.slug, code);
@@ -273,7 +281,7 @@ export function BasicInfoStep({
                                     {/* Custom / Dynamic Attributes */}
                                     {customTypes.length > 0 && (
                                         <div className="space-y-8">
-                                            {customTypes.map((type: any) => (
+                                            {customTypes.map((type: AttributeType) => (
                                                 <div key={type.id} className="space-y-6">
                                                     <div className="h-px bg-slate-100" />
                                                     <AttributeSelector
@@ -339,7 +347,7 @@ export function BasicInfoStep({
                                     {/* Custom Attributes for non-clothing */}
                                     {customTypes.length > 0 && (
                                         <div className="space-y-8 pt-4">
-                                            {customTypes.map((type: any) => (
+                                            {customTypes.map((type: AttributeType) => (
                                                 <div key={type.id} className="space-y-6">
                                                     <div className="h-px bg-slate-100" />
                                                     <AttributeSelector

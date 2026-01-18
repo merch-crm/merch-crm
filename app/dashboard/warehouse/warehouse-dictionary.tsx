@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, Trash, Check, X, AlertCircle, Pencil, RefreshCw, ArrowLeft, Book, Settings, Save } from "lucide-react";
+import { Plus, Trash, Check, Pencil, RefreshCw, Book, Settings } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, regenerateAllItemSKUs, createInventoryAttributeType, updateInventoryAttributeType, deleteInventoryAttributeType, seedSystemCategories } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

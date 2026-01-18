@@ -2,10 +2,11 @@
 
 import { Upload, Trash2, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ItemFormData } from "./basic-info-step";
 
 interface MediaStepProps {
-    formData: any;
-    updateFormData: (updates: any) => void;
+    formData: ItemFormData;
+    updateFormData: (updates: Partial<ItemFormData>) => void;
     onNext: () => void;
     onBack: () => void;
 }
