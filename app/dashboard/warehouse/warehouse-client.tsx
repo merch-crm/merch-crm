@@ -39,7 +39,7 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
     useEffect(() => {
         const tab = searchParams.get("tab");
         if (tab && ["inventory", "storage", "history", "dictionary"].includes(tab)) {
-            setActiveTab(tab);
+            setActiveTab(tab as "inventory" | "storage" | "history" | "dictionary");
         }
     }, [searchParams]);
 

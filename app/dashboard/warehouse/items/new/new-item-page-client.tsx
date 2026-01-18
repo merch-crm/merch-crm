@@ -553,10 +553,10 @@ export function NewItemPageClient({
                                 />
                             )}
 
-                            {step === 4 && (
+                            {step === 4 && selectedCategory && (
                                 <StockStep
                                     category={selectedCategory}
-                                    storageLocations={storageLocations}
+                                    storageLocations={storageLocations as any}
                                     formData={formData}
                                     updateFormData={updateFormData}
                                     onSubmit={handleSubmit}

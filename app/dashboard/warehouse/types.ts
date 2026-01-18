@@ -10,7 +10,6 @@ export interface AttributeType {
     id: string;
     name: string;
     slug: string;
-    type: string;
     categoryId?: string | null;
     isSystem: boolean;
     sortOrder?: number;

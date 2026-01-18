@@ -280,13 +280,13 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
         setTargetTypeSlug(attr.type);
         setEditingAttribute(attr);
         setNewItemName(attr.name);
-        setNewItemFemName(attr.meta?.fem || "");
-        setNewItemNeutName(attr.meta?.neut || "");
+        setNewItemFemName((attr.meta as { fem?: string })?.fem || "");
+        setNewItemNeutName((attr.meta as { neut?: string })?.neut || "");
         setNewItemCode(attr.value);
         setIsCodeManuallyEdited(true);
-        setNewItemColorHex(attr.meta?.hex || "#000000");
-        setShowInName(attr.meta?.showInName ?? true);
-        setShowInSku(attr.meta?.showInSku ?? true);
+        setNewItemColorHex((attr.meta as { hex?: string })?.hex || "#000000");
+        setShowInName((attr.meta as { showInName?: boolean })?.showInName ?? true);
+        setShowInSku((attr.meta as { showInSku?: boolean })?.showInSku ?? true);
         setError("");
         setIsValueDialogOpen(true);
     }
@@ -575,7 +575,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                                     className="flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-full transition-all group/item"
                                                 >
                                                     {type.slug === "color" ? (
-                                                        <span className="w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0" style={{ backgroundColor: attr.meta?.hex || "#000" }} />
+                                                        <span className="w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0" style={{ backgroundColor: (attr.meta as { hex?: string })?.hex || "#000" }} />
                                                     ) : (
                                                         <span className={cn(
                                                             "w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shadow-sm border border-slate-100 flex-shrink-0 overflow-hidden tracking-tight bg-white text-slate-600"
@@ -746,7 +746,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     <div className="flex items-center gap-3">
                                         {/* Visual Preview */}
                                         {editingTypeLatest?.slug === "color" && (
-                                            <div className="w-8 h-8 rounded-lg shadow-sm ring-1 ring-black/5 flex-shrink-0" style={{ backgroundColor: attr.meta?.hex || "#000" }} />
+                                            <div className="w-8 h-8 rounded-lg shadow-sm ring-1 ring-black/5 flex-shrink-0" style={{ backgroundColor: (attr.meta as { hex?: string })?.hex || "#000" }} />
                                         )}
                                         {editingTypeLatest && (editingTypeLatest.slug === "size" || editingTypeLatest.slug === "material") && (
                                             <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 flex-shrink-0">
