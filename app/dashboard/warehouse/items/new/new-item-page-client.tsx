@@ -10,6 +10,7 @@ import { CategorySelector } from "./components/category-selector";
 import { BasicInfoStep } from "./components/basic-info-step";
 import { MediaStep } from "./components/media-step";
 import { StockStep } from "./components/stock-step";
+import { InventoryAttribute, AttributeType } from "../../types";
 
 interface Category {
     id: string;
@@ -31,22 +32,16 @@ interface MeasurementUnit {
     name: string;
 }
 
-interface DynamicAttribute {
-    id: string;
-    type: string;
-    name: string;
-    value: string;
-    meta?: any;
-}
+
 
 interface NewItemPageClientProps {
     categories: Category[];
     storageLocations: StorageLocation[];
     measurementUnits: MeasurementUnit[];
-    dynamicAttributes: DynamicAttribute[];
+    dynamicAttributes: InventoryAttribute[];
     initialCategoryId?: string;
     initialSubcategoryId?: string;
-    attributeTypes: any[];
+    attributeTypes: AttributeType[];
 }
 
 export function NewItemPageClient({

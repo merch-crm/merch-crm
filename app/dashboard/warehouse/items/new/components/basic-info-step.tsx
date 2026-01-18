@@ -1,40 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Package, Hash, Ruler, Info, Wrench } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
 import { AttributeSelector } from "../../../attribute-selector";
 import { Category } from "../../../inventory-client";
+import { InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
 
-export interface InventoryAttribute {
-    id: string;
-    type: string;
-    value: string;
-    name: string;
-    meta?: Record<string, unknown> | null;
-}
 
-export interface AttributeType {
-    id: string;
-    name: string;
-    slug: string;
-    type: string;
-    categoryId?: string | null;
-}
-
-export interface ItemFormData {
-    subcategoryId?: string;
-    brandCode?: string;
-    qualityCode?: string;
-    materialCode?: string;
-    attributeCode?: string;
-    sizeCode?: string;
-    attributes?: Record<string, string>;
-    itemName?: string;
-    sku?: string;
-    unit?: string;
-    [key: string]: any;
-}
 
 interface MeasurementUnit {
     id: string;
@@ -153,7 +126,7 @@ export function BasicInfoStep({
                 if (attr && (attr.meta as { showInName?: boolean })?.showInName === false) return null;
 
                 if (attr) {
-                    const meta = attr.meta as any;
+                    const meta = attr.meta as { fem?: string; neut?: string } | null;
                     if (targetGender === "feminine" && meta?.fem) return meta.fem;
                     if (targetGender === "neuter" && meta?.neut) return meta.neut;
                     return attr.name;
@@ -383,7 +356,7 @@ export function BasicInfoStep({
                                                     <div className="relative">
                                                         <input
                                                             type="number"
-                                                            value={formData[dim]}
+                                                            value={(formData[dim] as string) || ""}
                                                             onChange={(e) => updateFormData({ [dim]: e.target.value })}
                                                             className="w-full h-11 px-4 pr-10 rounded-[14px] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
                                                         />
@@ -401,7 +374,7 @@ export function BasicInfoStep({
                                                 Область применения
                                             </label>
                                             <select
-                                                value={formData.department}
+                                                value={formData.department || ""}
                                                 onChange={(e) => updateFormData({ department: e.target.value })}
                                                 className="w-full h-12 px-5 rounded-[14px] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
                                             >
@@ -452,7 +425,7 @@ export function BasicInfoStep({
                                     Описание (Необязательно)
                                 </label>
                                 <textarea
-                                    value={formData.description}
+                                    value={formData.description || ""}
                                     onChange={(e) => updateFormData({ description: e.target.value })}
                                     className="w-full h-[260px] p-6 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner"
                                     placeholder="Особенности кроя, советы по уходу или детали упаковки..."

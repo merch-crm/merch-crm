@@ -2,12 +2,15 @@
 
 import { MapPin, AlertTriangle, CheckCircle2, Box, Shirt, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Category } from "../../../inventory-client";
+import { StorageLocation } from "../../../storage-locations-tab";
+import { ItemFormData } from "../../../types";
 
 interface StockStepProps {
-    category: any;
-    storageLocations: any[];
-    formData: any;
-    updateFormData: (updates: any) => void;
+    category: Category;
+    storageLocations: StorageLocation[];
+    formData: ItemFormData;
+    updateFormData: (updates: Partial<ItemFormData>) => void;
     onSubmit: () => void;
     onBack: () => void;
     validationError: string;
@@ -26,9 +29,10 @@ export function StockStep({
 }: StockStepProps) {
 
     // Quick helpers for visual hints
-    const itemTotal = parseInt(formData.quantity) || 0;
-    const lowStock = parseInt(formData.lowStockThreshold) || 10;
-    const critStock = parseInt(formData.criticalStockThreshold) || 0;
+    // Quick helpers for visual hints
+    const itemTotal = parseInt(formData.quantity || "0") || 0;
+    const lowStock = parseInt(formData.lowStockThreshold || "10") || 10;
+    const critStock = parseInt(formData.criticalStockThreshold || "0") || 0;
 
     let statusColor = "text-emerald-500";
     let statusText = "В наличии";
@@ -151,7 +155,7 @@ export function StockStep({
                                         <input
                                             type="number"
                                             min="0"
-                                            value={formData.quantity}
+                                            value={formData.quantity || "0"}
                                             onChange={(e) => updateFormData({ quantity: e.target.value })}
                                             className="w-full h-20 px-8 rounded-[14px] border border-slate-100 bg-slate-50/50 text-4xl font-black text-slate-900 focus:border-emerald-500 transition-all outline-none shadow-inner"
                                         />
@@ -171,7 +175,7 @@ export function StockStep({
                                             <input
                                                 type="number"
                                                 min="0"
-                                                value={formData.lowStockThreshold}
+                                                value={formData.lowStockThreshold || "10"}
                                                 onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
                                                 className="w-full h-12 px-5 rounded-[14px] border border-slate-100 bg-slate-50/50 font-black text-slate-900 focus:border-amber-500 transition-all outline-none"
                                             />
@@ -185,7 +189,7 @@ export function StockStep({
                                             <input
                                                 type="number"
                                                 min="0"
-                                                value={formData.criticalStockThreshold}
+                                                value={formData.criticalStockThreshold || "0"}
                                                 onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
                                                 className="w-full h-12 px-5 rounded-[14px] border border-slate-100 bg-slate-50/50 font-black text-slate-900 focus:border-rose-500 transition-all outline-none"
                                             />

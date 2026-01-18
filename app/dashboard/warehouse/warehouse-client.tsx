@@ -17,6 +17,7 @@ import { Transaction } from "./history-table";
 import { WarehouseWidgets } from "./warehouse-widgets";
 import { Session } from "@/lib/auth";
 import { WarehouseDictionary } from "./warehouse-dictionary";
+import { InventoryAttribute, AttributeType } from "./types";
 
 interface WarehouseClientProps {
     items: InventoryItem[];
@@ -25,8 +26,8 @@ interface WarehouseClientProps {
     storageLocations: StorageLocation[];
     users: { id: string; name: string }[];
     user: Session | null;
-    attributes: any[];
-    attributeTypes: any[];
+    attributes: InventoryAttribute[];
+    attributeTypes: AttributeType[];
 }
 
 export function WarehouseClient({ items, categories, history, storageLocations, users, user, attributes, attributeTypes }: WarehouseClientProps) {
@@ -36,7 +37,7 @@ export function WarehouseClient({ items, categories, history, storageLocations, 
 
     // Persist tab state in URL
     useEffect(() => {
-        const tab = searchParams.get("tab") as any;
+        const tab = searchParams.get("tab");
         if (tab && ["inventory", "storage", "history", "dictionary"].includes(tab)) {
             setActiveTab(tab);
         }

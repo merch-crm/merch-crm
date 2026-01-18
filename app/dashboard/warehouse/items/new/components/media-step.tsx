@@ -2,7 +2,7 @@
 
 import { Upload, Trash2, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ItemFormData } from "./basic-info-step";
+import { ItemFormData } from "../../../types";
 
 interface MediaStepProps {
     formData: ItemFormData;
@@ -104,7 +104,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <ImageUploadZone
                             label="Лицевая сторона"
-                            preview={formData.imagePreview}
+                            preview={formData.imagePreview ?? null}
                             onChange={handleMainImageChange}
                             onRemove={removeMainImage}
                             required
@@ -112,13 +112,13 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                         />
                         <ImageUploadZone
                             label="Вид со спины"
-                            preview={formData.imageBackPreview}
+                            preview={formData.imageBackPreview ?? null}
                             onChange={handleBackImageChange}
                             onRemove={removeBackImage}
                         />
                         <ImageUploadZone
                             label="Детализация"
-                            preview={formData.imageSidePreview}
+                            preview={formData.imageSidePreview ?? null}
                             onChange={handleSideImageChange}
                             onRemove={removeSideImage}
                         />
@@ -250,7 +250,7 @@ function ImageUploadZone({
                     accept="image/*"
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={onChange}
-                    onClick={(e) => (e.target as any).value = null} // Allow re-selecting same file
+                    onClick={(e) => (e.target as HTMLInputElement).value = ""} // Allow re-selecting same file
                 />
             </div>
         </div>

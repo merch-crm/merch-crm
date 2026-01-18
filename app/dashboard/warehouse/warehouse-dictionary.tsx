@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Lock } from "lucide-react";
 import { Session } from "@/lib/auth";
+import { InventoryAttribute as Attribute, AttributeType } from "./types";
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -151,22 +152,6 @@ function Switch({
             </button>
         </div>
     );
-}
-
-interface Attribute {
-    id: string;
-    type: string;
-    name: string;
-    value: string; // Code
-    meta?: any;
-}
-
-interface AttributeType {
-    id: string;
-    slug: string;
-    name: string;
-    isSystem: boolean;
-    categoryId?: string | null;
 }
 
 interface Category {
@@ -337,7 +322,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                 setIsValueDialogOpen(false);
                 router.refresh();
             }
-        } catch (e) {
+        } catch {
             setError("Ошибка при сохранении");
         } finally {
             setIsSaving(false);
@@ -360,7 +345,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
             }
-        } catch (e) {
+        } catch {
             toast("Ошибка при удалении", "error");
         } finally {
             setIsDeleting(false);
