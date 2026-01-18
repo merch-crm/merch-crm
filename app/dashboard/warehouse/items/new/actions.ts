@@ -44,7 +44,7 @@ export async function addStorageLocation(formData: FormData) {
     }
 }
 
-export async function addInventoryAttribute(type: string, name: string, value: string, meta?: any) {
+export async function addInventoryAttribute(type: string, name: string, value: string, meta?: Record<string, unknown>) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
         return { error: "Недостаточно прав" };

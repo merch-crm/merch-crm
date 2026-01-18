@@ -964,7 +964,7 @@ function AddItemDialogWrapper({ category, storageLocations, measurementUnits, su
         // Let's just generate it if any dependency changes.
 
         const currentQualities = [...CLOTHING_QUALITIES, ...dynamicAttributes.filter(a => a.type === 'quality').map(a => ({ name: a.name, code: a.value }))];
-        const currentMaterials = [...CLOTHING_MATERIALS, ...dynamicAttributes.filter(a => a.type === 'material').map(a => ({ name: a.name, code: a.value }))];
+
         const currentBrands = dynamicAttributes.filter(a => a.type === 'brand').map(a => ({ name: a.name, code: a.value }));
         const currentColors = [...CLOTHING_COLORS, ...dynamicAttributes.filter(a => a.type === 'color').map(a => ({ name: a.name, code: a.value, hex: (a.meta as { hex?: string })?.hex || "#CCCCCC" }))];
         const currentSizes = [...CLOTHING_SIZES, ...dynamicAttributes.filter(a => a.type === 'size').map(a => ({ name: a.name, code: a.value }))];

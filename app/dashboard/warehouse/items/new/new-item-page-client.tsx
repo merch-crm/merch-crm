@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getCategoryIcon, getColorStyles } from "../../category-utils";
-import { createElement } from "react";
+
 import { addInventoryItem } from "../../actions";
 import { CategorySelector } from "./components/category-selector";
 import { BasicInfoStep } from "./components/basic-info-step";

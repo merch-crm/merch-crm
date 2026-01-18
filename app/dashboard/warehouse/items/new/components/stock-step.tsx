@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, BarChart3, AlertTriangle, CheckCircle2, Box, Shirt, Info } from "lucide-react";
+import { MapPin, AlertTriangle, CheckCircle2, Box, Shirt, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StockStepProps {
@@ -242,11 +242,4 @@ export function StockStep({
     );
 }
 
-function SummaryRow({ label, value }: { label: string, value: string }) {
-    return (
-        <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-slate-400">{label}</span>
-            <span className="font-black text-slate-700 text-right">{value}</span>
-        </div>
-    );
-}
+

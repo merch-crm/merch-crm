@@ -4,6 +4,34 @@ import { useState, useEffect } from "react";
 import { Package, Hash, Ruler, Info, Wrench } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
 import { AttributeSelector } from "../../../attribute-selector";
+import { Category } from "../../../inventory-client";
+
+interface InventoryAttribute {
+    id: string;
+    type: string;
+    value: string;
+    name: string;
+    meta?: Record<string, unknown> | null;
+}
+
+interface ItemFormData {
+    subcategoryId?: string;
+    brandCode?: string;
+    qualityCode?: string;
+    materialCode?: string;
+    attributeCode?: string;
+    sizeCode?: string;
+    attributes?: Record<string, string>;
+    itemName?: string;
+    sku?: string;
+    unit?: string;
+    [key: string]: any;
+}
+
+interface MeasurementUnit {
+    id: string;
+    name: string;
+}
 
 // Measurement units for non-clothing items
 const UNIT_OPTIONS = [
@@ -16,13 +44,13 @@ const UNIT_OPTIONS = [
 ];
 
 interface BasicInfoStepProps {
-    category: any;
-    subCategories: any[];
-    measurementUnits: any[];
-    dynamicAttributes: any[];
-    attributeTypes: any[];
-    formData: any;
-    updateFormData: (updates: any) => void;
+    category: Category;
+    subCategories: Category[];
+    measurementUnits: MeasurementUnit[];
+    dynamicAttributes: InventoryAttribute[];
+    attributeTypes: any[]; // Keep any for now if complex, or fix if known
+    formData: ItemFormData;
+    updateFormData: (updates: Partial<ItemFormData>) => void;
     onNext: () => void;
     onBack: () => void;
     validationError: string;
@@ -76,7 +104,7 @@ export function BasicInfoStep({
             }
 
             // SKU Generation
-            const shouldShowInSku = (type: string, code: string) => {
+            const shouldShowInSku = (type: string, code?: string) => {
                 if (!code) return false;
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 return (attr?.meta as any)?.showInSku ?? true;
@@ -85,11 +113,11 @@ export function BasicInfoStep({
             const skuParts: string[] = [];
             if (prefix) skuParts.push(prefix);
 
-            if (shouldShowInSku('brand', formData.brandCode)) skuParts.push(formData.brandCode);
-            if (shouldShowInSku('quality', formData.qualityCode)) skuParts.push(formData.qualityCode);
-            if (shouldShowInSku('material', formData.materialCode)) skuParts.push(formData.materialCode);
-            if (shouldShowInSku('color', formData.attributeCode)) skuParts.push(formData.attributeCode);
-            if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode);
+            if (shouldShowInSku('brand', formData.brandCode)) skuParts.push(formData.brandCode!);
+            if (shouldShowInSku('quality', formData.qualityCode)) skuParts.push(formData.qualityCode!);
+            if (shouldShowInSku('material', formData.materialCode)) skuParts.push(formData.materialCode!);
+            if (shouldShowInSku('color', formData.attributeCode)) skuParts.push(formData.attributeCode!);
+            if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode!);
 
             // Add custom attributes to SKU
             customTypes.forEach((type: any) => {
@@ -111,7 +139,7 @@ export function BasicInfoStep({
             const baseName = activeCat?.singularName || activeCat?.name || "";
 
             // Item Name Generation
-            const getAttrName = (type: string, code: string) => {
+            const getAttrName = (type: string, code?: string) => {
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 // Check visibility
                 if (attr && (attr.meta as any)?.showInName === false) return null;
@@ -204,13 +232,13 @@ export function BasicInfoStep({
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <AttributeSelector
                                             type="brand"
-                                            value={formData.brandCode}
+                                            value={formData.brandCode || ""}
                                             onChange={(name, code) => updateFormData({ brandCode: code })}
                                         />
 
                                         <AttributeSelector
                                             type="quality"
-                                            value={formData.qualityCode}
+                                            value={formData.qualityCode || ""}
                                             onChange={(name, code) => updateFormData({ qualityCode: code })}
                                             onCodeChange={(code) => updateFormData({ qualityCode: code })}
                                         />
@@ -219,14 +247,14 @@ export function BasicInfoStep({
                                     {/* Material selection */}
                                     <AttributeSelector
                                         type="material"
-                                        value={formData.materialCode}
+                                        value={formData.materialCode || ""}
                                         onChange={(name, code) => updateFormData({ materialCode: code })}
                                         allowCustom={true}
                                     />
 
                                     <AttributeSelector
                                         type="size"
-                                        value={formData.sizeCode}
+                                        value={formData.sizeCode || ""}
                                         onChange={(name, code) => updateFormData({ sizeCode: code })}
                                         onCodeChange={(code) => updateFormData({ sizeCode: code })}
                                         allowCustom={true}
@@ -236,7 +264,7 @@ export function BasicInfoStep({
 
                                     <AttributeSelector
                                         type="color"
-                                        value={formData.attributeCode}
+                                        value={formData.attributeCode || ""}
                                         onChange={(name, code) => updateFormData({ attributeCode: code })}
                                         onCodeChange={(code) => updateFormData({ attributeCode: code })}
                                         allowCustom={true}
@@ -301,7 +329,7 @@ export function BasicInfoStep({
                                             </label>
                                             <UnitSelect
                                                 name="unit"
-                                                value={formData.unit}
+                                                value={formData.unit || "sht"}
                                                 onChange={(val) => updateFormData({ unit: val })}
                                                 options={UNIT_OPTIONS}
                                             />

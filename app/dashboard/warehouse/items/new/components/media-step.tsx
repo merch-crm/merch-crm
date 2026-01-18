@@ -1,6 +1,6 @@
 "use client";
 
-import { Upload, X, Trash2, Move } from "lucide-react";
+import { Upload, Trash2, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MediaStepProps {
