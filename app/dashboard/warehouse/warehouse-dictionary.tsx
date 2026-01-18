@@ -116,7 +116,7 @@ function Switch({
     onChange: (val: boolean) => void,
     disabled?: boolean,
     label?: string,
-    icon?: any,
+    icon?: React.ComponentType<{ className?: string }>,
     description?: string
 }) {
     return (
