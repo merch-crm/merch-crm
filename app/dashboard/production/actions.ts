@@ -41,9 +41,9 @@ export async function updateProductionStageAction(
         if (item?.orderId) revalidatePath(`/dashboard/orders/${item.orderId}`);
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error updating production stage:", error);
-        return { error: error.message || "Ошибка при обновлении этапа" };
+        return { error: error instanceof Error ? error.message : "Ошибка при обновлении этапа" };
     }
 }
 
@@ -153,8 +153,8 @@ export async function reportProductionDefect(orderItemId: string, quantity: numb
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/warehouse");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error reporting defect:", error);
-        return { error: error.message || "Ошибка при списании брака" };
+        return { error: error instanceof Error ? error.message : "Ошибка при списании брака" };
     }
 }

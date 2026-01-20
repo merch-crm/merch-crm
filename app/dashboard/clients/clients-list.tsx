@@ -10,11 +10,8 @@ import {
     Pencil,
     Trash2,
     ChevronDown,
-    Building2,
     Users as UsersIcon,
-    Check,
     Download,
-    Undo2,
     Archive,
     ArchiveRestore,
     RotateCcw
@@ -63,7 +60,6 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     const [filterOrderCount, setFilterOrderCount] = useState<string>("any");
     const [filterRegion, setFilterRegion] = useState<string>("all");
     const [filterStatus, setFilterStatus] = useState<string>("all"); // "all" | "lost"
-    const [showRegionFilter, setShowRegionFilter] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
 

@@ -48,7 +48,7 @@ const Button = ({ className, children, variant = "primary", ...props }: ButtonPr
     );
 };
 
-const CardAction = ({ icon: Icon, dark = false }: { icon: any, dark?: boolean }) => (
+const CardAction = ({ icon: Icon, dark = false }: { icon: React.ElementType, dark?: boolean }) => (
     <div className={cn(
         "absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md",
         dark ? "bg-white/10 text-white" : "bg-black/5 text-black"

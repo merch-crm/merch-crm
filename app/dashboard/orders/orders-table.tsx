@@ -19,6 +19,7 @@ export interface Order {
     priority: string;
     client: { name: string };
     creator?: { name: string } | null;
+    isUrgent?: boolean;
 }
 
 interface OrdersTableProps {
@@ -34,7 +35,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
 
-    const handleUpdateField = async (orderId: string, field: string, value: any) => {
+    const handleUpdateField = async (orderId: string, field: string, value: string | number | boolean) => {
         const res = await updateOrderField(orderId, field, value);
         if (res.error) {
             toast(res.error, "error");
@@ -121,17 +122,17 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleUpdateField(order.id, "isUrgent", !(order as any).isUrgent);
+                                            handleUpdateField(order.id, "isUrgent", !order.isUrgent);
                                         }}
                                         className={cn(
                                             "p-1.5 rounded-lg transition-all",
-                                            (order as any).isUrgent
+                                            order.isUrgent
                                                 ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
                                                 : "bg-slate-50 text-slate-400 hover:text-slate-600"
                                         )}
-                                        title={(order as any).isUrgent ? "Срочно" : "Обычный"}
+                                        title={order.isUrgent ? "Срочно" : "Обычный"}
                                     >
-                                        <Zap className={cn("w-4 h-4", (order as any).isUrgent && "fill-rose-600")} />
+                                        <Zap className={cn("w-4 h-4", order.isUrgent && "fill-rose-600")} />
                                     </button>
                                     <StatusBadgeInteractive orderId={order.id} status={order.status} />
                                 </div>

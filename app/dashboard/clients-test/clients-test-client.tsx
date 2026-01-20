@@ -12,8 +12,6 @@ import {
     LayoutList,
     Sparkles,
     MoreHorizontal,
-    ChevronRight,
-    Home,
     ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

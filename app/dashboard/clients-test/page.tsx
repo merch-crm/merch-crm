@@ -1,9 +1,4 @@
 import { getClientStats } from "./actions";
-import {
-    TrendingUp,
-    TrendingDown
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
