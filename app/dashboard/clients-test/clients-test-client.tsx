@@ -11,15 +11,14 @@ import {
     LayoutGrid,
     LayoutList,
     Sparkles,
-    Calendar,
-    ChevronDown,
-    MoreHorizontal
+    MoreHorizontal,
+    ChevronRight,
+    Home,
+    ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { ClientsTable } from "./clients-list";
-import { AddClientDialog } from "./add-client-dialog";
 
 interface ClientStats {
     totalClients: number;

@@ -489,8 +489,8 @@ export default async function FinancePage({
                 {activeTab === 'transactions' && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 border-t border-slate-100 pt-8">
                         <TransactionsClient
-                            initialPayments={paymentsRes.data || []}
-                            initialExpenses={expensesRes.data || []}
+                            initialPayments={(paymentsRes.data as any) || []}
+                            initialExpenses={(expensesRes.data as any) || []}
                         />
                     </div>
                 )}

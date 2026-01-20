@@ -313,7 +313,7 @@ export default function InvoiceDashboard() {
 }
 
 // Helper icon component since Briefcase was not imported above but used
-function Briefcase(props: any) {
+function Briefcase(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg
             {...props}

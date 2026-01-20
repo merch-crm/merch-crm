@@ -24,7 +24,7 @@ interface Transaction {
     amount: string;
     category: string;
     description: string | null;
-    date: string;
+    date: string | Date;
     orderNumber?: string;
     clientName?: string;
     method?: string;
@@ -34,8 +34,28 @@ export function TransactionsClient({
     initialPayments,
     initialExpenses
 }: {
-    initialPayments: any[],
-    initialExpenses: any[]
+    initialPayments: {
+        id: string;
+        amount: string;
+        isAdvance: boolean;
+        comment: string | null;
+        createdAt: string | Date;
+        method: string;
+        order?: {
+            orderNumber: string;
+            client?: {
+                firstName: string;
+                lastName: string;
+            };
+        };
+    }[],
+    initialExpenses: {
+        id: string;
+        amount: string;
+        category: string;
+        description: string | null;
+        date: string;
+    }[]
 }) {
     const [view, setView] = useState<'all' | 'payments' | 'expenses'>('all');
     const [searchQuery, setSearchQuery] = useState("");

@@ -28,7 +28,11 @@ import FocusFlowDashboard from "./focus-flow-dashboard";
 
 // --- Mock Data & Components ---
 
-const Button = ({ className, children, variant = "primary", ...props }: any) => {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: "primary" | "icon";
+}
+
+const Button = ({ className, children, variant = "primary", ...props }: ButtonProps) => {
     return (
         <button
             className={cn(
@@ -44,7 +48,7 @@ const Button = ({ className, children, variant = "primary", ...props }: any) => 
     );
 };
 
-const CardAction = ({ icon: Icon, dark = false }: any) => (
+const CardAction = ({ icon: Icon, dark = false }: { icon: any, dark?: boolean }) => (
     <div className={cn(
         "absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md",
         dark ? "bg-white/10 text-white" : "bg-black/5 text-black"

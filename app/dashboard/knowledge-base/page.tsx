@@ -22,7 +22,7 @@ export default async function KnowledgeBasePage() {
             <WikiClient
                 initialFolders={folders}
                 initialPages={pages}
-                userRole={(session as any).user?.roleName || "Пользователь"}
+                userRole={session.roleName || "Пользователь"}
             />
         </div>
     );

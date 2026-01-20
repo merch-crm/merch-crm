@@ -13,7 +13,7 @@ export async function GET() {
     try {
         const result = await db.select({ value: count() }).from(orders);
         return NextResponse.json({ count: result[0].value });
-    } catch (_e) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch count" }, { status: 500 });
     }
 }

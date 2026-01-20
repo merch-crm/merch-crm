@@ -4,7 +4,7 @@ import * as schema from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
     try {
         const session = await getSession();
         if (!session) {

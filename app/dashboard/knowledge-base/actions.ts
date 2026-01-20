@@ -32,9 +32,9 @@ export async function createWikiFolder(name: string, parentId: string | null = n
 
         revalidatePath("/dashboard/knowledge-base");
         return { success: true, folder: newFolder };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error creating wiki folder:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
@@ -85,9 +85,9 @@ export async function createWikiPage(data: { title: string, content: string, fol
 
         revalidatePath("/dashboard/knowledge-base");
         return { success: true, page: newPage };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error creating wiki page:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
@@ -107,9 +107,9 @@ export async function updateWikiPage(id: string, data: { title?: string, content
         revalidatePath(`/dashboard/knowledge-base/${id}`);
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error updating wiki page:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
@@ -121,8 +121,8 @@ export async function deleteWikiPage(id: string) {
         await db.delete(wikiPages).where(eq(wikiPages.id, id));
         revalidatePath("/dashboard/knowledge-base");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error deleting wiki page:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Ошибка" };
     }
 }

@@ -18,7 +18,11 @@ import {
 import { cn } from "@/lib/utils";
 
 // Reusing Button from page.tsx concept, but defined here for portability if needed
-const Button = ({ className, children, variant = "primary", ...props }: any) => {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: "primary" | "icon";
+}
+
+const Button = ({ className, children, variant = "primary", ...props }: ButtonProps) => {
     return (
         <button
             className={cn(

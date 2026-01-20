@@ -1,13 +1,5 @@
-import { AddClientDialog } from "./add-client-dialog";
-import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions";
 import {
-    Users,
-    UserPlus,
-    CreditCard,
-    BarChart3,
-    ChevronRight,
-    Home,
     TrendingUp,
     TrendingDown
 } from "lucide-react";
