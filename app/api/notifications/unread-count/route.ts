@@ -18,7 +18,7 @@ export async function GET() {
         });
 
         return NextResponse.json({ count: result.length });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ count: 0 });
     }
 }

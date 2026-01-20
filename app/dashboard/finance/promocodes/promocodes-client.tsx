@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/toast";
 import { createPromocode, togglePromocode, CreatePromocodeData } from "../actions";
 import { useRouter } from "next/navigation";
 
-interface Promocode {
+export interface Promocode {
     id: string;
     code: string;
     discountType: 'percentage' | 'fixed';
@@ -20,7 +20,7 @@ interface Promocode {
     usageLimit: number | null;
     usageCount: number;
     isActive: boolean;
-    createdAt: string;
+    createdAt: string | Date;
 }
 
 export function PromocodesClient({ initialData }: { initialData: Promocode[] }) {
@@ -161,7 +161,7 @@ function AddPromocodeDialog({ onClose, onSuccess }: { onClose: () => void, onSuc
             const res = await createPromocode(data);
             if (res.success) {
                 toast("Промокод создан", "success");
-                onSuccess(res.data as any);
+                onSuccess(res.data as unknown as Promocode);
             } else {
                 toast(res.error || "Ошибка", "error");
             }

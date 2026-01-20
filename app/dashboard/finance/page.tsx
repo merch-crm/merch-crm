@@ -31,9 +31,9 @@ import { startOfDay, endOfDay, subDays } from "date-fns";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FinanceDateFilter } from "./finance-date-filter";
-import { PromocodesClient } from "./promocodes/promocodes-client";
+import { PromocodesClient, Promocode } from "./promocodes/promocodes-client";
 import { TransactionsClient } from "./transactions-client";
-import { ExpensesClient } from "./expenses-client";
+import { ExpensesClient, Expense } from "./expenses-client";
 import { getPromocodes, getFinanceTransactions } from "./actions";
 
 export default async function FinancePage({
@@ -482,7 +482,7 @@ export default async function FinancePage({
 
                 {activeTab === 'promocodes' && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 border-t border-slate-100 pt-8">
-                        <PromocodesClient initialData={(promocodesRes.data as any) || []} />
+                        <PromocodesClient initialData={(promocodesRes.data as unknown as Promocode[]) || []} />
                     </div>
                 )}
 
@@ -497,7 +497,7 @@ export default async function FinancePage({
 
                 {activeTab === 'expenses' && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 border-t border-slate-100 pt-8">
-                        <ExpensesClient initialData={(expensesRes.data as any) || []} />
+                        <ExpensesClient initialData={(expensesRes.data as unknown as Expense[]) || []} />
                     </div>
                 )}
 

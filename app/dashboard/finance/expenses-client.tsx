@@ -10,13 +10,13 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
-interface Expense {
+export interface Expense {
     id: string;
     amount: string;
     category: string;
     description: string | null;
     date: string;
-    createdAt: string;
+    createdAt: string | Date;
 }
 
 export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
@@ -161,7 +161,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             const res = await createExpense(data);
             if (res.success) {
                 toast("Расход добавлен", "success");
-                onSuccess(res.data as any);
+                onSuccess(res.data as Expense);
             } else {
                 toast(res.error || "Ошибка", "error");
             }

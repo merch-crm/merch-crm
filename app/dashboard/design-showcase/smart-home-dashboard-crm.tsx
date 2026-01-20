@@ -80,7 +80,7 @@ export default function SmartHomeDashboardCRM() {
                                         "w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
                                         device.status === "Off" ? "bg-slate-100 text-slate-400" : "bg-primary text-white shadow-lg shadow-primary/20 scale-110"
                                     )}>
-                                        {React.cloneElement(device.icon as React.DetailedReactHTMLElement<any, any>, { className: "w-6 h-6" })}
+                                        {React.isValidElement(device.icon) && React.cloneElement(device.icon as React.ReactElement<{ className?: string }>, { className: "w-6 h-6" })}
                                     </div>
                                     <div className="flex flex-col items-end">
                                         <button className="w-8 h-8 rounded-full hover:bg-slate-50 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors">
@@ -188,7 +188,7 @@ export default function SmartHomeDashboardCRM() {
                                         "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center transition-transform group-hover:rotate-12",
                                         scene.color === "bg-slate-900" ? "bg-white/10 text-primary" : "bg-slate-50 text-slate-400"
                                     )}>
-                                        {React.cloneElement(scene.icon as React.DetailedReactHTMLElement<any, any>, { className: "w-5 h-5" })}
+                                        {React.isValidElement(scene.icon) && React.cloneElement(scene.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5" })}
                                     </div>
                                     <div className="text-xs font-bold uppercase tracking-widest">{scene.name}</div>
                                 </div>

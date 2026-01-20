@@ -12,9 +12,7 @@ import {
     ChevronDown,
     Building2,
     Users as UsersIcon,
-    Check,
     Download,
-    Undo2,
     Mail,
     Phone,
     Crown

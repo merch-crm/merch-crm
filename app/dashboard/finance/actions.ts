@@ -411,7 +411,7 @@ export async function createExpense(data: CreateExpenseData) {
 
     try {
         const [newExpense] = await db.insert(expenses).values({
-            category: data.category as any,
+            category: data.category as typeof expenses.$inferInsert.category,
             amount: String(data.amount),
             description: data.description,
             date: data.date ? new Date(data.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
@@ -449,7 +449,7 @@ export async function getPLReport(from?: Date, to?: Date) {
         // 3. Overhead Expenses
         const overheadStats = await db.select({
             total: sql<number>`sum(amount)`,
-            categories: sql<any>`json_agg(json_build_object('category', category, 'amount', amount))`
+            categories: sql<{ category: string; amount: string }[]>`json_agg(json_build_object('category', category, 'amount', amount))`
         })
             .from(expenses)
             .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)));
