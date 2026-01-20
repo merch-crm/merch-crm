@@ -9,7 +9,6 @@ import {
     Plus,
     ArrowUpRight,
     MoreHorizontal,
-    Wallet,
     ArrowRight,
     Apple
 } from "lucide-react";

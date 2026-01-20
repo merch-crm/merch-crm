@@ -11,7 +11,6 @@ import {
     TrendingUp
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { getDashboardStatsByPeriod } from "./actions";
 

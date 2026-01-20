@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { orderItems, orders } from "./schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 /**

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown, Home } from "lucide-react";
+import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions";
 import { Card } from "@/components/ui/card";

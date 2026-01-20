@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { notifications, users, inventoryItems, roles } from "./schema";
+import { notifications, inventoryItems } from "./schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export async function createNotification(data: {

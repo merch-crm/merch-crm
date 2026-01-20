@@ -8,7 +8,6 @@ import {
     ChevronDown,
     Plus,
     ArrowUpRight,
-    CreditCard,
     Megaphone,
     Crown,
     Smartphone,

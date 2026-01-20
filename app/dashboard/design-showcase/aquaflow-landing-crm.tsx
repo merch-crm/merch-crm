@@ -4,7 +4,6 @@ import React from "react";
 import {
     ArrowRight,
     ChevronRight,
-    Menu,
     Search,
     ShoppingBag,
     Send,
