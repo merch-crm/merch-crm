@@ -414,7 +414,6 @@ export function ItemDetailClient({
                                 isEditing={isEditing}
                                 attributeTypes={attributeTypes}
                                 allAttributes={allAttributes}
-                                measurementUnits={measurementUnits}
                                 editData={editData as unknown as InventoryItem}
                                 onUpdateField={(field, value) => setEditData(prev => ({ ...prev, [field]: value }))}
                                 onUpdateAttribute={handleAttributeChange}

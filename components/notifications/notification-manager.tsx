@@ -15,47 +15,6 @@ export function NotificationManager({ initialUnreadCount }: NotificationManagerP
     const prevOrderCount = useRef<number | null>(null);
     const originalFavicon = useRef<string | null>(null);
 
-    useEffect(() => {
-        if (unreadCount > prevCount.current) {
-            playNotificationSound();
-        }
-        prevCount.current = unreadCount;
-        updateFavicon(unreadCount);
-    }, [unreadCount]);
-
-    useEffect(() => {
-        if (orderCount !== null && prevOrderCount.current !== null && orderCount > prevOrderCount.current) {
-            // New order sound could be different or same
-            playNotificationSound();
-        }
-        prevOrderCount.current = orderCount;
-    }, [orderCount]);
-
-    useEffect(() => {
-        // Polling for demo purposes, in production use WebSockets/Pusher
-        const interval = setInterval(async () => {
-            try {
-                // Check notifications
-                const nRes = await fetch("/api/notifications/unread-count");
-                const nData = await nRes.json();
-                if (typeof nData.count === "number") {
-                    setUnreadCount(nData.count);
-                }
-
-                // Check orders
-                const oRes = await fetch("/api/orders/count");
-                const oData = await oRes.json();
-                if (typeof oData.count === "number") {
-                    setOrderCount(oData.count);
-                }
-            } catch (e) {
-                // Ignore
-            }
-        }, 15000); // Check every 15 seconds
-
-        return () => clearInterval(interval);
-    }, []);
-
     const updateFavicon = (count: number) => {
         if (typeof window === "undefined") return;
 
@@ -98,6 +57,43 @@ export function NotificationManager({ initialUnreadCount }: NotificationManagerP
             favicon.href = canvas.toDataURL("image/png");
         };
     };
+
+    useEffect(() => {
+        if (unreadCount > prevCount.current) {
+            playNotificationSound();
+        }
+        prevCount.current = unreadCount;
+        updateFavicon(unreadCount);
+    }, [unreadCount]);
+
+    useEffect(() => {
+        if (orderCount !== null && prevOrderCount.current !== null && orderCount > prevOrderCount.current) {
+            playNotificationSound();
+        }
+        prevOrderCount.current = orderCount;
+    }, [orderCount]);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                const nRes = await fetch("/api/notifications/unread-count");
+                const nData = await nRes.json();
+                if (typeof nData.count === "number") {
+                    setUnreadCount(nData.count);
+                }
+
+                const oRes = await fetch("/api/orders/count");
+                const oData = await oRes.json();
+                if (typeof oData.count === "number") {
+                    setOrderCount(oData.count);
+                }
+            } catch (e) {
+                // Ignore
+            }
+        }, 15000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     return null;
 }

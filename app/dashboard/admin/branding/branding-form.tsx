@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Upload, Palette, Database, Download } from "lucide-react";
-import { updateBrandingSettings, exportDatabaseBackup } from "./actions";
+import { Save, Upload, Palette, Database } from "lucide-react";
+import { updateBrandingSettings } from "./actions";
 import { useRouter } from "next/navigation";
 
 interface BrandingFormProps {
@@ -131,6 +131,7 @@ export function BrandingForm({ initialSettings }: BrandingFormProps) {
                 <p className="text-xs text-slate-400 mt-2">URL изображения логотипа (PNG, SVG). Оставьте пустым для иконки по умолчанию.</p>
                 {formData.logoUrl && (
                     <div className="mt-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={formData.logoUrl} alt="Logo preview" className="h-12 rounded-[12px] border border-slate-200 p-2 bg-white" />
                     </div>
                 )}

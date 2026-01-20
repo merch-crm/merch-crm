@@ -22,8 +22,28 @@ import { createOrder, searchClients, getInventoryForSelect } from "../actions";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 
+interface Client {
+    id: string;
+    name: string;
+    company?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    address?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+}
+
+interface OrderInventoryItem {
+    id: string;
+    name: string;
+    quantity: number;
+    unit: string;
+    price?: number;
+    orderQuantity?: number;
+}
+
 interface CreateOrderPageClientProps {
-    initialInventory: any[];
+    initialInventory: OrderInventoryItem[];
 }
 
 export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClientProps) {
@@ -35,8 +55,8 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
 
     // Step 1: Client
     const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState<any[]>([]);
-    const [selectedClient, setSelectedClient] = useState<any | null>(null);
+    const [searchResults, setSearchResults] = useState<Client[]>([]);
+    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [searchHistory, setSearchHistory] = useState<string[]>([]);
     const [showHistory, setShowHistory] = useState(false);
@@ -54,8 +74,8 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
     };
 
     // Step 2: Items
-    const [selectedItems, setSelectedItems] = useState<any[]>([]);
-    const [inventory, setInventory] = useState(initialInventory);
+    const [selectedItems, setSelectedItems] = useState<OrderInventoryItem[]>([]);
+    const [inventory, setInventory] = useState<OrderInventoryItem[]>(initialInventory);
 
     // Step 3: Details
     const [details, setDetails] = useState({
@@ -65,7 +85,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
         advanceAmount: "0",
         promocodeId: "",
         paymentMethod: "cash",
-        appliedPromo: null as any
+        appliedPromo: null as { id: string; code: string; discountType: string; value: string } | null
     });
     const [promoInput, setPromoInput] = useState("");
     const [isApplyingPromo, setIsApplyingPromo] = useState(false);
@@ -124,6 +144,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
         setLoading(true);
 
         const formData = new FormData();
+        if (!selectedClient) return;
         formData.append("clientId", selectedClient.id);
         formData.append("priority", details.priority);
         formData.append("isUrgent", details.isUrgent ? "true" : "false");
@@ -133,8 +154,8 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
         formData.append("deadline", details.deadline);
         formData.append("items", JSON.stringify(selectedItems.map(item => ({
             inventoryId: item.id,
-            quantity: item.orderQuantity,
-            price: item.price,
+            quantity: item.orderQuantity || 0,
+            price: item.price || 0,
             description: item.name
         }))));
 
@@ -150,7 +171,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
         }
     };
 
-    const addItem = (item: any) => {
+    const addItem = (item: OrderInventoryItem) => {
         if (selectedItems.find(i => i.id === item.id)) return;
         setSelectedItems([...selectedItems, { ...item, orderQuantity: 1, price: 0 }]);
     };
@@ -159,7 +180,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
         setSelectedItems(selectedItems.filter(i => i.id !== id));
     };
 
-    const updateItem = (id: string, updates: any) => {
+    const updateItem = (id: string, updates: Partial<OrderInventoryItem>) => {
         setSelectedItems(selectedItems.map(i => i.id === id ? { ...i, ...updates } : i));
     };
 
@@ -376,7 +397,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                                     <label className="text-[10px] text-slate-400 uppercase tracking-wider">Кол-во</label>
                                                                     <input
                                                                         type="number"
-                                                                        value={item.orderQuantity}
+                                                                        value={item.orderQuantity || 0}
                                                                         onChange={(e) => updateItem(item.id, { orderQuantity: Number(e.target.value) })}
                                                                         className="w-full bg-slate-50 border-none rounded-lg px-2 py-2"
                                                                     />
@@ -385,7 +406,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                                     <label className="text-[10px] text-slate-400 uppercase tracking-wider">Цена (₽)</label>
                                                                     <input
                                                                         type="number"
-                                                                        value={item.price}
+                                                                        value={item.price || 0}
                                                                         onChange={(e) => updateItem(item.id, { price: Number(e.target.value) })}
                                                                         className="w-full bg-slate-50 border-none rounded-lg px-2 py-2"
                                                                     />
@@ -512,8 +533,8 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                             <span className="text-slate-500 font-bold text-xs uppercase tracking-wider">Товары</span>
                                             {selectedItems.map(item => (
                                                 <div key={item.id} className="flex justify-between text-sm py-1">
-                                                    <span>{item.name} x {item.orderQuantity}</span>
-                                                    <span className="font-bold">{item.price * item.orderQuantity} ₽</span>
+                                                    <span>{item.name} x {item.orderQuantity || 0}</span>
+                                                    <span className="font-bold">{(item.price || 0) * (item.orderQuantity || 0)} ₽</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -523,11 +544,11 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                 {details.appliedPromo ? (
                                                     <>
                                                         <span className="text-sm text-slate-400 line-through mr-2 font-bold">
-                                                            {selectedItems.reduce((acc, i) => acc + (i.price * i.orderQuantity), 0)} ₽
+                                                            {selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} ₽
                                                         </span>
                                                         <span>
                                                             {(() => {
-                                                                const total = selectedItems.reduce((acc, i) => acc + (i.price * i.orderQuantity), 0);
+                                                                const total = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
                                                                 const promo = details.appliedPromo;
                                                                 let final = total;
                                                                 if (promo.discountType === 'percentage') {
@@ -540,7 +561,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                         </span>
                                                     </>
                                                 ) : (
-                                                    <span>{selectedItems.reduce((acc, i) => acc + (i.price * i.orderQuantity), 0)} ₽</span>
+                                                    <span>{selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} ₽</span>
                                                 )}
                                             </div>
                                         </div>

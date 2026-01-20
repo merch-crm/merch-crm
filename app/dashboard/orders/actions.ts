@@ -227,8 +227,8 @@ export async function createOrder(formData: FormData) {
                                 quantity: item.quantity
                             });
                         }
-                    } catch (e: any) {
-                        throw new Error(e.message || "Ошибка резервирования");
+                    } catch (e) {
+                        throw new Error(e instanceof Error ? e.message : "Ошибка резервирования");
                     }
                 }
 
@@ -257,7 +257,7 @@ export async function createOrder(formData: FormData) {
                 await tx.insert(payments).values({
                     orderId: newOrder.id,
                     amount: advanceAmount,
-                    method: paymentMethod as any,
+                    method: (paymentMethod as "cash" | "bank" | "online" | "account"),
                     isAdvance: true,
                     comment: "Предоплата при создании заказа"
                 });
@@ -377,7 +377,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
 
             await tx.update(orders)
                 .set({
-                    status: newStatus as any,
+                    status: newStatus as "new" | "design" | "production" | "done" | "shipped" | "cancelled",
                     cancelReason: reason || null
                 })
                 .where(eq(orders.id, orderId));
@@ -426,7 +426,7 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
 
     try {
         for (const orderId of orderIds) {
-            const res = await updateOrderStatus(orderId, newStatus as any);
+            const res = await updateOrderStatus(orderId, newStatus as "new" | "design" | "production" | "done" | "shipped" | "cancelled");
             if (res.error) {
                 console.error(`Failed to update order ${orderId}: ${res.error}`);
             }
@@ -466,6 +466,19 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true, department: true }
+    });
+
+    const isManagement = user?.department?.name === "Руководство";
+    const isAdmin = user?.role?.name === "Администратор";
+    const isSales = user?.department?.name === "Отдел продаж";
+
+    if (!isAdmin && !isManagement && !isSales) {
+        return { error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
+    }
+
     try {
         await db.update(orders)
             .set({ isArchived: archive })
@@ -484,6 +497,19 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
 export async function bulkArchiveOrders(orderIds: string[], archive: boolean = true) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
+
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true, department: true }
+    });
+
+    const isManagement = user?.department?.name === "Руководство";
+    const isAdmin = user?.role?.name === "Администратор";
+    const isSales = user?.department?.name === "Отдел продаж";
+
+    if (!isAdmin && !isManagement && !isSales) {
+        return { error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
+    }
 
     try {
         await db.update(orders)
@@ -707,7 +733,7 @@ export async function getOrderStats(from?: Date, to?: Date) {
     }
 }
 
-export async function updateOrderField(orderId: string, field: string, value: any) {
+export async function updateOrderField(orderId: string, field: string, value: string | number | boolean | null | Date) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -727,14 +753,14 @@ export async function updateOrderField(orderId: string, field: string, value: an
                 throw new Error("У вас нет прав для редактирования этого заказа");
             }
 
-            const updateData: any = {};
+            const updateData: Record<string, unknown> = {};
 
             if (field === "isUrgent") {
                 updateData.isUrgent = Boolean(value);
             } else if (field === "priority") {
                 updateData.priority = String(value);
             } else if (field === "deadline") {
-                updateData.deadline = value ? new Date(value) : null;
+                updateData.deadline = value ? new Date(value as string | number | Date) : null;
             } else if (field === "status") {
                 // For status, we might want to reuse updateOrderStatus logic 
                 // but for simple field update we handle it here if it's just a status change
@@ -747,21 +773,21 @@ export async function updateOrderField(orderId: string, field: string, value: an
 
             await logAction("Быстрое редактирование заказа", "order", orderId, {
                 field,
-                oldValue: (order as any)[field],
-                newValue: value
+                oldValue: String((order as Record<string, unknown>)[field]),
+                newValue: String(value)
             });
         });
 
         revalidatePath("/dashboard/orders");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         await logError({
             error,
             path: "/dashboard/orders",
             method: "updateOrderField",
             details: { orderId, field, value }
         });
-        return { error: error.message || "Failed to update order field" };
+        return { error: error instanceof Error ? error.message : "Failed to update order field" };
     }
 }
 

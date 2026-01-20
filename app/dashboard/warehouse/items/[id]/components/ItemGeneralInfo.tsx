@@ -5,13 +5,10 @@ import {
     Scale,
     Zap,
     Tag,
-    Info,
     CheckCircle2,
-    ClipboardList,
     FileText,
     ArrowUpRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { InventoryItem, AttributeType, InventoryAttribute, MeasurementUnit } from "../../../types";
 
 interface ItemGeneralInfoProps {
@@ -19,7 +16,7 @@ interface ItemGeneralInfoProps {
     isEditing: boolean;
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
-    measurementUnits: MeasurementUnit[];
+    // measurementUnits: MeasurementUnit[]; // unused
     editData: InventoryItem;
     onUpdateField: (field: string, value: string | number | null) => void;
     onUpdateAttribute: (key: string, value: string) => void;
@@ -30,14 +27,14 @@ export function ItemGeneralInfo({
     isEditing,
     attributeTypes,
     allAttributes,
-    measurementUnits,
+    // measurementUnits,
     editData,
     onUpdateField,
     onUpdateAttribute
 }: ItemGeneralInfoProps) {
 
     // Helper to get descriptive name for a code
-    const getAttrLabel = (typeSlug: string, value: any) => {
+    const getAttrLabel = (typeSlug: string, value: string | number | null | undefined) => {
         if (!value) return "—";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
         return attr ? attr.name : value;
@@ -189,7 +186,7 @@ export function ItemGeneralInfo({
                                 </select>
                             ) : (
                                 <div className="text-sm font-bold text-slate-900 truncate">
-                                    {getAttrLabel(param.slug, param.code)}
+                                    {getAttrLabel(param.slug, param.code as string | number | null | undefined)}
                                 </div>
                             )}
                         </div>

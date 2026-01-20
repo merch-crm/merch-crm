@@ -84,7 +84,8 @@ export async function getUsers(page = 1, limit = 20, search = "") {
 
         const data = allUsers.map(user => ({
             ...user,
-            department: user.department?.name || null
+            department: user.department?.name || null,
+            department_color: user.department?.color || null
         }));
 
         return {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, TrendingUp, CheckCircle, PieChart, Loader2, Calendar } from "lucide-react";
 import { getUserStats } from "./stats/actions";
-import { cn } from "@/lib/utils";
+
 
 interface UserStatsDrawerProps {
     userId: string | null;

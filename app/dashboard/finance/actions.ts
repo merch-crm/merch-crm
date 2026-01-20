@@ -293,12 +293,23 @@ export async function getPromocodes() {
             orderBy: [desc(promocodes.createdAt)]
         });
         return { data };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
-export async function createPromocode(data: any) {
+export interface CreatePromocodeData {
+    code: string;
+    discountType: "percentage" | "fixed_amount";
+    value: number | string;
+    minOrderAmount?: number | string;
+    maxDiscountAmount?: number | string;
+    startDate?: string | Date;
+    endDate?: string | Date;
+    usageLimit?: number | null;
+}
+
+export async function createPromocode(data: CreatePromocodeData) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -316,8 +327,8 @@ export async function createPromocode(data: any) {
         }).returning();
 
         return { success: true, data: newPromo };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
@@ -336,8 +347,8 @@ export async function validatePromocode(code: string) {
         if (!promo) return { error: "Промокод не найден или не активен" };
 
         return { success: true, data: promo };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
@@ -348,8 +359,8 @@ export async function togglePromocode(id: string, isActive: boolean) {
     try {
         await db.update(promocodes).set({ isActive }).where(eq(promocodes.id, id));
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
@@ -382,12 +393,19 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
             });
             return { data };
         }
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
-export async function createExpense(data: any) {
+export interface CreateExpenseData {
+    category: string;
+    amount: number | string;
+    description?: string;
+    date?: string | Date;
+}
+
+export async function createExpense(data: CreateExpenseData) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -401,8 +419,8 @@ export async function createExpense(data: any) {
         }).returning();
 
         return { success: true, data: newExpense };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
@@ -453,7 +471,7 @@ export async function getPLReport(from?: Date, to?: Date) {
                 margin: totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0
             }
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error("P&L Report error:", error);
         return { error: "Ошибка при формировании P&L отчета" };
     }

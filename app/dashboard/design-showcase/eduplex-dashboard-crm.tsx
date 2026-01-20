@@ -47,7 +47,7 @@ export default function EduplexDashboardCRM() {
                                     : "text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
-                            {React.cloneElement(item.icon as React.DetailedReactHTMLElement<any, any>, { className: "w-5 h-5" })}
+                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5" })}
                             <span>{item.label}</span>
                             {item.active && <ChevronRight className="ml-auto w-4 h-4" />}
                         </button>

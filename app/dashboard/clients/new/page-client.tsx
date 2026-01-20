@@ -29,7 +29,13 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     const [step, setStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [clientType, setClientType] = useState<"b2c" | "b2b">("b2c");
-    const [duplicates, setDuplicates] = useState<any[]>([]);
+    interface DuplicateClient {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+    }
+    const [duplicates, setDuplicates] = useState<DuplicateClient[]>([]);
     const [ignoreDuplicates, setIgnoreDuplicates] = useState(false);
     const [validationError, setValidationError] = useState("");
 

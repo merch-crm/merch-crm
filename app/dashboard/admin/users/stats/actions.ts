@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { orders, tasks, users } from "@/lib/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 
 export async function getUserStats(userId: string) {

@@ -459,7 +459,7 @@ export async function bulkUpdateClientManager(clientIds: string[], managerId: st
     }
 }
 
-export async function updateClientField(clientId: string, field: string, value: any) {
+export async function updateClientField(clientId: string, field: string, value: string | number | boolean | null) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 

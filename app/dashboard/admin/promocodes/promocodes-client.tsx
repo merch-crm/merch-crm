@@ -7,10 +7,7 @@ import {
     Trash2,
     ToggleLeft,
     ToggleRight,
-    Calendar,
-    Users,
-    Zap,
-    Search
+    Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -166,11 +163,11 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         <form action={async (formData) => {
                             setIsLoading(true);
                             const values = {
-                                code: formData.get("code"),
-                                discountType: formData.get("discountType"),
-                                value: formData.get("value"),
-                                usageLimit: formData.get("usageLimit"),
-                                expiresAt: formData.get("expiresAt")
+                                code: formData.get("code") as string,
+                                discountType: formData.get("discountType") as "percentage" | "fixed_amount",
+                                value: Number(formData.get("value")),
+                                usageLimit: formData.get("usageLimit")?.toString(),
+                                expiresAt: formData.get("expiresAt")?.toString() || null
                             };
                             const res = await createPromocode(values);
                             setIsLoading(false);

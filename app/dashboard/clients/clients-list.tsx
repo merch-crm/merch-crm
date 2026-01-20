@@ -107,7 +107,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         });
     }, []);
 
-    const handleUpdateField = async (clientId: string, field: string, value: any) => {
+    const handleUpdateField = async (clientId: string, field: string, value: string | number | boolean | null) => {
         const res = await updateClientField(clientId, field, value);
         if (res.success) {
             toast("Обновлено", "success", { mutation: true });

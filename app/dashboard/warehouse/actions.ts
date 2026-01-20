@@ -448,7 +448,7 @@ export async function addInventoryItem(formData: FormData) {
                 name,
                 sku: finalSku || null,
                 quantity,
-                unit: unit as any,
+                unit: unit as "pcs" | "liters" | "meters" | "kg" | "шт",
                 itemType: itemType || "clothing",
                 lowStockThreshold,
                 criticalStockThreshold,
@@ -721,7 +721,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             imageSide: imageSideUrl,
             imageDetails: imageDetailsUrls,
             reservedQuantity,
-            unit: unit as any
+            unit: unit as "pcs" | "liters" | "meters" | "kg" | "шт"
         }).where(eq(inventoryItems.id, id));
 
         console.log("UPDATE SUCCESSFUL. Lines affected:", result.rowCount);

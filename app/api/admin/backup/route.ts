@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
         // We use a mapping to ensure we capture everything useful
         const timestamp = new Date().toISOString();
 
-        const backupData: Record<string, any[]> = {};
+        const backupData: Record<string, unknown[]> = {};
 
         // List of tables to dump
         // Using dynamic access to db.select().from(...) might be verbose, 
@@ -32,17 +32,8 @@ export async function GET(req: NextRequest) {
         // For simplicity and coverage using check of keys in schema
 
         // Manual list to ensure order and selection of what matters
-        const tables = [
-            'roles', 'departments', 'users',
-            'clients',
-            'inventoryCategories', 'storageLocations', 'inventoryItems', 'inventoryAttributes', 'inventoryAttributeTypes',
-            'inventoryStocks', 'inventoryTransactions', 'inventoryTransfers',
-            'promocodes', 'orders', 'orderItems', 'payments', 'orderAttachments',
-            'tasks', 'taskChecklists', 'taskComments', 'taskHistory', 'taskAttachments',
-            'notifications', 'expenses',
-            'wikiFolders', 'wikiPages',
-            'systemSettings'
-        ];
+        // const tables = [...]; // Removed unused variable
+
 
         // We can't easily iterate db.query keys safely with typing without being careful.
         // Let's do it explicitly for safety.

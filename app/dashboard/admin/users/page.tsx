@@ -10,7 +10,7 @@ export default async function AdminUsersPage({
     const searchParams = await searchParamsPromise;
     const page = Number(searchParams.page) || 1;
     const search = searchParams.search || "";
-    const limit = 20;
+    const limit = 10;
 
     const { data: users = [], total = 0, error } = await getUsers(page, limit, search);
 

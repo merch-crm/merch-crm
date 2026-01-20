@@ -50,7 +50,7 @@ export default function FocusFlowDashboardCRM() {
                                     : "text-slate-400 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
-                            {React.cloneElement(item.icon as React.DetailedReactHTMLElement<any, any>, { className: "w-5 h-5 shrink-0" })}
+                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5 shrink-0" })}
                             <span className="hidden md:block">{item.label}</span>
                             {item.count && (
                                 <span className="absolute right-3 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[8px] font-bold text-white border-2 border-white shadow-sm">

@@ -20,7 +20,9 @@ interface User {
     isSystem?: boolean;
     role?: {
         name: string;
+        color?: string | null;
     } | null;
+    department_color?: string | null;
 }
 
 interface UsersTableProps {
@@ -156,11 +158,18 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
-                                                <div className={cn(
-                                                    "h-10 w-10 rounded-full flex items-center justify-center transition-colors shadow-sm border",
-                                                    isSelected ? "bg-white border-indigo-200 text-indigo-600" : "bg-slate-50 border-slate-100 text-slate-400"
-                                                )}>
-                                                    <UserIcon className="w-5 h-5" />
+                                                <div
+                                                    className={cn(
+                                                        "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
+                                                        isSelected ? "bg-white border-indigo-200 text-indigo-600 scale-110" : "text-white border-transparent"
+                                                    )}
+                                                    style={{
+                                                        backgroundColor: isSelected
+                                                            ? undefined
+                                                            : (user.role?.color || user.department_color || "#94a3b8")
+                                                    }}
+                                                >
+                                                    <UserIcon className={cn("w-5 h-5", isSelected ? "text-indigo-600" : "text-white")} />
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>

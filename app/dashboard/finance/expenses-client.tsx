@@ -5,7 +5,7 @@ import { CreditCard, Plus, Search, Calendar, Tag, FileText, Trash2, ArrowLeft } 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { createExpense } from "./actions";
+import { createExpense, CreateExpenseData } from "./actions";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -155,7 +155,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+        const data = Object.fromEntries(formData.entries()) as unknown as CreateExpenseData;
 
         try {
             const res = await createExpense(data);

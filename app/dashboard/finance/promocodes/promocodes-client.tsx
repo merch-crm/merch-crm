@@ -5,7 +5,7 @@ import { Tags, Plus, Search, Calendar, Check, X, ShieldCheck, ShieldAlert, Arrow
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { createPromocode, togglePromocode } from "../actions";
+import { createPromocode, togglePromocode, CreatePromocodeData } from "../actions";
 import { useRouter } from "next/navigation";
 
 interface Promocode {
@@ -155,7 +155,7 @@ function AddPromocodeDialog({ onClose, onSuccess }: { onClose: () => void, onSuc
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+        const data = Object.fromEntries(formData.entries()) as unknown as CreatePromocodeData;
 
         try {
             const res = await createPromocode(data);

@@ -8,35 +8,50 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Check, X, Search } from "lucide-react";
 
+interface WikiFolder {
+    id: string;
+    name: string;
+    parentId: string | null;
+}
+
+interface WikiPage {
+    id: string;
+    title: string;
+    content: string | null;
+    folderId: string | null;
+    updatedAt: string | Date;
+    author?: { name: string } | null;
+}
+
 interface WikiClientProps {
-    initialFolders: any[];
-    initialPages: any[];
+    initialFolders: WikiFolder[];
+    initialPages: WikiPage[];
     userRole: string;
 }
 
 export function WikiClient({ initialFolders, initialPages, userRole }: WikiClientProps) {
     const router = useRouter();
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
-    const [pageContent, setPageContent] = useState<any>(null);
+    const [pageContent, setPageContent] = useState<WikiPage | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editData, setEditData] = useState({ title: "", content: "" });
 
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
+    const fetchPageDetail = async (id: string) => {
+        setLoading(true);
+        const page = await getWikiPageDetail(id);
+        setPageContent(page as unknown as WikiPage);
+        setEditData({ title: page?.title || "", content: page?.content || "" });
+        setLoading(false);
+    };
+
     useEffect(() => {
         if (selectedPageId) {
             fetchPageDetail(selectedPageId);
         }
     }, [selectedPageId]);
-
-    const fetchPageDetail = async (id: string) => {
-        setLoading(true);
-        const page = await getWikiPageDetail(id);
-        setPageContent(page);
-        setEditData({ title: page?.title || "", content: page?.content || "" });
-        setLoading(false);
-    };
 
     const handleSave = async () => {
         if (!selectedPageId) return;

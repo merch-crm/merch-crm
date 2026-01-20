@@ -75,6 +75,7 @@ export function ItemHeader({
                         <LayoutGrid className="w-4 h-4" />
                     </button>
                     <div className="w-10 h-10 rounded-[18px] bg-slate-900 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="https://ui-avatars.com/api/?name=Admin&background=0a0a0a&color=fff" alt="User" />
                     </div>
                 </div>

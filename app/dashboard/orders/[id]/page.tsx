@@ -14,12 +14,22 @@ import { getSession } from "@/lib/auth";
 import { RefundDialog } from "./refund-dialog";
 import { Wallet, Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
+import OrderActions from "./order-actions";
 
 interface OrderItem {
     id: string;
     description: string;
     quantity: number;
     price: string;
+}
+
+interface OrderPayment {
+    id: string;
+    amount: string;
+    comment: string | null;
+    isAdvance: boolean;
+    createdAt: string | Date;
+    method: string;
 }
 
 export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
@@ -40,6 +50,9 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
         user?.role?.name === "Администратор" ||
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
+    const canDelete = user?.role?.name === "Администратор" || user?.department?.name === "Руководство";
+    const canArchive = canDelete || ["Отдел продаж"].includes(user?.department?.name || "");
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -58,14 +71,23 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                         </p>
                     </div>
                 </div>
-                <div className="flex gap-4">
-                    <div className="w-48">
-                        <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Приоритет</label>
-                        <PrioritySelect orderId={order.id} currentPriority={order.priority || 'normal'} />
-                    </div>
-                    <div className="w-56">
-                        <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Статус заказа</label>
-                        <StatusSelect orderId={order.id} currentStatus={order.status} />
+                <div className="flex items-center gap-6">
+                    <OrderActions
+                        orderId={order.id}
+                        isArchived={order.isArchived}
+                        canDelete={canDelete}
+                        canArchive={canArchive}
+                    />
+                    <div className="w-px h-12 bg-slate-100 mx-2" />
+                    <div className="flex gap-4">
+                        <div className="w-48">
+                            <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Приоритет</label>
+                            <PrioritySelect orderId={order.id} currentPriority={order.priority || 'normal'} />
+                        </div>
+                        <div className="w-56">
+                            <label className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] block mb-2 px-1">Статус заказа</label>
+                            <StatusSelect orderId={order.id} currentStatus={order.status} />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -216,13 +238,13 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500">Оплачено:</span>
                                     <span className="font-bold text-emerald-600">
-                                        {order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0).toFixed(2) || 0} ₽
+                                        {order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0).toFixed(2) || 0} ₽
                                     </span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
                                     <span className="text-sm font-bold text-slate-900 uppercase tracking-wider">Остаток:</span>
                                     <span className="text-xl font-black text-rose-600">
-                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0) || 0)).toFixed(2)} ₽
+                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} ₽
                                     </span>
                                 </div>
 
@@ -233,7 +255,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                             <Receipt className="w-3 h-3 mr-2" />
                                             История платежей
                                         </div>
-                                        {order.payments.map((p: any) => (
+                                        {order.payments.map((p: OrderPayment) => (
                                             <div key={p.id} className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
                                                 <div className="min-w-0">
                                                     <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
@@ -250,7 +272,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <div className="pt-6">
                                     <RefundDialog
                                         orderId={order.id}
-                                        maxAmount={order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0) || 0}
+                                        maxAmount={order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0}
                                     />
                                 </div>
                             </div>

@@ -103,7 +103,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 bg-white">
-                                    {client.orders.map((order: any) => (
+                                    {client.orders.map((order: { id: string; orderNumber?: string; createdAt: Date; status: string; totalAmount?: string | null }) => (
                                         <tr key={order.id} className="text-sm hover:bg-slate-50/50 transition-colors cursor-pointer block sm:table-row" onClick={() => { }}>
                                             {/* Row click needs client component or Link wrapper, for now simpler */}
                                             <td className="px-6 py-5 font-bold text-slate-900">
