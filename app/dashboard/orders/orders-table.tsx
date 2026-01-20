@@ -6,6 +6,10 @@ import { ru } from "date-fns/locale";
 import StatusBadgeInteractive from "./status-badge-interactive";
 import PriorityBadgeInteractive from "./priority-badge-interactive";
 import { BulkActionsPanel } from "./bulk-actions-panel";
+import { Zap, Archive, ArchiveRestore } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { updateOrderField, toggleOrderArchived } from "./actions";
+import { useToast } from "@/components/ui/toast";
 
 export interface Order {
     id: string;
@@ -22,10 +26,22 @@ interface OrdersTableProps {
     error?: string;
     isAdmin: boolean;
     showFinancials?: boolean;
+    showArchived?: boolean;
+    onToggleArchived?: () => void;
 }
 
-export function OrdersTable({ orders, error, isAdmin, showFinancials }: OrdersTableProps) {
+export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchived, onToggleArchived }: OrdersTableProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const { toast } = useToast();
+
+    const handleUpdateField = async (orderId: string, field: string, value: any) => {
+        const res = await updateOrderField(orderId, field, value);
+        if (res.error) {
+            toast(res.error, "error");
+        } else {
+            toast("Заказ обновлен", "success");
+        }
+    };
 
     const isAllSelected = orders.length > 0 && orders.every(o => selectedIds.includes(o.id));
 
@@ -48,64 +64,103 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials }: OrdersTa
     }
 
     return (
-        <div className="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200 table-fixed">
-                <thead className="bg-gray-50">
-                    <tr>
-                        <th className="w-[50px] px-6 py-3 text-left">
+        <div className="glass-panel overflow-hidden bg-white/60">
+            <table className="min-w-full divide-y divide-slate-100 table-fixed">
+                <thead>
+                    <tr className="bg-slate-50/40">
+                        <th className="w-[60px] px-6 py-4 text-left">
                             <input
                                 type="checkbox"
-                                className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                className="rounded-[6px] border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer h-4 w-4 transition-all"
                                 checked={isAllSelected}
                                 onChange={handleSelectAll}
                             />
                         </th>
-                        <th className="w-[140px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">ID / Дата</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Клиент</th>
+                        <th className="w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">ID / Дата</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-slate-400">Клиент</th>
                         {showFinancials && (
-                            <th className="w-[120px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Сумма</th>
+                            <th className="w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Бюджет</th>
                         )}
-                        <th className="w-[140px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Статус</th>
-                        <th className="w-[120px] px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Приоритет</th>
-                        <th className="w-[100px] px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
+                        <th className="w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">Статус</th>
+                        <th className="w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Приоритет</th>
+                        <th className="w-[120px] px-6 py-4 text-right text-xs font-bold text-slate-400">Действия</th>
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-slate-50">
                     {orders.map((order) => (
                         <tr
                             key={order.id}
                             onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
-                            className={`hover:bg-gray-50 transition-colors cursor-pointer ${selectedIds.includes(order.id) ? 'bg-indigo-50/30' : ''}`}
+                            className={`group hover:bg-white/80 transition-all cursor-pointer ${selectedIds.includes(order.id) ? 'bg-indigo-50/50' : ''}`}
                         >
-                            <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                            <td className="px-6 py-5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                 <input
                                     type="checkbox"
-                                    className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                    className="rounded-[6px] border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer h-4 w-4 transition-all"
                                     checked={selectedIds.includes(order.id)}
                                     onChange={() => handleSelectRow(order.id)}
                                 />
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-slate-900 font-mono">#{order.id.slice(0, 8)}</div>
-                                <div className="text-xs text-slate-500">{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</div>
+                            <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="text-sm font-bold text-slate-900 mb-0.5">ORD-{order.id.slice(0, 6)}</div>
+                                <div className="text-xs font-medium text-slate-400">{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-slate-900">{order.client.name}</div>
-                                <div className="text-xs text-slate-500">Создал: {order.creator?.name}</div>
+                            <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="text-sm font-bold text-slate-900 mb-0.5">{order.client.name}</div>
+                                <div className="text-xs font-medium text-slate-400">Отв: {order.creator?.name || "Система"}</div>
                             </td>
                             {showFinancials && (
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
-                                    {order.totalAmount} ₽
+                                <td className="px-6 py-5 whitespace-nowrap">
+                                    <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[8px]">
+                                        {order.totalAmount} ₽
+                                    </span>
                                 </td>
                             )}
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <StatusBadgeInteractive orderId={order.id} status={order.status} />
+                            <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleUpdateField(order.id, "isUrgent", !(order as any).isUrgent);
+                                        }}
+                                        className={cn(
+                                            "p-1.5 rounded-lg transition-all",
+                                            (order as any).isUrgent
+                                                ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
+                                                : "bg-slate-50 text-slate-400 hover:text-slate-600"
+                                        )}
+                                        title={(order as any).isUrgent ? "Срочно" : "Обычный"}
+                                    >
+                                        <Zap className={cn("w-4 h-4", (order as any).isUrgent && "fill-rose-600")} />
+                                    </button>
+                                    <StatusBadgeInteractive orderId={order.id} status={order.status} />
+                                </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
+                            <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="flex items-center gap-1">
+                                    <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
+                                    {isAdmin && (
+                                        <button
+                                            onClick={async (e) => {
+                                                e.stopPropagation();
+                                                const res = await toggleOrderArchived(order.id, !showArchived);
+                                                if (res.success) {
+                                                    toast(showArchived ? "Заказ восстановлен" : "Заказ архивирован", "success");
+                                                    window.location.reload(); // Quick reach to re-fetch
+                                                }
+                                            }}
+                                            className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                                            title={showArchived ? "Восстановить" : "Архивировать"}
+                                        >
+                                            {showArchived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                                        </button>
+                                    )}
+                                </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                                <a href={`/dashboard/orders/${order.id}`} className="text-indigo-600 hover:text-indigo-900">Открыть</a>
+                            <td className="px-6 py-5 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                <a href={`/dashboard/orders/${order.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-[10px] bg-slate-100 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </a>
                             </td>
                         </tr>
                     ))}

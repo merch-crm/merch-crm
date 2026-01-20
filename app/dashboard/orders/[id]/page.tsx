@@ -4,13 +4,16 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
 import PrioritySelect from "./priority-select";
-import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock, XCircle } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
+import { RefundDialog } from "./refund-dialog";
+import { Wallet, Receipt } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface OrderItem {
     id: string;
@@ -66,6 +69,21 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                     </div>
                 </div>
             </div>
+
+            {/* Cancellation Reason Alert */}
+            {order.status === 'cancelled' && order.cancelReason && (
+                <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 shadow-sm">
+                    <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                            <XCircle className="w-5 h-5 text-rose-600" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-sm font-bold text-rose-900 mb-1">Заказ отменен</h3>
+                            <p className="text-sm text-rose-700 font-medium leading-relaxed">{order.cancelReason}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Content: Items */}
@@ -141,10 +159,17 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             </div>
 
                             <div className="space-y-4 pt-4 border-t border-slate-100">
-                                <a href={`tel:${order.client.phone}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors">
-                                    <Phone className="w-4 h-4 mr-3 text-indigo-500" />
-                                    {order.client.phone}
-                                </a>
+                                {["Печатник", "Дизайнер"].includes(user?.role?.name || "") ? (
+                                    <div className="flex items-center text-sm font-medium text-slate-400 cursor-not-allowed">
+                                        <Phone className="w-4 h-4 mr-3 text-slate-300" />
+                                        HIDDEN
+                                    </div>
+                                ) : (
+                                    <a href={`tel:${order.client.phone}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors">
+                                        <Phone className="w-4 h-4 mr-3 text-indigo-500" />
+                                        {order.client.phone}
+                                    </a>
+                                )}
                                 {order.client.email && (
                                     <a href={`mailto:${order.client.email}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors">
                                         <Mail className="w-4 h-4 mr-3 text-indigo-500" />
@@ -174,6 +199,63 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             </div>
                         </div>
                     </div>
+
+                    {/* Financial Block (Visible to Admin/Sales) */}
+                    {showFinancials && (
+                        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                            <h3 className="font-bold text-slate-900 flex items-center mb-6">
+                                <Wallet className="w-5 h-5 mr-3 text-indigo-500" />
+                                Финансы
+                            </h3>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-500">Общая сумма:</span>
+                                    <span className="font-bold text-slate-900">{order.totalAmount} ₽</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-500">Оплачено:</span>
+                                    <span className="font-bold text-emerald-600">
+                                        {order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0).toFixed(2) || 0} ₽
+                                    </span>
+                                </div>
+                                <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                    <span className="text-sm font-bold text-slate-900 uppercase tracking-wider">Остаток:</span>
+                                    <span className="text-xl font-black text-rose-600">
+                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0) || 0)).toFixed(2)} ₽
+                                    </span>
+                                </div>
+
+                                {/* Payment History */}
+                                {order.payments && order.payments.length > 0 && (
+                                    <div className="mt-8 space-y-3">
+                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center">
+                                            <Receipt className="w-3 h-3 mr-2" />
+                                            История платежей
+                                        </div>
+                                        {order.payments.map((p: any) => (
+                                            <div key={p.id} className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                                <div className="min-w-0">
+                                                    <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
+                                                    <div className="text-[10px] text-slate-400">{format(new Date(p.createdAt), "dd.MM.yy HH:mm")} • {p.method}</div>
+                                                </div>
+                                                <div className={cn("text-xs font-black shrink-0 ml-2", Number(p.amount) < 0 ? "text-rose-600" : "text-slate-900")}>
+                                                    {p.amount} ₽
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="pt-6">
+                                    <RefundDialog
+                                        orderId={order.id}
+                                        maxAmount={order.payments?.reduce((acc: number, p: any) => acc + Number(p.amount), 0) || 0}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Meta Info */}
                     <div className="bg-slate-900 rounded-2xl p-8 shadow-xl text-white">

@@ -8,7 +8,8 @@ import {
     Calendar,
     Clock,
     Edit3,
-    CheckCircle2
+    CheckCircle2,
+    Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProfileForm } from "./profile-form";
@@ -72,6 +73,7 @@ interface StatisticsData {
     monthlyOrders: number;
     tasksByStatus: Array<{ count: number; status: string }>;
     totalActivity: number;
+    efficiency: number;
 }
 
 interface ScheduleTask {
@@ -92,9 +94,9 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
     // Initialize tab from URL
     const tabParam = searchParams.get("p");
-    const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule">(
-        (tabParam && ["profile", "settings", "statistics", "schedule"].includes(tabParam))
-            ? tabParam as "profile" | "settings" | "statistics" | "schedule"
+    const [activeTab, setActiveTab] = useState<"profile" | "settings" | "statistics" | "schedule" | "notifications">(
+        (tabParam && ["profile", "settings", "statistics", "schedule", "notifications"].includes(tabParam))
+            ? tabParam as "profile" | "settings" | "statistics" | "schedule" | "notifications"
             : "profile"
     );
 
@@ -129,7 +131,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
         }
     }, [activeTab, statsData, scheduleData.length]);
 
-    const onTabChange = (tab: "profile" | "settings" | "statistics" | "schedule") => {
+    const onTabChange = (tab: "profile" | "settings" | "statistics" | "schedule" | "notifications") => {
         setActiveTab(tab);
         const params = new URLSearchParams(searchParams.toString());
         params.set("p", tab);
@@ -143,6 +145,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     const tabs = [
         { id: "profile", name: "Профиль", icon: User },
         { id: "settings", name: "Настройки", icon: Settings },
+        { id: "notifications", name: "Уведомления", icon: Bell },
         { id: "statistics", name: "Статистика", icon: BarChart3 },
         { id: "schedule", name: "Заработная плата", icon: Calendar },
     ];
@@ -156,7 +159,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                     return (
                         <button
                             key={tab.id}
-                            onClick={() => onTabChange(tab.id as "profile" | "settings" | "statistics" | "schedule")}
+                            onClick={() => onTabChange(tab.id as "profile" | "settings" | "statistics" | "schedule" | "notifications")}
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-all",
                                 isActive
@@ -362,6 +365,48 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                     ) : (
                         <StatisticsView data={statsData} />
                     )}
+                </div>
+            )}
+
+            {activeTab === "notifications" && (
+                <div className="bg-white rounded-[24px] p-8 shadow-crm-sm border border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Центр уведомлений</h2>
+                            <p className="text-slate-400 text-sm font-bold mt-1">История всех ваших оповещений</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Всего: {activities.length}</span>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {activities.length > 0 ? (
+                            activities.map((activity) => {
+                                const Icon = IconMap[activity.iconName] || User;
+                                return (
+                                    <div key={activity.id} className="group flex items-center gap-6 p-6 rounded-[18px] bg-slate-50/50 border border-transparent hover:border-slate-200 hover:bg-white hover:shadow-xl transition-all duration-500">
+                                        <div className={cn(
+                                            "h-12 w-12 rounded-[14px] flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110",
+                                            activity.color
+                                        )}>
+                                            <Icon className="w-5 h-5" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-base font-bold text-slate-900 truncate">{activity.text}</div>
+                                            <div className="text-xs text-slate-400 font-bold mt-0.5 uppercase tracking-wider">{activity.time}</div>
+                                        </div>
+                                        <div className="h-2 w-2 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="text-center py-20 bg-slate-50/50 rounded-[18px] border-2 border-dashed border-slate-200">
+                                <Bell className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                                <p className="text-sm font-bold text-slate-300">Уведомлений пока нет</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
 

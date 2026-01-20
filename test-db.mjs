@@ -1,1 +1,0 @@
-import { Pool } from "pg"; import dotenv from "dotenv"; dotenv.config(); const pool = new Pool({ connectionString: process.env.DATABASE_URL }); pool.query("SELECT email, name FROM users").then(res => { console.log(JSON.stringify(res.rows)); process.exit(0); }).catch(e => { console.error(e); process.exit(1); })

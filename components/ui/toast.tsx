@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ToastType = "success" | "error" | "info" | "warning" | "destructive";
+
+interface ToastAction {
+    label: string;
+    onClick: () => void;
+}
 
 interface ToastProps {
     message: string;
     type?: ToastType;
     duration?: number;
+    action?: ToastAction;
     onClose: () => void;
 }
 
-export function Toast({ message, type = "info", duration = 4000, onClose }: ToastProps) {
+export function Toast({ message, type = "info", duration = 4000, action, onClose }: ToastProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -48,13 +54,29 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
     return (
         <div
             className={cn(
-                "fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 ease-out flex items-center gap-3 px-6 py-4 rounded-[2rem] border backdrop-blur-md shadow-2xl",
+                "fixed left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 ease-out flex items-center gap-3 px-6 py-4 rounded-[2rem] border backdrop-blur-md shadow-2xl",
+                "top-4 sm:top-auto sm:bottom-8",
                 styles[type],
-                isVisible ? "translate-y-0 opacity-100 scale-100" : "translate-y-12 opacity-0 scale-95"
+                isVisible ? "translate-y-0 opacity-100 scale-100" : "-translate-y-12 sm:translate-y-12 opacity-0 scale-95"
             )}
         >
             <div className="flex-shrink-0">{icons[type]}</div>
             <p className="text-sm font-bold tracking-tight whitespace-nowrap">{message}</p>
+
+            {action && (
+                <button
+                    onClick={() => {
+                        action.onClick();
+                        setIsVisible(false);
+                        setTimeout(onClose, 300);
+                    }}
+                    className="ml-4 px-3 py-1 rounded-full bg-white/50 hover:bg-white text-[10px] font-black uppercase tracking-widest text-slate-900 transition-all flex items-center gap-1.5"
+                >
+                    <Undo2 className="w-3 h-3" />
+                    {action.label}
+                </button>
+            )}
+
             <button
                 onClick={() => {
                     setIsVisible(false);
@@ -68,22 +90,43 @@ export function Toast({ message, type = "info", duration = 4000, onClose }: Toas
     );
 }
 
-let toastFn: (message: string, type?: ToastType) => void = () => { };
+interface ToastState {
+    message: string;
+    type: ToastType;
+    id: number;
+    action?: ToastAction;
+}
+
+let toastFn: (message: string, type?: ToastType, options?: { action?: ToastAction, mutation?: boolean }) => void = () => { };
 
 const toastApi = {
-    toast: (message: string, type?: ToastType) => toastFn(message, type),
+    toast: (message: string, type?: ToastType, options?: { action?: ToastAction, mutation?: boolean }) => toastFn(message, type, options),
 };
 
 export function useToast() {
     return toastApi;
 }
 
+import { triggerMutation } from "../global-undo";
+
 export function ToastContainer() {
-    const [activeToast, setActiveToast] = useState<{ message: string; type: ToastType; id: number } | null>(null);
+    const [activeToast, setActiveToast] = useState<ToastState | null>(null);
 
     useEffect(() => {
-        toastFn = (message: string, type: ToastType = "info") => {
-            setActiveToast({ message, type, id: Date.now() });
+        toastFn = (message: string, type: ToastType = "info", options = {}) => {
+            setActiveToast({ message, type, id: Date.now(), action: options.action });
+
+            if (options.mutation) {
+                triggerMutation();
+            }
+
+            // Play sound for success and warning
+            if (type === "success" || type === "warning") {
+                const audio = new Audio("/sounds/notification.mp3");
+                audio.play().catch(() => {
+                    // Ignore errors as browsers might block autoplay
+                });
+            }
         };
     }, []);
 
@@ -96,6 +139,7 @@ export function ToastContainer() {
             key={activeToast.id}
             message={activeToast.message}
             type={activeToast.type}
+            action={activeToast.action}
             onClose={handleClose}
         />
     );

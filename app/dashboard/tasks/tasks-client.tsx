@@ -15,19 +15,8 @@ import { TaskAnalytics } from "./task-analytics";
 import { TaskDetailsDialog } from "./task-details-dialog";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Task } from "./types";
 
-interface Task {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToRoleId?: string | null;
-    assignedToDepartmentId?: string | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-}
 
 interface User {
     id: string;
@@ -43,11 +32,12 @@ interface TasksClientProps {
     initialTasks: Task[];
     users: User[];
     departments: Department[];
+    orders: any[];
     currentUserId: string;
     currentUserDepartmentId?: string | null;
 }
 
-export function TasksClient({ initialTasks, users, departments, currentUserId, currentUserDepartmentId }: TasksClientProps) {
+export function TasksClient({ initialTasks, users, departments, orders, currentUserId, currentUserDepartmentId }: TasksClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
@@ -126,7 +116,7 @@ export function TasksClient({ initialTasks, users, departments, currentUserId, c
                                 className="pl-12 pr-6 py-3.5 bg-white border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 w-full sm:w-64 transition-all"
                             />
                         </div>
-                        <CreateTaskDialog users={users} departments={departments} />
+                        <CreateTaskDialog users={users} departments={departments} orders={orders} />
                     </div>
                 </div>
 

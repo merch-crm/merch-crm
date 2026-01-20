@@ -9,6 +9,7 @@ import {
     Paintbrush,
     Settings2,
     Truck,
+    XCircle,
     Zap,
     ChevronDown,
     Printer,
@@ -51,7 +52,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await bulkUpdateOrderStatus(selectedIds, status as any);
         if (res.success) {
-            toast(`Статус обновлен для ${selectedIds.length} заказов`, "success");
+            toast(`Статус обновлен для ${selectedIds.length} заказов`, "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -63,7 +64,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         setIsProcessing(true);
         const res = await bulkUpdateOrderPriority(selectedIds, priority);
         if (res.success) {
-            toast(`Приоритет обновлен для ${selectedIds.length} заказов`, "success");
+            toast(`Приоритет обновлен для ${selectedIds.length} заказов`, "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -76,7 +77,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         try {
             const res = await bulkDeleteOrders(selectedIds);
             if (res.success) {
-                toast(`Удалено ${selectedIds.length} заказов`, "success");
+                toast(`Удалено ${selectedIds.length} заказов`, "success", { mutation: true });
                 onClear();
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
@@ -130,6 +131,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                             <StatusMenuItem icon={Settings2} color="text-amber-500" label="Производство" onClick={() => handleStatusUpdate("production")} />
                             <StatusMenuItem icon={CheckCircle2} color="text-emerald-500" label="Готов" onClick={() => handleStatusUpdate("done")} />
                             <StatusMenuItem icon={Truck} color="text-slate-500" label="Отправлен" onClick={() => handleStatusUpdate("shipped")} />
+                            <StatusMenuItem icon={XCircle} color="text-rose-500" label="Отменен" onClick={() => handleStatusUpdate("cancelled")} />
                         </DropdownMenuContent>
                     </DropdownMenu>
 

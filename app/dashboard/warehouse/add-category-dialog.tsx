@@ -63,7 +63,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center justify-center"
+                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[18px] px-6 gap-2 font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95 inline-flex items-center justify-center"
             >
                 <FolderPlus className="w-5 h-5" />
                 {buttonText}
@@ -76,11 +76,11 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                         onClick={() => setIsOpen(false)}
                     />
 
-                    <div className="relative w-full max-w-6xl bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
+                    <div className="relative w-full max-w-6xl bg-white rounded-[18px] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
                         <div className="flex items-center justify-between p-10 pb-6 shrink-0">
                             <div>
-                                <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                                    <div className={cn("w-10 h-10 rounded-[14px] flex items-center justify-center transition-all duration-500", getColorStyles(selectedColor))}>
+                                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                                    <div className={cn("w-10 h-10 rounded-[18px] flex items-center justify-center transition-all duration-500", getColorStyles(selectedColor))}>
                                         {(() => {
                                             const Icon = ICONS.find(i => i.name === selectedIcon)?.icon || Package;
                                             return <Icon className="w-6 h-6" />;
@@ -92,7 +92,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                             </div>
                             <button
                                 type="button"
-                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[14px] bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
+                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <X className="h-6 w-6" />
@@ -104,7 +104,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                 {/* LEFT COLUMN: Basic Info */}
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="space-y-2 col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Название категории</label>
+                                        <label className="text-[10px] font-semibold text-slate-500 ml-1">Название категории</label>
                                         <input
                                             name="name"
                                             required
@@ -118,7 +118,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                                 }
                                             }}
                                             className={cn(
-                                                "w-full h-14 px-6 rounded-[14px] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-lg",
+                                                "input-premium w-full px-6 rounded-[18px] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-lg",
                                                 fieldErrors.name
                                                     ? "border-rose-300 bg-rose-50/50 focus:border-rose-500 focus:ring-rose-500/10"
                                                     : "border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50/50 hover:bg-white"
@@ -131,32 +131,32 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
 
                                     <div className="grid grid-cols-2 gap-4 col-span-2">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Единственное число</label>
+                                            <label className="text-[10px] font-semibold text-slate-500 ml-1">Единственное число</label>
                                             <input
                                                 name="singularName"
                                                 placeholder="Напр. Футболка"
-                                                className="w-full h-14 px-6 rounded-[14px] border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                                className="w-full h-14 px-6 rounded-[18px] border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Множественное число</label>
+                                            <label className="text-[10px] font-semibold text-slate-500 ml-1">Множественное число</label>
                                             <input
                                                 name="pluralName"
                                                 placeholder="Напр. Футболки"
-                                                className="w-full h-14 px-6 rounded-[14px] border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
+                                                className="w-full h-14 px-6 rounded-[18px] border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2 col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Грамматический род</label>
+                                        <label className="text-[10px] font-semibold text-slate-500 ml-1">Грамматический род</label>
                                         <div className="grid grid-cols-3 gap-2">
                                             {[
                                                 { id: 'masculine', label: 'Мужской (он)', hint: 'Белый' },
                                                 { id: 'feminine', label: 'Женский (она)', hint: 'Белая' },
                                                 { id: 'neuter', label: 'Средний (оно)', hint: 'Белое' }
                                             ].map((g) => (
-                                                <label key={g.id} className="relative flex flex-col items-center justify-center p-3 rounded-[14px] border-2 cursor-pointer transition-all border-slate-100 bg-slate-50/30 hover:bg-slate-50 hover:border-slate-200 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/50">
+                                                <label key={g.id} className="relative flex flex-col items-center justify-center p-3 rounded-[18px] border-2 cursor-pointer transition-all border-slate-100 bg-slate-50/30 hover:bg-slate-50 hover:border-slate-200 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/50">
                                                     <input
                                                         type="radio"
                                                         name="gender"
@@ -164,7 +164,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                                         defaultChecked={g.id === 'masculine'}
                                                         className="sr-only"
                                                     />
-                                                    <span className="text-[10px] font-black uppercase tracking-wider mb-1 text-slate-400 peer-checked:text-indigo-600">{g.label}</span>
+                                                    <span className="text-[10px] font-bold mb-1 text-slate-400 peer-checked:text-indigo-600">{g.label}</span>
                                                     <span className="text-[12px] font-bold text-slate-500">{g.hint}</span>
                                                 </label>
                                             ))}
@@ -172,13 +172,13 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 tracking-widest ml-1 uppercase">Артикул</label>
+                                        <label className="text-[10px] font-semibold text-slate-500 ml-1">Артикул</label>
                                         <input
                                             name="prefix"
                                             required
                                             placeholder="TS"
                                             className={cn(
-                                                "w-full h-14 px-6 rounded-[14px] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-center tracking-widest uppercase",
+                                                "input-premium w-full px-6 rounded-[18px] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-center",
                                                 fieldErrors.prefix
                                                     ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
                                                     : "border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50/50 hover:bg-white"
@@ -192,21 +192,21 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Приоритет</label>
+                                        <label className="text-xs font-semibold text-slate-500 ml-1">Приоритет</label>
                                         <input
                                             type="number"
                                             name="sortOrder"
                                             defaultValue={0}
-                                            className="w-full h-12 px-4 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
+                                            className="input-premium w-full px-4 rounded-[18px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center"
                                         />
                                     </div>
 
                                     <div className="space-y-2 col-span-2">
-                                        <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Описание</label>
+                                        <label className="text-xs font-semibold text-slate-500 ml-1">Описание</label>
                                         <textarea
                                             name="description"
                                             placeholder="Краткое описание для сайта..."
-                                            className="w-full min-h-[140px] p-5 rounded-[14px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
+                                            className="w-full min-h-[140px] p-5 rounded-[18px] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
                                         />
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                 <div className="space-y-8">
                                     {parentId && (
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black text-slate-400 tracking-widest ml-1 uppercase">Родительская категория</label>
+                                            <label className="text-xs font-semibold text-slate-500 ml-1">Родительская категория</label>
                                             <CategorySelect
                                                 categories={categories}
                                                 value={selectedParentId}
@@ -226,14 +226,14 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                         </div>
                                     )}
 
-                                    <div className="p-6 bg-white rounded-[14px] border border-slate-100 shadow-sm space-y-6 min-h-[220px] flex flex-col justify-center">
+                                    <div className="p-6 bg-white rounded-[18px] border border-slate-100 shadow-sm space-y-6 min-h-[220px] flex flex-col justify-center">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-5">
                                                 <div className={cn("w-16 h-16 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm", selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300")}>
                                                     {createElement(getCategoryIcon({ icon: selectedIcon, name: categoryName }), { className: "w-8 h-8" })}
                                                 </div>
                                                 <div>
-                                                    <span className="text-xs font-black text-slate-400 tracking-widest block leading-none mb-1.5 uppercase">ИКОНКА</span>
+                                                    <span className="text-xs font-bold text-slate-500 block leading-none mb-1.5">ИКОНКА</span>
                                                     <span className="text-[14px] font-bold text-slate-700 block leading-none">
                                                         {ICONS.find(i => i.name === selectedIcon)?.label || "Не выбрана"}
                                                     </span>
@@ -247,7 +247,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                                         setExpandedGroupId(getIconGroupForIcon(selectedIcon)?.id || ICON_GROUPS[0].id);
                                                     }
                                                 }}
-                                                className="h-12 px-6 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-500 group active:scale-95 shadow-sm"
+                                                className="h-12 px-6 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2 text-[10px] font-bold text-slate-500 group active:scale-95 shadow-sm"
                                             >
                                                 {showIcons ? (
                                                     <>Свернуть <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600" /></>
@@ -258,7 +258,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                         </div>
 
                                         <div className="space-y-4 pt-2">
-                                            <span className="text-[10px] font-black text-slate-400 tracking-widest block uppercase">Цвет карточки</span>
+                                            <span className="text-[10px] font-bold text-slate-500 block">Цвет карточки</span>
                                             <div className="flex flex-wrap gap-2.5">
                                                 {colors.map((color) => {
                                                     const isSelected = selectedColor === color.name;
@@ -282,7 +282,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                     </div>
 
                                     {showIcons && (
-                                        <div className="p-8 bg-slate-50/50 rounded-[14px] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
+                                        <div className="p-8 bg-slate-50/50 rounded-[18px] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
                                             <div className="grid grid-cols-1 gap-4">
                                                 {ICON_GROUPS.map((group) => {
                                                     const isExpanded = expandedGroupId === group.id;
@@ -292,18 +292,18 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                                                 type="button"
                                                                 onClick={() => setExpandedGroupId(isExpanded ? null : group.id)}
                                                                 className={cn(
-                                                                    "w-full flex items-center justify-between h-12 px-5 rounded-[14px] transition-all border",
+                                                                    "w-full flex items-center justify-between h-12 px-5 rounded-[18px] transition-all border",
                                                                     isExpanded
                                                                         ? "bg-white border-slate-200 text-slate-900 shadow-sm"
                                                                         : "bg-transparent border-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600 hover:border-slate-100"
                                                                 )}
                                                             >
-                                                                <span className="text-[11px] font-black tracking-[0.15em] uppercase">{group.label}</span>
+                                                                <span className="text-[11px] font-bold">{group.label}</span>
                                                                 <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", isExpanded && "rotate-180")} />
                                                             </button>
 
                                                             {isExpanded && (
-                                                                <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-[14px] shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
+                                                                <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-[18px] shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
                                                                     {group.icons.map((item) => {
                                                                         const Icon = item.icon;
                                                                         const isSelected = selectedIcon === item.name;
@@ -337,7 +337,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                                     )}
 
                                     {error && (
-                                        <div className="p-5 rounded-[14px] bg-rose-50 border border-rose-100 text-rose-600 text-sm font-bold flex items-center gap-3 animate-in slide-in-from-top-2">
+                                        <div className="p-5 rounded-[18px] bg-rose-50 border border-rose-100 text-rose-600 text-sm font-bold flex items-center gap-3 animate-in slide-in-from-top-2">
                                             <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
                                             {error}
                                         </div>
@@ -346,7 +346,7 @@ export function AddCategoryDialog({ categories, parentId, buttonText = "Доба
                             </div>
                         </form>
 
-                        <div className="shrink-0 p-10 border-t border-slate-100 bg-slate-50/10 rounded-b-[14px]">
+                        <div className="shrink-0 p-10 border-t border-slate-100 bg-slate-50/10 rounded-b-[18px]">
                             <SubmitButton
                                 form="add-category-form"
                                 label={parentId ? "Создать подкатегорию" : "Создать категорию"}

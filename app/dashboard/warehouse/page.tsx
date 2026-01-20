@@ -67,10 +67,10 @@ export default async function WarehousePage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                <div className="space-y-2">
-                    <h1 className="text-[32px] font-black text-[#0f172a] tracking-tight leading-tight">Складской учёт</h1>
-                    <p className="text-[#64748b] text-lg font-normal leading-relaxed">
-                        Управление остатками товаров и расходных материалов
+                <div className="space-y-1">
+                    <h1 className="text-4xl font-bold text-slate-900 leading-none">Склад</h1>
+                    <p className="text-slate-400 text-sm font-medium">
+                        Центральный узел логистики
                     </p>
                 </div>
             </div>

@@ -66,7 +66,7 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
             >
                 <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${activePriority.bgColor} shadow-[0_0_8px_rgba(0,0,0,0.1)] group-hover:scale-125 transition-transform ${priorityId === 'high' ? 'animate-pulse' : ''}`} />
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-[0.15em]">
+                    <span className="text-xs font-bold text-slate-900">
                         {activePriority.label}
                     </span>
                 </div>

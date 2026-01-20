@@ -1,0 +1,128 @@
+"use server";
+
+import { db } from "@/lib/db";
+import { wikiFolders, wikiPages } from "@/lib/schema";
+import { eq, and, asc, desc } from "drizzle-orm";
+import { getSession } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+
+// --- Folders ---
+
+export async function getWikiFolders() {
+    try {
+        const folders = await db.query.wikiFolders.findMany({
+            orderBy: [asc(wikiFolders.sortOrder), asc(wikiFolders.name)],
+        });
+        return folders;
+    } catch (error) {
+        console.error("Error fetching wiki folders:", error);
+        return [];
+    }
+}
+
+export async function createWikiFolder(name: string, parentId: string | null = null) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const [newFolder] = await db.insert(wikiFolders).values({
+            name,
+            parentId,
+        }).returning();
+
+        revalidatePath("/dashboard/knowledge-base");
+        return { success: true, folder: newFolder };
+    } catch (error: any) {
+        console.error("Error creating wiki folder:", error);
+        return { error: error.message };
+    }
+}
+
+// --- Pages ---
+
+export async function getWikiPages(folderId?: string) {
+    try {
+        const where = folderId ? eq(wikiPages.folderId, folderId) : undefined;
+        const pages = await db.query.wikiPages.findMany({
+            where,
+            orderBy: [desc(wikiPages.updatedAt)],
+            with: {
+                author: true,
+            }
+        });
+        return pages;
+    } catch (error) {
+        console.error("Error fetching wiki pages:", error);
+        return [];
+    }
+}
+
+export async function getWikiPageDetail(id: string) {
+    try {
+        const page = await db.query.wikiPages.findFirst({
+            where: eq(wikiPages.id, id),
+            with: {
+                author: true,
+                folder: true,
+            }
+        });
+        return page;
+    } catch (error) {
+        console.error("Error fetching wiki page detail:", error);
+        return null;
+    }
+}
+
+export async function createWikiPage(data: { title: string, content: string, folderId: string | null }) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const [newPage] = await db.insert(wikiPages).values({
+            ...data,
+            createdBy: session.id,
+        }).returning();
+
+        revalidatePath("/dashboard/knowledge-base");
+        return { success: true, page: newPage };
+    } catch (error: any) {
+        console.error("Error creating wiki page:", error);
+        return { error: error.message };
+    }
+}
+
+export async function updateWikiPage(id: string, data: { title?: string, content?: string, folderId?: string | null }) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(wikiPages)
+            .set({
+                ...data,
+                updatedAt: new Date()
+            })
+            .where(eq(wikiPages.id, id));
+
+        revalidatePath("/dashboard/knowledge-base");
+        revalidatePath(`/dashboard/knowledge-base/${id}`);
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Error updating wiki page:", error);
+        return { error: error.message };
+    }
+}
+
+export async function deleteWikiPage(id: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.delete(wikiPages).where(eq(wikiPages.id, id));
+        revalidatePath("/dashboard/knowledge-base");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Error deleting wiki page:", error);
+        return { error: error.message };
+    }
+}

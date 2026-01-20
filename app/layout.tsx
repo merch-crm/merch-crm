@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "@/components/ui/toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { getBrandingSettings } from "@/app/dashboard/admin/branding/actions";
 
-export const metadata: Metadata = {
-  title: "MerchCRM",
-  description: "CRM система для типографии",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const branding = await getBrandingSettings();
+  return {
+    title: (branding as any)?.companyName || "MerchCRM",
+    description: "CRM система для типографии",
+    icons: {
+      icon: (branding as any)?.faviconUrl || "/icon.png",
+    },
+  };
+}
+
+import { BrandingProvider } from "@/components/branding-provider";
 
 export default function RootLayout({
   children,
@@ -24,11 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light" style={{ colorScheme: 'light' }} suppressHydrationWarning>
+    <html lang="ru" className={`light ${manrope.variable}`} style={{ colorScheme: 'light' }} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
-        {children}
+        <BrandingProvider>
+          {children}
+        </BrandingProvider>
         <ToastContainer />
       </body>
     </html>

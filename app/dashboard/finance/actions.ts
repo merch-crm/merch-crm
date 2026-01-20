@@ -1,9 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, users } from "@/lib/schema";
+import { orders, users, promocodes, payments, expenses } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
+import { and, gte, lte, sql, eq, desc, or } from "drizzle-orm";
+import { subDays } from "date-fns";
 import { logError } from "@/lib/error-logger";
 
 export interface FinancialStats {
@@ -278,5 +279,182 @@ export async function getFundsStats(from?: Date, to?: Date) {
         });
         console.error("Funds stats error:", error);
         return { error: "Ошибка при загрузке данных по фондам" };
+    }
+}
+
+// --- Promocodes ---
+
+export async function getPromocodes() {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const data = await db.query.promocodes.findMany({
+            orderBy: [desc(promocodes.createdAt)]
+        });
+        return { data };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function createPromocode(data: any) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const [newPromo] = await db.insert(promocodes).values({
+            code: data.code.toUpperCase(),
+            discountType: data.discountType,
+            value: String(data.value),
+            minOrderAmount: String(data.minOrderAmount || 0),
+            maxDiscountAmount: String(data.maxDiscountAmount || 0),
+            startDate: data.startDate ? new Date(data.startDate) : null,
+            expiresAt: data.endDate ? new Date(data.endDate) : null,
+            usageLimit: data.usageLimit || null,
+            isActive: true,
+        }).returning();
+
+        return { success: true, data: newPromo };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function validatePromocode(code: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const promo = await db.query.promocodes.findFirst({
+            where: and(
+                eq(promocodes.code, code.toUpperCase()),
+                eq(promocodes.isActive, true)
+            )
+        });
+
+        if (!promo) return { error: "Промокод не найден или не активен" };
+
+        return { success: true, data: promo };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function togglePromocode(id: string, isActive: boolean) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(promocodes).set({ isActive }).where(eq(promocodes.id, id));
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+// --- Payments & Expenses ---
+
+export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        if (type === 'payment') {
+            const whereClause = [];
+            if (from) whereClause.push(gte(payments.createdAt, from));
+            if (to) whereClause.push(lte(payments.createdAt, to));
+
+            const data = await db.query.payments.findMany({
+                where: whereClause.length > 0 ? and(...whereClause) : undefined,
+                with: { order: { with: { client: true } } },
+                orderBy: [desc(payments.createdAt)]
+            });
+            return { data };
+        } else {
+            const whereClause = [];
+            if (from) whereClause.push(gte(expenses.createdAt, from));
+            if (to) whereClause.push(lte(expenses.createdAt, to));
+
+            const data = await db.query.expenses.findMany({
+                where: whereClause.length > 0 ? and(...whereClause) : undefined,
+                orderBy: [desc(expenses.createdAt)]
+            });
+            return { data };
+        }
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function createExpense(data: any) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const [newExpense] = await db.insert(expenses).values({
+            category: data.category as any,
+            amount: String(data.amount),
+            description: data.description,
+            date: data.date ? new Date(data.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            createdBy: session.id
+        }).returning();
+
+        return { success: true, data: newExpense };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function getPLReport(from?: Date, to?: Date) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const fromDate = from || subDays(new Date(), 30);
+        const toDate = to || new Date();
+
+        // 1. Revenue (Payments received)
+        const revenueStats = await db.select({
+            total: sql<number>`sum(amount)`
+        })
+            .from(payments)
+            .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate)));
+
+        // 2. Direct Costs (Cost of goods sold - hypothetical from order costs)
+        const orderCosts = await db.select({
+            total: sql<number>`sum(total_amount * 0.7)` // Assuming 70% COGS for now
+        })
+            .from(orders)
+            .where(and(gte(orders.createdAt, fromDate), lte(orders.createdAt, toDate), eq(orders.status, 'done')));
+
+        // 3. Overhead Expenses
+        const overheadStats = await db.select({
+            total: sql<number>`sum(amount)`,
+            categories: sql<any>`json_agg(json_build_object('category', category, 'amount', amount))`
+        })
+            .from(expenses)
+            .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)));
+
+        const totalRevenue = Number(revenueStats[0]?.total || 0);
+        const totalCOGS = Number(orderCosts[0]?.total || 0);
+        const totalOverhead = Number(overheadStats[0]?.total || 0);
+
+        const grossProfit = totalRevenue - totalCOGS;
+        const netProfit = grossProfit - totalOverhead;
+
+        return {
+            data: {
+                totalRevenue,
+                totalCOGS,
+                grossProfit,
+                totalOverhead,
+                netProfit,
+                margin: totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0
+            }
+        };
+    } catch (error: any) {
+        console.error("P&L Report error:", error);
+        return { error: "Ошибка при формировании P&L отчета" };
     }
 }

@@ -18,10 +18,15 @@ export default async function TasksPage() {
 
     if (!userData) redirect("/login");
 
-    const [tasksRes, usersRes, departmentsRes] = await Promise.all([
+    const [tasksRes, usersRes, departmentsRes, ordersRes] = await Promise.all([
         getTasks(),
         getUsers(),
-        db.query.departments.findMany()
+        db.query.departments.findMany(),
+        db.query.orders.findMany({
+            with: { client: true },
+            orderBy: (orders, { desc }) => [desc(orders.createdAt)],
+            limit: 50
+        })
     ]);
 
     return (
@@ -29,6 +34,7 @@ export default async function TasksPage() {
             initialTasks={tasksRes.data || []}
             users={usersRes.data || []}
             departments={departmentsRes || []}
+            orders={ordersRes || []}
             currentUserId={userData.id}
             currentUserDepartmentId={userData.departmentId}
         />

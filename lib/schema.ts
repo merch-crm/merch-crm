@@ -38,6 +38,14 @@ export const taskPriorityEnum = pgEnum("task_priority", [
     "high",
 ]);
 
+export const taskTypeEnum = pgEnum("task_type", [
+    "design",
+    "production",
+    "acquisition",
+    "delivery",
+    "other",
+]);
+
 export const notificationTypeEnum = pgEnum("notification_type", [
     "info",
     "warning",
@@ -75,6 +83,16 @@ export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
     "consumables"
 ]);
 
+export const clientTypeEnum = pgEnum("client_type", ["b2c", "b2b"]);
+
+export const measurementUnitEnum = pgEnum("measurement_unit", ["pcs", "liters", "meters", "kg", "шт"]);
+
+export const paymentMethodEnum = pgEnum("payment_method", ["cash", "bank", "online", "account"]);
+
+export const expenseCategoryEnum = pgEnum("expense_category", ["rent", "salary", "purchase", "tax", "other"]);
+
+export const productionStageStatusEnum = pgEnum("production_stage_status", ["pending", "in_progress", "done", "failed"]);
+
 export const inventoryAttributes = pgTable("inventory_attributes", {
     id: uuid("id").defaultRandom().primaryKey(),
     type: text("type").notNull(), // 'color' or 'material'
@@ -101,6 +119,7 @@ export const roles = pgTable("roles", {
     permissions: jsonb("permissions").notNull().default('{}'),
     isSystem: boolean("is_system").default(false).notNull(),
     departmentId: uuid("department_id").references(() => departments.id),
+    color: text("color"), // Roles can override department colors
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -138,6 +157,7 @@ export const users = pgTable("users", {
 // Clients
 export const clients = pgTable("clients", {
     id: uuid("id").defaultRandom().primaryKey(),
+    clientType: clientTypeEnum("client_type").default("b2c").notNull(),
     lastName: text("last_name").notNull(),
     firstName: text("first_name").notNull(),
     patronymic: text("patronymic"),
@@ -151,7 +171,9 @@ export const clients = pgTable("clients", {
     address: text("address"),
     comments: text("comments"),
     socialLink: text("social_link"),
+    acquisitionSource: text("acquisition_source"),
     managerId: uuid("manager_id").references(() => users.id),
+    isArchived: boolean("is_archived").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -181,7 +203,7 @@ export const inventoryItems = pgTable("inventory_items", {
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
     itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
-    unit: text("unit").default("шт").notNull(), // pcs, meters, etc.
+    unit: measurementUnitEnum("unit").default("pcs").notNull(),
     lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
     criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
@@ -205,6 +227,7 @@ export const inventoryItems = pgTable("inventory_items", {
 // Orders
 export const orders = pgTable("orders", {
     id: uuid("id").defaultRandom().primaryKey(),
+    orderNumber: text("order_number").notNull().unique(),
     clientId: uuid("client_id")
         .references(() => clients.id)
         .notNull(),
@@ -213,9 +236,14 @@ export const orders = pgTable("orders", {
     totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).default(
         "0"
     ),
+    advanceAmount: decimal("advance_amount", { precision: 10, scale: 2 }).default("0"),
     priority: text("priority").default("normal"), // low, normal, high
+    isUrgent: boolean("is_urgent").default(false).notNull(),
     deadline: timestamp("deadline"),
+    promocodeId: uuid("promocode_id").references(() => promocodes.id),
     createdBy: uuid("created_by").references(() => users.id),
+    isArchived: boolean("is_archived").default(false).notNull(),
+    cancelReason: text("cancel_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -229,6 +257,11 @@ export const orderItems = pgTable("order_items", {
     quantity: integer("quantity").notNull(),
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
     inventoryId: uuid("inventory_id").references(() => inventoryItems.id),
+    // Production stages
+    stagePrepStatus: productionStageStatusEnum("stage_prep_status").default("pending").notNull(),
+    stagePrintStatus: productionStageStatusEnum("stage_print_status").default("pending").notNull(),
+    stageApplicationStatus: productionStageStatusEnum("stage_application_status").default("pending").notNull(),
+    stagePackagingStatus: productionStageStatusEnum("stage_packaging_status").default("pending").notNull(),
 });
 
 // Inventory Transactions
@@ -254,11 +287,43 @@ export const tasks = pgTable("tasks", {
     description: text("description"),
     status: taskStatusEnum("status").default("new").notNull(),
     priority: taskPriorityEnum("priority").default("normal").notNull(),
+    type: taskTypeEnum("type").default("other").notNull(),
+    orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }),
     assignedToUserId: uuid("assigned_to_user_id").references(() => users.id),
     assignedToRoleId: uuid("assigned_to_role_id").references(() => roles.id),
     assignedToDepartmentId: uuid("assigned_to_department_id").references(() => departments.id),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     dueDate: timestamp("due_date"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Task Checklists
+export const taskChecklists = pgTable("task_checklists", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
+    content: text("content").notNull(),
+    isCompleted: boolean("is_completed").default(false).notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Task History / Activities
+export const taskHistory = pgTable("task_history", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    type: text("type").notNull(), // 'status_change', 'priority_change', 'assignment', etc.
+    oldValue: text("old_value"),
+    newValue: text("new_value"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Task Comments
+export const taskComments = pgTable("task_comments", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -316,15 +381,6 @@ export const securityEvents = pgTable("security_events", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Measurement Units
-export const measurementUnits = pgTable("measurement_units", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    name: text("name").notNull().unique(), // шт, кг, м, etc.
-    fullName: text("full_name"), // Штуки, Килограммы, Метры
-    description: text("description"),
-    isActive: boolean("is_active").default(true).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-});
 
 // System Errors
 export const systemErrors = pgTable("system_errors", {
@@ -369,6 +425,64 @@ export const orderAttachments = pgTable("order_attachments", {
     fileSize: integer("file_size"),
     contentType: text("content_type"),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Payments
+export const payments = pgTable("payments", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }).notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    method: paymentMethodEnum("method").notNull(),
+    isAdvance: boolean("is_advance").default(false).notNull(),
+    comment: text("comment"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Expenses
+export const expenses = pgTable("expenses", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    category: expenseCategoryEnum("category").notNull(),
+    description: text("description"),
+    date: date("date").notNull(),
+    createdBy: uuid("created_by").references(() => users.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Promocodes
+export const promocodes = pgTable("promocodes", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    code: text("code").notNull().unique(),
+    discountType: text("discount_type").notNull(), // 'percentage' or 'fixed'
+    value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+    minOrderAmount: decimal("min_order_amount", { precision: 10, scale: 2 }).default("0"),
+    maxDiscountAmount: decimal("max_discount_amount", { precision: 10, scale: 2 }).default("0"),
+    startDate: timestamp("start_date"),
+    expiresAt: timestamp("expires_at"),
+    usageLimit: integer("usage_limit"),
+    usageCount: integer("usage_count").default(0).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Wiki Folders
+export const wikiFolders = pgTable("wiki_folders", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    parentId: uuid("parent_id").references((): AnyPgColumn => wikiFolders.id),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Wiki Pages
+export const wikiPages = pgTable("wiki_pages", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    folderId: uuid("folder_id").references(() => wikiFolders.id),
+    title: text("title").notNull(),
+    content: text("content"),
+    createdBy: uuid("created_by").references(() => users.id),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -421,6 +535,12 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
         references: [users.id],
     }),
     attachments: many(orderAttachments),
+    tasks: many(tasks),
+    payments: many(payments),
+    promocode: one(promocodes, {
+        fields: [orders.promocodeId],
+        references: [promocodes.id],
+    }),
 }));
 
 export const orderAttachmentsRelations = relations(orderAttachments, ({ one }) => ({
@@ -544,7 +664,32 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
         references: [users.id],
         relationName: "createdTasks",
     }),
+    order: one(orders, {
+        fields: [tasks.orderId],
+        references: [orders.id],
+    }),
     attachments: many(taskAttachments),
+    checklists: many(taskChecklists),
+    comments: many(taskComments),
+    history: many(taskHistory),
+}));
+
+export const taskChecklistsRelations = relations(taskChecklists, ({ one }) => ({
+    task: one(tasks, {
+        fields: [taskChecklists.taskId],
+        references: [tasks.id],
+    }),
+}));
+
+export const taskCommentsRelations = relations(taskComments, ({ one }) => ({
+    task: one(tasks, {
+        fields: [taskComments.taskId],
+        references: [tasks.id],
+    }),
+    user: one(users, {
+        fields: [taskComments.userId],
+        references: [users.id],
+    }),
 }));
 
 export const taskAttachmentsRelations = relations(taskAttachments, ({ one }) => ({
@@ -597,6 +742,17 @@ export const clientsRelations = relations(clients, ({ one, many }) => ({
     orders: many(orders),
 }));
 
+export const taskHistoryRelations = relations(taskHistory, ({ one }) => ({
+    task: one(tasks, {
+        fields: [taskHistory.taskId],
+        references: [tasks.id],
+    }),
+    user: one(users, {
+        fields: [taskHistory.userId],
+        references: [users.id],
+    }),
+}));
+
 export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
     user: one(users, {
         fields: [auditLogs.userId],
@@ -614,6 +770,40 @@ export const securityEventsRelations = relations(securityEvents, ({ one }) => ({
 export const systemErrorsRelations = relations(systemErrors, ({ one }) => ({
     user: one(users, {
         fields: [systemErrors.userId],
+        references: [users.id],
+    }),
+}));
+
+export const paymentsRelations = relations(payments, ({ one }) => ({
+    order: one(orders, {
+        fields: [payments.orderId],
+        references: [orders.id],
+    }),
+}));
+
+export const promocodesRelations = relations(promocodes, ({ many }) => ({
+    orders: many(orders),
+}));
+
+export const wikiFoldersRelations = relations(wikiFolders, ({ one, many }) => ({
+    parent: one(wikiFolders, {
+        fields: [wikiFolders.parentId],
+        references: [wikiFolders.id],
+        relationName: "folderHierarchy",
+    }),
+    children: many(wikiFolders, {
+        relationName: "folderHierarchy",
+    }),
+    pages: many(wikiPages),
+}));
+
+export const wikiPagesRelations = relations(wikiPages, ({ one }) => ({
+    folder: one(wikiFolders, {
+        fields: [wikiPages.folderId],
+        references: [wikiFolders.id],
+    }),
+    author: one(users, {
+        fields: [wikiPages.createdBy],
         references: [users.id],
     }),
 }));

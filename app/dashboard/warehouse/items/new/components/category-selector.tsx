@@ -29,12 +29,12 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
             <div className="max-w-6xl mx-auto w-full space-y-6">
                 {!hideTitle && (
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                        <div className="w-12 h-12 rounded-[18px] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
                             <LayoutGrid className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Выберите тип позиции</h2>
-                            <p className="text-[11px] text-slate-500 font-bold uppercase tracking-widest opacity-60">От типа зависят доступные поля и характеристики</p>
+                            <h2 className="text-2xl font-bold text-slate-900">Выберите тип позиции</h2>
+                            <p className="text-[11px] text-slate-500 font-bold opacity-60">От типа зависят доступные поля и характеристики</p>
                         </div>
                     </div>
                 )}
@@ -55,14 +55,14 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     key={category.id}
                                     onClick={() => onSelect(category)}
                                     className={cn(
-                                        "group flex flex-row items-center gap-3 p-3 rounded-[14px] border transition-all text-left shadow-sm hover:shadow-md",
+                                        "group flex flex-row items-center gap-3 p-3 rounded-[18px] border transition-all text-left shadow-sm hover:shadow-md",
                                         selectedCategoryId === category.id
-                                            ? "border-indigo-600 bg-indigo-50/50 shadow-indigo-100"
-                                            : "border-slate-200 bg-white hover:border-indigo-300 hover:bg-slate-50/50"
+                                            ? "border-slate-900 bg-slate-50 shadow-md"
+                                            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 duration-300",
+                                        "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 duration-300",
                                         colorStyle
                                     )}>
                                         {createElement(IconComponent, { className: "w-5 h-5" })}
@@ -82,21 +82,21 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 key={category.id}
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center gap-2 p-3 rounded-[14px] border-2 transition-all text-center",
+                                    "group flex flex-col items-center gap-2 p-3 rounded-[18px] border-2 transition-all text-center",
                                     selectedCategoryId === category.id
-                                        ? "border-indigo-600 bg-indigo-50/50 shadow-xl shadow-indigo-100/50 scale-[1.02]"
-                                        : "border-slate-100 bg-white hover:border-indigo-300 hover:bg-slate-50/50"
+                                        ? "border-slate-900 bg-slate-50 shadow-lg scale-[1.02]"
+                                        : "border-slate-100 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                                 )}
                             >
                                 <div className={cn(
-                                    "w-14 h-14 rounded-[14px] flex items-center justify-center shrink-0 border-2 transition-transform group-hover:scale-110 duration-500 shadow-md",
+                                    "w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0 border-2 transition-transform group-hover:scale-110 duration-500 shadow-md",
                                     colorStyle
                                 )}>
                                     {createElement(IconComponent, { className: "w-7 h-7" })}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-lg font-black text-slate-900 tracking-tight mb-1">
+                                    <h3 className="text-lg font-bold text-slate-900 mb-1">
                                         {category.name}
                                     </h3>
                                     {category.description && (
@@ -106,7 +106,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-2 text-indigo-600 font-bold text-sm group-hover:gap-3 transition-all">
+                                <div className="flex items-center gap-2 text-slate-900 font-bold text-sm group-hover:gap-3 transition-all">
                                     <span>Выбрать</span>
                                     <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </div>

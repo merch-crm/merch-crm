@@ -19,7 +19,7 @@ export async function logAction(
             action,
             entityType,
             entityId,
-            details,
+            details: details || null,
         });
     } catch (error) {
         console.error("Failed to log action:", error);

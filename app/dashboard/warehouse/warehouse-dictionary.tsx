@@ -50,7 +50,7 @@ function CategorySelectDropdown({
             <DropdownMenuTrigger asChild>
                 <button
                     type="button"
-                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 bg-white flex items-center justify-between hover:border-indigo-400 transition-all outline-none group"
+                    className="w-full h-11 px-4 rounded-[18px] border border-slate-200 bg-white flex items-center justify-between hover:border-indigo-400 transition-all outline-none group"
                 >
                     <div className="flex items-center gap-2">
                         <div className={cn(
@@ -68,14 +68,14 @@ function CategorySelectDropdown({
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-                className="w-[var(--radix-dropdown-menu-trigger-width)] bg-white border border-slate-200 rounded-[14px] p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] z-[150] animate-in fade-in zoom-in-95 duration-200"
+                className="w-[var(--radix-dropdown-menu-trigger-width)] bg-white border border-slate-200 rounded-[18px] p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] z-[150] animate-in fade-in zoom-in-95 duration-200"
                 align="start"
                 sideOffset={8}
             >
                 <DropdownMenuItem
                     onClick={() => onChange("uncategorized")}
                     className={cn(
-                        "flex items-center justify-between px-3 py-2.5 rounded-[12px] text-sm font-bold transition-all cursor-pointer outline-none",
+                        "flex items-center justify-between px-3 py-2.5 rounded-[18px] text-sm font-bold transition-all cursor-pointer outline-none",
                         (value === "uncategorized" || !value) ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                     )}
                 >
@@ -90,7 +90,7 @@ function CategorySelectDropdown({
                             key={cat.id}
                             onClick={() => onChange(cat.id)}
                             className={cn(
-                                "flex items-center justify-between px-3 py-2.5 rounded-[12px] text-sm font-bold transition-all cursor-pointer outline-none",
+                                "flex items-center justify-between px-3 py-2.5 rounded-[18px] text-sm font-bold transition-all cursor-pointer outline-none",
                                 isSelected ? "bg-indigo-50 text-indigo-600" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
@@ -446,7 +446,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
     return (
         <div className="space-y-8 pb-20">
             {/* Category Tabs */}
-            <div className="bg-slate-100/50 p-1.5 rounded-2xl inline-flex gap-1 border border-slate-200 flex-wrap">
+            <div className="bg-slate-100/50 p-1.5 rounded-[18px] inline-flex gap-1 border border-slate-200 flex-wrap">
                 {rootCategories.map((cat) => (
                     <button
                         key={cat.id}
@@ -481,7 +481,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Характеристики: {activeCategoryName}</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 ">Характеристики: {activeCategoryName}</h2>
                             <p className="text-slate-500">Управление значениями списков</p>
                         </div>
                         <div className="flex gap-2">
@@ -504,7 +504,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     }
                                 }}
                                 disabled={isSyncingCategories}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-[14px] font-bold text-sm hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-[18px] font-bold text-sm hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50"
                             >
                                 <RefreshCw className={cn("w-4 h-4", isSyncingCategories && "animate-spin")} />
                                 <span className="hidden sm:inline">Синхронизировать категории</span>
@@ -524,7 +524,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                         toast("Ошибка при обновлении", "error");
                                     }
                                 }}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-[14px] font-bold text-sm hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-[18px] font-bold text-sm hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
                             >
                                 <RefreshCw className="w-4 h-4" />
                                 <span className="hidden sm:inline">Обновить SKU</span>
@@ -536,7 +536,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     setNewTypeSlug("");
                                     setIsSlugManuallyEdited(false);
                                 }}
-                                className="bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-md text-slate-700 hover:text-indigo-600 px-5 py-2.5 rounded-[14px] font-bold text-sm transition-all active:scale-95 flex items-center gap-2"
+                                className="bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-md text-slate-700 hover:text-indigo-600 px-5 py-2.5 rounded-[18px] font-bold text-sm transition-all active:scale-95 flex items-center gap-2"
                             >
                                 <Plus className="w-4 h-4" />
                                 Новый тип
@@ -568,14 +568,14 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                 >
                                     <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-[14px] bg-slate-100 text-slate-600 flex items-center justify-center shadow-inner">
+                                            <div className="w-10 h-10 rounded-[18px] bg-slate-100 text-slate-600 flex items-center justify-center shadow-inner">
                                                 <span className="font-bold text-lg leading-none pt-0.5">{type.name[0]}</span>
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-slate-800 leading-tight">{type.name}</h3>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-[10px] font-mono text-slate-400">{type.slug}</span>
-                                                    {type.isSystem && <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SYS</span>}
+                                                    {type.isSystem && <span className="text-[10px] font-bold  text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SYS</span>}
                                                 </div>
                                             </div>
                                         </div>
@@ -601,7 +601,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                                         <span className="w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0" style={{ backgroundColor: (attr.meta as { hex?: string })?.hex || "#000" }} />
                                                     ) : (
                                                         <span className={cn(
-                                                            "w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shadow-sm border border-slate-100 flex-shrink-0 overflow-hidden tracking-tight bg-white text-slate-600"
+                                                            "w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shadow-sm border border-slate-100 flex-shrink-0 overflow-hidden  bg-white text-slate-600"
                                                         )}>
                                                             {["size", "material"].includes(type.slug)
                                                                 ? attr.value
@@ -678,7 +678,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     }
                                 }}
                                 placeholder="Например: Тип рукава"
-                                className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400"
+                                className="w-full h-11 px-4 rounded-[18px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400"
                             />
                         </div>
                         <div className="space-y-2">
@@ -690,7 +690,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     setIsSlugManuallyEdited(true);
                                 }}
                                 placeholder="Например: sleeve_type"
-                                className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono placeholder:text-slate-400"
+                                className="w-full h-11 px-4 rounded-[18px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono placeholder:text-slate-400"
                             />
                         </div>
                         <Switch
@@ -727,7 +727,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                 <input
                                     value={editTypeName}
                                     onChange={e => setEditTypeName(e.target.value)}
-                                    className="w-full h-11 px-4 rounded-[14px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+                                    className="w-full h-11 px-4 rounded-[18px] border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -740,7 +740,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                             </div>
                         </div>
 
-                        <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div className="mt-4 p-4 bg-slate-50 rounded-[18px] border border-slate-100">
                             <Switch
                                 checked={editTypeIsSystem}
                                 onChange={setEditTypeIsSystem}
@@ -754,7 +754,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
 
                     <div className="flex-1 overflow-y-auto px-6 py-6 bg-slate-50/50">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wider">Значения ({editingTypeValues.length})</h3>
+                            <h3 className="text-sm font-bold text-slate-600 ">Значения ({editingTypeValues.length})</h3>
                             <button
                                 onClick={() => editingTypeLatest && openAddValue(editingTypeLatest.slug)}
                                 className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 font-bold flex items-center gap-1 transition-colors"
@@ -846,7 +846,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
             <Dialog open={isValueDialogOpen} onOpenChange={setIsValueDialogOpen}>
                 <DialogContent className="sm:max-w-[425px] z-[9999] overflow-hidden flex flex-col max-h-[90vh] p-0 gap-0" style={{ zIndex: 9999 }}>
                     <DialogHeader className="p-6 pb-2 shrink-0">
-                        <DialogTitle className="text-xl font-black">{editingAttribute ? "Редактировать значение" : "Добавить значение"}</DialogTitle>
+                        <DialogTitle className="text-xl font-bold">{editingAttribute ? "Редактировать значение" : "Добавить значение"}</DialogTitle>
                         <DialogDescription className="text-xs">
                             Для характеристики: <span className="font-bold text-indigo-600">{attributeTypes.find(t => t.slug === targetTypeSlug)?.name}</span>
                         </DialogDescription>
@@ -856,7 +856,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         <div className="space-y-3.5">
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Название</label>
+                                    <label className="text-[10px] font-bold text-slate-400  ml-1">Название</label>
                                     <input
                                         value={newItemName}
                                         onChange={e => {
@@ -871,7 +871,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Код (SKU)</label>
+                                    <label className="text-[10px] font-bold text-slate-400  ml-1">Код (SKU)</label>
                                     <input
                                         value={newItemCode}
                                         onChange={e => {
@@ -879,14 +879,14 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                             setIsCodeManuallyEdited(true);
                                         }}
                                         placeholder="BLU"
-                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono uppercase transition-all placeholder:text-slate-400 text-sm font-bold"
+                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-mono transition-all placeholder:text-slate-400 text-sm font-bold"
                                     />
                                 </div>
                             </div>
 
                             {targetTypeSlug === "color" && (
-                                <div className="space-y-1.5 p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Цвет (HEX)</label>
+                                <div className="space-y-1.5 p-3 bg-slate-50 rounded-[18px] border border-slate-100">
+                                    <label className="text-[10px] font-bold text-slate-400  ml-1">Цвет (HEX)</label>
                                     <div className="flex items-center gap-3">
                                         <div className="relative w-10 h-10 shrink-0">
                                             <input
@@ -903,17 +903,17 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                         <input
                                             value={newItemColorHex}
                                             onChange={e => setNewItemColorHex(e.target.value)}
-                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 font-mono uppercase focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400 text-sm font-bold bg-white"
+                                            className="w-full h-10 px-4 rounded-xl border border-slate-200 font-mono focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all placeholder:text-slate-400 text-sm font-bold bg-white"
                                         />
                                     </div>
                                 </div>
                             )}
 
-                            <div className="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 space-y-3">
-                                <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Склонения (для авто-имени)</label>
+                            <div className="p-4 bg-indigo-50/30 rounded-[18px] border border-indigo-100/50 space-y-3">
+                                <label className="text-[10px] font-bold text-indigo-400  ml-1">Склонения (для авто-имени)</label>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Она (жен.)</label>
+                                        <label className="text-[10px] font-bold text-slate-400 ">Она (жен.)</label>
                                         <input
                                             value={newItemFemName}
                                             onChange={e => setNewItemFemName(e.target.value)}
@@ -922,7 +922,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Оно (ср.)</label>
+                                        <label className="text-[10px] font-bold text-slate-400 ">Оно (ср.)</label>
                                         <input
                                             value={newItemNeutName}
                                             onChange={e => setNewItemNeutName(e.target.value)}
@@ -956,7 +956,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         {editingAttribute ? (
                             <button
                                 onClick={() => setAttributeToDelete(editingAttribute)}
-                                className="h-10 px-3 text-rose-500 hover:bg-rose-50 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-colors"
+                                className="h-10 px-3 text-rose-500 hover:bg-rose-50 rounded-xl text-xs font-bold  flex items-center gap-2 transition-colors"
                             >
                                 <Trash className="w-4 h-4" /> Удалить
                             </button>
@@ -964,14 +964,14 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setIsValueDialogOpen(false)}
-                                className="h-10 px-4 text-slate-500 hover:text-slate-900 text-xs font-black uppercase tracking-widest"
+                                className="h-10 px-4 text-slate-500 hover:text-slate-900 text-xs font-bold "
                             >
                                 Отмена
                             </button>
                             <button
                                 onClick={handleValueSave}
                                 disabled={isSaving}
-                                className="h-10 px-6 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
+                                className="h-10 px-6 bg-indigo-600 text-white rounded-xl text-xs font-bold  hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
                             >
                                 {isSaving && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
                                 Сохранить
@@ -1011,7 +1011,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 flex flex-col gap-3">
                             <div className="flex items-center gap-2 text-rose-600">
                                 <Lock className="w-4 h-4" />
-                                <span className="text-[11px] font-black uppercase tracking-wider">Системная защита</span>
+                                <span className="text-[11px] font-bold ">Системная защита</span>
                             </div>
                             <p className="text-xs font-bold text-rose-500/80 leading-relaxed">
                                 Это системный раздел. Для подтверждения удаления введите пароль администратора.

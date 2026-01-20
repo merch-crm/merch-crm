@@ -6,17 +6,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSam
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-interface Task {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToRoleId?: string | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-}
+import { Task } from "./types";
 
 interface CalendarViewProps {
     tasks: Task[];

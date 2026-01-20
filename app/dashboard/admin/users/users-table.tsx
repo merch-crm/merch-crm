@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { User as UserIcon, Trash2, Edit, Users, Building, Search, X } from "lucide-react";
+import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2 } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { AddUserDialog } from "./add-user-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
+import { UserStatsDrawer } from "./user-stats-drawer";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [deletingUser, setDeletingUser] = useState<User | null>(null);
     const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [viewingStatsUser, setViewingStatsUser] = useState<User | null>(null);
     const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
 
     const createQueryString = useCallback(
@@ -178,6 +180,13 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                         <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
+                                                    onClick={() => setViewingStatsUser(user)}
+                                                    className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-lg transition-all"
+                                                    title="Статистика"
+                                                >
+                                                    <BarChart2 className="w-4 h-4" />
+                                                </button>
+                                                <button
                                                     onClick={() => setEditingUser(user)}
                                                     className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-lg transition-all"
                                                 >
@@ -229,6 +238,12 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                     setEditingUser(null);
                     router.refresh();
                 }}
+            />
+
+            <UserStatsDrawer
+                isOpen={!!viewingStatsUser}
+                userId={viewingStatsUser?.id || null}
+                onClose={() => setViewingStatsUser(null)}
             />
         </div >
     );

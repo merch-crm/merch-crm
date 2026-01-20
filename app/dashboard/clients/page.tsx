@@ -1,16 +1,7 @@
-import { AddClientDialog } from "./add-client-dialog";
+import Link from "next/link";
+import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown, ChevronRight, Home } from "lucide-react";
 import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions";
-import {
-    Users,
-    UserPlus,
-    CreditCard,
-    BarChart3,
-    ChevronRight,
-    Home,
-    TrendingUp,
-    TrendingDown
-} from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 import { db } from "@/lib/db";
@@ -77,45 +68,44 @@ export default async function ClientsPage() {
     ].filter(card => card.visible);
 
     return (
-        <div className="space-y-6">
-            {/* Breadcrumbs */}
-            <nav className="flex items-center text-sm text-slate-500 gap-2">
-                <Home className="w-4 h-4 cursor-pointer hover:text-slate-800" />
-                <ChevronRight className="w-4 h-4" />
-                <span className="font-medium text-slate-800">Клиенты</span>
-            </nav>
-
-            <div className="flex flex-col gap-6">
-                <div className="sm:flex sm:items-center sm:justify-between">
+        <div className="space-y-4">
+            <div className="flex flex-col gap-4">
+                <div className="sm:flex sm:items-end sm:justify-between px-1">
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Управление клиентами</h1>
-                        <p className="text-slate-500 text-sm font-medium mt-1">
-                            Управляйте клиентской базой и отслеживайте взаимодействия
+                        <h1 className="text-4xl font-bold text-slate-900 leading-none">Клиенты</h1>
+                        <p className="text-slate-500 text-[13px] font-medium mt-3">
+                            База контрагентов и история взаимодействий
                         </p>
                     </div>
                     <div className="mt-4 sm:mt-0">
-                        <AddClientDialog />
+                        <Link
+                            href="/dashboard/clients/new"
+                            className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Добавить клиента
+                        </Link>
                     </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-4`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-[var(--crm-grid-gap)]`}>
                     {statCards.map((item) => (
-                        <Card key={item.name} className="p-4 border border-slate-100 shadow-sm rounded-xl bg-white flex flex-col justify-between h-32 hover:shadow-md transition-shadow">
+                        <div key={item.name} className="crm-card p-6 bg-white flex flex-col justify-between h-36 hover:-translate-y-1 transition-all duration-500 group border-none">
                             <div className="flex justify-between items-start">
-                                <div className={`h-8 w-8 rounded-lg flex items-center justify-center bg-slate-50`}>
-                                    <item.icon className={`h-4 w-4 ${item.iconColor}`} />
+                                <div className={`h-10 w-10 rounded-[var(--radius-inner)] flex items-center justify-center bg-slate-50 shadow-inner group-hover:scale-110 transition-transform duration-500`}>
+                                    <item.icon className={`h-5 w-5 ${item.iconColor}`} />
                                 </div>
-                                <div className={`flex items-center text-[10px] font-bold ${item.isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                    {item.isPositive ? <TrendingUp className="w-3 h-3 mr-0.5" /> : <TrendingDown className="w-3 h-3 mr-0.5" />}
+                                <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${item.isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                    {item.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                                     {item.trend}
                                 </div>
                             </div>
-                            <div className="mt-2">
-                                <p className="text-2xl font-black text-slate-900 leading-none">{item.value}</p>
-                                <p className="text-[11px] font-bold text-slate-400 mt-2 uppercase tracking-tight">{item.name}</p>
+                            <div>
+                                <p className="text-slate-500 text-[11px] font-semibold mb-2">{item.name}</p>
+                                <p className="text-3xl font-bold text-slate-900 leading-none">{item.value}</p>
                             </div>
-                        </Card>
+                        </div>
                     ))}
                 </div>
 

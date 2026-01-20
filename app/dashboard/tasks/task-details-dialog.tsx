@@ -19,63 +19,20 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { Task } from "./types";
 import {
     toggleTaskStatus,
     deleteTask,
     uploadTaskFile,
+    addTaskComment,
+    addTaskChecklistItem,
+    toggleChecklistItem,
+    deleteChecklistItem,
 } from "./actions";
 import { useTransition, useRef, useState, useEffect } from "react";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-interface Attachment {
-    id: string;
-    fileName: string;
-    fileUrl: string;
-    fileSize: number;
-    contentType: string;
-}
-
-interface Comment {
-    id: string;
-    content: string;
-    createdAt: Date | string;
-    user: { name: string, avatar?: string | null };
-}
-
-interface ChecklistItem {
-    id: string;
-    title: string;
-    isCompleted: boolean;
-}
-
-interface Activity {
-    id: string;
-    type: string;
-    oldValue?: string | null;
-    newValue?: string | null;
-    createdAt: Date | string;
-    user: { name: string };
-}
-
-interface Task {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToDepartmentId?: string | null;
-    assignedToUser?: { name: string, avatar?: string | null } | null;
-    assignedToDepartment?: { name: string } | null;
-    creator?: { name: string } | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-    attachments?: Attachment[];
-    comments?: Comment[];
-    checklist?: ChecklistItem[];
-    activities?: Activity[];
-}
 
 interface TaskDetailsDialogProps {
     task: Task;
@@ -157,25 +114,47 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     };
 
     const handleAddComment = () => {
-        // Disabled
+        if (!newComment.trim()) return;
+        startTransition(async () => {
+            const res = await addTaskComment(task.id, newComment.trim());
+            if (res.success) {
+                setNewComment("");
+                toast("Комментарий добавлен", "success");
+            } else {
+                toast(res.error || "Ошибка", "error");
+            }
+        });
     };
 
     const handleAddChecklistItem = () => {
-        // Disabled
+        if (!newChecklistItem.trim()) return;
+        startTransition(async () => {
+            const res = await addTaskChecklistItem(task.id, newChecklistItem.trim());
+            if (res.success) {
+                setNewChecklistItem("");
+                toast("Пункт добавлен", "success");
+            } else {
+                toast(res.error || "Ошибка", "error");
+            }
+        });
     };
 
     const handleToggleChecklist = (id: string, completed: boolean) => {
-        void id;
-        void completed;
-        // Disabled
+        startTransition(async () => {
+            const res = await toggleChecklistItem(id, completed);
+            if (!res.success) toast(res.error || "Ошибка", "error");
+        });
     };
 
     const handleDeleteChecklist = (id: string) => {
-        void id;
-        // Disabled
+        startTransition(async () => {
+            const res = await deleteChecklistItem(id);
+            if (!res.success) toast(res.error || "Ошибка", "error");
+            else toast("Пункт удален", "success");
+        });
     };
 
-    const getActivityLabel = (activity: Activity) => {
+    const getActivityLabel = (activity: any) => {
         switch (activity.type) {
             case 'status_change': return `заменил статус с ${activity.oldValue} на ${activity.newValue}`;
             case 'comment_add': return `добавил комментарий`;
@@ -253,9 +232,9 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 )}
                             >
                                 {tab.label}
-                                {tab.id === 'checklist' && task.checklist && task.checklist.length > 0 && (
+                                {tab.id === 'checklist' && task.checklists && task.checklists.length > 0 && (
                                     <span className="ml-2 px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded-md text-[10px]">
-                                        {task.checklist.filter(i => i.isCompleted).length}/{task.checklist.length}
+                                        {task.checklists.filter(i => i.isCompleted).length}/{task.checklists.length}
                                     </span>
                                 )}
                                 {tab.id === 'comments' && task.comments && task.comments.length > 0 && (
@@ -365,11 +344,11 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             className="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all group"
                                         >
                                             <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-indigo-50 transition-colors">
-                                                {getFileIcon(file.contentType)}
+                                                {getFileIcon(file.contentType || "")}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-xs font-black text-slate-900 truncate">{file.fileName}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{formatSize(file.fileSize)}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{formatSize(file.fileSize || 0)}</p>
                                             </div>
                                             <Download className="w-4 h-4 text-slate-200 group-hover:text-indigo-400 transition-colors" />
                                         </a>
@@ -405,7 +384,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             </div>
 
                             <div className="space-y-2">
-                                {task.checklist?.map((item) => (
+                                {task.checklists?.map((item) => (
                                     <div
                                         key={item.id}
                                         className="group flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all"
@@ -425,7 +404,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             "flex-1 text-sm font-bold text-slate-700",
                                             item.isCompleted && "line-through text-slate-400"
                                         )}>
-                                            {item.title}
+                                            {item.content}
                                         </span>
                                         <button
                                             onClick={() => handleDeleteChecklist(item.id)}
@@ -491,7 +470,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
 
                     {activeTab === 'history' && (
                         <div className="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
-                            {task.activities?.map((activity) => (
+                            {task.history?.map((activity) => (
                                 <div key={activity.id} className="relative">
                                     <div className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-white border-2 border-indigo-500 z-10" />
                                     <div className="space-y-1">

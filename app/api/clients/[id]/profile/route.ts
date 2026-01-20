@@ -32,6 +32,13 @@ export async function GET(
             return NextResponse.json({ error: "Client not found" }, { status: 404 });
         }
 
+        const userRole = session?.roleName;
+        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
+
+        if (shouldHidePhone) {
+            client.phone = "HIDDEN";
+        }
+
         // Fetch client's orders
         const clientOrders = await db.query.orders.findMany({
             where: eq(orders.clientId, id),

@@ -460,6 +460,7 @@ export async function updateRole(roleId: string, formData: FormData) {
 
     const name = formData.get("name") as string;
     const departmentId = formData.get("departmentId") as string;
+    const color = formData.get("color") as string || null;
 
     if (!name) {
         return { error: "Название роли обязательно" };
@@ -477,7 +478,8 @@ export async function updateRole(roleId: string, formData: FormData) {
         await db.update(roles)
             .set({
                 name,
-                departmentId: departmentId || null
+                departmentId: departmentId || null,
+                color: color
             })
             .where(eq(roles.id, roleId));
 
@@ -487,7 +489,7 @@ export async function updateRole(roleId: string, formData: FormData) {
             action: `Редактирование роли: ${name}`,
             entityType: "role",
             entityId: roleId,
-            details: { name, departmentId }
+            details: { name, departmentId, color }
         });
 
         revalidatePath("/dashboard/admin/roles");
@@ -585,6 +587,7 @@ export async function createRole(formData: FormData) {
 
     const name = formData.get("name") as string;
     const departmentId = formData.get("departmentId") as string;
+    const color = formData.get("color") as string || null;
 
     const permissionsJson = formData.get("permissions") as string;
     let permissions: Record<string, unknown> = {};
@@ -605,7 +608,8 @@ export async function createRole(formData: FormData) {
             name,
             permissions,
             isSystem: false,
-            departmentId: departmentId || null
+            departmentId: departmentId || null,
+            color: color
         }).returning();
 
         const newRole = result[0];
@@ -1428,16 +1432,76 @@ export async function updateSystemSetting(key: string, value: string | number | 
         revalidatePath("/dashboard/admin/settings");
         return { success: true };
     } catch (error) {
-        await logError({
-            error,
-            path: `/dashboard/admin/settings/${key}`,
-            method: "updateSystemSetting",
-            details: { key, value }
+        console.error("Error updating system setting:", error);
+        return { error: "Failed to update setting" };
+    }
+}
+
+export async function getBrandingAction() {
+    try {
+        const setting = await db.query.systemSettings.findFirst({
+            where: eq(systemSettings.key, "branding")
         });
-        console.error("Update setting error:");
-        return {
-            error: "Ошибка при обновлении настроек"
+
+        const defaultBranding = {
+            companyName: "MerchCRM",
+            logoUrl: null,
+            primary_color: "#5d00ff",
+            faviconUrl: null,
+            radius_outer: 24,
+            radius_inner: 14
         };
+
+        if (!setting) return { data: defaultBranding };
+
+        // Handle both camelCase and snake_case for compatibility
+        const val = setting.value as Record<string, unknown>;
+        return {
+            data: {
+                ...defaultBranding,
+                ...val,
+                primary_color: (val.primary_color as string) || (val.primaryColor as string) || "#5d00ff"
+            }
+        };
+    } catch (error) {
+        console.error("Error fetching branding:", error);
+        return { data: { primary_color: "#5d00ff" } };
+    }
+}
+
+export async function updateBrandingAction(data: Record<string, unknown>) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        // Ensure primary_color is saved
+        const saveData = { ...data };
+        if (saveData.primaryColor && !saveData.primary_color) {
+            saveData.primary_color = saveData.primaryColor;
+        }
+
+        await db.insert(systemSettings)
+            .values({ key: "branding", value: saveData })
+            .onConflictDoUpdate({
+                target: systemSettings.key,
+                set: { value: saveData, updatedAt: new Date() }
+            });
+
+        revalidatePath("/", "layout");
+        await logAction("Изменение внешнего вида системы", "system", "branding", saveData);
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating branding:", error);
+        return { error: "Failed to update branding" };
     }
 }
 export async function clearRamAction() {

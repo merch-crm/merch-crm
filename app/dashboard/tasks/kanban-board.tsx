@@ -15,19 +15,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
 
-interface Task {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToDepartmentId?: string | null;
-    assignedToUser?: { name: string } | null;
-    assignedToDepartment?: { name: string } | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-}
+import { Task } from "./types";
 
 interface KanbanBoardProps {
     tasks: Task[];
@@ -84,10 +72,8 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
 
         const task = tasks.find(t => t.id === taskId);
         if (task && task.status !== status) {
-            const formData = new FormData();
-            formData.append("status", status);
             startTransition(async () => {
-                await updateTask(taskId, formData);
+                await updateTask(taskId, { status: status as any });
             });
         }
     };
@@ -151,11 +137,23 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                             )}
                                         >
                                             <div className="flex justify-between items-start mb-3">
-                                                <div className="flex items-center gap-2">
-                                                    <div className={cn("h-2.5 w-2.5 rounded-full", priority.line)} title={priority.label} />
-                                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                                                        {task.assignedToDepartmentId ? "Отдел" : "Личное"}
-                                                    </span>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={cn("h-2.5 w-2.5 rounded-full", priority.line)} title={priority.label} />
+                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                                            {task.assignedToDepartmentId ? "Отдел" : "Личное"}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[8px] font-black uppercase tracking-tight">
+                                                            {task.type || "OTHER"}
+                                                        </span>
+                                                        {task.order && (
+                                                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md text-[8px] font-black uppercase tracking-tight">
+                                                                №{task.order.orderNumber}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <Eye className="w-3.5 h-3.5 text-slate-300 hover:text-indigo-500" />

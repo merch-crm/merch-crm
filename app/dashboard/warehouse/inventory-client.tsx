@@ -129,7 +129,7 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                 {itemsByCategory.map((category) => (
                     <CategoryCard
                         key={category.id}
@@ -199,26 +199,49 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group relative bg-white border border-slate-200/60 rounded-[14px] p-6 transition-all duration-300 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5 overflow-hidden"
+            className="group glass-panel p-6 md:p-8 cursor-pointer flex flex-col gap-6 overflow-hidden relative border-white/60 hover:border-primary/30"
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
 
             <div className="flex items-start justify-between relative z-10">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5">
                     <div className={cn(
-                        "w-14 h-14 rounded-[14px] flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg shadow-slate-100 group-hover:shadow-indigo-100",
-                        colorStyle
+                        "w-16 h-16 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg shadow-black/5",
+                        colorStyle // Keeping original logic but can be enhanced if needed
                     )}>
                         {createElement(IconComponent, { className: "w-7 h-7" })}
                     </div>
                     <div>
-                        <h3 className="text-lg font-black text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight leading-tight">
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-none">
                             {category.name}
                         </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[11px] font-bold text-slate-400 tracking-widest uppercase">
-                                {category.items.length} ПОЗИЦИЙ
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="text-xs font-medium text-slate-400">
+                                {category.items.length} позиций
                             </span>
+                            {(() => {
+                                const availableItems = category.items.map(i => ({
+                                    available: i.quantity - (i.reservedQuantity || 0),
+                                    low: i.lowStockThreshold || 10,
+                                    critical: i.criticalStockThreshold || 0
+                                }));
+                                const hasCritical = availableItems.some(i => i.available <= i.critical);
+                                const hasLow = !hasCritical && availableItems.some(i => i.available <= i.low);
+
+                                if (hasCritical) return (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 animate-pulse">
+                                        <div className="w-1 h-1 rounded-full bg-rose-500" />
+                                        <span className="text-[10px] font-bold">КРИТИЧНО</span>
+                                    </div>
+                                );
+                                if (hasLow) return (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-100">
+                                        <div className="w-1 h-1 rounded-full bg-amber-500" />
+                                        <span className="text-[10px] font-bold">МАЛО</span>
+                                    </div>
+                                );
+                                return null;
+                            })()}
                         </div>
                     </div>
                 </div>
@@ -230,7 +253,7 @@ function CategoryCard({
                                 e.stopPropagation();
                                 if (onEdit) onEdit(category);
                             }}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[14px] transition-all"
+                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[18px] transition-all"
                         >
                             <Pencil className="w-4 h-4" />
                         </button>
@@ -254,12 +277,12 @@ function CategoryCard({
                                         router.push(`/dashboard/warehouse/${child.id}`);
                                     }}
                                     className={cn(
-                                        "inline-flex items-center px-3 py-1.5 rounded-[14px] border text-[10px] font-black transition-all cursor-pointer uppercase tracking-tight",
+                                        "inline-flex items-center px-4 py-2 rounded-[18px] border text-xs font-medium transition-all cursor-pointer",
                                         hasChildCritical
                                             ? "bg-rose-50 border-rose-100 text-rose-500 hover:bg-rose-100 hover:border-rose-200"
                                             : hasChildLow
                                                 ? "bg-amber-50 border-amber-100 text-amber-500 hover:bg-amber-100 hover:border-amber-200"
-                                                : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-white hover:text-indigo-600 hover:border-indigo-200 hover:shadow-sm"
+                                                : "bg-slate-50 border-slate-100 text-slate-400 hover:bg-white hover:text-indigo-600 hover:border-indigo-200 hover:shadow-sm"
                                     )}
                                 >
                                     {child.name}
@@ -268,20 +291,20 @@ function CategoryCard({
                         })}
                     </div>
                 ) : category.description ? (
-                    <p className="text-[13px] text-slate-400 font-medium leading-relaxed line-clamp-2">
+                    <p className="text-sm font-medium text-slate-400 leading-relaxed line-clamp-2">
                         {category.description}
                     </p>
                 ) : (
-                    <div className="flex items-center gap-2 text-slate-300">
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                        <span className="text-[11px] font-bold uppercase tracking-widest">Основная категория</span>
+                    <div className="flex items-center gap-2 text-slate-200">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
+                        <span className="text-xs font-medium text-slate-400">Основная категория</span>
                     </div>
                 )}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-auto relative z-10">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-indigo-600 transition-colors">Перейти</span>
-                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all transform group-hover:rotate-[360deg] duration-500">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-100/50 mt-auto relative z-10">
+                <span className="text-xs font-bold text-slate-400 group-hover:text-primary transition-colors tracking-wide">ПОДРОБНЕЕ</span>
+                <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </div>
             </div>

@@ -15,7 +15,9 @@ interface Role {
     departmentId: string | null;
     department?: {
         name: string;
+        color: string | null;
     } | null;
+    color: string | null;
     permissions: Record<string, Record<string, boolean>>;
 }
 
@@ -46,55 +48,43 @@ export default function AdminRolesPage() {
         }
     };
 
-    const getRoleConfig = (roleName: string) => {
-        const config: Record<string, { icon: LucideIcon; gradient: string; cardGradient: string; color: string }> = {
-            "Администратор": {
-                icon: Shield,
-                gradient: "from-red-400 to-red-600",
-                cardGradient: "from-white via-red-50/30 to-red-100/20",
-                color: "text-white"
-            },
-            "Дизайнер": {
-                icon: Palette,
-                gradient: "from-purple-400 to-purple-600",
-                cardGradient: "from-white via-purple-50/30 to-purple-100/20",
-                color: "text-white"
-            },
-            "Отдел продаж": {
-                icon: ShoppingBag,
-                gradient: "from-emerald-400 to-emerald-600",
-                cardGradient: "from-white via-emerald-50/30 to-emerald-100/20",
-                color: "text-white"
-            },
-            "Печать": {
-                icon: Printer,
-                gradient: "from-orange-400 to-orange-600",
-                cardGradient: "from-white via-orange-50/30 to-orange-100/20",
-                color: "text-white"
-            },
-            "Вышивка": {
-                icon: Scissors,
-                gradient: "from-blue-400 to-blue-600",
-                cardGradient: "from-white via-blue-50/30 to-blue-100/20",
-                color: "text-white"
-            },
-            "Склад": {
-                icon: Package,
-                gradient: "from-slate-400 to-slate-600",
-                cardGradient: "from-white via-slate-50/30 to-slate-100/20",
-                color: "text-white"
-            },
-            "Управляющий": {
-                icon: UserCog,
-                gradient: "from-indigo-400 to-indigo-600",
-                cardGradient: "from-white via-indigo-50/30 to-indigo-100/20",
-                color: "text-white"
-            },
+    const getRoleConfig = (role: Role) => {
+        const hardcoded: Record<string, { icon: LucideIcon; defaultGradient: string }> = {
+            "Администратор": { icon: Shield, defaultGradient: "from-red-400 to-red-600" },
+            "Дизайнер": { icon: Palette, defaultGradient: "from-purple-400 to-purple-600" },
+            "Отдел продаж": { icon: ShoppingBag, defaultGradient: "from-emerald-400 to-emerald-600" },
+            "Печать": { icon: Printer, defaultGradient: "from-orange-400 to-orange-600" },
+            "Вышивка": { icon: Scissors, defaultGradient: "from-blue-400 to-blue-600" },
+            "Склад": { icon: Package, defaultGradient: "from-slate-400 to-slate-600" },
+            "Управляющий": { icon: UserCog, defaultGradient: "from-indigo-400 to-indigo-600" },
         };
-        return config[roleName] || {
-            icon: UserCog,
-            gradient: "from-slate-400 to-slate-600",
-            cardGradient: "from-white via-slate-50/30 to-slate-100/20",
+
+        const config = hardcoded[role.name] || { icon: UserCog, defaultGradient: "from-slate-400 to-slate-600" };
+
+        // Dynamic color from role or department
+        const activeColor = role.color || role.department?.color || "indigo";
+
+        // CSS mapping helper (simplified)
+        const colorMap: Record<string, string> = {
+            "red": "from-red-400 to-red-600",
+            "purple": "from-purple-400 to-purple-600",
+            "emerald": "from-emerald-400 to-emerald-600",
+            "orange": "from-orange-400 to-orange-600",
+            "blue": "from-blue-400 to-blue-600",
+            "slate": "from-slate-400 to-slate-600",
+            "indigo": "from-indigo-400 to-indigo-600",
+            "amber": "from-amber-400 to-amber-600",
+            "rose": "from-rose-400 to-rose-600",
+            "cyan": "from-cyan-400 to-cyan-600",
+        };
+
+        const gradient = colorMap[activeColor] || `from-${activeColor}-400 to-${activeColor}-600`;
+        const cardGradient = `from-white via-${activeColor}-50/30 to-${activeColor}-100/20`;
+
+        return {
+            icon: config.icon,
+            gradient: gradient,
+            cardGradient: cardGradient,
             color: "text-white"
         };
     };
@@ -118,7 +108,7 @@ export default function AdminRolesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {roles.map((role) => {
-                    const style = getRoleConfig(role.name);
+                    const style = getRoleConfig(role);
                     const Icon = style.icon;
 
                     return (

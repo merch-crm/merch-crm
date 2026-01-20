@@ -6,6 +6,7 @@ import {
     CheckCircle2,
     Truck
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function StatusBadge({ status }: { status: string }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,15 +47,17 @@ export default function StatusBadge({ status }: { status: string }) {
     const Icon = item.icon;
 
     return (
-        <Badge
-            variant="outline"
-            className={`
-                rounded-md font-bold text-[10px] uppercase tracking-wider gap-1.5 px-2 py-0.5
-                ${item.lightBg} ${item.color}
-            `}
+        <div
+            className={cn(
+                "inline-flex items-center gap-1.5 px-2 py-1 rounded-full transition-all",
+                item.lightBg,
+                item.color
+            )}
+            title={item.label}
         >
-            <Icon className="w-3 h-3" />
-            {item.label}
-        </Badge>
+            <Icon className="w-3.5 h-3.5 sm:hidden" />
+            <div className={cn("hidden sm:block w-1.5 h-1.5 rounded-full animate-pulse", item.color.replace("text-", "bg-"))} />
+            <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{item.label}</span>
+        </div>
     );
 }

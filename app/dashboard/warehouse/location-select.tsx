@@ -13,6 +13,7 @@ interface LocationSelectProps {
     disabled?: boolean;
     excludeId?: string;
     label?: string;
+    className?: string;
 }
 
 export function LocationSelect({
@@ -22,7 +23,8 @@ export function LocationSelect({
     placeholder = "Выберите склад",
     disabled,
     excludeId,
-    label
+    label,
+    className
 }: LocationSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -54,7 +56,7 @@ export function LocationSelect({
     return (
         <div className="relative" ref={containerRef}>
             {label && (
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block mb-2">
+                <label className="text-[10px] font-bold text-slate-400  ml-1 block mb-2">
                     {label}
                 </label>
             )}
@@ -63,11 +65,12 @@ export function LocationSelect({
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full h-12 px-5 rounded-[14px] border flex items-center justify-between outline-none text-left transition-all",
+                    "w-full h-12 px-5 rounded-[18px] border flex items-center justify-between outline-none text-left transition-all",
                     isOpen
                         ? "border-indigo-500 bg-white ring-4 ring-indigo-500/5"
                         : "border-slate-100 bg-slate-50/80 hover:bg-white hover:border-slate-200",
-                    disabled && "opacity-50 cursor-not-allowed"
+                    disabled && "opacity-50 cursor-not-allowed",
+                    className
                 )}
             >
                 <span className={cn(
@@ -83,14 +86,14 @@ export function LocationSelect({
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-[100] bg-white rounded-[14px] border border-slate-100 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-full left-0 right-0 mt-1 z-[100] bg-white rounded-[18px] border border-slate-100 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                     <div className="p-2 border-b border-slate-50 bg-slate-50/30">
                         <input
                             autoFocus
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Поиск склада..."
-                            className="w-full h-10 px-4 rounded-[14px] bg-white border border-slate-100 focus:outline-none focus:border-indigo-200 text-xs font-bold transition-all"
+                            className="w-full h-10 px-4 rounded-[18px] bg-white border border-slate-100 focus:outline-none focus:border-indigo-200 text-xs font-bold transition-all"
                         />
                     </div>
 
@@ -104,19 +107,19 @@ export function LocationSelect({
                                         type="button"
                                         onClick={() => handleSelect(loc.id)}
                                         className={cn(
-                                            "w-full flex items-center justify-between px-4 py-3 rounded-[14px] mb-0.5 transition-colors",
+                                            "w-full flex items-center justify-between px-4 py-3 rounded-[18px] mb-0.5 transition-colors",
                                             isSelected
                                                 ? "bg-indigo-600 text-white"
                                                 : "text-slate-600 hover:bg-slate-50"
                                         )}
                                     >
-                                        <span className="font-bold text-xs tracking-tight truncate">{loc.name}</span>
+                                        <span className="font-bold text-xs  truncate">{loc.name}</span>
                                     </button>
                                 );
                             })
                         ) : (
                             <div className="p-6 text-center">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Не найдено</p>
+                                <p className="text-[10px] font-bold text-slate-400 ">Не найдено</p>
                             </div>
                         )}
                     </div>

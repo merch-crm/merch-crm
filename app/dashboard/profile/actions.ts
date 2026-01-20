@@ -4,10 +4,10 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { comparePassword, hashPassword } from "@/lib/password";
-import { eq, count, sum, desc, and, gte, lte } from "drizzle-orm";
+import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { orders, tasks, auditLogs } from "@/lib/schema";
+import { orders, tasks, auditLogs, clients } from "@/lib/schema";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -32,7 +32,7 @@ export async function getUserProfile() {
 
         if (!user) return { error: "User not found" };
 
-        console.log(`[getUserProfile] User: ${user.email}, ID: ${user.id}, Avatar: ${user.avatar}`);
+
 
         return { data: user };
     } catch (error) {
@@ -185,13 +185,17 @@ export async function getUserStatistics() {
             ));
 
         // 2. Tasks stats
-        const userTasks = await db.select({
+        const userTasksCount = await db.select({
             count: count(),
             status: tasks.status
         })
             .from(tasks)
             .where(eq(tasks.assignedToUserId, session.id))
             .groupBy(tasks.status);
+
+        const totalTasks = userTasksCount.reduce((acc, curr) => acc + Number(curr.count), 0);
+        const completedTasks = Number(userTasksCount.find(t => t.status === "done")?.count || 0);
+        const efficiency = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         // 3. Activity stats
         const activityCount = await db.select({
@@ -205,8 +209,9 @@ export async function getUserStatistics() {
                 totalOrders: Number(userOrders[0]?.count || 0),
                 totalRevenue: Number(userOrders[0]?.totalRevenue || 0),
                 monthlyOrders: Number(monthlyOrders[0]?.count || 0),
-                tasksByStatus: userTasks,
-                totalActivity: Number(activityCount[0]?.count || 0)
+                tasksByStatus: userTasksCount.map(t => ({ status: t.status, count: Number(t.count) })),
+                totalActivity: Number(activityCount[0]?.count || 0),
+                efficiency
             }
         };
     } catch (error) {
@@ -217,6 +222,48 @@ export async function getUserStatistics() {
         });
         console.error("Error fetching user statistics:", error);
         return { error: "Failed to fetch statistics" };
+    }
+}
+
+export async function getUpcomingBirthdays() {
+    try {
+        const allUsers = await db.query.users.findMany({
+            where: (users, { isNotNull }) => isNotNull(users.birthday),
+            columns: { name: true, birthday: true, avatar: true }
+        });
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return allUsers.filter(user => {
+            if (!user.birthday) return false;
+            const bday = new Date(user.birthday);
+            return bday.getUTCMonth() === today.getUTCMonth() && bday.getUTCDate() === today.getUTCDate();
+        });
+    } catch (error) {
+        console.error("Error fetching birthdays:", error);
+        return [];
+    }
+}
+
+export async function getLostClientsCount() {
+    try {
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+        const lostClients = await db.select({ count: count() })
+            .from(clients)
+            .leftJoin(orders, eq(clients.id, orders.clientId))
+            .where(and(
+                eq(clients.isArchived, false)
+            ))
+            .groupBy(clients.id)
+            .having(sql`max(${orders.createdAt}) < ${threeMonthsAgo} OR max(${orders.createdAt}) IS NULL`);
+
+        return lostClients.length;
+    } catch (error) {
+        console.error("Error fetching lost clients:", error);
+        return 0;
     }
 }
 

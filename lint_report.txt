@@ -1,0 +1,287 @@
+
+> merch-crm@0.1.0 lint
+> eslint --quiet --no-cache
+
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/api/admin/backup/route.ts
+  27:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/actions.ts
+  1458:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  1472:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/branding/actions.ts
+   27:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   44:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   76:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/branding/branding-form.tsx
+  116:142  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  116:150  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/branding/page.tsx
+  16:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/promocodes/actions.ts
+  20:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/admin/promocodes/page.tsx
+  11:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients-test/actions.ts
+  462:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients-test/clients-list.tsx
+  107:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients/[id]/page.tsx
+  106:64  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  194:41  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  194:59  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients/actions.ts
+  514:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients/clients-list.tsx
+  110:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/clients/new/page-client.tsx
+  32:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/design-showcase/eduplex-dashboard-crm.tsx
+   50:93   error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   50:98   error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  158:129  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/design-showcase/focus-flow-dashboard-crm.tsx
+  53:93  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  53:98  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/design-showcase/smart-home-dashboard-crm.tsx
+   83:107  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   83:112  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:106  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:111  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/design-showcase/twisty-crm.tsx
+  121:90   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  121:129  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  130:70   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/finance/actions.ts
+  296:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  301:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  319:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  339:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  351:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  385:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  390:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  396:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  404:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  434:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  456:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/finance/expenses-client.tsx
+  164:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/finance/page.tsx
+  485:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  500:75  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/finance/promocodes/promocodes-client.tsx
+  164:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/finance/transactions-client.tsx
+  37:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  38:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/knowledge-base/actions.ts
+   35:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   88:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/knowledge-base/page.tsx
+  25:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/knowledge-base/wiki-client.tsx
+  12:21  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+  13:19  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+  20:52  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+  29:13  error  Error: Cannot access variable before it is declared
+
+`fetchPageDetail` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/knowledge-base/wiki-client.tsx:29:13
+  27 |     useEffect(() => {
+  28 |         if (selectedPageId) {
+> 29 |             fetchPageDetail(selectedPageId);
+     |             ^^^^^^^^^^^^^^^ `fetchPageDetail` accessed before it is declared
+  30 |         }
+  31 |     }, [selectedPageId]);
+  32 |
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/knowledge-base/wiki-client.tsx:33:5
+  31 |     }, [selectedPageId]);
+  32 |
+> 33 |     const fetchPageDetail = async (id: string) => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 34 |         setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 35 |         const page = await getWikiPageDetail(id);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |         setPageContent(page);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |         setEditData({ title: page?.title || "", content: page?.content || "" });
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 38 |         setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 39 |     };
+     | ^^^^^^^ `fetchPageDetail` is declared here
+  40 |
+  41 |     const handleSave = async () => {
+  42 |         if (!selectedPageId) return;  react-hooks/immutability
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/lumin-test/focus-flow-dashboard.tsx
+  213:77  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  368:81  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/lumin-test/invoice-dashboard.tsx
+  316:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/lumin-test/lumin-analytics.tsx
+  21:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/lumin-test/page.tsx
+  31:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  47:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/lumin-test/ui-components-showcase.tsx
+  195:80  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/orders/[id]/page.tsx
+  219:82   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:112  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:65   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  253:92   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/orders/actions.ts
+  230:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  260:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  380:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  429:71  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  710:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  730:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  750:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  757:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/orders/new/page-client.tsx
+   26:23  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   38:56  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   39:58  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   46:22  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/orders/new/page-client.tsx:46:22
+  44 |     useEffect(() => {
+  45 |         const history = localStorage.getItem("client_search_history");
+> 46 |         if (history) setSearchHistory(JSON.parse(history));
+     |                      ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  47 |     }, []);
+  48 |
+  49 |     const addToHistory = (query: string) => {  react-hooks/set-state-in-effect
+   57:56  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   68:31  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  153:28  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  162:46  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/orders/orders-table.tsx
+   37:77  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:96  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  128:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/production/actions.ts
+   44:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  156:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/production/production-board.tsx
+  36:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/tasks/kanban-board.tsx
+  76:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/tasks/task-details-dialog.tsx
+  157:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/tasks/tasks-client.tsx
+  35:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/undo-actions.ts
+  22:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/warehouse/actions.ts
+  451:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  724:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx
+  40:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/layout.tsx
+  17:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/layout/command-menu.tsx
+  13:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/layout/mobile-header.tsx
+  16:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/notifications/actions.ts
+  38:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  55:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/notifications/notification-manager.tsx
+  23:9  error  Error: Cannot access variable before it is declared
+
+`updateFavicon` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/notifications/notification-manager.tsx:23:9
+  21 |         }
+  22 |         prevCount.current = unreadCount;
+> 23 |         updateFavicon(unreadCount);
+     |         ^^^^^^^^^^^^^ `updateFavicon` accessed before it is declared
+  24 |     }, [unreadCount]);
+  25 |
+  26 |     useEffect(() => {
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/notifications/notification-manager.tsx:59:5
+   57 |     }, []);
+   58 |
+>  59 |     const updateFavicon = (count: number) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  60 |         if (typeof window === "undefined") return;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  61 |
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  99 |         };
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |     };
+      | ^^^^^^^ `updateFavicon` is declared here
+  101 |
+  102 |     return null;
+  103 | }  react-hooks/immutability
+
+/Users/leonidmolchanov/Desktop/merch-crm/lib/production.ts
+  14:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 108 problems (108 errors, 0 warnings)
+

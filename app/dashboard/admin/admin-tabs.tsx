@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Shield, Settings, Building, HardDrive } from "lucide-react";
+import { Users, Shield, Settings, Building, HardDrive, Palette, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminTabs() {
@@ -12,8 +12,11 @@ export default function AdminTabs() {
         { name: "Пользователи", href: "/dashboard/admin/users", icon: Users },
         { name: "Отделы компании", href: "/dashboard/admin/departments", icon: Building },
         { name: "Роли и права", href: "/dashboard/admin/roles", icon: Shield },
+        { name: "Внешний вид", href: "/dashboard/admin/branding", icon: Palette },
+        { name: "Промокоды", href: "/dashboard/admin/promocodes", icon: Ticket },
         { name: "Мониторинг", href: "/dashboard/admin/monitoring", icon: Settings },
         { name: "Хранилище", href: "/dashboard/admin/storage", icon: HardDrive },
+        { name: "Безопасность", href: "/dashboard/admin/security", icon: Shield },
     ];
 
     return (

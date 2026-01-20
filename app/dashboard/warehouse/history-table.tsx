@@ -138,11 +138,11 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     if (transactions.length === 0 && searchQuery === "" && activeFilter === "all") {
         return (
-            <div className="bg-white rounded-[14px] border border-gray-200 p-20 flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-[14px] flex items-center justify-center text-slate-300 mb-6 border border-slate-100 shadow-sm">
+            <div className="bg-white rounded-[18px] border border-gray-200 p-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-slate-50 rounded-[18px] flex items-center justify-center text-slate-300 mb-6 border border-slate-100 shadow-sm">
                     <Clock className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">История пуста</h3>
+                <h3 className="text-xl font-bold text-slate-900">История пуста</h3>
                 <p className="text-slate-500 mt-2 max-w-[320px] font-medium leading-relaxed">Здесь будут отображаться все перемещения товаров, списания и поставки.</p>
             </div>
         );
@@ -151,8 +151,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     return (
         <div className="space-y-6 relative pb-20">
             {/* Toolbar Panel */}
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-4 rounded-[14px] border border-slate-200/60 shadow-sm">
-                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-[14px] w-full md:w-fit border border-slate-200/50">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-4 rounded-[18px] border border-slate-200/60 shadow-sm">
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-[18px] w-full md:w-fit border border-slate-200/50">
                     {[
                         { id: "all", label: "Все", icon: Filter },
                         { id: "in", label: "Приход", icon: ArrowUpRight, color: "emerald" },
@@ -167,7 +167,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setCurrentPage(1);
                             }}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-[14px] text-[11px] font-black uppercase tracking-wider transition-all duration-300",
+                                "flex items-center gap-2 px-4 py-2 rounded-[18px] text-xs font-semibold transition-all duration-300",
                                 activeFilter === f.id
                                     ? "bg-white text-indigo-600 shadow-sm ring-1 ring-black/5"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
@@ -194,7 +194,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setSearchQuery(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full h-11 pl-10 pr-4 rounded-[14px] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                            className="w-full h-11 pl-10 pr-4 rounded-[18px] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                         />
                     </div>
                     {isAdmin && (
@@ -202,7 +202,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             variant="ghost"
                             onClick={handleClearHistory}
                             disabled={isDeleting || transactions.length === 0}
-                            className="h-11 px-4 rounded-[14px] border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
+                            className="h-11 px-4 rounded-[18px] border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
                         >
                             <Eraser className="w-4 h-4" />
                             <span className="hidden md:inline">Очистить</span>
@@ -214,28 +214,28 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             {/* Selection Quick Actions Bar */}
             {selectedIds.length > 0 && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-10 fade-in duration-500">
-                    <div className="bg-slate-900 border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] rounded-[14px] px-8 py-4 flex items-center gap-8 backdrop-blur-xl">
+                    <div className="bg-slate-900 border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] rounded-[18px] px-8 py-4 flex items-center gap-8 backdrop-blur-xl">
                         <div className="flex items-center gap-4 border-r border-white/10 pr-8">
-                            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-black shadow-lg shadow-indigo-500/20">
+                            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-indigo-500/10">
                                 {selectedIds.length}
                             </div>
                             <div>
-                                <h4 className="text-white text-sm font-black tracking-tight leading-none">Записи выбраны</h4>
-                                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Панель действий</p>
+                                <h4 className="text-white text-sm font-bold leading-none">Записи выбраны</h4>
+                                <p className="text-slate-400 text-xs font-medium mt-1">Панель действий</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setSelectedIds([])}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-[18px] text-[11px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
                             >
                                 <CloseIcon className="w-4 h-4" />
                                 Сбросить
                             </button>
 
                             <button
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/5 transition-all"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-[18px] text-[11px] font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all"
                             >
                                 <FileDown className="w-4 h-4" />
                                 Экспорт
@@ -245,7 +245,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 <button
                                     onClick={handleDeleteSelected}
                                     disabled={isDeleting}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-[18px] text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     <Trash2 className="w-4 h-4" />
                                     Удалить
@@ -256,7 +256,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 </div>
             )}
 
-            <div className="bg-white shadow-sm rounded-[14px] border border-gray-200 overflow-hidden">
+            <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -269,12 +269,12 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         onChange={handleSelectAll}
                                     />
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Тип / Дата</th>
-                                <th className="pl-6 pr-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Товар</th>
-                                <th className="pl-2 pr-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Склад</th>
-                                <th className="pl-2 pr-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">Изменение</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Причина</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Пользователь</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground">Тип / Дата</th>
+                                <th className="pl-6 pr-2 py-3 text-left text-xs font-semibold text-muted-foreground">Товар</th>
+                                <th className="pl-2 pr-2 py-3 text-left text-xs font-semibold text-muted-foreground">Склад</th>
+                                <th className="pl-2 pr-6 py-3 text-center text-xs font-semibold text-muted-foreground">Изменение</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground">Причина</th>
+                                <th className="px-6 py-3 text-right text-xs font-semibold text-muted-foreground">Пользователь</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -305,7 +305,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                                             <div className="flex items-center gap-4">
                                                 <div className={cn(
-                                                    "w-10 h-10 rounded-[14px] flex items-center justify-center shadow-sm transition-transform group-hover:scale-110",
+                                                    "w-10 h-10 rounded-[18px] flex items-center justify-center shadow-sm transition-transform group-hover:scale-110",
                                                     t.type === "transfer"
                                                         ? "bg-indigo-50 text-indigo-600 border border-indigo-100"
                                                         : t.type === "attribute_change"
@@ -325,7 +325,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-black text-slate-900 leading-tight">
+                                                    <div className="text-sm font-bold text-slate-900 leading-tight">
                                                         {t.type === "transfer" ? "Перемещение" : t.type === "attribute_change" ? "Характеристика" : isIn ? "Приход" : "Расход"}
                                                     </div>
                                                     <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
@@ -340,11 +340,11 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     className="flex items-center gap-3 cursor-pointer group/item hover:opacity-80 transition-all"
                                                     onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}
                                                 >
-                                                    <div className="w-8 h-8 rounded-[14px] bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-500 transition-colors">
+                                                    <div className="w-8 h-8 rounded-[18px] bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-500 transition-colors">
                                                         <Package className="w-4 h-4" />
                                                     </div>
                                                     <div className="max-w-[300px]">
-                                                        <div className="text-sm font-bold text-slate-900 truncate tracking-tight group-hover/item:text-indigo-600 transition-colors">{t.item.name}</div>
+                                                        <div className="text-sm font-bold text-slate-900 truncate group-hover/item:text-indigo-600 transition-colors">{t.item.name}</div>
                                                         {t.item.sku && (
                                                             <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">Арт.: {t.item.sku}</div>
                                                         )}
@@ -352,12 +352,12 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-3 py-1">
-                                                    <div className="w-8 h-8 rounded-[14px] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                                                    <div className="w-8 h-8 rounded-[18px] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
                                                         <Book className="w-4 h-4" />
                                                     </div>
                                                     <div>
-                                                        <div className="text-sm font-bold text-slate-900 tracking-tight">Справочник</div>
-                                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider">
+                                                        <div className="text-sm font-bold text-slate-900 ">Справочник</div>
+                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">
                                                             {t.reason?.includes("категория") ? "Категории" :
                                                                 t.reason?.includes("атрибут") ? "Атрибуты" : "Система"}
                                                         </div>
@@ -379,7 +379,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     </div>
                                                 </div>
                                             ) : t.storageLocation ? (
-                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[14px] border border-slate-200 w-fit">
+                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[18px] border border-slate-200 w-fit">
                                                     <Building2 className="w-3.5 h-3.5 text-slate-400" />
                                                     <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
                                                 </div>
@@ -389,13 +389,13 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         </td>
                                         <td className="pl-2 pr-6 py-4 whitespace-nowrap text-center">
                                             {t.type === "attribute_change" ? (
-                                                <Badge className="bg-amber-100/50 text-amber-700 border border-amber-200/50 px-3 py-1 font-black text-[10px] uppercase shadow-none hover:bg-amber-100/70">
+                                                <Badge className="bg-amber-100/50 text-amber-700 border border-amber-200/50 px-3 py-1 font-semibold text-xs shadow-none hover:bg-amber-100/70">
                                                     {t.reason?.includes("Создана") || t.reason?.includes("Добавлен") ? "Создание" :
                                                         t.reason?.includes("Удален") ? "Удаление" : "Изменение"}
                                                 </Badge>
                                             ) : (
                                                 <Badge className={cn(
-                                                    "px-3 py-1 font-black text-xs border-none shadow-none",
+                                                    "px-3 py-1 font-semibold text-xs border-none shadow-none",
                                                     t.type === "transfer"
                                                         ? "bg-indigo-50 text-indigo-600 hover:bg-indigo-50"
                                                         : isIn
@@ -432,7 +432,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             <div className="flex items-center justify-end gap-2.5">
                                                 <div className="text-right">
                                                     <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
-                                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">
+                                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
                                                         {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
                                                     </div>
                                                 </div>

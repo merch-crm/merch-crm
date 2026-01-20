@@ -1,44 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfdfd;
-  --foreground: #18181b;
-  /* zinc-950 */
-
-  --card: #ffffff;
-  --card-foreground: #18181b;
-
-  --popover: #ffffff;
-  --popover-foreground: #18181b;
-
-  --primary: #4f46e5;
-  /* indigo-600 */
+  /* MerchCRM Final Design System */
+  /* Accent Color */
+  --primary: #5d00ff;
+  --primary-hover: #4a00cc;
+  --primary-light: rgba(93, 0, 255, 0.1);
   --primary-foreground: #ffffff;
 
-  --secondary: #f4f4f5;
-  /* zinc-100 */
-  --secondary-foreground: #18181b;
+  /* Background - "Aurora" Base */
+  --background: #f8fafc;
+  /* Fallback */
+  --foreground: #0f172a;
 
-  --muted: #f4f4f5;
-  /* zinc-100 */
-  --muted-foreground: #71717a;
-  /* zinc-500 */
+  /* Cards */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
 
-  --accent: #f4f4f5;
-  /* zinc-100 */
-  --accent-foreground: #18181b;
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
+  /* Secondary */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+
+  /* Muted */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  /* Accent */
+  --accent: #f8fafc;
+  --accent-foreground: #0f172a;
+
+  /* Destructive */
   --destructive: #ef4444;
-  /* red-500 */
   --destructive-foreground: #ffffff;
 
-  --border: #e4e4e7;
-  /* zinc-200 */
-  --input: #e4e4e7;
-  --ring: #4f46e5;
+  /* Borders & Inputs */
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #5d00ff;
 
+  /* Radii - 18px for all */
   --radius: 18px;
-  /* Установлено 18px по запросу пользователя */
+  --radius-outer: 18px;
+  --radius-inner: 18px;
+
+  /* Shadows - "Glow" & Depth */
+  --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -2px rgba(0, 0, 0, 0.05);
+  --crm-shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  --crm-shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 4px 16px -4px rgba(0, 0, 0, 0.08);
+  --crm-shadow-xl: 0 24px 64px -12px rgba(0, 0, 0, 0.15), 0 8px 32px -8px rgba(0, 0, 0, 0.10);
+
+  /* Grid & Spacing */
+  --crm-blur: 24px;
+  --crm-grid-gap: 20px;
+  --crm-border-alpha: rgba(15, 23, 42, 0.05);
+
+  /* Graphite (minimal usage) */
+  --graphite-dark: #2d3748;
+  --graphite-medium: #4a5568;
+  --graphite-light: #718096;
+
+  /* Department Colors - More Vivid */
+  --dept-management: #6366f1;
+  --dept-sales: #0ea5e9;
+  --dept-production: #f59e0b;
+  --dept-design: #ec4899;
 }
 
 @theme inline {
@@ -51,7 +80,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
-  --color-color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -67,179 +96,155 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-mono: monospace;
+
+  --shadow-crm-sm: var(--crm-shadow-sm);
+  --shadow-crm-md: var(--crm-shadow-md);
+  --shadow-crm-lg: var(--crm-shadow-lg);
+  --shadow-crm-xl: var(--crm-shadow-xl);
 }
 
-/* Dark mode removed to force light theme */
-/* 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b; 
-    --foreground: #fafafa;
-    
-    --card: #09090b;
-    --card-foreground: #fafafa;
-    
-    --popover: #09090b;
-    --popover-foreground: #fafafa;
-    
-    --primary: #6366f1;
-    --primary-foreground: #fafafa;
-    
-    --secondary: #27272a; 
-    --secondary-foreground: #fafafa;
-    
-    --muted: #27272a; 
-    --muted-foreground: #a1a1aa; 
-    
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
-    
-    --destructive: #7f1d1d; 
-    --destructive-foreground: #fafafa;
-    
-    --border: #27272a; 
-    --input: #27272a;
-    --ring: #6366f1;
+@layer base {
+  * {
+    @apply border-border outline-none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    background-color: #f8fafc;
+    color: var(--foreground);
+    font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+    @apply antialiased selection:bg-primary/20 selection:text-primary relative min-h-screen overflow-x-hidden;
+  }
+
+  /* Aurora Background Effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, rgba(255, 255, 255, 0) 70%);
+    filter: blur(80px);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, rgba(255, 255, 255, 0) 70%);
+    filter: blur(80px);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  /* Bold headings as per standard */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
   }
 }
-*/
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  @apply antialiased selection:bg-indigo-500/20 selection:text-indigo-600 dark:selection:text-indigo-400;
-}
+@layer components {
 
-/* Custom Scrollbar - Invisible Silk */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
+  /* Glass Panel - The Core Building Block */
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-crm-md rounded-[var(--radius-outer)] transition-all duration-300;
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+  .glass-panel:hover {
+    @apply bg-white/80 shadow-crm-lg scale-[1.005];
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  transition: background-color 0.3s ease;
-}
+  /* High-Contrast Card for Critical Data */
+  .crm-card {
+    @apply bg-white text-card-foreground rounded-[var(--radius-outer)] shadow-crm-md border border-slate-100 overflow-hidden transition-all duration-300 relative z-0;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #4f46e5;
-  /* indigo-600 */
+  .crm-card:hover {
+    @apply shadow-crm-lg scale-[1.005] border-slate-200;
+  }
+
+  /* Sticky Glass Header */
+  .sticky-glass-header {
+    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-7xl rounded-[20px] bg-white/80 backdrop-blur-2xl border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
+  }
+
+  .sticky-glass-header.scrolled {
+    @apply bg-white/90 shadow-crm-xl translate-y-1;
+  }
+
+  /* Button Styles Overrides for Premium Feel */
+  .btn-primary {
+    @apply bg-primary text-white shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:bg-[#4a00cc] active:scale-[0.98] transition-all;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-foreground border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98];
+  }
+
+  /* Inputs with presence */
+  .input-premium {
+    @apply h-12 bg-slate-50 border-transparent hover:bg-white hover:border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 font-medium;
+  }
+
+  /* Bento Grid Layouts */
+  .bento-grid {
+    display: grid;
+    @apply gap-[var(--crm-grid-gap)];
+    grid-template-columns: repeat(12, 1fr);
+  }
 }
 
 /* react-day-picker custom styles */
-.rdp {
-  margin: 0;
-  padding: 0;
-}
-
 .rdp-custom {
-  --rdp-accent-color: #14b8a6;
-  --rdp-background-color: #ccfbf1;
+  --rdp-accent-color: var(--primary);
+  --rdp-background-color: color-mix(in srgb, var(--primary), white 80%);
 }
 
-/* Force proper table structure */
 .rdp-table {
   width: 100%;
   border-collapse: collapse;
-  display: table !important;
-  table-layout: fixed !important;
-}
-
-.rdp-thead {
-  display: table-header-group !important;
-}
-
-.rdp-tbody {
-  display: table-row-group !important;
-}
-
-.rdp-head_row,
-.rdp-row {
-  display: table-row !important;
-}
-
-.rdp-head_cell,
-.rdp-cell {
-  display: table-cell !important;
-  vertical-align: middle;
-  text-align: center;
-  padding: 0 !important;
-  width: 40px !important;
-  min-width: 40px !important;
-}
-
-/* Weekday headers - teal color */
-.rdp-custom .rdp-head_cell {
-  color: #14b8a6 !important;
-  font-weight: 700 !important;
-  font-size: 0.75rem !important;
-  text-transform: uppercase !important;
-}
-
-/* Ensure buttons don't break layout */
-.rdp-day_button,
-.rdp-day {
-  display: inline-flex !important;
-  margin: 0 auto;
-}
-
-/* Range styling with higher specificity */
-.rdp-custom .rdp-day_range_middle {
-  background-color: #ccfbf1 !important;
-  color: #0f766e !important;
-  border-radius: 0 !important;
 }
 
 .rdp-custom .rdp-day_range_start,
-.rdp-custom .rdp-day_range_end {
-  background-color: #14b8a6 !important;
+.rdp-custom .rdp-day_range_end,
+.rdp-custom .rdp-day_selected {
+  background-color: var(--primary) !important;
   color: white !important;
-  border-radius: 0.75rem !important;
+  border-radius: 12px !important;
 }
 
-.rdp-custom .rdp-day_range_start:hover,
-.rdp-custom .rdp-day_range_end:hover {
-  background-color: #0d9488 !important;
-}
-
-/* Today indicator */
-.rdp-custom .rdp-day_today {
-  color: #14b8a6 !important;
-  font-weight: 700 !important;
-}
-
-/* Selected day */
-.rdp-custom .rdp-day_selected:not(.rdp-day_range_middle):not(.rdp-day_range_start):not(.rdp-day_range_end) {
-  background-color: #14b8a6 !important;
-  color: white !important;
-  border-radius: 0.75rem !important;
-}
-
-/* Глобальный сброс выделения (рамки) при фокусе */
+/* Global Focus Reset */
 *:focus {
   outline: none !important;
   box-shadow: none !important;
 }
 
-/* Сброс для кнопок и инпутов */
 button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  ring: 0 !important;
+  @apply ring-0;
 }
 
-/* Hide spin buttons in number inputs */
+/* Hide spin buttons */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -249,5 +254,4 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
-  appearance: textfield;
 }

@@ -1,9 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients, orders, users, orderItems, inventoryItems } from "@/lib/schema";
+import { clients, orders, users, orderItems, inventoryItems, payments } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { asc, desc, eq, sql, or, and, ilike } from "drizzle-orm";
+import { asc, desc, eq, sql, or, and, ilike, inArray } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -26,13 +26,14 @@ export async function getManagers() {
 }
 
 
-export async function getClients() {
+export async function getClients(showArchived = false) {
     try {
         const data = await db.select({
             id: clients.id,
             lastName: clients.lastName,
             firstName: clients.firstName,
             patronymic: clients.patronymic,
+            clientType: clients.clientType,
             name: clients.name,
             company: clients.company,
             phone: clients.phone,
@@ -44,6 +45,7 @@ export async function getClients() {
             comments: clients.comments,
             socialLink: clients.socialLink,
             managerId: clients.managerId,
+            isArchived: clients.isArchived,
             createdAt: clients.createdAt,
             totalOrders: sql<number>`count(${orders.id})`,
             totalSpent: sql<number>`coalesce(sum(${orders.totalAmount}), 0)`,
@@ -51,10 +53,20 @@ export async function getClients() {
         })
             .from(clients)
             .leftJoin(orders, eq(orders.clientId, clients.id))
+            .where(eq(clients.isArchived, showArchived))
             .groupBy(clients.id)
             .orderBy(asc(clients.lastName), asc(clients.firstName));
 
-        return { data };
+        const session = await getSession();
+        const userRole = session?.roleName;
+        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
+
+        const safeData = data.map(client => ({
+            ...client,
+            phone: shouldHidePhone ? "HIDDEN" : client.phone
+        }));
+
+        return { data: safeData };
     } catch (error) {
         await logError({
             error,
@@ -91,7 +103,7 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
         if (conditions.length === 0) return { data: [] };
 
         const duplicates = await db.select().from(clients)
-            .where(or(...conditions))
+            .where(and(or(...conditions), eq(clients.isArchived, false)))
             .limit(5);
 
         return { data: duplicates };
@@ -118,6 +130,7 @@ export async function addClient(formData: FormData) {
     const comments = formData.get("comments") as string;
     const socialLink = formData.get("socialLink") as string;
     const managerId = formData.get("managerId") as string;
+    const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
     const ignoreDuplicates = formData.get("ignoreDuplicates") === "true";
 
     if (!lastName || !firstName || !phone) {
@@ -139,6 +152,7 @@ export async function addClient(formData: FormData) {
         const fullName = [lastName, firstName, patronymic].filter(Boolean).join(" ");
 
         const [newClient] = await db.insert(clients).values({
+            clientType,
             lastName,
             firstName,
             patronymic,
@@ -189,6 +203,7 @@ export async function updateClient(clientId: string, formData: FormData) {
     const comments = formData.get("comments") as string;
     const socialLink = formData.get("socialLink") as string;
     const managerId = formData.get("managerId") as string;
+    const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
 
     if (!lastName || !firstName || !phone) {
         return { error: "Фамилия, Имя и Телефон обязательны" };
@@ -206,6 +221,7 @@ export async function updateClient(clientId: string, formData: FormData) {
 
         await db.update(clients)
             .set({
+                clientType,
                 lastName,
                 firstName,
                 patronymic,
@@ -262,6 +278,14 @@ export async function getClientDetails(clientId: string) {
 
         if (!client) return { error: "Client not found" };
 
+        const session = await getSession();
+        const userRole = session?.roleName;
+        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
+
+        if (shouldHidePhone) {
+            client.phone = "HIDDEN";
+        }
+
         const clientOrders = await db.query.orders.findMany({
             where: eq(orders.clientId, clientId),
             orderBy: [desc(orders.createdAt)],
@@ -277,11 +301,26 @@ export async function getClientDetails(clientId: string) {
             .from(orders)
             .where(eq(orders.clientId, clientId));
 
+        const totalOrders = Number(stats[0]?.total || 0);
+
+        const paymentsRes = await db.select({
+            total: sql<string>`coalesce(sum(${payments.amount}), 0)`
+        })
+            .from(payments)
+            .leftJoin(orders, eq(payments.orderId, orders.id))
+            .where(eq(orders.clientId, clientId));
+
+        const totalPaid = Number(paymentsRes[0]?.total || 0);
+        const balance = totalPaid - totalOrders;
+
         return {
             data: {
                 ...client,
                 orders: clientOrders,
-                stats: stats[0]
+                stats: {
+                    ...stats[0],
+                    balance
+                }
             }
         };
     } catch (error) {
@@ -402,5 +441,92 @@ export async function deleteClient(clientId: string) {
         });
         console.error("Error deleting client:", error);
         return { error: "Failed to delete client" };
+    }
+}
+
+export async function bulkDeleteClients(clientIds: string[]) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const user = await db.query.users.findFirst({
+            where: eq(users.id, session.id),
+            with: { role: true }
+        });
+
+        if (!user || user.role?.name !== "Администратор") {
+            return { error: "Только администратор может удалять базу" };
+        }
+
+        // We should release reservations here too if we want to be thorough.
+        // For simplicity in bulk, we'll delete the clients and let cascading handle orders/items if set.
+        // However, the deleteClient logic has explicit reservation release. 
+        // Let's at least delete orders first to trigger schema cascades correctly if they exist.
+
+        await db.delete(orders).where(inArray(orders.clientId, clientIds));
+        await db.delete(clients).where(inArray(clients.id, clientIds));
+
+        revalidatePath("/dashboard/clients");
+        await logAction("Групповое удаление клиентов", "client", "bulk", { count: clientIds.length });
+        return { success: true };
+    } catch (error) {
+        console.error("Error in bulk delete:", error);
+        return { error: "Failed to delete clients" };
+    }
+}
+
+export async function bulkUpdateClientManager(clientIds: string[], managerId: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(clients)
+            .set({ managerId: managerId || null })
+            .where(inArray(clients.id, clientIds));
+
+        revalidatePath("/dashboard/clients");
+        await logAction("Групповая смена менеджера", "client", "bulk", { count: clientIds.length, managerId });
+        return { success: true };
+    } catch (error) {
+        console.error("Error in bulk manager update:", error);
+        return { error: "Failed to update clients" };
+    }
+}
+
+export async function toggleClientArchived(clientId: string, isArchived: boolean) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(clients)
+            .set({ isArchived })
+            .where(eq(clients.id, clientId));
+
+        await logAction(isArchived ? "Архивация клиента" : "Разархивация клиента", "client", clientId, { isArchived });
+        revalidatePath("/dashboard/clients");
+        return { success: true };
+    } catch (error) {
+        console.error("Error toggling client archive:", error);
+        return { error: "Failed to archive client" };
+    }
+}
+
+export async function updateClientField(clientId: string, field: string, value: any) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        const allowedFields = ["managerId", "clientType", "city", "lastName", "firstName", "company"];
+        if (!allowedFields.includes(field)) return { error: "Invalid field" };
+
+        await db.update(clients)
+            .set({ [field]: value || null })
+            .where(eq(clients.id, clientId));
+
+        revalidatePath("/dashboard/clients");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating client field:", error);
+        return { error: "Failed to update field" };
     }
 }

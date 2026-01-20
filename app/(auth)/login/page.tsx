@@ -5,19 +5,22 @@ import { loginAction } from "./actions";
 import { Loader2, Printer, User, Lock, Eye, EyeOff } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 
 function SubmitButton() {
     const { pending } = useFormStatus();
 
     return (
-        <button
+        <Button
             type="submit"
             disabled={pending}
-            className="w-full h-[72px] flex items-center justify-center gap-2 rounded-[24px] text-lg font-bold text-[#6366f1] bg-[#f5f7ff] hover:bg-[#eef2ff] active:scale-[0.99] transition-all duration-300 disabled:opacity-50"
+            className="w-full h-14 text-lg font-bold transition-all active:scale-[0.98]"
         >
-            {pending ? <Loader2 className="animate-spin h-5 w-5" /> : null}
-            {pending ? "ВХОД В СИСТЕМУ..." : "Войти в систему"}
-        </button>
+            {pending ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : null}
+            {pending ? "Загрузка..." : "Войти в систему"}
+        </Button>
     );
 }
 
@@ -26,82 +29,86 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased">
-            <div className="max-w-[480px] w-full bg-white p-12 rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.06)] border border-slate-50 flex flex-col items-center">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4 font-sans antialiased relative overflow-hidden">
+            {/* Background Aesthetic Elements */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+
+            <Card className="max-w-[420px] w-full p-8 md:p-10 flex flex-col items-center border-none shadow-2xl relative z-10 bg-white/80 backdrop-blur-xl">
                 {/* Logo Section */}
-                <div className="w-20 h-20 bg-[#4f46e5]/90 rounded-full flex items-center justify-center mb-10 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.3)]">
-                    <Printer className="h-10 w-10 text-white" strokeWidth={1.5} />
+                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform">
+                    <Printer className="h-8 w-8 text-primary-foreground" strokeWidth={2} />
                 </div>
 
-                <div className="text-center mb-10">
-                    <h2 className="text-[34px] font-bold text-slate-900 tracking-tight leading-tight mb-2">
-                        Вход в MerchCRM
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-foreground leading-tight mb-2">
+                        MerchCRM
                     </h2>
-                    <p className="text-lg text-slate-400 font-medium">
-                        Войдите в систему управления печатью
+                    <p className="text-muted-foreground font-medium">
+                        Система управления производством
                     </p>
                 </div>
 
-                <form action={action} className="w-full space-y-8">
-                    <div className="space-y-6">
+                <form action={action} className="w-full space-y-6">
+                    <div className="space-y-4">
                         {/* Email Field */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-muted-foreground ml-1">Email</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                                    <User className="h-6 w-6 text-slate-300 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <User className="h-5 w-5 text-muted-foreground/50 group-focus-within:text-primary transition-colors" strokeWidth={2} />
                                 </div>
-                                <input
+                                <Input
                                     name="email"
                                     type="email"
                                     required
-                                    className="block w-full h-[72px] pl-16 pr-6 rounded-[24px] bg-[#edf2ff]/50 border-2 border-transparent focus:border-indigo-100 focus:bg-[#edf2ff] text-slate-900 placeholder-slate-400 transition-all font-semibold text-lg"
+                                    className="h-12 pl-12 bg-secondary/50 border-none focus:bg-white"
                                     placeholder="admin@crm.local"
                                 />
                             </div>
                         </div>
 
                         {/* Password Field */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Пароль</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-muted-foreground ml-1">Пароль</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                                    <Lock className="h-6 w-6 text-slate-300 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock className="h-5 w-5 text-muted-foreground/50 group-focus-within:text-primary transition-colors" strokeWidth={2} />
                                 </div>
-                                <input
+                                <Input
                                     name="password"
                                     type={showPassword ? "text" : "password"}
                                     required
-                                    className="block w-full h-[72px] pl-16 pr-16 rounded-[24px] bg-[#edf2ff]/50 border-2 border-transparent focus:border-indigo-100 focus:bg-[#edf2ff] text-slate-900 placeholder-slate-400 transition-all font-semibold text-lg"
+                                    className="h-12 pl-12 pr-12 bg-secondary/50 border-none focus:bg-white"
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-300 hover:text-indigo-400 transition-colors z-10 cursor-pointer"
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/50 hover:text-primary transition-colors z-10"
                                 >
-                                    {showPassword ? <EyeOff className="h-6 w-6" strokeWidth={1.5} /> : <Eye className="h-6 w-6" strokeWidth={1.5} />}
+                                    {showPassword ? <EyeOff className="h-5 w-5" strokeWidth={2} /> : <Eye className="h-5 w-5" strokeWidth={2} />}
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center">
-                        <div className="relative flex items-center">
+                    <div className="flex items-center justify-between px-1">
+                        <div className="flex items-center space-x-2">
                             <input
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-6 w-6 border-2 border-slate-200 rounded-lg text-indigo-600 focus:ring-indigo-500 cursor-pointer transition-all checked:bg-indigo-600"
+                                className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer transition-all"
                             />
+                            <label htmlFor="remember-me" className="text-sm font-medium text-muted-foreground cursor-pointer select-none">
+                                Запомнить меня
+                            </label>
                         </div>
-                        <label htmlFor="remember-me" className="ml-3 block text-base font-semibold text-slate-400 cursor-pointer select-none">
-                            Запомнить меня
-                        </label>
                     </div>
 
                     {state?.error && (
-                        <div className="py-4 px-6 bg-red-50 text-red-500 text-sm font-bold text-center rounded-[20px] border border-red-100 animate-in fade-in zoom-in-95">
+                        <div className="p-3 bg-destructive/10 text-destructive text-xs font-bold text-center rounded-lg border border-destructive/20 animate-in fade-in zoom-in-95">
                             {state.error}
                         </div>
                     )}
@@ -110,7 +117,11 @@ export default function LoginPage() {
                         <SubmitButton />
                     </div>
                 </form>
-            </div>
+
+                <div className="mt-8 text-center text-xs text-muted-foreground">
+                    &copy; {new Date().getFullYear()} MerchCRM. Все права защищены.
+                </div>
+            </Card>
         </div>
     );
 }

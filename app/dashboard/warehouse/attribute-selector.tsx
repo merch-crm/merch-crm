@@ -153,8 +153,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         return (
             <div className="space-y-4 w-full">
                 <div className="flex items-center justify-between px-1">
-                    <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Цвет изделия</label>
-                    {value && <span className="text-[9px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-[14px] uppercase tracking-wider">{value}</span>}
+                    <label className="text-xs font-semibold text-slate-900">Цвет изделия</label>
+                    {value && <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-[18px]">{value}</span>}
                 </div>
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {filteredOptions.map(c => (
@@ -167,7 +167,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "group relative aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[14px] border transition-all duration-300",
+                                "group relative aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[18px] border transition-all duration-300",
                                 value === c.code
                                     ? "bg-white border-slate-900 shadow-xl shadow-slate-200 scale-[1.02] z-10"
                                     : "bg-white border-slate-100 hover:border-slate-900 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/60"
@@ -178,7 +178,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 style={{ backgroundColor: 'hex' in c ? (c as { name: string; code: string; hex: string }).hex : undefined }}
                             />
                             <span className={cn(
-                                "text-[10px] font-black truncate w-full px-2 text-center uppercase tracking-tight transition-colors duration-300",
+                                "text-xs font-medium truncate w-full px-2 text-center transition-colors duration-300",
                                 value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
                             )}>{c.name}</span>
                         </button>
@@ -188,28 +188,28 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "group aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[14px] border border-dashed transition-all duration-300",
+                                "group aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[18px] border border-dashed transition-all duration-300",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
                             <Plus className="w-6 h-6 opacity-50 group-hover:opacity-100 transition-opacity" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Добавить</span>
+                            <span className="text-xs font-medium">Добавить</span>
                         </button>
                     )}
                 </div>
 
                 {showCustom && (
-                    <div className="p-6 bg-white rounded-[14px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
+                    <div className="p-6 bg-white rounded-[18px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Новый цвет</span>
+                            <span className="text-xs font-bold text-slate-900 leading-none">Новый цвет</span>
                             <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <div className="relative w-14 h-14 rounded-[14px] overflow-hidden border-2 border-slate-100 shrink-0 shadow-inner">
+                            <div className="relative w-14 h-14 rounded-[18px] overflow-hidden border-2 border-slate-100 shrink-0 shadow-inner">
                                 <input
                                     type="color"
                                     className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
@@ -221,7 +221,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 <input
                                     type="text"
                                     placeholder="Название цвета..."
-                                    className="w-full h-12 px-5 text-sm font-bold rounded-[14px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                    className="w-full h-12 px-5 text-sm font-bold rounded-[18px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
@@ -230,7 +230,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     type="button"
                                     onClick={handleCustomSubmit}
                                     disabled={isSaving || !customName.trim()}
-                                    className="w-full h-11 bg-slate-900 text-white rounded-[14px] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                    className="w-full h-11 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     {isSaving ? "..." : "Добавить"}
                                 </button>
@@ -246,7 +246,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         return (
             <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Материал</label>
+                    <label className="text-xs font-semibold text-slate-900">Материал</label>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {filteredOptions.map(m => (
@@ -258,7 +258,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "h-10 px-5 rounded-[14px] text-[10px] font-black uppercase tracking-wider transition-all border",
+                                "h-10 px-5 rounded-[18px] text-xs font-medium transition-all border",
                                 value === m.code
                                     ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200 scale-[1.02]"
                                     : "bg-white border-slate-100 text-slate-400 hover:border-slate-300 hover:bg-slate-50/50"
@@ -272,24 +272,24 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "h-10 px-5 rounded-[14px] border border-dashed transition-all flex items-center gap-2",
+                                "h-10 px-5 rounded-[18px] border border-dashed transition-all flex items-center gap-2",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Добавить</span>
+                            <span className="text-xs font-medium">Добавить</span>
                         </button>
                     )}
                 </div>
 
                 {showCustom && (
-                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[14px] border border-slate-200">
+                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[18px] border border-slate-200">
                         <input
                             value={customName}
                             onChange={e => setCustomName(e.target.value)}
-                            className="flex-1 h-10 px-4 rounded-[14px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
+                            className="flex-1 h-10 px-4 rounded-[18px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
                             placeholder="Название материала..."
                             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
                         />
@@ -297,7 +297,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={handleCustomSubmit}
                             disabled={isSaving || !customName.trim()}
-                            className="h-10 px-4 bg-slate-900 text-white rounded-[14px] text-[10px] font-black uppercase tracking-widest hover:bg-black disabled:opacity-50"
+                            className="h-10 px-4 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black disabled:opacity-50"
                         >
                             {isSaving ? "..." : "OK"}
                         </button>
@@ -311,7 +311,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         return (
             <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Размер</label>
+                    <label className="text-xs font-semibold text-slate-900">Размер</label>
                 </div>
                 <div
                     className="flex flex-wrap gap-2"
@@ -325,7 +325,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 if (onCodeChange) onCodeChange(s.code);
                             }}
                             className={cn(
-                                "h-10 flex-1 min-w-max px-3 flex items-center justify-center rounded-[14px] text-[10px] font-black uppercase tracking-wider transition-all border",
+                                "h-10 flex-1 min-w-max px-3 flex items-center justify-center rounded-[18px] text-xs font-bold transition-all border",
                                 value === s.code
                                     ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200"
                                     : "bg-white border-slate-100 text-slate-400 hover:border-slate-300 hover:bg-slate-50/50"
@@ -339,24 +339,24 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "h-10 flex-1 min-w-max px-3 rounded-[14px] border border-dashed transition-all flex items-center justify-center gap-2",
+                                "h-10 flex-1 min-w-max px-3 rounded-[18px] border border-dashed transition-all flex items-center justify-center gap-2",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-black uppercase tracking-widest leading-none">Добавить</span>
+                            <span className="text-xs font-medium leading-none">Добавить</span>
                         </button>
                     )}
                 </div>
 
                 {showCustom && (
-                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[14px] border border-slate-200">
+                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[18px] border border-slate-200">
                         <input
                             value={customName}
                             onChange={e => setCustomName(e.target.value)}
-                            className="flex-1 h-10 px-4 rounded-[14px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
+                            className="flex-1 h-10 px-4 rounded-[18px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
                             placeholder="Название размера..."
                             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
                         />
@@ -364,7 +364,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={handleCustomSubmit}
                             disabled={isSaving || !customName.trim()}
-                            className="h-10 px-4 bg-slate-900 text-white rounded-[14px] text-[10px] font-black uppercase tracking-widest hover:bg-black disabled:opacity-50"
+                            className="h-10 px-4 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black disabled:opacity-50"
                         >
                             {isSaving ? "..." : "OK"}
                         </button>
@@ -382,11 +382,11 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         return (
             <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">{displayLabel}</label>
+                    <label className="text-xs font-semibold text-slate-900">{displayLabel}</label>
                     <button
                         type="button"
                         onClick={() => setShowCustom(true)}
-                        className="text-[10px] font-black text-slate-900 flex items-center gap-1.5 hover:opacity-70 transition-opacity uppercase tracking-widest"
+                        className="text-xs font-bold text-slate-900 flex items-center gap-1.5 hover:opacity-70 transition-opacity"
                     >
                         <Plus className="w-3.5 h-3.5" />
                         {addLabel}
@@ -395,8 +395,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
                 <div className="relative group">
                     {selectedOption ? (
-                        <div className="w-full h-12 px-5 rounded-[14px] border border-slate-900 bg-slate-900 flex items-center justify-between shadow-lg shadow-slate-200 transition-all">
-                            <span className="text-[11px] font-black text-white uppercase tracking-wider truncate">
+                        <div className="w-full h-12 px-5 rounded-[18px] border border-slate-900 bg-slate-900 flex items-center justify-between shadow-lg shadow-slate-200 transition-all">
+                            <span className="text-sm font-bold text-white truncate">
                                 {selectedOption.name}
                             </span>
                             <button
@@ -421,10 +421,10 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 // Delay blur to allow click event on options to fire
                                 onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full h-12 px-5 rounded-[14px] border border-slate-100 bg-slate-50 text-[11px] font-bold placeholder:text-slate-300 focus:bg-white focus:border-slate-200 focus:ring-4 focus:ring-slate-900/5 outline-none transition-all uppercase tracking-wider"
+                                className="w-full h-12 px-5 rounded-[18px] border border-slate-100 bg-slate-50 text-sm font-medium placeholder:text-slate-300 focus:bg-white focus:border-slate-200 focus:ring-4 focus:ring-slate-900/5 outline-none transition-all"
                             />
                             {(isFocused || searchQuery.length > 0) && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[14px] border border-slate-200 shadow-2xl z-[100] max-h-[220px] overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[18px] border border-slate-200 shadow-2xl z-[100] max-h-[220px] overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
                                     {filteredOptions.length > 0 ? (
                                         filteredOptions.map(b => (
                                             <button
@@ -439,14 +439,14 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                                 }}
                                                 className="w-full px-5 py-3 text-left hover:bg-slate-50 border-b border-slate-50 last:border-none transition-colors"
                                             >
-                                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none block">
+                                                <span className="text-xs font-medium text-slate-600 leading-none block">
                                                     {b.name}
                                                 </span>
                                             </button>
                                         ))
                                     ) : (
                                         <div className="px-5 py-4 text-center">
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ничего не найдено</p>
+                                            <p className="text-xs font-medium text-slate-400">Ничего не найдено</p>
                                         </div>
                                     )}
                                 </div>
@@ -457,9 +457,9 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
                 {
                     showCustom && (
-                        <div className="p-6 bg-white rounded-[14px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
+                        <div className="p-6 bg-white rounded-[18px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">{displayLabel}: Новая запись</span>
+                                <span className="text-xs font-bold text-slate-900 leading-none">{displayLabel}: Новая запись</span>
                                 <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
                                     <X className="w-4 h-4" />
                                 </button>
@@ -468,7 +468,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 <input
                                     type="text"
                                     placeholder="Название..."
-                                    className="w-full h-12 px-5 text-sm font-bold rounded-[14px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                    className="w-full h-12 px-5 text-sm font-bold rounded-[18px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
@@ -478,7 +478,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     type="button"
                                     onClick={handleCustomSubmit}
                                     disabled={isSaving || !customName.trim()}
-                                    className="w-full h-11 bg-slate-900 text-white rounded-[14px] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                    className="w-full h-11 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     {isSaving ? "..." : "Добавить"}
                                 </button>
@@ -494,9 +494,9 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-                <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Качество ткани</label>
+                <label className="text-xs font-semibold text-slate-900">Качество ткани</label>
             </div>
-            <div className="flex p-1 bg-slate-50 border border-slate-100 rounded-[14px]">
+            <div className="flex p-1 bg-slate-50 border border-slate-100 rounded-[18px]">
                 {filteredOptions.map(q => (
                     <button
                         key={q.name}
@@ -506,7 +506,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             if (onCodeChange) onCodeChange(q.code);
                         }}
                         className={cn(
-                            "flex-1 h-9 rounded-[14px] text-[10px] font-black uppercase tracking-widest transition-all duration-300 border",
+                            "flex-1 h-9 rounded-[18px] text-xs font-bold transition-all duration-300 border",
                             value === q.code
                                 ? "bg-white text-slate-900 border-slate-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
                                 : "bg-transparent border-transparent text-slate-400 hover:text-slate-600 hover:bg-white/50"
@@ -516,7 +516,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                     </button>
                 ))}
             </div>
-            <p className="px-1 text-[9px] font-bold text-slate-300 uppercase tracking-tight">Влияет на плотность и износостойкость</p>
+            <p className="px-1 text-[10px] font-medium text-slate-300">Влияет на плотность и износостойкость</p>
         </div>
     );
 }

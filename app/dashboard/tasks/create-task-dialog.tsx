@@ -26,12 +26,19 @@ interface Department {
     color?: string | null;
 }
 
+interface Order {
+    id: string;
+    orderNumber: string;
+    client?: { name: string } | null;
+}
+
 interface CreateTaskDialogProps {
     users: User[];
     departments: Department[];
+    orders: Order[];
 }
 
-export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) {
+export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -132,6 +139,25 @@ export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) 
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
+                        {/* Task Type */}
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Тип задачи</label>
+                            <div className="relative">
+                                <Flag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <select
+                                    name="type"
+                                    defaultValue="other"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-bold"
+                                >
+                                    <option value="design">Дизайн</option>
+                                    <option value="production">Производство</option>
+                                    <option value="acquisition">Закупка</option>
+                                    <option value="delivery">Доставка</option>
+                                    <option value="other">Прочее</option>
+                                </select>
+                            </div>
+                        </div>
+
                         {/* Priority */}
                         <div className="space-y-1">
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Приоритет</label>
@@ -145,6 +171,27 @@ export function CreateTaskDialog({ users, departments }: CreateTaskDialogProps) 
                                     <option value="low">Низкий</option>
                                     <option value="normal">Обычный</option>
                                     <option value="high">Высокий</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {/* Related Order */}
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Связанный заказ</label>
+                            <div className="relative">
+                                <PlusCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <select
+                                    name="orderId"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
+                                >
+                                    <option value="">Без привязки</option>
+                                    {orders.map(o => (
+                                        <option key={o.id} value={o.id}>
+                                            №{o.orderNumber} {o.client?.name ? `- ${o.client.name}` : ""}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

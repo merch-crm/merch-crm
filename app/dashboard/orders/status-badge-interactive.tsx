@@ -11,6 +11,7 @@ import {
     Truck
 } from "lucide-react";
 import { updateOrderStatus } from "./actions";
+import { cn } from "@/lib/utils";
 
 const statuses = [
     { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-600", lightBg: "bg-blue-50 border-blue-100", dot: "bg-blue-500" },
@@ -60,37 +61,36 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
 
     return (
         <div className="relative inline-block" ref={containerRef} onClick={(e) => e.stopPropagation()}>
-            <Badge
-                variant="outline"
+            <div
                 onClick={() => !loading && setIsOpen(!isOpen)}
-                className={`
-                    rounded-md font-bold text-[10px] uppercase tracking-wider gap-1.5 px-2 py-0.5 cursor-pointer
-                    transition-all hover:shadow-sm active:scale-95 select-none
-                    ${activeItem.lightBg} ${activeItem.color}
-                    ${loading ? 'opacity-50' : 'opacity-100'}
-                `}
+                className={cn(
+                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider cursor-pointer transition-all hover:scale-105 active:scale-95 select-none",
+                    activeItem.lightBg,
+                    activeItem.color,
+                    loading && "opacity-50 cursor-wait"
+                )}
             >
-                <Icon className="w-3 h-3" />
+                <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", activeItem.color.replace("text-", "bg-"))} />
                 {activeItem.label}
-                <ChevronDown className={`w-2.5 h-2.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-            </Badge>
+                <ChevronDown className={cn("w-3 h-3 ml-0.5 transition-transform", isOpen && "rotate-180")} />
+            </div>
 
             {isOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[140px] bg-white border border-slate-100 rounded-lg shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[150px] bg-white/90 backdrop-blur-xl border border-white/50 rounded-[14px] shadow-crm-lg z-[70] p-1.5 animate-in fade-in zoom-in-95 duration-200 overflow-hidden ring-1 ring-black/5">
                     {statuses.map((s) => (
                         <button
                             key={s.id}
                             onClick={() => handleChange(s.id)}
-                            className={`
-                                w-full flex items-center gap-2 px-3 py-2 
-                                hover:bg-slate-50 transition-all text-left
-                                ${s.id === currentStatus ? 'bg-indigo-50/50' : ''}
-                            `}
+                            className={cn(
+                                "w-full flex items-center gap-2.5 px-3 py-2 rounded-[10px] transition-all text-left",
+                                s.id === currentStatus ? "bg-indigo-50 text-indigo-600 shadow-sm" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                            )}
                         >
-                            <div className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-                            <span className={`text-[11px] font-bold uppercase tracking-wider ${s.id === currentStatus ? 'text-indigo-600' : 'text-slate-600'}`}>
+                            <div className={cn("w-2 h-2 rounded-full", s.dot)} />
+                            <span className="text-[11px] font-bold uppercase tracking-wider flex-1">
                                 {s.label}
                             </span>
+                            {s.id === currentStatus && <div className="w-1 h-1 rounded-full bg-indigo-500" />}
                         </button>
                     ))}
                 </div>

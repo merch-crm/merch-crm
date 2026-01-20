@@ -8,6 +8,7 @@ import { transferInventoryStock } from "../../actions";
 import { useToast } from "@/components/ui/toast";
 
 import { LocationSelect } from "../../location-select";
+import { cn } from "@/lib/utils";
 
 interface TransferItemDialogProps {
     item: {
@@ -30,6 +31,7 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -77,17 +79,17 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-visible">
+            <div className="relative w-full max-w-lg bg-white rounded-[18px] shadow-xl border border-slate-200 animate-in zoom-in-95 duration-300 overflow-visible">
                 <div className="p-10 pb-4 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Перемещение</h2>
+                        <h2 className="text-2xl font-bold text-slate-900">Перемещение</h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="text-xs font-bold text-slate-400 truncate max-w-[300px]">{item.name}</span>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
+                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all active:scale-95"
                     >
                         <X className="h-6 w-6" />
                     </button>
@@ -96,7 +98,7 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                 <form onSubmit={handleSubmit} className="p-10 pt-4 space-y-8">
                     <div className="flex items-end gap-3">
                         <div className="flex-1 space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Откуда</label>
+                            <label className="text-xs font-medium text-slate-400 ml-1 block">Откуда</label>
                             <LocationSelect
                                 locations={locations}
                                 value={fromLocationId}
@@ -113,19 +115,27 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                         </div>
 
                         <div className="flex-1 space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Куда</label>
+                            <label className="text-xs font-medium text-slate-400 ml-1 block">Куда</label>
                             <LocationSelect
                                 locations={locations}
                                 value={toLocationId}
                                 onChange={setToLocationId}
                                 excludeId={fromLocationId}
                                 placeholder="Склад..."
+                                // Applying the className to the LocationSelect component
+                                // Assuming LocationSelect accepts a className prop and applies it to its input element
+                                className={cn(
+                                    "input-premium w-full h-12 px-4 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold outline-none transition-all appearance-none cursor-pointer",
+                                    fieldErrors.toLocationId
+                                        ? "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5 text-rose-900"
+                                        : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                                )}
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2 pt-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Количество</label>
+                        <label className="text-xs font-medium text-slate-400 ml-1">Количество</label>
                         <div className="relative">
                             <input
                                 type="number"
@@ -133,7 +143,7 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                                 min="1"
                                 value={amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
-                                className="w-full h-14 pl-5 pr-24 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="input-premium w-full h-14 pl-5 pr-24 rounded-[18px] border border-slate-100 bg-slate-50 text-xl font-bold focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                             <span className="absolute right-12 top-1/2 -translate-y-1/2 font-bold text-slate-400 pointer-events-none">{item.unit}</span>
 
@@ -157,27 +167,28 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Причина</label>
+                        <label className="text-xs font-medium text-slate-400 ml-1">Причина</label>
                         <input
                             type="text"
+                            name="comment"
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
-                            placeholder="Напр. Пополнение запасов"
-                            className="w-full h-12 px-5 rounded-xl border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all"
+                            placeholder="Причина перемещения..."
+                            className="input-premium w-full h-12 px-5 rounded-xl border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all"
                         />
                     </div>
 
                     {error && (
-                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 text-rose-600">
+                        <div className="flex items-center gap-3 p-4 rounded-[18px] bg-rose-50 text-rose-600">
                             <AlertCircle className="w-5 h-5 shrink-0" />
-                            <p className="text-xs font-black uppercase tracking-widest">{error}</p>
+                            <p className="text-sm font-medium">{error}</p>
                         </div>
                     )}
 
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full h-14 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200 text-white transition-all active:scale-95 disabled:opacity-50"
+                        className="w-full h-14 rounded-[18px] font-semibold text-sm shadow-md bg-indigo-600 hover:bg-indigo-700 text-white transition-all active:scale-95 disabled:opacity-50"
                     >
                         {isSubmitting ? "Перемещение..." : "Переместить"}
                     </Button>

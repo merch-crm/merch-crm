@@ -62,13 +62,13 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     if (locations.length === 0) {
         return (
-            <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[14px] border border-dashed border-slate-200">
-                <div className="w-20 h-20 bg-white rounded-[14px] flex items-center justify-center mb-6 text-slate-300 shadow-sm">
+            <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-slate-50/20 rounded-[var(--radius-outer)] border border-dashed border-slate-200/60">
+                <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center mb-6 text-slate-300 shadow-sm ring-1 ring-slate-100">
                     <MapPin className="w-10 h-10" />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">Места хранения не найдены</h2>
-                <p className="text-slate-500 max-w-[280px] font-medium leading-relaxed">
-                    Добавьте первое место хранения, чтобы систематизировать учет товаров на складе.
+                <h2 className="text-xl font-bold text-slate-900 mb-2 leading-none">Места хранения не найдены</h2>
+                <p className="text-slate-400 text-xs font-medium max-w-[280px] leading-relaxed">
+                    Добавьте первое место хранения для систематизации учета.
                 </p>
             </div>
         );
@@ -82,103 +82,192 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 animate-in fade-in slide-in-from-bottom-6 duration-1000">
                 {sortedLocations.map((loc) => {
                     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
                     const isBrak = loc.name.toLowerCase().includes("брак");
-                    const isMain = loc.name.toLowerCase().includes("главный") || loc.name.toLowerCase().includes("основной");
+                    const isMain = loc.name.toLowerCase().includes("главный") || loc.name.toLowerCase().includes("основной") || loc.name.toLowerCase().includes("производство");
 
                     return (
                         <div
                             key={loc.id}
                             onClick={() => setEditingLocation(loc)}
-                            className="group relative bg-white border border-slate-200/60 rounded-[14px] p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 active:scale-[0.98] cursor-pointer flex flex-col gap-5"
+                            className={cn(
+                                "group relative flex flex-col justify-between p-6 md:p-8 transition-all duration-500 cursor-pointer overflow-hidden",
+                                "rounded-[var(--radius-outer)] border h-full min-h-[280px]",
+                                isMain
+                                    ? "bg-slate-900 border-slate-800 shadow-2xl shadow-slate-900/20 hover:shadow-slate-900/40 hover:-translate-y-1"
+                                    : isBrak
+                                        ? "glass-panel bg-rose-50/30 border-rose-100/60 hover:border-rose-200 hover:shadow-crm-lg hover:-translate-y-1"
+                                        : "glass-panel border-white/60 hover:border-white/80 hover:shadow-crm-lg hover:-translate-y-1"
+                            )}
                         >
-                            <div className="flex items-start justify-between">
+                            {/* Ambient Glows Removed */}
+
+                            {/* --- HEADER --- */}
+                            <div className="relative z-10 flex items-start justify-between mb-6">
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
-                                        "w-12 h-12 rounded-[14px] flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
-                                        isBrak ? "bg-rose-50 text-rose-500" : isMain ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"
+                                        "w-14 h-14 rounded-[var(--radius-inner)] flex items-center justify-center backdrop-blur-sm border shadow-sm transition-transform duration-500 group-hover:scale-110",
+                                        isMain
+                                            ? "bg-white/10 border-white/10 text-indigo-400"
+                                            : isBrak
+                                                ? "bg-rose-50 border-rose-100 text-rose-500"
+                                                : "bg-white/50 border-white/60 text-slate-600"
                                     )}>
-                                        <Building2 className="w-6 h-6" />
+                                        <Building2 className="w-7 h-7" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">
+                                        <h3 className={cn(
+                                            "text-xl font-bold leading-tight line-clamp-1 group-hover:text-indigo-600 transition-colors",
+                                            isMain ? "text-white group-hover:text-white" : "text-slate-900"
+                                        )}>
                                             {loc.name}
                                         </h3>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <div className={cn("w-1.5 h-1.5 rounded-full", totalItemsInLoc > 0 ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                                {totalItemsInLoc > 0 ? `${totalItemsInLoc} шт.` : "Пусто"}
-                                            </span>
-                                        </div>
+                                        <span className={cn(
+                                            "text-xs font-bold ",
+                                            isMain ? "text-slate-400" : "text-slate-400"
+                                        )}>
+                                            {isBrak ? "Зона брака" : isMain ? "Основной склад" : "Локация"}
+                                        </span>
                                     </div>
                                 </div>
-
-                                <div className="flex items-center gap-1 transition-opacity duration-300">
-                                    <button
-                                        onClick={(e) => handleEdit(e, loc)}
-                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[14px] transition-all"
-                                    >
-                                        <Pencil className="w-4 h-4" />
-                                    </button>
-                                    {!loc.isSystem && (
-                                        <button
-                                            onClick={(e) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
-                                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[14px] transition-all"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    )}
+                                <div className={cn(
+                                    "px-3 py-1.5 rounded-[var(--radius-inner)] text-xs font-bold tracking-wide backdrop-blur-md border shadow-sm",
+                                    isMain
+                                        ? "bg-white/10 border-white/10 text-white"
+                                        : isBrak
+                                            ? "bg-rose-50 border-rose-100 text-rose-600"
+                                            : "bg-white/60 border-white/60 text-slate-600"
+                                )}>
+                                    {totalItemsInLoc} <span className="opacity-60 font-medium ml-1">ед.</span>
                                 </div>
                             </div>
 
-                            <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-[14px] border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
-                                    <MapPin className="w-4 h-4 text-slate-400" />
-                                    <span className="text-xs font-bold text-slate-600 truncate">{loc.address}</span>
+                            {/* --- BODY --- */}
+                            <div className="relative z-10 space-y-3 mb-6">
+                                {loc.description && (
+                                    <p className={cn(
+                                        "text-sm font-medium line-clamp-2 mb-4",
+                                        isMain ? "text-slate-400" : "text-slate-500"
+                                    )}>
+                                        {loc.description}
+                                    </p>
+                                )}
+                                <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border",
+                                        isMain ? "bg-white/5 border-white/5 text-slate-400" : "bg-white/50 border-white/60 text-slate-400"
+                                    )}>
+                                        <MapPin className="w-4 h-4" />
+                                    </div>
+                                    <span className={cn(
+                                        "text-sm font-bold truncate",
+                                        isMain ? "text-slate-200" : "text-slate-700"
+                                    )}>
+                                        {loc.address || "Адрес не указан"}
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-[14px] border border-transparent group-hover:bg-white group-hover:border-slate-100 group-hover:shadow-sm transition-all">
-                                    <User className="w-4 h-4 text-slate-400" />
-                                    <span className="text-xs font-black text-slate-900 truncate">{loc.responsibleUser?.name || "Не назначен"}</span>
+                                <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border",
+                                        isMain ? "bg-white/5 border-white/5 text-slate-400" : "bg-white/50 border-white/60 text-slate-400"
+                                    )}>
+                                        <User className="w-4 h-4" />
+                                    </div>
+                                    <span className={cn(
+                                        "text-sm font-semibold truncate",
+                                        isMain ? "text-slate-400" : "text-slate-500"
+                                    )}>
+                                        {loc.responsibleUser?.name || "Ответственный не назначен"}
+                                    </span>
                                 </div>
                             </div>
 
-                            {/* Storage categories dots */}
-                            <div className="mt-2 flex flex-wrap gap-2">
+                            {/* --- FOOTER (Stats & Distribution) --- */}
+                            <div className="relative z-10 mt-auto pt-4 border-t border-dashed border-slate-200/20">
                                 {(() => {
-                                    const grouped = loc.items?.reduce((acc: Record<string, { count: number, singular: string | null, plural: string | null, name: string }>, item: InventoryItem) => {
+                                    const grouped = loc.items?.reduce((acc: Record<string, { count: number, name: string }>, item: InventoryItem) => {
                                         if (item.quantity > 0) {
                                             const catId = item.categoryId || "other";
                                             const catName = item.categoryName || "Прочее";
-                                            const singular = item.categorySingularName || null;
-                                            const plural = item.categoryPluralName || null;
-
-                                            if (!acc[catId]) {
-                                                acc[catId] = { count: 0, singular, plural, name: catName };
-                                            }
+                                            if (!acc[catId]) acc[catId] = { count: 0, name: catName };
                                             acc[catId].count += item.quantity;
                                         }
                                         return acc;
                                     }, {}) || {};
 
-                                    const categoriesList = Object.entries(grouped);
-                                    if (categoriesList.length === 0) return null;
+                                    const categoriesList = Object.values(grouped).sort((a, b) => b.count - a.count).slice(0, 4);
+                                    const total = Object.values(grouped).reduce((sum, i) => sum + i.count, 0) || 1;
 
-                                    return categoriesList.slice(0, 3).map(([catId, data]) => {
-                                        let displayName = data.name;
-                                        if (data.count === 1 && data.singular) {
-                                            displayName = data.singular;
-                                        } else if (data.count > 1 && data.plural) {
-                                            displayName = data.plural;
-                                        }
+                                    if (categoriesList.length === 0) {
                                         return (
-                                            <Badge key={catId} className="bg-white border-slate-100 text-[10px] font-bold text-slate-500 hover:text-indigo-600 transition-colors pointer-events-none">
-                                                {displayName}: {data.count}
-                                            </Badge>
+                                            <div className={cn("text-xs font-medium text-center py-2 opacity-50", isMain ? "text-slate-500" : "text-slate-400")}>
+                                                Нет товаров
+                                            </div>
                                         );
-                                    });
+                                    }
+
+                                    return (
+                                        <div className="space-y-3">
+                                            {/* Visual Bar - Elegant & Thin */}
+                                            <div className="flex h-1.5 rounded-full overflow-hidden bg-slate-100/10 w-full">
+                                                {categoriesList.map((cat, idx) => {
+                                                    const percent = (cat.count / total) * 100;
+                                                    // Harmonious palettes
+                                                    const colors = isMain
+                                                        ? ["bg-indigo-500", "bg-indigo-400", "bg-sky-400", "bg-slate-700"]
+                                                        : ["bg-slate-800", "bg-slate-400", "bg-slate-300", "bg-slate-200"];
+
+                                                    if (isBrak) {
+                                                        // Red palette for defect zone
+                                                        if (idx === 0) colors[0] = "bg-rose-500";
+                                                        if (idx === 1) colors[1] = "bg-rose-300";
+                                                    }
+
+                                                    return (
+                                                        <div
+                                                            key={idx}
+                                                            style={{ width: `${percent}%` }}
+                                                            className={cn("h-full", colors[idx % colors.length])}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                            {/* Minimal Legend */}
+                                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                                {categoriesList.slice(0, 3).map((cat, idx) => (
+                                                    <span key={idx} className={cn(
+                                                        "text-[10px] font-bold tracking-wide truncate max-w-[80px]",
+                                                        isMain ? "text-slate-500" : "text-slate-400"
+                                                    )}>
+                                                        {cat.name} <span className="opacity-50 ml-0.5">{cat.count}</span>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
                                 })()}
+                            </div>
+
+                            {/* Actions on Hover - Clean Circles */}
+                            <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-20">
+                                <button
+                                    onClick={(e) => handleEdit(e, loc)}
+                                    className="w-9 h-9 flex items-center justify-center bg-white text-slate-900 rounded-[var(--radius-inner)] shadow-md hover:scale-110 active:scale-95 transition-all text-indigo-600 border border-slate-100"
+                                    title="Редактировать"
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                </button>
+                                {!loc.isSystem && (
+                                    <button
+                                        onClick={(e) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
+                                        className="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-100 rounded-[var(--radius-inner)] shadow-md hover:bg-rose-500 hover:text-white hover:border-rose-500 hover:scale-110 active:scale-95 transition-all"
+                                        title="Удалить"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
                             </div>
                         </div>
                     );
@@ -192,37 +281,36 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setDeleteId(null)}
                     />
-                    <div className="relative w-full max-w-md bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 text-center">
-                        <div className="w-20 h-20 bg-rose-50 rounded-[14px] flex items-center justify-center mx-auto mb-6 text-rose-500">
+                    <div className="relative w-full max-w-md bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 text-center">
+                        <div className="w-20 h-20 bg-rose-50 rounded-[var(--radius-inner)] flex items-center justify-center mx-auto mb-6 text-rose-500">
                             <Trash2 className="w-10 h-10" />
                         </div>
 
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
-                            Удалить место хранения?
+                        <h2 className="text-3xl font-bold text-slate-900 leading-none mb-4">
+                            Удалить?
                         </h2>
 
-                        <p className="text-slate-500 font-medium mb-8">
-                            Вы собираетесь удалить <span className="text-slate-900 font-bold">&quot;{deleteName}&quot;</span>.
-                            <br />
-                            Все привязанные товары останутся без локации.
+                        <p className="text-slate-400 text-sm font-medium leading-relaxed mb-10">
+                            Объект <span className="text-slate-900">&quot;{deleteName}&quot;</span> будет стерт.<br />
+                            Товары останутся без локации.<br />
                             Это действие нельзя отменить.
                         </p>
 
                         {deleteIsSystem && (
-                            <div className="mb-6 p-4 bg-rose-50 rounded-[14px] border border-rose-100">
+                            <div className="mb-6 p-4 bg-rose-50 rounded-[var(--radius-inner)] border border-rose-100">
                                 <div className="flex items-center gap-2 text-rose-600 mb-3">
                                     <Lock className="w-4 h-4" />
-                                    <span className="text-xs font-black uppercase tracking-wider">Системная защита</span>
+                                    <span className="text-sm font-semibold">Системная защита</span>
                                 </div>
-                                <p className="text-xs font-bold text-rose-500/80 mb-3">
-                                    Это системное место хранения. Для подтверждения удаления введите ваш пароль администратора.
+                                <p className="text-xs font-medium text-rose-500/80 mb-4">
+                                    Введите пароль администратора для подтверждения.
                                 </p>
                                 <input
                                     type="password"
                                     value={deletePassword}
                                     onChange={(e) => setDeletePassword(e.target.value)}
-                                    placeholder="Пароль администратора"
-                                    className="w-full h-11 px-4 rounded-lg border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                    placeholder="Пароль"
+                                    className="w-full h-12 px-5 rounded-[18px] border-2 border-rose-100 focus:outline-none focus:border-rose-300 focus:ring-4 focus:ring-rose-500/5 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
                                     autoFocus
                                 />
                             </div>
@@ -234,24 +322,24 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                     setDeleteId(null);
                                     setDeletePassword("");
                                 }}
-                                className="h-14 rounded-[14px] font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                                className="h-14 rounded-[var(--radius-inner)] font-semibold text-sm text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all"
                             >
                                 Отмена
                             </button>
                             <button
                                 onClick={handleConfirmDelete}
                                 disabled={isDeleting || (deleteIsSystem && !deletePassword.trim())}
-                                className="h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-[14px] font-black shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-[var(--radius-inner)] font-semibold text-sm shadow-xl shadow-rose-500/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {isDeleting ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        Удаление...
+                                        Стирание...
                                     </>
                                 ) : (
                                     <>
                                         <Trash2 className="w-5 h-5" />
-                                        Удалить
+                                        Стереть объект
                                     </>
                                 )}
                             </button>

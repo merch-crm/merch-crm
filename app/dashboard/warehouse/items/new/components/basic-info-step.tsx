@@ -17,15 +17,7 @@ interface MeasurementUnit {
     name: string;
 }
 
-// Measurement units for non-clothing items
-const UNIT_OPTIONS = [
-    { id: "kg", name: "КГ" },
-    { id: "l", name: "Л" },
-    { id: "m", name: "М" },
-    { id: "pogm", name: "ПОГ.М" },
-    { id: "upak", name: "УПАК" },
-    { id: "sht", name: "ШТ" },
-];
+// Fallback UNIT_OPTIONS removed, using measurementUnits prop instead
 
 interface BasicInfoStepProps {
     category: Category;
@@ -49,7 +41,8 @@ export function BasicInfoStep({
     onBack,
     validationError,
     dynamicAttributes,
-    attributeTypes = []
+    attributeTypes = [],
+    measurementUnits
 }: BasicInfoStepProps) {
     const isClothing = category.name.toLowerCase().includes("одежда");
     const isPackaging = category.name.toLowerCase().includes("упаковка");
@@ -206,28 +199,28 @@ export function BasicInfoStep({
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                            <div className="w-12 h-12 rounded-[18px] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                                 <ClipboardList className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Основная информация</h2>
-                                <p className="text-[11px] text-slate-500 font-bold uppercase tracking-widest opacity-60">Заполните ключевые характеристики вашей позиции</p>
+                                <h2 className="text-2xl font-bold text-slate-900 ">Основная информация</h2>
+                                <p className="text-[11px] text-slate-500 font-bold  opacity-60">Заполните ключевые характеристики вашей позиции</p>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[14px] border border-slate-100/50 shadow-sm">
+                        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[18px] border border-slate-100/50 shadow-sm">
                             {(() => {
                                 const sub = subCategories.find(s => s.id === formData.subcategoryId);
                                 const displayCategory = sub || category;
 
                                 return (
                                     <>
-                                        <div className={cn("w-10 h-10 rounded-[10px] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
+                                        <div className={cn("w-10 h-10 rounded-[18px] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
                                             {createElement(getCategoryIcon(displayCategory), { className: "w-5 h-5" })}
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{category.name}</div>
-                                            <div className="text-sm font-black text-slate-900 leading-none">{sub ? sub.name : "Общая"}</div>
+                                            <div className="text-[9px] font-bold text-slate-400  leading-none mb-1">{category.name}</div>
+                                            <div className="text-sm font-bold text-slate-900 leading-none">{sub ? sub.name : "Общая"}</div>
                                         </div>
                                     </>
                                 );
@@ -339,7 +332,7 @@ export function BasicInfoStep({
                             ) : (
                                 <div className="space-y-10">
                                     <div className="space-y-6">
-                                        <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                        <label className="flex items-center gap-2 text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                             <Package className="w-3.5 h-3.5" />
                                             Название позиции
                                         </label>
@@ -348,13 +341,13 @@ export function BasicInfoStep({
                                             value={formData.itemName}
                                             onChange={(e) => updateFormData({ itemName: e.target.value })}
                                             placeholder="Например: Коробка картонная 40x40"
-                                            className="w-full h-12 px-5 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-bold text-base focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
+                                            className="w-full h-12 px-5 rounded-[18px] border border-slate-200 bg-white text-slate-900 font-bold text-base focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-4">
-                                            <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                                 <Hash className="w-3.5 h-3.5" />
                                                 Артикул (SKU)
                                             </label>
@@ -363,19 +356,19 @@ export function BasicInfoStep({
                                                 value={formData.sku}
                                                 onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase() })}
                                                 placeholder="SKU-123"
-                                                className="w-full h-11 px-5 rounded-[14px] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus:border-slate-900 transition-all outline-none uppercase font-mono"
+                                                className="w-full h-11 px-5 rounded-[18px] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus:border-slate-900 transition-all outline-none font-mono"
                                             />
                                         </div>
                                         <div className="space-y-4">
-                                            <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                                 <Ruler className="w-3.5 h-3.5" />
                                                 Единица измерения
                                             </label>
                                             <UnitSelect
                                                 name="unit"
-                                                value={formData.unit || "sht"}
+                                                value={formData.unit || "pcs"}
                                                 onChange={(val) => updateFormData({ unit: val })}
-                                                options={UNIT_OPTIONS}
+                                                options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
                                             />
                                         </div>
                                     </div>
@@ -406,14 +399,14 @@ export function BasicInfoStep({
 
                             {/* Additional Info (Department/Packing) */}
                             {(isPackaging || isConsumables) && (
-                                <div className="p-6 bg-slate-50 rounded-[14px] border border-slate-100 space-y-6">
-                                    <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest">Дополнительные параметры</h4>
+                                <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-100 space-y-6">
+                                    <h4 className="text-xs font-bold text-slate-900 ">Дополнительные параметры</h4>
 
                                     {isPackaging && (
                                         <div className="grid grid-cols-3 gap-4">
                                             {['width', 'height', 'depth'].map(dim => (
                                                 <div key={dim} className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                                    <label className="text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                                         {dim === 'width' ? 'Ширина' : dim === 'height' ? 'Высота' : 'Глубина'}
                                                     </label>
                                                     <div className="relative">
@@ -421,9 +414,9 @@ export function BasicInfoStep({
                                                             type="number"
                                                             value={(formData[dim] as string) || ""}
                                                             onChange={(e) => updateFormData({ [dim]: e.target.value })}
-                                                            className="w-full h-11 px-4 pr-10 rounded-[14px] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
+                                                            className="w-full h-11 px-4 pr-10 rounded-[18px] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
                                                         />
-                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300">СМ</span>
+                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">СМ</span>
                                                     </div>
                                                 </div>
                                             ))}
@@ -432,14 +425,14 @@ export function BasicInfoStep({
 
                                     {isConsumables && (
                                         <div className="space-y-4">
-                                            <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                                 <Wrench className="w-3.5 h-3.5" />
                                                 Область применения
                                             </label>
                                             <select
                                                 value={formData.department || ""}
                                                 onChange={(e) => updateFormData({ department: e.target.value })}
-                                                className="w-full h-12 px-5 rounded-[14px] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
+                                                className="w-full h-12 px-5 rounded-[18px] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
                                             >
                                                 <option value="">Выберите отдел...</option>
                                                 <option value="printing">Печатный цех</option>
@@ -457,33 +450,33 @@ export function BasicInfoStep({
                             {isClothing && (
                                 <div className="p-6 bg-white rounded-[20px] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
                                     <div className="flex items-center justify-between">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Превью позиции</label>
-                                        <div className="px-2 py-0.5 bg-emerald-500 rounded-full text-[9px] font-black uppercase text-white">Auto</div>
+                                        <label className="text-[10px] font-bold text-slate-400 tracking-[0.2em]">Превью позиции</label>
+                                        <div className="px-2 py-0.5 bg-emerald-500 rounded-full text-[9px] font-bold text-white">Auto</div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <div className="text-xl font-black leading-tight text-slate-900">
+                                        <div className="text-xl font-bold leading-tight text-slate-900">
                                             {formData.itemName || 'Название будет здесь'}
                                         </div>
 
                                         <div className="h-px bg-slate-100" />
 
                                         <div className="space-y-1">
-                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Артикул (SKU)</div>
-                                            <div className="text-lg font-mono font-black tracking-wider break-all text-slate-900 uppercase">
+                                            <div className="text-[9px] font-bold text-slate-400 ">Артикул (SKU)</div>
+                                            <div className="text-lg font-mono font-bold  break-all text-slate-900">
                                                 {formData.sku || '---'}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-relaxed opacity-60">
+                                    <p className="text-[10px] text-slate-400 font-bold  leading-relaxed opacity-60">
                                         Генерация данных в реальном времени
                                     </p>
                                 </div>
                             )}
 
                             <div className="space-y-3">
-                                <label className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] px-1">
+                                <label className="flex items-center gap-2 text-[10px] font-bold text-slate-900 tracking-[0.2em] px-1">
                                     <Info className="w-4 h-4" />
                                     Описание
                                 </label>

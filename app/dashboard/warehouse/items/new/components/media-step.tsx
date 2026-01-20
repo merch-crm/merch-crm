@@ -20,6 +20,14 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
     const [containerDims, setContainerDims] = useState<{ w: number, h: number } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const isFullPhotoSet = !!(
+        formData.imagePreview &&
+        formData.imageBackPreview &&
+        formData.imageSidePreview &&
+        formData.imageDetailsPreviews &&
+        formData.imageDetailsPreviews.length === 3
+    );
+
     const thumbSettings = (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 };
 
     useEffect(() => {
@@ -157,7 +165,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
             const newPreviews = [...(formData.imageDetailsPreviews || [])];
 
             for (let i = 0; i < files.length; i++) {
-                if (newFiles.length >= 4) break;
+                if (newFiles.length >= 3) break;
                 const processed = await handleFileProcessing(files[i]);
                 if (processed) {
                     newFiles.push(processed.file);
@@ -210,18 +218,18 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                 <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 space-y-2">
                     {/* Header Area */}
                     <div className="flex items-center gap-4 shrink-0 relative">
-                        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                        <div className="w-12 h-12 rounded-[18px] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
                             <Images className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Галерея фотографий</h2>
-                            <p className="text-[11px] text-slate-500 font-bold uppercase tracking-widest opacity-60">Визуализация карточки товара</p>
+                            <h2 className="text-2xl font-bold text-slate-900 ">Галерея фотографий</h2>
+                            <p className="text-[11px] text-slate-500 font-bold  opacity-60">Визуализация карточки товара</p>
                         </div>
 
                         {isProcessing && (
                             <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 animate-pulse">
                                 <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-                                <span className="text-[9px] font-black uppercase tracking-widest text-indigo-600">Сжатие...</span>
+                                <span className="text-[9px] font-bold  text-indigo-600">Сжатие...</span>
                             </div>
                         )}
                     </div>
@@ -235,7 +243,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                     className="flex items-center justify-between mb-4"
                                     style={{ width: containerDims ? containerDims.w : '100%' }}
                                 >
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400 pl-0 h-4 flex items-center">Лицевая сторона *</h3>
+                                    <h3 className="text-[10px] font-bold tracking-[0.12em] text-slate-400 pl-0 h-4 flex items-center">Лицевая сторона *</h3>
                                 </div>
 
                                 <div className="flex flex-col justify-start items-center w-full">
@@ -271,17 +279,17 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                         </div>
                                                     </div>
                                                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3 z-50 backdrop-blur-[2px]">
-                                                        <label className="flex items-center gap-2 px-5 py-3 bg-white rounded-2xl cursor-pointer hover:bg-slate-50 transition-all shadow-lg hover:scale-105 active:scale-95 group/btn">
+                                                        <label className="flex items-center gap-2 px-5 py-3 bg-white rounded-[18px] cursor-pointer hover:bg-slate-50 transition-all shadow-lg hover:scale-105 active:scale-95 group/btn">
                                                             <RefreshCcw className="w-4 h-4 text-indigo-600 group-hover/btn:rotate-180 transition-transform duration-500" />
-                                                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">Заменить</span>
+                                                            <span className="text-[9px] font-bold  text-slate-900">Заменить</span>
                                                             <input type="file" accept="image/*" className="hidden" onChange={handleMainImageChange} />
                                                         </label>
                                                         <button
                                                             onClick={(e) => { e.preventDefault(); removeMainImage(); }}
-                                                            className="flex items-center gap-2 px-5 py-3 bg-rose-500 hover:bg-rose-600 border-none rounded-2xl transition-all shadow-lg text-white hover:scale-105 active:scale-95 group/btn"
+                                                            className="flex items-center gap-2 px-5 py-3 bg-rose-500 hover:bg-rose-600 border-none rounded-[18px] transition-all shadow-lg text-white hover:scale-105 active:scale-95 group/btn"
                                                         >
                                                             <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                                                            <span className="text-[9px] font-black uppercase tracking-widest">Удалить</span>
+                                                            <span className="text-[9px] font-bold ">Удалить</span>
                                                         </button>
                                                     </div>
                                                 </>
@@ -290,7 +298,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                     <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                                         <Plus className="w-5 h-5 text-indigo-500" />
                                                     </div>
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-indigo-500 transition-colors">Загрузить</span>
+                                                    <span className="text-[10px] font-bold  text-slate-400 group-hover:text-indigo-500 transition-colors">Загрузить</span>
                                                 </div>
                                             )}
                                         </div>
@@ -316,7 +324,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                         {/* ZOOM SLIDER */}
                                         <div className="flex items-center gap-4">
                                             <div className="flex-1 space-y-0.5">
-                                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+                                                <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
                                                     <span>Масштаб</span>
                                                     <span className={cn("transition-colors", formData.imagePreview ? "text-indigo-600" : "text-slate-400")}>{Math.round((thumbSettings.zoom ?? 1) * 100)}%</span>
                                                 </div>
@@ -365,7 +373,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                         <div className="flex items-start gap-4">
                                             <div className="flex-1 grid grid-cols-2 gap-3">
                                                 <div className="space-y-1">
-                                                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
                                                         <span className="whitespace-nowrap">По горизонтали</span>
                                                     </div>
                                                     <div className="relative h-6 flex items-center select-none touch-none">
@@ -413,7 +421,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                 </div>
 
                                                 <div className="space-y-1">
-                                                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
                                                         <span className="whitespace-nowrap">По вертикали</span>
                                                     </div>
                                                     <div className="relative h-6 flex items-center select-none touch-none">
@@ -470,7 +478,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                             <div className="flex-1 flex flex-col min-h-0 bg-white pt-3 px-8 pb-8 overflow-y-auto custom-scrollbar">
                                 <div className="flex flex-col min-h-0 space-y-10">
                                     <div className="space-y-4 shrink-0">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400 block h-4 flex items-center">
+                                        <label className="text-[10px] font-bold tracking-[0.12em] text-slate-400 block h-4 flex items-center">
                                             Ракурсы и раскадровка
                                         </label>
                                         <div className="grid grid-cols-2 gap-4 h-[220px]">
@@ -491,11 +499,11 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
 
                                     <div className="space-y-4 flex-1 flex flex-col min-h-0">
                                         <div className="flex items-center justify-between shrink-0">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+                                            <label className="text-[10px] font-bold tracking-[0.12em] text-slate-400">
                                                 Галерея деталей
                                             </label>
-                                            <span className="text-[9px] font-black text-slate-300 tracking-widest">
-                                                {(formData.imageDetailsPreviews?.length || 0)}/4
+                                            <span className="text-[9px] font-bold text-slate-300 ">
+                                                {(formData.imageDetailsPreviews?.length || 0)}/3
                                             </span>
                                         </div>
                                         <div className="grid grid-cols-4 gap-3 pb-4">
@@ -522,13 +530,13 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                     </div>
                                                 </div>
                                             ))}
-                                            {(!formData.imageDetailsPreviews || formData.imageDetailsPreviews.length < 4) && (
-                                                <label className="aspect-square rounded-[20px] border-2 border-dashed border-slate-100 bg-slate-50/50 hover:border-indigo-400 hover:bg-white transition-all cursor-pointer flex flex-col items-center justify-center gap-2 group">
+                                            {(!formData.imageDetailsPreviews || formData.imageDetailsPreviews.length < 3) && (
+                                                <label className="aspect-square rounded-[20px] border-2 border-dashed border-slate-200 bg-slate-50/50 hover:border-indigo-400 hover:bg-white transition-all cursor-pointer flex flex-col items-center justify-center gap-2 group">
                                                     <input type="file" multiple accept="image/*" className="hidden" onChange={handleDetailImageChange} />
                                                     <div className="w-9 h-9 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:border-indigo-100 transition-all">
                                                         <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
                                                     </div>
-                                                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 group-hover:text-indigo-500">Добавить</span>
+                                                    <span className="text-[8px] font-bold  text-slate-400 group-hover:text-indigo-500">Добавить</span>
                                                 </label>
                                             )}
                                         </div>
@@ -542,8 +550,8 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
             <StepFooter
                 onBack={onBack}
                 onNext={onNext}
-                isNextDisabled={!formData.imagePreview || isProcessing}
-                validationError={!formData.imagePreview ? "Загрузите фото" : undefined}
+                isNextDisabled={!isFullPhotoSet || isProcessing}
+                validationError={!isFullPhotoSet ? "Загрузите все 6 фото (3 главных + 3 детали)" : undefined}
             />
         </div>
     );
@@ -553,7 +561,7 @@ function CompactDropzone({ label, preview, onChange, onRemove }: { label: string
     return (
         <div className="flex flex-col min-h-0 space-y-3 flex-1">
             <div className="flex items-center justify-between shrink-0">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.12em] leading-none">{label}</span>
+                <span className="text-[10px] font-bold text-slate-400 tracking-[0.12em] leading-none">{label}</span>
             </div>
             <div className={cn(
                 "relative flex-1 rounded-[20px] overflow-hidden border-2 border-dashed transition-all group",
@@ -565,7 +573,7 @@ function CompactDropzone({ label, preview, onChange, onRemove }: { label: string
                         <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3 z-50 backdrop-blur-[2px]">
                             <label className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl cursor-pointer hover:bg-slate-50 transition-all shadow-lg hover:scale-105 active:scale-95 group/btn">
                                 <RefreshCcw className="w-3.5 h-3.5 text-indigo-600 group-hover/btn:rotate-180 transition-transform duration-500" />
-                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-900">Заменить</span>
+                                <span className="text-[8px] font-bold  text-slate-900">Заменить</span>
                                 <input type="file" accept="image/*" className="hidden" onChange={onChange} />
                             </label>
                             <button
@@ -573,7 +581,7 @@ function CompactDropzone({ label, preview, onChange, onRemove }: { label: string
                                 className="flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 border-none rounded-xl transition-all shadow-lg text-white hover:scale-105 active:scale-95 group/btn"
                             >
                                 <Trash2 className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
-                                <span className="text-[8px] font-black uppercase tracking-widest">Удалить</span>
+                                <span className="text-[8px] font-bold ">Удалить</span>
                             </button>
                         </div>
                     </>
@@ -583,7 +591,7 @@ function CompactDropzone({ label, preview, onChange, onRemove }: { label: string
                         <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-white transition-all">
                             <Plus className="w-4 h-4" />
                         </div>
-                        <span className="text-[8px] font-black uppercase text-slate-400">Загрузить</span>
+                        <span className="text-[8px] font-bold text-slate-400">Загрузить</span>
                     </label>
                 )}
             </div>

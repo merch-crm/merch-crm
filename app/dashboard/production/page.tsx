@@ -1,21 +1,24 @@
-import { Settings } from "lucide-react";
+import { ProductionWidgets } from "./production-widgets";
+import { ProductionBoard } from "./production-board";
+import { getProductionStats, getProductionItems } from "./actions";
 
-export default function ProductionPage() {
+export default async function ProductionPage() {
+    const stats = await getProductionStats();
+    const items = await getProductionItems();
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-            <div className="p-4 bg-indigo-50 rounded-full">
-                <Settings className="h-12 w-12 text-indigo-600 animate-spin-slow" />
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Header */}
+            <div className="px-1">
+                <h1 className="text-4xl font-bold text-slate-900 leading-none">Производство</h1>
+                <p className="text-slate-400 text-sm font-medium mt-3">Управление очередью печати и цеховыми процессами</p>
             </div>
-            <div className="text-center space-y-2">
-                <h1 className="text-2xl font-bold text-slate-900">Модуль &quot;Производство&quot; в разработке</h1>
-                <p className="text-slate-500 max-w-md mx-auto">
-                    Мы активно работаем над созданием инструментов для управления производственными процессами.
-                    Совсем скоро здесь появится график очереди печати и мониторинг состояния оборудования.
-                </p>
-            </div>
+
+            {/* Widgets */}
+            <ProductionWidgets stats={stats} />
+
+            {/* Kanban Board */}
+            <ProductionBoard items={items} />
         </div>
     );
 }
-
-// Add animation to tailwind or globals if needed, but using standard lucide spin for now if possible
-// Or just static

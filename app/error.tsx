@@ -25,7 +25,7 @@ export default function Error({
                 </div>
 
                 <div className="space-y-3">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Упс! Что-то пошло не так</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 leading-none">Упс! Что-то пошло не так</h1>
                     <p className="text-slate-500 font-medium leading-relaxed">
                         Произошла системная ошибка. Мы уже работаем над её исправлением.
                     </p>
@@ -52,7 +52,7 @@ export default function Error({
                 </div>
 
                 <div className="pt-4 border-t border-slate-50">
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-slate-300">
                         Код ошибки: {error.digest || "SYSTEM_RUNTIME_ERR"}
                     </p>
                 </div>

@@ -1,10 +1,28 @@
 import { Navbar } from "@/components/layout/navbar";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { DesktopHeader } from "@/components/layout/desktop-header";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users, systemSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";
+import { getNotifications } from "@/components/notifications/actions";
+import { getBrandingSettings } from "@/app/dashboard/admin/branding/actions";
+import { NotificationManager } from "@/components/notifications/notification-manager";
+import { CommandMenu } from "@/components/layout/command-menu";
+import { checkAndRunNotifications } from "@/app/dashboard/notifications-actions";
+import { PullToRefresh } from "@/components/pull-to-refresh";
+import { GlobalUndo } from "@/components/global-undo";
+
+interface BrandingSettings {
+    companyName: string;
+    logoUrl: string | null;
+    primaryColor: string;
+    faviconUrl: string | null;
+}
 
 export default async function DashboardLayout({
     children,
@@ -41,6 +59,18 @@ export default async function DashboardLayout({
         departmentName: userData.department?.name || ""
     };
 
+    // Fetch notifications
+    await checkAndRunNotifications(); // Run daily checks if needed
+    const notifications = await getNotifications();
+
+    // Fetch branding settings
+    const branding = (await getBrandingSettings() as BrandingSettings) || {
+        companyName: "MerchCRM",
+        logoUrl: null,
+        primaryColor: "#5d00ff",
+        faviconUrl: null
+    };
+
     // Maintenance Mode Check
     try {
         const maintenanceSetting = await db.query.systemSettings.findFirst({
@@ -70,12 +100,37 @@ export default async function DashboardLayout({
     }
 
     return (
-        <div className="min-h-screen bg-[#f8f9fa]">
-            <ActivityTracker />
-            <Navbar user={user} />
-            <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {children}
-            </main>
-        </div>
+        <>
+            {/* Dynamic Primary Color */}
+            <style dangerouslySetInnerHTML={{
+                __html: `:root { --primary: ${branding.primaryColor}; }`
+            }} />
+
+            <PullToRefresh>
+                <div className="min-h-screen pb-24 md:pb-0">
+                    <GlobalUndo />
+                    <CommandMenu />
+                    <ActivityTracker />
+                    <NotificationManager
+                        initialUnreadCount={notifications.filter(n => !n.isRead).length}
+                        userId={session.id}
+                    />
+
+                    {/* Desktop Header - Floating Glass */}
+                    <DesktopHeader user={user} notifications={notifications} branding={branding} />
+
+                    {/* Mobile Header - Top Fixed */}
+                    <MobileHeader user={user} notifications={notifications} branding={branding} />
+
+                    {/* Mobile Bottom Nav - Bottom Fixed */}
+                    <MobileBottomNav />
+
+                    <main className="flex-1 p-4 md:p-8 pt-4 md:pt-6 max-w-7xl mx-auto w-full">
+                        <Breadcrumbs />
+                        {children}
+                    </main>
+                </div>
+            </PullToRefresh>
+        </>
     );
 }

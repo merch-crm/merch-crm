@@ -4,26 +4,30 @@ description: Startup routine to initialize SSH tunnel to remote Docker DB and st
 
 // turbo-all
 
-> **ВАЖНОЕ ПРАВИЛО:** Всегда используйте этот workflow или скрипт `./dev.sh` для работы. Это гарантирует подключение к актуальной базе данных на сервере. Прямой запуск `npm run dev` может привести к работе с пустой локальной базой и потере данных.
+> **ВАЖНОЕ ПРАВИЛО:** Всегда используйте этот workflow или скрипт `./dev.sh`. 
+> **Почему это важно:** Ваше приложение настроено на `localhost:5432`. Без SSH-туннеля эта "дверь" либо закрыта, либо ведет к вашей локальной пустой БД с другим паролем. Туннель перенаправляет этот адрес на реальный сервер 89.104.69.25.
 
-1. Clean up existing tunnels and clear port 5432.
+1. Очистка старых туннелей и порта 5432.
 ```bash
 lsof -ti:5432 | xargs kill -9 2>/dev/null || true
 ```
 
-2. Establish a background SSH tunnel to the remote server (89.104.69.25). 
-This links the remote Postgres in Docker to your local port 5432.
-We add a small sleep to ensure the tunnel is fully established before the next step.
+2. Установка SSH-туннеля к удаленному серверу (89.104.69.25).
 ```bash
 ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 root@89.104.69.25 && sleep 1
 ```
 
-3. Verify database connectivity using the local environment settings.
+3. **Синхронизация пароля:** Принудительно устанавливаем пароль 'postgres' в Docker-контейнере, чтобы он всегда совпадал с вашим .env.local.
+```bash
+ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
+```
+
+4. Проверка подключения к базе данных.
 ```bash
 node scripts/check-connection.js
 ```
 
-4. Start the development server.
+5. Запуск сервера разработки.
 ```bash
 npm run dev
 ```

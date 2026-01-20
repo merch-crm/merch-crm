@@ -11,15 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface Task {
-    id: string;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToRoleId?: string | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-}
+import { Task } from "./types";
 
 interface User {
     id: string;

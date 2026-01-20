@@ -1,18 +1,24 @@
-import { Palette } from "lucide-react";
+import { DesignWidgets } from "./design-widgets";
+import { DesignQueue } from "./design-queue";
+import { getDesignStats, getDesignOrders } from "./actions";
 
-export default function DesignPage() {
+export default async function DesignPage() {
+    const stats = await getDesignStats();
+    const orders = await getDesignOrders();
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-            <div className="p-4 bg-indigo-50 rounded-full">
-                <Palette className="h-12 w-12 text-indigo-600" />
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Header */}
+            <div className="px-1">
+                <h1 className="text-4xl font-bold text-slate-900 leading-none">Дизайн-студия</h1>
+                <p className="text-slate-400 text-sm font-medium mt-3">Управление макетами и согласованиями</p>
             </div>
-            <div className="text-center space-y-2">
-                <h1 className="text-2xl font-bold text-slate-900">Модуль &quot;Дизайн-студия&quot; в разработке</h1>
-                <p className="text-slate-500 max-w-md mx-auto">
-                    Здесь будет сосредоточено управление макетами, согласованиями с клиентами и
-                    инструменты для дизайнеров. Мы уже готовим этот раздел к запуску.
-                </p>
-            </div>
+
+            {/* Widgets */}
+            <DesignWidgets stats={stats} />
+
+            {/* Queue */}
+            <DesignQueue orders={orders} />
         </div>
     );
 }

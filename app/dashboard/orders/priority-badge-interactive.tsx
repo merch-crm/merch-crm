@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Circle, ChevronDown } from "lucide-react";
-import { updateOrderPriority } from "./actions";
+import { updateOrderField } from "./actions";
 
 const priorities = [
     { id: "normal", label: "Обычный", icon: Circle, color: "text-slate-500", lightBg: "bg-slate-50 border-slate-100", dot: "bg-slate-400" },
@@ -40,7 +40,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
         setCurrentPriority(newId);
         setIsOpen(false);
 
-        const res = await updateOrderPriority(orderId, newId);
+        const res = await updateOrderField(orderId, "priority", newId);
         if (res.error) {
             setCurrentPriority(prevPriority);
         }

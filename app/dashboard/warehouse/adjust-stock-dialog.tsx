@@ -96,10 +96,10 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white rounded-[14px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden">
+            <div className="relative w-full max-w-md bg-white rounded-[18px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden">
                 <div className="p-8 pb-4 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Корректировка</h2>
+                        <h2 className="text-2xl font-bold text-slate-900">Корректировка</h2>
                         <div className="flex items-center gap-2 mt-1">
                             <Package className="w-3.5 h-3.5 text-indigo-500" />
                             <span className="text-xs font-bold text-slate-500 truncate max-w-[200px]">{item.name}</span>
@@ -115,22 +115,22 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
                 <form onSubmit={handleSubmit} className="p-8 pt-4 space-y-6">
                     {/* Current Stock Indicator */}
-                    <div className="bg-indigo-50/50 rounded-[14px] p-5 flex items-center justify-between border border-indigo-100/50">
+                    <div className="bg-indigo-50/50 rounded-[18px] p-5 flex items-center justify-between border border-indigo-100/50">
                         <div className="space-y-1">
-                            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">Текущий остаток</span>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase truncate max-w-[150px] block">{selectedLocationName}</span>
+                            <span className="text-[10px] font-bold text-indigo-500 block">Текущий остаток</span>
+                            <span className="text-[10px] font-bold text-slate-400 truncate max-w-[150px] block">{selectedLocationName}</span>
                         </div>
-                        <span className="text-2xl font-black text-slate-900">{selectedLocationId ? currentStockOnLocation : item.quantity} <span className="text-sm text-slate-400 uppercase">{item.unit}</span></span>
+                        <span className="text-2xl font-bold text-slate-900">{selectedLocationId ? currentStockOnLocation : item.quantity} <span className="text-sm text-slate-400">{item.unit}</span></span>
                     </div>
 
 
                     {/* Type Selector */}
-                    <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-[14px]">
+                    <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-[18px]">
                         <button
                             type="button"
                             onClick={() => { setType("in"); setAmount(1); }}
                             className={cn(
-                                "flex items-center justify-center gap-2 py-3 rounded-[14px] font-black text-[10px] uppercase tracking-widest transition-all",
+                                "flex items-center justify-center gap-2 py-3 rounded-[18px] font-bold text-[10px] transition-all",
                                 type === "in"
                                     ? "bg-white text-emerald-600 shadow-sm"
                                     : "text-slate-400 hover:text-slate-600"
@@ -143,7 +143,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                             type="button"
                             onClick={() => { setType("out"); setAmount(1); }}
                             className={cn(
-                                "flex items-center justify-center gap-2 py-3 rounded-[14px] font-black text-[10px] uppercase tracking-widest transition-all",
+                                "flex items-center justify-center gap-2 py-3 rounded-[18px] font-bold text-[10px] transition-all",
                                 type === "out"
                                     ? "bg-white text-rose-600 shadow-sm"
                                     : "text-slate-400 hover:text-slate-600"
@@ -156,7 +156,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                             type="button"
                             onClick={() => { setType("set"); setAmount(item.quantity); }}
                             className={cn(
-                                "flex items-center justify-center gap-2 py-3 rounded-[14px] font-black text-[10px] uppercase tracking-widest transition-all",
+                                "flex items-center justify-center gap-2 py-3 rounded-[18px] font-bold text-[10px] transition-all",
                                 type === "set"
                                     ? "bg-white text-indigo-600 shadow-sm"
                                     : "text-slate-400 hover:text-slate-600"
@@ -169,7 +169,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
                     {/* Warehouse Selector */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <label className="text-[10px] font-bold text-slate-500 ml-1 flex items-center gap-2">
                             <MapPin className="w-3 h-3" /> Выберите склад
                         </label>
                         <StorageLocationSelect
@@ -183,7 +183,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
                     {/* Amount Input */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                        <label className="text-[10px] font-bold text-slate-500 ml-1">
                             {type === "set" ? "Новый остаток" : "Количество"}
                         </label>
                         <div className="relative">
@@ -193,7 +193,9 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                 min="0"
                                 value={amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
-                                className="w-full h-14 pl-5 pr-24 rounded-[14px] border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-indigo-500 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                name="quantity"
+                                placeholder="0"
+                                className="input-premium w-full pl-5 pr-14 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                             <span className="absolute right-12 top-1/2 -translate-y-1/2 font-bold text-slate-400 pointer-events-none">{item.unit}</span>
 
@@ -201,14 +203,14 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                 <button
                                     type="button"
                                     onClick={() => setAmount(prev => prev + 1)}
-                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[14px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[18px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
                                 >
                                     <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setAmount(prev => Math.max(0, prev - 1))}
-                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[14px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                    className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[18px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
                                 >
                                     <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
                                 </button>
@@ -218,19 +220,19 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
                     {/* Reason Input */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Причина</label>
+                        <label className="text-[10px] font-bold text-slate-400  ml-1">Причина</label>
                         <textarea
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder="Напр. Поставка от 12.01 или Списание на образец"
-                            className="w-full min-h-[100px] p-5 rounded-[14px] border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all resize-none"
+                            className="w-full min-h-[100px] p-5 rounded-[18px] border border-slate-100 bg-slate-50 text-sm font-medium focus:bg-white focus:border-indigo-500 outline-none transition-all resize-none"
                         />
                     </div>
 
                     {error && (
-                        <div className="flex items-center gap-3 p-4 rounded-[14px] bg-rose-50 text-rose-600">
+                        <div className="flex items-center gap-3 p-4 rounded-[18px] bg-rose-50 text-rose-600">
                             <AlertCircle className="w-5 h-5 shrink-0" />
-                            <p className="text-xs font-black uppercase tracking-widest">{error}</p>
+                            <p className="text-xs font-bold ">{error}</p>
                         </div>
                     )}
 
@@ -238,7 +240,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                         type="submit"
                         disabled={isSubmitting || amount <= 0}
                         className={cn(
-                            "w-full h-14 rounded-[14px] font-black text-sm uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50",
+                            "w-full h-14 rounded-[18px] font-bold text-sm shadow-lg transition-all active:scale-95 disabled:opacity-50",
                             type === "in"
                                 ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200"
                                 : "bg-rose-600 hover:bg-rose-700 shadow-rose-200"

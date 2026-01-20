@@ -16,19 +16,7 @@ import { TaskDetailsDialog } from "./task-details-dialog";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-interface Task {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    priority: string;
-    assignedToUserId?: string | null;
-    assignedToRoleId?: string | null;
-    assignedToUser?: { name: string } | null;
-    assignedToRole?: { name: string } | null;
-    dueDate?: Date | string | null;
-    createdAt: Date | string;
-}
+import { Task } from "./types";
 
 interface TasksListProps {
     tasks: Task[];

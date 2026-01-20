@@ -1,0 +1,35 @@
+"use client";
+
+import Link from "next/link";
+import { Printer } from "lucide-react";
+import { UserNav } from "./user-nav";
+
+interface BrandingSettings {
+    companyName: string;
+    logoUrl: string | null;
+    primaryColor: string;
+    faviconUrl: string | null;
+}
+
+export function MobileHeader({ user, notifications, branding }: {
+    user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
+    notifications: any[];
+    branding: BrandingSettings;
+}) {
+    return (
+        <header className="md:hidden sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 h-16 flex items-center justify-between">
+            <Link href="/dashboard" className="flex items-center gap-2.5">
+                <div className="bg-primary rounded-[10px] p-1.5 shadow-lg shadow-primary/20">
+                    {branding.logoUrl ? (
+                        <img src={branding.logoUrl} alt="Logo" className="h-4 w-4 object-contain" />
+                    ) : (
+                        <Printer className="h-4 w-4 text-white" />
+                    )}
+                </div>
+                <span className="text-lg font-bold text-slate-900 tracking-tight">{branding.companyName}</span>
+            </Link>
+
+            <UserNav user={user} />
+        </header>
+    );
+}

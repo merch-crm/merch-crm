@@ -19,6 +19,7 @@ interface StatisticsViewProps {
         monthlyOrders: number;
         tasksByStatus: Array<{ count: number; status: string }>;
         totalActivity: number;
+        efficiency?: number;
     } | null;
 }
 
@@ -166,13 +167,13 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                                     strokeWidth="8"
                                     fill="transparent"
                                     strokeDasharray={364.4}
-                                    strokeDashoffset={364.4 * 0.2} // 80% progress
+                                    strokeDashoffset={364.4 * (1 - (data.efficiency || 0) / 100)}
                                     className="text-indigo-600"
                                     strokeLinecap="round"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-2xl font-black text-slate-900">80%</span>
+                                <span className="text-2xl font-black text-slate-900">{data.efficiency || 0}%</span>
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">КПД</span>
                             </div>
                         </div>

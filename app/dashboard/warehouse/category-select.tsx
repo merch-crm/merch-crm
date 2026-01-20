@@ -56,7 +56,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full h-12 px-4 rounded-[14px] border flex items-center justify-between transition-all outline-none group",
+                    "w-full h-12 px-4 rounded-[18px] border flex items-center justify-between transition-all outline-none group",
                     isOpen ? "border-indigo-500 ring-4 ring-indigo-500/10 bg-white shadow-lg shadow-indigo-500/5" : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300",
                     disabled && "opacity-50 cursor-not-allowed"
                 )}
@@ -65,7 +65,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                     {value ? (
                         <>
                             <div className={cn(
-                                "w-7 h-7 rounded-[14px] flex items-center justify-center shrink-0 shadow-sm transition-colors",
+                                "w-7 h-7 rounded-[18px] flex items-center justify-center shrink-0 shadow-sm transition-colors",
                                 getColorStyles(selectedCategory?.color)
                             )}>
                                 {createElement(iconComponent, { className: "w-4 h-4" })}
@@ -80,7 +80,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-3 z-[70] bg-white rounded-[14px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="absolute top-full left-0 right-0 mt-3 z-[70] bg-white rounded-[18px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="p-3 border-b border-slate-50 bg-slate-50/30">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -89,7 +89,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Поиск категории..."
-                                className="w-full h-10 pl-9 pr-4 rounded-[14px] bg-white border border-slate-100 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-200 transition-all text-sm font-medium"
+                                className="w-full h-10 pl-9 pr-4 rounded-[18px] bg-white border border-slate-100 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-200 transition-all text-sm font-medium"
                             />
                         </div>
                     </div>
@@ -107,18 +107,18 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                                         type="button"
                                         onClick={() => handleSelect(cat.id)}
                                         className={cn(
-                                            "w-full flex items-center justify-between p-3 rounded-[14px] transition-all mb-1 group",
+                                            "w-full flex items-center justify-between p-3 rounded-[18px] transition-all mb-1 group",
                                             isSelected ? "bg-indigo-50 text-indigo-600" : "hover:bg-slate-50 text-slate-600"
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={cn(
-                                                "w-9 h-9 rounded-[14px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110",
+                                                "w-9 h-9 rounded-[18px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110",
                                                 colorStyles
                                             )}>
                                                 {createElement(CatIcon, { className: "w-4 h-4" })}
                                             </div>
-                                            <span className="font-bold text-sm tracking-tight">{cat.name}</span>
+                                            <span className="font-bold text-sm ">{cat.name}</span>
                                         </div>
                                         {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
                                     </button>

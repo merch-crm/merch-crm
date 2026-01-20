@@ -11,7 +11,6 @@ import {
     inventoryTransfers,
     notifications,
     orderItems,
-    measurementUnits,
     inventoryAttributes,
     inventoryAttributeTypes
 } from "@/lib/schema";
@@ -25,6 +24,7 @@ import { logError } from "@/lib/error-logger";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
+import { checkItemStockAlerts } from "@/lib/notifications";
 
 // Helper to sanitize folder/file names
 function sanitizeFileName(name: string): string {
@@ -448,7 +448,7 @@ export async function addInventoryItem(formData: FormData) {
                 name,
                 sku: finalSku || null,
                 quantity,
-                unit,
+                unit: unit as any,
                 itemType: itemType || "clothing",
                 lowStockThreshold,
                 criticalStockThreshold,
@@ -503,6 +503,11 @@ export async function addInventoryItem(formData: FormData) {
 
             return insertedItem;
         });
+
+        // Trigger stock check
+        if (newItem.id) {
+            await checkItemStockAlerts(newItem.id);
+        }
 
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
@@ -696,7 +701,6 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const result = await db.update(inventoryItems).set({
             name,
             sku: finalSku || null,
-            unit,
             itemType: itemType || "clothing",
             quantity,
             lowStockThreshold,
@@ -716,10 +720,15 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             imageBack: imageBackUrl,
             imageSide: imageSideUrl,
             imageDetails: imageDetailsUrls,
-            reservedQuantity
+            reservedQuantity,
+            unit: unit as any
         }).where(eq(inventoryItems.id, id));
 
         console.log("UPDATE SUCCESSFUL. Lines affected:", result.rowCount);
+
+        // Trigger stock check
+        await checkItemStockAlerts(id);
+
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
@@ -1941,69 +1950,21 @@ export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: s
     }
 }
 
-// Measurement Units Actions
+// Measurement Units are now a static list based on measurementUnitEnum
 export async function getMeasurementUnits() {
-    try {
-        const units = await db.query.measurementUnits.findMany({
-            where: eq(measurementUnits.isActive, true),
-            orderBy: measurementUnits.name
-        });
-        return { data: units };
-    } catch (error) {
-        console.error(error);
-        return { error: "Failed to fetch measurement units" };
-    }
-}
-
-export async function addMeasurementUnit(formData: FormData) {
-    const session = await getSession();
-    if (!session || session.roleName !== "Администратор") {
-        return { error: "Недостаточно прав" };
-    }
-
-    const name = formData.get("name") as string;
-    const fullName = formData.get("fullName") as string;
-    const description = formData.get("description") as string;
-
-    if (!name) return { error: "Name is required" };
-
-    try {
-        await db.insert(measurementUnits).values({
-            name,
-            fullName,
-            description,
-        });
-        revalidatePath("/dashboard/warehouse");
-        return { success: true };
-    } catch {
-        return { error: "Failed to add measurement unit" };
-    }
+    return {
+        data: [
+            { id: "pcs", name: "шт" },
+            { id: "liters", name: "л" },
+            { id: "meters", name: "м" },
+            { id: "kg", name: "кг" }
+        ]
+    };
 }
 
 export async function seedMeasurementUnits() {
-    const defaultUnits = [
-        { name: "шт", fullName: "Штуки" },
-        { name: "м", fullName: "Метры" },
-        { name: "кг", fullName: "Килограммы" },
-        { name: "упак", fullName: "Упаковки" },
-        { name: "л", fullName: "Литры" },
-        { name: "пог.м", fullName: "Погонные метры" }
-    ];
-
-    try {
-        for (const unit of defaultUnits) {
-            const existing = await db.query.measurementUnits.findFirst({
-                where: eq(measurementUnits.name, unit.name)
-            });
-            if (!existing) {
-                await db.insert(measurementUnits).values(unit);
-            }
-        }
-        return { success: true };
-    } catch (error) {
-        console.error("Seed error:", error);
-        return { error: "Failed to seed units" };
-    }
+    // Единицы измерения зашиты в Enum в БД, поэтому здесь просто подтверждаем готовность
+    return { success: true };
 }
 
 // Restore System Categories

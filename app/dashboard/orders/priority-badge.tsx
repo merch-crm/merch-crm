@@ -8,8 +8,8 @@ export default function PriorityBadge({ priority }: { priority: string }) {
         <Badge
             variant={isHigh ? "destructive" : "secondary"}
             className={`
-                rounded-md font-bold text-[10px] uppercase tracking-wider gap-1.5 px-2 py-0.5
-                ${isHigh ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100' : 'bg-slate-50 text-slate-500 border-slate-100 font-medium'}
+                rounded-md font-medium text-xs gap-1.5 px-2.5 py-1
+                ${isHigh ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100' : 'bg-slate-50 text-slate-500 border-slate-100'}
             `}
         >
             {isHigh ? (
