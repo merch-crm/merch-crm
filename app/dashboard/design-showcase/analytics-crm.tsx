@@ -9,7 +9,6 @@ import {
     Plus,
     ArrowUpRight,
     MoreHorizontal,
-    ArrowRight,
     Apple
 } from "lucide-react";
 import { motion } from "framer-motion";
