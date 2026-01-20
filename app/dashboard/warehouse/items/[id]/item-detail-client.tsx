@@ -4,15 +4,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-    Info,
     Image as ImageIcon,
     MapPin,
     Clock,
-    Edit3,
-    Trash2,
-    Download,
-    Package,
-    RefreshCcw,
     Zap,
     TrendingUp,
     ChevronRight,

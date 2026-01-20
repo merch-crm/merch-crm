@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { WikiSidebar } from "./wiki-sidebar";
 import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, deleteWikiPage } from "./actions";
 import { useRouter } from "next/navigation";
@@ -39,19 +39,19 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
 
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
-    const fetchPageDetail = async (id: string) => {
+    const fetchPageDetail = useCallback(async (id: string) => {
         setLoading(true);
         const page = await getWikiPageDetail(id);
         setPageContent(page as unknown as WikiPage);
         setEditData({ title: page?.title || "", content: page?.content || "" });
         setLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
         if (selectedPageId) {
             fetchPageDetail(selectedPageId);
         }
-    }, [selectedPageId]);
+    }, [selectedPageId, fetchPageDetail]);
 
     const handleSave = async () => {
         if (!selectedPageId) return;
