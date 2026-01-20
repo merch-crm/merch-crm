@@ -1,6 +1,7 @@
 import { db } from "./db";
 import { orderItems, orders } from "./schema";
 import { eq, and } from "drizzle-orm";
+import type { PgColumn } from "drizzle-orm/pg-core";
 
 /**
  * Управление этапами производства для позиций заказа.
@@ -11,7 +12,7 @@ export async function updateItemStage(
     stage: 'prep' | 'print' | 'application' | 'packaging',
     status: 'pending' | 'in_progress' | 'done' | 'failed'
 ) {
-    const fieldMap: Record<string, any> = {
+    const fieldMap: Record<string, PgColumn> = {
         prep: orderItems.stagePrepStatus,
         print: orderItems.stagePrintStatus,
         application: orderItems.stageApplicationStatus,

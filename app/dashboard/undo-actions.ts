@@ -7,8 +7,8 @@ import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 interface LogDetails {
-    previousState?: any;
-    [key: string]: any;
+    previousState?: unknown;
+    [key: string]: unknown;
 }
 
 export async function undoLastAction() {
@@ -34,19 +34,20 @@ export async function undoLastAction() {
         if (entityType === "client") {
             // Revert client update
             await db.update(clients)
-                .set(details.previousState)
+                .set(details.previousState as Partial<typeof clients.$inferInsert>)
                 .where(eq(clients.id, entityId));
         } else if (entityType === "inventory_item") {
             // Revert inventory update
             await db.update(inventoryItems)
-                .set(details.previousState)
+                .set(details.previousState as Partial<typeof inventoryItems.$inferInsert>)
                 .where(eq(inventoryItems.id, entityId));
         } else if (entityType === "order") {
             // Revert order status update
+            const prevState = details.previousState as { status?: string; cancelReason?: string | null };
             await db.update(orders)
                 .set({
-                    status: details.previousState.status,
-                    cancelReason: details.previousState.cancelReason || null
+                    status: prevState.status as typeof orders.$inferInsert.status,
+                    cancelReason: prevState.cancelReason || null
                 })
                 .where(eq(orders.id, entityId));
         } else {

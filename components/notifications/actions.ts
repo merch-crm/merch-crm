@@ -35,9 +35,9 @@ export async function markAsRead(notificationId: string) {
 
         revalidatePath("/dashboard");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error marking notification as read:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Failed to mark as read" };
     }
 }
 
@@ -52,8 +52,8 @@ export async function markAllAsRead() {
 
         revalidatePath("/dashboard");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error marking all notifications as read:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Failed to mark all as read" };
     }
 }
