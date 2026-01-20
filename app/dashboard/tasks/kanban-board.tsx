@@ -23,7 +23,7 @@ interface KanbanBoardProps {
     currentUserDepartmentId?: string | null;
 }
 
-const COLUMNS = [
+const COLUMNS: { id: Task['status']; label: string; color: string; bg: string }[] = [
     { id: "new", label: "Новые", color: "bg-slate-400", bg: "bg-slate-50/50" },
     { id: "in_progress", label: "В работе", color: "bg-indigo-500", bg: "bg-indigo-50/10" },
     { id: "review", label: "Проверка", color: "bg-amber-400", bg: "bg-amber-50/10" },
@@ -65,7 +65,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
         e.dataTransfer.dropEffect = "move";
     };
 
-    const onDrop = (e: React.DragEvent, status: string) => {
+    const onDrop = (e: React.DragEvent, status: Task['status']) => {
         e.preventDefault();
         const taskId = e.dataTransfer.getData("taskId");
         if (!taskId) return;
@@ -73,7 +73,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
         const task = tasks.find(t => t.id === taskId);
         if (task && task.status !== status) {
             startTransition(async () => {
-                await updateTask(taskId, { status: status as any });
+                await updateTask(taskId, { status: status as Task['status'] });
             });
         }
     };

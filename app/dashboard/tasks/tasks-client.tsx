@@ -28,11 +28,16 @@ interface Department {
     name: string;
 }
 
+interface Order {
+    id: string;
+    orderNumber: string;
+}
+
 interface TasksClientProps {
     initialTasks: Task[];
     users: User[];
     departments: Department[];
-    orders: any[];
+    orders: Order[];
     currentUserId: string;
     currentUserDepartmentId?: string | null;
 }

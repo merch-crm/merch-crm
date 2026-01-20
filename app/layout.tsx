@@ -14,10 +14,10 @@ import { getBrandingSettings } from "@/app/dashboard/admin/branding/actions";
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBrandingSettings();
   return {
-    title: (branding as any)?.companyName || "MerchCRM",
+    title: (branding as { companyName?: string })?.companyName || "MerchCRM",
     description: "CRM система для типографии",
     icons: {
-      icon: (branding as any)?.faviconUrl || "/icon.png",
+      icon: (branding as { faviconUrl?: string })?.faviconUrl || "/icon.png",
     },
   };
 }
@@ -30,10 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`light ${manrope.variable}`} style={{ colorScheme: 'light' }} suppressHydrationWarning>
-      <body
-        className="antialiased"
-      >
+    <html lang="ru">
+      <body className={`${manrope.variable} antialiased font-manrope`}>
         <BrandingProvider>
           {children}
         </BrandingProvider>

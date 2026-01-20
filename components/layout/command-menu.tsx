@@ -7,10 +7,18 @@ import { globalSearch } from "@/app/dashboard/search-actions";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface SearchResult {
+    id: string;
+    type: 'client' | 'order' | 'inventory' | 'wiki';
+    title: string;
+    subtitle: string | null;
+    href: string;
+}
+
 export function CommandMenu() {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 

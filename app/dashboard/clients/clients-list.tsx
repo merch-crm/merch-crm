@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { getClients, getManagers, bulkDeleteClients, bulkUpdateClientManager, updateClientField, toggleClientArchived } from "./actions";
 import { undoLastAction } from "../undo-actions";
 import {
@@ -85,19 +85,18 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     const [showManagerSelect, setShowManagerSelect] = useState(false);
     const { toast } = useToast();
 
-    const fetchClients = () => {
+    const fetchClients = useCallback(() => {
         getClients(showArchived).then(res => {
             if (res.data) setClients(res.data as Client[]);
             setLoading(false);
         });
-    };
-
-    useEffect(() => {
-        fetchClients();
     }, [showArchived]);
 
     useEffect(() => {
         fetchClients();
+    }, [fetchClients]);
+
+    useEffect(() => {
         getManagers().then(res => {
             if (res.data) setManagers(res.data);
         });

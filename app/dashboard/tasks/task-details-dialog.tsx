@@ -154,7 +154,13 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         });
     };
 
-    const getActivityLabel = (activity: any) => {
+    interface TaskActivity {
+        type: string;
+        oldValue?: string | null;
+        newValue?: string | null;
+    }
+
+    const getActivityLabel = (activity: TaskActivity) => {
         switch (activity.type) {
             case 'status_change': return `заменил статус с ${activity.oldValue} на ${activity.newValue}`;
             case 'comment_add': return `добавил комментарий`;

@@ -2,14 +2,14 @@ export interface Task {
     id: string;
     title: string;
     description?: string | null;
-    status: string;
-    priority: string;
+    status: "new" | "in_progress" | "review" | "done" | "archived";
+    priority: "low" | "normal" | "high";
     assignedToUserId?: string | null;
     assignedToRoleId?: string | null;
     assignedToDepartmentId?: string | null;
     dueDate?: Date | string | null;
     createdAt: Date | string;
-    type: string;
+    type: "design" | "production" | "acquisition" | "delivery" | "other";
     orderId?: string | null;
     order?: {
         id: string;

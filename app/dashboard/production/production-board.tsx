@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateProductionStageAction } from "./actions";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ interface ProductionBoardProps {
 type Stage = 'prep' | 'print' | 'application' | 'packaging';
 type StageStatus = 'pending' | 'in_progress' | 'done' | 'failed';
 
-const stages: { id: Stage; label: string; icon: any; color: string }[] = [
+const stages: { id: Stage; label: string; icon: LucideIcon; color: string }[] = [
     { id: 'prep', label: 'Подготовка', icon: Package, color: 'bg-blue-50 border-blue-200 text-blue-700' },
     { id: 'print', label: 'Печать', icon: Clock, color: 'bg-orange-50 border-orange-200 text-orange-700' },
     { id: 'application', label: 'Нанесение', icon: AlertCircle, color: 'bg-purple-50 border-purple-200 text-purple-700' },

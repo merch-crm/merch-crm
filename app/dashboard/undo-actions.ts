@@ -6,6 +6,11 @@ import { eq, desc, and } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
+interface LogDetails {
+    previousState?: any;
+    [key: string]: any;
+}
+
 export async function undoLastAction() {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
@@ -19,7 +24,7 @@ export async function undoLastAction() {
 
         if (!lastLog) return { error: "Нет действий для отмены" };
 
-        const details = lastLog.details as any;
+        const details = lastLog.details as LogDetails;
         if (!details || !details.previousState) {
             return { error: "Это действие нельзя отменить автоматически" };
         }

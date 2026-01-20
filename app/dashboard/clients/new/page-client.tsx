@@ -1,22 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     ArrowLeft,
     Check,
     User,
     Phone,
-    Building2,
-    MapPin,
     MessageSquare,
-    RotateCcw,
-    Mail,
-    Link as LinkIcon
+    RotateCcw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { addClient, getManagers, checkClientDuplicates } from "../actions";
+import { addClient } from "../actions";
 import { useToast } from "@/components/ui/toast";
 
 interface NewClientPageClientProps {
