@@ -47,9 +47,13 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
         if (selectedPageId) {
-            fetchPageDetail(selectedPageId);
+            fetchPageDetail(selectedPageId).then(() => {
+                if (!isMounted) return;
+            });
         }
+        return () => { isMounted = false; };
     }, [selectedPageId, fetchPageDetail]);
 
     const handleSave = async () => {

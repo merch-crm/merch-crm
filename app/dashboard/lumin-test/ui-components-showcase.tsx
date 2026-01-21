@@ -18,6 +18,7 @@ import {
     Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function UiComponentsShowcase() {
     const [showPassword, setShowPassword] = useState(false);
@@ -125,8 +126,8 @@ export default function UiComponentsShowcase() {
                 {/* 3. LOGIN FORM */}
                 <div className="bg-white rounded-[32px] p-6 shadow-lg">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-full overflow-hidden">
-                            <img src="https://i.pravatar.cc/100?img=20" alt="User" />
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                            <Image src="https://i.pravatar.cc/100?img=20" fill className="object-cover" alt="User" />
                         </div>
                         <div className="text-xs text-slate-400">Username</div>
                     </div>

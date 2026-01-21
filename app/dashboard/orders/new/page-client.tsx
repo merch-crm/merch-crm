@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { createOrder, searchClients, getInventoryForSelect } from "../actions";
+import { createOrder, searchClients } from "../actions";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 
@@ -76,7 +76,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
 
     // Step 2: Items
     const [selectedItems, setSelectedItems] = useState<OrderInventoryItem[]>([]);
-    const [inventory, setInventory] = useState<OrderInventoryItem[]>(initialInventory);
+    const [inventory] = useState<OrderInventoryItem[]>(initialInventory);
 
     // Step 3: Details
     const [details, setDetails] = useState({

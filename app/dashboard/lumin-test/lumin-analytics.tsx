@@ -2,19 +2,15 @@
 
 import React from "react";
 import {
-    Bell,
-    Settings,
     Search,
     SlidersHorizontal,
     Calendar,
     ChevronDown,
     Plus,
     ArrowUpRight,
-    MoreHorizontal,
-    Wallet,
-    ArrowRight,
     Apple
 } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Reusing Button from page.tsx concept, but defined here for portability if needed
@@ -147,8 +143,8 @@ export default function LuminAnalytics() {
                                 { name: "Darlene Robertson", bg: "bg-blue-100", percent: 15 },
                             ].map((person, idx) => (
                                 <div key={idx} className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden">
-                                        <img src={`https://i.pravatar.cc/100?img=${idx + 15}`} className="w-full h-full object-cover" alt={person.name} />
+                                    <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden relative">
+                                        <Image src={`https://i.pravatar.cc/100?img=${idx + 15}`} fill className="object-cover" alt={person.name} />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between mb-1">

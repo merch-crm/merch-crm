@@ -1,8 +1,7 @@
 "use client";
 
-import { FileText, PlusCircle, Settings, CheckCircle2, TrendingUp, Sparkles, Layers } from "lucide-react";
+import { PlusCircle, Settings, CheckCircle2, TrendingUp, Sparkles, Layers } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
-import { cn } from "@/lib/utils";
 
 interface OrderStatsProps {
     stats: {

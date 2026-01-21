@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
+
 import {
     ChevronDown,
     Sparkles,
@@ -28,7 +28,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
     const containerRef = useRef<HTMLDivElement>(null);
 
     const activeItem = statuses.find(s => s.id === currentStatus) || statuses[0];
-    const Icon = activeItem.icon;
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

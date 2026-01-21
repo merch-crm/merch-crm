@@ -11,7 +11,6 @@ import {
     ChevronDown,
     Search,
     Plus,
-    ArrowUpRight,
     TrendingUp,
     Video
 } from "lucide-react";

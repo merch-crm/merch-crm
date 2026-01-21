@@ -47,7 +47,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
             } else {
                 toast(res.error || "Ошибка", "error");
             }
-        } catch (error) {
+        } catch {
             toast("Ошибка соединения", "error");
         } finally {
             setLoading(false);

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { updateProductionStageAction } from "./actions";
 import { useRouter } from "next/navigation";
 import { DefectDialog } from "./defect-dialog";
@@ -121,10 +122,11 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                             {/* Mockup Preview */}
                                             {item.order.attachments && item.order.attachments.length > 0 && (
                                                 <div className="mb-3 relative group/mockup overflow-hidden rounded-[8px] bg-slate-50 border border-slate-100 aspect-video">
-                                                    <img
+                                                    <Image
                                                         src={item.order.attachments[0].fileUrl}
                                                         alt="Mockup"
-                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover/mockup:scale-110"
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover/mockup:scale-110"
                                                     />
                                                     <button
                                                         onClick={(e) => {

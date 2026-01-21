@@ -12,6 +12,7 @@ import {
     Code
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function TwistyDashboard() {
     return (
@@ -136,8 +137,8 @@ export default function TwistyDashboard() {
                                 ].map((user, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-1">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
-                                                <img src={`https://i.pravatar.cc/100?img=${idx + 40}`} className="w-full h-full object-cover" alt={user.name} />
+                                            <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden relative">
+                                                <Image src={`https://i.pravatar.cc/100?img=${idx + 40}`} fill className="object-cover" alt={user.name} />
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">

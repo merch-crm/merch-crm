@@ -13,6 +13,7 @@ import {
     Tv,
     Droplets
 } from "lucide-react";
+import Image from "next/image";
 
 
 export default function SmartHomeDashboard() {
@@ -27,8 +28,8 @@ export default function SmartHomeDashboard() {
 
                     {/* 1. Header/Greeting Card */}
                     <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-2 pr-6 rounded-full w-max">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
-                            <img src="https://i.pravatar.cc/100?img=9" alt="User" />
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white relative">
+                            <Image src="https://i.pravatar.cc/100?img=9" fill className="object-cover" alt="User" />
                         </div>
                         <div className="bg-[#dfff00] px-6 py-2.5 rounded-full flex items-center justify-between gap-12 text-[#0F172A] shadow-sm">
                             <div>

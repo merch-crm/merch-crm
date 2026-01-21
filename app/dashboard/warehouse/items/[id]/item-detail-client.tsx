@@ -48,7 +48,6 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 interface ItemDetailClientProps {
     item: InventoryItem;
     storageLocations: StorageLocation[];
-    measurementUnits: MeasurementUnit[];
     categories: Category[];
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
@@ -57,7 +56,6 @@ interface ItemDetailClientProps {
 export function ItemDetailClient({
     item: initialItem,
     storageLocations,
-    measurementUnits,
     attributeTypes,
     allAttributes
 }: ItemDetailClientProps) {
@@ -101,7 +99,7 @@ export function ItemDetailClient({
 
     const isAnyUploading = Object.values(uploadStates).some(s => s.uploading);
 
-    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details", _index?: number) => {
+    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details") => {
         if (!file) return;
         if (type === "front") setNewImageFile(file);
         if (type === "back") setNewImageBackFile(file);
@@ -117,14 +115,14 @@ export function ItemDetailClient({
 
             const nextIndex = pendingCount;
             setNewImageDetailsFiles(prev => [...prev, file]);
-            simulateUpload("details", file.name, nextIndex);
+            simulateUpload("details", file.name);
             return;
         }
 
         simulateUpload(type, file.name);
     };
 
-    const simulateUpload = (type: string, fileName: string, _index?: number) => {
+    const simulateUpload = (type: string, fileName: string) => {
         setUploadStates(prev => ({
             ...prev,
             [type]: { uploading: true, progress: 0, uploaded: false }

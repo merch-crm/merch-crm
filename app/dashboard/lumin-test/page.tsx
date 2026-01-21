@@ -2,20 +2,18 @@
 
 import React from "react";
 import {
-    Bell,
-    Settings,
     Search,
     SlidersHorizontal,
     Calendar,
     ChevronDown,
     Plus,
     ArrowUpRight,
-    CreditCard,
     Megaphone,
     Crown,
     Smartphone,
     Apple
 } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import LuminAnalytics from "./lumin-analytics";
 import TwistyDashboard from "./twisty-dashboard";
@@ -237,8 +235,8 @@ export default function LuminTestPage() {
                                 <div className="w-6 h-8 bg-black/20 rounded-sm" />
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white overflow-hidden">
-                                    <img src="https://i.pravatar.cc/100?img=11" alt="avatar" className="w-full h-full object-cover" />
+                                <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white overflow-hidden relative">
+                                    <Image src="https://i.pravatar.cc/100?img=11" alt="avatar" fill className="object-cover" />
                                 </div>
                                 <span className="text-[8px] text-white font-medium">Albert Flores</span>
                             </div>

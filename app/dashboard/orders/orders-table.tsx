@@ -31,7 +31,7 @@ interface OrdersTableProps {
     onToggleArchived?: () => void;
 }
 
-export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchived, onToggleArchived }: OrdersTableProps) {
+export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchived }: OrdersTableProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
 

@@ -10,7 +10,7 @@ interface WarehouseWidgetsProps {
     history: Transaction[];
 }
 
-export function WarehouseWidgets({ items, categories, history }: WarehouseWidgetsProps) {
+export function WarehouseWidgets({ items, history }: WarehouseWidgetsProps) {
     const criticalItems = items.filter(item => item.quantity <= item.lowStockThreshold);
 
     // Stats calculations

@@ -12,10 +12,9 @@ import { ItemDetailClient } from "./item-detail-client";
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: itemId } = await params;
 
-    const [itemRes, locationsRes, unitsRes, categoriesRes, typesRes, attrsRes] = await Promise.all([
+    const [itemRes, locationsRes, categoriesRes, typesRes, attrsRes] = await Promise.all([
         getInventoryItem(itemId),
         getStorageLocations(),
-        getMeasurementUnits(),
         getInventoryCategories(),
         getInventoryAttributeTypes(),
         getInventoryAttributes()
@@ -28,7 +27,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     // Process dates for serialization
     const processedItem = JSON.parse(JSON.stringify(itemRes.data));
     const processedLocations = JSON.parse(JSON.stringify(locationsRes.data || []));
-    const processedUnits = JSON.parse(JSON.stringify(unitsRes.data || []));
     const processedCategories = JSON.parse(JSON.stringify(categoriesRes.data || []));
     const processedAttributeTypes = JSON.parse(JSON.stringify(typesRes.data || []));
     const processedAttributes = JSON.parse(JSON.stringify(attrsRes.data || []));
@@ -39,7 +37,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             <ItemDetailClient
                 item={processedItem}
                 storageLocations={processedLocations}
-                measurementUnits={processedUnits}
                 categories={processedCategories}
                 attributeTypes={processedAttributeTypes}
                 allAttributes={processedAttributes}
