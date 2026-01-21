@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Folder, FileText, ChevronRight, ChevronDown, Plus, MoreVertical, Trash2, Edit2, Search } from "lucide-react";
+import { Folder, FileText, ChevronRight, ChevronDown, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 

@@ -14,7 +14,6 @@ import {
     Plus,
     ArrowUpRight,
     Zap,
-    Wifi,
     Tv,
     Droplets,
     Crown
@@ -22,8 +21,6 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function EduplexDashboard() {
-    const currentDate = new Date(2023, 7, 1); // August 2023
-
     return (
         <div className="w-full bg-[#F3F4F6] p-8 rounded-[40px] mt-10 font-sans flex gap-0 overflow-hidden min-h-[800px]">
 

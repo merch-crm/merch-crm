@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/navbar";
+
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { DesktopHeader } from "@/components/layout/desktop-header";
 import { MobileHeader } from "@/components/layout/mobile-header";

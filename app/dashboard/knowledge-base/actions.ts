@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { wikiFolders, wikiPages } from "@/lib/schema";
-import { eq, and, asc, desc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 

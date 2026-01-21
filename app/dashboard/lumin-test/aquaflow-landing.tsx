@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ShoppingCart, ArrowUpRight, Send } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 
 export default function AquaflowLanding() {
     return (

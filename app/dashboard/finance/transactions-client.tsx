@@ -55,7 +55,7 @@ export function TransactionsClient({
     const [view, setView] = useState<'all' | 'payments' | 'expenses'>('all');
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddingExpense, setIsAddingExpense] = useState(false);
-    const { toast } = useToast();
+
 
     // Map payments and expenses to a unified format
     const allTransactions: Transaction[] = [

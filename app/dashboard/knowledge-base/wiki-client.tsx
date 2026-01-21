@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { WikiSidebar } from "./wiki-sidebar";
 import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, deleteWikiPage } from "./actions";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Check, X, Search } from "lucide-react";
 
