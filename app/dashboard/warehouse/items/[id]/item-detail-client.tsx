@@ -20,7 +20,6 @@ import {
     InventoryAttribute,
     AttributeType,
     ItemHistoryTransaction,
-    MeasurementUnit,
     StorageLocation,
     ItemStock
 } from "../../types";
@@ -113,7 +112,6 @@ export function ItemDetailClient({
                 return;
             }
 
-            const nextIndex = pendingCount;
             setNewImageDetailsFiles(prev => [...prev, file]);
             simulateUpload("details", file.name);
             return;

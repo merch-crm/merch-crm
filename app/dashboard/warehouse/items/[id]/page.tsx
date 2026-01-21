@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import {
     getInventoryItem,
     getStorageLocations,
-    getMeasurementUnits,
     getInventoryCategories,
     getInventoryAttributeTypes,
     getInventoryAttributes
