@@ -87,7 +87,7 @@ export function NotificationManager({ initialUnreadCount }: NotificationManagerP
                 if (typeof oData.count === "number") {
                     setOrderCount(oData.count);
                 }
-            } catch (e) {
+            } catch {
                 // Ignore
             }
         }, 15000);

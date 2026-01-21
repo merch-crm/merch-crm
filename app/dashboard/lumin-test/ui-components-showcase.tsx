@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import {
     Search,
-    ChevronDown,
-    Plus,
     Check,
     Eye,
     EyeOff,
@@ -22,7 +20,6 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function UiComponentsShowcase() {
-    const [priceRange, setPriceRange] = useState([12340, 40350]);
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 

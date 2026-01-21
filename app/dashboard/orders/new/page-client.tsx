@@ -58,13 +58,14 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
     const [searchResults, setSearchResults] = useState<Client[]>([]);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
-    const [searchHistory, setSearchHistory] = useState<string[]>([]);
+    const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+        if (typeof window !== 'undefined') {
+            const history = localStorage.getItem("client_search_history");
+            return history ? JSON.parse(history) : [];
+        }
+        return [];
+    });
     const [showHistory, setShowHistory] = useState(false);
-
-    useEffect(() => {
-        const history = localStorage.getItem("client_search_history");
-        if (history) setSearchHistory(JSON.parse(history));
-    }, []);
 
     const addToHistory = (query: string) => {
         if (!query || query.length < 2) return;

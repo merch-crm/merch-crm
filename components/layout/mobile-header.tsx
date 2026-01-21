@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Printer } from "lucide-react";
 import { UserNav } from "./user-nav";
 
@@ -20,7 +21,7 @@ interface Notification {
     createdAt: Date | string;
 }
 
-export function MobileHeader({ user, notifications, branding }: {
+export function MobileHeader({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     notifications: Notification[];
     branding: BrandingSettings;
@@ -30,7 +31,14 @@ export function MobileHeader({ user, notifications, branding }: {
             <Link href="/dashboard" className="flex items-center gap-2.5">
                 <div className="bg-primary rounded-[10px] p-1.5 shadow-lg shadow-primary/20">
                     {branding.logoUrl ? (
-                        <img src={branding.logoUrl} alt="Logo" className="h-4 w-4 object-contain" />
+                        <div className="relative h-4 w-4">
+                            <Image
+                                src={branding.logoUrl}
+                                alt="Logo"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     ) : (
                         <Printer className="h-4 w-4 text-white" />
                     )}

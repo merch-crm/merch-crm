@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { inventoryItems, inventoryStocks, inventoryTransactions } from "./schema";
-import { eq, sql, and } from "drizzle-orm";
+import { inventoryItems } from "./schema";
+import { eq, sql } from "drizzle-orm";
 
 /**
  * Логика резервирования товара.

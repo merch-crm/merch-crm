@@ -5,13 +5,9 @@ import { usePathname } from "next/navigation";
 import {
     ShoppingCart,
     Users,
-    Settings,
-    LayoutDashboard,
-    Menu
+    Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { MobileSidebarTrigger } from "./mobile-sidebar-trigger";
 // import { Sidebar } from "./sidebar"; // We will implement a simplified mobile sidebar later if needed
 

@@ -1,22 +1,19 @@
 "use client";
 
-import React from "react";
+
 import {
     ArrowUpRight,
     ChevronRight,
     Plus,
     Power,
-    Settings,
     Sun,
     Moon,
     Wind,
     Wifi,
     Tv,
-    Droplets,
-    MoreVertical,
-    Minus
+    Droplets
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 
 export default function SmartHomeDashboard() {
     return (

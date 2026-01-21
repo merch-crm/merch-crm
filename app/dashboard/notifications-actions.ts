@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { systemSettings, users, clients, orders, notifications, roles } from "@/lib/schema";
-import { eq, sql, and, lt } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function checkAndRunNotifications() {
     try {

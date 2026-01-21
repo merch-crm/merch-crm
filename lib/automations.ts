@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { tasks, orders, roles } from "./schema";
+import { tasks, orders } from "./schema";
 import { eq } from "drizzle-orm";
 
 export async function autoGenerateTasks(orderId: string, status: string, userId: string) {

@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "50mb", // Increase limit for image uploads
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
