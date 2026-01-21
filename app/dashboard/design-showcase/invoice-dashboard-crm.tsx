@@ -1,12 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     Check,
-    ChevronDown,
-    MoreHorizontal,
     Plus,
-    Search,
     Trash2,
     Pencil,
     FileText,
@@ -78,7 +76,7 @@ export default function InvoiceDashboardCRM() {
                                 <div className="mt-4 flex -space-x-3">
                                     {[1, 2, 3].map(i => (
                                         <div key={i} className="w-10 h-10 rounded-full border-4 border-slate-900 overflow-hidden bg-slate-800">
-                                            <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="user" />
+                                            <Image src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="user" width={40} height={40} />
                                         </div>
                                     ))}
                                     <div className="w-10 h-10 rounded-full border-4 border-slate-900 bg-primary flex items-center justify-center text-[10px] font-bold">

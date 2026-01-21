@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     Plus,
@@ -10,7 +11,6 @@ import {
     Briefcase,
     PenTool,
     Code,
-    ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -138,7 +138,7 @@ export default function TwistyCRM() {
                                     <div key={idx} className="flex items-center justify-between p-1">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
-                                                <img src={`https://i.pravatar.cc/100?img=${idx + 40}`} className="w-full h-full object-cover" alt={user.name} />
+                                                <Image src={`https://i.pravatar.cc/100?img=${idx + 40}`} className="w-full h-full object-cover" alt={user.name} width={40} height={40} />
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">

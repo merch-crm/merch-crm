@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     ArrowRight,
@@ -135,7 +136,7 @@ export default function AquaflowLandingCRM() {
                 <div className="flex -space-x-3">
                     {[1, 2, 3, 4].map(i => (
                         <div key={i} className="w-9 h-9 rounded-full border-2 border-white overflow-hidden bg-slate-100">
-                            <img src={`https://i.pravatar.cc/100?img=${i + 25}`} alt="avatar" />
+                            <Image src={`https://i.pravatar.cc/100?img=${i + 25}`} alt="avatar" width={36} height={36} />
                         </div>
                     ))}
                 </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     Plus,
@@ -12,7 +13,6 @@ import {
     ChevronRight,
     ChevronDown,
     Search,
-    User,
     Settings,
     Zap,
     Moon,
@@ -30,7 +30,7 @@ export default function SmartHomeDashboardCRM() {
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 relative z-10">
                 <div className="flex items-center gap-5">
                     <div className="w-16 h-16 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary shadow-2xl shadow-slate-900/20 overflow-hidden group">
-                        <img src="https://i.pravatar.cc/100?img=33" alt="user" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        <Image src="https://i.pravatar.cc/100?img=33" alt="user" width={64} height={64} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900 leading-tight">Welcome home, Leonid</h1>
