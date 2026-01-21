@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Plus, Search, Calendar, Tag, FileText, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Search, Calendar, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";

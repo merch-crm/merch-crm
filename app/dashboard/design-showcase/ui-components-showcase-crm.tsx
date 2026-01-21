@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState } from "react";
 import {
     Search,
@@ -7,7 +8,6 @@ import {
     User,
     Lock,
     Upload,
-    Check,
     Bold,
     Italic,
     Underline,
@@ -15,8 +15,6 @@ import {
     AlignLeft,
     AlignCenter,
     AlignRight,
-    ChevronRight,
-    MoreHorizontal,
     Calendar,
     Layers,
     Sparkles
@@ -201,7 +199,7 @@ export default function UiComponentsShowcaseCRM() {
                     <div className="flex -space-x-3">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden">
-                                <img src={`https://i.pravatar.cc/100?img=${i + 45}`} alt="u" />
+                                <Image src={`https://i.pravatar.cc/100?img=${i + 45}`} alt="u" width={40} height={40} />
                             </div>
                         ))}
                     </div>

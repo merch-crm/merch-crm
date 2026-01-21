@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, users, promocodes, payments, expenses } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { and, gte, lte, sql, eq, desc, or } from "drizzle-orm";
+import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
 import { subDays } from "date-fns";
 import { logError } from "@/lib/error-logger";
 
