@@ -96,8 +96,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  --font-sans: var(--font-manrope);
-  --font-mono: monospace;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 
   --shadow-crm-sm: var(--crm-shadow-sm);
   --shadow-crm-md: var(--crm-shadow-md);

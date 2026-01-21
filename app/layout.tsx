@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { geistSans, geistMono } from "@/app/fonts";
 import "./globals.css";
 import { ToastContainer } from "@/components/ui/toast";
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-});
 
 import { getBrandingSettings } from "@/app/dashboard/admin/branding/actions";
 
@@ -30,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-      <body className={`${manrope.variable} antialiased font-manrope`}>
+    <html lang="ru" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="antialiased font-sans">
         <BrandingProvider>
           {children}
         </BrandingProvider>
