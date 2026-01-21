@@ -19,6 +19,7 @@ import {
     Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function EduplexDashboard() {
     return (
@@ -102,8 +103,8 @@ export default function EduplexDashboard() {
                                 className="pl-10 pr-4 py-2 bg-white rounded-full text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        <div className="w-10 h-10 rounded-full overflow-hidden">
-                            <img src="https://i.pravatar.cc/100?img=25" alt="User" />
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                            <Image src="https://i.pravatar.cc/100?img=25" fill className="object-cover" alt="User" />
                         </div>
                     </div>
                 </header>

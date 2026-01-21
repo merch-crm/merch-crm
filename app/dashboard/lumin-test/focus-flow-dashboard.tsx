@@ -7,17 +7,16 @@ import {
     Calendar as CalendarIcon,
     MessageSquare,
     Bell,
-    Users,
     Settings,
     ChevronDown,
     Search,
     Plus,
     ArrowUpRight,
     TrendingUp,
-    Video,
-    CheckCircle2
+    Video
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function FocusFlowDashboard() {
     return (
@@ -71,8 +70,8 @@ export default function FocusFlowDashboard() {
                         </a>
                         <div className="flex items-center gap-2 px-4 py-3">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
-                                    <img src={`https://i.pravatar.cc/100?img=${i + 30}`} alt="User" />
+                                <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-white relative">
+                                    <Image src={`https://i.pravatar.cc/100?img=${i + 30}`} fill className="object-cover" alt="User" />
                                 </div>
                             ))}
                             <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200">
@@ -136,8 +135,8 @@ export default function FocusFlowDashboard() {
                         <button className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50">
                             <Plus className="w-5 h-5 text-slate-600" />
                         </button>
-                        <div className="w-10 h-10 rounded-full overflow-hidden">
-                            <img src="https://i.pravatar.cc/100?img=28" alt="User" />
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                            <Image src="https://i.pravatar.cc/100?img=28" fill className="object-cover" alt="User" />
                         </div>
                     </div>
                 </header>
@@ -233,8 +232,8 @@ export default function FocusFlowDashboard() {
                                         <div className="flex-1">
                                             <h4 className="font-bold text-sm mb-1">{course.title}</h4>
                                             <div className="flex items-center gap-2">
-                                                <div className="w-5 h-5 rounded-full overflow-hidden">
-                                                    <img src={`https://i.pravatar.cc/100?img=${idx + 15}`} alt={course.author} />
+                                                <div className="w-5 h-5 rounded-full overflow-hidden relative">
+                                                    <Image src={`https://i.pravatar.cc/100?img=${idx + 15}`} fill className="object-cover" alt={course.author} />
                                                 </div>
                                                 <span className="text-xs text-slate-400">{course.author}</span>
                                             </div>
@@ -391,8 +390,8 @@ export default function FocusFlowDashboard() {
 
                             <div className="flex items-center gap-2 mb-4">
                                 {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                                        <img src={`https://i.pravatar.cc/100?img=${i + 35}`} alt="User" />
+                                    <div key={i} className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm relative">
+                                        <Image src={`https://i.pravatar.cc/100?img=${i + 35}`} fill className="object-cover" alt="User" />
                                     </div>
                                 ))}
                                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">

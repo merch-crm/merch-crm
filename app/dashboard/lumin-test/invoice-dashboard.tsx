@@ -15,7 +15,7 @@ import {
     FileText,
     Calendar
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function InvoiceDashboard() {
     return (
@@ -62,8 +62,8 @@ export default function InvoiceDashboard() {
                         <span>Delete</span>
                     </button>
 
-                    <div className="w-10 h-10 rounded-full bg-orange-200 ml-4 overflow-hidden border-2 border-white cursor-pointer">
-                        <img src="https://i.pravatar.cc/100?img=33" className="w-full h-full object-cover" alt="User" />
+                    <div className="w-10 h-10 rounded-full bg-orange-200 ml-4 overflow-hidden border-2 border-white cursor-pointer relative">
+                        <Image src="https://i.pravatar.cc/100?img=33" fill className="object-cover" alt="User" />
                     </div>
                     <button className="w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-slate-600 hover:bg-white/60 transition-colors">
                         <Search className="w-4 h-4" />
@@ -199,8 +199,8 @@ export default function InvoiceDashboard() {
                         ].map((item, idx) => (
                             <div key={idx} className="bg-white rounded-3xl p-4 flex flex-col justify-between h-[180px] hover:shadow-lg transition-all cursor-pointer group">
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-16 bg-slate-100 rounded-lg overflow-hidden shrink-0">
-                                        <img src={item.img} className="w-full h-full object-cover mix-blend-multiply" alt={item.name} />
+                                    <div className="w-12 h-16 bg-slate-100 rounded-lg overflow-hidden shrink-0 relative">
+                                        <Image src={item.img} fill className="object-cover mix-blend-multiply" alt={item.name} />
                                     </div>
                                     <div className="flex-1 pt-1">
                                         <h3 className="font-bold text-sm leading-tight mb-1">{item.name}</h3>
@@ -269,8 +269,8 @@ export default function InvoiceDashboard() {
                                     <ArrowUpRight className="w-3 h-3 text-slate-600" />
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white">
-                                        <img src="https://i.pravatar.cc/100?img=5" alt="User" />
+                                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white relative">
+                                        <Image src="https://i.pravatar.cc/100?img=5" fill className="object-cover" alt="User" />
                                     </div>
                                     <div className="text-[10px] text-slate-600 leading-tight">
                                         <span className="font-bold">Jessi Johnson</span> sent a payment<br />reminder
@@ -293,8 +293,8 @@ export default function InvoiceDashboard() {
                                     <ArrowUpRight className="w-3 h-3 text-slate-600" />
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white">
-                                        <img src="https://i.pravatar.cc/100?img=12" alt="User" />
+                                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white relative">
+                                        <Image src="https://i.pravatar.cc/100?img=12" fill className="object-cover" alt="User" />
                                     </div>
                                     <div className="text-[10px] text-slate-600 leading-tight">
                                         <span className="font-bold">Brian Carpenter</span><br />Google meets
