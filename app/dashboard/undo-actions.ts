@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { auditLogs, clients, inventoryItems, orders } from "@/lib/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 

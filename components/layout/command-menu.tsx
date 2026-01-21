@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Search, User, ShoppingCart, Package, Book, Command } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { globalSearch } from "@/app/dashboard/search-actions";
-import { cn } from "@/lib/utils";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchResult {

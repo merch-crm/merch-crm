@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     ShoppingCart,
@@ -10,7 +11,7 @@ import {
     Printer,
     BookOpen,
     CheckSquare,
-    LayoutDashboard,
+
     ChevronDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,7 +84,7 @@ export function DesktopHeader({ user, notifications, branding }: {
                 <Link href="/dashboard" className="flex items-center gap-3 group">
                     <div className="relative flex items-center justify-center w-10 h-10 rounded-[14px] bg-primary shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                         {branding.logoUrl ? (
-                            <img src={branding.logoUrl} alt="Logo" className="w-6 h-6 object-contain" />
+                            <Image src={branding.logoUrl} alt="Logo" width={24} height={24} className="w-6 h-6 object-contain" />
                         ) : (
                             <Printer className="h-5 w-5 text-white" />
                         )}

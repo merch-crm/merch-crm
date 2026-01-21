@@ -7,7 +7,7 @@ import { updateProductionStageAction } from "./actions";
 import { useRouter } from "next/navigation";
 import { DefectDialog } from "./defect-dialog";
 import { ImageLightbox } from "@/components/image-lightbox";
-import { ShieldAlert, Maximize } from "lucide-react";
+import { Maximize } from "lucide-react";
 
 interface OrderItem {
     id: string;

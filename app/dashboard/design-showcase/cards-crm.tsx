@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     Search,
@@ -170,7 +171,7 @@ export default function CardsCRM() {
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white overflow-hidden">
-                                <img src="https://i.pravatar.cc/100?img=11" alt="avatar" className="w-full h-full object-cover" />
+                                <Image src="https://i.pravatar.cc/100?img=11" alt="avatar" width={24} height={24} className="w-full h-full object-cover" />
                             </div>
                             <span className="text-[8px] text-white font-bold">Albert Flores</span>
                         </div>

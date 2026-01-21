@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, ZoomIn, ZoomOut, Maximize2, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+
 
 interface ImageLightboxProps {
     src: string;

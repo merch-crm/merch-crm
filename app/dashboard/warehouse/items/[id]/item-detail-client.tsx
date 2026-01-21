@@ -34,7 +34,7 @@ import {
 
 import { useToast } from "../../../../../components/ui/toast";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
 
 import { ItemGeneralInfo } from "./components/ItemGeneralInfo";
 import { ItemMediaSection } from "./components/ItemMediaSection";
@@ -101,7 +101,7 @@ export function ItemDetailClient({
 
     const isAnyUploading = Object.values(uploadStates).some(s => s.uploading);
 
-    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => {
+    const handleImageUpdate = (file: File | null, type: "front" | "back" | "side" | "details", _index?: number) => {
         if (!file) return;
         if (type === "front") setNewImageFile(file);
         if (type === "back") setNewImageBackFile(file);
@@ -124,7 +124,7 @@ export function ItemDetailClient({
         simulateUpload(type, file.name);
     };
 
-    const simulateUpload = (type: string, fileName: string, index?: number) => {
+    const simulateUpload = (type: string, fileName: string, _index?: number) => {
         setUploadStates(prev => ({
             ...prev,
             [type]: { uploading: true, progress: 0, uploaded: false }

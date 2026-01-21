@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, User, Building2, Trash2, Pencil, Lock } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+
 import { cn } from "@/lib/utils";
 import { deleteStorageLocation } from "./actions";
 import { useState } from "react";

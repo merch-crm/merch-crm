@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { tasks, taskAttachments, taskComments, taskChecklists, taskHistory } from "@/lib/schema";
+import { tasks, taskHistory } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

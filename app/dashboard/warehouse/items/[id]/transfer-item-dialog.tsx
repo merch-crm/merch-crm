@@ -31,7 +31,7 @@ export function TransferItemDialog({ item, locations, onClose }: TransferItemDia
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
-    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [fieldErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const originalStyle = window.getComputedStyle(document.body).overflow;

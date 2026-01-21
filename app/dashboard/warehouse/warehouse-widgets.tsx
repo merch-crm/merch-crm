@@ -1,4 +1,4 @@
-import { AlertTriangle, TrendingUp, Package, DollarSign, Layers, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
+import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 import { InventoryItem, Category } from "./inventory-client";
 import { Transaction } from "./history-table";
 import Link from "next/link";
@@ -16,7 +16,7 @@ export function WarehouseWidgets({ items, categories, history }: WarehouseWidget
     // Stats calculations
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalPos = items.length;
-    const activeCategories = categories.slice(0, 3);
+
 
     // Recent activity trend (simplified for demo)
     const recentIns = history.filter(t => t.type === 'in').length;

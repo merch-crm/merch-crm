@@ -9,15 +9,14 @@ import {
     Calendar,
     ArrowRightLeft,
     Settings2,
-    ChevronRight,
-    Search
+    ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemHistoryTransaction } from "../../../types";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
-import { Badge } from "@/components/ui/badge";
+
 
 interface ItemHistorySectionProps {
     history: ItemHistoryTransaction[];

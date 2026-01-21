@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     Search,
@@ -123,7 +124,7 @@ export default function AnalyticsCRM() {
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-                                            <img src={`https://i.pravatar.cc/100?img=${idx + 20}`} alt={person.name} className="w-full h-full object-cover" />
+                                            <Image src={`https://i.pravatar.cc/100?img=${idx + 20}`} alt={person.name} width={40} height={40} className="w-full h-full object-cover" />
                                         </div>
                                         <span className="text-sm font-bold">{person.name}</span>
                                     </div>

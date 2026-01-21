@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { clients, orders, inventoryItems, wikiPages } from "@/lib/schema";
-import { ilike, or, desc } from "drizzle-orm";
+import { ilike, or } from "drizzle-orm";
 
 export async function globalSearch(query: string) {
     if (!query || query.length < 2) return { results: [] };

@@ -1,5 +1,6 @@
 "use client";
-
+import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import {
     LayoutGrid,
@@ -9,11 +10,10 @@ import {
     Users,
     Settings,
     ChevronRight,
-    Search,
+
     Plus,
     TrendingUp,
-    Video,
-    CheckCircle2,
+
     Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -70,7 +70,7 @@ export default function FocusFlowDashboardCRM() {
 
                     <div className="flex items-center gap-3 p-2 bg-slate-900 rounded-[var(--radius-inner)] shadow-xl shadow-slate-900/10">
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] overflow-hidden border border-white/10">
-                            <img src="https://i.pravatar.cc/100?img=65" className="w-full h-full object-cover" alt="p" />
+                            <Image src="https://i.pravatar.cc/100?img=65" width={32} height={32} className="w-full h-full object-cover" alt="p" />
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="text-[10px] font-bold text-white truncate">L. Molchanov</div>
@@ -218,7 +218,7 @@ export default function FocusFlowDashboardCRM() {
                             <div className="flex -space-x-4">
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-100 overflow-hidden relative group cursor-pointer hover:z-20 transition-all">
-                                        <img src={`https://i.pravatar.cc/100?img=${i + 55}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                                        <Image src={`https://i.pravatar.cc/100?img=${i + 55}`} width={48} height={48} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="avatar" />
                                         <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
                                 ))}

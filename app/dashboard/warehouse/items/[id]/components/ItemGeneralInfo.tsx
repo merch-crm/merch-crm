@@ -9,7 +9,7 @@ import {
     FileText,
     ArrowUpRight
 } from "lucide-react";
-import { InventoryItem, AttributeType, InventoryAttribute, MeasurementUnit } from "../../../types";
+import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 
 interface ItemGeneralInfoProps {
     item: InventoryItem;

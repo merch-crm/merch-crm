@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import {
     LayoutGrid,
@@ -11,7 +12,7 @@ import {
     GraduationCap,
     Users,
     Compass,
-    ArrowUpRight
+
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -82,7 +83,7 @@ export default function EduplexDashboardCRM() {
                             <Plus className="w-5 h-5" />
                         </div>
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] overflow-hidden border-2 border-white shadow-crm-md">
-                            <img src="https://i.pravatar.cc/100?img=51" alt="avatar" className="w-full h-full object-cover" />
+                            <Image src="https://i.pravatar.cc/100?img=51" alt="avatar" width={48} height={48} className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </header>

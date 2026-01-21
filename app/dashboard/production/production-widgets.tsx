@@ -1,7 +1,7 @@
 "use client";
 
 import { Factory, AlertCircle, CheckCircle2, Gauge, Timer } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 
 interface ProductionStatsProps {
     stats: {
