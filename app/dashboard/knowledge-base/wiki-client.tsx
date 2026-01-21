@@ -40,7 +40,6 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
     const fetchPageDetail = useCallback(async (id: string) => {
-        setLoading(true);
         const page = await getWikiPageDetail(id);
         setPageContent(page as unknown as WikiPage);
         setEditData({ title: page?.title || "", content: page?.content || "" });
@@ -58,9 +57,15 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
         setLoading(true);
         await updateWikiPage(selectedPageId, editData);
         setIsEditing(false);
-        fetchPageDetail(selectedPageId);
-        setLoading(false);
+        await fetchPageDetail(selectedPageId);
         router.refresh();
+    };
+
+    const handleSelectPage = (id: string | null) => {
+        if (id && id !== selectedPageId) {
+            setLoading(true);
+        }
+        setSelectedPageId(id);
     };
 
     const handleCreateFolder = async (parentId: string | null) => {
@@ -76,6 +81,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
         if (title) {
             const res = await createWikiPage({ title, content: "", folderId });
             if (res.success && res.page) {
+                setLoading(true);
                 setSelectedPageId(res.page.id);
                 setIsEditing(true);
                 router.refresh();
@@ -99,7 +105,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                 folders={initialFolders}
                 pages={initialPages}
                 activePageId={selectedPageId || undefined}
-                onSelectPage={setSelectedPageId}
+                onSelectPage={handleSelectPage}
                 onAddFolder={handleCreateFolder}
                 onAddPage={handleCreatePage}
                 canEdit={canEdit}

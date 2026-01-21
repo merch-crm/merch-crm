@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
-import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -23,8 +22,6 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
     const [expenses, setExpenses] = useState(initialData || []);
     const [searchQuery, setSearchQuery] = useState("");
     const [isAdding, setIsAdding] = useState(false);
-    const { toast } = useToast();
-    const router = useRouter();
 
     const filteredExpenses = expenses.filter(e =>
     (e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||

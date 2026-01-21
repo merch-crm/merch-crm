@@ -6,12 +6,7 @@ import {
     ArrowDownRight,
     ArrowUpRight,
     Search,
-    Plus,
-    Calendar,
-    Filter,
-    User,
-    ShoppingBag,
-    Tag
+    Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

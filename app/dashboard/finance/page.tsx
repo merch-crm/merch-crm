@@ -22,8 +22,6 @@ import {
     Trash2,
     Tags,
     Package,
-    Plus,
-    PlusSquare,
     LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Tags, Plus, Search, Calendar, Check, X, ShieldCheck, ShieldAlert, ArrowLeft } from "lucide-react";
+import { Plus, Search, Calendar, ShieldCheck, ShieldAlert, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
