@@ -28,8 +28,8 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # Skip env validation during build
-ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
-ENV JWT_SECRET_KEY="super-secret-key-for-build-process-min-10-chars"
+ARG DATABASE_URL="postgresql://build:build@localhost:5432/build"
+ARG JWT_SECRET_KEY="super-secret-key-for-build-process-min-10-chars"
 ENV SKIP_ENV_VALIDATION="true"
 
 RUN npm run build
