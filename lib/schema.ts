@@ -68,6 +68,8 @@ export const securityEventTypeEnum = pgEnum("security_event_type", [
     "settings_change",
     "maintenance_mode_toggle",
     "system_error",
+    "admin_impersonation_start",
+    "admin_impersonation_stop",
 ]);
 
 export const orderCategoryEnum = pgEnum("order_category", [
@@ -85,7 +87,7 @@ export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
 
 export const clientTypeEnum = pgEnum("client_type", ["b2c", "b2b"]);
 
-export const measurementUnitEnum = pgEnum("measurement_unit", ["pcs", "liters", "meters", "kg", "шт"]);
+export const measurementUnitEnum = pgEnum("measurement_unit_v2", ["pcs", "liters", "meters", "kg", "шт", "шт."]);
 
 export const paymentMethodEnum = pgEnum("payment_method", ["cash", "bank", "online", "account"]);
 
@@ -184,11 +186,15 @@ export const inventoryCategories = pgTable("inventory_categories", {
     description: text("description"),
     icon: text("icon"),
     color: text("color"),
+    colorMarker: text("color_marker"), // HEX-код для визуального разделения
+    slug: text("slug").unique(), // ЧПУ
+    fullPath: text("full_path"), // Текстовый путь (Категория > Подкатегория)
     prefix: text("prefix"),
     parentId: uuid("parent_id").references((): AnyPgColumn => inventoryCategories.id, { onDelete: "set null" }),
     sortOrder: integer("sort_order").default(0).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
     isSystem: boolean("is_system").default(false).notNull(),
+    defaultUnit: measurementUnitEnum("default_unit"), // Ед. изм. по умолчанию
     gender: text("gender").default("masculine").notNull(), // 'masculine', 'feminine', 'neuter'
     singularName: text("singular_name"),
     pluralName: text("plural_name"),
@@ -203,7 +209,7 @@ export const inventoryItems = pgTable("inventory_items", {
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
     itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
-    unit: measurementUnitEnum("unit").default("pcs").notNull(),
+    unit: measurementUnitEnum("unit").default("шт.").notNull(),
     lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
     criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
@@ -221,6 +227,9 @@ export const inventoryItems = pgTable("inventory_items", {
     imageDetails: jsonb("image_details").default("[]"), // Детали (массив строк)
     thumbnailSettings: jsonb("thumbnail_settings"),
     reservedQuantity: integer("reserved_quantity").default(0).notNull(),
+    materialComposition: jsonb("material_composition").default("{}"), // Состав материалов (%)
+    costPrice: decimal("cost_price", { precision: 10, scale: 2 }), // Себестоимость
+    isArchived: boolean("is_archived").default(false).notNull(), // Архивация
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -276,6 +285,7 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     reason: text("reason"),
     storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
     fromStorageLocationId: uuid("from_storage_location_id").references(() => storageLocations.id),
+    costPrice: decimal("cost_price", { precision: 10, scale: 2 }),
     createdBy: uuid("created_by").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
