@@ -71,79 +71,79 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
         <div className="space-y-6">
             {/* Основные метрики */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
+                <div className="bg-white rounded-[18px] p-6 border border-slate-100 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-indigo-50 rounded-2xl">
-                            <Target className="w-6 h-6 text-indigo-600" />
+                        <div className="p-3 bg-primary/5 rounded-[18px]">
+                            <Target className="w-6 h-6 text-primary" />
                         </div>
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black">
+                        <span className="px-3 py-1 bg-primary/5 text-primary rounded-[18px] text-xs font-bold">
                             ВСЕГО
                         </span>
                     </div>
-                    <h3 className="text-4xl font-black text-slate-900 mb-1">{totalTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Задач в системе</p>
+                    <h3 className="text-4xl font-bold text-slate-900 mb-1">{totalTasks}</h3>
+                    <p className="text-sm font-bold text-slate-400  tracking-normal">Задач в системе</p>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
+                <div className="bg-white rounded-[18px] p-6 border border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-emerald-50 rounded-2xl">
+                        <div className="p-3 bg-emerald-50 rounded-[18px]">
                             <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                         </div>
-                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-black">
+                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-[18px] text-xs font-bold">
                             {completionRate}%
                         </span>
                     </div>
-                    <h3 className="text-4xl font-black text-slate-900 mb-1">{statusStats.done}</h3>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Выполнено</p>
+                    <h3 className="text-4xl font-bold text-slate-900 mb-1">{statusStats.done}</h3>
+                    <p className="text-sm font-bold text-slate-400  tracking-normal">Выполнено</p>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 border border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
+                <div className="bg-white rounded-[18px] p-6 border border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-amber-50 rounded-2xl">
+                        <div className="p-3 bg-amber-50 rounded-[18px]">
                             <Clock className="w-6 h-6 text-amber-600" />
                         </div>
-                        <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-xl text-xs font-black">
+                        <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-[18px] text-xs font-bold">
                             НЕДЕЛЯ
                         </span>
                     </div>
-                    <h3 className="text-4xl font-black text-slate-900 mb-1">{thisWeekTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">На этой неделе</p>
+                    <h3 className="text-4xl font-bold text-slate-900 mb-1">{thisWeekTasks}</h3>
+                    <p className="text-sm font-bold text-slate-400  tracking-normal">На этой неделе</p>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 border border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
+                <div className="bg-white rounded-[18px] p-6 border border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-rose-50 rounded-2xl">
+                        <div className="p-3 bg-rose-50 rounded-[18px]">
                             <AlertTriangle className="w-6 h-6 text-rose-600" />
                         </div>
                         {overdueTasks > 0 && (
-                            <span className="px-3 py-1 bg-rose-500 text-white rounded-xl text-xs font-black animate-pulse">
+                            <span className="px-3 py-1 bg-rose-500 text-white rounded-[18px] text-xs font-bold animate-pulse">
                                 !
                             </span>
                         )}
                     </div>
-                    <h3 className="text-4xl font-black text-slate-900 mb-1">{overdueTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Просрочено</p>
+                    <h3 className="text-4xl font-bold text-slate-900 mb-1">{overdueTasks}</h3>
+                    <p className="text-sm font-bold text-slate-400  tracking-normal">Просрочено</p>
                 </div>
             </div>
 
             {/* Детальная статистика */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Статусы */}
-                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
+                <div className="bg-white rounded-[18px] p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-3 bg-slate-50 rounded-2xl">
+                        <div className="p-3 bg-slate-50 rounded-[18px]">
                             <Activity className="w-6 h-6 text-slate-600" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-slate-900">Распределение по статусам</h3>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Текущее состояние</p>
+                            <h3 className="text-lg font-bold text-slate-900">Распределение по статусам</h3>
+                            <p className="text-xs font-bold text-slate-400  tracking-normal">Текущее состояние</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         {[
                             { label: "Новые", count: statusStats.new, color: "bg-slate-400", textColor: "text-slate-600" },
-                            { label: "В работе", count: statusStats.in_progress, color: "bg-indigo-500", textColor: "text-indigo-600" },
+                            { label: "В работе", count: statusStats.in_progress, color: "bg-primary", textColor: "text-primary" },
                             { label: "На проверке", count: statusStats.review, color: "bg-amber-400", textColor: "text-amber-600" },
                             { label: "Завершено", count: statusStats.done, color: "bg-emerald-500", textColor: "text-emerald-600" },
                         ].map((stat) => {
@@ -151,8 +151,8 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                             return (
                                 <div key={stat.label}>
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm font-black text-slate-700">{stat.label}</span>
-                                        <span className={cn("text-sm font-black", stat.textColor)}>{stat.count}</span>
+                                        <span className="text-sm font-bold text-slate-700">{stat.label}</span>
+                                        <span className={cn("text-sm font-bold", stat.textColor)}>{stat.count}</span>
                                     </div>
                                     <div className="h-3 bg-slate-50 rounded-full overflow-hidden">
                                         <div
@@ -167,14 +167,14 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                 </div>
 
                 {/* Приоритеты */}
-                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
+                <div className="bg-white rounded-[18px] p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-3 bg-slate-50 rounded-2xl">
+                        <div className="p-3 bg-slate-50 rounded-[18px]">
                             <BarChart3 className="w-6 h-6 text-slate-600" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-slate-900">Активные по приоритетам</h3>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Требуют внимания</p>
+                            <h3 className="text-lg font-bold text-slate-900">Активные по приоритетам</h3>
+                            <p className="text-xs font-bold text-slate-400  tracking-normal">Требуют внимания</p>
                         </div>
                     </div>
 
@@ -184,13 +184,13 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                             { label: "Обычный приоритет", count: priorityStats.normal, color: "bg-amber-400", bgColor: "bg-amber-50", textColor: "text-amber-600" },
                             { label: "Низкий приоритет", count: priorityStats.low, color: "bg-slate-300", bgColor: "bg-slate-50", textColor: "text-slate-600" },
                         ].map((stat) => (
-                            <div key={stat.label} className={cn("p-4 rounded-2xl border-2 border-transparent hover:border-slate-100 transition-all", stat.bgColor)}>
+                            <div key={stat.label} className={cn("p-4 rounded-[18px] border-2 border-transparent hover:border-slate-100 transition-all", stat.bgColor)}>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className={cn("h-3 w-3 rounded-full", stat.color)} />
-                                        <span className="text-sm font-black text-slate-700">{stat.label}</span>
+                                        <span className="text-sm font-bold text-slate-700">{stat.label}</span>
                                     </div>
-                                    <span className={cn("text-2xl font-black", stat.textColor)}>{stat.count}</span>
+                                    <span className={cn("text-2xl font-bold", stat.textColor)}>{stat.count}</span>
                                 </div>
                             </div>
                         ))}
@@ -200,14 +200,14 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
 
             {/* Топ исполнителей */}
             {userTaskCounts.length > 0 && (
-                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
+                <div className="bg-white rounded-[18px] p-8 border border-slate-100 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-3 bg-slate-50 rounded-2xl">
+                        <div className="p-3 bg-slate-50 rounded-[18px]">
                             <Users className="w-6 h-6 text-slate-600" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-slate-900">Топ исполнителей</h3>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">По количеству выполненных задач</p>
+                            <h3 className="text-lg font-bold text-slate-900">Топ исполнителей</h3>
+                            <p className="text-xs font-bold text-slate-400  tracking-normal">По количеству выполненных задач</p>
                         </div>
                     </div>
 
@@ -215,24 +215,24 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         {userTaskCounts.map((user, index) => {
                             const completionRate = user.total > 0 ? Math.round((user.completed / user.total) * 100) : 0;
                             return (
-                                <div key={user.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all">
-                                    <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-black text-sm shadow-lg">
+                                <div key={user.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-[18px] transition-all">
+                                    <div className="flex items-center justify-center h-10 w-10 rounded-[18px] bg-gradient-to-br from-primary to-primary-foreground text-white font-bold text-sm shadow-lg">
                                         #{index + 1}
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-sm font-black text-slate-900">{user.name}</p>
+                                        <p className="text-sm font-bold text-slate-900">{user.name}</p>
                                         <div className="flex items-center gap-2 mt-1">
                                             <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
                                                 <div
-                                                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+                                                    className="h-full bg-gradient-to-r from-primary to-primary-foreground rounded-full transition-all duration-500"
                                                     style={{ width: `${completionRate}%` }}
                                                 />
                                             </div>
-                                            <span className="text-xs font-black text-slate-400">{completionRate}%</span>
+                                            <span className="text-xs font-bold text-slate-400">{completionRate}%</span>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-2xl font-black text-slate-900">{user.completed}</p>
+                                        <p className="text-2xl font-bold text-slate-900">{user.completed}</p>
                                         <p className="text-xs font-bold text-slate-400">из {user.total}</p>
                                     </div>
                                 </div>

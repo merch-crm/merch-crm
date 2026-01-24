@@ -12,7 +12,7 @@ export function Header() {
                     <input
                         type="search"
                         placeholder="Поиск..."
-                        className="h-9 w-full rounded-xl border border-input bg-transparent pl-9 pr-4 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        className="h-9 w-full rounded-[18px] border border-input bg-transparent pl-9 pr-4 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
             </div>

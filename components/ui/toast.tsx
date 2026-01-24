@@ -40,21 +40,21 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
         error: <AlertCircle className="w-5 h-5 text-rose-500" />,
         destructive: <AlertCircle className="w-5 h-5 text-rose-500" />,
         warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
-        info: <Info className="w-5 h-5 text-indigo-500" />,
+        info: <Info className="w-5 h-5 text-primary" />,
     };
 
     const styles = {
-        success: "border-emerald-100 bg-emerald-50/50 text-emerald-900",
-        error: "border-rose-100 bg-rose-50/50 text-rose-900",
-        destructive: "border-rose-100 bg-rose-50/50 text-rose-900",
-        warning: "border-amber-100 bg-amber-50/50 text-amber-900",
-        info: "border-indigo-100 bg-indigo-50/50 text-indigo-900",
+        success: "border-emerald-500/20 bg-white text-emerald-900 shadow-[0_8px_30px_rgb(16,185,129,0.1)]",
+        error: "border-rose-500/20 bg-white text-rose-900 shadow-[0_8px_30px_rgb(244,63,94,0.1)]",
+        destructive: "border-rose-500/20 bg-white text-rose-900 shadow-[0_8px_30px_rgb(244,63,94,0.1)]",
+        warning: "border-amber-500/20 bg-white text-amber-900 shadow-[0_8px_30px_rgb(245,158,11,0.1)]",
+        info: "border-primary/20 bg-white text-primary shadow-[0_8px_30px_rgb(93,0,255,0.1)]",
     };
 
     return (
         <div
             className={cn(
-                "fixed left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 ease-out flex items-center gap-3 px-6 py-4 rounded-[2rem] border backdrop-blur-md shadow-2xl",
+                "fixed left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 ease-out flex items-center gap-3 px-6 py-4 rounded-[2rem] border shadow-2xl",
                 "top-4 sm:top-auto sm:bottom-8",
                 styles[type],
                 isVisible ? "translate-y-0 opacity-100 scale-100" : "-translate-y-12 sm:translate-y-12 opacity-0 scale-95"
@@ -63,19 +63,21 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
             <div className="flex-shrink-0">{icons[type]}</div>
             <p className="text-sm font-bold tracking-tight whitespace-nowrap">{message}</p>
 
-            {action && (
-                <button
-                    onClick={() => {
-                        action.onClick();
-                        setIsVisible(false);
-                        setTimeout(onClose, 300);
-                    }}
-                    className="ml-4 px-3 py-1 rounded-full bg-white/50 hover:bg-white text-[10px] font-black uppercase tracking-widest text-slate-900 transition-all flex items-center gap-1.5"
-                >
-                    <Undo2 className="w-3 h-3" />
-                    {action.label}
-                </button>
-            )}
+            {
+                action && (
+                    <button
+                        onClick={() => {
+                            action.onClick();
+                            setIsVisible(false);
+                            setTimeout(onClose, 300);
+                        }}
+                        className="ml-4 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-bold  tracking-normal text-slate-900 transition-all flex items-center gap-1.5"
+                    >
+                        <Undo2 className="w-3 h-3" />
+                        {action.label}
+                    </button>
+                )
+            }
 
             <button
                 onClick={() => {
@@ -86,7 +88,7 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
             >
                 <X className="w-4 h-4" />
             </button>
-        </div>
+        </div >
     );
 }
 

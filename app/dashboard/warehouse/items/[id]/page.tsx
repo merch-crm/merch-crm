@@ -8,8 +8,11 @@ import {
 } from "../../actions";
 import { ItemDetailClient } from "./item-detail-client";
 
+import { getSession } from "@/lib/auth";
+
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: itemId } = await params;
+    const session = await getSession();
 
     const [itemRes, locationsRes, categoriesRes, typesRes, attrsRes] = await Promise.all([
         getInventoryItem(itemId),
@@ -39,6 +42,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 categories={processedCategories}
                 attributeTypes={processedAttributeTypes}
                 allAttributes={processedAttributes}
+                user={session}
             />
         </div>
     );

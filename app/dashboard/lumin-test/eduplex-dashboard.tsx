@@ -37,36 +37,36 @@ export default function EduplexDashboard() {
 
                 {/* Nav */}
                 <nav className="flex-1 space-y-2">
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#DFFF00] text-[#1F2937] font-semibold">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] bg-[#DFFF00] text-[#1F2937] font-semibold">
                         <LayoutGrid className="w-5 h-5" />
                         <span>Dashboard</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <BookOpen className="w-5 h-5" />
                         <span>My Courses</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <CalendarIcon className="w-5 h-5" />
                         <span>My Classes</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <MessageSquare className="w-5 h-5" />
                         <span>Messages</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors relative">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors relative">
                         <Bell className="w-5 h-5" />
                         <span>Notifications</span>
                         <div className="absolute right-3 top-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold">2</div>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <CalendarIcon className="w-5 h-5" />
                         <span>Calendars</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <Users className="w-5 h-5" />
                         <span>Community</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-white/10 transition-colors">
                         <Settings className="w-5 h-5" />
                         <span>Settings</span>
                     </a>
@@ -121,7 +121,7 @@ export default function EduplexDashboard() {
                         {/* Course 1 */}
                         <div className="bg-white rounded-[24px] p-5 hover:shadow-lg transition-shadow cursor-pointer">
                             <div className="flex items-start justify-between mb-3">
-                                <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-[18px] bg-orange-100 flex items-center justify-center">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-orange-500">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                         <polyline points="14 2 14 8 20 8" />
@@ -146,7 +146,7 @@ export default function EduplexDashboard() {
                         {/* Course 2 */}
                         <div className="bg-white rounded-[24px] p-5 hover:shadow-lg transition-shadow cursor-pointer">
                             <div className="flex items-start justify-between mb-3">
-                                <div className="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-[18px] bg-yellow-100 flex items-center justify-center">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-yellow-600">
                                         <path d="M12 2L2 7l10 5 10-5-10-5z" />
                                         <path d="M2 17l10 5 10-5" />
@@ -201,7 +201,7 @@ export default function EduplexDashboard() {
                                     <span className="text-green-500 font-bold">+3%</span>
                                     <span className="text-slate-400">Increase than last week</span>
                                 </div>
-                                <select className="text-xs border border-slate-200 rounded-lg px-2 py-1">
+                                <select className="text-xs border border-slate-200 rounded-[18px] px-2 py-1">
                                     <option>Weekly</option>
                                 </select>
                             </div>
@@ -223,7 +223,7 @@ export default function EduplexDashboard() {
                                         {item.active && (
                                             <>
                                                 <div className="absolute inset-0 bg-blue-500 rounded-t-lg" />
-                                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded-lg whitespace-nowrap">
+                                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded-[18px] whitespace-nowrap">
                                                     {item.tooltip}
                                                 </div>
                                             </>
@@ -246,8 +246,8 @@ export default function EduplexDashboard() {
                                 { icon: Droplets, title: "Color Style", subtitle: "Group - Test", color: "bg-green-100 text-green-600" },
                                 { icon: Tv, title: "Visual Design", subtitle: "Lecture - Test", color: "bg-yellow-100 text-yellow-600" },
                             ].map((item, idx) => (
-                                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
-                                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", item.color)}>
+                                <div key={idx} className="flex items-center gap-3 p-3 rounded-[18px] hover:bg-slate-50 transition-colors cursor-pointer">
+                                    <div className={cn("w-10 h-10 rounded-[18px] flex items-center justify-center", item.color)}>
                                         <item.icon className="w-5 h-5" />
                                     </div>
                                     <div className="flex-1">
@@ -267,7 +267,7 @@ export default function EduplexDashboard() {
                         <div className="bg-white rounded-[24px] p-6">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="font-bold">Calendar</h3>
-                                <select className="text-xs border border-slate-200 rounded-lg px-2 py-1">
+                                <select className="text-xs border border-slate-200 rounded-[18px] px-2 py-1">
                                     <option>June</option>
                                 </select>
                             </div>
@@ -284,7 +284,7 @@ export default function EduplexDashboard() {
 
                                     return day > 0 && day <= 30 ? (
                                         <div key={i} className={cn(
-                                            "aspect-square flex items-center justify-center rounded-lg text-xs font-semibold",
+                                            "aspect-square flex items-center justify-center rounded-[18px] text-xs font-semibold",
                                             isToday && "bg-blue-500 text-white",
                                             !isToday && hasEvent && "bg-purple-100 text-purple-600",
                                             !isToday && !hasEvent && "text-slate-600 hover:bg-slate-50"
@@ -312,7 +312,7 @@ export default function EduplexDashboard() {
                                     { title: "Data Collection", date: "16 May, 11:00 AM", status: "Upcoming", color: "bg-orange-100 text-orange-600" },
                                 ].map((item, idx) => (
                                     <div key={idx} className="flex items-start gap-3">
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-[18px] bg-slate-100 flex items-center justify-center">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                                 <polyline points="14 2 14 8 20 8" />

@@ -20,7 +20,7 @@ export async function getPromocodes() {
 
 interface PromocodeValues {
     code: string;
-    discountType: "percentage" | "fixed_amount";
+    discountType: "percentage" | "fixed";
     value: number;
     minOrderAmount?: number;
     maxDiscountAmount?: number;
@@ -45,6 +45,27 @@ export async function createPromocode(values: PromocodeValues) {
     } catch (error) {
         console.error("Error creating promocode:", error);
         return { error: "Failed to create promocode" };
+    }
+}
+
+export async function updatePromocode(id: string, values: PromocodeValues) {
+    try {
+        await db.update(promocodes)
+            .set({
+                code: values.code.toUpperCase(),
+                discountType: values.discountType,
+                value: values.value.toString(),
+                minOrderAmount: values.minOrderAmount?.toString() || "0",
+                maxDiscountAmount: values.maxDiscountAmount?.toString() || "0",
+                usageLimit: values.usageLimit ? parseInt(values.usageLimit) : null,
+                expiresAt: values.expiresAt ? new Date(values.expiresAt) : null,
+            })
+            .where(eq(promocodes.id, id));
+        revalidatePath("/dashboard/admin/promocodes");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating promocode:", error);
+        return { error: "Failed to update promocode" };
     }
 }
 

@@ -105,11 +105,13 @@ interface StatsData {
 interface HealthData {
   database: { status: string; latency: number };
   storage: { status: string };
+  api: { status: string; latency: number };
+  overall: string;
   env: { status: string; details: string[] };
-  fs: { status: string };
-  backup: { status: string };
-  jwt: { status: string };
-  timestamp: string;
+  fs: { status: string; message: string };
+  backup: { status: string; lastBackup: string | null };
+  jwt: { status: string; message: string };
+  timestamp: Date;
 }
 
 interface BackupFile {
@@ -495,20 +497,20 @@ export function SystemStats() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-black text-slate-900 tracking-tight text-center sm:text-left">
+          <h3 className="text-2xl font-bold text-slate-900 tracking-tight text-center sm:text-left">
             Управление системой
           </h3>
-          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-0.5 text-center sm:text-left">
+          <p className="text-slate-400 text-sm font-bold  tracking-normal mt-0.5 text-center sm:text-left">
             Мониторинг, диагностика и резервное копирование
           </p>
         </div>
-        <div className="flex bg-slate-100/80 p-1 rounded-xl mx-auto sm:mx-0">
+        <div className="flex bg-slate-100/80 p-1 rounded-[18px] mx-auto sm:mx-0">
           <button
             onClick={() => setActiveTab("monitoring")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
               activeTab === "monitoring"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-#5d00ff shadow-sm"
                 : "text-slate-500 hover:text-slate-700",
             )}
           >
@@ -517,9 +519,9 @@ export function SystemStats() {
           <button
             onClick={() => setActiveTab("diagnostics")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
               activeTab === "diagnostics"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-#5d00ff shadow-sm"
                 : "text-slate-500 hover:text-slate-700",
             )}
           >
@@ -528,9 +530,9 @@ export function SystemStats() {
           <button
             onClick={() => setActiveTab("backups")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
               activeTab === "backups"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-#5d00ff shadow-sm"
                 : "text-slate-500 hover:text-slate-700",
             )}
           >
@@ -539,9 +541,9 @@ export function SystemStats() {
           <button
             onClick={() => setActiveTab("security")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
               activeTab === "security"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-#5d00ff shadow-sm"
                 : "text-slate-500 hover:text-slate-700",
             )}
           >
@@ -550,9 +552,9 @@ export function SystemStats() {
           <button
             onClick={() => setActiveTab("action_log")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-lg transition-all uppercase tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
               activeTab === "action_log"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-#5d00ff shadow-sm"
                 : "text-slate-500 hover:text-slate-700",
             )}
           >
@@ -564,12 +566,12 @@ export function SystemStats() {
       {activeTab === "monitoring" && (
         <div className="space-y-6 animate-in fade-in duration-300">
           <div className="flex items-center justify-between px-1">
-            <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest ">
+            <div className="text-slate-400 text-[10px] font-bold  tracking-normal ">
               Живой поток данных
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right mr-2 hidden sm:block">
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">
+                <p className="text-[10px] text-slate-400 font-bold  tracking-wider leading-none">
                   Обновлено
                 </p>
                 <p className="text-xs text-slate-600 font-medium">
@@ -579,7 +581,7 @@ export function SystemStats() {
               <button
                 onClick={() => fetchStats(true)}
                 disabled={loading}
-                className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50/30 transition-all active:scale-95 disabled:opacity-50"
+                className="p-2.5 rounded-[18px] border border-slate-200 bg-white text-slate-600 hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/30 transition-all active:scale-95 disabled:opacity-50"
               >
                 <RefreshCw
                   className={cn("w-5 h-5", loading && "animate-spin")}
@@ -589,19 +591,19 @@ export function SystemStats() {
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 flex items-center gap-2">
+            <div className="bg-red-50 text-red-600 p-4 rounded-[18px] border border-red-100 flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
               <p className="text-sm font-bold">Ошибка обновления: {error}</p>
             </div>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-none shadow-sm bg-gradient-to-br from-indigo-500 to-indigo-600 text-white overflow-hidden relative">
+            <Card className="border-none shadow-sm bg-gradient-to-br from-indigo-500 to-#5d00ff text-white overflow-hidden relative">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Server size={80} strokeWidth={1} />
               </div>
               <CardHeader className="pb-2">
-                <CardTitle className="text-white/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-white/80 text-xs font-bold  tracking-normal flex items-center gap-2">
                   <Activity size={14} /> Сервер
                 </CardTitle>
               </CardHeader>
@@ -616,7 +618,7 @@ export function SystemStats() {
 
             <Card className="border-slate-200/60 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <Cpu size={14} /> Нагрузка CPU
                 </CardTitle>
               </CardHeader>
@@ -639,7 +641,7 @@ export function SystemStats() {
 
             <Card className="border-slate-200/60 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <MemoryStick size={14} /> Память (RAM)
                 </CardTitle>
               </CardHeader>
@@ -663,7 +665,7 @@ export function SystemStats() {
 
             <Card className="border-slate-200/60 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <Database size={14} /> База данных
                 </CardTitle>
               </CardHeader>
@@ -681,7 +683,7 @@ export function SystemStats() {
             {/* Disk Space - 1 col */}
             <Card className="border-slate-200/60 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <HardDrive size={14} /> Место на диске
                 </CardTitle>
               </CardHeader>
@@ -721,7 +723,7 @@ export function SystemStats() {
             {/* API Performance - 1 col */}
             <Card className="border-slate-200/60 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <ActivityIcon size={14} /> Производительность API
                 </CardTitle>
               </CardHeader>
@@ -749,7 +751,7 @@ export function SystemStats() {
             {/* Active Sessions - Spans remaining columns (2 cols on lg) */}
             <Card className="border-slate-200/60 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
               <CardHeader className="pb-0 pt-4 px-6">
-                <CardTitle className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-slate-400 text-[10px] font-bold  tracking-normal flex items-center gap-2">
                   <Users size={14} /> Пользователи онлайн
                 </CardTitle>
               </CardHeader>
@@ -801,7 +803,7 @@ export function SystemStats() {
                               </p>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                                <p className="text-[10px] font-bold text-slate-400  tracking-tight">
                                   Active{" "}
                                   {user.lastActiveAt
                                     ? getTimeAgo(user.lastActiveAt)
@@ -837,9 +839,9 @@ export function SystemStats() {
                   ].map((item) => (
                     <div
                       key={item.key}
-                      className="p-3 rounded-xl bg-slate-50/50 border border-slate-100"
+                      className="p-3 rounded-[18px] bg-slate-50/50 border border-slate-100"
                     >
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                      <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">
                         {item.label}
                       </p>
                       <p className="text-lg font-bold text-slate-900">
@@ -879,7 +881,7 @@ export function SystemStats() {
                     }}
                   />
                 </div>
-                <p className="text-[10px] text-slate-400 text-right font-bold uppercase">
+                <p className="text-[10px] text-slate-400 text-right font-bold ">
                   {stats ? stats.storage.fileCount : 0} файлов
                 </p>
               </CardContent>
@@ -888,13 +890,13 @@ export function SystemStats() {
 
           {/* Maintenance Controls Moved from Diagnostics */}
           <div className="mt-6">
-            <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 px-1">
+            <h5 className="text-[10px] font-bold  tracking-normal text-slate-400 mb-4 px-1">
               Инструменты обслуживания
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="p-5 rounded-2xl bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-indigo-100 transition-all">
+              <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-indigo-100 transition-all">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                  <div className="p-3 rounded-[18px] bg-indigo-50 text-#5d00ff group-hover:bg-#5d00ff group-hover:text-white transition-all shadow-sm">
                     <Zap size={20} />
                   </div>
                   <div>
@@ -909,15 +911,15 @@ export function SystemStats() {
                 <button
                   onClick={handleClearRam}
                   disabled={clearingRam}
-                  className="px-5 py-2.5 bg-slate-50 text-slate-600 text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-all active:scale-95 disabled:opacity-50"
+                  className="px-5 py-2.5 bg-slate-50 text-slate-600 text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-indigo-50 hover:text-#5d00ff border border-slate-100 transition-all active:scale-95 disabled:opacity-50"
                 >
                   {clearingRam ? "Очистка..." : "Очистить"}
                 </button>
               </div>
 
-              <div className="p-5 rounded-2xl bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-rose-100 transition-all">
+              <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-rose-100 transition-all">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
+                  <div className="p-3 rounded-[18px] bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
                     <Power size={20} />
                   </div>
                   <div>
@@ -932,7 +934,7 @@ export function SystemStats() {
                 <button
                   onClick={() => setShowRestartConfirm(true)}
                   disabled={restarting}
-                  className="px-5 py-2.5 bg-rose-500 text-white text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-rose-600 shadow-md shadow-rose-100 transition-all active:scale-95 disabled:opacity-50"
+                  className="px-5 py-2.5 bg-rose-500 text-white text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-rose-600 shadow-md shadow-rose-100 transition-all active:scale-95 disabled:opacity-50"
                 >
                   {restarting ? "Запуск..." : "Рестарт"}
                 </button>
@@ -947,25 +949,25 @@ export function SystemStats() {
               <CardHeader className="flex flex-row items-center justify-between pb-6 pt-7 px-8 bg-white border-b border-slate-50">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-indigo-50 text-indigo-500 rounded-lg">
+                    <div className="p-1.5 bg-indigo-50 text-indigo-500 rounded-[18px]">
                       <BarChart3 size={18} />
                     </div>
                     <CardTitle className="text-base font-bold text-slate-800">
                       Активность системы
                     </CardTitle>
                   </div>
-                  <CardDescription className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  <CardDescription className="text-[10px] font-bold  tracking-normal text-slate-400">
                     Действия за последние 24 часа
                   </CardDescription>
                 </div>
-                <div className="text-2xl font-black text-indigo-600">
+                <div className="text-2xl font-bold text-#5d00ff">
                   {monitoringData
                     ? monitoringData.activityStats.reduce(
                       (acc, curr) => acc + curr.count,
                       0,
                     )
                     : "0"}{" "}
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                  <span className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">
                     действий
                   </span>
                 </div>
@@ -1038,7 +1040,7 @@ export function SystemStats() {
                               )}
                             </div>
                             <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
-                              <div className="bg-slate-900 text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap space-y-1">
+                              <div className="bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-[18px] shadow-xl whitespace-nowrap space-y-1">
                                 <div className="pb-1 border-b border-white/10">
                                   {totalCount}{" "}
                                   {Math.abs(totalCount % 10) === 1 &&
@@ -1080,7 +1082,7 @@ export function SystemStats() {
                     {[...Array(24)].map((_, i) => (
                       <div key={i} className="flex-1 text-center">
                         {i % 4 === 0 && (
-                          <span className="text-[9px] text-slate-400 font-black">
+                          <span className="text-[9px] text-slate-400 font-bold">
                             {i.toString().padStart(2, "0")}:00
                           </span>
                         )}
@@ -1108,7 +1110,7 @@ export function SystemStats() {
                                     : "bg-slate-400",
                           )}
                         />
-                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tight">
+                        <span className="text-[10px] font-bold text-slate-600  tracking-tight">
                           {stat.type === "orders"
                             ? "Заказы"
                             : stat.type === "inventory"
@@ -1122,7 +1124,7 @@ export function SystemStats() {
                                     : stat.type}
                           :
                         </span>
-                        <span className="text-[10px] font-black text-slate-900">
+                        <span className="text-[10px] font-bold text-slate-900">
                           {stat.count}
                         </span>
                       </div>
@@ -1141,16 +1143,16 @@ export function SystemStats() {
             {/* Security Section Header */}
             <div className="px-1 flex items-center justify-between">
               <div>
-                <h4 className="text-lg font-black text-slate-800">
+                <h4 className="text-lg font-bold text-slate-800">
                   Безопасность
                 </h4>
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <p className="text-xs font-bold  tracking-wider text-slate-400">
                   Режим обслуживания и фильтрация входа
                 </p>
               </div>
               <button
                 onClick={() => fetchStats(true)}
-                className="p-2.5 bg-white border border-slate-100 text-slate-400 rounded-xl hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
+                className="p-2.5 bg-white border border-slate-100 text-slate-400 rounded-[18px] hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
                 title="Обновить данные"
               >
                 <RefreshCw size={16} />
@@ -1163,21 +1165,21 @@ export function SystemStats() {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl">
+                      <div className="p-2.5 bg-indigo-50 text-#5d00ff rounded-[18px]">
                         <Shield size={20} />
                       </div>
                       <div>
                         <CardTitle className="text-base font-bold text-slate-900">
                           Режим обслуживания
                         </CardTitle>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mt-0.5">
                           Ограничение доступа к системе
                         </p>
                       </div>
                     </div>
                     <div
                       className={cn(
-                        "px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider",
+                        "px-4 py-1.5 rounded-full text-[11px] font-bold  tracking-wider",
                         securityData?.maintenanceMode
                           ? "bg-rose-50 text-rose-600"
                           : "bg-emerald-50 text-emerald-600",
@@ -1188,7 +1190,7 @@ export function SystemStats() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-2 pb-6">
-                  <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100/50">
+                  <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-[18px] border border-slate-100/50">
                     <div className="space-y-1">
 
                       <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-[320px]">
@@ -1204,7 +1206,7 @@ export function SystemStats() {
                       className={cn(
                         "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                         securityData?.maintenanceMode
-                          ? "bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]"
+                          ? "bg-#5d00ff shadow-[0_0_15px_rgba(79,70,229,0.4)]"
                           : "bg-slate-200",
                       )}
                     >
@@ -1226,14 +1228,14 @@ export function SystemStats() {
                 <CardHeader className="pb-4 border-b border-slate-50 bg-slate-50/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-rose-50 text-rose-600 rounded-2xl">
+                      <div className="p-2.5 bg-rose-50 text-rose-600 rounded-[18px]">
                         <Lock size={20} />
                       </div>
                       <div>
                         <CardTitle className="text-base font-bold text-slate-900">
                           Попытки входа (24ч)
                         </CardTitle>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mt-0.5">
                           Мониторинг безопасности доступа
                         </p>
                       </div>
@@ -1242,7 +1244,7 @@ export function SystemStats() {
                       onClick={handleClearFailedLogins}
                       disabled={clearingLogins || !securityData?.failedLogins.length}
                       className={cn(
-                        "flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm",
+                        "flex items-center gap-2 px-4 py-2 text-[10px] font-bold  tracking-normal rounded-[18px] transition-all active:scale-95 shadow-sm",
                         securityData?.failedLogins.length && !clearingLogins
                           ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
                           : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
@@ -1258,16 +1260,16 @@ export function SystemStats() {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-slate-50/50">
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email / Аккаунт</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Причина</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Адрес</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Дата и время</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Email / Аккаунт</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Причина</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50">
                         {securityData?.failedLogins.length === 0 ? (
                           <tr>
-                            <td colSpan={4} className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest">
+                            <td colSpan={4} className="py-12 text-center text-slate-400 font-bold text-[10px]  tracking-normal">
                               Атак не обнаружено
                             </td>
                           </tr>
@@ -1276,7 +1278,7 @@ export function SystemStats() {
                             <tr key={login.id} className="hover:bg-slate-50/50 transition-colors group">
                               <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
-                                  <div className="p-2 bg-rose-50 text-rose-500 rounded-lg group-hover:scale-110 transition-transform">
+                                  <div className="p-2 bg-rose-50 text-rose-500 rounded-[18px] group-hover:scale-110 transition-transform">
                                     <AlertTriangle size={14} />
                                   </div>
                                   <span className="text-sm font-bold text-slate-700">{login.email}</span>
@@ -1284,7 +1286,7 @@ export function SystemStats() {
                               </td>
                               <td className="px-6 py-4">
                                 <span className={cn(
-                                  "px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-tight",
+                                  "px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
                                   login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
                                 )}>
                                   {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
@@ -1296,7 +1298,7 @@ export function SystemStats() {
                                 </code>
                               </td>
                               <td className="px-6 py-4">
-                                <span className="text-[10px] font-black text-slate-400 uppercase">
+                                <span className="text-[10px] font-bold text-slate-400 ">
                                   {getTimeAgo(login.createdAt)} назад
                                 </span>
                               </td>
@@ -1317,14 +1319,14 @@ export function SystemStats() {
             <CardHeader className="pb-4 border-b border-rose-50 bg-rose-50/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center">
+                  <div className="p-2.5 bg-rose-600 text-white rounded-[18px] shadow-lg shadow-rose-200 flex items-center justify-center">
                     <AlertTriangle size={20} />
                   </div>
                   <div>
                     <CardTitle className="text-base font-bold text-rose-950">
                       Системные ошибки
                     </CardTitle>
-                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mt-0.5">
+                    <p className="text-[10px] text-rose-400 font-bold  tracking-normal mt-0.5">
                       Критические сбои и исключения
                     </p>
                   </div>
@@ -1333,7 +1335,7 @@ export function SystemStats() {
                   onClick={handleClearSecurityErrors}
                   disabled={clearingErrors || !securityData?.systemErrors.length}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm",
+                    "flex items-center gap-2 px-4 py-2 text-[10px] font-bold  tracking-normal rounded-[18px] transition-all active:scale-95 shadow-sm",
                     securityData?.systemErrors.length && !clearingErrors
                       ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
                       : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
@@ -1349,16 +1351,16 @@ export function SystemStats() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-rose-50/30">
-                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Сообщение об ошибке</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Критичность</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">IP / Путь</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-rose-400 uppercase tracking-widest">Дата</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Сообщение об ошибке</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Критичность</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">IP / Путь</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Дата</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-rose-50">
                     {securityData?.systemErrors.length === 0 ? (
                       <tr>
-                        <td colSpan={4} className="py-16 text-center text-emerald-600 font-black text-[10px] uppercase tracking-widest">
+                        <td colSpan={4} className="py-16 text-center text-emerald-600 font-bold text-[10px]  tracking-normal">
                           <Zap className="w-8 h-8 mx-auto mb-3 opacity-20" />
                           Ошибок не выявлено
                         </td>
@@ -1388,7 +1390,7 @@ export function SystemStats() {
                           </td>
                           <td className="px-6 py-4">
                             <span className={cn(
-                              "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-tight",
+                              "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
                               error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
                             )}>
                               {error.severity === "critical" ? "Критично" : "Предупреждение"}
@@ -1403,7 +1405,7 @@ export function SystemStats() {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex flex-col">
-                              <span className="text-[10px] font-black text-slate-900 uppercase">
+                              <span className="text-[10px] font-bold text-slate-900 ">
                                 {getTimeAgo(error.createdAt)}
                               </span>
                               <span className="text-[9px] font-bold text-slate-400">
@@ -1428,17 +1430,17 @@ export function SystemStats() {
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-black text-slate-800">
+                  <CardTitle className="text-lg font-bold text-slate-800">
                     Самодиагностика системы
                   </CardTitle>
-                  <CardDescription className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <CardDescription className="text-xs font-bold  tracking-wider text-slate-400">
                     Проверка целостности и связи с сервисами
                   </CardDescription>
                 </div>
                 <button
                   onClick={runDiagnostics}
                   disabled={diagnosing}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm"
                 >
                   <RefreshCw
                     size={14}
@@ -1462,7 +1464,7 @@ export function SystemStats() {
                     {/* DB */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.database.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : "bg-slate-50/50 border-slate-100",
@@ -1473,7 +1475,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.database.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : "bg-slate-200 text-slate-500",
@@ -1486,20 +1488,20 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.database.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             OK
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Задержка (Latency)
                         </p>
-                        <p className="text-lg font-black text-slate-800">
+                        <p className="text-lg font-bold text-slate-800">
                           {healthData?.database.latency ?? "0"}{" "}
                           <span className="text-xs text-slate-400">ms</span>
                         </p>
@@ -1509,7 +1511,7 @@ export function SystemStats() {
                     {/* Storage */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.storage.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.storage.status === "error"
@@ -1522,7 +1524,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.storage.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : healthData?.storage.status === "error"
@@ -1537,21 +1539,21 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.storage.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             Доступно
                           </span>
                         ) : healthData?.storage.status === "error" ? (
-                          <span className="text-[10px] font-black uppercase text-red-600 bg-red-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-red-600 bg-red-100 px-2 py-0.5 rounded-full">
                             Ошибка
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Состояние
                         </p>
                         <p className="text-xs text-slate-600 font-medium">
@@ -1565,7 +1567,7 @@ export function SystemStats() {
                     {/* Env Vars */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.env.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.env.status === "warning"
@@ -1578,7 +1580,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.env.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : healthData?.env.status === "warning"
@@ -1593,21 +1595,21 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.env.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             OK
                           </span>
                         ) : healthData?.env.status === "warning" ? (
-                          <span className="text-[10px] font-black uppercase text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
                             WARN
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Критические ключи
                         </p>
                         <p className="text-xs text-slate-600 font-bold truncate">
@@ -1623,7 +1625,7 @@ export function SystemStats() {
                     {/* File System */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.fs.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.fs.status === "error"
@@ -1636,7 +1638,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.fs.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : "bg-slate-200 text-slate-500",
@@ -1649,17 +1651,17 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.fs.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             OK
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Права на запись
                         </p>
                         <p className="text-xs text-slate-600 font-bold">
@@ -1673,7 +1675,7 @@ export function SystemStats() {
                     {/* Backups */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.backup.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.backup.status === "warning"
@@ -1686,7 +1688,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.backup.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : "bg-slate-200 text-slate-500",
@@ -1699,21 +1701,21 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.backup.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             Валидны
                           </span>
                         ) : healthData?.backup.status === "none" ? (
-                          <span className="text-[10px] font-black uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
                             Пусто
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Последний архив
                         </p>
                         <p className="text-xs text-slate-600 font-bold">
@@ -1729,7 +1731,7 @@ export function SystemStats() {
                     {/* JWT */}
                     <div
                       className={cn(
-                        "p-4 rounded-2xl border transition-all",
+                        "p-4 rounded-[18px] border transition-all",
                         healthData?.jwt.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.jwt.status === "error"
@@ -1742,7 +1744,7 @@ export function SystemStats() {
                         <div className="flex items-center gap-2">
                           <div
                             className={cn(
-                              "p-1.5 rounded-lg",
+                              "p-1.5 rounded-[18px]",
                               healthData?.jwt.status === "ok"
                                 ? "bg-emerald-100 text-emerald-600"
                                 : "bg-slate-200 text-slate-500",
@@ -1755,17 +1757,17 @@ export function SystemStats() {
                           </span>
                         </div>
                         {healthData?.jwt.status === "ok" ? (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold  text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                             OK
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-400">
+                          <span className="text-[10px] font-bold  text-slate-400">
                             ...
                           </span>
                         )}
                       </div>
                       <div className="mt-4">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-normal mb-1">
                           Криптография
                         </p>
                         <p className="text-xs text-slate-600 font-bold">
@@ -1778,14 +1780,14 @@ export function SystemStats() {
                   </div>
 
                   {healthData && (
-                    <div className="mt-8 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl shadow-indigo-900/10">
+                    <div className="mt-8 rounded-[18px] overflow-hidden border border-slate-800 shadow-2xl shadow-indigo-900/10">
                       <div className="bg-slate-900/95 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
                         <div className="flex gap-1.5">
                           <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                           <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                         </div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                        <div className="text-[10px] font-bold  tracking-normal text-slate-500">
                           System Core Output
                         </div>
                       </div>
@@ -1794,7 +1796,7 @@ export function SystemStats() {
                           <span className="text-emerald-500/50 font-bold">
                             ●
                           </span>
-                          <span className="text-slate-500 uppercase tracking-widest font-bold">
+                          <span className="text-slate-500  tracking-normal font-bold">
                             Log Archive:{" "}
                             {new Date(healthData.timestamp).toLocaleString()}
                           </span>
@@ -1807,7 +1809,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.database.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-rose-400",
@@ -1826,7 +1828,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.storage.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-rose-400",
@@ -1842,7 +1844,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.env.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-amber-400",
@@ -1860,7 +1862,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.fs.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-rose-400",
@@ -1876,7 +1878,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.backup.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-slate-400",
@@ -1892,7 +1894,7 @@ export function SystemStats() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold uppercase",
+                                "font-bold ",
                                 healthData.jwt.status === "ok"
                                   ? "text-emerald-400"
                                   : "text-rose-400",
@@ -1903,12 +1905,12 @@ export function SystemStats() {
                           </div>
                           <div className="flex items-center gap-3 pt-2 mt-2 border-t border-white/5">
                             <span className="text-slate-600 font-bold">07</span>
-                            <span className="text-slate-300 font-black tracking-wider">
+                            <span className="text-slate-300 font-bold tracking-wider">
                               &gt; TOTAL_SYSTEM_STABILITY:
                             </span>
                             <span
                               className={cn(
-                                "font-black animate-pulse",
+                                "font-bold animate-pulse",
                                 healthData.database.status === "ok" &&
                                   healthData.storage.status === "ok"
                                   ? "text-emerald-400"
@@ -1936,18 +1938,18 @@ export function SystemStats() {
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300 px-1">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h4 className="text-lg font-black text-slate-800">
+              <h4 className="text-lg font-bold text-slate-800">
                 Резервное копирование
               </h4>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <p className="text-xs font-bold  tracking-wider text-slate-400">
                 Локальные JSON-копии всей базы данных
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-1">
+              <span className="text-[10px] font-bold  tracking-normal text-slate-400 mr-1">
                 Автоматическое создание:
               </span>
-              <div className="flex bg-slate-100 p-1 rounded-xl mr-2">
+              <div className="flex bg-slate-100 p-1 rounded-[18px] mr-2">
                 {[
                   { id: "none", label: "Выкл" },
                   { id: "daily", label: "Сутки" },
@@ -1958,9 +1960,9 @@ export function SystemStats() {
                     key={freq.id}
                     onClick={() => updateSetting("backup_frequency", freq.id)}
                     className={cn(
-                      "px-3 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all",
+                      "px-3 py-1.5 text-[10px] font-bold  tracking-wider rounded-[18px] transition-all",
                       settings.backup_frequency === freq.id
-                        ? "bg-white text-indigo-600 shadow-sm"
+                        ? "bg-white text-#5d00ff shadow-sm"
                         : "text-slate-500 hover:text-slate-700",
                     )}
                   >
@@ -1971,7 +1973,7 @@ export function SystemStats() {
               <button
                 onClick={handleCreateBackup}
                 disabled={creatingBackup}
-                className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-100"
+                className="flex items-center gap-2 px-6 py-2.5 bg-#5d00ff text-white text-xs font-bold rounded-[18px] hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-100"
               >
                 <History
                   size={14}
@@ -2005,16 +2007,16 @@ export function SystemStats() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-50/50 border-b border-slate-100">
-                        <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
                           Имя файла
                         </th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
                           Размер
                         </th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">
+                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
                           Дата создания
                         </th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">
+                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
                           Действия
                         </th>
                       </tr>
@@ -2027,7 +2029,7 @@ export function SystemStats() {
                         >
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-lg bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
+                              <div className="p-2 rounded-[18px] bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
                                 <FileJson size={16} />
                               </div>
                               <span className="text-sm font-bold text-slate-700">
@@ -2050,14 +2052,14 @@ export function SystemStats() {
                               <a
                                 href={`/ uploads / backups / ${backup.name} `}
                                 download
-                                className="p-2 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                className="p-2 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all"
                                 title="Скачать"
                               >
                                 <Download size={16} />
                               </a>
                               <button
                                 onClick={() => setBackupToDelete(backup.name)}
-                                className="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                className="p-2 hover:text-red-600 hover:bg-red-50 rounded-[18px] transition-all"
                                 title="Удалить"
                               >
                                 <Trash2 size={16} />
@@ -2073,12 +2075,12 @@ export function SystemStats() {
             </CardContent>
           </Card>
 
-          <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex gap-4">
-            <div className="p-2 rounded-xl bg-amber-100 text-amber-600 h-fit">
+          <div className="bg-amber-50 border border-amber-100 rounded-[18px] p-4 flex gap-4">
+            <div className="p-2 rounded-[18px] bg-amber-100 text-amber-600 h-fit">
               <ShieldCheck size={20} />
             </div>
             <div>
-              <p className="text-xs font-black text-amber-900 uppercase tracking-wider mb-1">
+              <p className="text-xs font-bold text-amber-900  tracking-wider mb-1">
                 Важная информация
               </p>
               <p className="text-xs text-amber-800/80 leading-relaxed font-medium">
@@ -2113,26 +2115,26 @@ export function SystemStats() {
       {
         isRestarting && (
           <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
-            <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6">
+            <div className="bg-white p-8 rounded-[18px] shadow-2xl max-w-md w-full text-center space-y-6">
               <div className="relative w-20 h-20 mx-auto">
                 <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-#5d00ff border-t-transparent animate-spin"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Server className="w-8 h-8 text-indigo-600" />
+                  <Server className="w-8 h-8 text-#5d00ff" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-black text-slate-800 mb-2">
+                <h3 className="text-xl font-bold text-slate-800 mb-2">
                   Обновление системы
                 </h3>
                 <p className="text-slate-500 font-medium">
                   Сервер перезагружается. Это займет от 10 до 30 секунд.
                 </p>
               </div>
-              <div className="bg-slate-50 rounded-xl p-4 text-left">
+              <div className="bg-slate-50 rounded-[18px] p-4 text-left">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-700  tracking-wider">
                     Статус подключения
                   </span>
                 </div>
@@ -2142,7 +2144,7 @@ export function SystemStats() {
                   &gt; Reconnecting to dashboard...
                 </p>
               </div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest animate-pulse">
+              <p className="text-[10px] text-slate-400 font-bold  tracking-normal animate-pulse">
                 Не закрывайте эту страницу
               </p>
             </div>
@@ -2159,13 +2161,13 @@ export function SystemStats() {
       />
       {/* Error Details Dialog */}
       <Dialog open={!!selectedError} onOpenChange={(open) => !open && setSelectedError(null)}>
-        <DialogContent className="max-w-2xl bg-white rounded-3xl p-0 overflow-hidden border-rose-100 shadow-2xl">
+        <DialogContent className="max-w-2xl bg-white rounded-[18px] p-0 overflow-hidden border-rose-100 shadow-2xl">
           <div className="bg-rose-50/50 p-6 border-b border-rose-100 flex items-start gap-4">
-            <div className="p-3 bg-white rounded-xl shadow-sm text-rose-500 shrink-0">
+            <div className="p-3 bg-white rounded-[18px] shadow-sm text-rose-500 shrink-0">
               <AlertTriangle size={24} />
             </div>
             <div>
-              <DialogTitle className="text-xl font-black text-slate-900">Детали ошибки</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-slate-900">Детали ошибки</DialogTitle>
               <DialogDescription className="text-slate-500 font-medium mt-1">
                 Техническая информация о сбое
               </DialogDescription>
@@ -2174,43 +2176,43 @@ export function SystemStats() {
 
           <div className="p-6 space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Сообщение (перевод)</label>
-              <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 text-rose-800 font-bold text-sm">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Сообщение (перевод)</label>
+              <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100 text-rose-800 font-bold text-sm">
                 {selectedError && translateErrorMessage(selectedError.message)}
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Оригинальное сообщение</label>
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Оригинальное сообщение</label>
+              <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-100 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
                 {selectedError?.message}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Путь / Метод</label>
+                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Путь / Метод</label>
                 <div className="font-bold text-slate-700 text-sm">
                   {selectedError?.method || "-"} {selectedError?.path || "-"}
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Адрес</label>
+                <label className="text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</label>
                 <div className="font-bold text-slate-700 text-sm">
                   {selectedError?.ipAddress || "Не определен"}
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Критичность</label>
+                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Критичность</label>
                 <div className={cn(
-                  "inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-tight",
+                  "inline-flex px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
                   selectedError?.severity === "critical" ? "bg-rose-100 text-rose-600" : "bg-amber-100 text-amber-600"
                 )}>
                   {selectedError?.severity === "critical" ? "Критическая" : "Предупреждение"}
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Время возникновения</label>
+                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Время возникновения</label>
                 <div className="font-bold text-slate-700 text-sm">
                   {selectedError?.createdAt ? new Date(selectedError.createdAt).toLocaleString("ru-RU") : "-"}
                 </div>
@@ -2221,7 +2223,7 @@ export function SystemStats() {
           <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
             <Button
               onClick={() => setSelectedError(null)}
-              className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-sm font-bold rounded-xl"
+              className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-sm font-bold rounded-[18px]"
             >
               Закрыть
             </Button>

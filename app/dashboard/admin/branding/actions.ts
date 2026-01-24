@@ -19,19 +19,18 @@ interface BrandingSettings {
 }
 
 export async function getBrandingSettings(): Promise<BrandingSettings> {
-    try {
-        const settings = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, "branding")
-        });
+    const defaultBranding: BrandingSettings = {
+        companyName: "MerchCRM",
+        logoUrl: null,
+        primaryColor: "#5d00ff",
+        faviconUrl: null,
+        radius_outer: 24,
+        radius_inner: 14
+    };
 
-        const defaultBranding: BrandingSettings = {
-            companyName: "MerchCRM",
-            logoUrl: null,
-            primaryColor: "#5d00ff",
-            faviconUrl: null,
-            radius_outer: 24,
-            radius_inner: 14
-        };
+    try {
+        const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
+        const settings = result[0];
 
         if (!settings) return defaultBranding;
 
@@ -42,13 +41,8 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             primaryColor: (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff"
         };
     } catch (error) {
-        console.error("Error fetching branding settings:", error);
-        return {
-            companyName: "MerchCRM",
-            logoUrl: null,
-            primaryColor: "#5d00ff",
-            faviconUrl: null
-        };
+        console.error("Error fetching branding settings from DB:", error);
+        return defaultBranding;
     }
 }
 
@@ -58,9 +52,8 @@ export async function updateBrandingSettings(data: BrandingSettings) {
 
     try {
         // Check if settings exist
-        const existing = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, "branding")
-        });
+        const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
+        const existing = result[0];
 
         const saveData = { ...data };
         if (saveData.primaryColor && !saveData.primary_color) {

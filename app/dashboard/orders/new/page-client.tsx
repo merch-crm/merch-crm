@@ -44,9 +44,10 @@ interface OrderInventoryItem {
 
 interface CreateOrderPageClientProps {
     initialInventory: OrderInventoryItem[];
+    userRoleName?: string | null;
 }
 
-export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClientProps) {
+export function CreateOrderPageClient({ initialInventory, userRoleName }: CreateOrderPageClientProps) {
     const router = useRouter();
     const { toast } = useToast();
     const [step, setStep] = useState(0);
@@ -203,7 +204,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                 />
             </div>
 
-            <div className="flex-1 flex min-h-0 gap-6 px-8 pb-8 pt-4">
+            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4">
                 {/* Sidebar */}
                 <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden">
                     <div className="p-6 shrink-0">
@@ -212,7 +213,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                             Назад
                         </button>
                         <h1 className="text-2xl font-bold text-slate-900 leading-tight">Новый заказ</h1>
-                        <p className="text-[11px] text-slate-500 font-bold opacity-60 mt-1 uppercase tracking-wider">Оформление в CRM</p>
+                        <p className="text-[11px] text-slate-500 font-bold opacity-60 mt-1  tracking-wider">Оформление в CRM</p>
                     </div>
 
                     <div className="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
@@ -226,12 +227,12 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     }
                                 }}
                                 className={cn(
-                                    "relative w-full text-left p-4 rounded-[18px] transition-all duration-300 flex items-center gap-4 group",
-                                    step === s.id ? "bg-slate-900 text-white shadow-md" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                    "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
+                                    step === s.id ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                 )}
                             >
                                 <div className={cn(
-                                    "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
+                                    "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
                                     step === s.id ? "bg-white/10 border-white/20" : step > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-100"
                                 )}>
                                     {step > s.id ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
@@ -245,7 +246,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                     </div>
 
                     <div className="h-[80px] border-t border-slate-100 bg-white px-7 flex items-center">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        <div className="text-[10px] font-bold text-slate-400  tracking-normal">
                             {selectedClient ? selectedClient.name : "Клиент не выбран"}
                         </div>
                     </div>
@@ -274,12 +275,12 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                     addToHistory(searchQuery);
                                                 }
                                             }}
-                                            className="w-full h-14 pl-12 pr-4 rounded-2xl border-slate-200 bg-slate-50 text-sm font-medium focus:bg-white focus:border-slate-900 transition-all outline-none"
+                                            className="w-full h-14 pl-12 pr-4 rounded-[18px] border-slate-200 bg-slate-50 text-sm font-medium focus:bg-white focus:border-slate-900 transition-all outline-none"
                                         />
                                         {showHistory && searchHistory.length > 0 && !selectedClient && (
-                                            <div className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-[18px] shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
                                                 <div className="px-6 py-3 bg-slate-50 border-b border-slate-50 flex justify-between items-center">
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Недавние поиски</span>
+                                                    <span className="text-[10px] font-bold text-slate-400  tracking-normal">Недавние поиски</span>
                                                 </div>
                                                 <div className="p-2">
                                                     {searchHistory.map((h, i) => (
@@ -289,7 +290,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                                 setSearchQuery(h);
                                                                 setShowHistory(false);
                                                             }}
-                                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-xl text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
+                                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-[18px] text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
                                                         >
                                                             <RotateCcw className="w-4 h-4 text-slate-300" />
                                                             {h}
@@ -306,7 +307,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     </div>
 
                                     {searchResults.length > 0 && !selectedClient && (
-                                        <div className="border border-slate-100 rounded-2xl shadow-xl bg-white overflow-hidden">
+                                        <div className="border border-slate-100 rounded-[18px] shadow-xl bg-white overflow-hidden">
                                             {searchResults.map((client) => (
                                                 <button
                                                     key={client.id}
@@ -317,10 +318,12 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                     }}
                                                     className="w-full flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors border-b last:border-0"
                                                 >
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 font-bold uppercase">{client.name?.charAt(0)}</div>
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 font-bold ">{client.name?.charAt(0)}</div>
                                                     <div className="text-left">
                                                         <p className="font-bold text-slate-900">{client.name}</p>
-                                                        <p className="text-xs text-slate-500">{client.company} • {client.phone}</p>
+                                                        <p className="text-xs text-slate-500">
+                                                            {client.company} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : client.phone}
+                                                        </p>
                                                     </div>
                                                 </button>
                                             ))}
@@ -328,15 +331,15 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     )}
 
                                     {selectedClient && (
-                                        <div className="p-6 rounded-2xl bg-slate-900 text-white flex items-center justify-between">
+                                        <div className="p-6 rounded-[18px] bg-primary text-white flex items-center justify-between shadow-lg shadow-primary/20">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center font-bold text-xl uppercase">{selectedClient.name[0]}</div>
+                                                <div className="w-12 h-12 rounded-[18px] bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name[0]}</div>
                                                 <div>
                                                     <p className="font-bold">{selectedClient.name}</p>
-                                                    <p className="text-xs text-white/60 uppercase tracking-widest">{selectedClient.company || "Личный заказ"}</p>
+                                                    <p className="text-xs text-white/60  tracking-normal">{selectedClient.company || "Личный заказ"}</p>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-all">Изменить</button>
+                                            <button onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-[18px] transition-all">Изменить</button>
                                         </div>
                                     )}
                                 </div>
@@ -349,12 +352,12 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                         <div className="text-xs font-bold text-slate-400">ВЫБРАНО: {selectedItems.length}</div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                                         {/* Catalog */}
                                         <div className="space-y-4">
                                             <div className="relative">
                                                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                                                <input placeholder="Поиск товара..." className="w-full pl-9 pr-4 py-2 bg-slate-50 border-slate-200 rounded-xl text-sm outline-none" />
+                                                <input placeholder="Поиск товара..." className="w-full pl-9 pr-4 py-2 bg-slate-50 border-slate-200 rounded-[18px] text-sm outline-none" />
                                             </div>
                                             <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2">
                                                 {inventory.map(item => (
@@ -362,13 +365,13 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                         key={item.id}
                                                         disabled={selectedItems.some(i => i.id === item.id)}
                                                         onClick={() => addItem(item)}
-                                                        className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all text-left disabled:opacity-50"
+                                                        className="flex items-center justify-between p-3 rounded-[18px] border border-slate-100 hover:bg-slate-50 transition-all text-left disabled:opacity-50"
                                                     >
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 font-bold"><Package className="w-5 h-5" /></div>
+                                                            <div className="w-10 h-10 bg-slate-100 rounded-[18px] flex items-center justify-center text-slate-400 font-bold"><Package className="w-5 h-5" /></div>
                                                             <div>
                                                                 <p className="text-sm font-bold text-slate-900">{item.name}</p>
-                                                                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
+                                                                <p className="text-[10px] text-slate-500  font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
                                                             </div>
                                                         </div>
                                                         <Plus className="w-4 h-4 text-slate-400" />
@@ -378,8 +381,8 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                         </div>
 
                                         {/* Selected */}
-                                        <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 space-y-4">
-                                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Выбранные позиции</p>
+                                        <div className="bg-slate-50/50 rounded-[18px] p-6 border border-slate-100 space-y-4">
+                                            <p className="text-xs font-bold text-slate-400  tracking-normal">Выбранные позиции</p>
                                             {selectedItems.length === 0 ? (
                                                 <div className="h-40 flex flex-col items-center justify-center text-slate-300 gap-2">
                                                     <ShoppingCart className="w-8 h-8 opacity-20" />
@@ -388,28 +391,28 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                             ) : (
                                                 <div className="space-y-3">
                                                     {selectedItems.map(item => (
-                                                        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 space-y-4">
+                                                        <div key={item.id} className="bg-white p-4 rounded-[18px] shadow-sm border border-slate-100 space-y-4">
                                                             <div className="flex justify-between items-start">
                                                                 <p className="text-sm font-bold">{item.name}</p>
                                                                 <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-rose-500 font-bold">Удалить</button>
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-4 text-xs font-bold">
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-[10px] text-slate-400 uppercase tracking-wider">Кол-во</label>
+                                                                    <label className="text-[10px] text-slate-400  tracking-wider">Кол-во</label>
                                                                     <input
                                                                         type="number"
                                                                         value={item.orderQuantity || 0}
                                                                         onChange={(e) => updateItem(item.id, { orderQuantity: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-lg px-2 py-2"
+                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-2 py-2"
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-[10px] text-slate-400 uppercase tracking-wider">Цена (₽)</label>
+                                                                    <label className="text-[10px] text-slate-400  tracking-wider">Цена (₽)</label>
                                                                     <input
                                                                         type="number"
                                                                         value={item.price || 0}
                                                                         onChange={(e) => updateItem(item.id, { price: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-lg px-2 py-2"
+                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-2 py-2"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -427,11 +430,11 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     <h4 className="text-lg font-bold text-slate-900">Детали заказа</h4>
                                     <div className="grid grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Приоритет</label>
+                                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Приоритет</label>
                                             <select
                                                 value={details.priority}
                                                 onChange={(e) => setDetails({ ...details, priority: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
+                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
                                             >
                                                 <option value="low">Низкий</option>
                                                 <option value="medium">Средний</option>
@@ -439,23 +442,23 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                             </select>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Дедлайн</label>
+                                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Дедлайн</label>
                                             <input
                                                 type="date"
                                                 value={details.deadline}
                                                 onChange={(e) => setDetails({ ...details, deadline: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none"
+                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Срочный заказ</label>
+                                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Срочный заказ</label>
                                             <div
                                                 onClick={() => setDetails({ ...details, isUrgent: !details.isUrgent })}
                                                 className={cn(
-                                                    "w-full h-12 px-4 rounded-xl border flex items-center justify-between cursor-pointer transition-all",
+                                                    "w-full h-12 px-4 rounded-[18px] border flex items-center justify-between cursor-pointer transition-all",
                                                     details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-slate-50 border-slate-200 text-slate-400"
                                                 )}
                                             >
@@ -464,11 +467,11 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Способ оплаты</label>
+                                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Способ оплаты</label>
                                             <select
                                                 value={details.paymentMethod}
                                                 onChange={(e) => setDetails({ ...details, paymentMethod: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
+                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
                                             >
                                                 <option value="cash">Наличные</option>
                                                 <option value="bank">Безнал (Карта)</option>
@@ -479,20 +482,20 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Предоплата (₽)</label>
+                                        <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Предоплата (₽)</label>
                                         <div className="relative">
                                             <CreditCard className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
                                             <input
                                                 type="number"
                                                 value={details.advanceAmount}
                                                 onChange={(e) => setDetails({ ...details, advanceAmount: e.target.value })}
-                                                className="w-full h-14 pl-12 pr-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-lg focus:bg-white focus:border-slate-900 outline-none"
+                                                className="w-full h-14 pl-12 pr-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-lg focus:bg-white focus:border-slate-900 outline-none"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Промокод</label>
+                                        <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Промокод</label>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
                                                 <Tag className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
@@ -501,13 +504,13 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                     placeholder="Введите промокод..."
                                                     value={promoInput}
                                                     onChange={(e) => setPromoInput(e.target.value)}
-                                                    className="w-full h-14 pl-12 pr-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white focus:border-slate-900 outline-none uppercase"
+                                                    className="w-full h-14 pl-12 pr-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white focus:border-slate-900 outline-none "
                                                 />
                                             </div>
                                             <button
                                                 onClick={handleApplyPromo}
                                                 disabled={isApplyingPromo || !promoInput}
-                                                className="h-14 px-6 rounded-xl bg-slate-100 font-bold text-slate-900 hover:bg-slate-200 transition-all disabled:opacity-50"
+                                                className="h-14 px-6 rounded-[18px] bg-slate-100 font-bold text-slate-900 hover:bg-slate-200 transition-all disabled:opacity-50"
                                             >
                                                 {isApplyingPromo ? "..." : "Применить"}
                                             </button>
@@ -525,13 +528,13 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                 <div className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <h4 className="text-xl font-bold text-slate-900">Подтверждение заказа</h4>
 
-                                    <div className="bg-slate-50 rounded-2xl p-6 space-y-4">
+                                    <div className="bg-slate-50 rounded-[18px] p-6 space-y-4">
                                         <div className="flex justify-between border-b pb-4">
-                                            <span className="text-slate-500 font-bold text-xs uppercase tracking-wider">Клиент</span>
+                                            <span className="text-slate-500 font-bold text-xs  tracking-wider">Клиент</span>
                                             <span className="font-bold">{selectedClient?.name}</span>
                                         </div>
                                         <div className="space-y-2">
-                                            <span className="text-slate-500 font-bold text-xs uppercase tracking-wider">Товары</span>
+                                            <span className="text-slate-500 font-bold text-xs  tracking-wider">Товары</span>
                                             {selectedItems.map(item => (
                                                 <div key={item.id} className="flex justify-between text-sm py-1">
                                                     <span>{item.name} x {item.orderQuantity || 0}</span>
@@ -539,7 +542,7 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="flex justify-between pt-4 border-t text-xl font-black">
+                                        <div className="flex justify-between pt-4 border-t text-xl font-bold">
                                             <span>ИТОГО</span>
                                             <div className="text-right">
                                                 {details.appliedPromo ? (
@@ -569,13 +572,13 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 bg-white border rounded-xl">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Приоритет</p>
-                                            <p className="font-bold uppercase text-xs">{details.priority}</p>
+                                        <div className="p-4 bg-white border rounded-[18px]">
+                                            <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Приоритет</p>
+                                            <p className="font-bold  text-xs">{details.priority}</p>
                                         </div>
-                                        <div className="p-4 bg-white border rounded-xl">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Оплата</p>
-                                            <p className="font-bold uppercase text-xs">{details.paymentMethod}</p>
+                                        <div className="p-4 bg-white border rounded-[18px]">
+                                            <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Оплата</p>
+                                            <p className="font-bold  text-xs">{details.paymentMethod}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -590,13 +593,13 @@ export function CreateOrderPageClient({ initialInventory }: CreateOrderPageClien
                                 )}
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={handleBack} className="px-6 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all">Назад</button>
+                                <button onClick={handleBack} className="px-6 py-3 rounded-[18px] border border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all">Назад</button>
                                 {step < 3 ? (
-                                    <button onClick={handleNext} className="px-8 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow-lg hover:bg-slate-800 transition-all flex items-center gap-2">
+                                    <button onClick={handleNext} className="px-8 py-3 btn-primary rounded-[18px] text-sm font-bold shadow-lg transition-all flex items-center gap-2">
                                         Далее <ChevronRight className="w-4 h-4" />
                                     </button>
                                 ) : (
-                                    <button onClick={handleSubmit} disabled={loading} className="px-12 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow-lg hover:bg-slate-800 disabled:opacity-50 transition-all">
+                                    <button onClick={handleSubmit} disabled={loading} className="px-12 py-3 btn-primary rounded-[18px] text-sm font-bold shadow-lg disabled:opacity-50 transition-all">
                                         {loading ? "Создание..." : "Подтвердить и создать"}
                                     </button>
                                 )}

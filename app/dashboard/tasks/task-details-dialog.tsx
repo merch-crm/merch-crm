@@ -194,18 +194,18 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                     <div className="flex justify-between items-start gap-6 mb-8">
                         <div className="space-y-3 flex-1">
                             <div className="flex items-center gap-3">
-                                <span className={cn("px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest", config.color)}>
+                                <span className={cn("px-4 py-1.5 rounded-full text-[10px] font-bold  tracking-normal", config.color)}>
                                     {config.label}
                                 </span>
                                 {isDone && (
-                                    <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 flex items-center gap-1.5">
+                                    <span className="px-4 py-1.5 rounded-full text-[10px] font-bold  tracking-normal bg-emerald-50 text-emerald-600 flex items-center gap-1.5">
                                         <CheckCircle2 className="w-3 h-3" />
                                         Выполнено
                                     </span>
                                 )}
                             </div>
                             <h2 className={cn(
-                                "text-3xl font-black text-slate-900 tracking-tight leading-tight",
+                                "text-3xl font-bold text-slate-900 tracking-tight leading-tight",
                                 isDone && "line-through text-slate-400"
                             )}>
                                 {task.title}
@@ -213,7 +213,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-3 hover:bg-slate-100 rounded-2xl transition-all group"
+                            className="p-3 hover:bg-slate-100 rounded-[18px] transition-all group"
                         >
                             <X className="w-6 h-6 text-slate-300 group-hover:text-slate-600" />
                         </button>
@@ -231,9 +231,9 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as "details" | "checklist" | "comments" | "history")}
                                 className={cn(
-                                    "px-6 py-4 text-sm font-black transition-all border-b-2 whitespace-nowrap",
+                                    "px-6 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap",
                                     activeTab === tab.id
-                                        ? "border-indigo-600 text-indigo-600"
+                                        ? "border-primary text-primary"
                                         : "border-transparent text-slate-400 hover:text-slate-600"
                                 )}
                             >
@@ -244,7 +244,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     </span>
                                 )}
                                 {tab.id === 'comments' && task.comments && task.comments.length > 0 && (
-                                    <span className="ml-2 px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-md text-[10px]">
+                                    <span className="ml-2 px-1.5 py-0.5 bg-primary/5 text-primary rounded-md text-[10px]">
                                         {task.comments.length}
                                     </span>
                                 )}
@@ -257,9 +257,9 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
                                 <div className="space-y-8">
-                                    <div className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Исполнитель</div>
+                                    <div className="text-[11px] font-bold text-slate-400  tracking-normal mb-1">Исполнитель</div>
                                     <div className="flex items-center gap-3">
-                                        <div className="h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+                                        <div className="h-9 w-9 rounded-[18px] bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
                                             {task.assignedToUser?.avatar ? (
                                                 <NextImage src={task.assignedToUser.avatar} alt={task.assignedToUser.name} width={36} height={36} className="w-full h-full object-cover" unoptimized />
                                             ) : (
@@ -267,22 +267,22 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             )}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-black text-slate-900 leading-tight">
+                                            <p className="text-sm font-bold text-slate-900 leading-tight">
                                                 {task.assignedToUser?.name || task.assignedToDepartment?.name || "Все"}
                                             </p>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                            <p className="text-[10px] font-bold text-slate-400  tracking-normal">
                                                 {task.assignedToDepartmentId ? "Групповая задача" : "Персональная"}
                                             </p>
                                         </div>
                                     </div>
 
                                     <div className="flex items-start gap-4">
-                                        <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0">
+                                        <div className="h-12 w-12 rounded-[18px] bg-slate-50 flex items-center justify-center shrink-0">
                                             <Clock className="w-6 h-6 text-amber-500" />
                                         </div>
                                         <div className="flex flex-col pt-1">
-                                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Срок выполнения</span>
-                                            <span className="text-base font-black text-slate-900">
+                                            <span className="text-xs font-bold text-slate-400  tracking-normal mb-1">Срок выполнения</span>
+                                            <span className="text-base font-bold text-slate-900">
                                                 {task.dueDate ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru }) : "Срок не установлен"}
                                             </span>
                                             <div className="text-sm text-slate-400">
@@ -292,14 +292,14 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     </div>
                                 </div>
 
-                                <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Создано</span>
+                                <div className="bg-slate-50/50 rounded-[18px] p-6 border border-slate-100">
+                                    <span className="text-[10px] font-bold text-slate-400  tracking-normal block mb-4">Создано</span>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center">
                                             <User className="w-5 h-5 text-slate-400" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-black text-slate-900">{task.creator?.name || "Система"}</p>
+                                            <p className="text-sm font-bold text-slate-900">{task.creator?.name || "Система"}</p>
                                             <p className="text-xs font-medium text-slate-400">{format(new Date(task.createdAt), "HH:mm, dd.MM.yyyy")}</p>
                                         </div>
                                     </div>
@@ -307,8 +307,8 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             </div>
 
                             {task.description && (
-                                <div className="mb-10 p-8 bg-slate-50/30 rounded-3xl border border-slate-100/50">
-                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <div className="mb-10 p-8 bg-slate-50/30 rounded-[18px] border border-slate-100/50">
+                                    <h4 className="text-xs font-bold text-slate-400  tracking-normal mb-4 flex items-center gap-2">
                                         <AlignLeft className="w-3.5 h-3.5" />
                                         Подробное описание
                                     </h4>
@@ -320,7 +320,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
 
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <h4 className="text-xs font-bold text-slate-400  tracking-normal flex items-center gap-2">
                                         <Paperclip className="w-3.5 h-3.5" />
                                         Вложения ({task.attachments?.length || 0})
                                     </h4>
@@ -333,7 +333,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={isPending}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black hover:bg-indigo-100 transition-all disabled:opacity-50"
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-[18px] text-[10px] font-bold hover:bg-primary/10 transition-all disabled:opacity-50"
                                     >
                                         <UploadCloud className="w-3 h-3" />
                                         ЗАГРУЗИТЬ
@@ -347,22 +347,22 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             href={file.fileUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all group"
+                                            className="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-[18px] hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
                                         >
-                                            <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-indigo-50 transition-colors">
+                                            <div className="h-10 w-10 rounded-[18px] bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
                                                 {getFileIcon(file.contentType || "")}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-black text-slate-900 truncate">{file.fileName}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{formatSize(file.fileSize || 0)}</p>
+                                                <p className="text-xs font-bold text-slate-900 truncate">{file.fileName}</p>
+                                                <p className="text-[10px] font-bold text-slate-400  tracking-normal">{formatSize(file.fileSize || 0)}</p>
                                             </div>
-                                            <Download className="w-4 h-4 text-slate-200 group-hover:text-indigo-400 transition-colors" />
+                                            <Download className="w-4 h-4 text-slate-200 group-hover:text-primary transition-colors" />
                                         </a>
                                     ))}
                                     {(!task.attachments || task.attachments.length === 0) && (
-                                        <div className="col-span-full py-8 border-2 border-dashed border-slate-100 rounded-3xl flex flex-col items-center justify-center text-slate-300">
+                                        <div className="col-span-full py-8 border-2 border-dashed border-slate-100 rounded-[18px] flex flex-col items-center justify-center text-slate-300">
                                             <Paperclip className="w-8 h-8 mb-2 opacity-20" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Нет прикрепленных файлов</span>
+                                            <span className="text-[10px] font-bold  tracking-normal">Нет прикрепленных файлов</span>
                                         </div>
                                     )}
                                 </div>
@@ -378,12 +378,12 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     value={newChecklistItem}
                                     onChange={(e) => setNewChecklistItem(e.target.value)}
                                     placeholder="Добавить новый пункт..."
-                                    className="flex-1 px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-medium outline-none focus:border-indigo-500 transition-all"
+                                    className="flex-1 px-5 py-3 rounded-[18px] bg-slate-50 border border-slate-100 text-sm font-medium outline-none focus:border-primary transition-all"
                                     onKeyDown={(e) => e.key === 'Enter' && handleAddChecklistItem()}
                                 />
                                 <button
                                     onClick={handleAddChecklistItem}
-                                    className="px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-black hover:bg-slate-800 transition-all"
+                                    className="px-6 py-3 bg-slate-900 text-white rounded-[18px] text-sm font-bold hover:bg-slate-800 transition-all"
                                 >
                                     ДОБАВИТЬ
                                 </button>
@@ -393,15 +393,15 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 {task.checklists?.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="group flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all"
+                                        className="group flex items-center gap-4 p-4 hover:bg-slate-50 rounded-[18px] transition-all"
                                     >
                                         <button
                                             onClick={() => handleToggleChecklist(item.id, !item.isCompleted)}
                                             className={cn(
-                                                "h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                                                "h-6 w-6 rounded-[18px] border-2 flex items-center justify-center transition-all",
                                                 item.isCompleted
                                                     ? "bg-emerald-500 border-emerald-500"
-                                                    : "border-slate-200 hover:border-indigo-500"
+                                                    : "border-slate-200 hover:border-primary"
                                             )}
                                         >
                                             {item.isCompleted && <CheckCircle2 className="w-4 h-4 text-white" />}
@@ -432,13 +432,13 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="Написать комментарий..."
                                     rows={3}
-                                    className="w-full px-5 py-4 rounded-3xl bg-slate-50 border border-slate-100 text-sm font-medium outline-none focus:border-indigo-500 transition-all resize-none"
+                                    className="w-full px-5 py-4 rounded-[18px] bg-slate-50 border border-slate-100 text-sm font-medium outline-none focus:border-primary transition-all resize-none"
                                 />
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleAddComment}
                                         disabled={!newComment.trim() || isPending}
-                                        className="px-8 py-3 bg-indigo-600 text-white rounded-2xl text-sm font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 disabled:opacity-50"
+                                        className="px-8 py-3 bg-primary text-white rounded-[18px] text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                                     >
                                         ОТПРАВИТЬ
                                     </button>
@@ -448,21 +448,21 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             <div className="space-y-6">
                                 {task.comments?.map((comment) => (
                                     <div key={comment.id} className="flex gap-4">
-                                        <div className="h-10 w-10 rounded-2xl bg-slate-100 shrink-0 overflow-hidden">
+                                        <div className="h-10 w-10 rounded-[18px] bg-slate-100 shrink-0 overflow-hidden">
                                             {comment.user.avatar ? (
                                                 <NextImage src={comment.user.avatar} alt={comment.user.name} width={40} height={40} className="w-full h-full object-cover" unoptimized />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500 font-bold text-xs uppercase">
+                                                <div className="w-full h-full flex items-center justify-center bg-primary/5 text-primary font-bold text-xs ">
                                                     {comment.user.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 space-y-1">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-black text-slate-900">{comment.user.name}</span>
+                                                <span className="text-xs font-bold text-slate-900">{comment.user.name}</span>
                                                 <span className="text-[10px] font-bold text-slate-400">{format(new Date(comment.createdAt), "HH:mm, dd.MM.yyyy")}</span>
                                             </div>
-                                            <div className="p-4 bg-slate-50 rounded-2xl rounded-tl-none">
+                                            <div className="p-4 bg-slate-50 rounded-[18px] rounded-tl-none">
                                                 <p className="text-sm font-medium text-slate-600 leading-relaxed">
                                                     {comment.content}
                                                 </p>
@@ -478,7 +478,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         <div className="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
                             {task.history?.map((activity) => (
                                 <div key={activity.id} className="relative">
-                                    <div className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-white border-2 border-indigo-500 z-10" />
+                                    <div className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-white border-2 border-primary z-10" />
                                     <div className="space-y-1">
                                         <p className="text-sm font-bold text-slate-900">
                                             {activity.user.name}{" "}
@@ -486,7 +486,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                                 {getActivityLabel(activity)}
                                             </span>
                                         </p>
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                                        <p className="text-[10px] font-bold text-slate-400  tracking-normal leading-none">
                                             {format(new Date(activity.createdAt), "HH:mm, dd MMM yyyy", { locale: ru })}
                                         </p>
                                     </div>
@@ -503,10 +503,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             onClick={handleToggle}
                             disabled={isPending}
                             className={cn(
-                                "flex-1 py-4 rounded-2xl font-black shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
+                                "flex-1 py-4 rounded-[18px] font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
                                 isDone
                                     ? "bg-slate-100 text-slate-600 hover:bg-slate-200 shadow-slate-200/50"
-                                    : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-600/30"
+                                    : "bg-primary text-white hover:opacity-90 shadow-primary/30"
                             )}
                         >
                             {isDone ? <Clock className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
@@ -515,7 +515,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
                             disabled={isPending}
-                            className="p-4 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all active:scale-[0.98] shadow-lg shadow-rose-200/50"
+                            className="p-4 bg-rose-50 text-rose-500 rounded-[18px] hover:bg-rose-100 transition-all active:scale-[0.98] shadow-lg shadow-rose-200/50"
                         >
                             <Trash2 className="w-6 h-6" />
                         </button>

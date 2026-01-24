@@ -73,8 +73,8 @@ export default function LuminAnalytics() {
 
                     <div className="flex justify-between items-start z-10">
                         <h3 className="text-lg text-white/80 font-normal">Expenses</h3>
-                        <div className="bg-[#1a1a1a] rounded-xl px-3 py-2 text-right">
-                            <div className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Purchases</div>
+                        <div className="bg-[#1a1a1a] rounded-[18px] px-3 py-2 text-right">
+                            <div className="text-[10px] text-white/40  tracking-wider mb-0.5">Purchases</div>
                             <div className="text-sm font-mono text-white/90">$3,254.00</div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ export default function LuminAnalytics() {
                             {/* Segment 2 (White) */}
                             <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="12" fill="none" strokeDasharray="40 251" strokeDashoffset="-190" strokeLinecap="round" />
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center font-mono text-xl tracking-tighter">
+                        <div className="absolute inset-0 flex items-center justify-center font-mono text-xl tracking-normal">
                             $5,120.00
                         </div>
                     </div>
@@ -107,7 +107,7 @@ export default function LuminAnalytics() {
                     <h3 className="text-lg font-normal mb-6">Replenishment</h3>
 
                     {/* Card Visual */}
-                    <div className="w-[80%] mx-auto aspect-[1.58] bg-gradient-to-br from-[#b4d600] to-[#7a9100] rounded-2xl shadow-lg relative p-4 mb-4 transform group-hover:scale-105 transition-transform">
+                    <div className="w-[80%] mx-auto aspect-[1.58] bg-gradient-to-br from-[#b4d600] to-[#7a9100] rounded-[18px] shadow-lg relative p-4 mb-4 transform group-hover:scale-105 transition-transform">
                         <div className="flex justify-between">
                             <div className="w-6 h-6 rounded-full bg-white/20" />
                             <div className="w-8 h-10 bg-black/10 rounded-sm" />
@@ -252,7 +252,7 @@ export default function LuminAnalytics() {
                         </svg>
                     </div>
 
-                    <div className="flex justify-between mt-4 text-xs text-slate-400 uppercase tracking-wider">
+                    <div className="flex justify-between mt-4 text-xs text-slate-400  tracking-wider">
                         <span>Jan</span><span>Feb</span><span>Mar</span><span>Jun</span>
                         <span className="text-black font-bold bg-black text-white px-2 py-0.5 rounded-md">Jul</span>
                         <span>Aug</span><span>Sep</span><span>Oct</span>

@@ -94,7 +94,7 @@ export const getIconGroupForIcon = (iconName: string | null | undefined) => {
 };
 
 export const COLORS = [
-    { name: "indigo", class: "bg-indigo-500" },
+    { name: "primary", class: "bg-primary" },
     { name: "rose", class: "bg-rose-500" },
     { name: "emerald", class: "bg-emerald-500" },
     { name: "amber", class: "bg-amber-500" },
@@ -144,7 +144,8 @@ export const getColorStyles = (color: string | null | undefined) => {
         "cyan": "bg-cyan-100/80 text-cyan-600",
         "sky": "bg-sky-100/80 text-sky-600",
         "blue": "bg-blue-100/80 text-blue-600",
-        "indigo": "bg-indigo-100/80 text-indigo-600",
+        "primary": "bg-primary/10 text-primary",
+        "indigo": "bg-primary/10 text-primary",
         "violet": "bg-violet-100/80 text-violet-600",
         "purple": "bg-purple-100/80 text-purple-600",
         "fuchsia": "bg-fuchsia-100/80 text-fuchsia-600",

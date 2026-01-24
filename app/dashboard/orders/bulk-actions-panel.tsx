@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { pluralize, sentence } from "@/lib/pluralize";
 
 interface BulkActionsPanelProps {
     selectedIds: string[];
@@ -47,12 +48,11 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
 
     if (selectedIds.length === 0) return null;
 
-    const handleStatusUpdate = async (status: string) => {
+    const handleStatusUpdate = async (status: "new" | "design" | "production" | "done" | "shipped" | "cancelled") => {
         setIsProcessing(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res = await bulkUpdateOrderStatus(selectedIds, status as any);
+        const res = await bulkUpdateOrderStatus(selectedIds, status);
         if (res.success) {
-            toast(`Статус обновлен для ${selectedIds.length} заказов`, "success", { mutation: true });
+            toast(`Статус обновлен для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`, "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -64,7 +64,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         setIsProcessing(true);
         const res = await bulkUpdateOrderPriority(selectedIds, priority);
         if (res.success) {
-            toast(`Приоритет обновлен для ${selectedIds.length} заказов`, "success", { mutation: true });
+            toast(`Приоритет обновлен для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`, "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -77,7 +77,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
         try {
             const res = await bulkDeleteOrders(selectedIds);
             if (res.success) {
-                toast(`Удалено ${selectedIds.length} заказов`, "success", { mutation: true });
+                toast(sentence(selectedIds.length, 'm', { one: 'Удален', many: 'Удалено' }, { one: 'заказ', few: 'заказа', many: 'заказов' }), "success", { mutation: true });
                 onClear();
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
@@ -98,14 +98,14 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                 {/* Selection Badge Section */}
                 <div className="flex items-center gap-4 pl-4 pr-6 border-r border-slate-100">
                     <div className="relative">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-lg text-white shadow-lg shadow-indigo-200">
+                        <div className="w-12 h-12 rounded-[18px] bg-primary flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-primary/20">
                             {selectedIds.length}
                         </div>
                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 leading-none">Выбрано</span>
-                        <span className="text-sm font-bold text-slate-900">заказов</span>
+                        <span className="text-[10px] font-bold  tracking-[0.2em] text-slate-400 leading-none">{pluralize(selectedIds.length, 'Выбран', 'Выбрано', 'Выбрано')}</span>
+                        <span className="text-sm font-bold text-slate-900">{pluralize(selectedIds.length, 'заказ', 'заказа', 'заказов')}</span>
                     </div>
                 </div>
 
@@ -115,16 +115,16 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button
-                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 disabled:opacity-50"
+                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-[18px] transition-all active:scale-95 disabled:opacity-50"
                                 disabled={isProcessing}
                             >
-                                <CheckCircle2 className="w-5 h-5 text-indigo-500" />
+                                <CheckCircle2 className="w-5 h-5 text-primary" />
                                 Статус
                                 <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
                             </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top" align="start" sideOffset={20} className="w-64 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
-                            <DropdownMenuLabel className="text-[10px] uppercase font-black tracking-widest text-slate-400 px-3 py-2">Сменить этап работы</DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-[10px]  font-bold tracking-normal text-slate-400 px-3 py-2">Сменить этап работы</DropdownMenuLabel>
                             <DropdownMenuSeparator className="bg-slate-50" />
                             <StatusMenuItem icon={Sparkles} color="text-blue-500" label="Новый" onClick={() => handleStatusUpdate("new")} />
                             <StatusMenuItem icon={Paintbrush} color="text-purple-500" label="Дизайн" onClick={() => handleStatusUpdate("design")} />
@@ -139,7 +139,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button
-                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 disabled:opacity-50"
+                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-[18px] transition-all active:scale-95 disabled:opacity-50"
                                 disabled={isProcessing}
                             >
                                 <Zap className="w-5 h-5 text-rose-500" />
@@ -148,16 +148,16 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                             </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top" align="center" sideOffset={20} className="w-56 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
-                            <DropdownMenuLabel className="text-[10px] uppercase font-black tracking-widest text-slate-400 px-3 py-2">Срочность заказа</DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-[10px]  font-bold tracking-normal text-slate-400 px-3 py-2">Срочность заказа</DropdownMenuLabel>
                             <DropdownMenuSeparator className="bg-slate-50" />
-                            <DropdownMenuItem className="rounded-xl focus:bg-rose-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("high")}>
-                                <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center">
+                            <DropdownMenuItem className="rounded-[18px] focus:bg-rose-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("high")}>
+                                <div className="w-8 h-8 rounded-[18px] bg-rose-100 flex items-center justify-center">
                                     <Zap className="w-4 h-4 text-rose-600 fill-rose-600" />
                                 </div>
                                 Срочный
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="rounded-xl focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("normal")}>
-                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                            <DropdownMenuItem className="rounded-[18px] focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("normal")}>
+                                <div className="w-8 h-8 rounded-[18px] bg-slate-100 flex items-center justify-center">
                                     <Clock className="w-4 h-4 text-slate-600" />
                                 </div>
                                 Обычный
@@ -170,15 +170,15 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
 
                     <button
                         title="Печать бланков"
-                        className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
-                        onClick={() => toast(`Печать бланков для ${selectedIds.length} заказов...`, "info")}
+                        className="p-3 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[18px] transition-all active:scale-90"
+                        onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
                     >
                         <Printer className="w-5 h-5" />
                     </button>
 
                     <button
                         title="Экспорт в Excel"
-                        className="p-3 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
+                        className="p-3 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all active:scale-90"
                         onClick={() => toast("Подготовка файла экспорта...", "info")}
                     >
                         <FileDown className="w-5 h-5" />
@@ -187,7 +187,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                     {isAdmin && (
                         <button
                             title="Удалить выбранные"
-                            className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                            className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
                             onClick={() => setShowDeleteConfirm(true)}
                             disabled={isProcessing}
                         >
@@ -212,8 +212,8 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
                 isOpen={showDeleteConfirm}
                 onClose={() => setShowDeleteConfirm(false)}
                 onConfirm={handleDelete}
-                title="Удаление заказов"
-                description={`Вы уверены, что хотите удалить ${selectedIds.length} заказов? Это действие необратимо.`}
+                title={`Удаление ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`}
+                description={`Вы уверены, что хотите удалить ${pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов')} (${selectedIds.length})? Это действие необратимо.`}
                 confirmText="Удалить"
                 variant="destructive"
                 isLoading={isProcessing}
@@ -225,10 +225,10 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
 function StatusMenuItem({ icon: Icon, color, label, onClick }: { icon: LucideIcon, color: string, label: string, onClick: () => void }) {
     return (
         <DropdownMenuItem
-            className="rounded-xl focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900 group"
+            className="rounded-[18px] focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900 group"
             onClick={onClick}
         >
-            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", color.replace('text-', 'bg-').replace('-500', '-100'))}>
+            <div className={cn("w-8 h-8 rounded-[18px] flex items-center justify-center", color.replace('text-', 'bg-').replace('-500', '-100'))}>
                 <Icon className={cn("w-4 h-4", color)} />
             </div>
             {label}

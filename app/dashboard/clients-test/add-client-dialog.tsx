@@ -81,7 +81,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
             return (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-wider flex items-center transition-colors px-2 py-1 hover:bg-indigo-50 rounded-lg"
+                    className="text-[10px] font-bold text-#5d00ff hover:text-indigo-700  tracking-wider flex items-center transition-colors px-2 py-1 hover:bg-indigo-50 rounded-[18px]"
                 >
                     <Plus className="mr-1 h-3 w-3" /> Создать
                 </button>
@@ -90,7 +90,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
+                className="h-12 bg-#5d00ff hover:bg-indigo-700 text-white rounded-[18px] px-6 gap-2 font-bold shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
             >
                 <Plus className="w-5 h-5" />
                 Добавить клиента
@@ -109,12 +109,12 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-50">
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Новый клиент</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Новый клиент</h3>
                         <p className="text-sm text-slate-500 font-medium">Заполните данные для CRM</p>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -123,13 +123,13 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                 {/* Form Content */}
                 <form action={handleSubmit} className="p-8 pt-6 space-y-6 overflow-y-auto">
                     {/* Client Type Toggle */}
-                    <div className="flex p-1 bg-slate-100 rounded-[18px]">
+                    <div className="flex p-1 bg-slate-100 rounded-[var(--radius)]">
                         <button
                             type="button"
                             onClick={() => setClientType("b2c")}
                             className={cn(
-                                "flex-1 py-3 text-[11px] font-black uppercase tracking-widest rounded-[14px] transition-all",
-                                clientType === "b2c" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                                "flex-1 py-3 text-[11px] font-bold  tracking-normal rounded-[var(--radius)] transition-all",
+                                clientType === "b2c" ? "bg-white text-#5d00ff shadow-sm" : "text-slate-400 hover:text-slate-600"
                             )}
                         >
                             Физическое лицо (B2C)
@@ -138,7 +138,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                             type="button"
                             onClick={() => setClientType("b2b")}
                             className={cn(
-                                "flex-1 py-3 text-[11px] font-black uppercase tracking-widest rounded-[14px] transition-all",
+                                "flex-1 py-3 text-[11px] font-bold  tracking-normal rounded-[var(--radius)] transition-all",
                                 clientType === "b2b" ? "bg-white text-indigo-1000 shadow-sm" : "text-slate-400 hover:text-slate-600" // Typo in text-indigo-1000, should be 600
                             )}
                         >
@@ -150,7 +150,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                     {/* Name Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <User className="w-3.5 h-3.5" /> Фамилия <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -158,11 +158,11 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 name="lastName"
                                 required
                                 onChange={handleInputChange}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <User className="w-3.5 h-3.5" /> Имя <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -170,24 +170,24 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 name="firstName"
                                 required
                                 onChange={handleInputChange}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Отчество
                             </label>
                             <input
                                 type="text"
                                 name="patronymic"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Building2 className="w-3.5 h-3.5" /> Компания
                             </label>
                             <input
@@ -195,7 +195,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 name="company"
                                 required={clientType === "b2b"}
                                 className={cn(
-                                    "w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none",
+                                    "w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none",
                                     clientType === "b2b" && "border-indigo-100 bg-indigo-50/10"
                                 )}
                             />
@@ -205,7 +205,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                     {/* Contact Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Phone className="w-3.5 h-3.5" /> Телефон <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -213,42 +213,42 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                                 name="phone"
                                 required
                                 onChange={handleInputChange}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Mail className="w-3.5 h-3.5" /> Email
                             </label>
                             <input
                                 type="email"
                                 name="email"
                                 onChange={handleInputChange}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Telegram
                             </label>
                             <input
                                 type="text"
                                 name="telegram"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                                 placeholder="@username"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Instagram
                             </label>
                             <input
                                 type="text"
                                 name="instagram"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                                 placeholder="insta_link"
                             />
                         </div>
@@ -257,23 +257,23 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                     {/* New Fields */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <LinkIcon className="w-3.5 h-3.5" /> Ссылка на соцсеть
                             </label>
                             <input
                                 type="text"
                                 name="socialLink"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                                 placeholder="vk.com/..."
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Менеджер
                             </label>
                             <select
                                 name="managerId"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none appearance-none cursor-pointer"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">Не назначен</option>
                                 {managers.map(m => (
@@ -285,54 +285,54 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <MapPin className="w-3.5 h-3.5" /> Город
                             </label>
                             <input
                                 type="text"
                                 name="city"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Адрес
                             </label>
                             <input
                                 type="text"
                                 name="address"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                             <MessageSquare className="w-3.5 h-3.5" /> Комментарии
                         </label>
                         <textarea
                             name="comments"
                             rows={3}
-                            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none resize-none"
+                            className="w-full p-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none resize-none"
                         />
                     </div>
 
                     {duplicates.length > 0 && (
-                        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
-                            <div className="flex items-center gap-2 text-amber-800 font-black text-xs uppercase tracking-wider">
+                        <div className="p-4 rounded-[18px] bg-amber-50 border border-amber-100 space-y-3">
+                            <div className="flex items-center gap-2 text-amber-800 font-bold text-xs  tracking-wider">
                                 <Plus className="w-4 h-4 rotate-45" />
                                 Найдены похожие клиенты ({duplicates.length})
                             </div>
                             <div className="space-y-2">
                                 {duplicates.map(dup => (
-                                    <div key={dup.id} className="flex items-center justify-between bg-white/50 p-2 rounded-xl border border-amber-200/50">
+                                    <div key={dup.id} className="flex items-center justify-between bg-white/50 p-2 rounded-[18px] border border-amber-200/50">
                                         <div className="text-xs font-bold text-slate-700">
                                             {dup.lastName} {dup.firstName} ({dup.phone})
                                         </div>
                                         <a
                                             href={`/dashboard/clients?id=${dup.id}`}
                                             target="_blank"
-                                            className="text-[10px] font-black text-indigo-600 uppercase hover:underline"
+                                            className="text-[10px] font-bold text-#5d00ff  hover:underline"
                                         >
                                             Открыть
                                         </a>
@@ -355,7 +355,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full inline-flex justify-center rounded-2xl border border-transparent bg-indigo-600 py-4 px-4 text-base font-black text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                            className="w-full inline-flex justify-center rounded-[18px] border border-transparent bg-#5d00ff py-4 px-4 text-base font-bold text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                         >
                             {loading ? "Сохранение..." : "Создать клиента"}
                         </button>

@@ -65,15 +65,15 @@ export function DateRangeFilter() {
 
     return (
         <div className="flex flex-wrap items-center gap-4 mb-2">
-            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-[18px] w-fit border border-slate-200/50 shadow-sm">
                 {ranges.slice(0, 4).map((range) => (
                     <button
                         key={range.value}
                         onClick={() => handleRangeChange(range.value)}
                         className={cn(
-                            "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                            "px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
                             currentRange === range.value && !isCustom
-                                ? "bg-white text-indigo-600 shadow-sm"
+                                ? "bg-white text-primary shadow-sm"
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
@@ -82,23 +82,23 @@ export function DateRangeFilter() {
                 ))}
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-[18px] w-fit border border-slate-200/50 shadow-sm">
                 <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
                         <button
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                                "flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
                                 isCustom
-                                    ? "bg-white text-indigo-600 shadow-sm"
+                                    ? "bg-white text-primary shadow-sm"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
-                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-indigo-600" : "text-slate-400")} />
+                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-primary" : "text-slate-400")} />
                             <span>Выбрать период</span>
                             <ChevronDown className="w-4 h-4 opacity-50" />
                         </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 rounded-xl overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
+                    <PopoverContent className="w-auto p-0 rounded-[18px] overflow-hidden border-slate-200 shadow-2xl bg-white" align="start" sideOffset={8}>
                         <div className="p-4 bg-white">
                             <Calendar
                                 initialFocus
@@ -114,7 +114,7 @@ export function DateRangeFilter() {
                                 <div className="text-xs font-medium text-slate-500">
                                     {dateRange?.from ? (
                                         <>
-                                            Выбрано: <span className="text-indigo-600 font-bold">
+                                            Выбрано: <span className="text-primary font-bold">
                                                 {format(dateRange.from, "d MMM", { locale: ru })}
                                                 {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
                                             </span>
@@ -125,7 +125,7 @@ export function DateRangeFilter() {
                                     size="sm"
                                     onClick={handleApplyCustomRange}
                                     disabled={!dateRange?.from}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-600/20 px-6"
+                                    className="bg-primary hover:bg-primary/90 text-white rounded-[18px] font-bold shadow-lg shadow-primary/20 px-6"
                                 >
                                     Выбрать
                                 </Button>
@@ -135,8 +135,8 @@ export function DateRangeFilter() {
                 </Popover>
 
                 {isCustom && fromParam && toParam && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
-                        <span className="text-indigo-600 font-black text-sm uppercase tracking-wider">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-[18px] shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <span className="text-primary font-bold text-sm  tracking-wider">
                             {format(new Date(fromParam), "dd.MM.yy")} — {format(new Date(toParam), "dd.MM.yy")}
                         </span>
                         <button

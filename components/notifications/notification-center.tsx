@@ -87,7 +87,7 @@ export function NotificationCenter({ notifications }: NotificationCenterProps) {
                             <button
                                 onClick={handleMarkAllAsRead}
                                 disabled={loading === "all"}
-                                className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors disabled:opacity-50"
+                                className="text-xs font-bold text-#5d00ff hover:text-indigo-700 transition-colors disabled:opacity-50"
                             >
                                 {loading === "all" ? "..." : "Прочитать все"}
                             </button>

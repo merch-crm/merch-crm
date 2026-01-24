@@ -14,10 +14,11 @@ import { useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useRouter } from "next/navigation";
+import { pluralize, sentence } from "@/lib/pluralize";
 
 export interface Transaction {
     id: string;
-    type: "in" | "out" | "transfer" | "attribute_change";
+    type: "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore";
     changeAmount: number;
     reason: string | null;
     createdAt: Date;
@@ -59,7 +60,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeFilter, setActiveFilter] = useState<"all" | "in" | "out" | "transfer" | "attribute_change">("all");
+    const [activeFilter, setActiveFilter] = useState<"all" | "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore">("all");
     const itemsPerPage = 10;
 
     // Filter logic
@@ -105,7 +106,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         try {
             const res = await deleteInventoryTransactions(selectedIds);
             if (res.success) {
-                toast("Записи удалены", "success");
+                toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }), "success");
                 setSelectedIds([]);
                 setIsDeleteDialogOpen(false);
             } else {
@@ -138,8 +139,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     if (transactions.length === 0 && searchQuery === "" && activeFilter === "all") {
         return (
-            <div className="bg-white rounded-[18px] border border-gray-200 p-20 flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-[18px] flex items-center justify-center text-slate-300 mb-6 border border-slate-100 shadow-sm">
+            <div className="bg-white rounded-[var(--radius)] border border-gray-200 p-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-slate-50 rounded-[var(--radius)] flex items-center justify-center text-slate-300 mb-6 border border-slate-100 shadow-sm">
                     <Clock className="w-10 h-10" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">История пуста</h3>
@@ -151,14 +152,16 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     return (
         <div className="space-y-6 relative pb-20">
             {/* Toolbar Panel */}
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-4 rounded-[18px] border border-slate-200/60 shadow-sm">
-                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-[18px] w-full md:w-fit border border-slate-200/50">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-4 rounded-[var(--radius)] border border-slate-200/60 shadow-sm">
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-[var(--radius)] w-full md:w-fit border border-slate-200/50">
                     {[
                         { id: "all", label: "Все", icon: Filter },
                         { id: "in", label: "Приход", icon: ArrowUpRight, color: "emerald" },
                         { id: "out", label: "Расход", icon: ArrowDownLeft, color: "rose" },
-                        { id: "transfer", label: "Перемещение", icon: ArrowLeftRight, color: "indigo" },
+                        { id: "transfer", label: "Перемещение", icon: ArrowLeftRight, color: "primary" },
                         { id: "attribute_change", label: "Хар-ки", icon: Book, color: "amber" },
+                        { id: "archive", label: "Архив", icon: Clock, color: "rose" },
+                        { id: "restore", label: "Восст.", icon: Package, color: "emerald" },
                     ].map(f => (
                         <button
                             key={f.id}
@@ -167,16 +170,16 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setCurrentPage(1);
                             }}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-[18px] text-xs font-semibold transition-all duration-300",
+                                "flex items-center gap-2 px-4 py-2 rounded-[var(--radius)] text-xs font-semibold transition-all duration-300",
                                 activeFilter === f.id
-                                    ? "bg-white text-indigo-600 shadow-sm ring-1 ring-black/5"
+                                    ? "bg-white text-primary shadow-sm ring-1 ring-black/5"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
                             <f.icon className={cn("w-3.5 h-3.5", activeFilter === f.id && (
                                 f.color === "emerald" ? "text-emerald-500" :
                                     f.color === "rose" ? "text-rose-500" :
-                                        f.color === "indigo" ? "text-indigo-500" : ""
+                                        f.color === "primary" ? "text-primary" : ""
                             ))} />
                             {f.label}
                         </button>
@@ -194,7 +197,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setSearchQuery(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full h-11 pl-10 pr-4 rounded-[18px] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                            className="w-full h-11 pl-10 pr-4 rounded-[var(--radius)] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
                         />
                     </div>
                     {isAdmin && (
@@ -202,7 +205,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             variant="ghost"
                             onClick={handleClearHistory}
                             disabled={isDeleting || transactions.length === 0}
-                            className="h-11 px-4 rounded-[18px] border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
+                            className="h-11 px-4 rounded-[var(--radius)] border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
                         >
                             <Eraser className="w-4 h-4" />
                             <span className="hidden md:inline">Очистить</span>
@@ -214,13 +217,13 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             {/* Selection Quick Actions Bar */}
             {selectedIds.length > 0 && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-10 fade-in duration-500">
-                    <div className="bg-slate-900 border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] rounded-[18px] px-8 py-4 flex items-center gap-8 backdrop-blur-xl">
+                    <div className="bg-slate-900 border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] rounded-[var(--radius)] px-8 py-4 flex items-center gap-8 backdrop-blur-xl">
                         <div className="flex items-center gap-4 border-r border-white/10 pr-8">
-                            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-indigo-500/10">
+                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shadow-md shadow-primary/10">
                                 {selectedIds.length}
                             </div>
                             <div>
-                                <h4 className="text-white text-sm font-bold leading-none">Записи выбраны</h4>
+                                <h4 className="text-white text-sm font-bold leading-none">{pluralize(selectedIds.length, 'Запись выбрана', 'Записи выбрано', 'Записей выбрано')}</h4>
                                 <p className="text-slate-400 text-xs font-medium mt-1">Панель действий</p>
                             </div>
                         </div>
@@ -228,14 +231,14 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setSelectedIds([])}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-[18px] text-[11px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius)] text-[11px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
                             >
                                 <CloseIcon className="w-4 h-4" />
                                 Сбросить
                             </button>
 
                             <button
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-[18px] text-[11px] font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius)] text-[11px] font-bold text-slate-400 hover:text-primary hover:bg-primary/5 transition-all"
                             >
                                 <FileDown className="w-4 h-4" />
                                 Экспорт
@@ -245,7 +248,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 <button
                                     onClick={handleDeleteSelected}
                                     disabled={isDeleting}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-[18px] text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-[var(--radius)] text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     <Trash2 className="w-4 h-4" />
                                     Удалить
@@ -256,7 +259,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 </div>
             )}
 
-            <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
+            <div className="bg-white shadow-sm rounded-[var(--radius)] border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -264,7 +267,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 <th className="w-[50px] px-6 py-3 text-left">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
                                         checked={isAllSelected}
                                         onChange={handleSelectAll}
                                     />
@@ -291,13 +294,13 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         }}
                                         className={cn(
                                             "hover:bg-gray-50 transition-colors group cursor-pointer",
-                                            isSelected ? "bg-indigo-50/30" : ""
+                                            isSelected ? "bg-primary/5" : ""
                                         )}
                                     >
                                         <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
-                                                className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                                className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
                                                 checked={isSelected}
                                                 onChange={() => handleSelectRow(t.id)}
                                             />
@@ -305,19 +308,27 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                                             <div className="flex items-center gap-4">
                                                 <div className={cn(
-                                                    "w-10 h-10 rounded-[18px] flex items-center justify-center shadow-sm transition-transform group-hover:scale-110",
+                                                    "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shadow-sm transition-transform group-hover:scale-110",
                                                     t.type === "transfer"
-                                                        ? "bg-indigo-50 text-indigo-600 border border-indigo-100"
+                                                        ? "bg-primary/5 text-primary border border-primary/20"
                                                         : t.type === "attribute_change"
                                                             ? "bg-amber-50 text-amber-600 border border-amber-100"
-                                                            : isIn
-                                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                : "bg-rose-50 text-rose-600 border border-rose-100"
+                                                            : t.type === "archive"
+                                                                ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                                                : t.type === "restore"
+                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                    : isIn
+                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                        : "bg-rose-50 text-rose-600 border border-rose-100"
                                                 )}>
                                                     {t.type === "transfer" ? (
                                                         <ArrowLeftRight className="w-5 h-5" />
                                                     ) : t.type === "attribute_change" ? (
                                                         <Book className="w-5 h-5" />
+                                                    ) : t.type === "archive" ? (
+                                                        <Clock className="w-5 h-5" />
+                                                    ) : t.type === "restore" ? (
+                                                        <Package className="w-5 h-5" />
                                                     ) : isIn ? (
                                                         <ArrowUpRight className="w-5 h-5" />
                                                     ) : (
@@ -326,7 +337,11 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-bold text-slate-900 leading-tight">
-                                                        {t.type === "transfer" ? "Перемещение" : t.type === "attribute_change" ? "Характеристика" : isIn ? "Приход" : "Расход"}
+                                                        {t.type === "transfer" ? "Перемещение" :
+                                                            t.type === "attribute_change" ? "Характеристика" :
+                                                                t.type === "archive" ? "Архивация" :
+                                                                    t.type === "restore" ? "Восстановление" :
+                                                                        isIn ? "Приход" : "Расход"}
                                                     </div>
                                                     <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
                                                         {format(new Date(t.createdAt), "d MMM, HH:mm", { locale: ru })}
@@ -340,11 +355,11 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     className="flex items-center gap-3 cursor-pointer group/item hover:opacity-80 transition-all"
                                                     onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}
                                                 >
-                                                    <div className="w-8 h-8 rounded-[18px] bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-500 transition-colors">
+                                                    <div className="w-8 h-8 rounded-[var(--radius)] bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-primary/5 group-hover/item:text-primary transition-colors">
                                                         <Package className="w-4 h-4" />
                                                     </div>
                                                     <div className="max-w-[300px]">
-                                                        <div className="text-sm font-bold text-slate-900 truncate group-hover/item:text-indigo-600 transition-colors">{t.item.name}</div>
+                                                        <div className="text-sm font-bold text-slate-900 truncate group-hover/item:text-primary transition-colors">{t.item.name}</div>
                                                         {t.item.sku && (
                                                             <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">Арт.: {t.item.sku}</div>
                                                         )}
@@ -352,7 +367,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-3 py-1">
-                                                    <div className="w-8 h-8 rounded-[18px] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                                                    <div className="w-8 h-8 rounded-[var(--radius)] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
                                                         <Book className="w-4 h-4" />
                                                     </div>
                                                     <div>
@@ -379,7 +394,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                     </div>
                                                 </div>
                                             ) : t.storageLocation ? (
-                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[18px] border border-slate-200 w-fit">
+                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[var(--radius)] border border-slate-200 w-fit">
                                                     <Building2 className="w-3.5 h-3.5 text-slate-400" />
                                                     <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
                                                 </div>
@@ -397,7 +412,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 <Badge className={cn(
                                                     "px-3 py-1 font-semibold text-xs border-none shadow-none",
                                                     t.type === "transfer"
-                                                        ? "bg-indigo-50 text-indigo-600 hover:bg-indigo-50"
+                                                        ? "bg-primary/5 text-primary hover:bg-primary/10"
                                                         : isIn
                                                             ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-50"
                                                             : "bg-rose-50 text-rose-600 hover:bg-rose-50"
@@ -459,7 +474,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     totalItems={filteredTransactions.length}
                     pageSize={itemsPerPage}
                     onPageChange={setCurrentPage}
-                    itemName="записей"
+                    itemName={pluralize(filteredTransactions.length, 'запись', 'записи', 'записей')}
                 />
             )}
 
@@ -469,8 +484,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 onClose={() => setIsDeleteDialogOpen(false)}
                 onConfirm={confirmDeleteItems}
                 isLoading={isDeleting}
-                title="Удаление записей"
-                description={`Вы уверены, что хотите удалить выбранные записи (${selectedIds.length})? Это действие нельзя будет отменить.`}
+                title={`Удаление ${pluralize(selectedIds.length, 'записи', 'записей', 'записей')}`}
+                description={`Вы уверены, что хотите удалить ${pluralize(selectedIds.length, 'выбранную запись', 'выбранные записи', 'выбранные записи')} (${selectedIds.length})? Это действие нельзя будет отменить.`}
                 confirmText="Удалить"
                 variant="destructive"
             />

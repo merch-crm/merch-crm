@@ -55,7 +55,7 @@ export default function TwistyDashboard() {
                         <div className="flex justify-between items-start mb-8">
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
+                                    <div className="w-8 h-8 rounded-[18px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
                                         <Briefcase className="w-4 h-4" />
                                     </div>
                                     <h2 className="text-2xl font-semibold">Income Tracker</h2>
@@ -173,7 +173,7 @@ export default function TwistyDashboard() {
                                 </p>
                             </div>
 
-                            <button className="relative z-10 bg-white text-[#0F172A] text-xs font-bold py-3 px-4 rounded-xl flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
+                            <button className="relative z-10 bg-white text-[#0F172A] text-xs font-bold py-3 px-4 rounded-[18px] flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
                                 <span>Upgrade now</span>
                                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                             </button>
@@ -191,7 +191,7 @@ export default function TwistyDashboard() {
                         {/* Project 1 */}
                         <div className="bg-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-[#FF4F18] flex items-center justify-center text-white">
+                                <div className="w-10 h-10 rounded-[18px] bg-[#FF4F18] flex items-center justify-center text-white">
                                     <Code className="w-5 h-5" />
                                 </div>
                                 <MoreHorizontal className="text-slate-300 w-5 h-5" />
@@ -215,7 +215,7 @@ export default function TwistyDashboard() {
                         <div className="bg-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer opacity-60 hover:opacity-100">
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
+                                    <div className="w-10 h-10 rounded-[18px] bg-slate-100 flex items-center justify-center text-slate-500">
                                         <PenTool className="w-5 h-5" />
                                     </div>
                                     <div className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-semibold text-slate-500">Copyright</div>
@@ -228,7 +228,7 @@ export default function TwistyDashboard() {
                         <div className="bg-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer opacity-60 hover:opacity-100">
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-[#f0f0f0] flex items-center justify-center text-[#5cabff]">
+                                    <div className="w-10 h-10 rounded-[18px] bg-[#f0f0f0] flex items-center justify-center text-[#5cabff]">
                                         <Briefcase className="w-5 h-5" />
                                     </div>
                                     <div className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-semibold text-slate-500">Web Des...</div>

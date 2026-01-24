@@ -199,7 +199,7 @@ export function BasicInfoStep({
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-[18px] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                                 <ClipboardList className="w-6 h-6 text-white" />
                             </div>
                             <div>
@@ -208,14 +208,14 @@ export function BasicInfoStep({
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[18px] border border-slate-100/50 shadow-sm">
+                        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[var(--radius)] border border-slate-100/50 shadow-sm">
                             {(() => {
                                 const sub = subCategories.find(s => s.id === formData.subcategoryId);
                                 const displayCategory = sub || category;
 
                                 return (
                                     <>
-                                        <div className={cn("w-10 h-10 rounded-[18px] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
+                                        <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
                                             {createElement(getCategoryIcon(displayCategory), { className: "w-5 h-5" })}
                                         </div>
                                         <div className="text-right">
@@ -341,7 +341,7 @@ export function BasicInfoStep({
                                             value={formData.itemName}
                                             onChange={(e) => updateFormData({ itemName: e.target.value })}
                                             placeholder="Например: Коробка картонная 40x40"
-                                            className="w-full h-12 px-5 rounded-[18px] border border-slate-200 bg-white text-slate-900 font-bold text-base focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
+                                            className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-base focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
                                         />
                                     </div>
 
@@ -356,7 +356,7 @@ export function BasicInfoStep({
                                                 value={formData.sku}
                                                 onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase() })}
                                                 placeholder="SKU-123"
-                                                className="w-full h-11 px-5 rounded-[18px] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus:border-slate-900 transition-all outline-none font-mono"
+                                                className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus:border-slate-900 transition-all outline-none font-mono"
                                             />
                                         </div>
                                         <div className="space-y-4">
@@ -366,9 +366,10 @@ export function BasicInfoStep({
                                             </label>
                                             <UnitSelect
                                                 name="unit"
-                                                value={formData.unit || "pcs"}
+                                                value={isClothing || isPackaging ? "шт." : (formData.unit || "шт.")}
                                                 onChange={(val) => updateFormData({ unit: val })}
                                                 options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
+                                                disabled={isClothing || isPackaging}
                                             />
                                         </div>
                                     </div>
@@ -399,7 +400,7 @@ export function BasicInfoStep({
 
                             {/* Additional Info (Department/Packing) */}
                             {(isPackaging || isConsumables) && (
-                                <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-100 space-y-6">
+                                <div className="p-6 bg-slate-50 rounded-[var(--radius)] border border-slate-100 space-y-6">
                                     <h4 className="text-xs font-bold text-slate-900 ">Дополнительные параметры</h4>
 
                                     {isPackaging && (
@@ -414,7 +415,7 @@ export function BasicInfoStep({
                                                             type="number"
                                                             value={(formData[dim] as string) || ""}
                                                             onChange={(e) => updateFormData({ [dim]: e.target.value })}
-                                                            className="w-full h-11 px-4 pr-10 rounded-[18px] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
+                                                            className="w-full h-11 px-4 pr-10 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
                                                         />
                                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">СМ</span>
                                                     </div>
@@ -432,7 +433,7 @@ export function BasicInfoStep({
                                             <select
                                                 value={formData.department || ""}
                                                 onChange={(e) => updateFormData({ department: e.target.value })}
-                                                className="w-full h-12 px-5 rounded-[18px] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
+                                                className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
                                             >
                                                 <option value="">Выберите отдел...</option>
                                                 <option value="printing">Печатный цех</option>
@@ -448,7 +449,7 @@ export function BasicInfoStep({
                         {/* Right Sidebar - SKU Preview & Description */}
                         <div className="lg:col-span-4 space-y-10">
                             {isClothing && (
-                                <div className="p-6 bg-white rounded-[20px] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
+                                <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
                                     <div className="flex items-center justify-between">
                                         <label className="text-[10px] font-bold text-slate-400 tracking-[0.2em]">Превью позиции</label>
                                         <div className="px-2 py-0.5 bg-emerald-500 rounded-full text-[9px] font-bold text-white">Auto</div>
@@ -483,7 +484,7 @@ export function BasicInfoStep({
                                 <textarea
                                     value={formData.description || ""}
                                     onChange={(e) => updateFormData({ description: e.target.value })}
-                                    className="w-full h-[180px] p-5 rounded-[20px] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner"
+                                    className="w-full h-[180px] p-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner"
                                     placeholder="Особенности кроя, советы по уходу..."
                                 />
                             </div>

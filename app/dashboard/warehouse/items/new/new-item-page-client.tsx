@@ -254,7 +254,13 @@ export function NewItemPageClient({
         ? categories.filter(c => c.parentId === selectedCategory.id)
         : [];
 
-    const topLevelCategories = categories.filter(c => !c.parentId || c.parentId === "");
+    const topLevelCategories = categories
+        .filter(c => !c.parentId || c.parentId === "")
+        .sort((a, b) => {
+            if (a.name.toLowerCase().includes("без категории")) return 1;
+            if (b.name.toLowerCase().includes("без категории")) return -1;
+            return a.name.localeCompare(b.name);
+        });
     const hasSubCategories = subCategories.length > 0;
 
     const handleCategorySelect = (category: Category) => {
@@ -437,19 +443,6 @@ export function NewItemPageClient({
 
     return (
         <div className="h-[calc(100vh-130px)] flex flex-col overflow-hidden bg-slate-50/50">
-            <div className="px-8 pt-6 shrink-0">
-                <Breadcrumbs
-                    items={[
-                        { label: "Склад", href: "/dashboard/warehouse", icon: Package },
-                        { label: "Новая позиция" },
-                        ...(selectedCategory ? [{ label: selectedCategory.name }] : []),
-                        ...(() => {
-                            const sub = subCategories.find(s => s.id === formData.subcategoryId);
-                            return sub ? [{ label: sub.name }] : [];
-                        })()
-                    ]}
-                />
-            </div>
             <div className="flex-1 flex min-h-0 gap-6 px-8 pb-8 pt-4">
                 {/* Sidebar (Vertical Studio Navigation) */}
                 <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden text-medium">
@@ -502,12 +495,12 @@ export function NewItemPageClient({
                                         }
                                     }}
                                     className={cn(
-                                        "relative w-full text-left p-4 rounded-[18px] transition-all duration-300 flex items-center gap-4 group",
+                                        "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
                                         isActive ? "bg-slate-900 text-white shadow-md" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
+                                        "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
                                         isActive ? "bg-white/10 border-white/20" : isCompleted ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-100"
                                     )}>
                                         {isCompleted ? (
@@ -536,7 +529,7 @@ export function NewItemPageClient({
                     <div className="h-[80px] shrink-0 border-t border-slate-100 bg-white z-30 px-7 flex items-center">
                         <div className="flex items-center justify-between gap-3 w-full">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-[18px] bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                                <div className="w-9 h-9 rounded-[var(--radius)] bg-white border border-slate-100 flex items-center justify-center shadow-sm">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                 </div>
                                 <div>
@@ -547,7 +540,7 @@ export function NewItemPageClient({
 
                             <button
                                 onClick={handleReset}
-                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-100 transition-all text-[10px] font-bold  text-slate-400 hover:text-slate-900 group"
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-[18px] hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-100 transition-all text-[10px] font-bold  text-slate-400 hover:text-slate-900 group"
                             >
                                 <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
                                 Начать заново
@@ -592,7 +585,7 @@ export function NewItemPageClient({
                                                     />
                                                 ) : (
                                                     <div className="px-10 pb-6">
-                                                        <div className="w-full p-6 rounded-[18px] border-2 border-dashed border-slate-200 bg-white text-slate-400 font-bold flex flex-col items-center gap-2">
+                                                        <div className="w-full p-6 rounded-[var(--radius)] border-2 border-dashed border-slate-200 bg-white text-slate-400 font-bold flex flex-col items-center gap-2">
                                                             <span>В этой категории нет подкатегорий</span>
                                                             <span className="text-xs ">Вы можете продолжить выбор</span>
                                                         </div>

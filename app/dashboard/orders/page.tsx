@@ -10,6 +10,7 @@ import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { pluralize } from "@/lib/pluralize";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -69,10 +70,10 @@ export default async function OrdersPage({
                     <p className="text-slate-400 text-sm font-medium mt-3">Управление производственным циклом и логистикой</p>
                 </div>
 
-                <div className="flex items-center gap-3 bg-white border border-slate-200/60 p-1.5 rounded-[20px] shadow-crm-sm">
+                <div className="flex items-center gap-3 bg-white border border-slate-200/60 p-1.5 rounded-[var(--radius)] shadow-crm-sm">
                     <a
                         href={`/dashboard/orders${showArchived ? "" : "?archived=true"}`}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${showArchived
+                        className={`flex items-center gap-2 px-4 py-2 rounded-[18px] text-xs font-bold transition-all ${showArchived
                             ? "bg-amber-100 text-amber-700 shadow-sm"
                             : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                             }`}
@@ -85,7 +86,7 @@ export default async function OrdersPage({
                     <div className="w-px h-8 bg-slate-100" />
                     <Link
                         href="/dashboard/orders/new"
-                        className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center"
+                        className="h-12 btn-primary rounded-[var(--radius)] px-6 gap-2 font-bold transition-all active:scale-95 inline-flex items-center"
                     >
                         <Plus className="w-5 h-5" />
                         Создать заказ
@@ -110,7 +111,7 @@ export default async function OrdersPage({
                     totalItems={total}
                     pageSize={10}
                     currentPage={page}
-                    itemName="заказов"
+                    itemName={pluralize(total, 'заказ', 'заказа', 'заказов')}
                 />
             </div>
         </div>

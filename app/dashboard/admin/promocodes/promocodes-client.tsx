@@ -7,16 +7,24 @@ import {
     Trash2,
     ToggleLeft,
     ToggleRight,
-    Calendar
+    Calendar,
+    Edit3,
+    ArrowRight,
+    Search,
+    Filter,
+    X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
     togglePromocodeActive,
     deletePromocode,
-    createPromocode
+    createPromocode,
+    updatePromocode
 } from "./actions";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface Promocode {
     id: string;
@@ -32,8 +40,11 @@ interface Promocode {
 
 export function PromocodesClient({ initialData }: { initialData: Promocode[] }) {
     const [data, setData] = useState(initialData);
-    const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [editingPromo, setEditingPromo] = useState<Promocode | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
     const handleToggle = async (id: string, current: boolean) => {
         const res = await togglePromocodeActive(id, !current);
@@ -42,177 +53,306 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Вы уверены?")) return;
-        const res = await deletePromocode(id);
+    const handleDelete = (id: string) => {
+        setDeleteConfirmId(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteConfirmId) return;
+        const res = await deletePromocode(deleteConfirmId);
+        setDeleteConfirmId(null);
         if (res.success) {
-            setData(prev => prev.filter(p => p.id !== id));
+            setData(prev => prev.filter(p => p.id !== deleteConfirmId));
         }
     };
 
+    const handleOpenEdit = (promo: Promocode) => {
+        setEditingPromo(promo);
+        setIsDialogOpen(true);
+    };
+
+    const handleOpenCreate = () => {
+        setEditingPromo(null);
+        setIsDialogOpen(true);
+    };
+
+    const filteredData = data.filter(p =>
+        p.code.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Промокоды</h1>
-                    <p className="text-slate-400 text-xs font-black uppercase tracking-widest mt-3">Управление программами лояльности и скидками</p>
+        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 pb-20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 bg-primary/5 rounded-[22px] flex items-center justify-center border border-primary/10">
+                        <Ticket className="w-7 h-7 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                            Промокоды
+                            <span className="bg-primary/10 text-primary text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                {data.length}
+                            </span>
+                        </h1>
+                        <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Маркетинговые инструменты лояльности</p>
+                    </div>
                 </div>
-                <button
-                    onClick={() => setIsAddOpen(true)}
-                    className="group bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-[20px] font-black uppercase tracking-widest text-[11px] flex items-center gap-3 transition-all shadow-xl shadow-indigo-100 active:scale-95"
-                >
-                    <Plus className="w-4 h-4" />
-                    Создать промокод
-                </button>
+
+                <div className="flex items-center gap-3">
+                    <div className="relative flex-1 md:w-64">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="ПОИСК КОДА..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-[18px] text-[11px] font-bold tracking-normal focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-300"
+                        />
+                    </div>
+                    <Button
+                        onClick={handleOpenCreate}
+                        size="lg"
+                        className="rounded-2xl shadow-xl shadow-primary/20 font-bold"
+                    >
+                        <Plus className="mr-2 h-5 w-5" />
+                        Создать
+                    </Button>
+                </div>
             </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data.map((promo) => (
+            {/* Premium Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {filteredData.map((promo) => (
                     <div
                         key={promo.id}
                         className={cn(
-                            "bg-white rounded-[24px] border border-slate-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500 group relative overflow-hidden",
-                            !promo.isActive && "opacity-60 grayscale-[0.5]"
+                            "group bg-white rounded-[12px] border border-slate-100 p-5 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden flex flex-col justify-between",
+                            !promo.isActive && "opacity-75"
                         )}
                     >
-                        {/* Status Indicator */}
-                        <div className={cn(
-                            "absolute top-0 right-0 w-32 h-12 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] rotate-45 translate-x-12 -translate-y-2",
-                            promo.isActive ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-500"
-                        )}>
-                            {promo.isActive ? "Активен" : "Пауза"}
-                        </div>
+                        {/* High-end decorative background */}
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500" />
 
-                        <div className="flex flex-col h-full">
-                            <div className="flex items-start justify-between mb-6">
-                                <div className="p-4 bg-slate-50 rounded-[18px] group-hover:bg-indigo-50 transition-colors">
-                                    <Ticket className="w-8 h-8 text-indigo-600" />
+                        <div>
+                            <div className="flex items-start justify-between mb-4 relative z-10">
+                                <div className={cn(
+                                    "px-2.5 py-1 rounded-full text-[9px] font-bold  tracking-normal border",
+                                    promo.isActive
+                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                        : "bg-slate-50 text-slate-400 border-slate-100"
+                                )}>
+                                    {promo.isActive ? "● Активен" : "○ Пауза"}
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => handleOpenEdit(promo)}
+                                        className="p-1.5 text-slate-400 hover:text-primary transition-colors"
+                                    >
+                                        <Edit3 className="w-4 h-4" />
+                                    </button>
                                     <button
                                         onClick={() => handleToggle(promo.id, promo.isActive)}
-                                        className="p-2 text-slate-400 hover:text-indigo-600 transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-emerald-500 transition-colors"
                                     >
-                                        {promo.isActive ? <ToggleRight className="w-6 h-6 text-emerald-500" /> : <ToggleLeft className="w-6 h-6" />}
+                                        {promo.isActive ? <ToggleRight className="w-5 h-5 text-emerald-500" /> : <ToggleLeft className="w-5 h-5" />}
                                     </button>
                                     <button
                                         onClick={() => handleDelete(promo.id)}
-                                        className="p-2 text-slate-400 hover:text-rose-600 transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Код</div>
-                                    <div className="text-2xl font-black text-slate-900 tracking-tighter">{promo.code}</div>
+                            <div className="relative z-10">
+                                <div className="text-[10px] font-bold text-slate-400  tracking-normal mb-1.5">Код купона</div>
+                                <div className="text-xl font-bold text-slate-900 tracking-normal mb-4 group-hover:text-primary transition-colors">
+                                    {promo.code}
                                 </div>
 
-                                <div className="flex gap-8">
+                                <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-50">
                                     <div>
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Скидка</div>
-                                        <div className="text-xl font-bold text-indigo-600">
+                                        <div className="text-[9px] font-bold text-slate-300  tracking-normal mb-1">Выгода</div>
+                                        <div className="text-lg font-bold text-primary">
                                             {promo.discountType === 'percentage' ? `${promo.value}%` : `${promo.value} ₽`}
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Использовано</div>
-                                        <div className="text-xl font-bold text-slate-900">
-                                            {promo.usageCount} {promo.usageLimit ? `/ ${promo.usageLimit}` : ""}
+                                        <div className="text-[9px] font-bold text-slate-300  tracking-normal mb-1">Лимит</div>
+                                        <div className="text-lg font-bold text-slate-900">
+                                            {promo.usageCount}<span className="text-slate-200">/</span><span className="text-slate-400">{promo.usageLimit || "∞"}</span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        <span className="text-[10px] font-bold uppercase tracking-tight">
-                                            {promo.expiresAt
-                                                ? format(new Date(promo.expiresAt), "dd MMM yyyy", { locale: ru })
-                                                : "Бессрочно"
-                                            }
-                                        </span>
-                                    </div>
-                                    <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
-                                        {promo.discountType === 'percentage' ? "Процентная" : "Фикс. сумма"}
-                                    </div>
-                                </div>
+                        <div className="pt-4 flex items-center justify-between relative z-10">
+                            <div className="flex items-center gap-2 text-slate-400">
+                                <Calendar className="w-3.5 h-3.5 opacity-60" />
+                                <span className="text-[9px] font-bold  tracking-tight">
+                                    {promo.expiresAt
+                                        ? format(new Date(promo.expiresAt), "dd.MM.yyyy", { locale: ru })
+                                        : "БЕССРОЧНО"
+                                    }
+                                </span>
+                            </div>
+                            <div className="bg-slate-50 px-2 py-0.5 rounded text-[8px] font-bold text-slate-400  tracking-normal">
+                                {promo.discountType === 'percentage' ? "Процент" : "Прямая"}
                             </div>
                         </div>
                     </div>
                 ))}
 
-                {data.length === 0 && (
-                    <div className="col-span-full py-20 bg-slate-50/50 rounded-[32px] border-2 border-dashed border-slate-200 text-center">
-                        <Ticket className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-                        <h3 className="text-lg font-bold text-slate-400">Промокодов пока нет</h3>
-                        <p className="text-sm text-slate-300 mt-2">Создайте первый промокод для ваших клиентов</p>
+                {filteredData.length === 0 && (
+                    <div className="col-span-full py-24 bg-slate-50/50 rounded-[12px] border-2 border-dashed border-slate-100 flex flex-col items-center justify-center">
+                        <div className="w-20 h-20 bg-white rounded-[12px] shadow-sm flex items-center justify-center mb-6">
+                            <Ticket className="w-10 h-10 text-slate-200" />
+                        </div>
+                        <h3 className="text-base font-bold text-slate-400  tracking-normal">Ничего не найдено</h3>
+                        <p className="text-[11px] text-slate-300 font-bold mt-2  tracking-normal">Измените условия поиска или создайте новый купон</p>
                     </div>
                 )}
             </div>
 
-            {/* Simple Add Dialog Overlay */}
-            {isAddOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white rounded-[32px] w-full max-w-xl p-10 shadow-2xl animate-in zoom-in-95 duration-300">
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase mb-8">Новый промокод</h2>
+            {/* Premium Dialog Overlay */}
+            {isDialogOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[12px] w-full max-w-lg p-8 shadow-2xl animate-in zoom-in-95 slide-in-from-top-4 duration-400 relative overflow-hidden">
+                        {/* Decorative element */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full opacity-50 -mr-10 -mt-10" />
+
+                        <div className="flex items-center justify-between mb-8 relative z-10">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 tracking-tight ">
+                                    {editingPromo ? "Редактировать" : "Новый промокод"}
+                                </h2>
+                                <p className="text-slate-400 text-[10px] font-bold  tracking-normal mt-1">Заполните данные для купона</p>
+                            </div>
+                            <button
+                                onClick={() => setIsDialogOpen(false)}
+                                className="p-2 hover:bg-slate-50 rounded-full transition-colors text-slate-400"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
                         <form action={async (formData) => {
                             setIsLoading(true);
                             const values = {
-                                code: formData.get("code") as string,
-                                discountType: formData.get("discountType") as "percentage" | "fixed_amount",
+                                code: (formData.get("code") as string).toUpperCase(),
+                                discountType: formData.get("discountType") as "percentage" | "fixed",
                                 value: Number(formData.get("value")),
                                 usageLimit: formData.get("usageLimit")?.toString(),
                                 expiresAt: formData.get("expiresAt")?.toString() || null
                             };
-                            const res = await createPromocode(values);
+
+                            const res = editingPromo
+                                ? await updatePromocode(editingPromo.id, values)
+                                : await createPromocode(values);
+
                             setIsLoading(false);
                             if (res.success) {
                                 window.location.reload();
                             }
-                        }} className="space-y-6">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Код (напр. SUMMER2026)</label>
-                                    <input name="code" required className="w-full px-5 py-4 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all uppercase" placeholder="KOD" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Тип скидки</label>
-                                    <select name="discountType" className="w-full px-5 py-4 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all">
+                        }} className="space-y-6 relative z-10">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Код купона</label>
+                                <input
+                                    name="code"
+                                    required
+                                    defaultValue={editingPromo?.code}
+                                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[12px] text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all  placeholder:text-slate-300"
+                                    placeholder="SUMMER2026"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Тип скидки</label>
+                                    <select
+                                        name="discountType"
+                                        defaultValue={editingPromo?.discountType === 'fixed_amount' ? 'fixed' : editingPromo?.discountType}
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[12px] text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+                                    >
                                         <option value="percentage">Процент %</option>
                                         <option value="fixed">Фикс. сумма ₽</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Значение</label>
-                                    <input name="value" type="number" required className="w-full px-5 py-4 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="10" />
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Значение</label>
+                                    <input
+                                        name="value"
+                                        type="number"
+                                        required
+                                        defaultValue={editingPromo?.value}
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[12px] text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="10"
+                                    />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Лимит использований</label>
-                                    <input name="usageLimit" type="number" className="w-full px-5 py-4 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="100" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Дата истечения</label>
-                                <input name="expiresAt" type="date" className="w-full px-5 py-4 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all" />
                             </div>
 
-                            <div className="flex gap-4 pt-4">
-                                <button type="button" onClick={() => setIsAddOpen(false)} className="flex-1 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all">Отмена</button>
-                                <button type="submit" disabled={isLoading} className="flex-[2] bg-slate-900 text-white py-4 rounded-[18px] text-[11px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50">
-                                    {isLoading ? "Создание..." : "Подтвердить"}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Лимит использований</label>
+                                    <input
+                                        name="usageLimit"
+                                        type="number"
+                                        defaultValue={editingPromo?.usageLimit || ""}
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[12px] text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="Безлимитно"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Дата истечения</label>
+                                    <div className="relative">
+                                        <input
+                                            name="expiresAt"
+                                            type="date"
+                                            defaultValue={editingPromo?.expiresAt ? format(new Date(editingPromo.expiresAt), "yyyy-MM-dd") : ""}
+                                            className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[12px] text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
+                                        />
+                                        <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDialogOpen(false)}
+                                    className="flex-1 py-4 text-[11px] font-bold  tracking-normal text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-[12px] transition-all"
+                                >
+                                    Отмена
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="flex-[2] bg-primary text-white py-4 rounded-[12px] text-[11px] font-bold  tracking-normal hover:bg-primary/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
+                                >
+                                    {isLoading ? "Сохранение..." : (
+                                        <>
+                                            {editingPromo ? "Сохранить изменения" : "Подтвердить создание"}
+                                            <ArrowRight className="w-4 h-4" />
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
+
+            <ConfirmDialog
+                isOpen={!!deleteConfirmId}
+                onClose={() => setDeleteConfirmId(null)}
+                onConfirm={confirmDelete}
+                title="Удаление промокода"
+                description="Вы уверены, что хотите удалить этот промокод? Это действие нельзя отменить."
+                confirmText="Удалить"
+                variant="destructive"
+            />
         </div>
     );
 }

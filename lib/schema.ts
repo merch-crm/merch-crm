@@ -230,6 +230,11 @@ export const inventoryItems = pgTable("inventory_items", {
     materialComposition: jsonb("material_composition").default("{}"), // Состав материалов (%)
     costPrice: decimal("cost_price", { precision: 10, scale: 2 }), // Себестоимость
     isArchived: boolean("is_archived").default(false).notNull(), // Архивация
+    archivedAt: timestamp("archived_at"),
+    archivedBy: uuid("archived_by").references(() => users.id),
+    archiveReason: text("archive_reason"),
+    zeroStockSince: timestamp("zero_stock_since"),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -274,7 +279,7 @@ export const orderItems = pgTable("order_items", {
 });
 
 // Inventory Transactions
-export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change"]);
+export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change", "archive", "restore"]);
 
 export const inventoryTransactions = pgTable("inventory_transactions", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -356,6 +361,8 @@ export const storageLocations = pgTable("storage_locations", {
     description: text("description"),
     responsibleUserId: uuid("responsible_user_id").references(() => users.id),
     isSystem: boolean("is_system").default(false).notNull(),
+    isDefault: boolean("is_default").default(false).notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

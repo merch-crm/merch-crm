@@ -63,7 +63,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                 <button
                     onClick={handleArchive}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-[18px] bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50"
                 >
                     {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -80,7 +80,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                 <button
                     onClick={() => setShowDeleteDialog(true)}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100 transition-all font-bold text-xs disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-[18px] bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100 transition-all font-bold text-xs disabled:opacity-50"
                 >
                     <Trash2 className="w-4 h-4" />
                     Удалить

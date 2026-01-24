@@ -1,4 +1,4 @@
-
+import React from "react";
 import {
     Sparkles,
     Paintbrush,
@@ -9,8 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function StatusBadge({ status }: { status: string }) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const config: Record<string, { label: string, icon: any, color: string, lightBg: string }> = {
+    const config: Record<string, { label: string, icon: React.ElementType, color: string, lightBg: string }> = {
         new: {
             label: "Новый",
             icon: Sparkles,
@@ -57,7 +56,7 @@ export default function StatusBadge({ status }: { status: string }) {
         >
             <Icon className="w-3.5 h-3.5 sm:hidden" />
             <div className={cn("hidden sm:block w-1.5 h-1.5 rounded-full animate-pulse", item.color.replace("text-", "bg-"))} />
-            <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{item.label}</span>
+            <span className="hidden sm:inline text-[11px] font-bold  tracking-wider">{item.label}</span>
         </div>
     );
 }

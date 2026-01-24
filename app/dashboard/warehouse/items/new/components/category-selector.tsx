@@ -29,7 +29,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
             <div className="max-w-6xl mx-auto w-full space-y-6">
                 {!hideTitle && (
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-[18px] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
+                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
                             <LayoutGrid className="w-6 h-6 text-white" />
                         </div>
                         <div>
@@ -55,14 +55,14 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     key={category.id}
                                     onClick={() => onSelect(category)}
                                     className={cn(
-                                        "group flex flex-row items-center gap-3 p-3 rounded-[18px] border transition-all text-left shadow-sm hover:shadow-md",
+                                        "group flex flex-row items-center gap-3 p-3 rounded-[var(--radius)] border transition-all text-left shadow-sm hover:shadow-md",
                                         selectedCategoryId === category.id
                                             ? "border-slate-900 bg-slate-50 shadow-md"
                                             : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 duration-300",
+                                        "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 duration-300",
                                         colorStyle
                                     )}>
                                         {createElement(IconComponent, { className: "w-5 h-5" })}
@@ -82,14 +82,14 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 key={category.id}
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center gap-2 p-3 rounded-[18px] border-2 transition-all text-center",
+                                    "group flex flex-col items-center gap-2 p-3 rounded-[var(--radius)] border-2 transition-all text-center",
                                     selectedCategoryId === category.id
                                         ? "border-slate-900 bg-slate-50 shadow-lg scale-[1.02]"
                                         : "border-slate-100 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                                 )}
                             >
                                 <div className={cn(
-                                    "w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0 border-2 transition-transform group-hover:scale-110 duration-500 shadow-md",
+                                    "w-14 h-14 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-transform group-hover:scale-110 duration-500 shadow-md",
                                     colorStyle
                                 )}>
                                     {createElement(IconComponent, { className: "w-7 h-7" })}

@@ -44,6 +44,9 @@ export interface ItemFormData {
     imageBackPreview?: string | null;
     imageSidePreview?: string | null;
     imageDetailsPreviews?: string[];
+    costPrice?: string;
+    isArchived?: boolean;
+    materialComposition?: Record<string, number>;
     [key: string]: unknown;
 }
 
@@ -57,6 +60,8 @@ export interface Category {
     icon: string | null;
     gender?: 'masculine' | 'feminine' | 'neuter' | string;
     singularName?: string | null;
+    slug?: string | null;
+    fullPath?: string | null;
 }
 
 export interface StorageLocation {
@@ -67,15 +72,17 @@ export interface StorageLocation {
     userId?: string | null;
     responsibleUserId?: string | null;
     isSystem?: boolean;
+    isDefault?: boolean;
     createdAt?: Date;
 }
 
 export interface ItemHistoryTransaction {
     id: string;
-    type: "in" | "out" | "transfer" | "attribute_change";
+    type: "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore";
     changeAmount: number;
     reason: string | null;
     createdAt: Date;
+    costPrice?: number | string | null;
     creator: { name: string } | null;
     storageLocation: { name: string } | null;
 }
@@ -118,6 +125,11 @@ export interface InventoryItem {
     materialCode: string | null;
     attributes: Record<string, unknown>;
     thumbnailSettings?: ThumbnailSettings | null;
+    costPrice: number | null;
+    isArchived: boolean;
+    archivedAt?: Date | string | null;
+    archiveReason?: string | null;
+    materialComposition: Record<string, number>;
     category?: {
         id: string;
         name: string;
@@ -137,4 +149,20 @@ export interface ThumbnailSettings {
     zoom: number;
     x: number;
     y: number;
+}
+
+export interface ActiveOrderItem {
+    id: string;
+    quantity: number;
+    order: {
+        id: string;
+        orderNumber: string;
+        status: string;
+        createdAt: Date;
+        client: {
+            firstName: string;
+            lastName: string;
+            company: string | null;
+        } | null;
+    } | null;
 }

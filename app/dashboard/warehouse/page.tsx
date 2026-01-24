@@ -1,4 +1,4 @@
-import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers, getInventoryAttributes } from "./actions";
+import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStorageLocations, getAllUsers, getInventoryAttributes, getArchivedItems } from "./actions";
 import { getSession } from "@/lib/auth";
 // Auto-deploy trigger v1.1 - Restarting...
 import { WarehouseClient } from "./warehouse-client";
@@ -46,7 +46,9 @@ export default async function WarehousePage() {
 
     const session = await getSession();
 
-    const desiredOrder = ["Одежда", "Упаковка", "Расходники"];
+    const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
+
+    const { data: archivedItemsResponse = [] } = await getArchivedItems();
 
     const categories = [...categoriesFromDb].sort((a, b) => {
         const indexA = desiredOrder.indexOf(a.name);
@@ -65,18 +67,17 @@ export default async function WarehousePage() {
     }));
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
+        <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                <div className="space-y-1">
-                    <h1 className="text-4xl font-bold text-slate-900 leading-none">Склад</h1>
-                    <p className="text-slate-400 text-sm font-medium">
-                        Центральный узел логистики
-                    </p>
+                <div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Склад</h1>
+                    <p className="text-slate-500 text-[13px] font-medium mt-1">Центральный узел логистики и управления запасами</p>
                 </div>
             </div>
 
             <WarehouseClient
                 items={finalItems as unknown as import("./inventory-client").InventoryItem[]}
+                archivedItems={archivedItemsResponse as unknown as import("./inventory-client").InventoryItem[]}
                 categories={categories}
                 history={history}
                 storageLocations={storageLocations}

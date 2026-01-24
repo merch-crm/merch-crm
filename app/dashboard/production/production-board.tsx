@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { DefectDialog } from "./defect-dialog";
 import { ImageLightbox } from "@/components/image-lightbox";
 import { Maximize } from "lucide-react";
+import { pluralize } from "@/lib/pluralize";
 
 interface OrderItem {
     id: string;
@@ -80,7 +81,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                             </div>
                             <div className="flex-1">
                                 <h3 className="text-sm font-bold text-slate-900">{stage.label}</h3>
-                                <p className="text-xs text-slate-400 font-medium">{stageItems.length} позиций</p>
+                                <p className="text-xs text-slate-400 font-medium">{stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}</p>
                             </div>
                         </div>
 
@@ -100,7 +101,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                         <div
                                             key={item.id}
                                             className={cn(
-                                                "bg-white rounded-[14px] p-4 border transition-all hover:shadow-md cursor-pointer group",
+                                                "bg-white rounded-[var(--radius)] p-4 border transition-all hover:shadow-md cursor-pointer group",
                                                 isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-100"
                                             )}
                                         >
@@ -149,7 +150,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                             {/* Quantity */}
                                             <div className="flex items-center gap-2 mb-3">
                                                 <Package className="w-3.5 h-3.5 text-slate-400" />
-                                                <span className="text-xs font-bold text-slate-500">{item.quantity} шт</span>
+                                                <span className="text-xs font-bold text-slate-500">{item.quantity} {pluralize(item.quantity, 'штука', 'штуки', 'штук')}</span>
                                             </div>
 
                                             {/* Actions */}
@@ -158,7 +159,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                     <button
                                                         onClick={() => handleStageUpdate(item.id, stage.id, 'in_progress')}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-[8px] text-xs font-bold hover:bg-indigo-100 transition-all disabled:opacity-50"
+                                                        className="flex-1 px-3 py-1.5 bg-primary/5 text-primary rounded-[8px] text-xs font-bold hover:bg-primary/10 transition-all disabled:opacity-50"
                                                     >
                                                         {loading === item.id ? '...' : 'Начать'}
                                                     </button>

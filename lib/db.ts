@@ -29,9 +29,9 @@ const globalForDb = global as unknown as { db: NodePgDatabase<typeof schema> };
 
 export const db = globalForDb.db || drizzle(pool, {
     schema,
-    // Disable prepared statements to avoid parameter binding issues
-    // This can happen with certain PostgreSQL configurations or proxies
+    logger: process.env.NODE_ENV === "development",
 });
+
 
 // Export pool for direct SQL queries when needed
 export { pool };

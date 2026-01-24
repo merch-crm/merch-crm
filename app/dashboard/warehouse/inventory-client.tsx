@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
+import { pluralize } from "@/lib/pluralize";
 
 export interface InventoryItem {
     id: string;
@@ -34,6 +35,10 @@ export interface InventoryItem {
     categoryName?: string;
     categorySingularName?: string | null;
     categoryPluralName?: string | null;
+    isArchived: boolean;
+    archivedAt?: Date | string | null;
+    archiveReason?: string | null;
+    category?: Category;
 }
 
 export interface Category {
@@ -50,6 +55,8 @@ export interface Category {
     gender?: string;
     singularName?: string | null;
     pluralName?: string | null;
+    slug?: string | null;
+    fullPath?: string | null;
     items?: InventoryItem[];
     parent?: Category | null;
 }
@@ -129,7 +136,7 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {itemsByCategory.map((category) => (
                     <CategoryCard
                         key={category.id}
@@ -199,9 +206,9 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group glass-panel p-6 md:p-8 cursor-pointer flex flex-col gap-6 overflow-hidden relative border-white/60 hover:border-primary/30"
+            className="group glass-panel p-6 md:p-8 cursor-pointer flex flex-col gap-4 overflow-hidden relative border-white/60 hover:border-primary/30 rounded-[32px] shadow-crm-md hover:shadow-crm-lg"
         >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
 
             <div className="flex items-start justify-between relative z-10">
                 <div className="flex items-center gap-5">
@@ -212,48 +219,25 @@ function CategoryCard({
                         {createElement(IconComponent, { className: "w-7 h-7" })}
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-none">
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors leading-none">
                             {category.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-2">
                             <span className="text-xs font-medium text-slate-400">
-                                {category.items.length} позиций
+                                {category.items.length} {pluralize(category.items.length, 'позиция', 'позиции', 'позиций')}
                             </span>
-                            {(() => {
-                                const availableItems = category.items.map(i => ({
-                                    available: i.quantity - (i.reservedQuantity || 0),
-                                    low: i.lowStockThreshold || 10,
-                                    critical: i.criticalStockThreshold || 0
-                                }));
-                                const hasCritical = availableItems.some(i => i.available <= i.critical);
-                                const hasLow = !hasCritical && availableItems.some(i => i.available <= i.low);
-
-                                if (hasCritical) return (
-                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 animate-pulse">
-                                        <div className="w-1 h-1 rounded-full bg-rose-500" />
-                                        <span className="text-[10px] font-bold">КРИТИЧНО</span>
-                                    </div>
-                                );
-                                if (hasLow) return (
-                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-100">
-                                        <div className="w-1 h-1 rounded-full bg-amber-500" />
-                                        <span className="text-[10px] font-bold">МАЛО</span>
-                                    </div>
-                                );
-                                return null;
-                            })()}
                         </div>
                     </div>
                 </div>
 
                 {!isOrphaned && (
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                    <div className="flex items-center gap-1 transition-all duration-300">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 if (onEdit) onEdit(category);
                             }}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-[18px] transition-all"
+                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
                         >
                             <Pencil className="w-4 h-4" />
                         </button>
@@ -264,31 +248,18 @@ function CategoryCard({
             <div className="min-h-[3rem] relative z-10">
                 {category.children && category.children.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
-                        {category.children.map(child => {
-                            const childItems = child.items || [];
-                            const hasChildCritical = childItems.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.criticalStockThreshold || 0));
-                            const hasChildLow = childItems.some(i => (i.quantity - (i.reservedQuantity || 0)) <= (i.lowStockThreshold || 10));
-
-                            return (
-                                <span
-                                    key={child.id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        router.push(`/dashboard/warehouse/${child.id}`);
-                                    }}
-                                    className={cn(
-                                        "inline-flex items-center px-4 py-2 rounded-[18px] border text-xs font-medium transition-all cursor-pointer",
-                                        hasChildCritical
-                                            ? "bg-rose-50 border-rose-100 text-rose-500 hover:bg-rose-100 hover:border-rose-200"
-                                            : hasChildLow
-                                                ? "bg-amber-50 border-amber-100 text-amber-500 hover:bg-amber-100 hover:border-amber-200"
-                                                : "bg-slate-50 border-slate-100 text-slate-400 hover:bg-white hover:text-indigo-600 hover:border-indigo-200 hover:shadow-sm"
-                                    )}
-                                >
-                                    {child.name}
-                                </span>
-                            );
-                        })}
+                        {category.children.map(child => (
+                            <span
+                                key={child.id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/dashboard/warehouse/${child.id}`);
+                                }}
+                                className="inline-flex items-center px-4 py-2 rounded-[var(--radius-inner)] border text-xs font-medium transition-all cursor-pointer bg-slate-50 border-slate-100 text-slate-400 hover:bg-white hover:text-primary hover:border-primary/20 hover:shadow-sm"
+                            >
+                                {child.name}
+                            </span>
+                        ))}
                     </div>
                 ) : category.description ? (
                     <p className="text-sm font-medium text-slate-400 leading-relaxed line-clamp-2">

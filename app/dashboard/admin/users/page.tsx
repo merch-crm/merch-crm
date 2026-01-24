@@ -1,6 +1,7 @@
 import { getUsers } from "../actions";
 import { UsersTable } from "./users-table";
 import { Pagination } from "@/components/ui/pagination";
+import { AddUserDialog } from "./add-user-dialog";
 
 export default async function AdminUsersPage({
     searchParams: searchParamsPromise,
@@ -15,7 +16,15 @@ export default async function AdminUsersPage({
     const { data: users = [], total = 0, error } = await getUsers(page, limit, search);
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-7xl mx-auto space-y-6 pb-20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Пользователи</h1>
+                    <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Управление сотрудниками и их доступом к системе</p>
+                </div>
+                <AddUserDialog />
+            </div>
+
             <UsersTable
                 initialUsers={users}
                 error={error}

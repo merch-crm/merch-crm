@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Sparkles, Check, Minus, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
+import { QualityDropdown } from "./quality-dropdown";
 
 interface AttributeSelectorProps {
     type: string;
@@ -154,7 +155,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
             <div className="space-y-4 w-full">
                 <div className="flex items-center justify-between px-1">
                     <label className="text-xs font-semibold text-slate-900">Цвет изделия</label>
-                    {value && <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-[18px]">{value}</span>}
+                    {value && <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-[var(--radius)]">{value}</span>}
                 </div>
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {filteredOptions.map(c => (
@@ -167,7 +168,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "group relative aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[18px] border transition-all duration-300",
+                                "group relative aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border transition-all duration-300",
                                 value === c.code
                                     ? "bg-white border-slate-900 shadow-xl shadow-slate-200 scale-[1.02] z-10"
                                     : "bg-white border-slate-100 hover:border-slate-900 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/60"
@@ -188,7 +189,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "group aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[18px] border border-dashed transition-all duration-300",
+                                "group aspect-square flex flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border border-dashed transition-all duration-300",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
@@ -201,7 +202,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 </div>
 
                 {showCustom && (
-                    <div className="p-6 bg-white rounded-[18px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
+                    <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-crm-xl space-y-5 animate-in slide-in-from-top-4 duration-300">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-900 leading-none">Новый цвет</span>
                             <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
@@ -209,7 +210,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             </button>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <div className="relative w-14 h-14 rounded-[18px] overflow-hidden border-2 border-slate-100 shrink-0 shadow-inner">
+                            <div className="relative w-14 h-14 rounded-[var(--radius)] overflow-hidden border-2 border-slate-100 shrink-0 shadow-inner">
                                 <input
                                     type="color"
                                     className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
@@ -221,7 +222,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 <input
                                     type="text"
                                     placeholder="Название цвета..."
-                                    className="w-full h-12 px-5 text-sm font-bold rounded-[18px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                    className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
@@ -230,7 +231,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     type="button"
                                     onClick={handleCustomSubmit}
                                     disabled={isSaving || !customName.trim()}
-                                    className="w-full h-11 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                    className="w-full h-11 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     {isSaving ? "..." : "Добавить"}
                                 </button>
@@ -258,7 +259,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "h-10 px-5 rounded-[18px] text-xs font-medium transition-all border",
+                                "h-10 px-5 rounded-[var(--radius)] text-xs font-medium transition-all border",
                                 value === m.code
                                     ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200 scale-[1.02]"
                                     : "bg-white border-slate-100 text-slate-400 hover:border-slate-300 hover:bg-slate-50/50"
@@ -272,7 +273,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "h-10 px-5 rounded-[18px] border border-dashed transition-all flex items-center gap-2",
+                                "h-10 px-5 rounded-[var(--radius)] border border-dashed transition-all flex items-center gap-2",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
@@ -285,11 +286,11 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 </div>
 
                 {showCustom && (
-                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[18px] border border-slate-200">
+                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[var(--radius)] border border-slate-200">
                         <input
                             value={customName}
                             onChange={e => setCustomName(e.target.value)}
-                            className="flex-1 h-10 px-4 rounded-[18px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
+                            className="flex-1 h-10 px-4 rounded-[var(--radius)] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
                             placeholder="Название материала..."
                             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
                         />
@@ -297,7 +298,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={handleCustomSubmit}
                             disabled={isSaving || !customName.trim()}
-                            className="h-10 px-4 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black disabled:opacity-50"
+                            className="h-10 px-4 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black disabled:opacity-50"
                         >
                             {isSaving ? "..." : "OK"}
                         </button>
@@ -325,7 +326,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 if (onCodeChange) onCodeChange(s.code);
                             }}
                             className={cn(
-                                "h-10 flex-1 min-w-max px-3 flex items-center justify-center rounded-[18px] text-xs font-bold transition-all border",
+                                "h-10 flex-1 min-w-max px-3 flex items-center justify-center rounded-[var(--radius)] text-xs font-bold transition-all border",
                                 value === s.code
                                     ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200"
                                     : "bg-white border-slate-100 text-slate-400 hover:border-slate-300 hover:bg-slate-50/50"
@@ -339,7 +340,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "h-10 flex-1 min-w-max px-3 rounded-[18px] border border-dashed transition-all flex items-center justify-center gap-2",
+                                "h-10 flex-1 min-w-max px-3 rounded-[var(--radius)] border border-dashed transition-all flex items-center justify-center gap-2",
                                 showCustom
                                     ? "bg-slate-100 border-slate-300 text-slate-900"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
@@ -352,11 +353,11 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 </div>
 
                 {showCustom && (
-                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[18px] border border-slate-200">
+                    <div className="w-full flex gap-2 animate-in fade-in slide-in-from-top-1 p-4 bg-white rounded-[var(--radius)] border border-slate-200">
                         <input
                             value={customName}
                             onChange={e => setCustomName(e.target.value)}
-                            className="flex-1 h-10 px-4 rounded-[18px] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
+                            className="flex-1 h-10 px-4 rounded-[var(--radius)] border border-slate-200 text-sm font-bold placeholder:font-medium focus:border-slate-900 outline-none"
                             placeholder="Название размера..."
                             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
                         />
@@ -364,7 +365,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={handleCustomSubmit}
                             disabled={isSaving || !customName.trim()}
-                            className="h-10 px-4 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black disabled:opacity-50"
+                            className="h-10 px-4 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black disabled:opacity-50"
                         >
                             {isSaving ? "..." : "OK"}
                         </button>
@@ -395,7 +396,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
                 <div className="relative group">
                     {selectedOption ? (
-                        <div className="w-full h-12 px-5 rounded-[18px] border border-slate-900 bg-slate-900 flex items-center justify-between shadow-lg shadow-slate-200 transition-all">
+                        <div className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-900 bg-slate-900 flex items-center justify-between shadow-lg shadow-slate-200 transition-all">
                             <span className="text-sm font-bold text-white truncate">
                                 {selectedOption.name}
                             </span>
@@ -421,10 +422,10 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 // Delay blur to allow click event on options to fire
                                 onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full h-12 px-5 rounded-[18px] border border-slate-100 bg-slate-50 text-sm font-medium placeholder:text-slate-300 focus:bg-white focus:border-slate-200 focus:ring-4 focus:ring-slate-900/5 outline-none transition-all"
+                                className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-100 bg-slate-50 text-sm font-medium placeholder:text-slate-300 focus:bg-white focus:border-slate-200 focus:ring-4 focus:ring-slate-900/5 outline-none transition-all"
                             />
                             {(isFocused || searchQuery.length > 0) && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[18px] border border-slate-200 shadow-2xl z-[100] max-h-[220px] overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[var(--radius)] border border-slate-200 shadow-crm-xl z-[100] max-h-[220px] overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
                                     {filteredOptions.length > 0 ? (
                                         filteredOptions.map(b => (
                                             <button
@@ -457,7 +458,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
                 {
                     showCustom && (
-                        <div className="p-6 bg-white rounded-[18px] border border-slate-200 shadow-2xl space-y-5 animate-in slide-in-from-top-4 duration-300">
+                        <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-crm-xl space-y-5 animate-in slide-in-from-top-4 duration-300">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-slate-900 leading-none">{displayLabel}: Новая запись</span>
                                 <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
@@ -468,7 +469,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 <input
                                     type="text"
                                     placeholder="Название..."
-                                    className="w-full h-12 px-5 text-sm font-bold rounded-[18px] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                    className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
@@ -478,7 +479,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     type="button"
                                     onClick={handleCustomSubmit}
                                     disabled={isSaving || !customName.trim()}
-                                    className="w-full h-11 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                    className="w-full h-11 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
                                 >
                                     {isSaving ? "..." : "Добавить"}
                                 </button>
@@ -490,33 +491,28 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         );
     }
 
-    // Quality - Segmented Control Style
-    return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between px-1">
-                <label className="text-xs font-semibold text-slate-900">Качество ткани</label>
+    // Quality - Custom Dark Dropdown
+    if (type === "quality") {
+        return (
+            <div className="space-y-4">
+                <div className="flex items-center justify-between px-1">
+                    <label className="text-xs font-semibold text-slate-900">Качество ткани</label>
+                </div>
+
+                <QualityDropdown
+                    value={value}
+                    onChange={(name, code) => {
+                        onChange(name, code);
+                        if (onCodeChange) onCodeChange(code);
+                    }}
+                />
+
+                <p className="px-1 text-[10px] font-medium text-slate-300">
+                    {value === "PRM"
+                        ? "✨ Выбрана повышенная плотность ткани"
+                        : "Стандартная плотность ткани"}
+                </p>
             </div>
-            <div className="flex p-1 bg-slate-50 border border-slate-100 rounded-[18px]">
-                {filteredOptions.map(q => (
-                    <button
-                        key={q.name}
-                        type="button"
-                        onClick={() => {
-                            onChange(q.name, q.code);
-                            if (onCodeChange) onCodeChange(q.code);
-                        }}
-                        className={cn(
-                            "flex-1 h-9 rounded-[18px] text-xs font-bold transition-all duration-300 border",
-                            value === q.code
-                                ? "bg-white text-slate-900 border-slate-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                                : "bg-transparent border-transparent text-slate-400 hover:text-slate-600 hover:bg-white/50"
-                        )}
-                    >
-                        {q.name}
-                    </button>
-                ))}
-            </div>
-            <p className="px-1 text-[10px] font-medium text-slate-300">Влияет на плотность и износостойкость</p>
-        </div>
-    );
+        );
+    }
 }

@@ -65,7 +65,7 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
                 }}
             >
                 <div className="bg-white rounded-full p-2 shadow-xl border border-slate-100 flex items-center justify-center">
-                    <Loader2 className={`w-5 h-5 text-indigo-600 ${refreshing || pullChange > 100 ? 'animate-spin' : ''}`} style={{ transform: `rotate(${pullChange * 2}deg)` }} />
+                    <Loader2 className={`w-5 h-5 text-#5d00ff ${refreshing || pullChange > 100 ? 'animate-spin' : ''}`} style={{ transform: `rotate(${pullChange * 2}deg)` }} />
                 </div>
             </div>
             {children}

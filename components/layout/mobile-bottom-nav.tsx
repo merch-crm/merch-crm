@@ -17,7 +17,15 @@ const mobileTabs = [
     { name: "Производство", href: "/dashboard/production", icon: Settings },
 ];
 
-export function MobileBottomNav() {
+interface UserProp {
+    name: string;
+    email: string;
+    roleName: string;
+    departmentName: string;
+    avatar?: string | null;
+}
+
+export function MobileBottomNav({ user }: { user: UserProp }) {
     const pathname = usePathname();
 
     return (
@@ -52,7 +60,7 @@ export function MobileBottomNav() {
 
 
                 {/* Menu Trigger for Sidebar */}
-                <MobileSidebarTrigger />
+                <MobileSidebarTrigger user={user} />
             </div>
             {/* Safe Area at bottom for iOS home indicator */}
             <div className="h-4 w-full" />

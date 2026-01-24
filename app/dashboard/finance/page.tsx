@@ -25,6 +25,7 @@ import {
     LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/pluralize";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -137,12 +138,12 @@ export default async function FinancePage({
             value: netProfit.toLocaleString('ru-RU'),
             suffix: "₽",
             icon: TrendingUp,
-            color: "text-indigo-600",
-            bgIcon: "bg-indigo-100",
-            bgCard: "bg-indigo-50",
+            color: "text-primary",
+            bgIcon: "bg-primary/10",
+            bgCard: "bg-primary/5",
             trend: "+8.3%",
             trendLabel: "рост эффективности",
-            trendColor: "text-indigo-600",
+            trendColor: "text-primary",
             trendIcon: ArrowUpRight
         },
         {
@@ -209,7 +210,7 @@ export default async function FinancePage({
     };
 
     const categoryLabels: Record<string, { label: string, color: string }> = {
-        print: { label: "Печать", color: "bg-indigo-500" },
+        print: { label: "Печать", color: "bg-primary" },
         embroidery: { label: "Вышивка", color: "bg-purple-500" },
         merch: { label: "Мерч", color: "bg-emerald-500" },
         other: { label: "Прочее", color: "bg-slate-500" }
@@ -230,7 +231,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'sales' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'sales'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -240,7 +241,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'salary' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'salary'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -250,7 +251,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'funds' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'funds'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -260,7 +261,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'promocodes' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'promocodes'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -270,7 +271,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'transactions' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'transactions'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -280,7 +281,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'expenses' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'expenses'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -290,7 +291,7 @@ export default async function FinancePage({
                     <Link
                         href={`?${createQueryString({ tab: 'pl' })}`}
                         className={`flex items-center gap-2.5 px-6 py-2.5 rounded-[10px] text-xs font-medium transition-all ${activeTab === 'pl'
-                            ? "bg-white text-indigo-600 shadow-md shadow-indigo-100/50"
+                            ? "bg-white text-primary shadow-md shadow-primary/20"
                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             }`}
                     >
@@ -351,7 +352,7 @@ export default async function FinancePage({
                                             <div className="text-2xl font-bold text-slate-900 leading-none mb-2">
                                                 {cat.revenue.toLocaleString()} <span className="text-sm text-slate-500 font-bold">₽</span>
                                             </div>
-                                            <div className="text-xs text-slate-400 font-bold">{cat.count} заказов</div>
+                                            <div className="text-xs text-slate-400 font-bold">{cat.count} {pluralize(cat.count, 'заказ', 'заказа', 'заказов')}</div>
                                         </div>
 
                                         <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
@@ -372,16 +373,16 @@ export default async function FinancePage({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="crm-card p-6 bg-white flex flex-col justify-between h-40 hover:-translate-y-1 transition-all duration-500 group border-none">
                                 <div className="flex justify-between items-start">
-                                    <div className="h-12 w-12 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                    <div className="h-12 w-12 rounded-[var(--radius-inner)] bg-primary/5 flex items-center justify-center text-primary font-bold shadow-inner group-hover:scale-110 transition-transform duration-500">
                                         <Activity className="w-6 h-6" />
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-full">Авто-расчет</div>
+                                        <div className="text-[10px] font-bold text-emerald-600  tracking-normal bg-emerald-50 px-2.5 py-1 rounded-full">Авто-расчет</div>
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">Общий ФОТ (Фонд оплаты труда)</p>
-                                    <div className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
+                                    <p className="text-slate-400 text-[10px] font-bold  tracking-normal leading-none mb-2">Общий ФОТ (Фонд оплаты труда)</p>
+                                    <div className="text-3xl font-bold text-slate-900 tracking-normal leading-none">
                                         {totalBudget.toLocaleString('ru-RU')} <span className="text-sm font-bold text-slate-400">₽ /мес.</span>
                                     </div>
                                 </div>
@@ -393,13 +394,13 @@ export default async function FinancePage({
                                         <Users className="w-6 h-6" />
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">активный штат</div>
+                                        <div className="text-[10px] font-bold text-slate-400  tracking-normal">активный штат</div>
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">Сотрудников в базе</p>
-                                    <div className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
-                                        {employeePayments.length} <span className="text-sm font-bold text-slate-400 uppercase whitespace-nowrap">человек</span>
+                                    <p className="text-slate-400 text-[10px] font-bold  tracking-normal leading-none mb-2">Сотрудников в базе</p>
+                                    <div className="text-3xl font-bold text-slate-900 tracking-normal leading-none">
+                                        {employeePayments.length} <span className="text-sm font-bold text-slate-400  whitespace-nowrap">{pluralize(employeePayments.length, 'человек', 'человека', 'человек')}</span>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +420,7 @@ export default async function FinancePage({
                                     <div key={idx} className="crm-card border-none bg-white shadow-sm overflow-hidden">
                                         <div className="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-indigo-600 shadow-sm border border-slate-100">
+                                                <div className="w-10 h-10 rounded-[18px] bg-white flex items-center justify-center text-primary shadow-sm border border-slate-100">
                                                     <Briefcase className="w-5 h-5" />
                                                 </div>
                                                 <h3 className="font-bold text-slate-900 text-sm">{deptName}</h3>
@@ -445,7 +446,7 @@ export default async function FinancePage({
                                                         <tr key={emp.id} className="group hover:bg-slate-50/50 transition-colors">
                                                             <td className="px-8 py-6">
                                                                 <div className="font-bold text-slate-900 mb-0.5 text-sm">{emp.name}</div>
-                                                                <div className="text-xs text-indigo-500 font-semibold uppercase tracking-wider">USR-{emp.id.split('-')[0]}</div>
+                                                                <div className="text-xs text-primary font-semibold  tracking-wider">USR-{emp.id.split('-')[0]}</div>
                                                             </td>
                                                             <td className="px-8 py-6 text-center">
                                                                 <span className="px-3 py-1.5 bg-slate-100 rounded-[10px] text-xs font-medium text-slate-500 border border-slate-200/50">
@@ -458,7 +459,7 @@ export default async function FinancePage({
                                                             <td className="px-8 py-6 text-center">
                                                                 <div className="inline-flex flex-col items-center">
                                                                     <div className="font-bold text-emerald-600 text-sm">+{emp.bonus.toLocaleString()} ₽</div>
-                                                                    <div className="text-xs font-medium text-slate-400">за {emp.ordersCount} эффект. зак.</div>
+                                                                    <div className="text-xs font-medium text-slate-400">за {emp.ordersCount} {pluralize(emp.ordersCount, 'заказ', 'заказа', 'заказов')}</div>
                                                                 </div>
                                                             </td>
                                                             <td className="px-8 py-6 text-right">
@@ -505,35 +506,35 @@ export default async function FinancePage({
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div className="crm-card p-8 bg-slate-900 text-white border-none shadow-xl">
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Выручка</p>
-                                        <div className="text-4xl font-black tracking-tighter">{plRes.data.totalRevenue.toLocaleString()} ₽</div>
+                                        <p className="text-slate-400 text-[10px] font-bold  tracking-normal mb-2">Выручка</p>
+                                        <div className="text-4xl font-bold tracking-normal">{plRes.data.totalRevenue.toLocaleString()} ₽</div>
                                     </div>
                                     <div className="crm-card p-8 bg-white border border-slate-100 shadow-sm">
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Себестоимость (COGS)</p>
-                                        <div className="text-4xl font-black text-rose-500 tracking-tighter">-{plRes.data.totalCOGS.toLocaleString()} ₽</div>
+                                        <p className="text-slate-400 text-[10px] font-bold  tracking-normal mb-2">Себестоимость (COGS)</p>
+                                        <div className="text-4xl font-bold text-rose-500 tracking-normal">-{plRes.data.totalCOGS.toLocaleString()} ₽</div>
                                         <div className="text-[10px] text-slate-400 mt-2">Расходы на производство</div>
                                     </div>
                                     <div className="crm-card p-8 bg-white border border-slate-100 shadow-sm">
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Опер. расходы</p>
-                                        <div className="text-4xl font-black text-rose-600 tracking-tighter">-{plRes.data.totalOverhead.toLocaleString()} ₽</div>
+                                        <p className="text-slate-400 text-[10px] font-bold  tracking-normal mb-2">Опер. расходы</p>
+                                        <div className="text-4xl font-bold text-rose-600 tracking-normal">-{plRes.data.totalOverhead.toLocaleString()} ₽</div>
                                         <div className="text-[10px] text-slate-400 mt-2">Аренда, налоги и др.</div>
                                     </div>
                                     <div className="crm-card p-8 bg-emerald-600 text-white border-none shadow-xl">
-                                        <p className="text-emerald-100 text-[10px] font-black uppercase tracking-widest mb-2">Чистая прибыль</p>
-                                        <div className="text-4xl font-black tracking-tighter">{plRes.data.netProfit.toLocaleString()} ₽</div>
+                                        <p className="text-emerald-100 text-[10px] font-bold  tracking-normal mb-2">Чистая прибыль</p>
+                                        <div className="text-4xl font-bold tracking-normal">{plRes.data.netProfit.toLocaleString()} ₽</div>
                                         <div className="mt-4 text-xs font-bold bg-white/20 w-fit px-3 py-1 rounded-full">Маржа: {plRes.data.margin.toFixed(1)}%</div>
                                     </div>
                                 </div>
 
                                 <div className="crm-card bg-white p-10 border-none shadow-sm">
-                                    <h3 className="text-xl font-black text-slate-900 mb-8">Структура расходов</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-8">Структура расходов</h3>
                                     <div className="space-y-6">
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-2 h-2 rounded-full bg-rose-500" />
-                                                <span className="text-sm font-bold text-slate-700 uppercase tracking-widest text-[10px]">Себестоимость закупки</span>
+                                                <span className="text-sm font-bold text-slate-700  tracking-normal text-[10px]">Себестоимость закупки</span>
                                             </div>
-                                            <span className="font-black text-slate-900 ">{plRes.data.totalCOGS.toLocaleString()} ₽</span>
+                                            <span className="font-bold text-slate-900 ">{plRes.data.totalCOGS.toLocaleString()} ₽</span>
                                         </div>
                                         <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden">
                                             <div
@@ -545,9 +546,9 @@ export default async function FinancePage({
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-2 h-2 rounded-full bg-rose-400" />
-                                                <span className="text-sm font-bold text-slate-700 uppercase tracking-widest text-[10px]">Косвенные расходы</span>
+                                                <span className="text-sm font-bold text-slate-700  tracking-normal text-[10px]">Косвенные расходы</span>
                                             </div>
-                                            <span className="font-black text-slate-900">{plRes.data.totalOverhead.toLocaleString()} ₽</span>
+                                            <span className="font-bold text-slate-900">{plRes.data.totalOverhead.toLocaleString()} ₽</span>
                                         </div>
                                         <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden">
                                             <div
@@ -582,14 +583,14 @@ export default async function FinancePage({
                                                 <Icon className="w-6 h-6" />
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-2xl font-black text-slate-900 tracking-tighter leading-none mb-1">{fund.percentage}%</div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">доля фонда</div>
+                                                <div className="text-2xl font-bold text-slate-900 tracking-normal leading-none mb-1">{fund.percentage}%</div>
+                                                <div className="text-[10px] font-bold text-slate-400  tracking-normal">доля фонда</div>
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <h4 className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none">{fund.name}</h4>
-                                            <div className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
-                                                {fund.amount.toLocaleString()} <span className="text-sm text-slate-500 font-bold uppercase">₽</span>
+                                            <h4 className="text-slate-400 text-[10px] font-bold  tracking-normal leading-none">{fund.name}</h4>
+                                            <div className="text-3xl font-bold text-slate-900 tracking-normal leading-none">
+                                                {fund.amount.toLocaleString()} <span className="text-sm text-slate-500 font-bold ">₽</span>
                                             </div>
                                         </div>
                                         <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-slate-50">
@@ -604,15 +605,15 @@ export default async function FinancePage({
                         </div>
 
                         <div className="crm-card p-10 bg-white border-none shadow-sm relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50/50 rounded-full -mr-32 -mt-32 blur-3xl opacity-60" />
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-60" />
 
                             <div className="relative flex items-center gap-6 mb-12">
                                 <div className="h-14 w-14 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-200 group-hover:scale-110 transition-transform duration-500">
                                     <PieChart className="w-7 h-7" />
                                 </div>
                                 <div>
-                                    <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Распределение капитала</h3>
-                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Визуальный баланс всех фондов организации</p>
+                                    <h3 className="text-3xl font-bold text-slate-900 tracking-normal ">Распределение капитала</h3>
+                                    <p className="text-slate-400 text-[10px] font-bold  tracking-normal mt-1">Визуальный баланс всех фондов организации</p>
                                 </div>
                             </div>
 
@@ -623,7 +624,7 @@ export default async function FinancePage({
                                         className={`${fund.color} h-full transition-all hover:opacity-80 relative group first:rounded-l-[10px] last:rounded-r-[10px]`}
                                         style={{ width: `${fund.percentage}%` }}
                                     >
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10 text-white text-[10px] font-black uppercase tracking-widest">
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10 text-white text-[10px] font-bold  tracking-normal">
                                             {fund.percentage}%
                                         </div>
                                     </div>
@@ -634,7 +635,7 @@ export default async function FinancePage({
                                 {funds.map((fund, i) => (
                                     <div key={i} className="flex items-center gap-3">
                                         <div className={`w-3 h-3 rounded-full ${fund.color} shadow-sm ring-4 ring-white`} />
-                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{fund.name}</span>
+                                        <span className="text-[10px] font-bold text-slate-600  tracking-normal">{fund.name}</span>
                                     </div>
                                 ))}
                             </div>

@@ -23,18 +23,19 @@ import { cn } from "@/lib/utils";
 import { ClientProfileDrawer } from "./client-profile-drawer";
 import { EditClientDialog } from "./edit-client-dialog";
 import { DeleteClientDialog } from "./delete-client-dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/ui/pagination";
 
 function FilterSelect({ label, value, onChange, options }: { label: string, value: string, onChange: (v: string) => void, options: { value: string, label: string }[] }) {
     return (
         <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">{label}</label>
+            <label className="text-[10px] font-bold text-slate-400  tracking-[0.2em] ml-1">{label}</label>
             <div className="relative group">
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-100 text-slate-900 text-[13px] rounded-[14px] focus:ring-4 focus:ring-primary/5 focus:border-primary/20 block p-4 pr-12 font-bold cursor-pointer group-hover:border-slate-200 transition-all uppercase tracking-tight shadow-sm"
+                    className="w-full appearance-none bg-white border border-slate-100 text-slate-900 text-[13px] rounded-[var(--radius)] focus:ring-4 focus:ring-primary/5 focus:border-primary/20 block p-4 pr-12 font-bold cursor-pointer group-hover:border-slate-200 transition-all  tracking-tight shadow-sm"
                 >
                     {options.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -81,6 +82,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     const [filterOrderCount, setFilterOrderCount] = useState<string>("any");
     const [filterRegion, setFilterRegion] = useState<string>("all");
     const [showFilters, setShowFilters] = useState(false);
+    const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
 
     // Mass Actions State
     const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
@@ -253,14 +255,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
                 <div className="flex flex-col md:flex-row items-center gap-6 p-6 md:h-24 relative z-10">
                     <div className="relative flex-1 group/search w-full">
-                        <div className="absolute inset-0 bg-primary/5 rounded-[20px] scale-95 opacity-0 group-focus-within/search:scale-105 group-focus-within/search:opacity-100 transition-all duration-500 blur-xl" />
+                        <div className="absolute inset-0 bg-primary/5 rounded-[var(--radius)] scale-95 opacity-0 group-focus-within/search:scale-105 group-focus-within/search:opacity-100 transition-all duration-500 blur-xl" />
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within/search:text-primary transition-colors z-10" />
                         <input
                             type="text"
                             placeholder="Поиск по клиентской базе (имя, компания, телефон)..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full h-16 pl-16 pr-8 bg-white/50 border border-slate-100/50 rounded-[20px] text-base font-bold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-0 focus:border-primary/30 transition-all outline-none relative z-10 shadow-inner-sm"
+                            className="w-full h-16 pl-16 pr-8 bg-white/50 border border-slate-100/50 rounded-[var(--radius)] text-base font-bold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-0 focus:border-primary/30 transition-all outline-none relative z-10 shadow-inner-sm"
                         />
                     </div>
 
@@ -268,7 +270,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <button
                             onClick={() => setShowFilters(!showFilters)}
                             className={cn(
-                                "flex items-center justify-center gap-4 px-10 h-16 rounded-[20px] text-[11px] font-black uppercase tracking-[0.25em] transition-all duration-500 w-full md:w-auto",
+                                "flex items-center justify-center gap-4 px-10 h-16 rounded-[var(--radius)] text-[11px] font-bold  tracking-[0.25em] transition-all duration-500 w-full md:w-auto",
                                 showFilters
                                     ? "bg-slate-900 text-white shadow-2xl shadow-slate-900/40 translate-y-[-2px]"
                                     : "bg-white text-slate-500 border border-slate-100 hover:text-slate-900 hover:border-slate-300 shadow-crm-sm hover:scale-105"
@@ -282,7 +284,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <button
                             onClick={handleExport}
                             disabled={selectedIds.length === 0}
-                            className="h-16 w-16 flex items-center justify-center bg-white border border-slate-100 rounded-[20px] text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all disabled:opacity-30 shadow-crm-sm group/export">
+                            className="h-16 w-16 flex items-center justify-center bg-white border border-slate-100 rounded-[var(--radius)] text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all disabled:opacity-30 shadow-crm-sm group/export">
                             <Download className="w-6 h-6 group-hover/export:scale-125 transition-transform duration-500" />
                         </button>
                     </div>
@@ -339,11 +341,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             <div className="px-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="h-6 w-[3px] bg-primary rounded-full shadow-[0_0_8px_rgba(93,0,255,0.5)]" />
-                    <p className="text-[12px] font-black text-slate-900 uppercase tracking-[0.2em]">
+                    <p className="text-[12px] font-bold text-slate-900  tracking-[0.2em]">
                         Результаты поиска: <span className="text-primary ml-2">{sortedAndFilteredClients.length}</span>
                     </p>
                 </div>
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+                <div className="text-[10px] font-bold text-slate-400  tracking-[0.3em] flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                     Live Sync: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
@@ -363,32 +365,32 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         onChange={handleSelectAll}
                                     />
                                 </th>
-                                <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("alphabet")}>
+                                <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("alphabet")}>
                                     <div className="flex items-center gap-3">
                                         Контрагент
-                                        <div className={cn("p-1.5 rounded-lg bg-slate-50 transition-all", sortBy === "alphabet" && "bg-primary/10")}>
+                                        <div className={cn("p-1.5 rounded-[18px] bg-slate-50 transition-all", sortBy === "alphabet" && "bg-primary/10")}>
                                             <ChevronDown className={cn("h-3 w-3", sortBy === "alphabet" ? "text-primary rotate-0" : "opacity-0 group-hover:opacity-50")} />
                                         </div>
                                     </div>
                                 </th>
-                                <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em]">
+                                <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em]">
                                     Контакты
                                 </th>
-                                <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em]">
+                                <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em]">
                                     Куратор
                                 </th>
-                                <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[110px]" onClick={() => setSortBy("order_count")}>
+                                <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[110px]" onClick={() => setSortBy("order_count")}>
                                     Заказы
                                 </th>
-                                <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[140px]" onClick={() => setSortBy("last_order")}>
+                                <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[140px]" onClick={() => setSortBy("last_order")}>
                                     Активность
                                 </th>
                                 {showFinancials && (
-                                    <th className="px-5 py-4 text-left text-[11px] font-black uppercase tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[150px]" onClick={() => setSortBy("revenue")}>
+                                    <th className="px-5 py-4 text-left text-[11px] font-bold  tracking-[0.25em] cursor-pointer group hover:text-primary transition-colors w-[150px]" onClick={() => setSortBy("revenue")}>
                                         Финансы
                                     </th>
                                 )}
-                                <th className="px-5 py-4 text-right text-[11px] font-black uppercase tracking-[0.25em] w-[140px]">Опции</th>
+                                <th className="px-5 py-4 text-right text-[11px] font-bold  tracking-[0.25em] w-[140px]">Опции</th>
                             </tr>
                         </thead>
                         <tbody className="space-y-4">
@@ -422,17 +424,17 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     <td className="px-5 py-6">
                                         <div className="flex flex-col max-w-[180px]">
                                             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                                                <span className="text-[14px] font-black text-slate-900 group-hover:text-primary transition-colors tracking-tight line-clamp-1">
+                                                <span className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors tracking-tight line-clamp-1">
                                                     {client.lastName} {client.firstName}
                                                 </span>
                                                 {client.clientType === "b2b" && (
-                                                    <div className="px-1.5 py-0.5 rounded-full bg-slate-900 text-white text-[7px] font-black uppercase tracking-[0.1em] flex items-center gap-1 flex-shrink-0">
+                                                    <div className="px-1.5 py-0.5 rounded-full bg-slate-900 text-white text-[7px] font-bold  tracking-[0.1em] flex items-center gap-1 flex-shrink-0">
                                                         <Crown className="w-2 h-2 text-primary" />
                                                         B2B
                                                     </div>
                                                 )}
                                             </div>
-                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 truncate">
+                                            <span className="text-[10px] text-slate-400 font-bold  tracking-wider flex items-center gap-1.5 truncate">
                                                 <Building2 className="w-3 h-3 opacity-40 flex-shrink-0" />
                                                 {client.company || "Частное лицо"}
                                             </span>
@@ -446,7 +448,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             </div>
                                             <div className="flex items-center gap-2.5 text-slate-500 group-hover:text-slate-900 transition-colors">
                                                 <Phone className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                                <span className="text-[11px] font-bold tracking-tighter truncate">
+                                                <span className="text-[11px] font-bold tracking-normal truncate">
                                                     {["Печатник", "Дизайнер"].includes(userRoleName || "")
                                                         ? "•••-••-••"
                                                         : client.phone}
@@ -455,12 +457,12 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         </div>
                                     </td>
                                     <td className="px-5 py-6 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50/50 rounded-xl border border-slate-100 group/manager hover:border-primary/30 transition-all backdrop-blur-sm">
+                                        <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50/50 rounded-[18px] border border-slate-100 group/manager hover:border-primary/30 transition-all backdrop-blur-sm">
                                             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(93,0,255,0.4)]" />
                                             <select
                                                 value={client.managerId || ""}
                                                 onChange={(e) => handleUpdateField(client.id, "managerId", e.target.value)}
-                                                className="bg-transparent border-none text-[9px] font-black text-slate-500 focus:ring-0 cursor-pointer hover:text-primary transition-colors max-w-[100px] truncate outline-none p-0 uppercase tracking-widest"
+                                                className="bg-transparent border-none text-[9px] font-bold text-slate-500 focus:ring-0 cursor-pointer hover:text-primary transition-colors max-w-[100px] truncate outline-none p-0  tracking-normal"
                                             >
                                                 <option value="">Без куратора</option>
                                                 {managers.map(m => (
@@ -470,9 +472,9 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         </div>
                                     </td>
                                     <td className="px-5 py-6 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 bg-slate-50/50 px-3 py-2 rounded-xl border border-slate-100 w-fit">
-                                            <span className="text-xl font-black text-slate-900 tracking-tighter">{client.totalOrders || 0}</span>
-                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest opacity-60">Ord</span>
+                                        <div className="flex items-center gap-2 bg-slate-50/50 px-3 py-2 rounded-[18px] border border-slate-100 w-fit">
+                                            <span className="text-xl font-bold text-slate-900 tracking-normal">{client.totalOrders || 0}</span>
+                                            <span className="text-[8px] font-bold text-slate-400  tracking-normal opacity-60">Ord</span>
                                         </div>
                                     </td>
                                     <td className="px-5 py-6 whitespace-nowrap">
@@ -480,22 +482,22 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             <div className="flex flex-col">
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.3)]" />
-                                                    <span className="text-[13px] font-black text-slate-900 tracking-tight">
+                                                    <span className="text-[13px] font-bold text-slate-900 tracking-tight">
                                                         {new Date(client.lastOrderDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
                                                     </span>
                                                 </div>
-                                                <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest ml-4 opacity-50">
+                                                <span className="text-[9px] text-slate-400 font-bold  tracking-normal ml-4 opacity-50">
                                                     {Math.floor((Date.now() - new Date(client.lastOrderDate).getTime()) / (1000 * 60 * 60 * 24))}д. назад
                                                 </span>
                                             </div>
                                         ) : (
-                                            <span className="text-[9px] text-slate-300 font-black uppercase tracking-widest">Нет заказов</span>
+                                            <span className="text-[9px] text-slate-300 font-bold  tracking-normal">Нет заказов</span>
                                         )}
                                     </td>
                                     {showFinancials && (
                                         <td className="px-5 py-6 whitespace-nowrap">
-                                            <div className="text-[15px] font-black text-slate-900 tracking-tighter">
-                                                {Math.round(Number(client.totalSpent) || 0).toLocaleString()} <span className="text-[9px] text-primary uppercase ml-0.5">₽</span>
+                                            <div className="text-[15px] font-bold text-slate-900 tracking-normal">
+                                                {Math.round(Number(client.totalSpent) || 0).toLocaleString()} <span className="text-[9px] text-primary  ml-0.5">₽</span>
                                             </div>
                                         </td>
                                     )}
@@ -503,21 +505,21 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         <div className="flex items-center justify-end gap-1.5">
                                             <button
                                                 onClick={() => setSelectedClientId(client.id)}
-                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all shadow-sm"
+                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[18px] transition-all shadow-sm"
                                                 title="Full Profile"
                                             >
                                                 <Eye className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => setEditingClient(client)}
-                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all shadow-sm"
+                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-[18px] transition-all shadow-sm"
                                                 title="Quick Edit"
                                             >
                                                 <Pencil className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => setDeletingClient(client)}
-                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm"
+                                                className="w-9 h-9 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all shadow-sm"
                                                 title="Delete Contact"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -582,7 +584,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             {/* --- PREMIUM PAGINATION --- */}
             {sortedAndFilteredClients.length > 0 && (
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-4 py-8 border-t border-slate-100 mt-8">
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] bg-slate-50 px-6 py-3 rounded-full border border-slate-100/50 shadow-sm">
+                    <div className="text-[10px] font-bold text-slate-400  tracking-[0.2em] bg-slate-50 px-6 py-3 rounded-full border border-slate-100/50 shadow-sm">
                         Show <span className="text-slate-900 mx-1">{Math.min(currentPage * 10, sortedAndFilteredClients.length)}</span>
                         of <span className="text-slate-900 ml-1">{sortedAndFilteredClients.length}</span> entries
                     </div>
@@ -603,11 +605,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 selectedIds.length > 0 && (
                     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-10 py-5 bg-slate-950 text-white rounded-[24px] shadow-2xl shadow-slate-900/40 border border-slate-800 z-50 animate-in slide-in-from-bottom-10 duration-500">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-800 font-black text-xs border border-slate-700">
+                            <div className="flex items-center justify-center w-8 h-8 rounded-[18px] bg-slate-800 font-bold text-xs border border-slate-700">
                                 {selectedIds.length}
                             </div>
                             <div>
-                                <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">Клиентов выбрано</div>
+                                <div className="text-[10px] font-bold  tracking-wider text-slate-400">Клиентов выбрано</div>
                                 <div className="text-xs font-bold">Действия с группой</div>
                             </div>
                         </div>
@@ -618,7 +620,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                             {/* Export */}
                             <button
                                 onClick={handleExport}
-                                className="bg-slate-800 hover:bg-slate-700 h-11 px-6 rounded-xl text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-white"
+                                className="bg-slate-800 hover:bg-slate-700 h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-white"
                             >
                                 <Download className="w-3.5 h-3.5" />
                                 Экспорт (CSV)
@@ -629,7 +631,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 <button
                                     onClick={() => setShowManagerSelect(!showManagerSelect)}
                                     className={cn(
-                                        "h-11 px-6 rounded-xl text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2",
+                                        "h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2",
                                         showManagerSelect ? "bg-white text-slate-900" : "bg-slate-800 hover:bg-slate-700 text-white"
                                     )}
                                 >
@@ -638,7 +640,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 </button>
 
                                 {showManagerSelect && (
-                                    <div className="absolute bottom-full left-0 mb-4 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                                    <div className="absolute bottom-full left-0 mb-4 w-64 bg-slate-900 border border-slate-800 rounded-[18px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                                         <div className="p-3 border-b border-slate-800 bg-slate-800/50">
                                             <div className="text-[10px] font-semibold text-slate-400">Выберите менеджера</div>
                                         </div>
@@ -655,7 +657,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                         fetchClients();
                                                     }
                                                 }}
-                                                className="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 text-sm font-bold transition-colors"
+                                                className="w-full text-left px-4 py-3 rounded-[18px] hover:bg-slate-800 text-sm font-bold transition-colors"
                                             >
                                                 Без менеджера
                                             </button>
@@ -673,7 +675,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                             fetchClients();
                                                         }
                                                     }}
-                                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 text-sm font-bold transition-colors"
+                                                    className="w-full text-left px-4 py-3 rounded-[18px] hover:bg-slate-800 text-sm font-bold transition-colors"
                                                 >
                                                     {m.name}
                                                 </button>
@@ -685,35 +687,9 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
                             {userRoleName === "Администратор" && (
                                 <button
-                                    onClick={async () => {
-                                        if (confirm(`Вы уверены что хотите удалить ${selectedIds.length} клиентов? Это действие необратимо и удалит все связанные заказы.`)) {
-                                            setIsBulkUpdating(true);
-                                            const res = await bulkDeleteClients(selectedIds);
-                                            setIsBulkUpdating(false);
-                                            if (res.success) {
-                                                toast(`База очищена (${selectedIds.length})`, "success", {
-                                                    action: {
-                                                        label: "Отменить",
-                                                        onClick: async () => {
-                                                            const undoRes = await undoLastAction();
-                                                            if (undoRes.success) {
-                                                                toast("Действие отменено", "success");
-                                                                fetchClients();
-                                                            } else {
-                                                                toast(undoRes.error || "Не удалось отменить", "error");
-                                                            }
-                                                        }
-                                                    }
-                                                });
-                                                setSelectedIds([]);
-                                                fetchClients();
-                                            } else {
-                                                toast(res.error || "Ошибка удаления", "error");
-                                            }
-                                        }
-                                    }}
+                                    onClick={() => setShowBulkDeleteConfirm(true)}
                                     disabled={isBulkUpdating}
-                                    className="bg-rose-500/10 hover:bg-rose-500 hover:text-white h-11 px-6 rounded-xl text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-rose-500 disabled:opacity-50"
+                                    className="bg-rose-500/10 hover:bg-rose-500 hover:text-white h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-rose-500 disabled:opacity-50"
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
                                     Удалить группу
@@ -733,6 +709,41 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 )
             }
 
+            <ConfirmDialog
+                isOpen={showBulkDeleteConfirm}
+                onClose={() => setShowBulkDeleteConfirm(false)}
+                onConfirm={async () => {
+                    setShowBulkDeleteConfirm(false);
+                    setIsBulkUpdating(true);
+                    const res = await bulkDeleteClients(selectedIds);
+                    setIsBulkUpdating(false);
+                    if (res.success) {
+                        toast(`База очищена (${selectedIds.length})`, "success", {
+                            action: {
+                                label: "Отменить",
+                                onClick: async () => {
+                                    const undoRes = await undoLastAction();
+                                    if (undoRes.success) {
+                                        toast("Действие отменено", "success");
+                                        fetchClients();
+                                    } else {
+                                        toast(undoRes.error || "Не удалось отменить", "error");
+                                    }
+                                }
+                            }
+                        });
+                        setSelectedIds([]);
+                        fetchClients();
+                    } else {
+                        toast(res.error || "Ошибка удаления", "error");
+                    }
+                }}
+                title="Удаление группы клиентов"
+                description={`Вы уверены что хотите удалить ${selectedIds.length} клиентов? Это действие необратимо и удалит все связанные заказы.`}
+                confirmText="Удалить"
+                variant="destructive"
+                isLoading={isBulkUpdating}
+            />
         </div>
     );
 }

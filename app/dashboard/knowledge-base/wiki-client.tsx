@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Check, X, Search } from "lucide-react";
 
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { PromptDialog } from "@/components/ui/prompt-dialog";
+
 interface WikiFolder {
     id: string;
     name: string;
@@ -36,6 +39,11 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editData, setEditData] = useState({ title: "", content: "" });
+
+    // Dialog states
+    const [createFolderDialog, setCreateFolderDialog] = useState<{ open: boolean, parentId: string | null }>({ open: false, parentId: null });
+    const [createPageDialog, setCreatePageDialog] = useState<{ open: boolean, folderId: string | null }>({ open: false, folderId: null });
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
@@ -74,30 +82,40 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
         setSelectedPageId(id);
     };
 
-    const handleCreateFolder = async (parentId: string | null) => {
-        const name = prompt("Введите название папки:");
-        if (name) {
-            await createWikiFolder(name, parentId);
+    const handleCreateFolder = (parentId: string | null) => {
+        setCreateFolderDialog({ open: true, parentId });
+    };
+
+    const confirmCreateFolder = async (name: string) => {
+        setCreateFolderDialog(prev => ({ ...prev, open: false }));
+        await createWikiFolder(name, createFolderDialog.parentId);
+        router.refresh();
+    };
+
+    const handleCreatePage = (folderId: string | null) => {
+        setCreatePageDialog({ open: true, folderId });
+    };
+
+    const confirmCreatePage = async (title: string) => {
+        setCreatePageDialog(prev => ({ ...prev, open: false }));
+        const res = await createWikiPage({ title, content: "", folderId: createPageDialog.folderId });
+        if (res.success && res.page) {
+            setLoading(true);
+            setSelectedPageId(res.page.id);
+            setIsEditing(true);
             router.refresh();
         }
     };
 
-    const handleCreatePage = async (folderId: string | null) => {
-        const title = prompt("Введите заголовок статьи:");
-        if (title) {
-            const res = await createWikiPage({ title, content: "", folderId });
-            if (res.success && res.page) {
-                setLoading(true);
-                setSelectedPageId(res.page.id);
-                setIsEditing(true);
-                router.refresh();
-            }
-        }
+    const handleDeletePage = () => {
+        if (!selectedPageId) return;
+        setDeleteConfirmOpen(true);
     };
 
-    const handleDeletePage = async () => {
-        if (!selectedPageId || !confirm("Вы уверены, что хотите удалить эту статью?")) return;
+    const confirmDeletePage = async () => {
+        if (!selectedPageId) return;
         setLoading(true);
+        setDeleteConfirmOpen(false);
         await deleteWikiPage(selectedPageId);
         setSelectedPageId(null);
         setPageContent(null);
@@ -177,7 +195,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                                         <div className="text-center py-20 opacity-40">
                                             <p className="text-lg font-bold">Статья пуста</p>
                                             {canEdit && (
-                                                <Button variant="link" onClick={() => setIsEditing(true)} className="text-indigo-600 font-bold">
+                                                <Button variant="link" onClick={() => setIsEditing(true)} className="text-primary font-bold">
                                                     Добавить текст
                                                 </Button>
                                             )}
@@ -189,7 +207,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
 
                         {/* Footer Info */}
                         {!isEditing && pageContent && (
-                            <div className="px-8 py-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-widest bg-white/20">
+                            <div className="px-8 py-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400  tracking-normal bg-white/20">
                                 <span>Автор: {pageContent.author?.name || "Система"}</span>
                                 <span>Обновлено: {new Date(pageContent.updatedAt).toLocaleString('ru-RU')}</span>
                             </div>
@@ -200,13 +218,43 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                         <div className="w-24 h-24 rounded-[32px] bg-slate-100 flex items-center justify-center mb-8">
                             <Search className="w-10 h-10 text-slate-300" />
                         </div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter uppercase mb-2">Выберите статью</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal  mb-2">Выберите статью</h2>
                         <p className="max-w-xs font-bold text-sm leading-tight">
                             Выберите статью из списка слева или создайте новую, чтобы начать.
                         </p>
                     </div>
                 )}
             </div>
+
+            <PromptDialog
+                isOpen={createFolderDialog.open}
+                onClose={() => setCreateFolderDialog(prev => ({ ...prev, open: false }))}
+                onConfirm={confirmCreateFolder}
+                title="Создать папку"
+                label="Название папки"
+                placeholder="Введите название..."
+                confirmText="Создать"
+            />
+
+            <PromptDialog
+                isOpen={createPageDialog.open}
+                onClose={() => setCreatePageDialog(prev => ({ ...prev, open: false }))}
+                onConfirm={confirmCreatePage}
+                title="Новая статья"
+                label="Заголовок статьи"
+                placeholder="Введите заголовок..."
+                confirmText="Создать"
+            />
+
+            <ConfirmDialog
+                isOpen={deleteConfirmOpen}
+                onClose={() => setDeleteConfirmOpen(false)}
+                onConfirm={confirmDeletePage}
+                title="Удалить статью?"
+                description={`Вы уверены, что хотите удалить статью "${pageContent?.title}"? Это действие необратимо.`}
+                confirmText="Удалить"
+                variant="destructive"
+            />
         </div>
     );
 }

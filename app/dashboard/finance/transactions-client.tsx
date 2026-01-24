@@ -97,15 +97,15 @@ export function TransactionsClient({
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-4 bg-slate-100/50 p-1.5 rounded-2xl w-fit border border-slate-200/50">
-                    <button onClick={() => setView('all')} className={cn("px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all", view === 'all' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Все</button>
-                    <button onClick={() => setView('payments')} className={cn("px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all", view === 'payments' ? "bg-white text-emerald-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Доходы</button>
-                    <button onClick={() => setView('expenses')} className={cn("px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all", view === 'expenses' ? "bg-white text-rose-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Расходы</button>
+                <div className="flex items-center gap-4 bg-slate-100/50 p-1.5 rounded-[18px] w-fit border border-slate-200/50">
+                    <button onClick={() => setView('all')} className={cn("px-6 py-2.5 rounded-[18px] text-xs font-bold  tracking-normal transition-all", view === 'all' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Все</button>
+                    <button onClick={() => setView('payments')} className={cn("px-6 py-2.5 rounded-[18px] text-xs font-bold  tracking-normal transition-all", view === 'payments' ? "bg-white text-emerald-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Доходы</button>
+                    <button onClick={() => setView('expenses')} className={cn("px-6 py-2.5 rounded-[18px] text-xs font-bold  tracking-normal transition-all", view === 'expenses' ? "bg-white text-rose-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}>Расходы</button>
                 </div>
 
                 <Button
                     onClick={() => setIsAddingExpense(true)}
-                    className="h-12 bg-slate-900 hover:bg-black text-white rounded-[14px] px-6 gap-2 font-black transition-all active:scale-95"
+                    className="h-12 btn-primary rounded-[var(--radius)] px-6 gap-2 font-bold transition-all active:scale-95"
                 >
                     <Plus className="w-5 h-5" />
                     Добавить расход
@@ -120,7 +120,7 @@ export function TransactionsClient({
                             placeholder="Поиск транзакций..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full h-11 pl-11 pr-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium"
+                            className="w-full h-11 pl-11 pr-4 rounded-[18px] bg-slate-50 border-none focus:ring-2 focus:ring-primary text-sm font-medium"
                         />
                     </div>
                 </div>
@@ -129,10 +129,10 @@ export function TransactionsClient({
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50">
-                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Дата</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Категория / Субъект</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Описание</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Сумма</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Категория / Субъект</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Описание</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-right">Сумма</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -140,19 +140,19 @@ export function TransactionsClient({
                                 <tr key={t.id} className="group hover:bg-slate-50/50 transition-colors">
                                     <td className="px-8 py-5">
                                         <div className="text-sm font-bold text-slate-900">{new Date(t.date).toLocaleDateString()}</div>
-                                        <div className="text-[10px] text-slate-400 uppercase font-black tracking-tighter mt-0.5">{new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                        <div className="text-[10px] text-slate-400  font-bold tracking-normal mt-0.5">{new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                     </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-3">
                                             <div className={cn(
-                                                "w-10 h-10 rounded-xl flex items-center justify-center shadow-inner",
+                                                "w-10 h-10 rounded-[18px] flex items-center justify-center shadow-inner",
                                                 t.type === 'payment' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
                                             )}>
                                                 {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-black text-slate-900 uppercase tracking-tight">{t.category}</div>
-                                                {t.orderNumber && <div className="text-[10px] font-bold text-indigo-600">Заказ #{t.orderNumber} • {t.clientName}</div>}
+                                                <div className="text-sm font-bold text-slate-900  tracking-tight">{t.category}</div>
+                                                {t.orderNumber && <div className="text-[10px] font-bold text-primary">Заказ #{t.orderNumber} • {t.clientName}</div>}
                                             </div>
                                         </div>
                                     </td>
@@ -161,7 +161,7 @@ export function TransactionsClient({
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <div className={cn(
-                                            "text-lg font-black tracking-tight",
+                                            "text-lg font-bold tracking-tight",
                                             t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                         )}>
                                             {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} ₽
@@ -224,12 +224,12 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
             <form onSubmit={handleSubmit} className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in-95">
-                <h2 className="text-2xl font-black text-slate-900 mb-8">Новый расход</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-8">Новый расход</h2>
 
                 <div className="space-y-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Категория</label>
-                        <select name="category" required className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm">
+                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Категория</label>
+                        <select name="category" required className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm">
                             <option value="purchase">Закупки</option>
                             <option value="salary">Зарплаты</option>
                             <option value="rent">Аренда</option>
@@ -239,23 +239,23 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Сумма ₽</label>
-                        <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Сумма ₽</label>
+                        <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Дата</label>
-                        <input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Дата</label>
+                        <input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Описание</label>
-                        <textarea name="description" rows={3} placeholder="За что платеж..." className="w-full p-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm resize-none" />
+                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Описание</label>
+                        <textarea name="description" rows={3} placeholder="За что платеж..." className="w-full p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm resize-none" />
                     </div>
 
                     <div className="flex gap-4 pt-4">
-                        <Button type="button" variant="outline" onClick={onClose} className="h-14 flex-1 rounded-[14px] font-black">Отмена</Button>
-                        <Button type="submit" disabled={isLoading} className="h-14 flex-1 bg-slate-900 text-white rounded-[14px] font-black shadow-xl shadow-slate-200">{isLoading ? "Запись..." : "Сохранить"}</Button>
+                        <Button type="button" variant="outline" onClick={onClose} className="h-14 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
+                        <Button type="submit" disabled={isLoading} className="h-14 flex-1 btn-primary rounded-[var(--radius)] font-bold shadow-xl shadow-primary/20">{isLoading ? "Запись..." : "Сохранить"}</Button>
                     </div>
                 </div>
             </form>

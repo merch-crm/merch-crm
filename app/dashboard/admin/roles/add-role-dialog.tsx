@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, X, Shield, Loader2, Building, ChevronDown, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { createRole, getDepartments } from "../actions";
 import { cn } from "@/lib/utils";
 
@@ -77,13 +78,14 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
 
     if (!isOpen) {
         return (
-            <button
+            <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
+                size="lg"
+                className="rounded-2xl shadow-xl shadow-primary/20 font-bold"
             >
-                <Plus className="w-5 h-5" />
+                <Plus className="mr-2 h-5 w-5" />
                 Добавить роль
-            </button>
+            </Button>
         );
     }
 
@@ -92,7 +94,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => setIsOpen(false)} />
 
-                <div className="relative transform overflow-hidden rounded-xl bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-200">
+                <div className="relative transform overflow-hidden rounded-[18px] bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-200">
                     <div className="absolute top-0 right-0 pt-6 pr-6">
                         <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
                             <X className="h-6 w-6" />
@@ -100,7 +102,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                     </div>
 
                     <div className="mb-8 text-center border-b border-slate-100 pb-6">
-                        <div className="h-14 w-14 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 border border-indigo-100 shadow-inner">
+                        <div className="h-14 w-14 rounded-full bg-primary/5 text-primary flex items-center justify-center mx-auto mb-4 border border-primary/20 shadow-inner">
                             <Shield className="w-7 h-7" />
                         </div>
                         <h3 className="text-2xl font-bold text-slate-900">Новая роль</h3>
@@ -108,7 +110,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                     </div>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-lg border border-red-100">
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100">
                             {error}
                         </div>
                     )}
@@ -116,7 +118,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                     <form action={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Название роли</label>
+                                <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Название роли</label>
                                 <div className="relative">
                                     <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input
@@ -124,18 +126,18 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                         name="name"
                                         required
                                         placeholder="Например: Оператор цеха"
-                                        className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                        className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Привязка к отделу</label>
+                                <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Привязка к отделу</label>
                                 <div className="relative">
                                     <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <select
                                         name="departmentId"
-                                        className="block w-full pl-10 h-[46px] rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
+                                        className="block w-full pl-10 h-[46px] rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
                                     >
                                         <option value="">Общая роль (без отдела)</option>
                                         {departments.map(dept => (
@@ -148,14 +150,14 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
-                            <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-xl border border-slate-100 shadow-inner">
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
+                            <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-[18px] border border-slate-100 shadow-inner">
                                 {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
                                     <label key={c} className="relative cursor-pointer group">
                                         <input type="radio" name="color" value={c} className="peer sr-only" />
                                         <div className={cn(
-                                            "w-8 h-8 rounded-lg transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
-                                            c === "indigo" ? "bg-indigo-500 peer-checked:ring-indigo-500" :
+                                            "w-8 h-8 rounded-[18px] transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
+                                            c === "indigo" ? "bg-primary peer-checked:ring-primary" :
                                                 c === "slate" ? "bg-slate-500 peer-checked:ring-slate-500" :
                                                     c === "red" ? "bg-red-500 peer-checked:ring-red-500" :
                                                         c === "orange" ? "bg-orange-500 peer-checked:ring-orange-500" :
@@ -172,10 +174,10 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Права доступа</label>
-                            <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Права доступа</label>
+                            <div className="bg-slate-50 border border-slate-200 rounded-[18px] overflow-hidden shadow-sm">
                                 <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-100 text-slate-500 font-bold uppercase text-[10px] tracking-tighter">
+                                    <thead className="bg-slate-100 text-slate-500 font-bold  text-[10px] tracking-normal">
                                         <tr>
                                             <th className="px-4 py-3">Раздел</th>
                                             {ACTIONS.map(action => (
@@ -199,8 +201,8 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                                                 className={cn(
                                                                     "w-5 h-5 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90",
                                                                     isChecked
-                                                                        ? "bg-indigo-600 border-indigo-600 text-white shadow-sm"
-                                                                        : "bg-white border-slate-200 hover:border-indigo-400"
+                                                                        ? "bg-primary border-primary text-white shadow-sm"
+                                                                        : "bg-white border-slate-200 hover:border-primary/40"
                                                                 )}
                                                             >
                                                                 {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
@@ -219,14 +221,14 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                             <button
                                 type="button"
                                 onClick={() => setIsOpen(false)}
-                                className="flex-1 inline-flex justify-center items-center rounded-lg border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
+                                className="flex-1 inline-flex justify-center items-center rounded-[18px] border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
                             >
                                 Отмена
                             </button>
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[18px] border border-transparent bg-primary py-3 px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {loading ? "Создание..." : "Создать роль"}

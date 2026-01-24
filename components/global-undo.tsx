@@ -52,7 +52,7 @@ export function GlobalUndo() {
                     <Undo2 className="w-4 h-4 text-slate-400" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Последнее действие</span>
+                    <span className="text-[10px] font-bold  tracking-wider text-slate-500">Последнее действие</span>
                     <span className="text-xs font-bold">Выполнено успешно</span>
                 </div>
             </div>
@@ -61,7 +61,7 @@ export function GlobalUndo() {
 
             <button
                 onClick={handleUndo}
-                className="h-10 px-6 rounded-xl bg-white text-slate-900 text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all active:scale-95"
+                className="h-10 px-6 rounded-[18px] bg-white text-slate-900 text-[11px] font-bold  tracking-normal hover:bg-slate-100 transition-all active:scale-95"
             >
                 {isUndoing ? "Отмена..." : "Отменить"}
             </button>

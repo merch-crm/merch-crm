@@ -41,7 +41,27 @@ const navigation = [
 
 import { UserNav } from "./user-nav";
 
-export function Navbar({ user }: { user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null } }) {
+interface BrandingSettings {
+    companyName: string;
+    logoUrl: string | null;
+    primaryColor: string;
+    faviconUrl: string | null;
+}
+
+interface Notification {
+    id: string;
+    title: string;
+    message: string;
+    type: string;
+    isRead: boolean;
+    createdAt: Date | string;
+}
+
+export function Navbar({ user, branding, notifications }: {
+    user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
+    branding?: BrandingSettings;
+    notifications?: Notification[];
+}) {
     const pathname = usePathname();
 
     const filteredNavigation = navigation.filter(item => {
@@ -50,23 +70,21 @@ export function Navbar({ user }: { user: { name: string, email: string, roleName
     });
 
     return (
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm shadow-slate-200/20">
-            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center">
+        <header className="sticky top-0 z-50 p-3 md:p-4 md:px-6">
+            <div className="max-w-[1600px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center shadow-crm-lg border-white/50">
+                <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     {/* Left: Logo */}
-                    <div className="flex items-center">
+                    <div className="flex items-center shrink-0">
                         <Link href="/dashboard" className="flex items-center gap-3 group">
-                            <div className="bg-indigo-600 rounded-xl p-2 shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                            <div className="bg-primary rounded-[18px] p-2 shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                                 <Printer className="h-5 w-5 text-white" />
                             </div>
-                            <span className="text-2xl font-black text-slate-900 tracking-tighter group-hover:text-indigo-600 transition-colors">MerchCRM</span>
+                            <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">MerchCRM</span>
                         </Link>
                     </div>
 
-                    <div className="flex-1" />
-
                     {/* Center: Nav Links */}
-                    <nav className="hidden md:flex items-center gap-2">
+                    <nav className="hidden lg:flex items-center gap-1 mx-8 pointer-events-auto">
                         {filteredNavigation.map((item) => {
                             const isActive = item.href === "/dashboard"
                                 ? pathname === "/dashboard"
@@ -76,24 +94,22 @@ export function Navbar({ user }: { user: { name: string, email: string, roleName
                                     key={item.name}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center gap-2.5 px-5 py-2.5 rounded-[var(--radius-inner)] text-[13px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
+                                        "flex items-center gap-2.5 px-4 py-2 rounded-lg text-[13px] font-bold tracking-normal transition-all duration-300 whitespace-nowrap",
                                         isActive
-                                            ? "text-indigo-600 bg-indigo-50 shadow-inner"
+                                            ? "text-primary bg-primary/10 shadow-inner"
                                             : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                                     )}
                                 >
-                                    <item.icon className={cn("h-4 w-4", isActive ? "text-indigo-600" : "text-slate-400")} />
+                                    <item.icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-slate-400")} />
                                     {item.name}
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    <div className="flex-1" />
-
                     {/* Right Side: Notifications & Profile */}
-                    <div className="flex items-center justify-end gap-2 md:gap-4">
-                        <Button variant="ghost" size="icon" className="relative text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all rounded-[14px]">
+                    <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
+                        <Button variant="ghost" size="icon" className="relative text-slate-400 hover:text-primary hover:bg-primary/10 transition-all rounded-lg">
                             <Bell className="h-5.5 w-5.5" />
                             <span className="absolute top-3 right-3 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
                         </Button>

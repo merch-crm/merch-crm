@@ -58,8 +58,8 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                 disabled={loading}
                 className={`
                     w-full flex items-center justify-between px-4 py-3.5 
-                    ${activePriority.lightBg} border border-slate-200 rounded-2xl shadow-sm
-                    hover:border-indigo-300 hover:shadow-md transition-all duration-200
+                    ${activePriority.lightBg} border border-slate-200 rounded-[18px] shadow-sm
+                    hover:border-primary/40 hover:shadow-md transition-all duration-200
                     active:scale-[0.98] group relative overflow-hidden
                     ${loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -78,8 +78,8 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-slate-100 rounded-2xl shadow-2xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-20" />
+                <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-slate-100 rounded-[18px] shadow-crm-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-20" />
 
                     {priorities.map((p) => (
                         <button
@@ -88,12 +88,12 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                             className={`
                                 w-full flex items-center justify-between px-5 py-3 
                                 hover:bg-slate-50 transition-all group/item
-                                ${p.id === priorityId ? 'bg-indigo-50/50' : ''}
+                                ${p.id === priorityId ? 'bg-primary/5' : ''}
                             `}
                         >
                             <div className="flex items-center gap-3">
                                 <div className={`w-1.5 h-1.5 rounded-full ${p.bgColor} ${p.id === priorityId ? 'scale-125' : 'opacity-40 group-hover/item:opacity-100'} transition-all`} />
-                                <span className={`text-[13px] font-bold ${p.id === priorityId ? 'text-indigo-600' : 'text-slate-600 group-hover/item:text-slate-900'} transition-colors`}>
+                                <span className={`text-[13px] font-bold ${p.id === priorityId ? 'text-primary' : 'text-slate-600 group-hover/item:text-slate-900'} transition-colors`}>
                                     {p.label}
                                 </span>
                             </div>

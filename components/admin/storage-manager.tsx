@@ -45,9 +45,9 @@ export function StorageManager() {
                     <button
                         onClick={() => setActiveTab("s3")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-black uppercase tracking-widest transition-all",
+                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
                             activeTab === "s3"
-                                ? "bg-white text-indigo-600 shadow-sm border border-slate-100"
+                                ? "bg-white text-#5d00ff shadow-sm border border-slate-100"
                                 : "text-slate-400 hover:text-slate-600"
                         )}
                     >
@@ -57,7 +57,7 @@ export function StorageManager() {
                     <button
                         onClick={() => setActiveTab("local")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-black uppercase tracking-widest transition-all",
+                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
                             activeTab === "local"
                                 ? "bg-white text-emerald-600 shadow-sm border border-slate-100"
                                 : "text-slate-400 hover:text-slate-600"
@@ -70,7 +70,7 @@ export function StorageManager() {
 
                 <button
                     onClick={() => setIsSettingsOpen(true)}
-                    className="p-3 bg-white text-slate-500 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition-all active:scale-95"
+                    className="p-3 bg-white text-slate-500 hover:text-#5d00ff hover:bg-slate-50 rounded-[18px] border border-slate-100 shadow-sm transition-all active:scale-95"
                     title="Настройки лимитов"
                 >
                     <Settings2 size={20} />
@@ -82,17 +82,17 @@ export function StorageManager() {
                 <div className="space-y-4">
                     {quotaUsage.local.status !== 'ok' && (
                         <div className={cn(
-                            "p-4 rounded-2xl flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
+                            "p-4 rounded-[18px] flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
                             quotaUsage.local.status === 'critical' ? "bg-rose-50 border-rose-100 text-rose-700" : "bg-amber-50 border-amber-100 text-amber-700"
                         )}>
                             <div className={cn(
-                                "p-2 rounded-xl text-white shrink-0",
+                                "p-2 rounded-[18px] text-white shrink-0",
                                 quotaUsage.local.status === 'critical' ? "bg-rose-500" : "bg-amber-500"
                             )}>
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
-                                <p className="font-black text-sm uppercase tracking-wide">
+                                <p className="font-bold text-sm  tracking-wide">
                                     {quotaUsage.local.status === 'critical' ? "Критическая нехватка места на диске" : "Заканчивается место на диске"}
                                 </p>
                                 <p className="text-xs font-medium opacity-80 mt-1">
@@ -104,17 +104,17 @@ export function StorageManager() {
 
                     {quotaUsage.s3.status !== 'ok' && (
                         <div className={cn(
-                            "p-4 rounded-2xl flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
+                            "p-4 rounded-[18px] flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
                             quotaUsage.s3.status === 'critical' ? "bg-rose-50 border-rose-100 text-rose-700" : "bg-amber-50 border-amber-100 text-amber-700"
                         )}>
                             <div className={cn(
-                                "p-2 rounded-xl text-white shrink-0",
+                                "p-2 rounded-[18px] text-white shrink-0",
                                 quotaUsage.s3.status === 'critical' ? "bg-rose-500" : "bg-amber-500"
                             )}>
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
-                                <p className="font-black text-sm uppercase tracking-wide">
+                                <p className="font-bold text-sm  tracking-wide">
                                     {quotaUsage.s3.status === 'critical' ? "S3 хранилище переполнено" : "Заканчивается место в S3"}
                                 </p>
                                 <p className="text-xs font-medium opacity-80 mt-1">

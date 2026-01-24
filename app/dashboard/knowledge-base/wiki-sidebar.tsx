@@ -83,7 +83,7 @@ export function WikiSidebar({
                     <div className="w-4 h-4 flex items-center justify-center text-slate-400">
                         {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                     </div>
-                    <Folder className="w-4 h-4 text-indigo-500 shrink-0" />
+                    <Folder className="w-4 h-4 text-primary shrink-0" />
                     <span className="text-sm font-bold text-slate-700 truncate">{folder.name}</span>
                     {canEdit && (
                         <button
@@ -103,11 +103,11 @@ export function WikiSidebar({
                                 key={page.id}
                                 className={cn(
                                     "flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer ml-8 group",
-                                    activePageId === page.id && "bg-indigo-50 text-indigo-700 shadow-sm"
+                                    activePageId === page.id && "bg-primary/5 text-primary shadow-sm"
                                 )}
                                 onClick={() => onSelectPage(page.id)}
                             >
-                                <FileText className={cn("w-3.5 h-3.5 shrink-0", activePageId === page.id ? "text-indigo-600" : "text-slate-400")} />
+                                <FileText className={cn("w-3.5 h-3.5 shrink-0", activePageId === page.id ? "text-primary" : "text-slate-400")} />
                                 <span className="text-sm font-semibold truncate">{page.title}</span>
                             </div>
                         ))}
@@ -120,7 +120,7 @@ export function WikiSidebar({
     return (
         <div className="w-72 bg-white/50 backdrop-blur-sm border-r border-slate-200/60 p-4 flex flex-col gap-4">
             <div className="flex items-center justify-between px-2">
-                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Разделы</h3>
+                <h3 className="text-xs font-bold text-slate-400  tracking-normal">Разделы</h3>
                 {canEdit && (
                     <button
                         onClick={() => onAddFolder(null)}
@@ -135,12 +135,12 @@ export function WikiSidebar({
             {/* Search Input */}
             <div className="px-2">
                 <div className="relative group">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
                     <input
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Поиск статей..."
-                        className="w-full bg-slate-100/50 border-none rounded-[10px] pl-8 pr-3 py-2 text-xs font-bold text-slate-700 placeholder:text-slate-400 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-100/50 border-none rounded-[10px] pl-8 pr-3 py-2 text-xs font-bold text-slate-700 placeholder:text-slate-400 focus:ring-1 focus:ring-primary/20 transition-all"
                     />
                 </div>
             </div>
@@ -155,11 +155,11 @@ export function WikiSidebar({
                                 key={page.id}
                                 className={cn(
                                     "flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer group",
-                                    activePageId === page.id && "bg-indigo-50 text-indigo-700 shadow-sm"
+                                    activePageId === page.id && "bg-primary/5 text-primary shadow-sm"
                                 )}
                                 onClick={() => onSelectPage(page.id)}
                             >
-                                <FileText className={cn("w-3.5 h-3.5 shrink-0", activePageId === page.id ? "text-indigo-600" : "text-slate-400")} />
+                                <FileText className={cn("w-3.5 h-3.5 shrink-0", activePageId === page.id ? "text-primary" : "text-slate-400")} />
                                 <span className="text-sm font-semibold truncate">{page.title}</span>
                             </div>
                         ))}
@@ -170,7 +170,7 @@ export function WikiSidebar({
             {canEdit && (
                 <div className="mt-auto px-2">
                     <Button
-                        className="w-full h-11 rounded-[12px] bg-indigo-600 hover:bg-indigo-700 text-white gap-2 font-bold shadow-lg shadow-indigo-100"
+                        className="w-full h-11 rounded-[12px] bg-primary hover:bg-primary/90 text-white gap-2 font-bold shadow-lg shadow-primary/20"
                         onClick={() => onAddPage(null)}
                     >
                         <Plus className="w-4 h-4" />

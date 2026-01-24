@@ -1,5 +1,6 @@
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Manrope } from 'next/font/google';
 
-export const geistSans = GeistSans;
-export const geistMono = GeistMono;
+export const manrope = Manrope({
+    subsets: ['latin', 'cyrillic'],
+    variable: '--font-manrope',
+});

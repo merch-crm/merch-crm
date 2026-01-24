@@ -14,13 +14,29 @@ import { cn } from "@/lib/utils";
 interface MoveInventoryDialogProps {
     items: InventoryItem[];
     locations: StorageLocation[];
+    isOpen?: boolean;
+    onClose?: () => void;
+    defaultItemId?: string;
 }
 
-export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogProps) {
+export function MoveInventoryDialog({
+    items,
+    locations,
+    isOpen: externalIsOpen,
+    onClose: externalOnClose,
+    defaultItemId
+}: MoveInventoryDialogProps) {
     const router = useRouter();
-    const [isOpen, setIsOpen] = useState(false);
+    const [internalIsOpen, setInternalIsOpen] = useState(false);
+
+    const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+    const setIsOpen = (val: boolean) => {
+        if (externalOnClose && !val) externalOnClose();
+        setInternalIsOpen(val);
+    };
+
     const [error, setError] = useState("");
-    const [selectedItemId, setSelectedItemId] = useState("");
+    const [selectedItemId, setSelectedItemId] = useState(defaultItemId || "");
     const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
     const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
     const [quantity, setQuantity] = useState("");
@@ -94,13 +110,15 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
 
     return (
         <>
-            <Button
-                onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[18px] px-6 gap-2 font-semibold shadow-lg shadow-indigo-100 transition-all active:scale-95 transition-all"
-            >
-                <ArrowRightLeft className="w-5 h-5" />
-                Переместить позиции
-            </Button>
+            {!externalIsOpen && (
+                <Button
+                    onClick={() => setIsOpen(true)}
+                    className="h-12 btn-primary rounded-[var(--radius)] px-6 gap-2 font-bold shadow-xl shadow-primary/20 transition-all active:scale-95"
+                >
+                    <ArrowRightLeft className="w-5 h-5" />
+                    Переместить позиции
+                </Button>
+            )}
 
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -108,15 +126,15 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                         className="fixed inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="relative w-full max-w-lg bg-white rounded-[18px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
+                    <div className="relative w-full max-w-lg bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h2 className="text-2xl font-bold text-slate-900">Перемещение</h2>
-                                <p className="text-[10px] text-slate-500 font-semibold mt-1">Отгрузка между складами</p>
+                                <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Перемещение</h2>
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-3">Между складами</p>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 transition-all hover:rotate-90"
+                                className="w-14 h-14 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[var(--radius-inner)] bg-slate-50 transition-all active:scale-95"
                             >
                                 <X className="h-6 w-6" />
                             </button>
@@ -134,7 +152,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.itemId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                                         )}
                                         value={selectedItemId}
                                         onChange={(e) => {
@@ -168,7 +186,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.fromLocationId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                                         )}
                                         value={fromLocationId}
                                         onChange={(e) => {
@@ -200,7 +218,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
                                             fieldErrors.toLocationId
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                                         )}
                                         value={toLocationId}
                                         onChange={(e) => {
@@ -241,23 +259,23 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                             "input-premium w-full pl-5 pr-14 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                                             fieldErrors.quantity
                                                 ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5"
+                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                                         )}
                                     />
                                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
                                         <button
                                             type="button"
                                             onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[18px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[var(--radius)] hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
                                         >
-                                            <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                            <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-primary" />
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[18px] hover:bg-slate-50 hover:border-indigo-300 transition-all active:scale-95 group"
+                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[var(--radius)] hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
                                         >
-                                            <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-indigo-500" />
+                                            <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-primary" />
                                         </button>
                                     </div>
                                 </div>
@@ -279,7 +297,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                                         "input-premium w-full px-5 rounded-[var(--radius)] border text-sm font-bold outline-none transition-all focus:ring-4",
                                         fieldErrors.comment
                                             ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
-                                            : "border-slate-100 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500/5"
+                                            : "border-slate-100 bg-slate-50 focus:bg-white focus:border-primary focus:ring-primary/10"
                                     )}
                                     value={comment}
                                     onChange={(e) => {
@@ -295,7 +313,7 @@ export function MoveInventoryDialog({ items, locations }: MoveInventoryDialogPro
                             </div>
 
                             {error && (
-                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-[18px] flex items-center gap-3 animate-in shake duration-500">
+                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-[var(--radius)] flex items-center gap-3 animate-in shake duration-500">
                                     <AlertCircle className="w-5 h-5 text-rose-500" />
                                     <p className="text-rose-600 text-xs font-bold">{error}</p>
                                 </div>
@@ -316,12 +334,12 @@ function SubmitButton() {
         <Button
             type="submit"
             disabled={pending}
-            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[18px] font-bold text-sm shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] mt-4"
+            className="w-full h-16 btn-primary rounded-[var(--radius)] font-bold text-sm shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4"
         >
             {pending ? (
                 <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Перемещение...
+                    Обработка...
                 </div>
             ) : "Переместить товар"}
         </Button>

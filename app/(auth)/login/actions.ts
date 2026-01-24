@@ -7,8 +7,7 @@ import { redirect } from "next/navigation";
 import { logSecurityEvent } from "@/lib/security-logger";
 import { logError } from "@/lib/error-logger";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function loginAction(prevState: any, formData: FormData) {
+export async function loginAction(prevState: unknown, formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
@@ -123,6 +122,19 @@ export async function loginAction(prevState: any, formData: FormData) {
                 role: role?.name
             }
         });
+
+        // Log to general audit logs as well
+        try {
+            const { logAction } = await import('@/lib/audit');
+            await logAction(
+                "Вход в систему",
+                "auth",
+                user[0].id,
+                { email: user[0].email, name: user[0].name }
+            );
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
 
         console.log(`[Login] Cookie set, redirecting to dashboard...`);
     } catch (error) {

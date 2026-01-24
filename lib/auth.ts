@@ -14,6 +14,8 @@ export interface Session extends JWTPayload {
     roleName: string;
     roleId: string;
     departmentName: string;
+    impersonatorId?: string; // ID of the admin who is impersonating
+    impersonatorName?: string; // Name of the admin who is impersonating
     expires?: Date;
 }
 

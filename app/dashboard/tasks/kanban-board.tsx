@@ -25,7 +25,7 @@ interface KanbanBoardProps {
 
 const COLUMNS: { id: Task['status']; label: string; color: string; bg: string }[] = [
     { id: "new", label: "Новые", color: "bg-slate-400", bg: "bg-slate-50/50" },
-    { id: "in_progress", label: "В работе", color: "bg-indigo-500", bg: "bg-indigo-50/10" },
+    { id: "in_progress", label: "В работе", color: "bg-primary", bg: "bg-primary/5" },
     { id: "review", label: "Проверка", color: "bg-amber-400", bg: "bg-amber-50/10" },
     { id: "done", label: "Завершено", color: "bg-emerald-500", bg: "bg-emerald-50/10" },
 ];
@@ -97,10 +97,10 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                 column.color
                             )}>
                                 <div className="flex items-center gap-3">
-                                    <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                    <h3 className="text-sm font-bold text-white  tracking-normal flex items-center gap-2">
                                         {column.label}
                                     </h3>
-                                    <span className="bg-white/20 text-white px-2 py-0.5 rounded-lg text-[10px] font-black">
+                                    <span className="bg-white/20 text-white px-2 py-0.5 rounded-[18px] text-[10px] font-bold">
                                         {columnTasks.length}
                                     </span>
                                 </div>
@@ -114,9 +114,9 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                 draggedTaskId && "bg-slate-100/30"
                             )}>
                                 {columnTasks.length === 0 && !draggedTaskId && (
-                                    <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200/50 rounded-2xl">
+                                    <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200/50 rounded-[18px]">
                                         <Plus className="w-6 h-6 text-slate-200 mb-2" />
-                                        <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Пусто</span>
+                                        <span className="text-[10px] font-bold text-slate-300  tracking-normal">Пусто</span>
                                     </div>
                                 )}
 
@@ -132,7 +132,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                             onDragEnd={onDragEnd}
                                             onClick={() => setSelectedTask(task)}
                                             className={cn(
-                                                "group relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 cursor-grab active:cursor-grabbing border-l-4",
+                                                "group relative bg-white rounded-[18px] p-4 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-grab active:cursor-grabbing border-l-4",
                                                 priority.line
                                             )}
                                         >
@@ -140,28 +140,28 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                                 <div className="flex flex-col gap-2">
                                                     <div className="flex items-center gap-2">
                                                         <div className={cn("h-2.5 w-2.5 rounded-full", priority.line)} title={priority.label} />
-                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                                        <span className="text-[9px] font-bold text-slate-400  tracking-normal">
                                                             {task.assignedToDepartmentId ? "Отдел" : "Личное"}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[8px] font-black uppercase tracking-tight">
+                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[8px] font-bold  tracking-tight">
                                                             {task.type || "OTHER"}
                                                         </span>
                                                         {task.order && (
-                                                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md text-[8px] font-black uppercase tracking-tight">
+                                                            <span className="px-2 py-0.5 bg-primary/5 text-primary rounded-md text-[8px] font-bold  tracking-tight">
                                                                 №{task.order.orderNumber}
                                                             </span>
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <Eye className="w-3.5 h-3.5 text-slate-300 hover:text-indigo-500" />
+                                                    <Eye className="w-3.5 h-3.5 text-slate-300 hover:text-primary" />
                                                 </div>
                                             </div>
 
                                             <h4 className={cn(
-                                                "text-sm font-black text-slate-900 leading-tight mb-4 group-hover:text-indigo-600 transition-colors",
+                                                "text-sm font-bold text-slate-900 leading-tight mb-4 group-hover:text-primary transition-colors",
                                                 isDone && "line-through text-slate-400"
                                             )}>
                                                 {task.title}
@@ -172,18 +172,18 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                                     <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center border-2 border-white">
                                                         <User className="w-3.5 h-3.5 text-slate-400" />
                                                     </div>
-                                                    <span className="text-[11px] font-black text-slate-600 truncate max-w-[120px]">
+                                                    <span className="text-[11px] font-bold text-slate-600 truncate max-w-[120px]">
                                                         {task.assignedToUser?.name || task.assignedToDepartment?.name || "Все"}
                                                     </span>
                                                 </div>
 
                                                 {task.dueDate && (
                                                     <div className={cn(
-                                                        "flex items-center gap-1.5 px-2 py-1 rounded-lg",
+                                                        "flex items-center gap-1.5 px-2 py-1 rounded-[18px]",
                                                         new Date(task.dueDate) < new Date() && !isDone ? "bg-rose-50 text-rose-500" : "bg-slate-50 text-slate-400"
                                                     )}>
                                                         <Clock className="w-3 h-3" />
-                                                        <span className="text-[10px] font-black">
+                                                        <span className="text-[10px] font-bold">
                                                             {format(new Date(task.dueDate), "d MMM", { locale: ru })}
                                                         </span>
                                                     </div>

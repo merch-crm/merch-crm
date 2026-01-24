@@ -5,11 +5,21 @@ import {
     Scale,
     Zap,
     Tag,
-    CheckCircle2,
-    FileText,
-    ArrowUpRight
+    X,
+    Sparkles,
+    Fingerprint,
+    Box,
+    Ruler,
+    Droplets,
+    Search,
+    MoreHorizontal,
 } from "lucide-react";
+import { QualityDropdown } from "../../../quality-dropdown";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
+import { Session } from "@/lib/auth";
+import { UnitSelect } from "@/components/ui/unit-select";
+import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface ItemGeneralInfoProps {
     item: InventoryItem;
@@ -18,8 +28,11 @@ interface ItemGeneralInfoProps {
     allAttributes: InventoryAttribute[];
     // measurementUnits: MeasurementUnit[]; // unused
     editData: InventoryItem;
-    onUpdateField: (field: string, value: string | number | null) => void;
+    onUpdateField: (field: string, value: string | number | null | boolean | Record<string, unknown>) => void;
     onUpdateAttribute: (key: string, value: string) => void;
+    user: Session | null;
+    totalStock: number;
+    onEdit?: () => void;
 }
 
 export function ItemGeneralInfo({
@@ -30,14 +43,70 @@ export function ItemGeneralInfo({
     // measurementUnits,
     editData,
     onUpdateField,
-    onUpdateAttribute
+    onUpdateAttribute,
+    user,
+    totalStock,
+    onEdit
 }: ItemGeneralInfoProps) {
 
     // Helper to get descriptive name for a code
-    const getAttrLabel = (typeSlug: string, value: string | number | null | undefined) => {
+    const getAttrLabel = (typeSlug: string, value: string | number | null | undefined): string => {
         if (!value) return "—";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
-        return attr ? attr.name : value;
+        return attr ? attr.name : String(value);
+    };
+
+    // Color mapping for visual indicator
+    const getColorHex = (label: string) => {
+        const colors: Record<string, string> = {
+            "шоколад": "#3E2A24",
+            "черный": "#020617",
+            "белый": "#FFFFFF",
+            "красный": "#E11D48",
+            "синий": "#2563EB",
+            "зеленый": "#16A34A",
+            "желтый": "#EAB308",
+            "серый": "#64748B",
+            "розовый": "#DB2777",
+            "оранжевый": "#EA580C",
+            "фиолетовый": "#9333EA",
+            "бежевый": "#D6D3D1",
+            "хаки": "#454B1B",
+            "бордовый": "#7F1D1D",
+            "мята": "#4ADE80",
+            "голубой": "#38BDF8",
+            "песочный": "#C2B280",
+            "оливка": "#808000",
+            "горчица": "#EAB308",
+            "графит": "#334155",
+            "антрацит": "#1E293B",
+            "бирюза": "#0D9488",
+            "индиго": "#4F46E5",
+        };
+        const lowerLabel = label.toLowerCase();
+        for (const [key, hex] of Object.entries(colors)) {
+            if (lowerLabel.includes(key)) return hex;
+        }
+        return null;
+    };
+
+    // Param mapping for Clean Minimal style
+    const getParamConfig = (slug: string, hexColor?: string | null): { icon: React.ElementType, gradient: string, customHex?: string } => {
+        const configs: Record<string, { icon: React.ElementType, gradient: string }> = {
+            "quality": { icon: Sparkles, gradient: "from-slate-400 to-slate-600" },
+            "brand": { icon: Fingerprint, gradient: "from-slate-400 to-slate-600" },
+            "material": { icon: Box, gradient: "from-slate-400 to-slate-600" },
+            "size": { icon: Ruler, gradient: "from-slate-400 to-slate-600" },
+            "color": { icon: Droplets, gradient: "from-slate-400 to-slate-600" },
+        };
+
+        const config = configs[slug] || { icon: Search, gradient: "from-slate-300 to-slate-500" };
+
+        if (slug === 'color' && hexColor) {
+            return { ...config, customHex: hexColor };
+        }
+
+        return config;
     };
 
     // Filter dynamic attributes
@@ -56,12 +125,12 @@ export function ItemGeneralInfo({
         { label: "Бренд", slug: "brand", code: isEditing ? editData.brandCode : item.brandCode },
         { label: "Материал", slug: "material", code: isEditing ? editData.materialCode : item.materialCode },
         { label: "Размер", slug: "size", code: isEditing ? editData.sizeCode : item.sizeCode },
-        { label: "Цвет/Атрибут", slug: "color", code: isEditing ? editData.attributeCode : item.attributeCode },
+        { label: "Цвет", slug: "color", code: isEditing ? editData.attributeCode : item.attributeCode },
     ].filter(p => isEditing || p.code);
 
     // Filter dynamic entries to avoid duplicates
     const skuTechnicalSlugs = skuParams.map(p => p.slug);
-    const skuLabels = ["Бренд", "Качество", "Материал", "Размер", "Цвет", "Цвет/Атрибут"];
+    const skuLabels = ["Бренд", "Качество", "Материал", "Размер", "Цвет"];
 
     const nonSkuDynamicEntries = dynamicEntries.filter(([key]) => {
         if (skuTechnicalSlugs.includes(key)) return false;
@@ -78,119 +147,101 @@ export function ItemGeneralInfo({
         isSku: false
     }))];
 
+    const isAdmin = user?.roleName === 'Администратор' || user?.roleName === 'Руководство';
+    const totalValue = totalStock * (item.costPrice || 0);
+
     return (
-        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            {/* Top Stats Row (FinTech Inspired) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-8 rounded-[18px] border border-slate-200 shadow-sm space-y-4 ring-1 ring-slate-100 hover:ring-indigo-500/30 transition-all">
-                    <div className="flex items-center justify-between">
-                        <Scale className="w-5 h-5 text-indigo-600" />
-                        <ArrowUpRight className="w-4 h-4 text-slate-300" />
-                    </div>
-                    <div>
-                        <p className="text-[12px] font-medium text-slate-500">Формат учета</p>
-                        <p className="text-3xl font-bold text-slate-900">{item.unit || "шт"}</p>
-                    </div>
-                </div>
-
-                <div className="bg-white p-8 rounded-[18px] border border-slate-200 shadow-sm space-y-4 group">
-                    <div className="flex items-center justify-between font-bold">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                        <span className="text-[11px] font-medium text-slate-400 group-hover:text-slate-900 transition-colors">Статус</span>
-                    </div>
-                    <div>
-                        <p className="text-[12px] font-medium text-slate-400">Система</p>
-                        <p className="text-2xl font-bold text-slate-950">Активно</p>
-                    </div>
-                </div>
-
-                <div className="bg-slate-900 p-8 rounded-[18px] border border-white/5 shadow-xl space-y-4">
-                    <div className="flex items-center justify-between">
-                        <Zap className="w-5 h-5 text-indigo-400" />
-                        <div className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-white">Global</div>
-                    </div>
-                    <div>
-                        <p className="text-[12px] font-medium text-white/40">Свойства</p>
-                        <p className="text-2xl font-bold text-white">{allParams.length} параметров</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Description Area */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-indigo-500" />
-                        <h4 className="text-[12px] font-bold text-slate-400">Описание изделия</h4>
-                    </div>
-                </div>
-
-                <div className="bg-slate-50/50 rounded-[18px] p-8 border border-slate-200/50">
-                    {isEditing ? (
-                        <textarea
-                            value={editData.description || ""}
-                            onChange={(e) => onUpdateField("description", e.target.value)}
-                            placeholder="Правила ухода, состав, особенности..."
-                            className="w-full min-h-[140px] bg-white rounded-[18px] p-6 border border-slate-200 text-slate-900 font-semibold text-sm focus:border-indigo-500 outline-none transition-all shadow-inner"
-                        />
-                    ) : (
-                        <p className="text-base font-medium text-slate-700 leading-relaxed max-w-4xl">
-                            {item.description || "Описание этой позиции еще не заполнено менеджером."}
-                        </p>
-                    )}
-                </div>
-            </div>
-
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Parameters Grid */}
-            <div className="space-y-6">
-                <div className="flex items-center gap-2 px-2">
-                    <Tag className="w-4 h-4 text-indigo-500" />
-                    <h4 className="text-[12px] font-bold text-slate-400">Техническая спецификация</h4>
-                </div>
+            <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {allParams.map((param) => {
+                        const attrLabel = getAttrLabel(param.slug, param.code as string | number | null);
+                        const hexColor = getColorHex(attrLabel);
+                        const config = getParamConfig(param.slug, hexColor);
+                        const Icon = config.icon;
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {allParams.map((param) => (
-                        <div key={param.slug} className="bg-white p-6 rounded-[18px] border border-slate-100 shadow-sm transition-all hover:shadow-md group">
-                            <div className="flex items-center gap-2 mb-4">
-                                {param.isSku ? (
-                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                ) : (
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                                )}
-                                <span className="text-[11px] font-bold text-slate-400 group-hover:text-slate-900 transition-colors">{param.label}</span>
-                            </div>
-
-                            {isEditing ? (
-                                <select
-                                    value={(param.code as string) || ""}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        onUpdateAttribute(param.slug, val);
-                                        if (param.isSku) {
-                                            const map: Record<string, string> = {
-                                                'quality': 'qualityCode',
-                                                'brand': 'brandCode',
-                                                'material': 'materialCode',
-                                                'size': 'sizeCode',
-                                                'color': 'attributeCode'
-                                            };
-                                            if (map[param.slug]) onUpdateField(map[param.slug], val);
-                                        }
-                                    }}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-[18px] px-3 py-2 text-[12px] font-semibold text-slate-950 focus:border-indigo-500 outline-none appearance-none"
+                        return (
+                            <div key={param.slug} className="group bg-slate-50 rounded-2xl p-4 border border-slate-100 transition-all hover:border-primary/60 hover:ring-1 hover:ring-primary/10 flex items-center justify-start gap-4 text-left">
+                                {/* 3D-like Icon/Color Container */}
+                                <div
+                                    className={cn(
+                                        "w-10 h-10 shrink-0 flex items-center justify-center relative transition-all duration-500 group-hover:scale-110",
+                                        param.slug === 'color' ? "rounded-full" : "rounded-xl",
+                                        !config.customHex ? "bg-slate-100 text-slate-500" : "text-white"
+                                    )}
+                                    style={config.customHex ? {
+                                        backgroundColor: config.customHex,
+                                        boxShadow: `0 4px 12px ${config.customHex}40`,
+                                        border: attrLabel.toLowerCase().includes('белый') ? '1px solid #e2e8f0' : 'none'
+                                    } : undefined}
                                 >
-                                    <option value="">—</option>
-                                    {allAttributes.filter(a => a.type === param.slug).map(attr => (
-                                        <option key={attr.id} value={attr.value}>{attr.name}</option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <div className="text-sm font-bold text-slate-900 truncate">
-                                    {getAttrLabel(param.slug, param.code as string | number | null | undefined)}
+                                    {param.slug === 'color' && config.customHex ? (
+                                        <div className="relative z-10 w-full h-full flex items-center justify-center">
+                                            <div className="absolute inset-0 rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]" />
+                                            <Icon className="w-5 h-5 text-slate-900/20" />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="absolute inset-0 bg-white/40 rounded-xl" />
+                                            <Icon className="w-5 h-5 relative z-10" />
+                                        </>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    ))}
+
+                                <div className="space-y-0.5 min-w-0">
+                                    <div className="min-w-0">
+                                        {isEditing ? (
+                                            param.slug === 'quality' ? (
+                                                <QualityDropdown
+                                                    value={param.code as string || ""}
+                                                    onChange={(name: string, code: string) => {
+                                                        onUpdateAttribute(param.slug, code);
+                                                        onUpdateField('qualityCode', code);
+                                                    }}
+                                                    compact={true}
+                                                    className="w-full"
+                                                />
+                                            ) : (
+                                                <select
+                                                    value={(param.code as string) || ""}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        onUpdateAttribute(param.slug, val);
+                                                        if (param.isSku) {
+                                                            const map: Record<string, string> = {
+                                                                'brand': 'brandCode',
+                                                                'material': 'materialCode',
+                                                                'size': 'sizeCode',
+                                                                'color': 'attributeCode'
+                                                            };
+                                                            if (map[param.slug]) onUpdateField(map[param.slug], val);
+                                                        }
+                                                    }}
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-[14px] font-bold text-slate-900 focus:bg-white focus:border-primary outline-none appearance-none transition-all"
+                                                >
+                                                    <option value="">—</option>
+                                                    {allAttributes.filter(a => a.type === param.slug).map(attr => (
+                                                        <option key={attr.id} value={attr.value}>{attr.name}</option>
+                                                    ))}
+                                                </select>
+                                            )
+                                        ) : (
+                                            <div
+                                                className="text-lg font-bold text-slate-900 tracking-tight leading-tight group-hover:text-black transition-colors overflow-hidden text-ellipsis cursor-pointer"
+                                                onDoubleClick={onEdit}
+                                            >
+                                                {attrLabel}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <span className="block text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-500 uppercase tracking-wider">
+                                        {param.label}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

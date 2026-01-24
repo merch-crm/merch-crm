@@ -38,7 +38,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
     const getStatusColor = (status: string) => {
         switch (status) {
             case "done": return "border-emerald-500";
-            case "in_progress": return "border-indigo-500";
+            case "in_progress": return "border-primary";
             case "review": return "border-amber-400";
             default: return "border-slate-300";
         }
@@ -49,14 +49,14 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-indigo-50 rounded-2xl">
-                        <CalendarIcon className="w-6 h-6 text-indigo-600" />
+                    <div className="p-3 bg-primary/5 rounded-[18px]">
+                        <CalendarIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                             {format(currentMonth, "LLLL yyyy", { locale: ru })}
                         </h2>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        <p className="text-xs font-bold text-slate-400  tracking-normal">
                             Календарь задач
                         </p>
                     </div>
@@ -65,19 +65,19 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                        className="p-3 hover:bg-slate-50 rounded-xl transition-all"
+                        className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
                     >
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
                     </button>
                     <button
                         onClick={() => setCurrentMonth(new Date())}
-                        className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-black hover:bg-slate-800 transition-all"
+                        className="px-4 py-2 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-slate-800 transition-all"
                     >
                         СЕГОДНЯ
                     </button>
                     <button
                         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                        className="p-3 hover:bg-slate-50 rounded-xl transition-all"
+                        className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
                     >
                         <ChevronRight className="w-5 h-5 text-slate-400" />
                     </button>
@@ -88,7 +88,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             <div className="grid grid-cols-7 gap-2 mb-4">
                 {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((day) => (
                     <div key={day} className="text-center">
-                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                        <span className="text-xs font-bold text-slate-400  tracking-normal">
                             {day}
                         </span>
                     </div>
@@ -106,20 +106,20 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                         <div
                             key={day.toString()}
                             className={cn(
-                                "min-h-[120px] p-3 rounded-2xl border-2 transition-all",
+                                "min-h-[120px] p-3 rounded-[18px] border-2 transition-all",
                                 isCurrentMonth ? "bg-white" : "bg-slate-50/50",
-                                isCurrentDay ? "border-indigo-500 shadow-lg shadow-indigo-500/10" : "border-slate-100 hover:border-slate-200"
+                                isCurrentDay ? "border-primary shadow-lg shadow-primary/10" : "border-slate-100 hover:border-slate-200"
                             )}
                         >
                             <div className="flex items-center justify-between mb-2">
                                 <span className={cn(
-                                    "text-sm font-black",
-                                    isCurrentDay ? "text-indigo-600" : isCurrentMonth ? "text-slate-900" : "text-slate-300"
+                                    "text-sm font-bold",
+                                    isCurrentDay ? "text-primary" : isCurrentMonth ? "text-slate-900" : "text-slate-300"
                                 )}>
                                     {format(day, "d")}
                                 </span>
                                 {dayTasks.length > 0 && (
-                                    <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-md text-[10px] font-black">
+                                    <span className="px-1.5 py-0.5 bg-primary/5 text-primary rounded-md text-[10px] font-bold">
                                         {dayTasks.length}
                                     </span>
                                 )}
@@ -131,16 +131,16 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                         key={task.id}
                                         onClick={() => onTaskClick(task)}
                                         className={cn(
-                                            "w-full text-left p-2 rounded-xl border-l-4 transition-all hover:shadow-md group",
+                                            "w-full text-left p-2 rounded-[18px] border-l-4 transition-all hover:shadow-md group",
                                             getStatusColor(task.status),
-                                            task.status === "done" ? "bg-slate-50" : "bg-white hover:bg-indigo-50"
+                                            task.status === "done" ? "bg-slate-50" : "bg-white hover:bg-primary/5"
                                         )}
                                     >
                                         <div className="flex items-center gap-1.5 mb-1">
                                             <div className={cn("h-1.5 w-1.5 rounded-full", getPriorityColor(task.priority))} />
                                             <span className={cn(
-                                                "text-[10px] font-black truncate",
-                                                task.status === "done" ? "line-through text-slate-400" : "text-slate-700 group-hover:text-indigo-600"
+                                                "text-[10px] font-bold truncate",
+                                                task.status === "done" ? "line-through text-slate-400" : "text-slate-700 group-hover:text-primary"
                                             )}>
                                                 {task.title}
                                             </span>
@@ -148,7 +148,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                     </button>
                                 ))}
                                 {dayTasks.length > 3 && (
-                                    <div className="text-[9px] font-black text-slate-400 text-center uppercase tracking-widest">
+                                    <div className="text-[9px] font-bold text-slate-400 text-center  tracking-normal">
                                         +{dayTasks.length - 3} ещё
                                     </div>
                                 )}

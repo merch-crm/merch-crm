@@ -80,7 +80,7 @@ export default async function ClientsPage() {
                     <div className="mt-4 sm:mt-0">
                         <Link
                             href="/dashboard/clients/new"
-                            className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center"
+                            className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-[18px] px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center"
                         >
                             <Plus className="w-5 h-5" />
                             Добавить клиента

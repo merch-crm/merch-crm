@@ -77,8 +77,8 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                        <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
                             <Settings size={24} />
                         </div>
                         Лимиты хранилища
@@ -99,7 +99,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                                 step="0.1"
                                 value={toGB(settings.maxS3Size)}
                                 onChange={e => setSettings({ ...settings, maxS3Size: fromGB(e.target.value) })}
-                                className="bg-slate-50 border-none rounded-xl font-bold text-slate-900 h-12 px-4 shadow-sm"
+                                className="bg-slate-50 border-none rounded-[18px] font-bold text-slate-900 h-12 px-4 shadow-sm"
                             />
                         </div>
                         <div className="space-y-2">
@@ -109,12 +109,12 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                                 step="0.1"
                                 value={toGB(settings.maxLocalSize)}
                                 onChange={e => setSettings({ ...settings, maxLocalSize: fromGB(e.target.value) })}
-                                className="bg-slate-50 border-none rounded-xl font-bold text-slate-900 h-12 px-4 shadow-sm"
+                                className="bg-slate-50 border-none rounded-[18px] font-bold text-slate-900 h-12 px-4 shadow-sm"
                             />
                         </div>
                         <div className="space-y-3">
                             <label className="font-bold text-slate-700 text-sm block mb-2">Порог предупреждения (%)</label>
-                            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-100">
+                            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-[18px] shadow-sm border border-slate-100">
                                 <input
                                     type="range"
                                     min="10"
@@ -122,9 +122,9 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                                     step="5"
                                     value={settings.warningThreshold * 100}
                                     onChange={e => setSettings({ ...settings, warningThreshold: parseInt(e.target.value) / 100 })}
-                                    className="flex-1 accent-indigo-600 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                                    className="flex-1 accent-#5d00ff h-2 bg-slate-200 rounded-[18px] appearance-none cursor-pointer"
                                 />
-                                <span className="font-black text-indigo-600 w-12 text-right text-lg">
+                                <span className="font-bold text-#5d00ff w-12 text-right text-lg">
                                     {Math.round(settings.warningThreshold * 100)}%
                                 </span>
                             </div>
@@ -133,7 +133,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                 )}
 
                 <DialogFooter>
-                    <Button onClick={handleSave} disabled={saving || loading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 font-black uppercase tracking-widest text-xs shadow-lg shadow-indigo-200">
+                    <Button onClick={handleSave} disabled={saving || loading} className="w-full bg-#5d00ff hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold  tracking-normal text-xs shadow-lg shadow-indigo-200">
                         {saving ? "Сохранение..." : "Сохранить настройки"}
                     </Button>
                 </DialogFooter>

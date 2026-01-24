@@ -92,15 +92,15 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 px-2 relative z-10">
                 <div className="space-y-2">
                     <div className="flex items-center gap-3 mb-1">
-                        <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
+                        <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold  tracking-normal border border-primary/20">
                             v2.0 Beta
                         </span>
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase tracking-wider">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500  tracking-wider">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             Real-time active
                         </div>
                     </div>
-                    <h1 className="text-5xl font-black text-slate-900 tracking-tighter leading-none flex items-center gap-4">
+                    <h1 className="text-5xl font-bold text-slate-900 tracking-normal leading-none flex items-center gap-4">
                         База клиентов
                         <Sparkles className="w-8 h-8 text-primary animate-pulse" />
                     </h1>
@@ -114,7 +114,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         <button
                             onClick={() => setViewMode("list")}
                             className={cn(
-                                "flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+                                "flex items-center gap-2 px-6 py-2.5 rounded-[18px] text-[10px] font-bold  tracking-normal transition-all hover:scale-105 active:scale-95",
                                 viewMode === "list" ? "bg-slate-900 text-white shadow-lg" : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
                             )}
                         >
@@ -124,7 +124,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         <button
                             onClick={() => setViewMode("grid")}
                             className={cn(
-                                "flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+                                "flex items-center gap-2 px-6 py-2.5 rounded-[18px] text-[10px] font-bold  tracking-normal transition-all hover:scale-105 active:scale-95",
                                 viewMode === "grid" ? "bg-slate-900 text-white shadow-lg" : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
                             )}
                         >
@@ -133,7 +133,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         </button>
                     </div>
 
-                    <button className="btn-primary h-14 px-8 rounded-[var(--radius-inner)] flex items-center gap-3 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
+                    <button className="btn-primary h-14 px-8 rounded-[var(--radius-inner)] flex items-center gap-3 text-sm font-bold  tracking-normal shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
                         <Plus className="w-5 h-5" />
                         Новый контрагент
                     </button>
@@ -154,11 +154,11 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-[60px] opacity-0 group-hover:opacity-40 transition-opacity duration-700", card.bg.replace('/10', '/30'))} />
 
                         <div className="flex justify-between items-start relative z-10">
-                            <div className={cn("p-4 rounded-2xl transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6", card.bg)}>
+                            <div className={cn("p-4 rounded-[18px] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6", card.bg)}>
                                 <card.icon className={cn("h-6 w-6", card.color)} />
                             </div>
                             <div className={cn(
-                                "flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-black border backdrop-blur-md transition-all",
+                                "flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold border backdrop-blur-md transition-all",
                                 card.isPositive
                                     ? "text-emerald-500 bg-emerald-500/5 border-emerald-500/10 group-hover:bg-emerald-500/10"
                                     : "text-rose-500 bg-rose-500/5 border-rose-500/10 group-hover:bg-rose-500/10"
@@ -169,14 +169,14 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         </div>
 
                         <div className="space-y-1 relative z-10">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:translate-x-1 transition-transform duration-300">
+                            <p className="text-[10px] font-bold text-slate-400  tracking-[0.2em] group-hover:translate-x-1 transition-transform duration-300">
                                 {card.name}
                             </p>
                             <div className="flex items-baseline gap-2">
-                                <h3 className="text-4xl font-black text-slate-900 tracking-tighter group-hover:tracking-normal transition-all duration-500">
+                                <h3 className="text-4xl font-bold text-slate-900 tracking-normal group-hover:tracking-normal transition-all duration-500">
                                     {card.value}
                                 </h3>
-                                {(card.name.includes("чек") || card.name.includes("выручка")) && <span className="text-lg font-black text-primary">₽</span>}
+                                {(card.name.includes("чек") || card.name.includes("выручка")) && <span className="text-lg font-bold text-primary">₽</span>}
                             </div>
                         </div>
 
@@ -223,11 +223,11 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                             {/* NEW: Grid View Preview */}
                             <div className="col-span-full py-32 text-center glass-panel border-dashed bg-white/30">
                                 <div className="mb-6 flex justify-center">
-                                    <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center animate-pulse">
+                                    <div className="w-20 h-20 rounded-[18px] bg-primary/10 flex items-center justify-center animate-pulse">
                                         <LayoutGrid className="w-10 h-10 text-primary" />
                                     </div>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Режим сетки в разработке</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 tracking-tight ">Режим сетки в разработке</h3>
                                 <p className="text-slate-400 text-sm max-w-xs mx-auto mt-3 font-medium">
                                     Мы проектируем идеальные интерактивные карточки для вашей базы.
                                 </p>
@@ -263,11 +263,11 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                     </div>
 
                     <div className="relative z-10">
-                        <div className="h-16 w-16 rounded-2xl bg-white/10 flex items-center justify-center mb-8 backdrop-blur-md border border-white/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl overflow-hidden relative">
+                        <div className="h-16 w-16 rounded-[18px] bg-white/10 flex items-center justify-center mb-8 backdrop-blur-md border border-white/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl overflow-hidden relative">
                             <div className="absolute inset-0 bg-primary/20 animate-pulse" />
                             <ArrowUpRight className="w-8 h-8 text-white relative z-10" />
                         </div>
-                        <h3 className="text-5xl font-black tracking-tighter uppercase mb-6 leading-[0.85]">
+                        <h3 className="text-5xl font-bold tracking-normal  mb-6 leading-[0.85]">
                             Автоматизация <br /> <span className="text-primary italic">маркетинга 2.0</span>
                         </h3>
                         <p className="text-white/50 text-base font-medium leading-relaxed max-w-sm">
@@ -275,7 +275,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         </p>
                     </div>
 
-                    <button className="relative z-10 w-fit h-14 px-10 bg-white text-slate-900 rounded-[var(--radius-inner)] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/5">
+                    <button className="relative z-10 w-fit h-14 px-10 bg-white text-slate-900 rounded-[var(--radius-inner)] font-bold text-[11px]  tracking-[0.2em] hover:bg-slate-100 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/5">
                         Настроить триггеры
                     </button>
 
@@ -287,10 +287,10 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                 <div className="lg:col-span-5 glass-panel p-10 bg-white/80 border-white/60 shadow-crm-lg flex flex-col min-h-[340px]">
                     <div className="flex items-center justify-between mb-10">
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Рабочие задачи</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Клиентский сервис</p>
+                            <h3 className="text-xl font-bold text-slate-900  tracking-tight">Рабочие задачи</h3>
+                            <p className="text-[10px] text-slate-400 font-bold  tracking-normal mt-1">Клиентский сервис</p>
                         </div>
-                        <button className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all shadow-sm">
+                        <button className="w-10 h-10 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all shadow-sm">
                             <MoreHorizontal className="w-5 h-5" />
                         </button>
                     </div>
@@ -302,25 +302,25 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         ].map((task, i) => (
                             <div key={i} className="flex items-center justify-between p-5 bg-white rounded-[22px] border border-slate-100 hover:border-primary/30 hover:shadow-crm-md transition-all cursor-pointer group">
                                 <div className="flex items-center gap-5">
-                                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900 shadow-inner font-black group-hover:scale-110 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500">
+                                    <div className="w-12 h-12 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-900 shadow-inner font-bold group-hover:scale-110 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500">
                                         {task.name[0]}
                                     </div>
                                     <div>
-                                        <div className="text-sm font-black text-slate-900 leading-none mb-1.5">{task.name}</div>
-                                        <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                                        <div className="text-sm font-bold text-slate-900 leading-none mb-1.5">{task.name}</div>
+                                        <div className="text-[10px] text-slate-400 font-bold  tracking-normal flex items-center gap-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                             {task.action}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">{task.date}</div>
+                                    <div className="text-[10px] font-bold text-primary  tracking-normal bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">{task.date}</div>
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    <button className="mt-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-all flex items-center gap-3 self-center group">
+                    <button className="mt-8 text-[10px] font-bold text-slate-400  tracking-[0.2em] hover:text-primary transition-all flex items-center gap-3 self-center group">
                         Развернуть все задачи
                         <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary group-hover:translate-x-1 transition-all">
                             <ArrowUpRight className="w-3 h-3" />

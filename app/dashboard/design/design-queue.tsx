@@ -3,6 +3,7 @@
 import { FileText, User, Calendar, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { pluralize } from "@/lib/pluralize";
 
 interface Order {
     id: string;
@@ -31,7 +32,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                     <p className="text-sm text-slate-400 mt-1">Заказы, ожидающие макетирования</p>
                 </div>
                 <div className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-bold">
-                    {orders.length} заказов
+                    {orders.length} {pluralize(orders.length, 'заказ', 'заказа', 'заказов')}
                 </div>
             </div>
 
@@ -53,7 +54,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                 key={order.id}
                                 href={`/dashboard/orders/${order.id}`}
                                 className={cn(
-                                    "block bg-white rounded-[14px] p-5 border transition-all hover:shadow-md group",
+                                    "block bg-white rounded-[var(--radius)] p-5 border transition-all hover:shadow-md group",
                                     isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-100"
                                 )}
                             >
@@ -64,7 +65,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                                 {order.orderNumber}
                                             </span>
                                             {isUrgent && (
-                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold uppercase">
+                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold ">
                                                     Срочно
                                                 </div>
                                             )}
@@ -81,7 +82,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                 <div className="flex items-center gap-4 text-xs text-slate-500">
                                     <div className="flex items-center gap-1.5">
                                         <Package className="w-3.5 h-3.5" />
-                                        <span>{totalItems} позиций</span>
+                                        <span>{totalItems} {pluralize(totalItems, 'позиция', 'позиции', 'позиций')}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3.5 h-3.5" />
@@ -93,7 +94,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                     <div className="mt-3 pt-3 border-t border-slate-100">
                                         <p className="text-xs text-slate-600 line-clamp-2">
                                             {order.items[0].description}
-                                            {order.items.length > 1 && ` +${order.items.length - 1} ещё`}
+                                            {order.items.length > 1 && ` +${order.items.length - 1} ${pluralize(order.items.length - 1, 'позиция', 'позиции', 'позиций')} ещё`}
                                         </p>
                                     </div>
                                 )}

@@ -64,9 +64,9 @@ export default function SmartHomeDashboard() {
                         {/* List */}
                         <div className="space-y-3">
                             {/* Item 1 */}
-                            <div className="bg-[#F8F9FB] rounded-2xl p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-[#F8F9FB] rounded-[18px] p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-500 shadow-sm">
+                                    <div className="w-10 h-10 rounded-[18px] bg-white flex items-center justify-center text-slate-500 shadow-sm">
                                         <Wind className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -78,9 +78,9 @@ export default function SmartHomeDashboard() {
                             </div>
 
                             {/* Item 2 */}
-                            <div className="bg-[#F8F9FB] rounded-2xl p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-[#F8F9FB] rounded-[18px] p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-500 shadow-sm">
+                                    <div className="w-10 h-10 rounded-[18px] bg-white flex items-center justify-center text-slate-500 shadow-sm">
                                         <Wifi className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -92,9 +92,9 @@ export default function SmartHomeDashboard() {
                             </div>
 
                             {/* Item 3 */}
-                            <div className="bg-[#F8F9FB] rounded-2xl p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-[#F8F9FB] rounded-[18px] p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-500 shadow-sm">
+                                    <div className="w-10 h-10 rounded-[18px] bg-white flex items-center justify-center text-slate-500 shadow-sm">
                                         <Tv className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -106,9 +106,9 @@ export default function SmartHomeDashboard() {
                             </div>
 
                             {/* Item 4 */}
-                            <div className="bg-[#F8F9FB] rounded-2xl p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-[#F8F9FB] rounded-[18px] p-4 flex items-center justify-between group hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-500 shadow-sm">
+                                    <div className="w-10 h-10 rounded-[18px] bg-white flex items-center justify-center text-slate-500 shadow-sm">
                                         <Droplets className="w-5 h-5" />
                                     </div>
                                     <div>

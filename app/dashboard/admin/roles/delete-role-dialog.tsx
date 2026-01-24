@@ -62,17 +62,17 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                         </div>
                     </DialogHeader>
 
-                    <div className="bg-slate-50/80 rounded-2xl p-6 border border-slate-100 text-center backdrop-blur-sm">
+                    <div className="bg-slate-50/80 rounded-[18px] p-6 border border-slate-100 text-center backdrop-blur-sm">
                         <p className="text-[13px] text-slate-600 leading-relaxed font-medium">
                             Это действие <span className="text-slate-900 font-bold">нельзя будет отменить</span>. Все настройки разрешений для этой роли будут безвозвратно удалены.
                         </p>
                     </div>
 
                     {role.isSystem && (
-                        <div className="p-4 bg-rose-50 rounded-xl border border-rose-100">
+                        <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100">
                             <div className="flex items-center gap-2 text-rose-600 mb-3">
                                 <Lock className="w-4 h-4" />
-                                <span className="text-xs font-black uppercase tracking-wider">Системная защита</span>
+                                <span className="text-xs font-bold  tracking-wider">Системная защита</span>
                             </div>
                             <p className="text-xs font-bold text-rose-500/80 mb-3">
                                 Это системная роль. Для подтверждения удаления введите ваш пароль администратора.
@@ -82,7 +82,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Пароль администратора"
-                                className="w-full h-11 px-4 rounded-lg border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                className="w-full h-11 px-4 rounded-[18px] border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
                                 autoFocus
                             />
                         </div>
@@ -95,14 +95,14 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                                 onClose();
                             }}
                             disabled={loading}
-                            className="flex-1 px-6 py-3.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                            className="flex-1 px-6 py-3.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 rounded-[18px] transition-all active:scale-[0.98] disabled:opacity-50"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleConfirm}
                             disabled={loading || (role.isSystem && !password.trim())}
-                            className="flex-[1.2] inline-flex justify-center items-center gap-2 px-6 py-3.5 bg-red-600 text-white text-sm font-bold rounded-xl hover:bg-red-700 shadow-lg shadow-red-200 hover:shadow-red-300 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-[1.2] inline-flex justify-center items-center gap-2 px-6 py-3.5 bg-red-600 text-white text-sm font-bold rounded-[18px] hover:bg-red-700 shadow-lg shadow-red-200 hover:shadow-red-300 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                             {loading ? "Удаление..." : "Удалить роль"}

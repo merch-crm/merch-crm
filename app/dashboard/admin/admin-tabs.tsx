@@ -16,7 +16,6 @@ export default function AdminTabs() {
         { name: "Промокоды", href: "/dashboard/admin/promocodes", icon: Ticket },
         { name: "Мониторинг", href: "/dashboard/admin/monitoring", icon: Settings },
         { name: "Хранилище", href: "/dashboard/admin/storage", icon: HardDrive },
-        { name: "Безопасность", href: "/dashboard/admin/security", icon: Shield },
     ];
 
     return (

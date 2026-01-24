@@ -252,7 +252,7 @@ export async function getFundsStats(from?: Date, to?: Date) {
 
         const fundDefinitions = [
             { name: "Операционный фонд", percentage: 40, color: "bg-blue-500", icon: "Activity" },
-            { name: "Фонд оплаты труда", percentage: 30, color: "bg-indigo-500", icon: "Users" },
+            { name: "Фонд оплаты труда", percentage: 30, color: "bg-primary", icon: "Users" },
             { name: "Фонд развития", percentage: 15, color: "bg-emerald-500", icon: "TrendingUp" },
             { name: "Резервный фонд", percentage: 10, color: "bg-amber-500", icon: "ShieldCheck" },
             { name: "Маркетинг", percentage: 5, color: "bg-rose-500", icon: "Megaphone" },

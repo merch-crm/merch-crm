@@ -42,10 +42,14 @@
   --input: #f1f5f9;
   --ring: #5d00ff;
 
-  /* Radii - 18px for all */
-  --radius: 18px;
-  --radius-outer: 18px;
-  --radius-inner: 18px;
+  /* Radii - Unified Rounding System */
+  /* Outer blocks (panels, cards): 16px */
+  /* Inner elements (nested cards, buttons): 8px */
+  /* Rule: Visual harmony with p-8 (32px) padding */
+  --radius: 16px;
+  --radius-outer: 16px;
+  --radius-inner: 8px;
+  --radius-padding: 32px;
 
   /* Shadows - "Glow" & Depth */
   --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -2px rgba(0, 0, 0, 0.05);
@@ -91,18 +95,21 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-2xl: var(--radius-outer);
+  --radius-xl: 12px;
+  --radius-lg: var(--radius-inner);
+  --radius-md: 6px;
+  --radius-sm: 4px;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --spacing-container: var(--radius-padding);
 
-  --shadow-crm-sm: var(--crm-shadow-sm);
-  --shadow-crm-md: var(--crm-shadow-md);
-  --shadow-crm-lg: var(--crm-shadow-lg);
-  --shadow-crm-xl: var(--crm-shadow-xl);
+  --font-sans: var(--font-manrope);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --shadow-crm-sm: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-crm-md: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  --shadow-crm-lg: 0 20px 48px -10px rgba(0, 0, 0, 0.18), 0 10px 20px -8px rgba(0, 0, 0, 0.12);
+  --shadow-crm-xl: 0 32px 64px -16px rgba(0, 0, 0, 0.35), 0 16px 32px -12px rgba(0, 0, 0, 0.2);
 }
 
 @layer base {
@@ -119,7 +126,7 @@
   body {
     background-color: #f8fafc;
     color: var(--foreground);
-    font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
     @apply antialiased selection:bg-primary/20 selection:text-primary relative min-h-screen overflow-x-hidden;
   }
 
@@ -165,7 +172,7 @@
 
   /* Glass Panel - The Core Building Block */
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-crm-md rounded-[var(--radius-outer)] transition-all duration-300;
+    @apply bg-white/70 backdrop-blur-xl shadow-crm-md rounded-2xl p-[var(--radius-padding)] transition-all duration-300;
   }
 
   .glass-panel:hover {
@@ -174,16 +181,16 @@
 
   /* High-Contrast Card for Critical Data */
   .crm-card {
-    @apply bg-white text-card-foreground rounded-[var(--radius-outer)] shadow-crm-md border border-slate-100 overflow-hidden transition-all duration-300 relative z-0;
+    @apply bg-white text-card-foreground rounded-2xl p-[var(--radius-padding)] shadow-crm-md overflow-hidden transition-all duration-300 relative z-0;
   }
 
   .crm-card:hover {
-    @apply shadow-crm-lg scale-[1.005] border-slate-200;
+    @apply shadow-crm-lg scale-[1.005];
   }
 
   /* Sticky Glass Header */
   .sticky-glass-header {
-    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-7xl rounded-[20px] bg-white/80 backdrop-blur-2xl border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
+    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-[1480px] rounded-[var(--radius-outer)] bg-white/80 backdrop-blur-2xl border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
   }
 
   .sticky-glass-header.scrolled {
@@ -202,6 +209,18 @@
   /* Inputs with presence */
   .input-premium {
     @apply h-12 bg-slate-50 border-transparent hover:bg-white hover:border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 font-medium;
+  }
+
+  /* Placeholder animation: fade out on focus */
+  input::placeholder,
+  textarea::placeholder {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  input:focus::placeholder,
+  textarea:focus::placeholder {
+    opacity: 0;
+    transform: translateX(4px);
   }
 
   /* Bento Grid Layouts */
@@ -234,7 +253,6 @@
 /* Global Focus Reset */
 *:focus {
   outline: none !important;
-  box-shadow: none !important;
 }
 
 button:focus,

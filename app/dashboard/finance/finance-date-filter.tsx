@@ -63,13 +63,13 @@ export function FinanceDateFilter() {
 
     return (
         <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-xl w-fit border border-slate-200/50 shadow-sm">
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-[18px] w-fit border border-slate-200/50 shadow-sm">
                 {ranges.map((range) => (
                     <button
                         key={range.value}
                         onClick={() => handleRangeChange(range.value)}
                         className={cn(
-                            "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                            "px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
                             currentRange === range.value && !isCustom
                                 ? "bg-white text-slate-900 shadow-sm"
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
@@ -81,7 +81,7 @@ export function FinanceDateFilter() {
                 <button
                     onClick={() => handleRangeChange("all")}
                     className={cn(
-                        "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                        "px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
                         currentRange === "all" && !isCustom
                             ? "bg-white text-slate-900 shadow-sm"
                             : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
@@ -96,13 +96,13 @@ export function FinanceDateFilter() {
                     <PopoverTrigger asChild>
                         <button
                             className={cn(
-                                "flex items-center gap-2 px-6 py-2.5 text-sm font-black rounded-xl transition-all border border-slate-200 shadow-sm",
+                                "flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-[18px] transition-all border border-slate-200 shadow-sm",
                                 isCustom
                                     ? "bg-white text-slate-900"
                                     : "bg-white text-slate-500 hover:text-slate-700"
                             )}
                         >
-                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-indigo-600" : "text-slate-400")} />
+                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-primary" : "text-slate-400")} />
                             <span>Выбрать период</span>
                             <ChevronDown className="w-4 h-4 opacity-50" />
                         </button>
@@ -117,7 +117,7 @@ export function FinanceDateFilter() {
                                 onSelect={setDateRange}
                                 numberOfMonths={1}
                                 locale={ru}
-                                className="rounded-xl"
+                                className="rounded-[18px]"
                             />
 
                             <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
@@ -135,7 +135,7 @@ export function FinanceDateFilter() {
                                     size="sm"
                                     onClick={handleApplyCustomRange}
                                     disabled={!dateRange?.from}
-                                    className="bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold px-6"
+                                    className="bg-slate-900 hover:bg-slate-800 text-white rounded-[18px] font-bold px-6"
                                 >
                                     Применить
                                 </Button>
@@ -145,15 +145,15 @@ export function FinanceDateFilter() {
                 </Popover>
 
                 {(fromParam && toParam) ? (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-left-2 duration-300">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-[18px] border border-slate-100 animate-in fade-in slide-in-from-left-2 duration-300">
                         <span className="text-slate-600 font-bold text-sm">
                             {format(new Date(fromParam), "d MMMM", { locale: ru })}
                             {fromParam !== toParam && ` — ${format(new Date(toParam), "d MMMM", { locale: ru })}`}
                         </span>
                     </div>
                 ) : currentRange !== "all" && (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-left-2 duration-300">
-                        <span className="text-slate-400 font-bold text-sm uppercase tracking-widest text-[10px]">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-[18px] border border-slate-100 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <span className="text-slate-400 font-bold text-sm  tracking-normal text-[10px]">
                             {currentRange === "today" && "За сегодня"}
                             {currentRange === "7d" && "За последние 7 дней"}
                             {currentRange === "30d" && "За последние 30 дней"}

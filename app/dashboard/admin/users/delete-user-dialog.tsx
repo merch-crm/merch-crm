@@ -58,7 +58,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
-                <div className="relative transform overflow-hidden rounded-lg bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-slate-200">
+                <div className="relative transform overflow-hidden rounded-[18px] bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-slate-200">
                     <div className="absolute top-0 right-0 pt-6 pr-6">
                         <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
                             <X className="h-6 w-6" />
@@ -73,7 +73,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         <p className="text-slate-500 mt-2">Вы действительно хотите удалить данного сотрудника?</p>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4 mb-6 border border-slate-100">
+                    <div className="bg-slate-50 rounded-[18px] p-4 mb-6 border border-slate-100">
                         <p className="text-sm font-bold text-slate-700 mb-1">Сотрудник:</p>
                         <p className="text-lg font-bold text-slate-900">{user.name}</p>
                         <p className="text-xs text-red-600 font-bold mt-2">
@@ -82,10 +82,10 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                     </div>
 
                     {user.isSystem && (
-                        <div className="mb-6 p-4 bg-rose-50 rounded-lg border border-rose-100">
+                        <div className="mb-6 p-4 bg-rose-50 rounded-[18px] border border-rose-100">
                             <div className="flex items-center gap-2 text-rose-600 mb-3">
                                 <Lock className="w-4 h-4" />
-                                <span className="text-xs font-black uppercase tracking-wider">Системная защита</span>
+                                <span className="text-xs font-bold  tracking-wider">Системная защита</span>
                             </div>
                             <p className="text-xs font-bold text-rose-500/80 mb-3">
                                 Это системный пользователь. Для подтверждения удаления введите ваш пароль администратора.
@@ -95,7 +95,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Пароль администратора"
-                                className="w-full h-11 px-4 rounded-lg border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
+                                className="w-full h-11 px-4 rounded-[18px] border-2 border-rose-200 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-slate-900 placeholder:text-rose-200"
                                 autoFocus
                             />
                         </div>
@@ -111,14 +111,14 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         <button
                             onClick={onClose}
                             disabled={isLoading}
-                            className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors disabled:opacity-50"
+                            className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-[18px] transition-colors disabled:opacity-50"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleDelete}
                             disabled={isLoading || (user.isSystem && !password.trim())}
-                            className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-3 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                            className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-3 bg-red-600 text-white text-sm font-bold rounded-[18px] hover:bg-red-700 transition-colors disabled:opacity-50"
                         >
                             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                             {isLoading ? "Удаление..." : "Удалить"}

@@ -123,8 +123,8 @@ export default function LuminTestPage() {
                                 </div>
 
                                 <div className="space-y-4">
-                                    <div className="font-mono text-xl tracking-widest text-white/90">7812 2139 0823 XXXX</div>
-                                    <div className="flex gap-8 text-[10px] uppercase tracking-wider text-white/50">
+                                    <div className="font-mono text-xl tracking-normal text-white/90">7812 2139 0823 XXXX</div>
+                                    <div className="flex gap-8 text-[10px]  tracking-wider text-white/50">
                                         <div>
                                             <div className="mb-1 text-[8px]">Valid Thru</div>
                                             <div className="text-white font-mono">05/24</div>
@@ -157,8 +157,8 @@ export default function LuminTestPage() {
                                 </div>
 
                                 <div className="relative z-10 space-y-4">
-                                    <div className="font-mono text-xl tracking-widest text-white/90">5622 4544 0845 XXXX</div>
-                                    <div className="flex gap-8 text-[10px] uppercase tracking-wider text-white/50">
+                                    <div className="font-mono text-xl tracking-normal text-white/90">5622 4544 0845 XXXX</div>
+                                    <div className="flex gap-8 text-[10px]  tracking-wider text-white/50">
                                         <div>
                                             <div className="mb-1 text-[8px]">Valid Thru</div>
                                             <div className="text-white font-mono">02/25</div>
@@ -187,8 +187,8 @@ export default function LuminTestPage() {
                                     </div>
                                 </div>
                                 <div className="space-y-4">
-                                    <div className="font-mono text-xl tracking-widest text-white/90">6784 9987 7899 XXXX</div>
-                                    <div className="flex gap-8 text-[10px] uppercase tracking-wider text-white/50">
+                                    <div className="font-mono text-xl tracking-normal text-white/90">6784 9987 7899 XXXX</div>
+                                    <div className="flex gap-8 text-[10px]  tracking-wider text-white/50">
                                         <div>
                                             <div className="mb-1 text-[8px]">Valid Thru</div>
                                             <div className="text-white font-mono">07/28</div>
@@ -229,7 +229,7 @@ export default function LuminTestPage() {
                         </div>
 
                         {/* Vertical Card Preview */}
-                        <div className="self-end mt-4 relative w-[140px] h-[220px] bg-gradient-to-b from-[#b4d600] to-[#4a5e00] rounded-xl shadow-xl transform rotate-6 hover:rotate-0 transition-all duration-500 p-4 flex flex-col justify-between">
+                        <div className="self-end mt-4 relative w-[140px] h-[220px] bg-gradient-to-b from-[#b4d600] to-[#4a5e00] rounded-[18px] shadow-xl transform rotate-6 hover:rotate-0 transition-all duration-500 p-4 flex flex-col justify-between">
                             <div className="flex justify-between items-start">
                                 <div className="w-6 h-6 rounded-full bg-white/30 backdrop-blur-md" />
                                 <div className="w-6 h-8 bg-black/20 rounded-sm" />
@@ -255,7 +255,7 @@ export default function LuminTestPage() {
 
                         <div className="space-y-4">
                             {/* Item 1 */}
-                            <div className="bg-slate-50 rounded-2xl p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-slate-50 rounded-[18px] p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center shrink-0">
                                     <span className="text-[#dfff00] text-xs font-bold">16%</span>
                                 </div>
@@ -266,7 +266,7 @@ export default function LuminTestPage() {
                             </div>
 
                             {/* Item 2 */}
-                            <div className="bg-slate-50 rounded-2xl p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-slate-50 rounded-[18px] p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center shrink-0">
                                     <span className="text-white text-xs font-bold">x2</span>
                                 </div>
@@ -277,7 +277,7 @@ export default function LuminTestPage() {
                             </div>
 
                             {/* Item 3 */}
-                            <div className="bg-slate-50 rounded-2xl p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <div className="bg-slate-50 rounded-[18px] p-4 flex gap-4 hover:bg-slate-100 transition-colors cursor-pointer">
                                 <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center shrink-0">
                                     <span className="text-white text-xs font-bold">2%</span>
                                 </div>
@@ -295,9 +295,9 @@ export default function LuminTestPage() {
                         {/* 3 Small Widgets */}
                         <div className="grid grid-cols-3 gap-3">
                             {/* Referral */}
-                            <div className="bg-[#dfff00] rounded-2xl p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer">
+                            <div className="bg-[#dfff00] rounded-[18px] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer">
                                 <Megaphone className="w-6 h-6 text-black z-10" />
-                                <div className="z-10 text-[10px] font-bold uppercase leading-tight">Referral<br />program</div>
+                                <div className="z-10 text-[10px] font-bold  leading-tight">Referral<br />program</div>
 
                                 {/* Decorative shape */}
                                 <div className="absolute -right-4 -top-4 w-16 h-16 bg-black rounded-full" />
@@ -307,23 +307,23 @@ export default function LuminTestPage() {
                             </div>
 
                             {/* PRO Version */}
-                            <div className="bg-[#dfff00] rounded-2xl p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-lime-400 transition-colors">
-                                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white mb-2">
+                            <div className="bg-[#dfff00] rounded-[18px] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-lime-400 transition-colors">
+                                <div className="w-8 h-8 bg-black rounded-[18px] flex items-center justify-center text-white mb-2">
                                     <Crown className="w-4 h-4" />
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <div className="text-[10px] font-bold uppercase leading-tight">PRO<br />version</div>
+                                    <div className="text-[10px] font-bold  leading-tight">PRO<br />version</div>
                                     <span className="text-[10px] font-bold">Pro</span>
                                 </div>
                             </div>
 
                             {/* Cashback */}
-                            <div className="bg-[#dfff00] rounded-2xl p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-lime-400 transition-colors">
-                                <div className="absolute top-2 right-2 w-10 h-10 bg-black rounded-xl rotate-12 flex items-center justify-center">
+                            <div className="bg-[#dfff00] rounded-[18px] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-lime-400 transition-colors">
+                                <div className="absolute top-2 right-2 w-10 h-10 bg-black rounded-[18px] rotate-12 flex items-center justify-center">
                                     <span className="text-white text-[10px] font-bold">20%</span>
                                 </div>
                                 <Smartphone className="w-6 h-6 text-black mt-1" />
-                                <div className="text-[10px] font-bold uppercase leading-tight mt-auto">Cashback<br />up to 20%</div>
+                                <div className="text-[10px] font-bold  leading-tight mt-auto">Cashback<br />up to 20%</div>
                             </div>
                         </div>
 

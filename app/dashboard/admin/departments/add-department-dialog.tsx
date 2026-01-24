@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, X, Building, Loader2, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { createDepartment, getRoles } from "../actions";
 
 interface Role {
@@ -17,7 +18,7 @@ interface AddDepartmentDialogProps {
 }
 
 const COLORS = [
-    { name: "Синий", value: "indigo", bg: "bg-indigo-50", text: "text-indigo-600", border: "border-indigo-100", ring: "ring-indigo-500", badge: "bg-indigo-100", badgeText: "text-indigo-700" },
+    { name: "Синий", value: "indigo", bg: "bg-primary/5", text: "text-primary", border: "border-primary/20", ring: "ring-primary", badge: "bg-primary/10", badgeText: "text-primary" },
     { name: "Фиолетовый", value: "purple", bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-100", ring: "ring-purple-500", badge: "bg-purple-100", badgeText: "text-purple-700" },
     { name: "Розовый", value: "rose", bg: "bg-rose-50", text: "text-rose-600", border: "border-rose-100", ring: "ring-rose-500", badge: "bg-rose-100", badgeText: "text-rose-700" },
     { name: "Оранжевый", value: "orange", bg: "bg-orange-50", text: "text-orange-600", border: "border-orange-100", ring: "ring-orange-500", badge: "bg-orange-100", badgeText: "text-orange-700" },
@@ -74,13 +75,14 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
 
     if (!isOpen) {
         return (
-            <button
+            <Button
                 onClick={() => setIsOpen(true)}
-                className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 gap-2 font-black shadow-xl shadow-indigo-200 transition-all active:scale-95 inline-flex items-center"
+                size="lg"
+                className="rounded-2xl shadow-xl shadow-primary/20 font-bold"
             >
-                <Plus className="w-5 h-5" />
+                <Plus className="mr-2 h-5 w-5" />
                 Добавить отдел
-            </button>
+            </Button>
         );
     }
 
@@ -91,7 +93,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => setIsOpen(false)} />
 
-                <div className="relative transform overflow-hidden rounded-2xl bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl border border-slate-200">
+                <div className="relative transform overflow-hidden rounded-[18px] bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl border border-slate-200">
                     <div className="absolute top-0 right-0 pt-6 pr-6">
                         <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-50 rounded-full">
                             <X className="h-6 w-6" />
@@ -99,22 +101,22 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                     </div>
 
                     <div className="mb-8 text-center">
-                        <div className={`h-16 w-16 rounded-2xl ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center mx-auto mb-4 border ${colorStyle.border} shadow-sm`}>
+                        <div className={`h-16 w-16 rounded-[18px] ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center mx-auto mb-4 border ${colorStyle.border} shadow-sm`}>
                             <Building className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Новый отдел</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Новый отдел</h3>
                         <p className="text-slate-500 mt-1 font-medium">Создайте новое подразделение компании</p>
                     </div>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-lg border border-red-100">
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100">
                             {error}
                         </div>
                     )}
 
                     <form action={handleSubmit} className="space-y-6">
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Название отдела</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Название отдела</label>
                             <div className="relative">
                                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -122,23 +124,23 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                     name="name"
                                     required
                                     placeholder="Например: Цех печати"
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Описание</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Описание</label>
                             <textarea
                                 name="description"
                                 rows={2}
                                 placeholder="Чем занимается этот отдел..."
-                                className="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
+                                className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
                             />
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Цветовая метка</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Цветовая метка</label>
                             <div className="flex flex-wrap gap-2">
                                 {COLORS.map((color) => (
                                     <button
@@ -157,14 +159,14 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
 
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Роли в этом отделе</label>
-                                <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">
+                                <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Роли в этом отделе</label>
+                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                                     Выбрано: {selectedRoleIds.length}
                                 </span>
                             </div>
-                            <div className="max-h-[160px] overflow-y-auto pr-2 custom-scrollbar border border-slate-100 rounded-xl p-2 bg-slate-50/50">
+                            <div className="max-h-[160px] overflow-y-auto pr-2 custom-scrollbar border border-slate-100 rounded-[18px] p-2 bg-slate-50/50">
                                 {fetchingRoles ? (
-                                    <div className="py-4 text-center text-slate-400 text-[11px] font-bold uppercase animate-pulse">Загрузка ролей...</div>
+                                    <div className="py-4 text-center text-slate-400 text-[11px] font-bold  animate-pulse">Загрузка ролей...</div>
                                 ) : roles.length === 0 ? (
                                     <div className="py-4 text-center text-slate-400 text-xs">Нет созданных ролей</div>
                                 ) : (
@@ -176,17 +178,17 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                                     key={role.id}
                                                     type="button"
                                                     onClick={() => toggleRole(role.id)}
-                                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${isSelected ? 'bg-white shadow-md border-indigo-200 ring-4 ring-indigo-500/5' : 'hover:bg-white/80 border-transparent hover:border-slate-200'}`}
+                                                    className={`flex items-center gap-3 p-3 rounded-[18px] transition-all text-left group ${isSelected ? 'bg-white shadow-md border-primary/20 ring-4 ring-primary/5' : 'hover:bg-white/80 border-transparent hover:border-slate-200'}`}
                                                 >
-                                                    <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-transparent group-hover:border-slate-300'}`}>
+                                                    <div className={`w-6 h-6 rounded-[18px] border flex items-center justify-center transition-all ${isSelected ? 'bg-primary border-primary text-white shadow-lg shadow-primary/10' : 'bg-white border-slate-200 text-transparent group-hover:border-slate-300'}`}>
                                                         <Check className="w-4 h-4 stroke-[3px]" />
                                                     </div>
                                                     <div>
-                                                        <p className={`text-sm font-black ${isSelected ? 'text-indigo-600' : 'text-slate-600'}`}>{role.name}</p>
+                                                        <p className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-slate-600'}`}>{role.name}</p>
                                                         {role.department?.name && (
                                                             <div className="flex items-center gap-1 mt-0.5">
                                                                 <Building className="w-3 h-3 text-slate-300" />
-                                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">В отделе: {role.department.name}</p>
+                                                                <p className="text-[10px] text-slate-400 font-bold  tracking-tight">В отделе: {role.department.name}</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -202,7 +204,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-indigo-600 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="w-full inline-flex justify-center items-center gap-2 rounded-[18px] border border-transparent bg-primary py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {loading ? "Создание..." : "Создать отдел"}
@@ -229,7 +231,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
 
 function getColorHex(color: string) {
     const map: Record<string, string> = {
-        indigo: "#6366f1",
+        indigo: "#5d00ff",
         purple: "#a855f7",
         rose: "#f43f5e",
         orange: "#f97316",

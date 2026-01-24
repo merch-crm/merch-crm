@@ -81,7 +81,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all font-bold"
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all font-bold"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -92,11 +92,11 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/50">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center h-full space-y-4">
-                            <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+                            <Loader2 className="w-10 h-10 text-primary animate-spin" />
                             <p className="text-xs font-medium text-slate-400">Считаем показатели...</p>
                         </div>
                     ) : error ? (
-                        <div className="p-6 bg-rose-50 text-rose-600 rounded-2xl border border-rose-100 font-medium text-center">
+                        <div className="p-6 bg-rose-50 text-rose-600 rounded-[18px] border border-rose-100 font-medium text-center">
                             {error}
                         </div>
                     ) : stats ? (
@@ -106,25 +106,25 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                             <section>
                                 <div className="flex items-center gap-2 mb-4 px-1">
                                     <TrendingUp className="w-4 h-4 text-slate-400" />
-                                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Продажи и Заказы</h3>
+                                    <h3 className="text-xs font-bold  tracking-wider text-slate-400">Продажи и Заказы</h3>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4">
-                                    <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                    <div className="p-6 bg-white rounded-[18px] border border-slate-100 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
                                         <div className="text-3xl font-bold text-slate-900 tracking-tight">
                                             {stats.orders.monthRevenue.toLocaleString()} ₽
                                         </div>
-                                        <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-lg">
+                                        <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-[18px]">
                                             <Calendar className="w-3 h-3" />
                                             {stats.orders.month} заказов в этом месяце
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                        <div className="p-5 bg-white rounded-[18px] border border-slate-100 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего заказов</p>
                                             <div className="text-xl font-bold text-slate-900">{stats.orders.total}</div>
                                         </div>
-                                        <div className="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                        <div className="p-5 bg-white rounded-[18px] border border-slate-100 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего выручка</p>
                                             <div className="text-xl font-bold text-slate-900 truncate" title={stats.orders.totalRevenue.toLocaleString()}>
                                                 {(stats.orders.totalRevenue / 1000).toFixed(0)}k ₽
@@ -138,12 +138,12 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                             <section>
                                 <div className="flex items-center gap-2 mb-4 px-1">
                                     <PieChart className="w-4 h-4 text-slate-400" />
-                                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Задачи и Эффективность</h3>
+                                    <h3 className="text-xs font-bold  tracking-wider text-slate-400">Задачи и Эффективность</h3>
                                 </div>
-                                <div className="p-6 bg-indigo-600 rounded-[2rem] text-white shadow-lg shadow-indigo-200">
+                                <div className="p-6 bg-primary rounded-[2rem] text-white shadow-lg shadow-primary/20">
                                     <div className="flex items-center justify-between mb-6">
                                         <div>
-                                            <p className="text-indigo-200 text-xs font-bold uppercase tracking-wider">Эффективность</p>
+                                            <p className="text-white/70 text-xs font-bold  tracking-wider">Эффективность</p>
                                             <div className="text-4xl font-bold mt-1">{stats.tasks.efficiency}%</div>
                                         </div>
                                         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
@@ -152,11 +152,11 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                                         <div>
-                                            <p className="text-indigo-200 text-xs mb-1">Выполнено задач</p>
-                                            <p className="text-lg font-bold">{stats.tasks.completed} <span className="text-xs text-indigo-300 font-normal">/ {stats.tasks.total}</span></p>
+                                            <p className="text-white/70 text-xs mb-1">Выполнено задач</p>
+                                            <p className="text-lg font-bold">{stats.tasks.completed} <span className="text-xs text-white/50 font-normal">/ {stats.tasks.total}</span></p>
                                         </div>
                                         <div>
-                                            <p className="text-indigo-200 text-xs mb-1">В этом месяце</p>
+                                            <p className="text-white/70 text-xs mb-1">В этом месяце</p>
                                             <p className="text-lg font-bold">+{stats.tasks.monthCompleted}</p>
                                         </div>
                                     </div>

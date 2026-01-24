@@ -43,11 +43,11 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
                     <div className="text-[12px] text-slate-400 font-medium">{user.roleName}</div>
                 </div>
-                <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-indigo-600")} />
+                <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-#5d00ff")} />
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-3 w-80 origin-top-right rounded-[var(--radius-outer)] bg-white/95 backdrop-blur-xl shadow-xl border border-slate-200/50 focus:outline-none z-[100] animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 overflow-hidden">
+                <div className="absolute right-0 mt-3 w-80 origin-top-right rounded-[var(--radius-outer)] bg-white shadow-crm-xl border border-slate-200/50 focus:outline-none z-[100] animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 overflow-hidden">
                     {/* Header */}
                     <div className="p-6 flex items-center gap-4 border-b border-slate-100/60 bg-slate-50/40 text-left">
                         <div className="h-16 w-16 rounded-[var(--radius-inner)] bg-indigo-100/30 flex items-center justify-center text-indigo-500 shrink-0 overflow-hidden relative shadow-inner border border-indigo-200/20">
@@ -69,7 +69,7 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                         <Link
                             href="/dashboard/profile"
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-4 px-4 py-3 text-[14px] font-semibold text-slate-600 rounded-[18px] hover:bg-slate-50 hover:text-indigo-600 transition-all duration-300 group"
+                            className="flex items-center gap-4 px-4 py-3 text-[14px] font-semibold text-slate-600 rounded-[18px] hover:bg-slate-50 hover:text-#5d00ff transition-all duration-300 group"
                         >
                             <User className="h-5 w-5 opacity-60 group-hover:opacity-100" />
                             Профиль
@@ -80,7 +80,7 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                                 <Link
                                     href="/dashboard/warehouse"
                                     onClick={() => setIsOpen(false)}
-                                    className="flex items-center gap-4 px-4 py-3 text-[14px] font-semibold text-slate-600 rounded-[18px] hover:bg-slate-50 hover:text-indigo-600 transition-all duration-300 group"
+                                    className="flex items-center gap-4 px-4 py-3 text-[14px] font-semibold text-slate-600 rounded-[18px] hover:bg-slate-50 hover:text-#5d00ff transition-all duration-300 group"
                                 >
                                     <Package className="h-5 w-5 opacity-60 group-hover:opacity-100" />
                                     Склад

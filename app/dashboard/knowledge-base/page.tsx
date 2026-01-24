@@ -14,8 +14,8 @@ export default async function KnowledgeBasePage() {
         <div className="space-y-8 animate-in fade-in duration-700 pb-10">
             <div className="sm:flex sm:items-end sm:justify-between px-1">
                 <div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">База знаний</h1>
-                    <p className="text-slate-400 text-xs font-black uppercase tracking-widest mt-3">Инструкции, процессы и ответы на вопросы</p>
+                    <h1 className="text-4xl font-bold text-slate-900 tracking-normal  leading-none">База знаний</h1>
+                    <p className="text-slate-400 text-xs font-bold  tracking-normal mt-3">Инструкции, процессы и ответы на вопросы</p>
                 </div>
             </div>
 

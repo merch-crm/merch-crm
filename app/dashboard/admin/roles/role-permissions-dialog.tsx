@@ -146,26 +146,26 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                     {/* Role Name & Department */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Название роли</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Название роли</label>
                             <div className="relative">
                                 <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
                                     type="text"
                                     value={roleName}
                                     onChange={(e) => setRoleName(e.target.value)}
-                                    className="block w-full pl-10 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 px-3 py-2.5 border transition-all"
+                                    className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Отдел</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Отдел</label>
                             <div className="relative">
                                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     value={departmentId}
                                     onChange={(e) => setDepartmentId(e.target.value)}
-                                    className="block w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none"
+                                    className="block w-full pl-10 pr-4 py-2.5 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
                                 >
                                     <option value="">Без отдела</option>
                                     {departments.map(dept => (
@@ -179,9 +179,9 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                     {/* Permissions Table */}
                     <div>
                         <h3 className="text-sm font-bold text-slate-700 mb-3">Права доступа</h3>
-                        <div className="bg-slate-50 border border-slate-200 rounded-lg overflow-hidden">
+                        <div className="bg-slate-50 border border-slate-200 rounded-[18px] overflow-hidden">
                             <table className="w-full text-sm text-left">
-                                <thead className="bg-slate-100 text-slate-500 font-bold uppercase text-xs">
+                                <thead className="bg-slate-100 text-slate-500 font-bold  text-xs">
                                     <tr>
                                         <th className="px-4 py-3">Раздел</th>
                                         {ACTIONS.map(action => (
@@ -204,8 +204,8 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                                             className={cn(
                                                                 "w-5 h-5 rounded border flex items-center justify-center transition-all mx-auto",
                                                                 isChecked
-                                                                    ? "bg-indigo-600 border-indigo-600 text-white"
-                                                                    : "bg-white border-slate-300 hover:border-indigo-400"
+                                                                    ? "bg-primary border-primary text-white"
+                                                                    : "bg-white border-slate-300 hover:border-primary/40"
                                                             )}
                                                         >
                                                             {isChecked && (
@@ -231,7 +231,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                             <button
                                 onClick={handleDelete}
                                 disabled={loading}
-                                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-lg transition-colors disabled:opacity-50"
+                                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-[18px] transition-colors disabled:opacity-50"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 Удалить роль
@@ -248,7 +248,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                         <button
                             onClick={handleSave}
                             disabled={loading}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-bold rounded-[18px] hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                             <Save className="w-4 h-4" />

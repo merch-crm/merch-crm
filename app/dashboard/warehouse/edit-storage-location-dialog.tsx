@@ -13,6 +13,7 @@ import { useFormStatus } from "react-dom";
 import { ArrowRightLeft } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/pluralize";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
@@ -70,7 +71,7 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-6xl bg-white rounded-[18px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
+            <div className="relative w-full max-w-2xl bg-white rounded-[18px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">Редактирование</h2>
@@ -167,8 +168,25 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                                         <Plus className="w-4 h-4 rotate-45" />
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-[18px] border border-slate-100 hover:border-primary/20 hover:bg-white transition-all cursor-pointer group relative">
+                                    <input
+                                        type="checkbox"
+                                        name="isDefault"
+                                        defaultChecked={location.isDefault}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer peer z-10"
+                                    />
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-primary/20 bg-white text-slate-400 border border-slate-100 group-hover:border-primary/20">
+                                        <Plus className="w-5 h-5 transition-transform peer-checked:rotate-0 rotate-45" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-[11px] font-black text-slate-900 leading-none mb-1">ОСНОВНОЙ СКЛАД</p>
+                                        <p className="text-[10px] font-bold text-slate-400 leading-none">Приоритетное место хранения</p>
+                                    </div>
+                                    <div className="w-6 h-6 rounded-full border-2 border-slate-200 transition-all flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary">
+                                        <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                                    </div>
+                                </div>
                             </div>
-
 
                             <SubmitButton />
                         </form>
@@ -181,7 +199,7 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                                 <Package className="w-3 h-3" /> Товары на складе
                             </label>
                             <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-[18px]">
-                                {items.length} ПОЗИЦИЙ
+                                {items.length} {pluralize(items.length, 'ПОЗИЦИЯ', 'ПОЗИЦИИ', 'ПОЗИЦИЙ')}
                             </span>
                         </div>
 

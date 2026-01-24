@@ -74,12 +74,12 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-50">
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Редактировать клиента</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Редактировать клиента</h3>
                         <p className="text-sm text-slate-500 font-medium">Измените необходимые поля</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -90,7 +90,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     {/* Name Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <User className="w-3.5 h-3.5" /> Фамилия <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -98,11 +98,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="lastName"
                                 defaultValue={client.lastName}
                                 required
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <User className="w-3.5 h-3.5" /> Имя <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -110,32 +110,32 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="firstName"
                                 defaultValue={client.firstName}
                                 required
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Отчество
                             </label>
                             <input
                                 type="text"
                                 name="patronymic"
                                 defaultValue={client.patronymic || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Building2 className="w-3.5 h-3.5" /> Компания
                             </label>
                             <input
                                 type="text"
                                 name="company"
                                 defaultValue={client.company || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -143,7 +143,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     {/* Contact Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Phone className="w-3.5 h-3.5" /> Телефон <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -151,44 +151,44 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="phone"
                                 defaultValue={client.phone || ""}
                                 required
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <Mail className="w-3.5 h-3.5" /> Email
                             </label>
                             <input
                                 type="email"
                                 name="email"
                                 defaultValue={client.email || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Telegram
                             </label>
                             <input
                                 type="text"
                                 name="telegram"
                                 defaultValue={client.telegram || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="@username"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Instagram
                             </label>
                             <input
                                 type="text"
                                 name="instagram"
                                 defaultValue={client.instagram || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="insta_link"
                             />
                         </div>
@@ -197,25 +197,25 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     {/* New Fields */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <LinkIcon className="w-3.5 h-3.5" /> Ссылка на соцсеть
                             </label>
                             <input
                                 type="text"
                                 name="socialLink"
                                 defaultValue={client.socialLink || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="vk.com/..."
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Менеджер
                             </label>
                             <select
                                 name="managerId"
                                 defaultValue={client.managerId || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none appearance-none cursor-pointer"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">Не назначен</option>
                                 {managers.map(m => (
@@ -227,38 +227,38 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 <MapPin className="w-3.5 h-3.5" /> Город
                             </label>
                             <input
                                 type="text"
                                 name="city"
                                 defaultValue={client.city || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                                 Адрес
                             </label>
                             <input
                                 type="text"
                                 name="address"
                                 defaultValue={client.address || ""}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1 flex items-center gap-2">
                             <MessageSquare className="w-3.5 h-3.5" /> Комментарии
                         </label>
                         <textarea
                             name="comments"
                             defaultValue={client.comments || ""}
                             rows={3}
-                            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all outline-none resize-none"
+                            className="w-full p-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
                         />
                     </div>
 
@@ -266,14 +266,14 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-4 border border-slate-200 text-slate-600 font-black rounded-2xl hover:bg-slate-50 transition-all active:scale-[0.98]"
+                            className="flex-1 px-4 py-4 border border-slate-200 text-slate-600 font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-[0.98]"
                         >
                             Отмена
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-[2] inline-flex justify-center rounded-2xl border border-transparent bg-indigo-600 py-4 px-4 text-base font-black text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                            className="flex-[2] inline-flex justify-center rounded-[18px] border border-transparent bg-primary py-4 px-4 text-base font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
                         >
                             {loading ? "Сохранение..." : "Сохранить изменения"}
                         </button>

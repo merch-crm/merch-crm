@@ -8,7 +8,13 @@ import {
     UserPlus,
     UploadCloud,
     Package,
-    TrendingUp
+    TrendingUp,
+    ArrowUpRight,
+    ShoppingBag,
+    Zap,
+    LayoutGrid,
+    Timer,
+    CheckCircle2
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -30,188 +36,265 @@ interface DashboardClientProps {
     userName: string;
 }
 
-
 export function DashboardClient({ initialStats, period, userName }: DashboardClientProps) {
     const [statsData, setStatsData] = useState<DashboardStats>(initialStats);
+    const [time, setTime] = useState(new Date());
 
     useEffect(() => {
         const fetchStats = async () => {
             const data = await getDashboardStatsByPeriod(period);
             setStatsData(data);
-            setStatsData(data);
         };
 
         const interval = setInterval(fetchStats, 15000);
-        return () => clearInterval(interval);
+        const clockInterval = setInterval(() => setTime(new Date()), 60000);
+        return () => {
+            clearInterval(interval);
+            clearInterval(clockInterval);
+            clearInterval(clockInterval);
+        };
     }, [period]);
 
-    // Stat Cards Configuration
-    const stats = [
-        {
-            name: "Всего клиентов",
-            value: (statsData?.totalClients ?? 0).toString(),
-            change: "+12%",
-            isNegative: false,
-            icon: Users,
-            color: "bg-blue-600",
-            lightColor: "bg-blue-50",
-            textColor: "text-blue-600",
-        },
-        {
-            name: "Новых за период",
-            value: (statsData?.newClients ?? 0).toString(),
-            change: "+8%",
-            isNegative: false,
-            icon: UserPlus,
-            color: "bg-emerald-600",
-            lightColor: "bg-emerald-50",
-            textColor: "text-emerald-600",
-        },
-        {
-            name: "Средний чек",
-            value: statsData?.averageCheck ?? "0 ₽",
-            change: "-2%",
-            isNegative: true,
-            icon: Rouble,
-            color: "bg-slate-700",
-            lightColor: "bg-slate-50",
-            textColor: "text-slate-600",
-        },
-        {
-            name: "Общая выручка",
-            value: statsData?.revenue ?? "0 ₽",
-            change: "+18%",
-            isNegative: false,
-            icon: Rouble,
-            color: "bg-indigo-700",
-            lightColor: "bg-indigo-50",
-            textColor: "text-indigo-700",
-        },
-    ];
+    const primaryAction = {
+        name: "Новый заказ",
+        icon: Plus,
+        color: "bg-primary",
+        href: "/dashboard/orders",
+    };
 
     const actions = [
         {
-            name: "Новый заказ",
-            icon: Plus,
-            color: "bg-blue-600",
-            href: "/dashboard/orders",
-        },
-        {
             name: "Добавить клиента",
             icon: UserPlus,
-            color: "bg-emerald-600",
+            color: "bg-primary",
             href: "/dashboard/clients",
         },
         {
             name: "Загрузить дизайн",
             icon: UploadCloud,
-            color: "bg-indigo-600",
+            color: "bg-violet-500",
             href: "/dashboard/design/upload",
         },
         {
-            name: "Управление складом",
+            name: "Склад",
             icon: Package,
-            color: "bg-amber-600",
-            href: "/dashboard/admin/warehouse",
+            color: "bg-amber-500",
+            href: "/dashboard/warehouse",
         },
     ];
 
     return (
-        <div className="space-y-4 animate-in fade-in duration-500 pb-10">
-            {/* Header with Breadcrumbs */}
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
+            {/* Top Navigation / Breadcrumbs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-                <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                    <span className="hover:text-slate-600 transition-colors">Главная</span>
-                    <span className="text-slate-300">/</span>
-                    <span className="text-slate-900 font-bold">Обзор</span>
+                <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-[18px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                        <LayoutGrid className="h-4 w-4" />
+                    </div>
+                    <div className="flex flex-col">
+                        <h1 className="text-xl font-bold text-slate-900 leading-tight">Общий обзор</h1>
+                    </div>
                 </div>
-                <div className="text-xs font-bold text-slate-400 bg-white/50 px-3 py-1 rounded-full border border-white">
-                    {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-[18px] border border-slate-200 shadow-sm text-xs font-bold text-slate-600">
+                        <Timer className="w-3.5 h-3.5 text-primary" />
+                        {time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-900 rounded-[18px] text-xs font-bold text-white shadow-lg shadow-primary/10">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
+                        {time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
+                    </div>
                 </div>
             </div>
 
-            {/* Main Bento Grid */}
-            <div className="grid grid-cols-12 gap-5 auto-rows-[minmax(180px,auto)]">
+            {/* MAIN BENTO GRID */}
+            <div className="grid grid-cols-12 gap-4">
 
-                {/* Welcome Banner - Span 8 (Large) */}
-                <div className="col-span-12 lg:col-span-8 glass-panel p-8 md:p-10 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-full h-full bg-slate-50/50 -z-10" />
+                {/* Hero / Welcome Card - Spans 8 cols */}
+                <div className="col-span-12 lg:col-span-8 relative group overflow-hidden bg-white rounded-[18px] border border-slate-200 p-8 md:p-10 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Background Decorative Elements */}
+                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent rounded-full -mr-20 -mt-20 blur-3xl animate-pulse" />
 
                     <div className="relative z-10 h-full flex flex-col justify-between">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/60 backdrop-blur-md rounded-full text-[11px] font-bold text-primary mb-6 border border-white/40 shadow-sm">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                                    </span>
-                                    ONLINE SYSTEM
-                                </div>
-                                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-[0.9] tracking-tight mb-4">
-                                    Привет, <br />
-                                    <span className="text-primary">{userName || "Администратор"}</span>
-                                </h1>
-                            </div>
-                        </div>
-                        <p className="text-slate-500 font-medium max-w-md leading-relaxed">
-                            Система работает в штатном режиме. Показатели обновлены.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Primary Stat (Revenue) - Span 4 (Vertical) */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 glass-panel p-8 flex flex-col justify-between relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-slate-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="flex justify-between items-start relative z-10">
-                        <div className="h-12 w-12 rounded-[14px] bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                            <Rouble className="h-6 w-6" />
-                        </div>
-                        <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                            <TrendingUp className="h-3 w-3" />
-                            +18%
-                        </div>
-                    </div>
-                    <div className="relative z-10">
-                        <p className="text-slate-500 text-sm font-medium mb-1">Общая выручка</p>
-                        <p className="text-4xl font-bold text-slate-900 tracking-tight">{statsData?.revenue ?? "0 ₽"}</p>
-                    </div>
-                </div>
-
-                {/* Secondary Stats - 3 blocks spanning 4 cols each */}
-                {stats.slice(0, 3).map((item) => (
-                    <div key={item.name} className="col-span-12 md:col-span-4 glass-panel p-6 flex flex-col justify-between h-[180px] group hover:-translate-y-1 transition-transform duration-300">
-                        <div className="flex justify-between items-start">
-                            <div className={cn("h-10 w-10 rounded-[12px] flex items-center justify-center text-white shadow-md transition-transform duration-300 group-hover:scale-110", item.color)}>
-                                <item.icon className="h-5 w-5" />
-                            </div>
-                            <span className={cn("text-xs font-bold px-2 py-1 rounded-[8px]", item.isNegative ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600")}>
-                                {item.change}
-                            </span>
-                        </div>
                         <div>
-                            <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">{item.name}</p>
-                            <p className="text-3xl font-bold text-slate-900">{item.value}</p>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 rounded-[18px] text-[10px] font-bold text-primary mb-6 border border-primary/10 shadow-sm tracking-normal">
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+                                </span>
+                                AI-Integrated CRM v2.0
+                            </div>
+
+                            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
+                                Привет, <span className="text-primary">{userName.split(' ')[0]}</span>
+                            </h2>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
+                            <p className="text-slate-500 font-medium max-w-sm leading-relaxed text-sm">
+                                Система работает стабильно. У вас <span className="text-primary font-bold">4 новых заказа</span>, которые ожидают внимания.
+                            </p>
+                            <Link
+                                href="/dashboard/orders"
+                                className="group/btn btn-primary px-6 py-3 rounded-[18px] font-bold text-sm shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                            >
+                                Посмотреть заказы
+                                <ArrowUpRight className="w-4 h-4 text-white/70" />
+                            </Link>
                         </div>
                     </div>
-                ))}
+                </div>
+
+                {/* Main Metric - Revenue - Spans 4 cols */}
+                <div className="col-span-12 md:col-span-6 lg:col-span-4 bg-[#212121] rounded-[18px] p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
+                    <div className="absolute top-0 right-0 p-8">
+                        <div className="w-12 h-12 rounded-[18px] bg-white/5 flex items-center justify-center border border-white/10">
+                            <TrendingUp className="h-6 w-6 text-primary" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 text-white rounded-[18px] text-[10px] font-bold tracking-normal mb-2 border border-primary/30">
+                            +18.4% рост
+                        </div>
+                        <h3 className="text-slate-400 text-sm font-semibold mb-1">Выручка за период</h3>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-4xl sm:text-5xl font-bold text-white tracking-normal">
+                                {statsData?.revenue.replace(' ₽', '')}
+                            </span>
+                            <span className="text-2xl font-bold text-slate-500">₽</span>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-xs font-bold text-slate-500">
+                        <span>Прогноз: 1.2M ₽</span>
+                        <div className="flex h-1.5 w-24 bg-white/5 rounded-[18px] overflow-hidden">
+                            <div className="h-full bg-primary w-2/3" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Secondary Metrics Row */}
+                <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Metric 1 */}
+                    <div className="bg-white rounded-[18px] p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-10 h-10 rounded-[18px] bg-slate-50 text-primary flex items-center justify-center border border-slate-100 transition-transform group-hover:scale-105">
+                                <Users className="h-5 w-5" />
+                            </div>
+                            <div className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-[18px] text-[10px] font-bold">
+                                +12%
+                            </div>
+                        </div>
+                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Всего клиентов</p>
+                        <p className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.totalClients ?? 0}</p>
+                    </div>
+
+                    {/* Metric 2 */}
+                    <div className="bg-white rounded-[18px] p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-10 h-10 rounded-[18px] bg-slate-50 text-primary flex items-center justify-center border border-slate-100 transition-transform group-hover:scale-105">
+                                <ShoppingBag className="h-5 w-5" />
+                            </div>
+                            <div className="bg-violet-50 text-primary px-2 py-1 rounded-[18px] text-[10px] font-bold">
+                                {statsData?.inProduction ?? 0} в работе
+                            </div>
+                        </div>
+                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Заказов в работе</p>
+                        <p className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.totalOrders ?? 0}</p>
+                    </div>
+
+                    {/* Metric 3 */}
+                    <div className="bg-white rounded-[18px] p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-10 h-10 rounded-[18px] bg-slate-50 text-primary flex items-center justify-center border border-slate-100 transition-transform group-hover:scale-105">
+                                <Rouble className="h-5 w-5" />
+                            </div>
+                            <div className="bg-rose-50 text-rose-600 px-2 py-1 rounded-[18px] text-[10px] font-bold">
+                                -2.4%
+                            </div>
+                        </div>
+                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Средний чек</p>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.averageCheck.replace(' ₽', '')}</span>
+                            <span className="text-lg font-bold text-slate-400">₽</span>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Quick Actions Header */}
-                <div className="col-span-12 mt-8 mb-2 flex items-center gap-4">
-                    <h2 className="text-2xl font-bold text-slate-900">Быстрые действия</h2>
+                <div className="col-span-12 mt-6 mb-2 flex items-center gap-4">
+                    <h2 className="text-sm font-bold text-slate-900 tracking-normal whitespace-nowrap">Управление системой</h2>
                     <div className="h-px bg-slate-200 flex-1" />
                 </div>
 
-                {/* Actions Grid */}
-                {actions.map((action) => (
-                    <Link key={action.name} href={action.href} className="col-span-12 sm:col-span-6 lg:col-span-3 group">
-                        <div className="glass-panel h-[160px] flex flex-col items-center justify-center gap-4 hover:border-primary/30 hover:shadow-primary/10 transition-all duration-300">
-                            <div className={cn("h-14 w-14 rounded-[16px] flex items-center justify-center text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3", action.color)}>
-                                <action.icon className="h-7 w-7" />
+                {/* Primary Action Button - Spans full width or grid */}
+                <div className="col-span-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Link href={primaryAction.href} className="group flex flex-col">
+                        <div className="h-full bg-primary rounded-[18px] p-6 flex flex-col items-center justify-center gap-4 text-white shadow-lg shadow-primary/20 hover:opacity-90 transition-all duration-300">
+                            <div className="w-16 h-16 rounded-[18px] bg-white/10 flex items-center justify-center border border-white/20 group-hover:scale-105 transition-transform">
+                                <Plus className="h-8 w-8 text-white" />
                             </div>
-                            <span className="font-bold text-slate-700 group-hover:text-primary transition-colors">{action.name}</span>
+                            <span className="font-bold text-lg tracking-normal">{primaryAction.name}</span>
                         </div>
                     </Link>
-                ))}
+
+                    {actions.map((action) => (
+                        <Link key={action.name} href={action.href} className="group">
+                            <div className="h-full bg-white rounded-[18px] p-6 flex flex-col items-center justify-center gap-4 border border-slate-200 shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                                <div className={cn("w-16 h-16 rounded-[18px] flex items-center justify-center transition-transform group-hover:scale-105", action.color === "bg-primary" ? "bg-primary/10" : action.color.replace('bg-', 'bg-').replace('500', '50'))}>
+                                    <action.icon className={cn("h-7 w-7", action.color === "bg-primary" ? "text-primary" : action.color.replace('bg-', 'text-').replace('500', '600'))} />
+                                </div>
+                                <span className="font-bold text-slate-700 group-hover:text-primary transition-colors">{action.name}</span>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Bottom Decorative Row */}
+                <div className="col-span-12 lg:col-span-4 bg-primary rounded-[18px] p-8 text-white relative overflow-hidden group shadow-lg shadow-primary/10">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
+                    <div className="relative z-10">
+                        < Zap className="w-8 h-8 text-primary-foreground/20 mb-4" />
+                        <h4 className="text-xl font-bold mb-2">Обновите запасы</h4>
+                        <p className="text-white/70 text-sm font-medium leading-relaxed mb-6">
+                            Мы заметили, что на складе осталось менее 10 футболок черного цвета (L).
+                        </p>
+                        <Link href="/dashboard/warehouse" className="inline-flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-[18px] transition-colors border border-white/10 backdrop-blur-md">
+                            Проверить склад <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="col-span-12 lg:col-span-8 bg-white rounded-[18px] p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h4 className="text-xl font-bold text-slate-900 tracking-normal">Последние уведомления</h4>
+                            <p className="text-slate-400 text-xs font-medium">Обновлено минуту назад</p>
+                        </div>
+                        <button className="text-primary text-xs font-bold hover:underline">Прочитать все</button>
+                    </div>
+
+                    <div className="space-y-3">
+                        {[
+                            { title: "Заказ №1045 готов к отгрузке", time: "10 мин назад", type: "success" },
+                            { title: "Новый клиент зарегистрирован: Вероника", time: "1 час назад", type: "info" },
+                            { title: "Ошибка при загрузке макета для заказа #990", time: "2 часа назад", type: "error" },
+                        ].map((note, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 rounded-[18px] bg-slate-50 border border-slate-100/50 hover:bg-slate-100 transition-colors">
+                                <div className="flex items-center gap-4">
+                                    <div className={cn(
+                                        "w-2 h-2 rounded-full ring-4",
+                                        note.type === "success" ? "bg-emerald-500 ring-emerald-500/10" :
+                                            note.type === "info" ? "bg-sky-500 ring-sky-500/10" : "bg-rose-500 ring-rose-500/10"
+                                    )} />
+                                    <span className="text-sm font-bold text-slate-700">{note.title}</span>
+                                </div>
+                                <span className="text-[10px] font-bold text-slate-400 tracking-normal">{note.time}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );

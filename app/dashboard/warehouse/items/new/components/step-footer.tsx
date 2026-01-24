@@ -9,6 +9,7 @@ interface StepFooterProps {
     isNextDisabled?: boolean;
     isSubmitting?: boolean;
     validationError?: string;
+    hint?: string;
     nextIcon?: ReactNode;
     className?: string; // in case we need mt-auto or not
 }
@@ -25,6 +26,7 @@ export function StepFooter({
     isNextDisabled = false,
     isSubmitting = false,
     validationError,
+    hint,
     nextIcon,
     className
 }: StepFooterProps) {
@@ -34,7 +36,7 @@ export function StepFooter({
                 <button
                     onClick={onBack}
                     disabled={isSubmitting}
-                    className="group px-6 h-11 rounded-[18px] text-slate-400 font-bold text-[10px] hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                    className="group px-6 h-11 rounded-[var(--radius)] text-slate-400 font-bold text-[10px] hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
                 >
                     <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                     Назад
@@ -47,12 +49,18 @@ export function StepFooter({
                             <span className="text-[10px] font-bold leading-none">{validationError}</span>
                         </div>
                     )}
+                    {hint && !validationError && (
+                        <div className="flex items-center gap-2 text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/20 animate-in fade-in slide-in-from-right-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                            <span className="text-[10px] font-bold leading-none">{hint}</span>
+                        </div>
+                    )}
 
                     {onNext && (
                         <button
                             onClick={onNext}
                             disabled={isNextDisabled || isSubmitting}
-                            className="pl-8 pr-7 h-11 bg-slate-900 text-white rounded-[18px] font-bold text-[10px] hover:bg-black hover:pr-5 shadow-md transition-all duration-300 active:scale-95 disabled:opacity-50 flex items-center group relative overflow-hidden"
+                            className="pl-8 pr-7 h-11 bg-slate-900 text-white rounded-[var(--radius)] font-bold text-[10px] hover:bg-black hover:pr-5 shadow-md transition-all duration-300 active:scale-95 disabled:opacity-50 flex items-center group relative overflow-hidden"
                         >
                             {isSubmitting ? (
                                 <div className="flex items-center gap-3">

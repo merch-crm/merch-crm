@@ -82,9 +82,9 @@ export function ImageLightbox({ src, alt, isOpen, onClose }: ImageLightboxProps)
 
                 {/* Info */}
                 <div className="absolute top-6 left-6 z-[1001]">
-                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-sm">
+                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-[18px] backdrop-blur-sm">
                         <Maximize2 className="w-4 h-4 text-indigo-400" />
-                        <span className="text-white text-xs font-bold uppercase tracking-widest">{alt || "Просмотр макета"}</span>
+                        <span className="text-white text-xs font-bold  tracking-normal">{alt || "Просмотр макета"}</span>
                     </div>
                 </div>
 
@@ -102,12 +102,12 @@ export function ImageLightbox({ src, alt, isOpen, onClose }: ImageLightboxProps)
                         drag
                         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                         dragElastic={0.1}
-                        className="max-w-full max-h-full object-contain shadow-2xl rounded-lg cursor-grab active:cursor-grabbing"
+                        className="max-w-full max-h-full object-contain shadow-2xl rounded-[18px] cursor-grab active:cursor-grabbing"
                     />
                 </motion.div>
 
                 {/* Footer Tip */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40 text-[10px] font-bold  tracking-[0.2em]">
                     Используйте зум или перетаскивание для детального осмотра
                 </div>
             </motion.div>

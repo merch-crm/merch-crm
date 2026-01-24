@@ -53,7 +53,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
                 variant="outline"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={`
-                    rounded-md font-bold text-[10px] uppercase tracking-wider gap-1.5 px-2 py-0.5 cursor-pointer
+                    rounded-md font-bold text-[10px]  tracking-wider gap-1.5 px-2 py-0.5 cursor-pointer
                     transition-all hover:shadow-sm active:scale-95 select-none
                     ${activeItem.lightBg} ${activeItem.color}
                     ${loading ? 'opacity-50' : 'opacity-100'}
@@ -69,7 +69,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
             </Badge>
 
             {isOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-100 rounded-lg shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-100 rounded-[18px] shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
                     {priorities.map((p) => (
                         <button
                             key={p.id}
@@ -77,11 +77,11 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
                             className={`
                                 w-full flex items-center gap-2 px-3 py-2 
                                 hover:bg-slate-50 transition-all text-left
-                                ${p.id === currentPriority ? 'bg-indigo-50/50' : ''}
+                                ${p.id === currentPriority ? 'bg-primary/5' : ''}
                             `}
                         >
                             <div className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
-                            <span className={`text-[11px] font-bold uppercase tracking-wider ${p.id === currentPriority ? 'text-indigo-600' : 'text-slate-600'}`}>
+                            <span className={`text-[11px] font-bold  tracking-wider ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
                                 {p.label}
                             </span>
                         </button>

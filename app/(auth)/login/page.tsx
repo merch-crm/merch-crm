@@ -36,7 +36,7 @@ export default function LoginPage() {
 
             <Card className="max-w-[420px] w-full p-8 md:p-10 flex flex-col items-center border-none shadow-2xl relative z-10 bg-white/80 backdrop-blur-xl">
                 {/* Logo Section */}
-                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform">
+                <div className="w-16 h-16 bg-primary rounded-[18px] flex items-center justify-center mb-8 shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform">
                     <Printer className="h-8 w-8 text-primary-foreground" strokeWidth={2} />
                 </div>
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
                     </div>
 
                     {state?.error && (
-                        <div className="p-3 bg-destructive/10 text-destructive text-xs font-bold text-center rounded-lg border border-destructive/20 animate-in fade-in zoom-in-95">
+                        <div className="p-3 bg-destructive/10 text-destructive text-xs font-bold text-center rounded-[18px] border border-destructive/20 animate-in fade-in zoom-in-95">
                             {state.error}
                         </div>
                     )}

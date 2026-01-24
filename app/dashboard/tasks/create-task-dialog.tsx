@@ -78,7 +78,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-[18px] font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
                 <PlusCircle className="w-5 h-5" />
                 Создать задачу
@@ -93,12 +93,12 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 onClick={() => setIsOpen(false)}
             />
 
-            <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 border border-slate-100">
+            <div className="relative w-full max-w-xl bg-white rounded-[18px] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 border border-slate-100">
                 {/* Header */}
                 <div className="px-8 pt-8 pb-6 flex justify-between items-start">
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Новая задача</h2>
-                        <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-1">Заполните детали поручения</p>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Новая задача</h2>
+                        <p className="text-slate-400 text-sm font-bold  tracking-normal mt-1">Заполните детали поручения</p>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
@@ -111,7 +111,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 <form action={handleSubmit} className="p-8 pt-0 space-y-6">
                     {/* Title */}
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Что нужно сделать?</label>
+                        <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Что нужно сделать?</label>
                         <div className="relative">
                             <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
@@ -119,21 +119,21 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 type="text"
                                 required
                                 placeholder="Например: Закупить материалы для склада"
-                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-medium"
+                                className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all outline-none font-medium"
                             />
                         </div>
                     </div>
 
                     {/* Description */}
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Описание (необязательно)</label>
+                        <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Описание (необязательно)</label>
                         <div className="relative">
                             <AlignLeft className="absolute left-3 top-4 w-4 h-4 text-slate-400" />
                             <textarea
                                 name="description"
                                 rows={3}
                                 placeholder="Добавьте подробности или инструкции..."
-                                className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-medium resize-none"
+                                className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all outline-none font-medium resize-none"
                             />
                         </div>
                     </div>
@@ -141,13 +141,13 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                     <div className="grid grid-cols-2 gap-4">
                         {/* Task Type */}
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Тип задачи</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Тип задачи</label>
                             <div className="relative">
                                 <Flag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="type"
                                     defaultValue="other"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-bold"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none font-bold"
                                 >
                                     <option value="design">Дизайн</option>
                                     <option value="production">Производство</option>
@@ -160,13 +160,13 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                         {/* Priority */}
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Приоритет</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Приоритет</label>
                             <div className="relative">
                                 <Flag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="priority"
                                     defaultValue="normal"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-bold"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none font-bold"
                                 >
                                     <option value="low">Низкий</option>
                                     <option value="normal">Обычный</option>
@@ -179,12 +179,12 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                     <div className="grid grid-cols-2 gap-4">
                         {/* Related Order */}
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Связанный заказ</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Связанный заказ</label>
                             <div className="relative">
                                 <PlusCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="orderId"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
                                     <option value="">Без привязки</option>
                                     {orders.map(o => (
@@ -198,13 +198,13 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                         {/* Due Date */}
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Срок выполнения</label>
+                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Срок выполнения</label>
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
                                     name="dueDate"
                                     type="date"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all outline-none font-bold"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all outline-none font-bold"
                                 />
                             </div>
                         </div>
@@ -212,15 +212,15 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                     {/* Assignment */}
                     <div className="space-y-3">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Кому назначить?</label>
+                        <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Кому назначить?</label>
 
                         {/* Toggle Buttons */}
-                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[18px]">
                             <button
                                 type="button"
                                 onClick={() => setAssignmentType("user")}
-                                className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "user"
-                                    ? "bg-white text-indigo-600 shadow-sm"
+                                className={`px-4 py-2.5 rounded-[18px] font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "user"
+                                    ? "bg-white text-primary shadow-sm"
                                     : "text-slate-500 hover:text-slate-700"
                                     }`}
                             >
@@ -230,8 +230,8 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                             <button
                                 type="button"
                                 onClick={() => setAssignmentType("department")}
-                                className={`px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "department"
-                                    ? "bg-white text-indigo-600 shadow-sm"
+                                className={`px-4 py-2.5 rounded-[18px] font-bold text-sm transition-all flex items-center justify-center gap-2 ${assignmentType === "department"
+                                    ? "bg-white text-primary shadow-sm"
                                     : "text-slate-500 hover:text-slate-700"
                                     }`}
                             >
@@ -246,7 +246,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="assignedToUserId"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
                                     <option value="">Выберите сотрудника</option>
                                     {users.map(u => (
@@ -259,7 +259,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
                                     name="assignedToDepartmentId"
-                                    className="block w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-0 border transition-all appearance-none outline-none font-medium"
+                                    className="block w-full pl-10 pr-4 py-3 rounded-[18px] border-slate-200 bg-slate-50/50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none font-medium"
                                 >
                                     <option value="">Выберите отдел</option>
                                     {departments.map(d => (
@@ -278,7 +278,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-xl shadow-indigo-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                            className="w-full py-4 bg-primary text-white rounded-[18px] font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                             {loading ? "СОЗДАНИЕ..." : "СОЗДАТЬ ЗАДАЧУ"}

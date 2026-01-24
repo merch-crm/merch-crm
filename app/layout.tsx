@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { geistSans, geistMono } from "@/app/fonts";
+import { manrope } from "@/app/fonts";
 import "./globals.css";
 import { ToastContainer } from "@/components/ui/toast";
 
@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: {
       icon: (branding as { faviconUrl?: string })?.faviconUrl || "/icon.png",
     },
+    viewport: "width=device-width, initial-scale=1, maximum-scale=1", // Prevent zoom on mobile inputs
   };
 }
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning>
       <body className="antialiased font-sans">
         <BrandingProvider>
           {children}

@@ -22,3 +22,10 @@
 ## UI Integrity during Refactoring
 - **Rule**: Technical refactoring or bug fixing must NEVER alter the established UI design.
 - **Constraint**: If a component's code is rewritten to resolve linting or type errors, every CSS class, Tailwind utility, and layout structure must be preserved or meticulously reconstructed to match the original "Premium" aesthetic.
+
+## Localization (L10n)
+- **Rule**: All user-facing text, including navigation elements, buttons, headers, and breadcrumbs, MUST be in **Russian**.
+- **Breadcrumbs**:
+  - Technical path segments (e.g., `finance`, `promocodes`, `admin`) MUST be mapped to their Russian equivalents in the `routeLabels` dictionary within the `Breadcrumbs` component.
+  - When adding new routes, immediately add the corresponding translation to `components/layout/breadcrumbs.tsx`.
+- **Formatting**: Use Russian locale (`ru` from `date-fns/locale`) for dates and currency formatting where applicable.

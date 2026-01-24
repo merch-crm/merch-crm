@@ -53,14 +53,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                     </button>
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">Промокоды</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">Промокоды</h1>
                         <p className="text-slate-500 font-medium mt-1">Управление скидками и акциями</p>
                     </div>
                 </div>
 
                 <Button
                     onClick={() => setIsAdding(true)}
-                    className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[14px] px-6 gap-2 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                    className="h-12 btn-primary rounded-[var(--radius)] px-6 gap-2 font-bold shadow-xl shadow-primary/20 transition-all active:scale-95"
                 >
                     <Plus className="w-5 h-5" />
                     Создать промокод
@@ -75,7 +75,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         placeholder="Поиск по коду..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-14 pl-14 pr-6 rounded-[14px] bg-slate-50 border border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none font-medium text-slate-900 transition-all"
+                        className="w-full h-14 pl-14 pr-6 rounded-[var(--radius)] bg-slate-50 border border-transparent focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-medium text-slate-900 transition-all"
                     />
                 </div>
             </div>
@@ -88,8 +88,8 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     )}>
                         <div className="flex justify-between items-start mb-6">
                             <div className={cn(
-                                "px-4 py-2 rounded-xl text-sm font-black tracking-widest uppercase",
-                                promo.isActive ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-slate-200 text-slate-500"
+                                "px-4 py-2 rounded-[18px] text-sm font-bold tracking-normal ",
+                                promo.isActive ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-200 text-slate-500"
                             )}>
                                 {promo.code}
                             </div>
@@ -106,27 +106,27 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
 
                         <div className="space-y-4">
                             <div>
-                                <div className="text-4xl font-black text-slate-900 tracking-tighter">
+                                <div className="text-4xl font-bold text-slate-900 tracking-normal">
                                     {promo.discountType === 'percentage' ? `${promo.value}%` : `${Number(promo.value).toLocaleString()} ₽`}
                                 </div>
-                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">скидка</div>
+                                <div className="text-[10px] font-bold text-slate-400  tracking-normal mt-1">скидка</div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
                                 <div>
-                                    <div className="text-xs font-black text-slate-900">{promo.usageCount} / {promo.usageLimit || '∞'}</div>
-                                    <div className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Использовано</div>
+                                    <div className="text-xs font-bold text-slate-900">{promo.usageCount} / {promo.usageLimit || '∞'}</div>
+                                    <div className="text-[9px] font-bold text-slate-400  tracking-tight">Использовано</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs font-black text-slate-900">{promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString() : 'Бессрочно'}</div>
-                                    <div className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Истекает</div>
+                                    <div className="text-xs font-bold text-slate-900">{promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString() : 'Бессрочно'}</div>
+                                    <div className="text-[9px] font-bold text-slate-400  tracking-tight">Истекает</div>
                                 </div>
                             </div>
 
                             {Number(promo.minOrderAmount) > 0 && (
-                                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl">
-                                    <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">От {Number(promo.minOrderAmount).toLocaleString()} ₽</span>
+                                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-[18px]">
+                                    <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                                    <span className="text-[10px] font-bold text-slate-500  tracking-tight">От {Number(promo.minOrderAmount).toLocaleString()} ₽</span>
                                 </div>
                             )}
                         </div>
@@ -176,61 +176,61 @@ function AddPromocodeDialog({ onClose, onSuccess }: { onClose: () => void, onSuc
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
             <form onSubmit={handleSubmit} className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in-95 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16" />
 
-                <h2 className="text-2xl font-black text-slate-900 mb-8 relative">Новый промокод</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-8 relative">Новый промокод</h2>
 
                 <div className="space-y-6 relative">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Код</label>
-                        <input name="code" required placeholder="SUMMER2024" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-black text-lg uppercase tracking-widest placeholder:text-slate-300" />
+                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Код</label>
+                        <input name="code" required placeholder="SUMMER2024" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-lg  tracking-normal placeholder:text-slate-300" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Тип скидки</label>
-                            <select name="discountType" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm">
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Тип скидки</label>
+                            <select name="discountType" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm">
                                 <option value="percentage">Процент %</option>
                                 <option value="fixed">Фиксированная ₽</option>
                             </select>
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Значение</label>
-                            <input name="value" type="number" required placeholder="10" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Значение</label>
+                            <input name="value" type="number" required placeholder="10" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Мин. сумма заказа</label>
-                            <input name="minOrderAmount" type="number" placeholder="0" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Мин. сумма заказа</label>
+                            <input name="minOrderAmount" type="number" placeholder="0" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Лимит использований</label>
-                            <input name="usageLimit" type="number" placeholder="∞" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Лимит использований</label>
+                            <input name="usageLimit" type="number" placeholder="∞" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Дата начала</label>
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Дата начала</label>
                             <div className="relative">
                                 <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input name="startDate" type="date" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                                <input name="startDate" type="date" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                             </div>
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Дата окончания</label>
+                            <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Дата окончания</label>
                             <div className="relative">
                                 <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input name="endDate" type="date" className="w-full h-14 px-6 rounded-[14px] bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-sm" />
+                                <input name="endDate" type="date" className="w-full h-14 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                             </div>
                         </div>
                     </div>
 
                     <div className="flex gap-4 pt-4">
-                        <Button type="button" variant="outline" onClick={onClose} className="h-14 flex-1 rounded-[14px] font-black">Отмена</Button>
-                        <Button type="submit" disabled={isLoading} className="h-14 flex-1 bg-indigo-600 text-white rounded-[14px] font-black shadow-xl shadow-indigo-100">{isLoading ? "Создание..." : "Создать"}</Button>
+                        <Button type="button" variant="outline" onClick={onClose} className="h-14 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
+                        <Button type="submit" disabled={isLoading} className="h-14 flex-1 btn-primary rounded-[var(--radius)] font-bold shadow-xl shadow-primary/20">{isLoading ? "Создание..." : "Создать"}</Button>
                     </div>
                 </div>
             </form>

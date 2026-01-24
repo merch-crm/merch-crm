@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2 } from "lucide-react";
+import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2, LogIn } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddUserDialog } from "./add-user-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
 import { UserStatsDrawer } from "./user-stats-drawer";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { impersonateUser } from "../actions";
+import { useToast } from "@/components/ui/toast";
 
 interface User {
     id: string;
@@ -42,6 +45,9 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
     const [deletingUser, setDeletingUser] = useState<User | null>(null);
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [viewingStatsUser, setViewingStatsUser] = useState<User | null>(null);
+    const [impersonateUserConfirm, setImpersonateUserConfirm] = useState<User | null>(null);
+    const [isImpersonatingLoading, setIsImpersonatingLoading] = useState<string | null>(null);
+    const { toast } = useToast();
     const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
 
     const createQueryString = useCallback(
@@ -86,7 +92,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
 
     if (error) {
         return (
-            <div className="text-rose-600 p-6 bg-rose-50 rounded-2xl border border-rose-100 font-bold">
+            <div className="text-rose-600 p-6 bg-rose-50 rounded-[18px] border border-rose-100 font-bold">
                 Ошибка: {error}
             </div>
         );
@@ -94,30 +100,27 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between gap-4">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder="Поиск сотрудника..."
-                        value={searchValue}
-                        onChange={(e) => handleSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && applySearch()}
-                        className="w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:text-slate-400 font-medium"
-                    />
-                    {searchValue && (
-                        <button
-                            onClick={() => { setSearchValue(""); router.push(pathname); }}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
-                    )}
-                </div>
-                <AddUserDialog onSuccess={() => router.refresh()} />
+            <div className="relative max-w-md">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <input
+                    type="text"
+                    placeholder="Поиск сотрудника..."
+                    value={searchValue}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && applySearch()}
+                    className="w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-[18px] shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-400 font-medium"
+                />
+                {searchValue && (
+                    <button
+                        onClick={() => { setSearchValue(""); router.push(pathname); }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
+                )}
             </div>
 
-            <div className="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -125,15 +128,15 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                 <th className="w-[50px] px-6 py-3 text-left">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
                                         checked={isAllSelected}
                                         onChange={handleSelectAll}
                                     />
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Сотрудник</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Роль</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Отдел</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Действия</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Сотрудник</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Роль</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Отдел</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground  tracking-wider">Действия</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -145,13 +148,13 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                         onClick={() => setEditingUser(user)}
                                         className={cn(
                                             "hover:bg-gray-50 transition-colors group cursor-pointer",
-                                            isSelected ? "bg-indigo-50/30" : ""
+                                            isSelected ? "bg-primary/5" : ""
                                         )}
                                     >
                                         <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
-                                                className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
+                                                className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
                                                 checked={isSelected}
                                                 onChange={() => handleSelectRow(user.id)}
                                             />
@@ -161,7 +164,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 <div
                                                     className={cn(
                                                         "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
-                                                        isSelected ? "bg-white border-indigo-200 text-indigo-600 scale-110" : "text-white border-transparent"
+                                                        isSelected ? "bg-white border-primary/20 text-primary scale-110" : "text-white border-transparent"
                                                     )}
                                                     style={{
                                                         backgroundColor: isSelected
@@ -169,7 +172,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                             : (user.role?.color || user.department_color || "#94a3b8")
                                                     }}
                                                 >
-                                                    <UserIcon className={cn("w-5 h-5", isSelected ? "text-indigo-600" : "text-white")} />
+                                                    <UserIcon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-white")} />
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
@@ -178,7 +181,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-black uppercase tracking-wider" />
+                                            <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-bold  tracking-wider" />
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
@@ -189,22 +192,33 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                         <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
+                                                    onClick={() => setImpersonateUserConfirm(user)}
+                                                    disabled={isImpersonatingLoading === user.id}
+                                                    className={cn(
+                                                        "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all",
+                                                        isImpersonatingLoading === user.id && "animate-pulse"
+                                                    )}
+                                                    title="Войти как пользователь"
+                                                >
+                                                    <LogIn className="w-4 h-4" />
+                                                </button>
+                                                <button
                                                     onClick={() => setViewingStatsUser(user)}
-                                                    className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-lg transition-all"
+                                                    className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-[18px] transition-all"
                                                     title="Статистика"
                                                 >
                                                     <BarChart2 className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => setEditingUser(user)}
-                                                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-lg transition-all"
+                                                    className="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-[18px] transition-all"
                                                 >
                                                     <Edit className="w-4 h-4" />
                                                 </button>
                                                 {!user.isSystem && (
                                                     <button
                                                         onClick={() => setDeletingUser(user)}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-[18px] transition-all"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
@@ -253,6 +267,28 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                 isOpen={!!viewingStatsUser}
                 userId={viewingStatsUser?.id || null}
                 onClose={() => setViewingStatsUser(null)}
+            />
+
+            <ConfirmDialog
+                isOpen={!!impersonateUserConfirm}
+                onClose={() => setImpersonateUserConfirm(null)}
+                onConfirm={async () => {
+                    if (!impersonateUserConfirm) return;
+                    const userId = impersonateUserConfirm.id;
+                    setImpersonateUserConfirm(null);
+                    setIsImpersonatingLoading(userId);
+                    const res = await impersonateUser(userId);
+                    if (res.success) {
+                        toast(`Вы вошли как ${impersonateUserConfirm.name}`, "success");
+                        window.location.href = "/dashboard";
+                    } else {
+                        toast(res.error || "Ошибка", "destructive");
+                        setIsImpersonatingLoading(null);
+                    }
+                }}
+                title="Имперсонация"
+                description={`Вы уверены, что хотите войти в систему как ${impersonateUserConfirm?.name}?`}
+                confirmText="Войти"
             />
         </div >
     );

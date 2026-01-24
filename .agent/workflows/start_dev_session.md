@@ -19,7 +19,7 @@ ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 root@89.104.69.25 && 
 
 3. **Синхронизация пароля:** Принудительно устанавливаем пароль 'postgres' в Docker-контейнере, чтобы он всегда совпадал с вашим .env.local.
 ```bash
-ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
+ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD 'da1c8fe9f308039384edeecbe252fdda51f305d59cae0c94';\""
 ```
 
 4. Проверка подключения к базе данных.

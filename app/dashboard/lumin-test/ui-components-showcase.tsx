@@ -39,7 +39,7 @@ export default function UiComponentsShowcase() {
                         <input
                             type="text"
                             placeholder="Search countries..."
-                            className="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-[18px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -51,7 +51,7 @@ export default function UiComponentsShowcase() {
                             { flag: "🇨🇦", name: "Canada", code: "+918" },
                         ].map((country, idx) => (
                             <div key={idx} className={cn(
-                                "flex items-center justify-between p-3 rounded-xl transition-colors cursor-pointer",
+                                "flex items-center justify-between p-3 rounded-[18px] transition-colors cursor-pointer",
                                 country.selected ? "bg-blue-50" : "hover:bg-slate-50"
                             )}>
                                 <div className="flex items-center gap-3">
@@ -70,7 +70,7 @@ export default function UiComponentsShowcase() {
                         ))}
                     </div>
 
-                    <button className="w-full mt-4 bg-blue-500 text-white font-bold py-3 rounded-2xl hover:bg-blue-600 transition-colors">
+                    <button className="w-full mt-4 bg-blue-500 text-white font-bold py-3 rounded-[18px] hover:bg-blue-600 transition-colors">
                         Login
                     </button>
                 </div>
@@ -90,12 +90,12 @@ export default function UiComponentsShowcase() {
                     <div className="relative h-2 bg-slate-200 rounded-full mb-8">
                         <div className="absolute h-full bg-blue-500 rounded-full" style={{ left: '30%', right: '20%' }} />
                         <div className="absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-blue-500 rounded-full border-4 border-white shadow-lg cursor-pointer" style={{ left: '30%', marginLeft: '-16px' }}>
-                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-lg whitespace-nowrap">
+                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-[18px] whitespace-nowrap">
                                 1
                             </div>
                         </div>
                         <div className="absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-blue-500 rounded-full border-4 border-white shadow-lg cursor-pointer" style={{ right: '20%', marginRight: '-16px' }}>
-                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-lg whitespace-nowrap">
+                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-[18px] whitespace-nowrap">
                                 1
                             </div>
                         </div>
@@ -113,10 +113,10 @@ export default function UiComponentsShowcase() {
                     </div>
 
                     <div className="flex gap-3">
-                        <button className="flex-1 bg-blue-500 text-white font-bold py-3 rounded-2xl hover:bg-blue-600 transition-colors">
+                        <button className="flex-1 bg-blue-500 text-white font-bold py-3 rounded-[18px] hover:bg-blue-600 transition-colors">
                             Apply
                         </button>
-                        <button className="px-6 py-3 rounded-2xl border border-slate-200 font-semibold hover:bg-slate-50 transition-colors">
+                        <button className="px-6 py-3 rounded-[18px] border border-slate-200 font-semibold hover:bg-slate-50 transition-colors">
                             Cancel
                         </button>
                     </div>
@@ -132,7 +132,7 @@ export default function UiComponentsShowcase() {
                         <div className="text-xs text-slate-400">Username</div>
                     </div>
 
-                    <div className="bg-blue-50 border-2 border-blue-500 rounded-3xl p-4 mb-4">
+                    <div className="bg-blue-50 border-2 border-blue-500 rounded-[18px] p-4 mb-4">
                         <div className="text-xs text-slate-400 mb-1">Username</div>
                         <input
                             type="text"
@@ -141,7 +141,7 @@ export default function UiComponentsShowcase() {
                         />
                     </div>
 
-                    <div className="bg-slate-50 rounded-3xl p-4 mb-4 relative">
+                    <div className="bg-slate-50 rounded-[18px] p-4 mb-4 relative">
                         <div className="text-xs text-slate-400 mb-1">Password</div>
                         <div className="flex items-center gap-2">
                             <input
@@ -171,7 +171,7 @@ export default function UiComponentsShowcase() {
                         <span className="text-sm text-slate-600">Remember me</span>
                     </div>
 
-                    <button className="w-full bg-blue-500 text-white font-bold py-3 rounded-2xl hover:bg-blue-600 transition-colors">
+                    <button className="w-full bg-blue-500 text-white font-bold py-3 rounded-[18px] hover:bg-blue-600 transition-colors">
                         Login
                     </button>
                 </div>
@@ -180,7 +180,7 @@ export default function UiComponentsShowcase() {
                 {/* 4. EVENT CARD */}
                 <div className="bg-white rounded-[32px] p-6 shadow-lg">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
+                        <div className="w-10 h-10 rounded-[18px] bg-slate-100 flex items-center justify-center text-slate-400">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -195,7 +195,7 @@ export default function UiComponentsShowcase() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
+                        <div className="w-10 h-10 rounded-[18px] bg-slate-100 flex items-center justify-center text-slate-400">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -226,7 +226,7 @@ export default function UiComponentsShowcase() {
                     <p className="text-xs text-slate-400 text-center mb-1">Videos must be less than <span className="font-bold text-slate-900">30 MB</span></p>
                     <p className="text-xs text-slate-400 text-center mb-6">and photos must be less than <span className="font-bold text-slate-900">2 MB</span> in size.</p>
 
-                    <button className="bg-blue-500 text-white font-bold px-8 py-3 rounded-2xl hover:bg-blue-600 transition-colors">
+                    <button className="bg-blue-500 text-white font-bold px-8 py-3 rounded-[18px] hover:bg-blue-600 transition-colors">
                         Upload
                     </button>
 
@@ -245,40 +245,40 @@ export default function UiComponentsShowcase() {
                 <div className="bg-white rounded-[32px] p-6 shadow-lg">
                     <textarea
                         placeholder="Enter your message here..."
-                        className="w-full h-24 bg-slate-50 rounded-2xl p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                        className="w-full h-24 bg-slate-50 rounded-[18px] p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                     />
 
-                    <div className="flex items-center justify-between bg-slate-50 rounded-2xl p-3">
+                    <div className="flex items-center justify-between bg-slate-50 rounded-[18px] p-3">
                         <div className="flex items-center gap-2">
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <AlignLeft className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <AlignCenter className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <AlignRight className="w-4 h-4 text-slate-600" />
                             </button>
                             <div className="w-px h-6 bg-slate-300 mx-1" />
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <Bold className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <Italic className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <Underline className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <Strikethrough className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-lg hover:bg-white transition-colors flex items-center justify-center">
+                            <button className="w-8 h-8 rounded-[18px] hover:bg-white transition-colors flex items-center justify-center">
                                 <List className="w-4 h-4 text-slate-600" />
                             </button>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 mt-4 bg-slate-50 rounded-2xl p-3">
+                    <div className="flex items-center gap-3 mt-4 bg-slate-50 rounded-[18px] p-3">
                         <div className="flex items-center gap-2">
                             <span className="text-2xl">🇺🇸</span>
                             <span className="text-xs font-bold">+1</span>
@@ -304,7 +304,7 @@ export default function UiComponentsShowcase() {
                         <input
                             type="text"
                             placeholder="Search application..."
-                            className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-[18px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -315,7 +315,7 @@ export default function UiComponentsShowcase() {
                             { name: "Adobe XD", selected: false },
                             { name: "Figma", selected: false },
                         ].map((app, idx) => (
-                            <div key={idx} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
+                            <div key={idx} className="flex items-center gap-3 p-3 rounded-[18px] hover:bg-slate-50 transition-colors cursor-pointer">
                                 <div className={cn(
                                     "w-5 h-5 rounded-full border-2 flex items-center justify-center",
                                     app.selected ? "border-blue-500" : "border-slate-300"
@@ -327,7 +327,7 @@ export default function UiComponentsShowcase() {
                         ))}
                     </div>
 
-                    <button className="w-full mt-6 bg-blue-500 text-white font-bold py-3 rounded-2xl hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
+                    <button className="w-full mt-6 bg-blue-500 text-white font-bold py-3 rounded-[18px] hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
                         <span>Continue</span>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="9 18 15 12 9 6" />

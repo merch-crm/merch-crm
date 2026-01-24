@@ -272,12 +272,12 @@ export function LocalStorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-[18px]">
                                 <HardDrive size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Всего файлов</p>
-                                <h3 className="text-xl font-black text-slate-900">{data?.stats.fileCount || 0}</h3>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Всего файлов</p>
+                                <h3 className="text-xl font-bold text-slate-900">{data?.stats.fileCount || 0}</h3>
                                 <p className="text-[10px] text-slate-500 font-bold mt-0.5">{formatSize(data?.stats.size || 0)}</p>
                             </div>
                         </div>
@@ -287,12 +287,12 @@ export function LocalStorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl">
+                            <div className="p-3 bg-amber-50 text-amber-600 rounded-[18px]">
                                 <Folder size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Папок</p>
-                                <h3 className="text-xl font-black text-slate-900">{data?.stats.folderCount || 0}</h3>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Папок</p>
+                                <h3 className="text-xl font-bold text-slate-900">{data?.stats.folderCount || 0}</h3>
                                 <p className="text-[10px] text-slate-500 font-bold mt-0.5">в структуре</p>
                             </div>
                         </div>
@@ -302,13 +302,13 @@ export function LocalStorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
                     <CardContent className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-slate-100 text-slate-600 rounded-2xl">
+                            <div className="p-3 bg-slate-100 text-slate-600 rounded-[18px]">
                                 <RefreshCw size={24} className={loading ? "animate-spin" : ""} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Статус</p>
-                                <h3 className="text-sm font-black text-slate-900">Данные актуальны</h3>
-                                <p className="text-[9px] text-slate-500 font-bold mt-0.5 uppercase tracking-tighter">Нажмите для обновления</p>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Статус</p>
+                                <h3 className="text-sm font-bold text-slate-900">Данные актуальны</h3>
+                                <p className="text-[9px] text-slate-500 font-bold mt-0.5  tracking-normal">Нажмите для обновления</p>
                             </div>
                         </div>
                     </CardContent>
@@ -325,8 +325,8 @@ export function LocalStorageManager() {
                                     <Server size={24} />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl font-black text-slate-900">Локальное хранилище сервера</CardTitle>
-                                    <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Управление файлами на диске</CardDescription>
+                                    <CardTitle className="text-xl font-bold text-slate-900">Локальное хранилище сервера</CardTitle>
+                                    <CardDescription className="text-xs font-bold  tracking-normal text-slate-400 mt-1">Управление файлами на диске</CardDescription>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -337,7 +337,7 @@ export function LocalStorageManager() {
                                         placeholder="Поиск..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-emerald-500 w-full sm:w-48 transition-all"
+                                        className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-emerald-500 w-full sm:w-48 transition-all"
                                     />
                                 </div>
                                 <button
@@ -346,28 +346,28 @@ export function LocalStorageManager() {
                                         if (isMultiSelectMode) setSelectedPaths(new Set());
                                     }}
                                     className={cn(
-                                        "p-2.5 rounded-2xl transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
+                                        "p-2.5 rounded-[18px] transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
                                         isMultiSelectMode ? "bg-emerald-600 text-white" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                                     )}
                                 >
                                     <CheckSquare size={18} />
-                                    <span className="text-[10px] font-black uppercase">Выбор</span>
+                                    <span className="text-[10px] font-bold ">Выбор</span>
                                 </button>
                                 <button
                                     onClick={() => setIsCreateModalOpen(true)}
-                                    className="p-2.5 bg-emerald-50 text-emerald-600 rounded-2xl hover:bg-emerald-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
+                                    className="p-2.5 bg-emerald-50 text-emerald-600 rounded-[18px] hover:bg-emerald-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
                                 >
                                     <FolderPlus size={18} />
-                                    <span className="text-[10px] font-black uppercase">Папка</span>
+                                    <span className="text-[10px] font-bold ">Папка</span>
                                 </button>
                             </div>
                         </div>
 
                         {/* Multi-select Actions Bar */}
                         {isMultiSelectMode && selectedPaths.size > 0 && (
-                            <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                            <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-[18px] border border-emerald-100">
                                 <div className="flex items-center gap-3">
-                                    <div className="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-black">
+                                    <div className="px-3 py-1.5 bg-emerald-600 text-white rounded-[18px] text-xs font-bold">
                                         {selectedPaths.size}
                                     </div>
                                     <span className="text-sm font-bold text-slate-700">выбрано</span>
@@ -375,19 +375,19 @@ export function LocalStorageManager() {
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={selectAll}
-                                        className="px-4 py-2 bg-white text-emerald-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                        className="px-4 py-2 bg-white text-emerald-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
                                     >
                                         Выбрать все
                                     </button>
                                     <button
                                         onClick={() => setSelectedPaths(new Set())}
-                                        className="px-4 py-2 bg-white text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                        className="px-4 py-2 bg-white text-slate-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
                                     >
                                         Снять выбор
                                     </button>
                                     <button
                                         onClick={() => setShowDeleteMultipleConfirm(true)}
-                                        className="px-4 py-2 bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-rose-700 transition-all flex items-center gap-2"
+                                        className="px-4 py-2 bg-rose-600 text-white rounded-[18px] text-[10px] font-bold  hover:bg-rose-700 transition-all flex items-center gap-2"
                                     >
                                         <Trash2 size={14} />
                                         Удалить
@@ -397,11 +397,11 @@ export function LocalStorageManager() {
                         )}
 
                         {/* Breadcrumbs */}
-                        <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 overflow-x-auto scrollbar-hide">
+                        <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-100 overflow-x-auto scrollbar-hide">
                             <button
                                 onClick={() => navigateTo("")}
                                 className={cn(
-                                    "flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest",
+                                    "flex items-center gap-1.5 px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
                                     currentPrefix === "" ? "bg-white text-emerald-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
                                 )}
                             >
@@ -416,7 +416,7 @@ export function LocalStorageManager() {
                                         <button
                                             onClick={() => navigateTo(path)}
                                             className={cn(
-                                                "px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest",
+                                                "px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
                                                 currentPrefix === path ? "bg-white text-emerald-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
                                             )}
                                         >
@@ -433,23 +433,23 @@ export function LocalStorageManager() {
                         {loading ? (
                             <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
                                 <RefreshCw className="animate-spin" size={48} />
-                                <p className="text-xs font-black uppercase tracking-widest">Загрузка...</p>
+                                <p className="text-xs font-bold  tracking-normal">Загрузка...</p>
                             </div>
                         ) : filteredFolders.length === 0 && filteredFiles.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
                                 <div className="p-6 bg-slate-50 rounded-full">
                                     <File size={48} className="opacity-20" />
                                 </div>
-                                <p className="text-xs font-black uppercase tracking-widest">Здесь пока пусто</p>
+                                <p className="text-xs font-bold  tracking-normal">Здесь пока пусто</p>
                             </div>
                         ) : (
                             <table className="w-full text-left border-collapse">
                                 <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-50">
                                     <tr>
                                         {isMultiSelectMode && <th className="px-4 py-4 w-12"></th>}
-                                        <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Наименование</th>
-                                        <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Размер</th>
-                                        <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Действия</th>
+                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Наименование</th>
+                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-right">Размер</th>
+                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-center">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
@@ -478,17 +478,17 @@ export function LocalStorageManager() {
                                                 )}
                                                 <td className="px-8 py-4">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="p-2.5 bg-amber-50 text-amber-500 rounded-xl group-hover:scale-110 transition-transform shadow-sm">
+                                                        <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm">
                                                             <Folder size={18} fill="currentColor" fillOpacity={0.2} />
                                                         </div>
                                                         <div>
-                                                            <p className="text-sm font-black text-slate-700">{name}</p>
-                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Папка</p>
+                                                            <p className="text-sm font-bold text-slate-700">{name}</p>
+                                                            <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Папка</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-4 text-right">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase">---</span>
+                                                    <span className="text-[10px] font-bold text-slate-400 ">---</span>
                                                 </td>
                                                 <td className="px-8 py-4">
                                                     <div className="flex items-center justify-center gap-2">
@@ -496,14 +496,14 @@ export function LocalStorageManager() {
                                                             <>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); openRenameModal(folderPath); }}
-                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
+                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all active:scale-90"
                                                                     title="Переименовать"
                                                                 >
                                                                     <Edit2 size={16} />
                                                                 </button>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); setDeletingPath(folderPath); }}
-                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
                                                                     title="Удалить"
                                                                 >
                                                                     <Trash2 size={16} />
@@ -542,7 +542,7 @@ export function LocalStorageManager() {
                                                 <td className="px-8 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className={cn(
-                                                            "p-2.5 rounded-xl group-hover:scale-110 transition-transform shadow-sm",
+                                                            "p-2.5 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm",
                                                             ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(file.name.split('.').pop()?.toLowerCase() || '')
                                                                 ? "bg-emerald-50 text-emerald-500"
                                                                 : "bg-slate-100 text-slate-400"
@@ -566,21 +566,21 @@ export function LocalStorageManager() {
                                                             <>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); handleFileClick(file); }}
-                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
+                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all active:scale-90"
                                                                     title="Просмотреть"
                                                                 >
                                                                     <Eye size={16} />
                                                                 </button>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); openRenameModal(file.path); }}
-                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all active:scale-90"
+                                                                    className="p-2.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all active:scale-90"
                                                                     title="Переименовать"
                                                                 >
                                                                     <Edit2 size={16} />
                                                                 </button>
                                                                 <button
                                                                     onClick={(e) => { e.stopPropagation(); setDeletingPath(file.path); }}
-                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
                                                                     title="Удалить"
                                                                 >
                                                                     <Trash2 size={16} />
@@ -603,8 +603,8 @@ export function LocalStorageManager() {
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                 <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-[18px]">
                                 <FolderPlus size={24} />
                             </div>
                             Новая папка
@@ -621,21 +621,21 @@ export function LocalStorageManager() {
                             onChange={(e) => setNewFolderName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-lg font-black text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
                         />
                     </div>
                     <DialogFooter className="sm:justify-between gap-4">
                         <Button
                             variant="ghost"
                             onClick={() => setIsCreateModalOpen(false)}
-                            className="px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleCreateFolder}
                             disabled={isCreating || !newFolderName.trim()}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest py-6 shadow-lg shadow-emerald-200"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-emerald-200"
                         >
                             {isCreating ? "Создание..." : "Создать папку"}
                         </Button>
@@ -647,8 +647,8 @@ export function LocalStorageManager() {
             <Dialog open={isRenameModalOpen} onOpenChange={setIsRenameModalOpen}>
                 <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                            <div className="p-2 bg-amber-50 text-amber-600 rounded-[18px]">
                                 <Edit2 size={24} />
                             </div>
                             Переименовать
@@ -665,21 +665,21 @@ export function LocalStorageManager() {
                             onChange={(e) => setNewName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleRename()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-lg font-black text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
+                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
                         />
                     </div>
                     <DialogFooter className="sm:justify-between gap-4">
                         <Button
                             variant="ghost"
                             onClick={() => setIsRenameModalOpen(false)}
-                            className="px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleRename}
                             disabled={isRenaming || !newName.trim()}
-                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest py-6 shadow-lg shadow-amber-200"
+                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-amber-200"
                         >
                             {isRenaming ? "Переименование..." : "Переименовать"}
                         </Button>
@@ -718,14 +718,14 @@ export function LocalStorageManager() {
                         <div className="absolute top-6 right-6 z-50 flex gap-2">
                             <button
                                 onClick={() => window.open(previewFile?.url, '_blank')}
-                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-2xl shadow-xl transition-all active:scale-95"
+                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-[18px] shadow-xl transition-all active:scale-95"
                                 title="Открыть в новой вкладке"
                             >
                                 <ExternalLink size={20} />
                             </button>
                             <button
                                 onClick={() => setPreviewFile(null)}
-                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xl transition-all active:scale-95 shadow-rose-200"
+                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-[18px] shadow-xl transition-all active:scale-95 shadow-rose-200"
                             >
                                 <X size={20} />
                             </button>
@@ -733,12 +733,12 @@ export function LocalStorageManager() {
 
                         <div className="p-8 border-b border-slate-50 bg-slate-50/50">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-100">
+                                <div className="p-3 bg-emerald-600 text-white rounded-[18px] shadow-lg shadow-emerald-100">
                                     <File size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Предпросмотр файла</p>
+                                    <h3 className="text-lg font-bold text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
+                                    <p className="text-[10px] font-bold  tracking-normal text-slate-400">Предпросмотр файла</p>
                                 </div>
                             </div>
                         </div>
@@ -750,7 +750,7 @@ export function LocalStorageManager() {
                                     alt={previewFile.name}
                                     width={1000}
                                     height={800}
-                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-lg w-auto h-auto"
+                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-[18px] w-auto h-auto"
                                     unoptimized
                                 />
                             )}

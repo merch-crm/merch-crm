@@ -44,7 +44,7 @@ export default function AquaflowLanding() {
                         <h1 className="text-white text-6xl font-light leading-tight mb-4">
                             The simple<br />Bottle<br />Water
                         </h1>
-                        <p className="text-white/50 text-sm font-medium uppercase tracking-wider">More Offers</p>
+                        <p className="text-white/50 text-sm font-medium  tracking-wider">More Offers</p>
                     </div>
 
                     {/* Bottle Image */}

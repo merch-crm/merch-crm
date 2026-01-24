@@ -51,8 +51,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
         setCurrentStatus(newId);
         setIsOpen(false);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res = await updateOrderStatus(orderId, newId as any);
+        const res = await updateOrderStatus(orderId, newId);
         if (res.error) {
             setCurrentStatus(prevStatus);
         }
@@ -64,7 +63,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
             <div
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={cn(
-                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider cursor-pointer transition-all hover:scale-105 active:scale-95 select-none",
+                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold  tracking-wider cursor-pointer transition-all hover:scale-105 active:scale-95 select-none",
                     activeItem.lightBg,
                     activeItem.color,
                     loading && "opacity-50 cursor-wait"
@@ -76,21 +75,21 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
             </div>
 
             {isOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[150px] bg-white/90 backdrop-blur-xl border border-white/50 rounded-[14px] shadow-crm-lg z-[70] p-1.5 animate-in fade-in zoom-in-95 duration-200 overflow-hidden ring-1 ring-black/5">
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[150px] bg-white/90 backdrop-blur-xl border border-white/50 rounded-[var(--radius)] shadow-crm-lg z-[70] p-1.5 animate-in fade-in zoom-in-95 duration-200 overflow-hidden ring-1 ring-black/5">
                     {statuses.map((s) => (
                         <button
                             key={s.id}
                             onClick={() => handleChange(s.id)}
                             className={cn(
                                 "w-full flex items-center gap-2.5 px-3 py-2 rounded-[10px] transition-all text-left",
-                                s.id === currentStatus ? "bg-indigo-50 text-indigo-600 shadow-sm" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                s.id === currentStatus ? "bg-primary/5 text-primary shadow-sm" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
                             <div className={cn("w-2 h-2 rounded-full", s.dot)} />
-                            <span className="text-[11px] font-bold uppercase tracking-wider flex-1">
+                            <span className="text-[11px] font-bold  tracking-wider flex-1">
                                 {s.label}
                             </span>
-                            {s.id === currentStatus && <div className="w-1 h-1 rounded-full bg-indigo-500" />}
+                            {s.id === currentStatus && <div className="w-1 h-1 rounded-full bg-primary" />}
                         </button>
                     ))}
                 </div>

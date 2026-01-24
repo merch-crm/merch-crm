@@ -80,7 +80,7 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                 <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                     <CheckCircle2 className="w-8 h-8 text-slate-200" />
                 </div>
-                <h3 className="text-lg font-black text-slate-900">Задач пока нет</h3>
+                <h3 className="text-lg font-bold text-slate-900">Задач пока нет</h3>
                 <p className="text-slate-400 text-sm font-medium mt-1">Отдыхайте или создайте новое поручение</p>
             </div>
         );
@@ -98,7 +98,7 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                             key={task.id}
                             onClick={() => setSelectedTask(task)}
                             className={cn(
-                                "group relative bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 cursor-pointer",
+                                "group relative bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-pointer",
                                 isDone && "opacity-75 grayscale-[0.5]"
                             )}
                         >
@@ -106,10 +106,10 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                             <button
                                 onClick={(e) => handleToggle(e, task.id, task.status)}
                                 className={cn(
-                                    "h-14 w-14 rounded-2xl flex items-center justify-center transition-all active:scale-90 absolute -top-4 -right-4 shadow-lg z-10",
+                                    "h-14 w-14 rounded-[18px] flex items-center justify-center transition-all active:scale-90 absolute -top-4 -right-4 shadow-lg z-10",
                                     isDone
                                         ? "bg-emerald-500 text-white shadow-emerald-200"
-                                        : "bg-white text-slate-200 hover:text-indigo-600 border border-slate-50 hover:border-indigo-100 hover:shadow-indigo-100"
+                                        : "bg-white text-slate-200 hover:text-primary border border-slate-50 hover:border-primary/20 hover:shadow-primary/10"
                                 )}
                             >
                                 <CheckCircle2 className={cn("w-7 h-7", isDone && "animate-in zoom-in-50")} />
@@ -117,13 +117,13 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
 
                             <div className="flex flex-col h-full">
                                 <div className="flex justify-between items-start mb-4 pr-10">
-                                    <span className={cn("px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest", config.color)}>
+                                    <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold  tracking-normal", config.color)}>
                                         {config.label}
                                     </span>
                                 </div>
 
                                 <h3 className={cn(
-                                    "text-lg font-black text-slate-900 leading-snug mb-2",
+                                    "text-lg font-bold text-slate-900 leading-snug mb-2",
                                     isDone && "line-through text-slate-400"
                                 )}>
                                     {task.title}
@@ -138,11 +138,11 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                                 <div className="mt-auto pt-4 border-t border-slate-50 space-y-3">
                                     <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center">
-                                            {task.assignedToRole ? <Shield className="w-4 h-4 text-indigo-500" /> : <User className="w-4 h-4 text-indigo-500" />}
+                                            {task.assignedToRole ? <Shield className="w-4 h-4 text-primary" /> : <User className="w-4 h-4 text-primary" />}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">Исполнитель</span>
-                                            <span className="text-xs font-black text-slate-700">
+                                            <span className="text-[10px] font-bold text-slate-400  tracking-normal leading-none mb-0.5">Исполнитель</span>
+                                            <span className="text-xs font-bold text-slate-700">
                                                 {task.assignedToUser?.name || task.assignedToRole?.name || "Все"}
                                             </span>
                                         </div>
@@ -154,8 +154,8 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                                                 <Calendar className="w-4 h-4 text-slate-400" />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">Срок</span>
-                                                <span className="text-xs font-black text-slate-700">
+                                                <span className="text-[10px] font-bold text-slate-400  tracking-normal leading-none mb-0.5">Срок</span>
+                                                <span className="text-xs font-bold text-slate-700">
                                                     {format(new Date(task.dueDate), "d MMMM", { locale: ru })}
                                                 </span>
                                             </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InventoryItem, ThumbnailSettings } from "../../../types";
 
@@ -12,7 +12,29 @@ interface ItemMediaSectionProps {
     // For editing
     onImageChange: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
     onImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    onSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    onImageClick?: (index: number) => void;
     thumbnailSettings?: ThumbnailSettings | null;
+    uploadStates?: Record<string, UploadState>;
+}
+
+export interface UploadState {
+    uploading: boolean;
+    progress: number;
+    uploaded: boolean;
+}
+
+// Moved outside component for stable reference in useMemo
+function getAllItemImages(item: InventoryItem) {
+    const images: { src: string | null; label: string, type: "front" | "back" | "side" | "details", index?: number }[] = [
+        { src: item.image || null, label: "Основное", type: "front" },
+        { src: item.imageBack || null, label: "Вид сзади", type: "back" },
+        { src: item.imageSide || null, label: "Вид сбоку", type: "side" },
+        { src: (item.imageDetails && item.imageDetails[0]) || null, label: "Деталь 1", type: "details", index: 0 },
+        { src: (item.imageDetails && item.imageDetails[1]) || null, label: "Деталь 2", type: "details", index: 1 },
+        { src: (item.imageDetails && item.imageDetails[2]) || null, label: "Деталь 3", type: "details", index: 2 },
+    ];
+    return images;
 }
 
 export function ItemMediaSection({
@@ -20,181 +42,383 @@ export function ItemMediaSection({
     isEditing,
     onImageChange,
     onImageRemove,
-    thumbnailSettings
+    onSetMain,
+    onImageClick,
+    thumbnailSettings,
+    uploadStates
 }: ItemMediaSectionProps) {
-    const allImages = getAllItemImages(item);
+    const allImages = React.useMemo(() => getAllItemImages(item), [item]);
     const [fullscreen, setFullscreen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [imageZoomed, setImageZoomed] = useState(false);
+    const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 
-    function getAllItemImages(item: InventoryItem) {
-        const images: { src: string; label: string, type: string, index?: number }[] = [];
-        if (item.image) images.push({ src: item.image, label: "Face", type: "front" });
-        if (item.imageBack) images.push({ src: item.imageBack, label: "Back", type: "back" });
-        if (item.imageSide) images.push({ src: item.imageSide, label: "Side", type: "side" });
-        if (item.imageDetails) {
-            item.imageDetails.forEach((src: string, idx: number) => {
-                images.push({ src, label: `D-${idx + 1}`, type: "details", index: idx });
-            });
-        }
-        return images;
-    }
+    // Draggable Scroll Logic
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeftState, setScrollLeftState] = useState(0);
+    const [dragDistance, setDragDistance] = useState(0);
 
-    const openFullscreen = (src: string) => {
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (!scrollRef.current) return;
+        setIsDragging(true);
+        setStartX(e.pageX - scrollRef.current.offsetLeft);
+        setScrollLeftState(scrollRef.current.scrollLeft);
+        setDragDistance(0);
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging || !scrollRef.current) return;
+        e.preventDefault();
+        const x = e.pageX - scrollRef.current.offsetLeft;
+        const walk = (x - startX) * 1.5; // multiplier for scroll speed
+        scrollRef.current.scrollLeft = scrollLeftState - walk;
+        setDragDistance(Math.abs(x - startX));
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleMouseLeave = () => {
+        setIsDragging(false);
+    };
+
+
+    const openFullscreen = (src: string | null) => {
+        if (!src) return;
         const idx = allImages.findIndex(img => img.src === src);
         setCurrentIndex(idx >= 0 ? idx : 0);
+        setImageZoomed(false);
         setFullscreen(true);
     };
 
-    const nextImage = () => setCurrentIndex(prev => (prev + 1) % allImages.length);
-    const prevImage = () => setCurrentIndex(prev => (prev - 1 + allImages.length) % allImages.length);
+    const nextImage = () => {
+        setCurrentIndex(prev => (prev + 1) % allImages.length);
+        setImageZoomed(false);
+    };
+
+    const prevImage = () => {
+        setCurrentIndex(prev => (prev - 1 + allImages.length) % allImages.length);
+        setImageZoomed(false);
+    };
+
+    // Focus management for keyboard navigation
+    const lightboxRef = useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        if (fullscreen && lightboxRef.current) {
+            lightboxRef.current.focus();
+        }
+    }, [fullscreen]);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            setCurrentIndex(prev => (prev - 1 + allImages.length) % allImages.length);
+            setImageZoomed(false);
+        } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            setCurrentIndex(prev => (prev + 1) % allImages.length);
+            setImageZoomed(false);
+        } else if (e.key === "Escape") {
+            e.preventDefault();
+            setFullscreen(false);
+        }
+    };
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            {/* Gallery Grid: FinTech Modern Style */}
-            <div className="flex flex-wrap gap-6">
-                {allImages.map((img, idx) => (
-                    <div
-                        key={idx}
-                        onClick={() => openFullscreen(img.src)}
-                        className={cn(
-                            "group relative flex-grow basis-[calc(20%-24px)] min-w-[160px] aspect-square rounded-[18px] overflow-hidden border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer bg-white shadow-sm"
-                        )}
-                    >
-                        <Image
-                            src={img.src}
-                            alt={img.label}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3"
-                            unoptimized
-                            style={(() => {
-                                if (img.type === "front" && thumbnailSettings) {
-                                    return {
-                                        transform: `scale(${thumbnailSettings.zoom || 1}) translate(${thumbnailSettings.x ?? 0}%, ${thumbnailSettings.y ?? 0}%)`
-                                    };
-                                }
-                                return {};
-                            })()}
-                        />
-
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-4">
-                            <Maximize2 className="w-6 h-6 text-white" />
-
-                            {isEditing && (
-                                <div className="flex gap-2">
-                                    <label
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="p-3 bg-white rounded-[18px] text-slate-900 hover:bg-slate-50 transition-all cursor-pointer shadow-md"
-                                    >
-                                        <input
-                                            type="file"
-                                            className="hidden"
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) onImageChange(file, img.type as "front" | "back" | "side" | "details", img.index);
-                                            }}
-                                        />
-                                        <RefreshCcw className="w-4 h-4" />
-                                    </label>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            onImageRemove(img.type as "front" | "back" | "side" | "details", img.index);
-                                        }}
-                                        className="p-3 bg-rose-500 rounded-[18px] text-white hover:bg-rose-600 transition-all shadow-md"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Type Indicator */}
-                        <div className="absolute top-4 left-4">
-                            <div className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-[18px] text-[10px] font-bold text-slate-900 border border-slate-200 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all">
-                                {img.label}
-                            </div>
-                        </div>
+        <div className="space-y-6">
+            <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                        <ImageIcon className="w-6 h-6" />
                     </div>
-                ))}
+                    <div>
+                        <h3 className="text-xl font-black text-slate-900 tracking-tighter">Галерея</h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                            Загружено {allImages.filter(i => i.src).length} из 6 фото
+                        </p>
+                    </div>
+                </div>
 
-                {/* Add New Button */}
-                {isEditing && (item.imageDetails?.length || 0) < 3 && (
-                    <label className="flex-grow basis-[calc(20%-24px)] min-w-[160px] aspect-square rounded-[18px] border-2 border-dashed border-slate-200 hover:border-indigo-500 bg-slate-50 flex flex-col items-center justify-center text-slate-400 hover:text-indigo-600 transition-all cursor-pointer group">
-                        <input
-                            type="file"
-                            className="hidden"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) onImageChange(file, "details");
-                            }}
-                        />
-                        <div className="w-12 h-12 rounded-full border border-dashed border-slate-300 flex items-center justify-center group-hover:border-indigo-400 transition-colors mb-4">
-                            <ImageIcon className="w-6 h-6 opacity-40 group-hover:opacity-100" />
-                        </div>
-                        <span className="text-xs font-semibold opacity-40 group-hover:opacity-100">Upload Details</span>
-                    </label>
-                )}
+                <div className="flex items-center gap-3">
+                    {allImages.some(i => !i.src) && (
+                        <label className="cursor-pointer group/upload">
+                            <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const firstEmptyIdx = allImages.findIndex(img => !img.src);
+                                        if (firstEmptyIdx !== -1) {
+                                            const img = allImages[firstEmptyIdx];
+                                            setLoadingIndex(firstEmptyIdx);
+                                            onImageChange(file, img.type, img.index);
+                                        }
+                                    }
+                                }}
+                            />
+                            <div className="h-10 px-6 rounded-xl bg-slate-900 hover:bg-black text-white flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-slate-900/10 group">
+                                <ImagePlus className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Добавить больше</span>
+                            </div>
+                        </label>
+                    )}
+                </div>
             </div>
 
-            {/* Carousel Navigation (Visual Hint) */}
-            <div className="flex items-center gap-4">
-                <div className="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 rounded-full transition-all duration-500" style={{ width: `${(currentIndex + 1) / allImages.length * 100}%` }} />
-                </div>
-                <div className="text-xs font-medium text-slate-500">
-                    Source Base: {allImages.length}
+            {/* Gallery Grid: Modern Mosaic / Horizontal Scroll */}
+            <div className="relative group/gallery">
+                <div
+                    ref={scrollRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseLeave}
+                    className={cn(
+                        "flex overflow-x-auto gap-4 snap-x snap-mandatory no-scrollbar",
+                        isDragging ? "cursor-grabbing select-none snap-none scroll-auto" : "cursor-grab snap-x scroll-smooth"
+                    )}
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                    {allImages.map((img, idx) => {
+                        if (!img.src && !isEditing) return null;
+                        return (
+                            <div
+                                key={idx}
+                                onClick={(e) => {
+                                    if (dragDistance < 15 && img.src) {
+                                        if (onImageClick) {
+                                            onImageClick(idx);
+                                        } else {
+                                            openFullscreen(img.src);
+                                        }
+                                    }
+                                }}
+                                onMouseUp={(e) => {
+                                    // Fallback for very quick clics where dragDistance might be slightly off
+                                    if (dragDistance < 3 && img.src && !isDragging) {
+                                        if (onImageClick) onImageClick(idx);
+                                        else openFullscreen(img.src);
+                                    }
+                                }}
+                                className={cn(
+                                    "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-[var(--radius-inner)] overflow-hidden border transition-all duration-500 bg-slate-50 snap-start",
+                                    img.src
+                                        ? "border-slate-200/60 hover:border-slate-300 cursor-pointer hover:shadow-2xl hover:shadow-slate-200/50"
+                                        : "border-dashed border-slate-200 hover:bg-slate-100/50"
+                                )}
+                            >
+                                {img.src ? (
+                                    <>
+                                        <Image
+                                            src={img.src}
+                                            alt={img.label}
+                                            fill
+                                            className="object-cover transition-transform duration-1000 cubic-bezier group-hover:scale-110"
+                                            unoptimized
+                                        />
+
+                                        {/* Glassmorphism Overlay */}
+                                        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">{img.label}</p>
+                                        </div>
+
+                                        <div className="absolute inset-0 bg-slate-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                        {/* Action Buttons */}
+                                        {isEditing && (
+                                            <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onImageRemove(img.type, img.index);
+                                                    }}
+                                                    className="w-8 h-8 flex items-center justify-center bg-rose-500 text-white rounded-lg shadow-lg hover:bg-rose-600 active:scale-90 transition-all z-20"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+
+                                                <label
+                                                    className="w-8 h-8 flex items-center justify-center bg-white text-slate-600 rounded-lg shadow-lg hover:bg-slate-50 hover:text-primary active:scale-90 transition-all cursor-pointer z-20"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        className="hidden"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                setLoadingIndex(idx);
+                                                                onImageChange(file, img.type, img.index);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <RefreshCcw className="w-4 h-4" />
+                                                </label>
+
+                                                {img.type !== "front" && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onSetMain(img.type, img.index);
+                                                        }}
+                                                        className="w-8 h-8 flex items-center justify-center btn-primary rounded-lg shadow-lg active:scale-90 transition-all border-none z-20"
+                                                    >
+                                                        <Star className="w-4 h-4 fill-current" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center text-white scale-0 group-hover:scale-100 transition-transform duration-500 border border-white/30">
+                                            <Maximize2 className="w-5 h-5" />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                                        {(isEditing && uploadStates?.[img.type]?.uploading && loadingIndex === idx) ? (
+                                            <div className="flex flex-col items-center justify-center gap-3 w-full h-full animate-in fade-in duration-300">
+                                                <div className="relative w-12 h-12 flex items-center justify-center">
+                                                    <svg className="w-full h-full rotate-[-90deg]" viewBox="0 0 36 36">
+                                                        <path
+                                                            className="text-slate-100"
+                                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="3"
+                                                        />
+                                                        <path
+                                                            className="text-primary transition-all duration-300 ease-out"
+                                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="3"
+                                                            strokeDasharray={`${uploadStates[img.type].progress}, 100`}
+                                                        />
+                                                    </svg>
+                                                    <span className="absolute text-[10px] font-bold text-primary">
+                                                        {uploadStates[img.type].progress}%
+                                                    </span>
+                                                </div>
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">Загрузка...</span>
+                                            </div>
+                                        ) : !isEditing ? (
+                                            <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                                                <ImageIcon className="w-5 h-5 text-slate-300" />
+                                            </div>
+                                        ) : (
+                                            <label className="cursor-pointer group/upload flex flex-col items-center justify-center w-full h-full">
+                                                <input
+                                                    type="file"
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            setLoadingIndex(idx);
+                                                            onImageChange(file, img.type, img.index);
+                                                        }
+                                                    }}
+                                                />
+                                                <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
+                                                    <Plus className="w-5 h-5" />
+                                                </div>
+                                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 group-hover/upload:text-primary transition-colors">Добавить</span>
+                                            </label>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
-            {/* Fullscreen UI Updated */}
+            {/* Lightbox Overlay */}
             {fullscreen && (
-                <div className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-3xl flex items-center justify-center animate-in fade-in duration-500">
+                <div
+                    ref={lightboxRef}
+                    tabIndex={0}
+                    onKeyDown={handleKeyDown}
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 animate-in fade-in duration-300 outline-none"
+                >
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-slate-900/95 backdrop-blur-2xl"
+                        onClick={() => setFullscreen(false)}
+                    />
+
+                    {/* Close Button */}
                     <button
                         onClick={() => setFullscreen(false)}
-                        className="absolute top-10 right-10 w-16 h-16 flex items-center justify-center rounded-[18px] bg-white text-slate-900 hover:bg-indigo-600 hover:text-white transition-all active:scale-95 z-[110] shadow-2xl"
+                        className="absolute top-8 right-8 w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 active:scale-95 transition-all z-[110] border border-white/10 group"
                     >
-                        <RefreshCcw className="w-8 h-8 rotate-45" />
+                        <X className="w-7 h-7 transition-transform group-hover:rotate-90 duration-500" />
                     </button>
 
+                    {/* Navigation */}
                     <button
                         onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                        className="absolute left-10 w-20 h-20 flex items-center justify-center rounded-[18px] bg-white/10 text-white hover:bg-white border border-white/20 hover:text-slate-900 transition-all z-[110] backdrop-blur-md"
+                        className="absolute left-10 w-16 h-16 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
                     >
                         <ChevronLeft className="w-10 h-10" />
                     </button>
 
-                    <div className="relative w-[85vw] h-[75vh] group/modal">
-                        <Image
-                            src={allImages[currentIndex].src}
-                            alt="Full view"
-                            fill
-                            className="object-contain"
-                            unoptimized
-                        />
-                        <div className="absolute top-0 left-0 right-0 py-10 flex justify-center opacity-0 group-hover/modal:opacity-100 transition-opacity">
-                            <span className="px-6 py-2 bg-white/10 backdrop-blur-xl rounded-[18px] text-white font-semibold border border-white/20">
-                                {allImages[currentIndex].label}
-                            </span>
-                        </div>
-                    </div>
-
                     <button
                         onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                        className="absolute right-10 w-20 h-20 flex items-center justify-center rounded-[18px] bg-white/10 text-white hover:bg-white border border-white/20 hover:text-slate-900 transition-all z-[110] backdrop-blur-md"
+                        className="absolute right-10 w-16 h-16 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
                     >
                         <ChevronRight className="w-10 h-10" />
                     </button>
 
-                    <div className="absolute bottom-12 flex items-center gap-3">
-                        {allImages.map((_, i) => (
-                            <div
+                    {/* Main Content */}
+                    <div className="relative w-full max-w-5xl aspect-square md:aspect-auto h-full flex flex-col items-center justify-center gap-8 z-[105]">
+                        <div className="relative w-full h-[70vh] flex items-center justify-center">
+                            {allImages[currentIndex].src && (
+                                <img
+                                    src={allImages[currentIndex].src || ""}
+                                    alt="Full view"
+                                    className={cn(
+                                        "max-w-full max-h-full object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
+                                        imageZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
+                                    )}
+                                    onClick={() => setImageZoomed(!imageZoomed)}
+                                />
+                            )}
+                        </div>
+
+                        <div className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center gap-4">
+                            <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">{allImages[currentIndex].label}</span>
+                            <div className="w-px h-4 bg-white/20" />
+                            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{currentIndex + 1} / 6</span>
+                        </div>
+                    </div>
+
+                    {/* Bottom Thumbnails */}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10">
+                        {allImages.map((img, i) => (
+                            <button
                                 key={i}
+                                onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
                                 className={cn(
-                                    "w-3 h-3 rounded-full transition-all duration-300",
-                                    i === currentIndex ? "bg-indigo-500 w-10" : "bg-white/30"
+                                    "relative w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all duration-300",
+                                    i === currentIndex ? "border-primary scale-110 shadow-lg shadow-primary/20" : "border-transparent opacity-40 hover:opacity-100"
                                 )}
-                            />
+                            >
+                                {img.src ? (
+                                    <Image src={img.src} alt="thumb" fill className="object-cover" unoptimized />
+                                ) : (
+                                    <div className="w-full h-full bg-slate-800 flex items-center justify-center">
+                                        <ImageIcon className="w-5 h-5 text-slate-600" />
+                                    </div>
+                                )}
+                            </button>
                         ))}
                     </div>
                 </div>

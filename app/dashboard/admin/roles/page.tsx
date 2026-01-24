@@ -56,7 +56,7 @@ export default function AdminRolesPage() {
             "Печать": { icon: Printer, defaultGradient: "from-orange-400 to-orange-600" },
             "Вышивка": { icon: Scissors, defaultGradient: "from-blue-400 to-blue-600" },
             "Склад": { icon: Package, defaultGradient: "from-slate-400 to-slate-600" },
-            "Управляющий": { icon: UserCog, defaultGradient: "from-indigo-400 to-indigo-600" },
+            "Управляющий": { icon: UserCog, defaultGradient: "from-primary/60 to-primary" },
         };
 
         const config = hardcoded[role.name] || { icon: UserCog, defaultGradient: "from-slate-400 to-slate-600" };
@@ -72,7 +72,7 @@ export default function AdminRolesPage() {
             "orange": "from-orange-400 to-orange-600",
             "blue": "from-blue-400 to-blue-600",
             "slate": "from-slate-400 to-slate-600",
-            "indigo": "from-indigo-400 to-indigo-600",
+            "indigo": "from-primary/60 to-primary",
             "amber": "from-amber-400 to-amber-600",
             "rose": "from-rose-400 to-rose-600",
             "cyan": "from-cyan-400 to-cyan-600",
@@ -92,21 +92,16 @@ export default function AdminRolesPage() {
     if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка ролей системы...</div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                        <Shield className="w-5 h-5 text-indigo-600" />
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-bold text-slate-900 leading-tight">Роли системы</h3>
-                        <p className="text-xs text-slate-500 font-medium mt-0.5">Всего ролей: {roles.length}</p>
-                    </div>
+        <div className="max-w-7xl mx-auto space-y-6 pb-20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Роли и права</h1>
+                    <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Настройка доступов и полномочий сотрудников</p>
                 </div>
                 <AddRoleDialog onSuccess={fetchRoles} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {roles.map((role) => {
                     const style = getRoleConfig(role);
                     const Icon = style.icon;
@@ -115,23 +110,23 @@ export default function AdminRolesPage() {
                         <div
                             key={role.id}
                             onClick={() => setPermissionsRole(role)}
-                            className={`group relative rounded-xl border border-slate-200 overflow-hidden bg-gradient-to-br ${style.cardGradient} hover:border-indigo-400 hover:shadow-lg transition-all cursor-pointer h-[180px] flex flex-col`}
+                            className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${style.cardGradient} hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer h-[180px] flex flex-col`}
                         >
                             <div className="p-6 flex flex-col h-full">
                                 <div className="flex items-start gap-4 mb-3">
-                                    <div className={`flex-shrink-0 h-11 w-11 rounded-lg bg-gradient-to-br ${style.gradient} flex items-center justify-center shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-300`}>
+                                    <div className={`flex-shrink-0 h-11 w-11 rounded-[18px] bg-gradient-to-br ${style.gradient} flex items-center justify-center shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform duration-300`}>
                                         <Icon className={`w-5 h-5 ${style.color}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-bold text-slate-900 truncate tracking-tight group-hover:text-indigo-600 transition-colors">
+                                        <h3 className="text-lg font-bold text-slate-900 truncate tracking-tight group-hover:text-primary transition-colors">
                                             {role.name}
                                         </h3>
                                         <div className="mt-0.5 flex items-center gap-2">
                                             {role.isSystem && (
-                                                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-slate-100 text-slate-500 rounded">System</span>
+                                                <span className="text-[10px] font-bold  tracking-normal px-2 py-0.5 bg-slate-100 text-slate-500 rounded">System</span>
                                             )}
                                             {role.department && (
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-500">
+                                                <span className="text-[10px] font-bold  tracking-normal text-primary">
                                                     {role.department.name}
                                                 </span>
                                             )}
@@ -162,7 +157,7 @@ export default function AdminRolesPage() {
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between mt-auto">
-                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400  tracking-normal">
                                         <Key className="w-3.5 h-3.5" />
                                         <span>Разрешения</span>
                                     </div>

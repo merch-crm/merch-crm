@@ -30,7 +30,7 @@ export default function InvoiceDashboard() {
             {/* --- HEADER --- */}
             <header className="relative z-10 flex items-center justify-between mb-12">
                 <div className="flex items-center gap-6">
-                    <div className="text-2xl font-black italic tracking-tighter text-slate-900">sf.</div>
+                    <div className="text-2xl font-bold italic tracking-normal text-slate-900">sf.</div>
 
                     <div className="flex items-center gap-2">
                         <button className="w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-slate-600 hover:bg-white/60 transition-colors">
@@ -108,7 +108,7 @@ export default function InvoiceDashboard() {
                                 <Briefcase className="w-3 h-3" />
                             </div>
                             <div>
-                                <div className="text-[10px] uppercase tracking-wider opacity-60">Account</div>
+                                <div className="text-[10px]  tracking-wider opacity-60">Account</div>
                                 <div className="font-semibold text-slate-900">Ohana Inc.</div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@ export default function InvoiceDashboard() {
                                 <span className="text-xs font-bold">#</span>
                             </div>
                             <div>
-                                <div className="text-[10px] uppercase tracking-wider opacity-60">Invoice Number</div>
+                                <div className="text-[10px]  tracking-wider opacity-60">Invoice Number</div>
                                 <div className="font-semibold text-slate-900">INV-4905</div>
                             </div>
                         </div>
@@ -126,7 +126,7 @@ export default function InvoiceDashboard() {
                                 <div className="w-4 h-4 border-2 border-dotted border-slate-400 rounded-full" />
                             </div>
                             <div>
-                                <div className="text-[10px] uppercase tracking-wider opacity-60">Status</div>
+                                <div className="text-[10px]  tracking-wider opacity-60">Status</div>
                                 <div className="font-semibold text-slate-900">Posted</div>
                             </div>
                         </div>
@@ -197,9 +197,9 @@ export default function InvoiceDashboard() {
                             { name: "iMac 27\"", price: "$ 1,300", qty: "20", img: "https://images.unsplash.com/photo-1547082299-ff1167503719?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" },
                             { name: "iPhone 15", price: "$ 800", qty: "10", img: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" },
                         ].map((item, idx) => (
-                            <div key={idx} className="bg-white rounded-3xl p-4 flex flex-col justify-between h-[180px] hover:shadow-lg transition-all cursor-pointer group">
+                            <div key={idx} className="bg-white rounded-[18px] p-4 flex flex-col justify-between h-[180px] hover:shadow-lg transition-all cursor-pointer group">
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-16 bg-slate-100 rounded-lg overflow-hidden shrink-0 relative">
+                                    <div className="w-12 h-16 bg-slate-100 rounded-[18px] overflow-hidden shrink-0 relative">
                                         <Image src={item.img} fill className="object-cover mix-blend-multiply" alt={item.name} />
                                     </div>
                                     <div className="flex-1 pt-1">
@@ -211,7 +211,7 @@ export default function InvoiceDashboard() {
                                 <div className="flex items-center justify-between border-t border-slate-100 pt-3 mt-auto">
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-2xl font-light">{item.qty}</span>
-                                        <span className="text-[10px] text-slate-400 font-bold uppercase">Qty</span>
+                                        <span className="text-[10px] text-slate-400 font-bold ">Qty</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] font-bold text-slate-400">Store 2</span>
@@ -247,7 +247,7 @@ export default function InvoiceDashboard() {
                         <div className="font-semibold text-slate-900">Upcoming</div>
                         <div className="flex items-center gap-1">
                             <span className="text-2xl font-light">12</span>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase">Activities</span>
+                            <span className="text-[10px] text-slate-400 font-bold ">Activities</span>
                         </div>
                     </div>
 
@@ -256,7 +256,7 @@ export default function InvoiceDashboard() {
                         <div className="absolute left-[26px] top-4 bottom-4 w-[1px] bg-slate-300 border-l border-dashed border-slate-400/50" />
 
                         {/* Item 1 */}
-                        <div className="bg-[#D4C1EC] rounded-3xl p-4 flex gap-4 relative z-10 transition-transform hover:scale-[1.02] cursor-pointer">
+                        <div className="bg-[#D4C1EC] rounded-[18px] p-4 flex gap-4 relative z-10 transition-transform hover:scale-[1.02] cursor-pointer">
                             <div className="flex flex-col items-center gap-1 min-w-[32px]">
                                 <div className="w-8 h-8 rounded-full border border-slate-900/10 flex items-center justify-center">
                                     <Mail className="w-3 h-3 text-slate-700" />
@@ -280,7 +280,7 @@ export default function InvoiceDashboard() {
                         </div>
 
                         {/* Item 2 */}
-                        <div className="bg-[#FFF580] rounded-3xl p-4 flex gap-4 relative z-10 transition-transform hover:scale-[1.02] cursor-pointer">
+                        <div className="bg-[#FFF580] rounded-[18px] p-4 flex gap-4 relative z-10 transition-transform hover:scale-[1.02] cursor-pointer">
                             <div className="flex flex-col items-center gap-1 min-w-[32px]">
                                 <div className="w-8 h-8 rounded-full border border-slate-900/10 flex items-center justify-center">
                                     <Phone className="w-3 h-3 text-slate-700" />

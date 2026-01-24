@@ -15,7 +15,9 @@ type SecurityEventType =
     | "record_delete"
     | "settings_change"
     | "maintenance_mode_toggle"
-    | "system_error";
+    | "system_error"
+    | "admin_impersonation_start"
+    | "admin_impersonation_stop";
 
 type SecurityEventSeverity = "info" | "warning" | "critical";
 

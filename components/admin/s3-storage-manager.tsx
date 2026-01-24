@@ -289,12 +289,12 @@ export function S3StorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+                            <div className="p-3 bg-indigo-50 text-#5d00ff rounded-[18px]">
                                 <Database size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Всего в S3</p>
-                                <h3 className="text-xl font-black text-slate-900">{formatSize(data?.s3.size || 0)}</h3>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Всего в S3</p>
+                                <h3 className="text-xl font-bold text-slate-900">{formatSize(data?.s3.size || 0)}</h3>
                                 <p className="text-[10px] text-slate-500 font-bold mt-0.5">{data?.s3.fileCount || 0} объектов</p>
                             </div>
                         </div>
@@ -304,12 +304,12 @@ export function S3StorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-[18px]">
                                 <Server size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Локальный диск</p>
-                                <h3 className="text-xl font-black text-slate-900">{formatSize(data?.local.used || 0)} / {formatSize(data?.local.total || 0)}</h3>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Локальный диск</p>
+                                <h3 className="text-xl font-bold text-slate-900">{formatSize(data?.local.used || 0)} / {formatSize(data?.local.total || 0)}</h3>
                                 <div className="w-32 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
                                     <div
                                         className="h-full bg-emerald-500 rounded-full transition-all duration-500"
@@ -324,13 +324,13 @@ export function S3StorageManager() {
                 <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
                     <CardContent className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-slate-100 text-slate-600 rounded-2xl">
+                            <div className="p-3 bg-slate-100 text-slate-600 rounded-[18px]">
                                 <RefreshCw size={24} className={loading ? "animate-spin" : ""} />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Статус</p>
-                                <h3 className="text-sm font-black text-slate-900">Данные актуальны</h3>
-                                <p className="text-[9px] text-slate-500 font-bold mt-0.5 uppercase tracking-tighter">Нажмите для обновления</p>
+                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Статус</p>
+                                <h3 className="text-sm font-bold text-slate-900">Данные актуальны</h3>
+                                <p className="text-[9px] text-slate-500 font-bold mt-0.5  tracking-normal">Нажмите для обновления</p>
                             </div>
                         </div>
                     </CardContent>
@@ -345,12 +345,12 @@ export function S3StorageManager() {
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-3.5 bg-indigo-600 text-white rounded-[24px] shadow-lg shadow-indigo-200">
+                                        <div className="p-3.5 bg-#5d00ff text-white rounded-[24px] shadow-lg shadow-indigo-200">
                                             <CloudUpload size={24} />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-xl font-black text-slate-900">Облачное хранилище S3</CardTitle>
-                                            <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Управление структурой файлов</CardDescription>
+                                            <CardTitle className="text-xl font-bold text-slate-900">Облачное хранилище S3</CardTitle>
+                                            <CardDescription className="text-xs font-bold  tracking-normal text-slate-400 mt-1">Управление структурой файлов</CardDescription>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -361,7 +361,7 @@ export function S3StorageManager() {
                                                 placeholder="Поиск..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 w-full sm:w-48 transition-all"
+                                                className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 w-full sm:w-48 transition-all"
                                             />
                                         </div>
                                         <button
@@ -370,28 +370,28 @@ export function S3StorageManager() {
                                                 if (isMultiSelectMode) setSelectedKeys(new Set());
                                             }}
                                             className={cn(
-                                                "p-2.5 rounded-2xl transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
-                                                isMultiSelectMode ? "bg-indigo-600 text-white" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                                                "p-2.5 rounded-[18px] transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
+                                                isMultiSelectMode ? "bg-#5d00ff text-white" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                                             )}
                                         >
                                             <CheckSquare size={18} />
-                                            <span className="text-[10px] font-black uppercase">Выбор</span>
+                                            <span className="text-[10px] font-bold ">Выбор</span>
                                         </button>
                                         <button
                                             onClick={() => setIsCreateModalOpen(true)}
-                                            className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
+                                            className="p-2.5 bg-indigo-50 text-#5d00ff rounded-[18px] hover:bg-indigo-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
                                         >
                                             <FolderPlus size={18} />
-                                            <span className="text-[10px] font-black uppercase">Папка</span>
+                                            <span className="text-[10px] font-bold ">Папка</span>
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Multi-select Actions Bar */}
                                 {isMultiSelectMode && selectedKeys.size > 0 && (
-                                    <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                    <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-[18px] border border-indigo-100">
                                         <div className="flex items-center gap-3">
-                                            <div className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-black">
+                                            <div className="px-3 py-1.5 bg-#5d00ff text-white rounded-[18px] text-xs font-bold">
                                                 {selectedKeys.size}
                                             </div>
                                             <span className="text-sm font-bold text-slate-700">выбрано</span>
@@ -399,19 +399,19 @@ export function S3StorageManager() {
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={selectAll}
-                                                className="px-4 py-2 bg-white text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                                className="px-4 py-2 bg-white text-slate-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
                                             >
                                                 Выбрать все
                                             </button>
                                             <button
                                                 onClick={deselectAll}
-                                                className="px-4 py-2 bg-white text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-50 transition-all"
+                                                className="px-4 py-2 bg-white text-slate-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
                                             >
                                                 Снять выбор
                                             </button>
                                             <button
                                                 onClick={() => setShowDeleteMultipleConfirm(true)}
-                                                className="px-4 py-2 bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-rose-700 transition-all flex items-center gap-2"
+                                                className="px-4 py-2 bg-rose-600 text-white rounded-[18px] text-[10px] font-bold  hover:bg-rose-700 transition-all flex items-center gap-2"
                                             >
                                                 <Trash2 size={14} />
                                                 Удалить
@@ -421,12 +421,12 @@ export function S3StorageManager() {
                                 )}
 
                                 {/* Breadcrumbs */}
-                                <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 overflow-x-auto scrollbar-hide">
+                                <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-100 overflow-x-auto scrollbar-hide">
                                     <button
                                         onClick={() => navigateTo("")}
                                         className={cn(
-                                            "flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest shrink-0",
-                                            currentPrefix === "" ? "bg-white text-indigo-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                            "flex items-center gap-1.5 px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal shrink-0",
+                                            currentPrefix === "" ? "bg-white text-#5d00ff shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
                                         <Home size={12} />
@@ -440,8 +440,8 @@ export function S3StorageManager() {
                                                 <button
                                                     onClick={() => navigateTo(path)}
                                                     className={cn(
-                                                        "px-3 py-1.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest",
-                                                        currentPrefix === path ? "bg-white text-indigo-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                                        "px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
+                                                        currentPrefix === path ? "bg-white text-#5d00ff shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
                                                     )}
                                                 >
                                                     {crumb}
@@ -457,14 +457,14 @@ export function S3StorageManager() {
                                 {loading ? (
                                     <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
                                         <RefreshCw className="animate-spin" size={48} />
-                                        <p className="text-xs font-black uppercase tracking-widest">Загрузка...</p>
+                                        <p className="text-xs font-bold  tracking-normal">Загрузка...</p>
                                     </div>
                                 ) : filteredFolders.length === 0 && filteredFiles.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
                                         <div className="p-6 bg-slate-50 rounded-full">
                                             <File size={48} className="opacity-20" />
                                         </div>
-                                        <p className="text-xs font-black uppercase tracking-widest">Здесь пока пусто</p>
+                                        <p className="text-xs font-bold  tracking-normal">Здесь пока пусто</p>
                                     </div>
                                 ) : (
                                     <table className="w-full text-left border-collapse">
@@ -473,9 +473,9 @@ export function S3StorageManager() {
                                                 {isMultiSelectMode && (
                                                     <th className="px-4 py-4 w-12"></th>
                                                 )}
-                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Наименование</th>
-                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Размер</th>
-                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Действия</th>
+                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Наименование</th>
+                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-right">Размер</th>
+                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-center">Действия</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
@@ -501,7 +501,7 @@ export function S3StorageManager() {
                                                                     className="p-1 hover:bg-indigo-100 rounded transition-colors"
                                                                 >
                                                                     {isSelected ? (
-                                                                        <CheckSquare size={20} className="text-indigo-600" />
+                                                                        <CheckSquare size={20} className="text-#5d00ff" />
                                                                     ) : (
                                                                         <Square size={20} className="text-slate-300" />
                                                                     )}
@@ -513,17 +513,17 @@ export function S3StorageManager() {
                                                             onClick={() => !isMultiSelectMode && navigateTo(folderPrefix)}
                                                         >
                                                             <div className="flex items-center gap-4">
-                                                                <div className="p-2.5 bg-amber-50 text-amber-500 rounded-xl group-hover:scale-110 transition-transform shadow-sm">
+                                                                <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm">
                                                                     <Folder size={18} fill="currentColor" fillOpacity={0.2} />
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-sm font-black text-slate-700">{name}</p>
-                                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Папка</p>
+                                                                    <p className="text-sm font-bold text-slate-700">{name}</p>
+                                                                    <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Папка</p>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td className="px-8 py-4 text-right">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase">---</span>
+                                                            <span className="text-[10px] font-bold text-slate-400 ">---</span>
                                                         </td>
                                                         <td className="px-8 py-4">
                                                             <div className="flex items-center justify-center gap-2">
@@ -534,7 +534,7 @@ export function S3StorageManager() {
                                                                                 e.stopPropagation();
                                                                                 openRenameModal(folderPrefix);
                                                                             }}
-                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
                                                                             title="Переименовать"
                                                                         >
                                                                             <Edit2 size={16} />
@@ -544,7 +544,7 @@ export function S3StorageManager() {
                                                                                 e.stopPropagation();
                                                                                 setDeletingKey(folderPrefix);
                                                                             }}
-                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
                                                                             title="Удалить"
                                                                         >
                                                                             <Trash2 size={16} />
@@ -552,7 +552,7 @@ export function S3StorageManager() {
                                                                     </>
                                                                 )}
                                                                 {!isMultiSelectMode && (
-                                                                    <ChevronRight size={16} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                                                                    <ChevronRight size={16} className="text-slate-300 group-hover:text-#5d00ff transition-colors" />
                                                                 )}
                                                             </div>
                                                         </td>
@@ -585,7 +585,7 @@ export function S3StorageManager() {
                                                                     className="p-1 hover:bg-indigo-100 rounded transition-colors"
                                                                 >
                                                                     {isSelected ? (
-                                                                        <CheckSquare size={20} className="text-indigo-600" />
+                                                                        <CheckSquare size={20} className="text-#5d00ff" />
                                                                     ) : (
                                                                         <Square size={20} className="text-slate-300" />
                                                                     )}
@@ -598,7 +598,7 @@ export function S3StorageManager() {
                                                         >
                                                             <div className="flex items-center gap-4">
                                                                 <div className={cn(
-                                                                    "p-2.5 rounded-xl group-hover:scale-110 transition-transform shadow-sm",
+                                                                    "p-2.5 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm",
                                                                     isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
                                                                 )}>
                                                                     <File size={18} />
@@ -623,7 +623,7 @@ export function S3StorageManager() {
                                                                                 e.stopPropagation();
                                                                                 handleFileClick(file);
                                                                             }}
-                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
                                                                             title="Просмотреть"
                                                                         >
                                                                             <Eye size={16} />
@@ -633,7 +633,7 @@ export function S3StorageManager() {
                                                                                 e.stopPropagation();
                                                                                 openRenameModal(file.key);
                                                                             }}
-                                                                            className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-90"
+                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
                                                                             title="Переименовать"
                                                                         >
                                                                             <Edit2 size={16} />
@@ -643,7 +643,7 @@ export function S3StorageManager() {
                                                                                 e.stopPropagation();
                                                                                 setDeletingKey(file.key);
                                                                             }}
-                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
                                                                             title="Удалить"
                                                                         >
                                                                             <Trash2 size={16} />
@@ -668,34 +668,34 @@ export function S3StorageManager() {
                     <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
+                                <div className="p-2 bg-slate-100 text-slate-600 rounded-[18px]">
                                     <HardDrive size={20} />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-base font-black text-slate-900">Серверное хранилище</CardTitle>
-                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Локальные данные</p>
+                                    <CardTitle className="text-base font-bold text-slate-900">Серверное хранилище</CardTitle>
+                                    <p className="text-[10px] text-slate-400 font-bold  tracking-normal mt-0.5">Локальные данные</p>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4 pt-4">
-                            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                            <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-100 space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Путь системы</span>
+                                    <span className="text-[11px] font-bold text-slate-500  tracking-tight">Путь системы</span>
                                     <code className="text-[10px] font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-600 max-w-[150px] truncate" title={data?.local.path}>
                                         {data?.local.path}
                                     </code>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Доступно</span>
-                                    <span className="text-sm font-black text-emerald-600">{formatSize(data?.local.free || 0)}</span>
+                                    <span className="text-[11px] font-bold text-slate-500  tracking-tight">Доступно</span>
+                                    <span className="text-sm font-bold text-emerald-600">{formatSize(data?.local.free || 0)}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Использовано</span>
-                                    <span className="text-sm font-black text-slate-900">{formatSize(data?.local.used || 0)}</span>
+                                    <span className="text-[11px] font-bold text-slate-500  tracking-tight">Использовано</span>
+                                    <span className="text-sm font-bold text-slate-900">{formatSize(data?.local.used || 0)}</span>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                            <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-[18px] border border-amber-100">
                                 <AlertTriangle className="text-amber-600 shrink-0 mt-0.5" size={16} />
                                 <p className="text-[10px] text-amber-900 font-medium leading-relaxed">
                                     Локальное хранилище используется для кэша и временных файлов. Основные данные хранятся в S3.
@@ -707,11 +707,11 @@ export function S3StorageManager() {
                     <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                                <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
                                     <Info size={20} />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-base font-black text-slate-900">Возможности</CardTitle>
+                                    <CardTitle className="text-base font-bold text-slate-900">Возможности</CardTitle>
                                 </div>
                             </div>
                         </CardHeader>
@@ -738,14 +738,14 @@ export function S3StorageManager() {
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                 <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                            <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
                                 <FolderPlus size={24} />
                             </div>
                             Новая папка
                         </DialogTitle>
                         <DialogDescription className="text-sm font-medium text-slate-500">
-                            Введите имя папки. Она будет создана в текущем пути: <span className="font-bold text-indigo-600">{currentPrefix || "/"}</span>
+                            Введите имя папки. Она будет создана в текущем пути: <span className="font-bold text-#5d00ff">{currentPrefix || "/"}</span>
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-6">
@@ -756,21 +756,21 @@ export function S3StorageManager() {
                             onChange={(e) => setNewFolderName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-lg font-black text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
+                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
                         />
                     </div>
                     <DialogFooter className="sm:justify-between gap-4">
                         <Button
                             variant="ghost"
                             onClick={() => setIsCreateModalOpen(false)}
-                            className="px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleCreateFolder}
                             disabled={isCreating || !newFolderName.trim()}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest py-6 shadow-lg shadow-indigo-200"
+                            className="bg-#5d00ff hover:bg-indigo-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-indigo-200"
                         >
                             {isCreating ? "Создание..." : "Создать папку"}
                         </Button>
@@ -782,8 +782,8 @@ export function S3StorageManager() {
             <Dialog open={isRenameModalOpen} onOpenChange={setIsRenameModalOpen}>
                 <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                            <div className="p-2 bg-amber-50 text-amber-600 rounded-[18px]">
                                 <Edit2 size={24} />
                             </div>
                             Переименовать
@@ -800,21 +800,21 @@ export function S3StorageManager() {
                             onChange={(e) => setNewName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleRename()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-lg font-black text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
+                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
                         />
                     </div>
                     <DialogFooter className="sm:justify-between gap-4">
                         <Button
                             variant="ghost"
                             onClick={() => setIsRenameModalOpen(false)}
-                            className="px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleRename}
                             disabled={isRenaming || !newName.trim()}
-                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest py-6 shadow-lg shadow-amber-200"
+                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-amber-200"
                         >
                             {isRenaming ? "Переименование..." : "Переименовать"}
                         </Button>
@@ -853,14 +853,14 @@ export function S3StorageManager() {
                         <div className="absolute top-6 right-6 z-50 flex gap-2">
                             <button
                                 onClick={() => window.open(previewFile?.url, '_blank')}
-                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-2xl shadow-xl transition-all active:scale-95"
+                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-[18px] shadow-xl transition-all active:scale-95"
                                 title="Открыть в новой вкладке"
                             >
                                 <ExternalLink size={20} />
                             </button>
                             <button
                                 onClick={() => setPreviewFile(null)}
-                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xl transition-all active:scale-95 shadow-rose-200"
+                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-[18px] shadow-xl transition-all active:scale-95 shadow-rose-200"
                             >
                                 <X size={20} />
                             </button>
@@ -868,12 +868,12 @@ export function S3StorageManager() {
 
                         <div className="p-8 border-b border-slate-50 bg-slate-50/50">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-100">
+                                <div className="p-3 bg-#5d00ff text-white rounded-[18px] shadow-lg shadow-indigo-100">
                                     <File size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Предпросмотр файла</p>
+                                    <h3 className="text-lg font-bold text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
+                                    <p className="text-[10px] font-bold  tracking-normal text-slate-400">Предпросмотр файла</p>
                                 </div>
                             </div>
                         </div>
@@ -885,7 +885,7 @@ export function S3StorageManager() {
                                     alt={previewFile.name}
                                     width={1000}
                                     height={800}
-                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-lg w-auto h-auto"
+                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-[18px] w-auto h-auto"
                                     unoptimized
                                 />
                             )}
@@ -898,7 +898,7 @@ export function S3StorageManager() {
             {isPreviewLoading && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center gap-4 text-white">
                     <RefreshCw className="animate-spin" size={48} />
-                    <p className="text-xs font-black uppercase tracking-widest">Генерация ссылки...</p>
+                    <p className="text-xs font-bold  tracking-normal">Генерация ссылки...</p>
                 </div>
             )}
         </div>

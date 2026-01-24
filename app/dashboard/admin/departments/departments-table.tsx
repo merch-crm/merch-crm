@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getDepartments, deleteDepartment } from "../actions";
 import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
-import { AddDepartmentDialog } from "./add-department-dialog";
+
 import { DeleteDepartmentDialog } from "./delete-department-dialog";
 import { DepartmentSettingsDialog } from "./department-settings-dialog";
 
@@ -17,7 +17,7 @@ interface Department {
 }
 
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string; gradient: string; iconBg: string; iconColor: string }> = {
-    indigo: { bg: "bg-indigo-50", text: "text-indigo-600", border: "border-indigo-100", gradient: "from-indigo-50/50 to-indigo-100/30", iconBg: "bg-indigo-100", iconColor: "text-indigo-600" },
+    indigo: { bg: "bg-primary/5", text: "text-primary", border: "border-primary/20", gradient: "from-primary/5 to-primary/10", iconBg: "bg-primary/10", iconColor: "text-primary" },
     purple: { bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-100", gradient: "from-purple-50/50 to-purple-100/30", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
     rose: { bg: "bg-rose-50", text: "text-rose-600", border: "border-rose-100", gradient: "from-rose-50/50 to-rose-100/30", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
     orange: { bg: "bg-orange-50", text: "text-orange-600", border: "border-orange-100", gradient: "from-orange-50/50 to-orange-100/30", iconBg: "bg-orange-100", iconColor: "text-orange-600" },
@@ -94,19 +94,7 @@ export function DepartmentsTable() {
     if (loading) return <div className="text-slate-400 p-12 text-center text-sm font-medium">Загрузка отделов...</div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                        <Building className="w-5 h-5 text-indigo-600" />
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-bold text-slate-900 leading-tight">Отделы компании</h3>
-                        <p className="text-xs text-slate-500 font-medium mt-0.5">Всего подразделений: {departments.length}</p>
-                    </div>
-                </div>
-                <AddDepartmentDialog onSuccess={fetchDepartments} />
-            </div>
+        <div className="max-w-7xl mx-auto space-y-6 pb-20">
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {departments.map((dept) => {
@@ -117,16 +105,16 @@ export function DepartmentsTable() {
                         <div
                             key={dept.id}
                             onClick={() => setSelectedDepartment(dept)}
-                            className={`group relative rounded-2xl border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all h-[200px] flex flex-col cursor-pointer active:scale-[0.98]`}
+                            className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all h-[200px] flex flex-col cursor-pointer active:scale-[0.98]`}
                         >
                             <div className="p-7 flex flex-col h-full">
                                 <div className="flex items-start gap-4 mb-4">
-                                    <div className={`flex-shrink-0 h-14 w-14 rounded-2xl ${config.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 border border-white shadow-sm`}>
+                                    <div className={`flex-shrink-0 h-14 w-14 rounded-[18px] ${config.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 border border-white shadow-sm`}>
                                         <Icon className={`w-7 h-7 ${config.iconColor}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="text-xl font-black text-slate-900 truncate tracking-tight">{dept.name}</h4>
-                                        <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
+                                        <h4 className="text-xl font-bold text-slate-900 truncate tracking-tight">{dept.name}</h4>
+                                        <p className={`text-[10px] font-bold  tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
                                     </div>
                                     <div className="flex flex-col gap-1 -mr-3 -mt-3">
                                         <button
@@ -134,7 +122,7 @@ export function DepartmentsTable() {
                                                 e.stopPropagation();
                                                 setSelectedDepartment(dept);
                                             }}
-                                            className="p-2 text-slate-300 hover:text-indigo-600 transition-colors rounded-xl hover:bg-white shadow-sm"
+                                            className="p-2 text-slate-300 hover:text-primary transition-colors rounded-[18px] hover:bg-white shadow-sm"
                                         >
                                             <Settings2 className="w-4 h-4" />
                                         </button>
@@ -144,7 +132,7 @@ export function DepartmentsTable() {
                                                     e.stopPropagation();
                                                     handleDeleteClick(dept);
                                                 }}
-                                                className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-xl hover:bg-white shadow-sm"
+                                                className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-[18px] hover:bg-white shadow-sm"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -159,7 +147,7 @@ export function DepartmentsTable() {
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between mt-auto">
-                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400  tracking-normal">
                                         <Users className="w-3.5 h-3.5" />
                                         <span>Сотрудники</span>
                                     </div>
@@ -173,7 +161,7 @@ export function DepartmentsTable() {
                 })}
 
                 {departments.length === 0 && (
-                    <div className="col-span-full py-16 bg-slate-50/50 rounded-xl border border-dashed border-slate-200 text-center">
+                    <div className="col-span-full py-16 bg-slate-50/50 rounded-[18px] border border-dashed border-slate-200 text-center">
                         <Building className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                         <p className="text-slate-500 font-bold">Отделы еще не созданы</p>
                         <p className="text-slate-400 text-sm mt-1">Используйте кнопку выше, чтобы добавить первый отдел</p>

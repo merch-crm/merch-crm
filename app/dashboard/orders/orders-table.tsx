@@ -10,6 +10,8 @@ import { Zap, Archive, ArchiveRestore } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateOrderField, toggleOrderArchived } from "./actions";
 import { useToast } from "@/components/ui/toast";
+import { GlassEmptyState } from "@/components/ui/glass-empty-state";
+import { PackageOpen } from "lucide-react";
 
 export interface Order {
     id: string;
@@ -61,7 +63,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
     };
 
     if (error) {
-        return <div className="text-red-400 p-4 bg-red-50 rounded-xl border border-red-100">Ошибка загрузки заказов: {error}</div>;
+        return <div className="text-red-400 p-4 bg-red-50 rounded-[18px] border border-red-100">Ошибка загрузки заказов: {error}</div>;
     }
 
     return (
@@ -72,7 +74,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                         <th className="w-[60px] px-6 py-4 text-left">
                             <input
                                 type="checkbox"
-                                className="rounded-[6px] border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer h-4 w-4 transition-all"
+                                className="rounded-[var(--radius-sm)] border-slate-300 text-primary focus:ring-0 cursor-pointer h-4 w-4 transition-all"
                                 checked={isAllSelected}
                                 onChange={handleSelectAll}
                             />
@@ -92,12 +94,12 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                         <tr
                             key={order.id}
                             onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
-                            className={`group hover:bg-white/80 transition-all cursor-pointer ${selectedIds.includes(order.id) ? 'bg-indigo-50/50' : ''}`}
+                            className={`group hover:bg-white/80 transition-all cursor-pointer ${selectedIds.includes(order.id) ? 'bg-primary/5' : ''}`}
                         >
                             <td className="px-6 py-5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                 <input
                                     type="checkbox"
-                                    className="rounded-[6px] border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer h-4 w-4 transition-all"
+                                    className="rounded-[var(--radius-sm)] border-slate-300 text-primary focus:ring-0 cursor-pointer h-4 w-4 transition-all"
                                     checked={selectedIds.includes(order.id)}
                                     onChange={() => handleSelectRow(order.id)}
                                 />
@@ -112,7 +114,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                             </td>
                             {showFinancials && (
                                 <td className="px-6 py-5 whitespace-nowrap">
-                                    <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[8px]">
+                                    <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[var(--radius-sm)]">
                                         {order.totalAmount} ₽
                                     </span>
                                 </td>
@@ -125,7 +127,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                             handleUpdateField(order.id, "isUrgent", !order.isUrgent);
                                         }}
                                         className={cn(
-                                            "p-1.5 rounded-lg transition-all",
+                                            "p-1.5 rounded-[18px] transition-all",
                                             order.isUrgent
                                                 ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
                                                 : "bg-slate-50 text-slate-400 hover:text-slate-600"
@@ -150,7 +152,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                     window.location.reload(); // Quick reach to re-fetch
                                                 }
                                             }}
-                                            className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                                            className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-[18px] transition-all"
                                             title={showArchived ? "Восстановить" : "Архивировать"}
                                         >
                                             {showArchived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
@@ -159,7 +161,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                 </div>
                             </td>
                             <td className="px-6 py-5 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                <a href={`/dashboard/orders/${order.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-[10px] bg-slate-100 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all">
+                                <a href={`/dashboard/orders/${order.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-[10px] bg-slate-100 text-slate-400 hover:bg-primary hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                                 </a>
                             </td>
@@ -168,9 +170,11 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 </tbody>
             </table>
             {orders.length === 0 && (
-                <div className="p-12 text-center text-slate-500">
-                    Заказов пока нет.
-                </div>
+                <GlassEmptyState
+                    icon={PackageOpen}
+                    title="Заказов пока нет"
+                    description="Как только появятся новые заказы, они отобразятся здесь"
+                />
             )}
 
             <BulkActionsPanel

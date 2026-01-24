@@ -125,7 +125,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all font-bold"
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all font-bold"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -135,14 +135,14 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                     {!loading && client && client.id && (
                         <div className="flex flex-wrap gap-2 mb-6">
                             <Button
-                                className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs"
+                                className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[18px] font-semibold text-xs"
                                 onClick={() => window.open(`tel:${client.phone}`)}
                             >
                                 <Phone className="w-3.5 h-3.5 mr-2" /> Позвонить
                             </Button>
                             {client.telegram && (
                                 <Button
-                                    className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-xs"
+                                    className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-[18px] font-bold text-xs"
                                     onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
@@ -150,7 +150,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
                             <Button
                                 variant="outline"
-                                className="h-10 px-4 border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-50"
+                                className="h-10 px-4 border-slate-200 text-slate-600 rounded-[18px] font-bold text-xs hover:bg-slate-50"
                                 onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}
                             >
                                 <Plus className="w-3.5 h-3.5 mr-2" /> Создать заказ
@@ -159,7 +159,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <Button
                                     onClick={onEdit}
                                     variant="outline"
-                                    className="h-10 px-4 border-indigo-100 text-indigo-600 rounded-xl font-bold text-xs hover:bg-indigo-50"
+                                    className="h-10 px-4 border-indigo-100 text-#5d00ff rounded-[18px] font-bold text-xs hover:bg-indigo-50"
                                 >
                                     <Edit2 className="w-3.5 h-3.5 mr-2" /> Редактировать
                                 </Button>
@@ -176,7 +176,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 className={cn(
                                     "pb-4 text-xs font-medium transition-all relative",
                                     activeTab === tab
-                                        ? "text-indigo-600"
+                                        ? "text-#5d00ff"
                                         : "text-slate-400 hover:text-slate-600"
                                 )}
                             >
@@ -184,7 +184,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 {tab === "orders" && "Заказы"}
                                 {tab === "activity" && "Активность"}
                                 {activeTab === tab && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full mt-auto" />
+                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-#5d00ff rounded-t-full mt-auto" />
                                 )}
                             </button>
                         ))}
@@ -195,7 +195,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/30">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center h-full space-y-4">
-                            <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
+                            <div className="w-10 h-10 border-4 border-indigo-100 border-t-#5d00ff rounded-full animate-spin" />
                             <p className="text-xs font-medium text-slate-400">Загрузка данных...</p>
                         </div>
                     ) : client ? (
@@ -207,7 +207,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
                                             <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                                                <div className="w-10 h-10 bg-indigo-50 text-#5d00ff rounded-[18px] flex items-center justify-center">
                                                     <ShoppingBag className="w-5 h-5" />
                                                 </div>
                                                 <span className="text-xs font-medium text-slate-400">Заказы</span>
@@ -218,7 +218,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                         {showFinancials && (
                                             <div className="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                                                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-[18px] flex items-center justify-center">
                                                         <TrendingUp className="w-5 h-5" />
                                                     </div>
                                                     <span className="text-xs font-medium text-slate-400">LTV</span>
@@ -235,7 +235,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <h3 className="text-xs font-semibold text-slate-400">Основная информация</h3>
                                         </div>
                                         <div className="grid grid-cols-1 gap-3">
-                                            <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                            <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-100 shadow-sm">
                                                 <Phone className="w-5 h-5 text-slate-300" />
                                                 <div>
                                                     <p className="text-xs font-medium text-slate-400 mb-0.5">Телефон</p>
@@ -243,7 +243,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             </div>
                                             {client.email && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-100 shadow-sm">
                                                     <Mail className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Email</p>
@@ -252,7 +252,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.city && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-100 shadow-sm">
                                                     <MapPin className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">География</p>
@@ -261,7 +261,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.company && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-100 shadow-sm">
                                                     <Building2 className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Компания</p>
@@ -299,7 +299,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <User className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Менеджер</h3>
                                             </div>
-                                            <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                            <div className="p-4 bg-white rounded-[18px] border border-slate-100 shadow-sm flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                                                     <User className="w-4 h-4" />
                                                 </div>
@@ -338,11 +338,11 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                     className="flex items-center justify-between p-5 rounded-[1.5rem] bg-white border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/10 transition-all group shadow-sm"
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <div className="w-12 h-12 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-#5d00ff group-hover:text-white transition-all">
                                                             <ShoppingBag className="w-5 h-5" />
                                                         </div>
                                                         <div>
-                                                            <p className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Заказ #{order.orderNumber}</p>
+                                                            <p className="text-sm font-bold text-slate-900 group-hover:text-#5d00ff transition-colors">Заказ #{order.orderNumber}</p>
                                                             <p className="text-xs font-medium text-slate-400 mt-0.5">
                                                                 {safeFormat(order.createdAt, "d MMM yyyy", { locale: ru })}
                                                             </p>
@@ -352,8 +352,8 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                         {showFinancials && (
                                                             <span className="text-sm font-bold text-slate-900">{Math.round(order.totalPrice)} ₽</span>
                                                         )}
-                                                        <Badge className="bg-indigo-50 text-indigo-600 border-none font-bold text-xs">{order.status}</Badge>
-                                                        <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                                                        <Badge className="bg-indigo-50 text-#5d00ff border-none font-bold text-xs">{order.status}</Badge>
+                                                        <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-#5d00ff transition-colors" />
                                                     </div>
                                                 </a>
                                             ))}
@@ -392,7 +392,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                             <p className="text-[10px] font-bold text-slate-500">{log.user?.name || "Система"}</p>
                                                         </div>
                                                         {log.details ? (
-                                                            <div className="mt-2 p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
+                                                            <div className="mt-2 p-3 rounded-[18px] bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
                                                                 <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as Record<string, unknown>, null, 2)}</pre>
                                                             </div>
                                                         ) : null}
@@ -416,7 +416,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                         <Calendar className="w-3.5 h-3.5" />
                                         <span>Регистрация: {safeFormat(client.createdAt, "d MMMM yyyy", { locale: ru })}</span>
                                     </div>
-                                    <span className="text-indigo-600">ID: {client.id ? client.id.slice(0, 8) : "---"}</span>
+                                    <span className="text-#5d00ff">ID: {client.id ? client.id.slice(0, 8) : "---"}</span>
                                 </div>
                             </div>
                         </div>

@@ -33,37 +33,37 @@ export default function FocusFlowDashboard() {
 
                 {/* Menu Label */}
                 <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Menu</span>
+                    <span className="text-xs font-bold text-slate-400  tracking-wider">Menu</span>
                     <ChevronDown className="w-4 h-4 text-slate-400" />
                 </div>
 
                 {/* Nav */}
                 <nav className="flex-1 space-y-1">
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 text-blue-600 font-semibold">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] bg-blue-50 text-blue-600 font-semibold">
                         <LayoutGrid className="w-5 h-5" />
                         <span>Dashboard</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                         <BookOpen className="w-5 h-5" />
                         <span>My tasks</span>
                         <div className="ml-auto w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">3</div>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                         <CalendarIcon className="w-5 h-5" />
                         <span>Calendar</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                         <TrendingUp className="w-5 h-5" />
                         <span>Progress</span>
                     </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                    <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                         <MessageSquare className="w-5 h-5" />
                         <span>Recommendations</span>
                     </a>
 
                     <div className="pt-6">
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Team Workspace</div>
-                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                        <div className="text-xs font-bold text-slate-400  tracking-wider mb-4">Team Workspace</div>
+                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                             <span className="text-xs">Invite</span>
                             <span className="text-xs text-slate-400">(up to 5 max)</span>
                         </a>
@@ -77,11 +77,11 @@ export default function FocusFlowDashboard() {
                                 <Plus className="w-4 h-4" />
                             </button>
                         </div>
-                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                             <Settings className="w-5 h-5" />
                             <span>Settings</span>
                         </a>
-                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-slate-600">
+                        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-colors text-slate-600">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -151,7 +151,7 @@ export default function FocusFlowDashboard() {
                         <div className="bg-white rounded-[24px] p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-[18px] bg-blue-100 flex items-center justify-center">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
                                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                             <polyline points="22 4 12 14.01 9 11.01" />
@@ -169,7 +169,7 @@ export default function FocusFlowDashboard() {
                             </div>
 
                             {/* Progress Info */}
-                            <div className="bg-blue-50 rounded-2xl p-4 mb-6">
+                            <div className="bg-blue-50 rounded-[18px] p-4 mb-6">
                                 <div className="flex items-baseline gap-2 mb-2">
                                     <span className="text-3xl font-bold text-slate-900">13</span>
                                     <span className="text-sm text-slate-500">Completed tasks</span>
@@ -210,7 +210,7 @@ export default function FocusFlowDashboard() {
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="font-bold text-lg">Course You&apos;re Taking</h3>
                                 <div className="flex items-center gap-2">
-                                    <select className="text-xs border border-slate-200 rounded-lg px-3 py-1.5">
+                                    <select className="text-xs border border-slate-200 rounded-[18px] px-3 py-1.5">
                                         <option>Active</option>
                                     </select>
                                     <button className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">
@@ -224,8 +224,8 @@ export default function FocusFlowDashboard() {
                                     { title: "3D Design Course", author: "Michael Andrew", time: "8h 45 min", progress: 45, color: "bg-purple-100" },
                                     { title: "Development Basics", author: "Natalia Varman", time: "15h 12 min", progress: 75, color: "bg-pink-100" },
                                 ].map((course, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors">
-                                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", course.color)}>
+                                    <div key={idx} className="flex items-center gap-4 p-4 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-colors">
+                                        <div className={cn("w-12 h-12 rounded-[18px] flex items-center justify-center", course.color)}>
                                             <BookOpen className="w-6 h-6 text-slate-700" />
                                         </div>
                                         <div className="flex-1">
@@ -272,7 +272,7 @@ export default function FocusFlowDashboard() {
                         <div className="bg-white rounded-[24px] p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="font-bold">Calendar</h3>
-                                <select className="text-xs border border-slate-200 rounded-lg px-2 py-1">
+                                <select className="text-xs border border-slate-200 rounded-[18px] px-2 py-1">
                                     <option>June</option>
                                 </select>
                             </div>
@@ -289,7 +289,7 @@ export default function FocusFlowDashboard() {
                                     return day > 0 && day <= 30 ? (
                                         <div key={i} className="relative">
                                             <div className={cn(
-                                                "aspect-square flex items-center justify-center rounded-lg text-xs font-semibold cursor-pointer",
+                                                "aspect-square flex items-center justify-center rounded-[18px] text-xs font-semibold cursor-pointer",
                                                 isToday && "bg-blue-500 text-white",
                                                 !isToday && "text-slate-600 hover:bg-slate-50"
                                             )}>
@@ -359,7 +359,7 @@ export default function FocusFlowDashboard() {
                                 </div>
                             </div>
 
-                            <div className="bg-green-50 rounded-2xl p-3 flex items-center gap-2">
+                            <div className="bg-green-50 rounded-[18px] p-3 flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
                                     <TrendingUp className="w-4 h-4 text-white" />
                                 </div>
@@ -416,7 +416,7 @@ export default function FocusFlowDashboard() {
                                 <div className="flex justify-center gap-2 mt-3">
                                     {[1, 2, 3, 4, 5].map((i) => (
                                         <button key={i} className={cn(
-                                            "w-10 h-10 rounded-xl font-bold text-sm transition-colors",
+                                            "w-10 h-10 rounded-[18px] font-bold text-sm transition-colors",
                                             i === 3 ? "bg-blue-500 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"
                                         )}>
                                             {i}

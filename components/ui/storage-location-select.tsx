@@ -44,7 +44,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                         <div className="flex items-center gap-3">
                             <MapPin className={cn("w-5 h-5 transition-colors", value ? "text-indigo-500" : "text-slate-400")} />
                             <span className={cn(
-                                "text-sm font-black truncate",
+                                "text-sm font-bold truncate",
                                 value ? "text-slate-900" : "text-slate-400"
                             )}>
                                 {selectedOption ? selectedOption.name : (placeholder || "Выберите склад...")}
@@ -54,7 +54,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="w-[var(--radix-dropdown-menu-trigger-width)] bg-[#444444] border-none rounded-[14px] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
+                    className="w-[var(--radix-dropdown-menu-trigger-width)] bg-[#444444] border-none rounded-[14px] p-2 shadow-crm-xl animate-in fade-in zoom-in-95 duration-200 z-[100]"
                     align="start"
                     sideOffset={8}
                 >
@@ -67,7 +67,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                                         key={option.id}
                                         onClick={() => onChange(option.id)}
                                         className={cn(
-                                            "flex items-center justify-between px-4 py-3.5 rounded-[14px] text-[12px] font-black uppercase tracking-wider transition-all cursor-pointer outline-none border-none",
+                                            "flex items-center justify-between px-4 py-3.5 rounded-[14px] text-[12px] font-bold  tracking-wider transition-all cursor-pointer outline-none border-none",
                                             isSelected
                                                 ? "bg-[#5086ec] text-white"
                                                 : "text-white/80 hover:bg-white/10 focus:bg-white/10 hover:text-white focus:text-white"
@@ -83,7 +83,7 @@ export function StorageLocationSelect({ value, onChange, options, className, pla
                         ) : (
                             <div className="px-4 py-8 text-center">
                                 <MapPin className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-relaxed">
+                                <p className="text-[10px] font-bold text-white/40  tracking-normal leading-relaxed">
                                     Склады еще не созданы.<br />
                                     Добавьте склад в настройках.
                                 </p>

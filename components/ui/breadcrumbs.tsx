@@ -16,7 +16,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
     return (
-        <div className={cn("flex items-center gap-2 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest pl-1 flex-wrap", className)}>
+        <div className={cn("flex items-center gap-2 text-[12px] font-bold text-slate-400 tracking-tight pl-1 flex-wrap", className)}>
             {items.map((item, index) => {
                 const isLast = index === items.length - 1;
 
@@ -31,7 +31,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
                 const itemClasses = cn(
                     "flex items-center gap-1 transition-colors",
                     !isLast && (item.href || item.onClick)
-                        ? "hover:text-indigo-600 cursor-pointer"
+                        ? "hover:text-#5d00ff cursor-pointer"
                         : "text-slate-500"
                 );
 

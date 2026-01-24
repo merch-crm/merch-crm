@@ -2,9 +2,12 @@
 
 import { db } from "@/lib/db";
 import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents, systemErrors } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
+import { getSession, encrypt, decrypt } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
+import { PgTable } from "drizzle-orm/pg-core";
 import { hashPassword, comparePassword } from "@/lib/password";
 import { eq, asc, desc, sql, and, or, inArray, count, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -319,7 +322,15 @@ export async function deleteUser(userId: string, password?: string) {
     }
 }
 
-export async function getAuditLogs(page = 1, limit = 20, search = "") {
+export async function getAuditLogs(
+    page = 1,
+    limit = 20,
+    search = "",
+    userId?: string | null,
+    entityType?: string | null,
+    startDate?: string | null,
+    endDate?: string | null
+) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
@@ -337,9 +348,9 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
 
         // Build filtering conditions
         const conditions = [];
+
         if (search) {
             const searchLower = `%${search.toLowerCase()}%`;
-
             // Find users matching search to filter by userId
             const matchingUsers = await db.query.users.findMany({
                 where: sql`lower(${users.name}) LIKE ${searchLower}`,
@@ -354,6 +365,24 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
                     ${matchingUserIds.length > 0 ? inArray(auditLogs.userId, matchingUserIds) : sql`false`}
                 )
             `);
+        }
+
+        if (userId) {
+            conditions.push(eq(auditLogs.userId, userId));
+        }
+
+        if (entityType) {
+            conditions.push(eq(auditLogs.entityType, entityType));
+        }
+
+        if (startDate) {
+            conditions.push(gte(auditLogs.createdAt, new Date(startDate)));
+        }
+
+        if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999);
+            conditions.push(sql`${auditLogs.createdAt} <= ${end}`);
         }
 
         const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -373,9 +402,9 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
             .offset(offset);
 
         // 3. Fetch users for mapping
-        const userIds = Array.from(new Set(logs.map(l => l.userId).filter(Boolean))) as string[];
-        const relatedUsers = userIds.length > 0
-            ? await db.query.users.findMany({ where: inArray(users.id, userIds) })
+        const logUserIds = Array.from(new Set(logs.map(l => l.userId).filter(Boolean))) as string[];
+        const relatedUsers = logUserIds.length > 0
+            ? await db.query.users.findMany({ where: inArray(users.id, logUserIds) })
             : [];
 
         const userMap = new Map(relatedUsers.map((u) => [u.id, u] as const));
@@ -396,7 +425,7 @@ export async function getAuditLogs(page = 1, limit = 20, search = "") {
             error,
             path: "/dashboard/admin/audit",
             method: "getAuditLogs",
-            details: { page, limit, search }
+            details: { page, limit, search, userId, entityType, startDate, endDate }
         });
         console.error("Error fetching audit logs:");
         return { error: "Failed to fetch audit logs" };
@@ -751,7 +780,7 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const color = formData.get("color") as string || "indigo";
+    const color = formData.get("color") as string || "primary";
 
     if (!name) return { error: "Название отдела обязательно" };
 
@@ -793,6 +822,127 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
         });
         console.error("Error creating department:");
         return { error: "Отдел с таким названием уже существует" };
+    }
+}
+
+export async function impersonateUser(userId: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Только администратор может использовать имперсонацию" };
+    }
+
+    const targetUser = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        with: { role: true, department: true }
+    });
+
+    if (!targetUser) return { error: "Пользователь не найден" };
+
+    try {
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        const newSessionData = {
+            id: targetUser.id,
+            email: targetUser.email,
+            roleId: targetUser.roleId || "",
+            roleName: targetUser.role?.name || "User",
+            departmentName: targetUser.department?.name || "",
+            name: targetUser.name || "",
+            impersonatorId: session.impersonatorId || session.id, // Keep the root impersonator if already impersonating (though UI won't allow)
+            impersonatorName: session.impersonatorName || session.name,
+            expires,
+        };
+
+        const encryptedSession = await encrypt(newSessionData);
+
+        (await cookies()).set("session", encryptedSession, {
+            expires,
+            httpOnly: true,
+            secure: false, // process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        });
+
+        await logSecurityEvent({
+            eventType: "admin_impersonation_start",
+            userId: session.id,
+            severity: "warning",
+            entityType: "user",
+            entityId: targetUser.id,
+            details: {
+                adminId: session.id,
+                targetUserId: targetUser.id,
+                targetUserName: targetUser.name
+            }
+        });
+
+        revalidatePath("/");
+        return { success: true };
+    } catch (error) {
+        console.error("Error starting impersonation:", error);
+        return { error: "Failed to start impersonation" };
+    }
+}
+
+export async function stopImpersonating() {
+    const session = await getSession();
+    if (!session || !session.impersonatorId) {
+        return { error: "Вы не находитесь в режиме имперсонации" };
+    }
+
+    const originalAdminId = session.impersonatorId;
+
+    const adminUser = await db.query.users.findFirst({
+        where: eq(users.id, originalAdminId),
+        with: { role: true, department: true }
+    });
+
+    if (!adminUser) return { error: "Оригинальный администратор не найден" };
+
+    try {
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        const originalSessionData = {
+            id: adminUser.id,
+            email: adminUser.email,
+            roleId: adminUser.roleId || "",
+            roleName: adminUser.role?.name || "User",
+            departmentName: adminUser.department?.name || "",
+            name: adminUser.name || "",
+            expires,
+        };
+
+        const encryptedSession = await encrypt(originalSessionData);
+
+        (await cookies()).set("session", encryptedSession, {
+            expires,
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+        });
+
+        await logSecurityEvent({
+            eventType: "admin_impersonation_stop",
+            userId: adminUser.id,
+            severity: "info",
+            entityType: "user",
+            details: {
+                adminId: adminUser.id,
+                stoppedImpersonating: session.id
+            }
+        });
+
+        revalidatePath("/");
+        return { success: true };
+    } catch (error) {
+        console.error("Error stopping impersonation:", error);
+        return { error: "Failed to return to admin mode" };
     }
 }
 
@@ -984,14 +1134,13 @@ export async function getSystemStats() {
             // Drizzle returns raw rows; for pg_database_size we need to parse carefully
             const dbSizeResult = await withTimeout(db.execute(sql`SELECT pg_database_size(current_database())`), 2000);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const rows = dbSizeResult.rows as any[];
+            const rows = dbSizeResult.rows as { pg_database_size: string }[];
             dbSize = parseInt(rows[0]?.pg_database_size || "0");
         } catch (e) {
             console.error("Failed to get db size:", e);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const fetchCount = async (table: any) => {
+        const fetchCount = async (table: PgTable) => {
             try {
                 const res = await withTimeout(db.select({ value: count() }).from(table), 2000);
                 return res[0].value;
@@ -1147,14 +1296,28 @@ export async function checkSystemHealth() {
     if (!session) return { error: "Unauthorized" };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const health: any = {
+    interface HealthStatus {
+        database: { status: string; latency: number };
+        storage: { status: string };
+        api: { status: string; latency: number };
+        overall: string;
+        env: { status: string; details: string[] };
+        fs: { status: string; message: string };
+        backup: { status: string; lastBackup: string | null };
+        jwt: { status: string; message: string };
+        timestamp: Date;
+    }
+
+    const health: HealthStatus = {
         database: { status: "loading", latency: 0 },
         storage: { status: "loading" },
+        api: { status: "loading", latency: 0 },
+        overall: "loading",
         env: { status: "loading", details: [] },
-        fs: { status: "loading" },
-        backup: { status: "loading" },
-        jwt: { status: "loading" },
-        timestamp: new Date().toISOString()
+        fs: { status: "loading", message: "" },
+        backup: { status: "loading", lastBackup: null },
+        jwt: { status: "loading", message: "" },
+        timestamp: new Date()
     };
 
     try {
@@ -1229,7 +1392,7 @@ export async function checkSystemHealth() {
             const { encrypt, decrypt } = await import("@/lib/auth");
             const testPayload = { ...session, test: true };
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const token = await encrypt(testPayload as any);
+            const token = await encrypt(testPayload);
             const decrypted = await decrypt(token);
             health.jwt.status = decrypted.id === session.id ? "ok" : "error";
         } catch (e) {
@@ -2315,3 +2478,92 @@ export async function getS3FileUrlAction(key: string) {
     }
 }
 
+
+export interface NotificationSettings {
+    system: {
+        enabled: boolean;
+        browserPush: boolean;
+        [key: string]: boolean;
+    };
+    telegram: {
+        enabled: boolean;
+        botToken: string;
+        chatId: string;
+        notifyOnNewOrder: boolean;
+        notifyOnLowStock: boolean;
+        notifyOnSystemError: boolean;
+        [key: string]: boolean | string;
+    };
+    events: {
+        new_order: boolean;
+        order_status_change: boolean;
+        stock_low: boolean;
+        task_assigned: boolean;
+        [key: string]: boolean;
+    };
+}
+
+export async function getNotificationSettingsAction() {
+    try {
+        const setting = await db.query.systemSettings.findFirst({
+            where: eq(systemSettings.key, "notifications")
+        });
+
+        const defaultSettings: NotificationSettings = {
+            system: {
+                enabled: true,
+                browserPush: false
+            },
+            telegram: {
+                enabled: false,
+                botToken: "",
+                chatId: "",
+                notifyOnNewOrder: true,
+                notifyOnLowStock: true,
+                notifyOnSystemError: true
+            },
+            events: {
+                new_order: true,
+                order_status_change: true,
+                stock_low: true,
+                task_assigned: true
+            }
+        };
+
+        if (!setting) return { data: defaultSettings };
+        return { data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
+    } catch (error) {
+        console.error("Error fetching notification settings:", error);
+        return { data: null, error: "Failed to fetch settings" };
+    }
+}
+
+export async function updateNotificationSettingsAction(data: NotificationSettings) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, session.id),
+        with: { role: true }
+    });
+
+    if (currentUser?.role?.name !== "Администратор") {
+        return { error: "Доступ запрещен" };
+    }
+
+    try {
+        await db.insert(systemSettings)
+            .values({ key: "notifications", value: data, updatedAt: new Date() })
+            .onConflictDoUpdate({
+                target: systemSettings.key,
+                set: { value: data, updatedAt: new Date() }
+            });
+
+        revalidatePath("/dashboard/admin/notifications");
+        await logAction("Изменение настроек уведомлений", "system", "notifications", data as unknown as Record<string, unknown>);
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating notification settings:", error);
+        return { error: "Failed to update settings" };
+    }
+}

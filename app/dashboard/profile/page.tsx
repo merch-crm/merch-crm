@@ -1,15 +1,9 @@
 import { getUserProfile, getUserActivities } from "./actions";
 import { formatDistanceToNow, format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { ProfileClient } from "./profile-client";
-import Image from "next/image";
-import {
-    Home,
-    ChevronRight,
-} from "lucide-react";
+import { ProfileClient } from "./ProfileClient";
 
-import { RoleBadge } from "@/components/ui/role-badge";
-
+// Profile page server component
 export default async function ProfilePage() {
     const { data: user, error } = await getUserProfile();
 
@@ -33,7 +27,7 @@ export default async function ProfilePage() {
         if (lower.includes("создан")) return { iconName: "PlusCircle", color: "bg-blue-500" };
         if (lower.includes("обновлен") || lower.includes("изменен")) return { iconName: "User", color: "bg-emerald-500" };
         if (lower.includes("удален")) return { iconName: "Trash2", color: "bg-red-500" };
-        if (lower.includes("отправлен")) return { iconName: "Send", color: "bg-indigo-500" };
+        if (lower.includes("отправлен")) return { iconName: "Send", color: "bg-primary" };
         if (lower.includes("завершен")) return { iconName: "CheckCircle2", color: "bg-orange-500" };
         return { iconName: "Activity", color: "bg-slate-400" };
     };
@@ -85,38 +79,10 @@ export default async function ProfilePage() {
     ];
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            {/* Breadcrumbs */}
-            <div className="flex items-center text-sm text-slate-500 gap-2">
-                <Home className="w-4 h-4" />
-                <span className="cursor-pointer hover:text-slate-800">Главная</span>
-                <ChevronRight className="w-4 h-4" />
-                <span className="font-medium text-slate-800">Кабинет сотрудника</span>
-            </div>
-
-            {/* Welcome Banner */}
-            <div className="bg-white rounded-lg p-8 shadow-sm border border-slate-100 flex justify-between items-center relative overflow-hidden group">
-                <div className="relative z-10">
-                    <h1 className="text-3xl font-bold text-slate-900 leading-tight">Добро пожаловать, {user.name.split(' ')[0]}! 👋</h1>
-                    <div className="flex items-center gap-3 mt-2">
-                        <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-xs" />
-                        <span className="text-slate-300">•</span>
-                        <span className="text-slate-400 font-medium">{user.department?.name || user.departmentLegacy || "Без отдела"}</span>
-                    </div>
-                </div>
-
-                {user.avatar && (
-                    <div className="relative z-10 h-20 w-20 rounded-full overflow-hidden border-4 border-slate-50 shadow-sm hidden sm:block">
-                        <Image src={user.avatar} alt={user.name} width={80} height={80} className="w-full h-full object-cover" />
-                    </div>
-                )}
-            </div>
-
-            <ProfileClient
-                user={user}
-                activities={activities}
-                tasks={tasks}
-            />
-        </div >
+        <ProfileClient
+            user={user}
+            activities={activities}
+            tasks={tasks}
+        />
     );
 }
