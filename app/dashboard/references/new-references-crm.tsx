@@ -5,8 +5,6 @@ import {
     Plus,
     ChevronLeft,
     ChevronRight,
-    Search,
-    RefreshCw,
     Wifi,
     Bluetooth,
     Signal,
@@ -36,11 +34,9 @@ import {
     Radio,
     Cloud,
     CloudRain,
-    CloudSnow,
     Sun,
     ArrowUp,
     Fan,
-    Thermometer,
     Droplets,
     Tv,
     Router,
@@ -61,7 +57,6 @@ import {
     endOfWeek,
     isSameMonth,
     isSameDay,
-    addDays,
     eachDayOfInterval,
     isWithinInterval,
     getDate,
@@ -438,9 +433,7 @@ const DarkSchedule = () => {
 
 /* --- 8. CALENDAR WIDGETS --- */
 const CalendarWidgets = () => {
-    const [currentMonth, setCurrentMonth] = useState(new Date(2021, 5, 1));
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2021, 11, 28));
-    const [range, setRange] = useState<{ start: Date | null, end: Date | null }>({ start: new Date(2021, 5, 11), end: new Date(2021, 5, 24) });
     const daysArr = ["П", "В", "С", "Ч", "П", "С", "В"];
     const getDaysInMonth = (date: Date) => {
         const start = startOfWeek(startOfMonth(date), { weekStartsOn: 1 });

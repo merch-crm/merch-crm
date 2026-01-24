@@ -6,7 +6,6 @@ import {
     X,
     Image as ImageIcon,
     Smile,
-    List,
     SlidersHorizontal,
     Wand2,
     Trash2,
