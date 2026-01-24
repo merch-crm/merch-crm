@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { ilike, or, sql, desc, and, eq } from "drizzle-orm";
+import { ilike, or, desc } from "drizzle-orm";
 
 export interface SearchResult {
     id: string;
@@ -34,7 +34,6 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
         const canSearchClients = isAdmin || isSales;
         const canSearchFinance = isAdmin;
         const canSearchUsers = isAdmin;
-        const canSearchAdmin = isAdmin;
         const canSearchWarehouse = isAdmin || isSales || isProd || isDesign;
 
         // Parallel search across different entities based on permissions

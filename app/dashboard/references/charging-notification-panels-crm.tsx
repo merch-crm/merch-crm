@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { BatteryCharging, Check, Zap } from "lucide-react";
+import { Check, Zap } from "lucide-react";
 
 export default function ChargingNotificationPanelsCRM() {
     return (

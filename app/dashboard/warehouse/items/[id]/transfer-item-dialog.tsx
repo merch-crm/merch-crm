@@ -8,7 +8,7 @@ import { transferInventoryStock } from "../../actions";
 import { useToast } from "@/components/ui/toast";
 
 import { LocationSelect } from "../../location-select";
-import { cn } from "@/lib/utils";
+
 
 interface ItemStock {
     storageLocationId: string;

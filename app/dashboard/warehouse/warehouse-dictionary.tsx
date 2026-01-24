@@ -27,10 +27,7 @@ const transliterateToSlug = (text: string) => {
     return text.toLowerCase().split('').map(char => RUSSIAN_TO_LATIN_MAP[char] || char).join('').replace(/[^a-z0-9_]/g, '');
 };
 
-const PRESET_COLORS = [
-    "#000000", "#FFFFFF", "#64748b", "#ef4444", "#f97316", "#f59e0b",
-    "#10b981", "#3b82f6", "#6366f1", "#a855f7", "#ec4899", "#78350f"
-];
+
 
 const transliterateToSku = (text: string) => {
     const transliterated = text.toLowerCase().split('').map(char => {

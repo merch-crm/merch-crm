@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Plus, Minus, X, AlertCircle, Package, MapPin, RefreshCw, ChevronUp, ChevronDown, Lock } from "lucide-react";
+import { Plus, Minus, X, AlertCircle, Package, MapPin, RefreshCw, ChevronUp, ChevronDown } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -105,8 +105,8 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
         }
     };
 
-    const netChange = type === "in" ? amount : (type === "out" ? -amount : amount - currentStockOnLocation);
-    const isNegative = (type === "set" ? amount : currentStockOnLocation + netChange) < 0 || (item.quantity + (type === "set" ? amount - currentStockOnLocation : netChange)) < 0;
+
+
 
     return (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">

@@ -1,11 +1,10 @@
 "use client";
 
-import { X, Printer, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Printer, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QRCode } from "@/components/ui/qr-code";
 import { InventoryItem } from "../../../types";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 
 interface ItemPrintDialogProps {
     item: InventoryItem;

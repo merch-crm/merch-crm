@@ -41,26 +41,10 @@ const navigation = [
 
 import { UserNav } from "./user-nav";
 
-interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-}
 
-interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: string;
-    isRead: boolean;
-    createdAt: Date | string;
-}
 
-export function Navbar({ user, branding, notifications }: {
+export function Navbar({ user }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
-    branding?: BrandingSettings;
-    notifications?: Notification[];
 }) {
     const pathname = usePathname();
 

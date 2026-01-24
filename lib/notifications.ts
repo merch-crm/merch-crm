@@ -62,8 +62,8 @@ export async function checkItemStockAlerts(itemId: string) {
         if (!item) return;
 
         const quantity = item.quantity;
-        const low = item.lowStockThreshold || 0;
-        const critical = item.criticalStockThreshold || 0;
+        const low = item.lowStockThreshold ?? 5;
+        const critical = item.criticalStockThreshold ?? 0;
 
         let alertType: "error" | "warning" | null = null;
         let title = "";
@@ -73,11 +73,11 @@ export async function checkItemStockAlerts(itemId: string) {
             alertType = "error";
             title = "Отрицательный остаток!";
             message = `Товар "${item.name}" (SKU: ${item.sku}) ушел в минус: ${quantity} ${item.unit}. Срочно проверьте списания.`;
-        } else if (quantity <= (item.criticalStockThreshold ?? 0)) {
+        } else if (quantity <= critical) {
             alertType = "error";
             title = "Критический остаток!";
             message = `Товар "${item.name}" (SKU: ${item.sku}) достиг критического уровня: ${quantity} ${item.unit}.`;
-        } else if (quantity <= (item.lowStockThreshold ?? 5)) {
+        } else if (quantity <= low) {
             alertType = "warning";
             title = "Низкий остаток";
             message = `Товар "${item.name}" (SKU: ${item.sku}) заканчивается: ${quantity} ${item.unit}.`;

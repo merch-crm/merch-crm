@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Package, RotateCcw, Trash2, Search, SearchX, Clock, User, MessageCircle, Eye } from "lucide-react";
+import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useToast } from "@/components/ui/toast";
@@ -12,15 +11,13 @@ import { InventoryItem } from "./inventory-client";
 import { restoreInventoryItems, deleteInventoryItems } from "./actions";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Pagination } from "@/components/ui/pagination";
-import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
 
 interface ArchiveTableProps {
     items: InventoryItem[];
-    user: Session | null;
 }
 
-export function ArchiveTable({ items, user }: ArchiveTableProps) {
+export function ArchiveTable({ items }: ArchiveTableProps) {
     const router = useRouter();
     const { toast } = useToast();
     const [searchQuery, setSearchQuery] = useState("");

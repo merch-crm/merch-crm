@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 
-import { Download, Edit3, Save, Trash2, X, RefreshCcw, RotateCcw, AlertTriangle, Printer, Camera, ArrowLeft, Archive } from "lucide-react";
+import { Edit3, Save, Trash2, X, RefreshCcw, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { InventoryItem } from "../../../types";
@@ -18,12 +18,7 @@ interface ItemHeaderProps {
     onCancel: () => void;
     onSave: () => void;
     onEdit: () => void;
-    onDelete: () => void;
-    onDownload: () => void;
     onUnarchive: () => void;
-    onArchive: () => void;
-    onPrint: () => void;
-    onScan: () => void;
 }
 
 export function ItemHeader({
@@ -36,12 +31,7 @@ export function ItemHeader({
     onCancel,
     onSave,
     onEdit,
-    onDelete,
-    onDownload,
     onUnarchive,
-    onArchive,
-    onPrint,
-    onScan
 }: ItemHeaderProps) {
     const router = useRouter();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,9 +42,6 @@ export function ItemHeader({
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
     }, [isEditing, editName]);
-
-    const isCritical = item.quantity <= item.criticalStockThreshold;
-    const isLow = !isCritical && item.quantity <= item.lowStockThreshold;
 
     return (
         <div className={cn(

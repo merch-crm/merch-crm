@@ -1,35 +1,23 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
     Image as ImageIcon,
     MapPin,
-    Scissors,
-    Warehouse,
     ClipboardList,
-    Camera,
     Printer,
-    Share2,
-    Heart,
     X,
-    MoreHorizontal,
-    Search,
     LayoutGrid,
     TrendingUp,
     ShoppingBag,
-    Check,
-    Map,
     BarChart3,
     RefreshCcw,
     Save,
-    FileText,
     SlidersHorizontal,
     ArrowRightLeft,
-    Zap,
     Bell,
-    AlertTriangle,
     CheckCircle2,
     Package,
     Download,
@@ -38,7 +26,6 @@ import {
     ChevronLeft,
     ChevronRight,
     RotateCcw,
-    QrCode,
     Archive
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -58,7 +45,6 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
 import {
-    deleteInventoryItems,
     getItemHistory,
     updateInventoryItem,
     getItemStocks,
@@ -76,7 +62,6 @@ import { Button } from "@/components/ui/button";
 
 import { ItemGeneralInfo } from "./components/ItemGeneralInfo";
 import { ItemMediaSection } from "./components/ItemMediaSection";
-import { ItemInventorySection } from "./components/ItemInventorySection";
 import { ItemHistorySection } from "./components/ItemHistorySection";
 import { ItemAnalyticsSection } from "./components/ItemAnalyticsSection";
 import { ItemHeader } from "./components/ItemHeader";
@@ -84,10 +69,8 @@ import { AdjustStockDialog } from "../../adjust-stock-dialog";
 import { TransferItemDialog } from "./transfer-item-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ArchiveReasonDialog } from "../../components/archive-reason-dialog";
-import { MoveInventoryDialog } from "../../move-inventory-dialog";
 import { ItemActiveOrdersSection } from "./components/ItemActiveOrdersSection";
 import { LabelPrinterDialog } from "./components/LabelPrinterDialog";
-import { ItemWarehouseBreakdownSection } from "./components/ItemWarehouseBreakdownSection";
 import { QRScanner } from "@/components/ui/qr-scanner";
 import { Session } from "@/lib/auth";
 
@@ -137,7 +120,6 @@ export function ItemDetailClient({
     const [history, setHistory] = useState<ItemHistoryTransaction[]>([]);
     const [stocks, setStocks] = useState<ItemStock[]>([]);
     const [activeOrders, setActiveOrders] = useState<ActiveOrderItem[]>([]);
-    const [isLoadingOrders, setIsLoadingOrders] = useState(true);
     const [showArchiveReason, setShowArchiveReason] = useState(false);
 
     // Confirm Dialog States
@@ -149,14 +131,17 @@ export function ItemDetailClient({
     // Thumbnail settings logic
     const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
-    const thumbSettings = (editData.thumbnailSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 };
+    const thumbSettings = useMemo(() => (editData.thumbnailSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 }, [editData.thumbnailSettings]);
 
-    const updateThumb = (settings: Partial<{ zoom: number; x: number; y: number }>) => {
-        setEditData(prev => ({
-            ...prev,
-            thumbnailSettings: { ...thumbSettings, ...settings }
-        }));
-    };
+    const updateThumb = useCallback((settings: Partial<{ zoom: number; x: number; y: number }>) => {
+        setEditData(prev => {
+            const current = (prev.thumbnailSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 };
+            return {
+                ...prev,
+                thumbnailSettings: { ...current, ...settings }
+            };
+        });
+    }, []);
 
     const resetThumbSettings = () => {
         setEditData(prev => ({ ...prev, thumbnailSettings: { zoom: 1, x: 0, y: 0 } }));
@@ -207,7 +192,7 @@ export function ItemDetailClient({
                 y: newY
             });
         }
-    }, [maxBounds, thumbSettings.zoom, thumbSettings.x, thumbSettings.y]);
+    }, [maxBounds, thumbSettings, updateThumb]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -303,7 +288,7 @@ export function ItemDetailClient({
             window.removeEventListener('mouseup', handleMouseUpGlobal);
             window.removeEventListener('mousemove', handleMouseMoveGlobal);
         };
-    }, [isEditing]);
+    }, [isEditing, updateThumb]);
 
     const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
     const [isMainImageZoomed, setIsMainImageZoomed] = useState(false);
@@ -369,10 +354,7 @@ export function ItemDetailClient({
         return item.costPrice || 0;
     }, [history, item.costPrice]);
 
-    const locationWithMaxStock = useMemo(() => {
-        if (stocks.length === 0) return null;
-        return stocks.reduce((max, stock) => stock.quantity > max.quantity ? stock : max, stocks[0]);
-    }, [stocks]);
+
 
     const costHistoryStats = useMemo(() => {
         const now = new Date();
@@ -715,7 +697,7 @@ export function ItemDetailClient({
         }));
     };
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         const [historyRes, stocksRes, ordersRes] = await Promise.all([
             getItemHistory(item.id),
             getItemStocks(item.id),
@@ -725,7 +707,7 @@ export function ItemDetailClient({
         if (historyRes.data) setHistory(historyRes.data as ItemHistoryTransaction[]);
         if (stocksRes.data) setStocks(stocksRes.data as ItemStock[]);
         if (ordersRes.data) setActiveOrders(ordersRes.data as ActiveOrderItem[]);
-    };
+    }, [item.id]);
 
     useEffect(() => {
         fetchData();
@@ -741,7 +723,7 @@ export function ItemDetailClient({
         }
 
         return () => clearInterval(interval);
-    }, [item.id]);
+    }, [fetchData, item.quantity, item.criticalStockThreshold, item.lowStockThreshold, item.isArchived, item.unit, toast]);
 
     const handleSave = async (forceDuplicate = false) => {
         setIsSaving(true);
@@ -838,7 +820,6 @@ export function ItemDetailClient({
             toast("Ошибка при архивации", "error");
         } finally {
             setIsSaving(false);
-            setShowDeleteConfirm(false);
         }
     };
 
@@ -976,18 +957,7 @@ export function ItemDetailClient({
                             }}
                             onSave={() => handleSave()}
                             onEdit={() => setIsEditing(true)}
-                            onDelete={() => setShowDeleteConfirm(true)}
-                            onDownload={handleDownload}
-                            onPrint={() => setShowLabelDialog(true)}
-                            onScan={() => setShowScanner(true)}
                             onUnarchive={handleRestore}
-                            onArchive={() => {
-                                if (item.quantity > 0) {
-                                    toast("Нельзя архивировать товар с остатком > 0", "error");
-                                    return;
-                                }
-                                setShowArchiveReason(true);
-                            }}
                         />
 
                         {/* SPLIT LAYOUT */}
@@ -1959,6 +1929,13 @@ export function ItemDetailClient({
                         />
                     )
                 }
+
+                <ArchiveReasonDialog
+                    isOpen={showArchiveReason}
+                    onClose={() => setShowArchiveReason(false)}
+                    onConfirm={handleArchive}
+                    isLoading={isSaving}
+                />
 
                 <ConfirmDialog
                     isOpen={showDeleteConfirm}

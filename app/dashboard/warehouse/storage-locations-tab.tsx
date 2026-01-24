@@ -16,9 +16,7 @@ import {
     DragEndEvent,
     DragStartEvent,
     DragOverlay,
-    DraggableAttributes,
 } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import {
     arrayMove,
     SortableContext,
@@ -96,7 +94,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         if (editingLocation) {
             const updated = locations.find(l => l.id === editingLocation.id);
             if (updated && JSON.stringify(updated) !== JSON.stringify(editingLocation)) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect -- Sync editing state with updated data
                 setEditingLocation(updated);
             }
         }
@@ -272,14 +269,12 @@ const LocationCardContent = memo(({
     onEdit,
     onDeleteClick,
     dragHandleProps,
-    isDragging,
     isOverlay
 }: {
     loc: StorageLocation;
     onEdit?: (e: React.MouseEvent) => void;
     onDeleteClick?: (e: React.MouseEvent) => void;
     dragHandleProps?: Record<string, unknown>;
-    isDragging?: boolean;
     isOverlay?: boolean;
 }) => {
     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
@@ -443,7 +438,6 @@ const SortableLocationCard = memo(({ loc, onEdit, onDeleteClick, onClick }: Sort
                 onEdit={onEdit}
                 onDeleteClick={onDeleteClick}
                 dragHandleProps={{ ...attributes, ...listeners }}
-                isDragging={isDragging}
             />
         </div>
     );

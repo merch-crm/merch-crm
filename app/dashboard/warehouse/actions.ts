@@ -11,7 +11,6 @@ import {
     inventoryTransfers,
     notifications,
     orderItems,
-    orders,
     inventoryAttributes,
     inventoryAttributeTypes
 } from "@/lib/schema";

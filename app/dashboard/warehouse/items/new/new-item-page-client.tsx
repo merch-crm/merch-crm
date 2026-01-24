@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, RotateCcw, Package } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 import { addInventoryItem } from "../../actions";
 import { CategorySelector } from "./components/category-selector";

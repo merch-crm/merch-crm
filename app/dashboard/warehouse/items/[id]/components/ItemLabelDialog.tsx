@@ -8,9 +8,8 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, Download, X } from "lucide-react";
+import { Printer, X } from "lucide-react";
 import { InventoryItem } from "../../../types";
-import { cn } from "@/lib/utils";
 
 interface ItemLabelDialogProps {
     item: InventoryItem;

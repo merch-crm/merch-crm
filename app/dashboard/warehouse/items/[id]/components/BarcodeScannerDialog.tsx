@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import {
     Dialog,
     DialogContent,
@@ -9,8 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, Camera } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Camera } from "lucide-react";
 
 interface BarcodeScannerDialogProps {
     isOpen: boolean;
@@ -56,7 +55,7 @@ export function BarcodeScannerDialog({
                     onScan(decodedText);
                     stopScanner();
                 },
-                (errorMessage) => {
+                () => {
                     // console.log(errorMessage); // Ignore scan errors
                 }
             ).catch(err => {

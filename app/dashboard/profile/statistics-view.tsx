@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import {
     TrendingUp,
     CheckCircle2,
-    Clock,
     BarChart,
     Activity as ActivityIcon,
     DollarSign,

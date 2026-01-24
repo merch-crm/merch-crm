@@ -2,23 +2,16 @@
 
 import React from "react";
 import {
-    Scale,
-    Zap,
-    Tag,
-    X,
     Sparkles,
     Fingerprint,
     Box,
     Ruler,
     Droplets,
     Search,
-    MoreHorizontal,
 } from "lucide-react";
 import { QualityDropdown } from "../../../quality-dropdown";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 import { Session } from "@/lib/auth";
-import { UnitSelect } from "@/components/ui/unit-select";
-import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface ItemGeneralInfoProps {
@@ -26,7 +19,6 @@ interface ItemGeneralInfoProps {
     isEditing: boolean;
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
-    // measurementUnits: MeasurementUnit[]; // unused
     editData: InventoryItem;
     onUpdateField: (field: string, value: string | number | null | boolean | Record<string, unknown>) => void;
     onUpdateAttribute: (key: string, value: string) => void;
@@ -40,12 +32,9 @@ export function ItemGeneralInfo({
     isEditing,
     attributeTypes,
     allAttributes,
-    // measurementUnits,
     editData,
     onUpdateField,
     onUpdateAttribute,
-    user,
-    totalStock,
     onEdit
 }: ItemGeneralInfoProps) {
 
@@ -91,16 +80,16 @@ export function ItemGeneralInfo({
     };
 
     // Param mapping for Clean Minimal style
-    const getParamConfig = (slug: string, hexColor?: string | null): { icon: React.ElementType, gradient: string, customHex?: string } => {
-        const configs: Record<string, { icon: React.ElementType, gradient: string }> = {
-            "quality": { icon: Sparkles, gradient: "from-slate-400 to-slate-600" },
-            "brand": { icon: Fingerprint, gradient: "from-slate-400 to-slate-600" },
-            "material": { icon: Box, gradient: "from-slate-400 to-slate-600" },
-            "size": { icon: Ruler, gradient: "from-slate-400 to-slate-600" },
-            "color": { icon: Droplets, gradient: "from-slate-400 to-slate-600" },
+    const getParamConfig = (slug: string, hexColor?: string | null): { icon: React.ElementType, customHex?: string } => {
+        const configs: Record<string, { icon: React.ElementType }> = {
+            "quality": { icon: Sparkles },
+            "brand": { icon: Fingerprint },
+            "material": { icon: Box },
+            "size": { icon: Ruler },
+            "color": { icon: Droplets },
         };
 
-        const config = configs[slug] || { icon: Search, gradient: "from-slate-300 to-slate-500" };
+        const config = configs[slug] || { icon: Search };
 
         if (slug === 'color' && hexColor) {
             return { ...config, customHex: hexColor };
@@ -147,9 +136,6 @@ export function ItemGeneralInfo({
         isSku: false
     }))];
 
-    const isAdmin = user?.roleName === 'Администратор' || user?.roleName === 'Руководство';
-    const totalValue = totalStock * (item.costPrice || 0);
-
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Parameters Grid */}
@@ -195,7 +181,7 @@ export function ItemGeneralInfo({
                                             param.slug === 'quality' ? (
                                                 <QualityDropdown
                                                     value={param.code as string || ""}
-                                                    onChange={(name: string, code: string) => {
+                                                    onChange={(_name: string, code: string) => {
                                                         onUpdateAttribute(param.slug, code);
                                                         onUpdateField('qualityCode', code);
                                                     }}

@@ -22,7 +22,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ArchiveReasonDialog } from "../components/archive-reason-dialog";
 import { createElement } from "react";
 import { getCategoryIcon, getColorStyles } from "../category-utils";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
@@ -43,12 +43,11 @@ import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
     rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { restrictToFirstScrollableAncestor, restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
 
 
 import type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute } from "../types";
@@ -125,7 +124,7 @@ export function CategoryDetailClient({
                 } else {
                     // toast("Порядок сохранен", "success");
                 }
-            } catch (error) {
+            } catch {
                 toast("Ошибка при сохранении порядка", "error");
                 setSubCategories(initialSubCategories);
             }
@@ -625,7 +624,6 @@ export function CategoryDetailClient({
                                         <div className="bg-white border border-primary/30 rounded-[var(--radius)] p-5 shadow-2xl shadow-primary/15 flex items-center justify-between">
                                             <SubCategoryCardContent
                                                 subcat={subCategories.find(s => s.id === activeId)!}
-                                                items={items}
                                                 isDragging={true}
                                             />
                                         </div>
@@ -903,13 +901,11 @@ interface NavigationRouter {
 
 function SortableSubCategoryCard({
     subcat,
-    items,
     router,
     setEditingCategory,
     setDeletingCategory
 }: {
     subcat: Category;
-    items: InventoryItem[];
     router: NavigationRouter;
     setEditingCategory: (cat: Category) => void;
     setDeletingCategory: (cat: Category) => void;
@@ -929,9 +925,6 @@ function SortableSubCategoryCard({
         zIndex: isDragging ? 50 : undefined,
     };
 
-    const IconComponent = getCategoryIcon(subcat);
-    const colorStyle = getColorStyles(subcat.color);
-
     return (
         <div
             ref={setNodeRef}
@@ -944,12 +937,10 @@ function SortableSubCategoryCard({
         >
             <SubCategoryCardContent
                 subcat={subcat}
-                items={items}
                 isDragging={isDragging}
                 dragHandleProps={{ ...attributes, ...listeners }}
                 onEdit={() => setEditingCategory(subcat)}
                 onDelete={() => setDeletingCategory(subcat)}
-                router={router}
             />
         </div>
     );
@@ -957,20 +948,16 @@ function SortableSubCategoryCard({
 
 function SubCategoryCardContent({
     subcat,
-    items,
     isDragging,
     dragHandleProps,
     onEdit,
     onDelete,
-    router
 }: {
     subcat: Category;
-    items: InventoryItem[];
     isDragging?: boolean;
     dragHandleProps?: Record<string, unknown>;
     onEdit?: () => void;
     onDelete?: () => void;
-    router?: NavigationRouter;
 }) {
     const IconComponent = getCategoryIcon(subcat);
     const colorStyle = getColorStyles(subcat.color);

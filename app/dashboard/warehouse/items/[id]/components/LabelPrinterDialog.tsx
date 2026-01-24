@@ -51,11 +51,11 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [isLandscape, setIsLandscape] = useState(false);
 
     // Resolve Attributes Logic
-    const getAttrLabel = (typeSlug: string, value: string | number | null | undefined): string => {
+    const getAttrLabel = React.useCallback((typeSlug: string, value: string | number | null | undefined): string => {
         if (!value) return "";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
         return attr ? attr.name : String(value);
-    };
+    }, [allAttributes]);
 
     const resolvedParams = React.useMemo(() => {
         if (!item) return [];
@@ -93,7 +93,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                 value: getAttrLabel(p.slug, p.code as string | number | null)
             }))
             .filter(p => p.value);
-    }, [item, showBrand, showQuality, showMaterial, showSize, showColor, allAttributes, attributeTypes, extraAttributesToggles]);
+    }, [item, showBrand, showQuality, showMaterial, showSize, showColor, attributeTypes, extraAttributesToggles, getAttrLabel]);
 
     // Dynamic Preview Sizing
     const [refNode, setRefNode] = useState<HTMLDivElement | null>(null);

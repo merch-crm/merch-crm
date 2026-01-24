@@ -11,7 +11,6 @@ import {
     RotateCcw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { addClient } from "../actions";
 import { useToast } from "@/components/ui/toast";
 

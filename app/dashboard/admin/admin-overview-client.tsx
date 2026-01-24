@@ -2,20 +2,15 @@
 
 import React from "react";
 import {
-    Activity,
     Users,
     ShieldCheck,
     Database,
-    Zap,
     Clock,
     AlertTriangle,
     ChevronRight,
-    Search,
     Plus,
     BarChart3,
-    Server,
-    HardDrive,
-    ShieldAlert
+    HardDrive
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";

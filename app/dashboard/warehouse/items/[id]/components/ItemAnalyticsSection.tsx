@@ -2,13 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import {
-    TrendingUp,
-    TrendingDown,
     Activity,
-    AlertCircle,
-    Clock,
-    BarChart3,
-    ShieldCheck,
     Package,
     ShoppingCart,
     AlertTriangle
@@ -53,7 +47,6 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
             const txDate = new Date(tx.createdAt);
             const amount = Math.abs(tx.changeAmount);
             const reason = (tx.reason || "").toLowerCase();
-            const isWastage = reason.includes("списание") || reason.includes("брак") || reason.includes("утеря") || reason.includes("порча") || reason.includes("списано");
 
             if (isAfter(txDate, last30Days)) {
                 // Current 30 days
@@ -224,8 +217,6 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
         const paddingX = 40;
         const paddingBottom = 25; // More space at bottom for dates
         const paddingTop = 15;
-        const paddingY = (paddingTop + paddingBottom) / 2;
-        const hOffset = paddingBottom - paddingY;
 
         // Visual forecast zone at 2/3 mark (doesn't affect data positioning)
         const forecastSplitX = paddingX + (width - paddingX * 2) * (2 / 3);
@@ -407,7 +398,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
 
                                             return (
                                                 <motion.path
-                                                    d={forecastPath}
+                                                    Krank={forecastPath}
                                                     fill="none"
                                                     stroke={line.color}
                                                     strokeWidth={line.id === 'orders' ? "3" : "2"}
@@ -508,8 +499,8 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                         {/* Interactive Tooltip Line */}
                         {hoveredData && (
                             <line
-                                x1={hoveredData.x} y1={paddingY}
-                                x2={hoveredData.x} y2={height - paddingY}
+                                x1={hoveredData.x} y1={15}
+                                x2={hoveredData.x} y2={height - 25}
                                 stroke="#5d00ff" strokeWidth="1" strokeDasharray="4 4"
                                 className="opacity-30"
                             />

@@ -320,8 +320,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                             <ShoppingBag className="w-4 h-4" />
                                         </h3>
                                         <div className="space-y-3">
-                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                            {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order: any) => (
+                                            {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order) => (
                                                 <div key={order.id} className="bg-white border border-slate-100 rounded-[18px] p-4 hover:shadow-md transition-shadow">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <span className="text-xs font-mono text-slate-400">#{order.id.slice(0, 8)}</span>

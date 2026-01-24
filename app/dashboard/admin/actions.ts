@@ -2,9 +2,9 @@
 
 import { db } from "@/lib/db";
 import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents, systemErrors } from "@/lib/schema";
-import { getSession, encrypt, decrypt } from "@/lib/auth";
+import { getSession, encrypt } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { PgTable } from "drizzle-orm/pg-core";
@@ -1133,7 +1133,7 @@ export async function getSystemStats() {
         try {
             // Drizzle returns raw rows; for pg_database_size we need to parse carefully
             const dbSizeResult = await withTimeout(db.execute(sql`SELECT pg_database_size(current_database())`), 2000);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             const rows = dbSizeResult.rows as { pg_database_size: string }[];
             dbSize = parseInt(rows[0]?.pg_database_size || "0");
         } catch (e) {
@@ -1295,7 +1295,7 @@ export async function checkSystemHealth() {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     interface HealthStatus {
         database: { status: string; latency: number };
         storage: { status: string };
@@ -1391,7 +1391,7 @@ export async function checkSystemHealth() {
         try {
             const { encrypt, decrypt } = await import("@/lib/auth");
             const testPayload = { ...session, test: true };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             const token = await encrypt(testPayload);
             const decrypted = await decrypt(token);
             health.jwt.status = decrypted.id === session.id ? "ok" : "error";

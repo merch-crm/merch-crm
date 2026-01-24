@@ -3,12 +3,10 @@
 import React, { useState } from "react";
 import {
     Bell,
-    MessageSquare,
     Send,
     ShieldAlert,
     Info,
     CheckCircle2,
-    XCircle,
     Save,
     Bot,
     Smartphone,
@@ -17,8 +15,7 @@ import {
     AlertTriangle,
     ShoppingBag,
     Boxes,
-    UserCheck,
-    CloudLightning
+    UserCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

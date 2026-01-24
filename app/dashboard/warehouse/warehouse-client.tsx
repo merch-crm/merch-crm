@@ -13,7 +13,7 @@ import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
 import { ArchiveTable } from "./archive-table";
 import { InventoryItem, Category } from "./inventory-client";
-import { migrateCategories } from "./actions";
+
 import { StorageLocation } from "./storage-locations-tab";
 import { Transaction } from "./history-table";
 import { WarehouseWidgets } from "./warehouse-widgets";

@@ -94,32 +94,19 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     const searchParams = useSearchParams();
 
     // Map URL param to internal view state
-    // Map URL param to internal view state
     const tabParam = searchParams.get("p");
-    const initialView = (tabParam && ["settings", "statistics", "schedule", "notifications"].includes(tabParam))
+
+    const view = (tabParam && ["settings", "statistics", "schedule", "notifications"].includes(tabParam))
         ? tabParam as "profile" | "settings" | "statistics" | "schedule" | "notifications"
         : "profile";
-
-    const [view, setView] = useState<"profile" | "settings" | "statistics" | "schedule" | "notifications">(initialView);
 
     const [statsData, setStatsData] = useState<StatisticsData | null>(null);
     const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
     const [loading, setLoading] = useState(false);
 
-    // Sync state with URL params changes
-    useEffect(() => {
-        const target = (tabParam && ["settings", "statistics", "schedule", "notifications"].includes(tabParam))
-            ? tabParam as typeof view
-            : "profile";
-
-        if (view !== target) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- URL sync pattern
-            setView(target);
-        }
-    }, [tabParam]); // Remove 'view' from dependency to avoid cycle if setView triggers update
-
     // Data fetching
     const fetchStats = React.useCallback(async () => {
+        await Promise.resolve();
         setLoading(true);
         const res = await getUserStatistics();
         if (res.data) setStatsData(res.data);
@@ -127,6 +114,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     }, []);
 
     const fetchSchedule = React.useCallback(async () => {
+        await Promise.resolve();
         setLoading(true);
         const res = await getUserSchedule();
         if (res.data) setScheduleData(res.data);
@@ -135,17 +123,19 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
     useEffect(() => {
         if ((view === "statistics" || view === "profile") && !statsData) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Data fetching pattern
-            fetchStats();
+            const timer = setTimeout(() => fetchStats(), 0);
+            return () => clearTimeout(timer);
         }
+    }, [view, statsData, fetchStats]);
+
+    useEffect(() => {
         if (view === "schedule" && scheduleData.length === 0) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Data fetching pattern
-            fetchSchedule();
+            const timer = setTimeout(() => fetchSchedule(), 0);
+            return () => clearTimeout(timer);
         }
-    }, [view, statsData, scheduleData.length, fetchStats, fetchSchedule]);
+    }, [view, scheduleData.length, fetchSchedule]);
 
     const handleNavClick = (newView: typeof view) => {
-        setView(newView);
         const params = new URLSearchParams(searchParams.toString());
         params.set("p", newView);
         router.replace(`?${params.toString()}`, { scroll: false });

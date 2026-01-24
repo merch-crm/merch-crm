@@ -2,8 +2,7 @@ import {
     getSystemStats,
     getMonitoringStats,
     getSecurityStats,
-    getBackupsList,
-    getBackupsList as getBackups // Alias
+    getBackupsList
 } from "./actions";
 import { AdminOverviewClient } from "@/app/dashboard/admin/admin-overview-client";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, X, Sparkles, Check, Minus, ChevronDown } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";

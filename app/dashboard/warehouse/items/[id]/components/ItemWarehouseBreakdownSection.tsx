@@ -1,19 +1,17 @@
 "use client";
 
 import React from "react";
-import { Warehouse, MapPin } from "lucide-react";
-import { ItemStock, StorageLocation } from "../../../types";
+import { Warehouse } from "lucide-react";
+import { ItemStock } from "../../../types";
 
 interface ItemWarehouseBreakdownSectionProps {
     stocks: ItemStock[];
     unit: string;
-    storageLocations: StorageLocation[];
 }
 
 export function ItemWarehouseBreakdownSection({
     stocks,
     unit,
-    storageLocations
 }: ItemWarehouseBreakdownSectionProps) {
     return (
         <div className="space-y-4">

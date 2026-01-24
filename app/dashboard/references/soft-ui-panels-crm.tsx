@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, Check, Grid, List, Menu } from "lucide-react";
+import { ChevronLeft, Check, Grid, List } from "lucide-react";
 
 export default function SoftUiPanelsCRM() {
     return (
