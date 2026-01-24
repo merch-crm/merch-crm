@@ -49,14 +49,7 @@ interface BrandingSettings {
     faviconUrl: string | null;
 }
 
-interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: string;
-    isRead: boolean;
-    createdAt: Date | string;
-}
+
 
 export function Navbar({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };

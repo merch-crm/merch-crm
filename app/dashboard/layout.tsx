@@ -130,10 +130,10 @@ export default async function DashboardLayout({
                     />
 
                     {/* Desktop Header - Floating Glass */}
-                    <DesktopHeader user={user} notifications={notifications} branding={branding} />
+                    <DesktopHeader user={user} branding={branding} />
 
                     {/* Mobile Header - Top Fixed */}
-                    <MobileHeader user={user} notifications={notifications} branding={branding} />
+                    <MobileHeader user={user} branding={branding} />
 
                     {/* Mobile Bottom Nav - Bottom Fixed */}
                     <MobileBottomNav user={user} />
