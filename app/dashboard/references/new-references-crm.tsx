@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import {
     Plus,
     ChevronLeft,
@@ -469,7 +470,7 @@ const CalendarWidgets = () => {
 /* --- 10. MODERN DROPDOWN --- */
 const ModernDropdown = () => {
     const [isOpen, setIsOpen] = useState(true);
-    const [selected, setSelected] = useState<string | null>(null);
+    const [, setSelected] = useState<string | null>(null);
 
     const options = [
         {
@@ -990,7 +991,13 @@ const SmartHomeDashboard = () => {
                     <div className="flex items-center gap-4 z-10">
                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-black/5 bg-white">
                             {/* Placeholder avatar */}
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Diana" alt="Avatar" className="w-full h-full object-cover" />
+                            <Image
+                                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Diana"
+                                alt="Avatar"
+                                className="w-full h-full object-cover"
+                                width={48}
+                                height={48}
+                            />
                         </div>
                         <div>
                             <h3 className="text-black font-bold text-lg leading-tight">Hi, Diana Kemmer</h3>
@@ -1203,7 +1210,7 @@ const DateRangePickers = () => {
     });
 
     // State for Purple Calendar
-    const [currentDate2, setCurrentDate2] = useState(new Date(2021, 5, 1)); // June 2021
+    const [currentDate2] = useState(new Date(2021, 5, 1)); // June 2021
     const [selectedRange2, setSelectedRange2] = useState<{ start: Date | null, end: Date | null }>({
         start: new Date(2021, 5, 11),
         end: new Date(2021, 5, 24)
@@ -1562,6 +1569,10 @@ export default function NewReferencesCRM() {
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Быстрые настройки (Bento)</h3>
                             <QuickSettings />
                         </section>
+                        <section className="space-y-8">
+                            <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Умный дом</h3>
+                            <SmartHomeDashboard />
+                        </section>
                     </div>
                 );
             case "calendar":
@@ -1649,6 +1660,7 @@ export default function NewReferencesCRM() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <CryptoSwap />
                                 <QuickSettings />
+                                <SmartHomeDashboard />
                             </div>
                         </section>
 
@@ -1757,6 +1769,4 @@ export default function NewReferencesCRM() {
     );
 }
 
-const ChevronDownIcon = ({ className }: { className?: string }) => (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
-);
+

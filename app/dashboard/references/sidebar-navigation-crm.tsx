@@ -12,11 +12,6 @@ import {
     ChevronRight,
     ChevronLeft,
     ChevronDown,
-    Settings,
-    Database,
-    Zap,
-    Box,
-    Book,
     LogOut,
     Plus,
     MoreVertical
