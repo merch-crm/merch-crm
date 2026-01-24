@@ -39,12 +39,29 @@ const navigation = [
     { name: "База знаний", href: "/dashboard/knowledge-base", icon: BookOpen },
 ];
 
+import Image from "next/image";
 import { UserNav } from "./user-nav";
 
+interface BrandingSettings {
+    companyName: string;
+    logoUrl: string | null;
+    primaryColor: string;
+    faviconUrl: string | null;
+}
 
+interface Notification {
+    id: string;
+    title: string;
+    message: string;
+    type: string;
+    isRead: boolean;
+    createdAt: Date | string;
+}
 
-export function Navbar({ user }: {
+export function Navbar({ user, branding, notifications }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
+    branding: BrandingSettings;
+    notifications: Notification[];
 }) {
     const pathname = usePathname();
 
@@ -61,9 +78,17 @@ export function Navbar({ user }: {
                     <div className="flex items-center shrink-0">
                         <Link href="/dashboard" className="flex items-center gap-3 group">
                             <div className="bg-primary rounded-[18px] p-2 shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                                <Printer className="h-5 w-5 text-white" />
+                                {branding.logoUrl ? (
+                                    <div className="relative h-5 w-5">
+                                        <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" />
+                                    </div>
+                                ) : (
+                                    <Printer className="h-5 w-5 text-white" />
+                                )}
                             </div>
-                            <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">MerchCRM</span>
+                            <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">
+                                {branding.companyName}
+                            </span>
                         </Link>
                     </div>
 

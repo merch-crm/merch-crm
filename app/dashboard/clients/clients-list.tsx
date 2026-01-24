@@ -23,7 +23,7 @@ import { EditClientDialog } from "./edit-client-dialog";
 import { DeleteClientDialog } from "./delete-client-dialog";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Pagination } from "@/components/ui/pagination";
-import { pluralize, sentence } from "@/lib/pluralize";
+import { pluralize } from "@/lib/pluralize";
 
 interface Client {
     id: string;

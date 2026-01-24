@@ -172,7 +172,6 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                         <ArchiveTable
                             items={archivedItems}
-                            user={user}
                         />
                     </div>
                 ) : (

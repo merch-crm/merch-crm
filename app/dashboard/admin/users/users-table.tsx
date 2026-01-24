@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2, LogIn } from "lucide-react";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { AddUserDialog } from "./add-user-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
 import { UserStatsDrawer } from "./user-stats-drawer";

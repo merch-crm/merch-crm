@@ -7,7 +7,6 @@ import {
     Image as ImageIcon,
     Users,
     Clock,
-    Upload,
     Search,
     Grid3x3,
     List,
@@ -15,10 +14,7 @@ import {
     ChevronRight,
     MoreHorizontal,
     Share2,
-    Plus,
-    TrendingUp,
-    HardDrive,
-    Download
+    Plus
 } from "lucide-react";
 
 interface FileItem {
@@ -163,18 +159,18 @@ export default function FileManagerCRM() {
                                     key={folder.id}
                                     className="group cursor-pointer"
                                 >
-                                                                        <div className="relative mb-2">
+                                    <div className="relative mb-2">
                                         {/* 3D Folder Icon - Precise macOS Style */}
                                         <div className="w-full aspect-[1.3/1] relative transition-transform duration-200 group-hover:-translate-y-1">
                                             {/* Folder Tab (Back) */}
                                             <div className="absolute top-[8%] left-0 w-[40%] h-[20%] bg-[#5094FC] rounded-t-md"></div>
-                                            
+
                                             {/* Main Folder Body (Front) */}
                                             <div className="absolute bottom-0 left-0 w-full h-[85%] bg-gradient-to-b from-[#4B90FC] to-[#2F7CF6] rounded-lg shadow-sm border-t border-[#6BA6FD]/50">
                                                 {/* Subtle inner glow */}
                                                 <div className="absolute inset-x-0 top-0 h-px bg-white/20"></div>
                                             </div>
-                                            
+
                                             {/* Icon Shadow */}
                                             <div className="absolute -bottom-1 left-2 right-2 h-3 bg-blue-900/10 blur-md rounded-full"></div>
                                         </div>

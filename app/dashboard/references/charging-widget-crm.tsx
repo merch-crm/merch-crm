@@ -71,7 +71,7 @@ export const ChargingWidget = () => {
                                 height="200"
                                 fill="url(#liquidYellow)"
                                 initial={{ y: 150 }}
-                                animate={{ y: 150 - (52 * 1.5) }}
+                                animate={{ y: 150 - (charge * 1.5) }}
                                 transition={{ type: "spring", stiffness: 35, damping: 20 }}
                             />
 
@@ -81,7 +81,7 @@ export const ChargingWidget = () => {
                                 fill="#f2f207"
                                 initial={{ y: 150 }}
                                 animate={{
-                                    y: 150 - (52 * 1.5),
+                                    y: 150 - (charge * 1.5),
                                     x: [-60, 0, -60]
                                 }}
                                 transition={{
@@ -109,7 +109,7 @@ export const ChargingWidget = () => {
                             animate={{ y: 0, opacity: 1 }}
                             className="text-[6.8rem] font-[900] text-[#F2F207] leading-[0.7] tracking-[-0.07em] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
                         >
-                            52%
+                            {charge}%
                         </motion.h1>
                         <p className="text-white text-[1.8rem] font-medium mt-5 tracking-tight shadow-black drop-shadow-md">
                             Charged

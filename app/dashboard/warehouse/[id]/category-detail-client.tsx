@@ -607,7 +607,6 @@ export function CategoryDetailClient({
                                         <SortableSubCategoryCard
                                             key={subcat.id}
                                             subcat={subcat}
-                                            items={items}
                                             router={router}
                                             setEditingCategory={setEditingCategory}
                                             setDeletingCategory={setDeletingCategory}

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { CloudUpload, Trash2, X, FileText, Paperclip, File } from "lucide-react";
+import { CloudUpload, Trash2, X } from "lucide-react";
 
 export default function FileUploadShowcaseCRM() {
     return (

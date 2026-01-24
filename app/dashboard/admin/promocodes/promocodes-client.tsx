@@ -11,7 +11,6 @@ import {
     Edit3,
     ArrowRight,
     Search,
-    Filter,
     X
 } from "lucide-react";
 import { cn } from "@/lib/utils";

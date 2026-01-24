@@ -398,7 +398,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
 
                                             return (
                                                 <motion.path
-                                                    Krank={forecastPath}
+                                                    d={forecastPath}
                                                     fill="none"
                                                     stroke={line.color}
                                                     strokeWidth={line.id === 'orders' ? "3" : "2"}
