@@ -1150,21 +1150,30 @@ export async function getSystemStats() {
             }
         };
 
+        const [usersCount, ordersCount, clientsCount, auditLogsCount, inventoryItemsCount] = await Promise.all([
+            fetchCount(users),
+            fetchCount(orders),
+            fetchCount(clients),
+            fetchCount(auditLogs),
+            fetchCount(inventoryItems),
+        ]);
+
         const tableCounts = {
-            users: await fetchCount(users),
-            orders: await fetchCount(orders),
-            clients: await fetchCount(clients),
-            auditLogs: await fetchCount(auditLogs),
-            inventoryItems: await fetchCount(inventoryItems),
+            users: usersCount,
+            orders: ordersCount,
+            clients: clientsCount,
+            auditLogs: auditLogsCount,
+            inventoryItems: inventoryItemsCount,
         };
 
         // 3. Storage Stats (S3)
         let storageStats = { size: 0, fileCount: 0 };
         try {
             const { getStorageStats } = await import("@/lib/storage");
-            storageStats = await withTimeout(getStorageStats(), 5000);
+            // Set a very short timeout for storage stats as it can be very slow
+            storageStats = await withTimeout(getStorageStats(), 1000);
         } catch (e) {
-            console.error("Failed to get storage stats:", e);
+            console.error("Failed to get storage stats (timeout):", e);
         }
 
 
@@ -1480,17 +1489,19 @@ export async function getBackupsList() {
         const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
         if (!fs.existsSync(backupDir)) return { data: [] };
 
-        const files = fs.readdirSync(backupDir);
-        const backups = files
+        const files = await fs.promises.readdir(backupDir);
+        const backupPromises = files
             .filter((f: string) => f.endsWith(".json"))
-            .map((f: string) => {
-                const stats = fs.statSync(path.join(backupDir, f));
+            .map(async (f: string) => {
+                const stats = await fs.promises.stat(path.join(backupDir, f));
                 return {
                     name: f,
                     size: stats.size,
                     createdAt: stats.birthtime.toISOString()
                 };
-            })
+            });
+
+        const backups = (await Promise.all(backupPromises))
             .sort((a: BackupFile, b: BackupFile) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         return { data: backups as BackupFile[] };
@@ -1765,42 +1776,42 @@ export async function getMonitoringStats() {
     }
 
     try {
-        // 1. Get active sessions (users active in last 5 minutes)
-        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-        const activeUsers = await db.query.users.findMany({
-            where: sql`${users.lastActiveAt} > ${fiveMinutesAgo}`,
-            with: {
-                role: true,
-                department: true
-            },
-            limit: 10
-        });
-
         // 2. Get activity stats (audit logs per hour and type for last 24h)
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-        // Get breakdown by hour and type for stacked bars
-        const activityStatsResult = await db.execute(sql`
-            SELECT 
-                EXTRACT(HOUR FROM ${auditLogs.createdAt})::int as hour, 
-                ${auditLogs.entityType} as type,
-                count(*)::int as count 
-            FROM ${auditLogs} 
-            WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
-            GROUP BY 1, 2 
-            ORDER BY 1, 2
-        `);
-
-        // Get overall breakdown for legend (last 24h)
-        const entityStatsResult = await db.execute(sql`
-            SELECT 
-                ${auditLogs.entityType} as type, 
-                count(*)::int as count 
-            FROM ${auditLogs} 
-            WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
-            GROUP BY 1 
-            ORDER BY 2 DESC
-        `);
+        const [activeUsers, activityStatsResult, entityStatsResult] = await Promise.all([
+            // active sessions
+            db.query.users.findMany({
+                where: sql`${users.lastActiveAt} > ${fiveMinutesAgo}`,
+                with: {
+                    role: true,
+                    department: true
+                },
+                limit: 10
+            }),
+            // activity breakdown
+            db.execute(sql`
+                SELECT 
+                    EXTRACT(HOUR FROM ${auditLogs.createdAt})::int as hour, 
+                    ${auditLogs.entityType} as type,
+                    count(*)::int as count 
+                FROM ${auditLogs} 
+                WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
+                GROUP BY 1, 2 
+                ORDER BY 1, 2
+            `),
+            // entity stats
+            db.execute(sql`
+                SELECT 
+                    ${auditLogs.entityType} as type, 
+                    count(*)::int as count 
+                FROM ${auditLogs} 
+                WHERE ${auditLogs.createdAt} > ${twentyFourHoursAgo}
+                GROUP BY 1 
+                ORDER BY 2 DESC
+            `)
+        ]);
 
         return {
             activeUsers: activeUsers.map(u => ({
@@ -1840,40 +1851,39 @@ export async function getSecurityStats() {
     try {
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-        // 1. Failed Logins
-        const failedLogins = await db.query.securityEvents.findMany({
-            where: and(
-                eq(securityEvents.eventType, 'login_failed'),
-                gte(securityEvents.createdAt, last24h)
-            ),
-            orderBy: [desc(securityEvents.createdAt)],
-            limit: 20
-        });
-
-        // 2. Sensitive Actions (from auditLogs as they represent user actions)
-        const sensitiveActions = await db.query.auditLogs.findMany({
-            where: and(
-                sql`${auditLogs.action} IN ('password_change', 'email_change', 'profile_update')`,
-                gte(auditLogs.createdAt, last24h)
-            ),
-            with: {
-                user: true
-            },
-            orderBy: [desc(auditLogs.createdAt)],
-            limit: 50
-        });
-
-        // 3. System Errors
-        const errors = await db.query.systemErrors.findMany({
-            where: gte(systemErrors.createdAt, last24h),
-            orderBy: [desc(systemErrors.createdAt)],
-            limit: 100
-        });
-
-        // 4. Maintenance Mode Status
-        const maintenanceSetting = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, 'maintenance_mode')
-        });
+        const [failedLogins, sensitiveActions, errors, maintenanceSetting] = await Promise.all([
+            // 1. Failed Logins
+            db.query.securityEvents.findMany({
+                where: and(
+                    eq(securityEvents.eventType, 'login_failed'),
+                    gte(securityEvents.createdAt, last24h)
+                ),
+                orderBy: [desc(securityEvents.createdAt)],
+                limit: 20
+            }),
+            // 2. Sensitive Actions
+            db.query.auditLogs.findMany({
+                where: and(
+                    sql`${auditLogs.action} IN ('password_change', 'email_change', 'profile_update')`,
+                    gte(auditLogs.createdAt, last24h)
+                ),
+                with: {
+                    user: true
+                },
+                orderBy: [desc(auditLogs.createdAt)],
+                limit: 50
+            }),
+            // 3. System Errors
+            db.query.systemErrors.findMany({
+                where: gte(systemErrors.createdAt, last24h),
+                orderBy: [desc(systemErrors.createdAt)],
+                limit: 100
+            }),
+            // 4. Maintenance Mode Status
+            db.query.systemSettings.findFirst({
+                where: eq(systemSettings.key, 'maintenance_mode')
+            })
+        ]);
 
         return {
             failedLogins: failedLogins.map(l => ({
