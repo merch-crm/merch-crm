@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
@@ -12,7 +13,6 @@ import {
     ChevronRight,
     ChevronLeft,
     ChevronDown,
-    LogOut,
     Plus,
     MoreVertical
 } from "lucide-react";
@@ -202,7 +202,6 @@ const SidebarItem = ({
 };
 
 export default function SidebarNavigationCRM() {
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [items, setItems] = useState(menuData);
 
     const toggleItem = (id: string) => {
@@ -257,10 +256,12 @@ export default function SidebarNavigationCRM() {
                     {/* User Profile */}
                     <div className="mt-4 pt-4 border-t border-slate-100">
                         <div className="flex items-center gap-3 px-2 py-1 cursor-pointer hover:bg-slate-50 rounded-xl transition-colors">
-                            <img
+                            <Image
                                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
                                 alt="Profile"
                                 className="w-9 h-9 rounded-full object-cover"
+                                width={36}
+                                height={36}
                             />
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-slate-900 truncate">Alexandra D.</p>
@@ -299,13 +300,14 @@ export default function SidebarNavigationCRM() {
                         ))}
                     </div>
 
-                    {/* User Profile */}
                     <div className="mt-auto">
                         <div className="cursor-pointer hover:opacity-80 transition-opacity">
-                            <img
+                            <Image
                                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
                                 alt="Profile"
                                 className="w-9 h-9 rounded-full object-cover"
+                                width={36}
+                                height={36}
                             />
                         </div>
                     </div>

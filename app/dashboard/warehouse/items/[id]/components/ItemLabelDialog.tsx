@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import {
     Dialog,
     DialogContent,
@@ -145,10 +146,12 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
                             <div className="flex gap-4 items-center">
                                 <div className="w-20 h-20 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 overflow-hidden">
-                                    <img
+                                    <Image
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
                                         alt="QR Code"
                                         className="w-full h-full object-contain"
+                                        width={80}
+                                        height={80}
                                     />
                                 </div>
                                 <div className="flex-1 space-y-1">

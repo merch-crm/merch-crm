@@ -14,7 +14,6 @@ interface ItemMediaSectionProps {
     onImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
     onSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
     onImageClick?: (index: number) => void;
-    thumbnailSettings?: ThumbnailSettings | null;
     uploadStates?: Record<string, UploadState>;
 }
 
@@ -44,7 +43,6 @@ export function ItemMediaSection({
     onImageRemove,
     onSetMain,
     onImageClick,
-    thumbnailSettings,
     uploadStates
 }: ItemMediaSectionProps) {
     const allImages = React.useMemo(() => getAllItemImages(item), [item]);
@@ -190,7 +188,7 @@ export function ItemMediaSection({
                         return (
                             <div
                                 key={idx}
-                                onClick={(e) => {
+                                onClick={() => {
                                     if (dragDistance < 15 && img.src) {
                                         if (onImageClick) {
                                             onImageClick(idx);
@@ -381,14 +379,16 @@ export function ItemMediaSection({
                     <div className="relative w-full max-w-5xl aspect-square md:aspect-auto h-full flex flex-col items-center justify-center gap-8 z-[105]">
                         <div className="relative w-full h-[70vh] flex items-center justify-center">
                             {allImages[currentIndex].src && (
-                                <img
+                                <Image
                                     src={allImages[currentIndex].src || ""}
                                     alt="Full view"
+                                    fill
                                     className={cn(
-                                        "max-w-full max-h-full object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
+                                        "object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
                                         imageZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
                                     )}
                                     onClick={() => setImageZoomed(!imageZoomed)}
+                                    unoptimized
                                 />
                             )}
                         </div>

@@ -6,9 +6,7 @@ import {
     ChevronRight,
     User,
     Calendar,
-    ExternalLink
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { ActiveOrderItem } from "../../../types";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
