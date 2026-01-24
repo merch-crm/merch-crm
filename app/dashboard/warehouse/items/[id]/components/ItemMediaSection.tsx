@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { InventoryItem, ThumbnailSettings } from "../../../types";
+import { InventoryItem } from "../../../types";
 
 interface ItemMediaSectionProps {
     item: InventoryItem;
@@ -197,7 +197,7 @@ export function ItemMediaSection({
                                         }
                                     }
                                 }}
-                                onMouseUp={(e) => {
+                                onMouseUp={() => {
                                     // Fallback for very quick clics where dragDistance might be slightly off
                                     if (dragDistance < 3 && img.src && !isDragging) {
                                         if (onImageClick) onImageClick(idx);

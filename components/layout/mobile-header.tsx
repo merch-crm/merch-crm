@@ -21,9 +21,8 @@ interface Notification {
     createdAt: Date | string;
 }
 
-export function MobileHeader({ user, branding, notifications }: {
+export function MobileHeader({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
-    notifications: Notification[];
     branding: BrandingSettings;
 }) {
     return (

@@ -1733,7 +1733,6 @@ export function ItemDetailClient({
                                             const src = getMediaImages(item)[idx]?.src;
                                             if (src) openGallery(src);
                                         }}
-                                        thumbnailSettings={editData.thumbnailSettings}
                                         uploadStates={uploadStates}
                                     />
                                 </div>

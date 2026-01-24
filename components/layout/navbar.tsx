@@ -58,10 +58,9 @@ interface Notification {
     createdAt: Date | string;
 }
 
-export function Navbar({ user, branding, notifications }: {
+export function Navbar({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     branding: BrandingSettings;
-    notifications: Notification[];
 }) {
     const pathname = usePathname();
 
