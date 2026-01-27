@@ -356,7 +356,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-5 custom-scrollbar relative">
                             {/* Paper Size */}
                             <div className="space-y-2.5">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Размер этикетки</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Размер этикетки</label>
                                 <div className="grid grid-cols-2 gap-2">
                                     {['58x40', '58x60', '75x120', 'a4', 'custom'].map((size) => (
                                         <button
@@ -402,7 +402,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                             {/* Layout Style Settings (Moved up for visibility) */}
                             <div className="space-y-2.5">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Стиль макета</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Стиль макета</label>
                                 <div className="grid grid-cols-2 gap-2">
                                     {[
                                         { id: 'standard', label: 'Стандарт' },
@@ -426,7 +426,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                             {/* Unified Characteristics Toggles */}
                             <div className={cn("space-y-2.5 transition-opacity", layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Характеристики</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Характеристики</label>
                                 <div className="-mx-2 grid grid-cols-2 gap-x-1 gap-y-0.5">
                                     <ToggleItem label="Артикул товара" checked={showArticle} onChange={setShowArticle} compact />
                                     <ToggleItem label="Цена изделия" checked={showPrice} onChange={setShowPrice} compact />
@@ -457,7 +457,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                             {/* Custom Text */}
                             <div className={cn("space-y-2.5 transition-opacity", layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Дополнительная строка</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Дополнительная строка</label>
                                 <input
                                     type="text"
                                     value={customText}
@@ -471,7 +471,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                             {/* Layout Settings */}
                             <div className="space-y-2.5 pb-2">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Расположение контента</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Расположение контента</label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
                                         onClick={() => setIsLandscape(!isLandscape)}
@@ -508,7 +508,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-100 z-50 space-y-4 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)]">
                             {/* Quantity Row */}
                             <div className="flex items-center justify-between">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Тираж</label>
+                                <label className="text-[11px] font-bold text-slate-500 tracking-normal ml-1">Тираж</label>
                                 <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-[14px]">
                                     <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                                         <Minus className="w-3.5 h-3.5" />
@@ -583,12 +583,12 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                         {item.name}
                                     </div>
                                     {layoutStyle === 'minimal' && item.sizeCode && (
-                                        <div style={{ fontSize: `${12 * scale * finalAttrScale}px` }} className="font-black text-slate-900 uppercase tracking-tighter mt-1 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                                        <div style={{ fontSize: `${12 * scale * finalAttrScale}px` }} className="font-black text-slate-900 uppercase tracking-normaler mt-1 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
                                             Размер: {getAttrLabel('size', item.sizeCode)}
                                         </div>
                                     )}
                                     {showArticle && item.sku && layoutStyle !== 'minimal' && (
-                                        <div style={{ fontSize: `${8 * scale}px` }} className="font-mono font-bold text-slate-500 uppercase tracking-tighter mt-1">
+                                        <div style={{ fontSize: `${8 * scale}px` }} className="font-mono font-bold text-slate-500 uppercase tracking-normaler mt-1">
                                             APT: {item.sku}
                                         </div>
                                     )}
@@ -652,7 +652,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                             <div
                                                 style={{ fontSize: `${8 * scale * finalAttrScale}px`, paddingTop: `${0.5 * scale}mm` }}
                                                 className={cn(
-                                                    "font-black text-black uppercase tracking-tight border-t border-slate-100 mt-0.5 w-full break-words",
+                                                    "font-black text-black uppercase tracking-normal border-t border-slate-100 mt-0.5 w-full break-words",
                                                     alignment === 'center' ? "text-center" : "text-left"
                                                 )}
                                             >
@@ -669,9 +669,9 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                     (layoutStyle === 'side-by-side' || layoutStyle === 'inline' || heightNum <= 60 || paperSize === '75x120') ? "flex-row justify-between items-end w-full px-1" : "flex-col items-center",
                                     layoutStyle === 'minimal' && "flex-1 justify-center items-center border-none pt-2"
                                 )}>
-                                    {showPrice && item.costPrice !== null && layoutStyle !== 'minimal' && (
-                                        <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black tracking-tighter leading-none">
-                                            {new Intl.NumberFormat('ru-RU').format(Number(item.costPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">₽</span>
+                                    {showPrice && item.sellingPrice !== null && layoutStyle !== 'minimal' && (
+                                        <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black tracking-normaler leading-none">
+                                            {new Intl.NumberFormat('ru-RU').format(Number(item.sellingPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">₽</span>
                                         </div>
                                     )}
                                     {(showBarcode || layoutStyle === 'minimal') && (

@@ -397,7 +397,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 <div className="relative group">
                     {selectedOption ? (
                         <div className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-900 bg-slate-900 flex items-center justify-between shadow-lg shadow-slate-200 transition-all">
-                            <span className="text-sm font-bold text-white truncate">
+                            <span className="text-sm font-bold text-white whitespace-nowrap">
                                 {selectedOption.name}
                             </span>
                             <button

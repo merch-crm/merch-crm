@@ -25,7 +25,7 @@ export default function EduplexDashboardCRM() {
                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                         <GraduationCap className="w-6 h-6" />
                     </div>
-                    <span className="font-bold text-xl tracking-tight">Eduplex</span>
+                    <span className="font-bold text-xl tracking-normal">Eduplex</span>
                 </div>
 
                 <nav className="flex-1 space-y-2">

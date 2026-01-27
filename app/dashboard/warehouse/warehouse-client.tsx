@@ -67,7 +67,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         className={cn(
                             "flex items-center gap-2.5 px-6 py-2.5 rounded-[var(--radius)] text-[11px] font-bold transition-all duration-300",
                             activeTab === "inventory"
-                                ? "bg-white text-primary shadow-md shadow-primary/10"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                         )}
                     >
@@ -79,7 +79,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         className={cn(
                             "flex items-center gap-2.5 px-6 py-2.5 rounded-[var(--radius)] text-[11px] font-bold transition-all duration-300",
                             activeTab === "storage"
-                                ? "bg-white text-primary shadow-md shadow-primary/10"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                         )}
                     >
@@ -91,7 +91,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         className={cn(
                             "flex items-center gap-2.5 px-6 py-2.5 rounded-[var(--radius)] text-[11px] font-bold transition-all duration-300",
                             activeTab === "dictionary"
-                                ? "bg-white text-primary shadow-md shadow-primary/10"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                         )}
                     >
@@ -103,7 +103,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         className={cn(
                             "flex items-center gap-2.5 px-6 py-2.5 rounded-[var(--radius)] text-[11px] font-bold transition-all duration-300",
                             activeTab === "history"
-                                ? "bg-white text-primary shadow-md shadow-primary/10"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                         )}
                     >
@@ -115,7 +115,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         className={cn(
                             "flex items-center gap-2.5 px-6 py-2.5 rounded-[var(--radius)] text-[11px] font-bold transition-all duration-300",
                             activeTab === "archive"
-                                ? "bg-white text-rose-600 shadow-md shadow-rose-100"
+                                ? "bg-rose-600 text-white shadow-lg shadow-rose-200"
                                 : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                         )}
                     >

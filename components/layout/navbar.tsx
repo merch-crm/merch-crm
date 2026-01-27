@@ -64,7 +64,7 @@ export function Navbar({ user, branding }: {
 
     return (
         <header className="sticky top-0 z-50 p-3 md:p-4 md:px-6">
-            <div className="max-w-[1600px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center shadow-crm-lg border-white/50">
+            <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center shadow-crm-lg border-white/50">
                 <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     {/* Left: Logo */}
                     <div className="flex items-center shrink-0">

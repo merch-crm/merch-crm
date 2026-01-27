@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, users, promocodes, payments, expenses } from "@/lib/schema";
+import { orders, users, promocodes, payments, expenses, inventoryTransactions } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
 import { subDays } from "date-fns";
@@ -124,17 +124,31 @@ export async function getFinancialStats(from?: Date, to?: Date) {
             }
         });
 
+        // 5. Calculate actual COGS from inventory transactions
+        const cogsRes = await db.select({
+            total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
+        })
+            .from(inventoryTransactions)
+            .where(and(
+                eq(inventoryTransactions.type, 'out'),
+                from ? gte(inventoryTransactions.createdAt, from) : undefined,
+                to ? lte(inventoryTransactions.createdAt, to) : undefined
+            ));
+
+        const actualCOGS = Number(cogsRes[0]?.total || 0);
+
         const summary = stats[0] || { totalRevenue: 0, orderCount: 0, avgOrderValue: 0 };
+        const totalRevenue = Number(summary.totalRevenue || 0);
 
         return {
             data: {
                 summary: {
-                    totalRevenue: Number(summary.totalRevenue || 0),
+                    totalRevenue: totalRevenue,
                     orderCount: Number(summary.orderCount || 0),
                     avgOrderValue: Number(summary.avgOrderValue || 0),
-                    netProfit: Number(summary.totalRevenue || 0) * 0.3, // Примерный расчет: 30% маржинальность
-                    averageCost: Number(summary.avgOrderValue || 0) * 0.7, // Примерный расчет: 70% себестоимость
-                    writeOffs: Number(summary.totalRevenue || 0) * 0.02, // Примерный расчет: 2% списания
+                    netProfit: totalRevenue - actualCOGS,
+                    averageCost: Number(summary.orderCount || 0) > 0 ? (actualCOGS / Number(summary.orderCount)) : 0,
+                    writeOffs: actualCOGS * 0.05, // Still a fallback but based on real COGS
                 },
                 chartData: dailyStats.map(d => ({
                     date: new Date(d.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
@@ -439,12 +453,16 @@ export async function getPLReport(from?: Date, to?: Date) {
             .from(payments)
             .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate)));
 
-        // 2. Direct Costs (Cost of goods sold - hypothetical from order costs)
-        const orderCosts = await db.select({
-            total: sql<number>`sum(total_amount * 0.7)` // Assuming 70% COGS for now
+        // 2. Direct Costs (COGS from real transactions)
+        const cogsStats = await db.select({
+            total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
         })
-            .from(orders)
-            .where(and(gte(orders.createdAt, fromDate), lte(orders.createdAt, toDate), eq(orders.status, 'done')));
+            .from(inventoryTransactions)
+            .where(and(
+                eq(inventoryTransactions.type, 'out'),
+                gte(inventoryTransactions.createdAt, fromDate),
+                lte(inventoryTransactions.createdAt, toDate)
+            ));
 
         // 3. Overhead Expenses
         const overheadStats = await db.select({
@@ -455,7 +473,7 @@ export async function getPLReport(from?: Date, to?: Date) {
             .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)));
 
         const totalRevenue = Number(revenueStats[0]?.total || 0);
-        const totalCOGS = Number(orderCosts[0]?.total || 0);
+        const totalCOGS = Number(cogsStats[0]?.total || 0);
         const totalOverhead = Number(overheadStats[0]?.total || 0);
 
         const grossProfit = totalRevenue - totalCOGS;

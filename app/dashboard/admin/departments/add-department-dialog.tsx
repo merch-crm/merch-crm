@@ -104,7 +104,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                         <div className={`h-16 w-16 rounded-[18px] ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center mx-auto mb-4 border ${colorStyle.border} shadow-sm`}>
                             <Building className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Новый отдел</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-normal">Новый отдел</h3>
                         <p className="text-slate-500 mt-1 font-medium">Создайте новое подразделение компании</p>
                     </div>
 
@@ -188,7 +188,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                                         {role.department?.name && (
                                                             <div className="flex items-center gap-1 mt-0.5">
                                                                 <Building className="w-3 h-3 text-slate-300" />
-                                                                <p className="text-[10px] text-slate-400 font-bold  tracking-tight">В отделе: {role.department.name}</p>
+                                                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">В отделе: {role.department.name}</p>
                                                             </div>
                                                         )}
                                                     </div>

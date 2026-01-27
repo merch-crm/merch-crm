@@ -4,33 +4,16 @@ import { useState } from "react";
 import {
     Trash2,
     X,
-    CheckCircle2,
-    Sparkles,
-    Paintbrush,
-    Settings2,
-    Truck,
-    XCircle,
-    Zap,
-    ChevronDown,
     Printer,
     FileDown,
-    Clock,
-    LucideIcon
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     bulkUpdateOrderStatus,
     bulkUpdateOrderPriority,
     bulkDeleteOrders
 } from "./actions";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-    DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { pluralize, sentence } from "@/lib/pluralize";
@@ -39,9 +22,10 @@ interface BulkActionsPanelProps {
     selectedIds: string[];
     onClear: () => void;
     isAdmin: boolean;
+    onExport?: () => void;
 }
 
-export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsPanelProps) {
+export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: BulkActionsPanelProps) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const { toast } = useToast();
@@ -92,146 +76,132 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin }: BulkActionsP
     };
 
     return (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-12 duration-500 ease-out">
-            <div className="bg-white/80 backdrop-blur-2xl px-2 py-2 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/50 flex items-center gap-1 min-w-[500px]">
+        <AnimatePresence>
+            {selectedIds.length > 0 && (
+                <>
+                    {/* Bottom Progressive Gradient Blur Overlay */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
+                        style={{
+                            backdropFilter: 'blur(40px)',
+                            WebkitBackdropFilter: 'blur(40px)',
+                            maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                            background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                        }}
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                        exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                        className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                    >
 
-                {/* Selection Badge Section */}
-                <div className="flex items-center gap-4 pl-4 pr-6 border-r border-slate-100">
-                    <div className="relative">
-                        <div className="w-12 h-12 rounded-[18px] bg-primary flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-primary/20">
-                            {selectedIds.length}
+                        {/* Selection Badge Section */}
+                        <div className="flex items-center gap-3 px-2">
+                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+                                {selectedIds.length}
+                            </div>
+                            <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Заказов выбрано</span>
                         </div>
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[10px] font-bold  tracking-[0.2em] text-slate-400 leading-none">{pluralize(selectedIds.length, 'Выбран', 'Выбрано', 'Выбрано')}</span>
-                        <span className="text-sm font-bold text-slate-900">{pluralize(selectedIds.length, 'заказ', 'заказа', 'заказов')}</span>
-                    </div>
-                </div>
 
-                {/* Primary Actions Group */}
-                <div className="flex items-center gap-1 px-3">
-                    {/* Status Dropdown */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                        <div className="w-px h-8 bg-slate-200 mx-2" />
+
+                        {/* Primary Actions Group */}
+                        <div className="flex items-center gap-1">
+                            {/* Status Select */}
+                            <div className="min-w-[140px]">
+                                <PremiumSelect
+                                    value=""
+                                    onChange={(val) => handleStatusUpdate(val as "new" | "design" | "production" | "done" | "shipped" | "cancelled")}
+                                    options={[
+                                        { id: "new", title: "Новый", description: "Только что созданный", color: "text-blue-500" },
+                                        { id: "design", title: "Дизайн", description: "Создание макета", color: "text-purple-500" },
+                                        { id: "production", title: "Производство", description: "В процессе изготовления", color: "text-amber-500" },
+                                        { id: "done", title: "Готов", description: "Ожидает отгрузки", color: "text-emerald-500" },
+                                        { id: "shipped", title: "Отправлен", description: "Передан в доставку", color: "text-slate-500" },
+                                        { id: "cancelled", title: "Отменен", description: "Заказ аннулирован", color: "text-rose-500" },
+                                    ]}
+                                    placeholder="Статус"
+                                    variant="minimal"
+                                    className="!bg-transparent !border-none !text-slate-900"
+                                />
+                            </div>
+
+                            {/* Priority Select */}
+                            <div className="min-w-[140px]">
+                                <PremiumSelect
+                                    value=""
+                                    onChange={(val) => handlePriorityUpdate(val)}
+                                    options={[
+                                        { id: "high", title: "Срочный", description: "Максимальный приоритет", color: "text-rose-500" },
+                                        { id: "normal", title: "Обычный", description: "Стандартный приоритет", color: "text-slate-500" },
+                                    ]}
+                                    placeholder="Приоритет"
+                                    variant="minimal"
+                                    className="!bg-transparent !border-none !text-slate-900"
+                                />
+                            </div>
+
+                            {/* Quick Tools */}
+                            <div className="h-8 w-px bg-slate-200 mx-2" />
+
                             <button
-                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-[18px] transition-all active:scale-95 disabled:opacity-50"
+                                title="Печать бланков"
+                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all"
+                                onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
+                            >
+                                <Printer className="w-4 h-4" />
+                            </button>
+
+                            <button
+                                title="Экспорт в Excel"
+                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-emerald-600 transition-all"
+                                onClick={onExport}
+                            >
+                                <FileDown className="w-4 h-4" />
+                            </button>
+
+                            {isAdmin && (
+                                <button
+                                    title="Удалить выбранные"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-all font-bold"
+                                    onClick={() => setShowDeleteConfirm(true)}
+                                    disabled={isProcessing}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            )}
+
+                            <div className="h-8 w-px bg-slate-200 mx-2" />
+
+                            <button
+                                onClick={onClear}
+                                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all"
                                 disabled={isProcessing}
                             >
-                                <CheckCircle2 className="w-5 h-5 text-primary" />
-                                Статус
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
+                                <X className="w-4 h-4" />
                             </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent side="top" align="start" sideOffset={20} className="w-64 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
-                            <DropdownMenuLabel className="text-[10px]  font-bold tracking-normal text-slate-400 px-3 py-2">Сменить этап работы</DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-slate-50" />
-                            <StatusMenuItem icon={Sparkles} color="text-blue-500" label="Новый" onClick={() => handleStatusUpdate("new")} />
-                            <StatusMenuItem icon={Paintbrush} color="text-purple-500" label="Дизайн" onClick={() => handleStatusUpdate("design")} />
-                            <StatusMenuItem icon={Settings2} color="text-amber-500" label="Производство" onClick={() => handleStatusUpdate("production")} />
-                            <StatusMenuItem icon={CheckCircle2} color="text-emerald-500" label="Готов" onClick={() => handleStatusUpdate("done")} />
-                            <StatusMenuItem icon={Truck} color="text-slate-500" label="Отправлен" onClick={() => handleStatusUpdate("shipped")} />
-                            <StatusMenuItem icon={XCircle} color="text-rose-500" label="Отменен" onClick={() => handleStatusUpdate("cancelled")} />
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </div>
 
-                    {/* Priority Dropdown */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button
-                                className="group flex items-center gap-2.5 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-[18px] transition-all active:scale-95 disabled:opacity-50"
-                                disabled={isProcessing}
-                            >
-                                <Zap className="w-5 h-5 text-rose-500" />
-                                Приоритет
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent side="top" align="center" sideOffset={20} className="w-56 bg-white/95 backdrop-blur-xl rounded-[1.5rem] p-2 shadow-2xl border-white/40 border">
-                            <DropdownMenuLabel className="text-[10px]  font-bold tracking-normal text-slate-400 px-3 py-2">Срочность заказа</DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-slate-50" />
-                            <DropdownMenuItem className="rounded-[18px] focus:bg-rose-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("high")}>
-                                <div className="w-8 h-8 rounded-[18px] bg-rose-100 flex items-center justify-center">
-                                    <Zap className="w-4 h-4 text-rose-600 fill-rose-600" />
-                                </div>
-                                Срочный
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="rounded-[18px] focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900" onClick={() => handlePriorityUpdate("normal")}>
-                                <div className="w-8 h-8 rounded-[18px] bg-slate-100 flex items-center justify-center">
-                                    <Clock className="w-4 h-4 text-slate-600" />
-                                </div>
-                                Обычный
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* Quick Tools */}
-                    <div className="h-8 w-px bg-slate-100 mx-2" />
-
-                    <button
-                        title="Печать бланков"
-                        className="p-3 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[18px] transition-all active:scale-90"
-                        onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
-                    >
-                        <Printer className="w-5 h-5" />
-                    </button>
-
-                    <button
-                        title="Экспорт в Excel"
-                        className="p-3 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all active:scale-90"
-                        onClick={() => toast("Подготовка файла экспорта...", "info")}
-                    >
-                        <FileDown className="w-5 h-5" />
-                    </button>
-
-                    {isAdmin && (
-                        <button
-                            title="Удалить выбранные"
-                            className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
-                            onClick={() => setShowDeleteConfirm(true)}
-                            disabled={isProcessing}
-                        >
-                            <Trash2 className="w-5 h-5" />
-                        </button>
-                    )}
-                </div>
-
-                {/* Dismiss Section */}
-                <div className="pl-4 pr-1">
-                    <button
-                        onClick={onClear}
-                        className="w-11 h-11 flex items-center justify-center rounded-[1.25rem] bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:rotate-90 active:scale-90"
-                        disabled={isProcessing}
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
-
-            <ConfirmDialog
-                isOpen={showDeleteConfirm}
-                onClose={() => setShowDeleteConfirm(false)}
-                onConfirm={handleDelete}
-                title={`Удаление ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`}
-                description={`Вы уверены, что хотите удалить ${pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов')} (${selectedIds.length})? Это действие необратимо.`}
-                confirmText="Удалить"
-                variant="destructive"
-                isLoading={isProcessing}
-            />
-        </div>
-    );
-}
-
-function StatusMenuItem({ icon: Icon, color, label, onClick }: { icon: LucideIcon, color: string, label: string, onClick: () => void }) {
-    return (
-        <DropdownMenuItem
-            className="rounded-[18px] focus:bg-slate-50 cursor-pointer gap-3 px-3 py-3 font-bold text-[13px] text-slate-900 group"
-            onClick={onClick}
-        >
-            <div className={cn("w-8 h-8 rounded-[18px] flex items-center justify-center", color.replace('text-', 'bg-').replace('-500', '-100'))}>
-                <Icon className={cn("w-4 h-4", color)} />
-            </div>
-            {label}
-        </DropdownMenuItem>
+                        <ConfirmDialog
+                            isOpen={showDeleteConfirm}
+                            onClose={() => setShowDeleteConfirm(false)}
+                            onConfirm={handleDelete}
+                            title={`Удаление ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`}
+                            description={`Вы уверены, что хотите удалить ${pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов')} (${selectedIds.length})? Это действие необратимо.`}
+                            confirmText="Удалить"
+                            variant="destructive"
+                            isLoading={isProcessing}
+                        />
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
     );
 }

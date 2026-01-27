@@ -21,7 +21,7 @@ export default function AnalyticsCRM() {
 
             {/* --- HEADER --- */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold tracking-tight text-slate-900">Analytics</h1>
+                <h1 className="text-4xl font-bold tracking-normal text-slate-900">Analytics</h1>
 
                 <div className="flex items-center gap-3">
                     <button className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center hover:scale-110 transition-transform"><Search className="w-5 h-5 text-slate-600" /></button>

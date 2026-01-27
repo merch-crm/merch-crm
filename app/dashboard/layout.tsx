@@ -88,7 +88,7 @@ export default async function DashboardLayout({
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
                         </div>
                         <div className="space-y-4">
-                            <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight tracking-tight">Технические работы</h1>
+                            <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight tracking-normal">Технические работы</h1>
                             <p className="text-[#64748B] text-lg font-medium leading-relaxed">
                                 Система временно недоступна для проведения планового обслуживания. Пожалуйста, зайдите позже.
                             </p>
@@ -140,7 +140,7 @@ export default async function DashboardLayout({
 
                     <FloatingSearch />
 
-                    <main className="flex-1 p-3 md:p-6 md:px-10 pt-4 md:pt-6 max-w-[1480px] mx-auto w-full">
+                    <main className="flex-1 px-4 md:px-12 pt-4 md:pt-6 pb-20 max-w-[1480px] mx-auto w-full">
                         <Breadcrumbs />
                         {children}
                     </main>

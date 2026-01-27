@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function AdminStoragePage() {
     return (
-        <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Хранилище системы</h1>
+                <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Хранилище системы</h1>
                 <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Локальные диски и S3 провайдеры</p>
             </div>
 

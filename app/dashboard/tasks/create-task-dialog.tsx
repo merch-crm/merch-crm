@@ -97,7 +97,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 {/* Header */}
                 <div className="px-8 pt-8 pb-6 flex justify-between items-start">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Новая задача</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal">Новая задача</h2>
                         <p className="text-slate-400 text-sm font-bold  tracking-normal mt-1">Заполните детали поручения</p>
                     </div>
                     <button

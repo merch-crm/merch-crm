@@ -205,7 +205,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 )}
                             </div>
                             <h2 className={cn(
-                                "text-3xl font-bold text-slate-900 tracking-tight leading-tight",
+                                "text-3xl font-bold text-slate-900 tracking-normal leading-tight",
                                 isDone && "line-through text-slate-400"
                             )}>
                                 {task.title}

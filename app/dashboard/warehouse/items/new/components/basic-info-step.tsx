@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, createElement } from "react";
-import { Package, Hash, Ruler, Info, Wrench, ClipboardList } from "lucide-react";
+import { Package, Hash, Ruler, Info, Wrench, ClipboardList, Printer, Shirt, Scissors } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
 import { cn } from "@/lib/utils";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "../../../attribute-selector";
 import { Category } from "../../../inventory-client";
@@ -430,16 +431,16 @@ export function BasicInfoStep({
                                                 <Wrench className="w-3.5 h-3.5" />
                                                 Область применения
                                             </label>
-                                            <select
+                                            <PremiumSelect
+                                                options={[
+                                                    { id: "printing", title: "Печатный цех", icon: <Printer className="w-4 h-4 opacity-50" /> },
+                                                    { id: "embroidery", title: "Вышивальный цех", icon: <Shirt className="w-4 h-4 opacity-50" /> },
+                                                    { id: "sewing", title: "Швейный цех", icon: <Scissors className="w-4 h-4 opacity-50" /> },
+                                                ]}
                                                 value={formData.department || ""}
-                                                onChange={(e) => updateFormData({ department: e.target.value })}
-                                                className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus:border-emerald-500 outline-none appearance-none cursor-pointer"
-                                            >
-                                                <option value="">Выберите отдел...</option>
-                                                <option value="printing">Печатный цех</option>
-                                                <option value="embroidery">Вышивальный цех</option>
-                                                <option value="sewing">Швейный цех</option>
-                                            </select>
+                                                onChange={(val) => updateFormData({ department: val })}
+                                                placeholder="Выберите отдел..."
+                                            />
                                         </div>
                                     )}
                                 </div>

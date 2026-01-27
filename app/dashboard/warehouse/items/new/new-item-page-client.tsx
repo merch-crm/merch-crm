@@ -126,6 +126,8 @@ export function NewItemPageClient({
             quantity: "0",
             criticalStockThreshold: "0",
             lowStockThreshold: "10",
+            costPrice: "0",
+            sellingPrice: "0",
             attributes: {}
         };
 
@@ -242,6 +244,8 @@ export function NewItemPageClient({
             quantity: "0",
             criticalStockThreshold: "0",
             lowStockThreshold: "10",
+            costPrice: "0",
+            sellingPrice: "0",
             attributes: {}
         });
         toast("Форма сброшена", "info");
@@ -388,6 +392,8 @@ export function NewItemPageClient({
             submitFormData.append("criticalStockThreshold", formData.criticalStockThreshold || "0");
             submitFormData.append("lowStockThreshold", formData.lowStockThreshold || "10");
             submitFormData.append("storageLocationId", formData.storageLocationId || "");
+            submitFormData.append("costPrice", formData.costPrice || "0");
+            submitFormData.append("sellingPrice", formData.sellingPrice || "0");
 
             submitFormData.append("qualityCode", formData.qualityCode || "");
             submitFormData.append("materialCode", formData.materialCode || "");

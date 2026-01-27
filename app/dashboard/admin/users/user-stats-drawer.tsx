@@ -111,7 +111,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="p-6 bg-white rounded-[18px] border border-slate-100 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
-                                        <div className="text-3xl font-bold text-slate-900 tracking-tight">
+                                        <div className="text-3xl font-bold text-slate-900 tracking-normal">
                                             {stats.orders.monthRevenue.toLocaleString()} ₽
                                         </div>
                                         <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-[18px]">

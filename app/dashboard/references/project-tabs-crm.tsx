@@ -33,7 +33,7 @@ export default function ProjectTabsCRM() {
                         <span className="text-lg font-light text-white/40 tracking-wide font-mono group-hover:text-white/60 transition-colors">
                             {tab.id}
                         </span>
-                        <span className="text-xl font-normal text-white/90 tracking-tight group-hover:text-white transition-colors">
+                        <span className="text-xl font-normal text-white/90 tracking-normal group-hover:text-white transition-colors">
                             {tab.label}
                         </span>
                     </motion.button>

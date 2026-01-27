@@ -106,7 +106,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
                 <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Рабочие процессы</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 tracking-normal mb-2">Рабочие процессы</h1>
                         <p className="text-slate-500 font-medium max-w-md text-sm">Контролируйте движение задач в реальном времени на интерактивной доске</p>
                     </div>
 

@@ -53,7 +53,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                     </button>
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">Промокоды</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 tracking-normal leading-none">Промокоды</h1>
                         <p className="text-slate-500 font-medium mt-1">Управление скидками и акциями</p>
                     </div>
                 </div>
@@ -115,18 +115,18 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
                                 <div>
                                     <div className="text-xs font-bold text-slate-900">{promo.usageCount} / {promo.usageLimit || '∞'}</div>
-                                    <div className="text-[9px] font-bold text-slate-400  tracking-tight">Использовано</div>
+                                    <div className="text-[9px] font-bold text-slate-400  tracking-normal">Использовано</div>
                                 </div>
                                 <div>
                                     <div className="text-xs font-bold text-slate-900">{promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString() : 'Бессрочно'}</div>
-                                    <div className="text-[9px] font-bold text-slate-400  tracking-tight">Истекает</div>
+                                    <div className="text-[9px] font-bold text-slate-400  tracking-normal">Истекает</div>
                                 </div>
                             </div>
 
                             {Number(promo.minOrderAmount) > 0 && (
                                 <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-[18px]">
                                     <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-                                    <span className="text-[10px] font-bold text-slate-500  tracking-tight">От {Number(promo.minOrderAmount).toLocaleString()} ₽</span>
+                                    <span className="text-[10px] font-bold text-slate-500  tracking-normal">От {Number(promo.minOrderAmount).toLocaleString()} ₽</span>
                                 </div>
                             )}
                         </div>

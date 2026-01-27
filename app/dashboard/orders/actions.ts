@@ -99,7 +99,13 @@ export async function getClientsForSelect() {
 
 // Helper to get inventory for the dropdown
 export async function getInventoryForSelect() {
-    return db.select({ id: inventoryItems.id, name: inventoryItems.name, quantity: inventoryItems.quantity, unit: inventoryItems.unit }).from(inventoryItems);
+    return db.select({
+        id: inventoryItems.id,
+        name: inventoryItems.name,
+        quantity: inventoryItems.quantity,
+        unit: inventoryItems.unit,
+        sellingPrice: inventoryItems.sellingPrice
+    }).from(inventoryItems);
 }
 
 export async function searchClients(query: string) {
@@ -362,7 +368,8 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
                             type: "out",
                             reason: `Отгрузка: Заказ #${order.orderNumber}`,
                             createdBy: session.id,
-                            storageLocationId: sourceLocationId || null
+                            storageLocationId: sourceLocationId || null,
+                            costPrice: item.inventoryItem.costPrice,
                         });
                     } else if (isCancellation) {
                         // Just release reservation

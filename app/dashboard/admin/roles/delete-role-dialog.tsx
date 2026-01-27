@@ -54,7 +54,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                             </div>
                         </div>
                         <div className="space-y-2 text-center">
-                            <DialogTitle className="text-2xl font-bold text-slate-900 tracking-tight">Подтвердите удаление</DialogTitle>
+                            <DialogTitle className="text-2xl font-bold text-slate-900 tracking-normal">Подтвердите удаление</DialogTitle>
                             <DialogDescription className="text-slate-500 text-base">
                                 Вы уверены, что хотите удалить роль <br />
                                 <span className="text-slate-900 font-extrabold break-all underline decoration-red-200 decoration-4 underline-offset-4">&quot;{role.name}&quot;</span>?

@@ -41,6 +41,12 @@ function sanitizeFileName(name: string): string {
     return name.replace(/[^a-zA-Z0-9а-яА-ЯёЁ0-9 \-\.]/g, "_").trim();
 }
 
+// Helper to refresh all warehouse related pages
+function refreshWarehouse() {
+    revalidatePath("/dashboard/warehouse", "layout");
+    revalidatePath("/dashboard/orders", "layout");
+}
+
 // Helper: Build category hierarchy path (text format for display/search)
 async function getCategoryFullPath(categoryId: string | null): Promise<string> {
     if (!categoryId || categoryId === "") return "";
@@ -198,7 +204,7 @@ export async function getInventoryCategories() {
 
 export async function addInventoryCategory(formData: FormData) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для добавления категории" };
     }
 
@@ -263,7 +269,7 @@ export async function addInventoryCategory(formData: FormData) {
             });
         });
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch {
         return { error: "Failed to add category" };
@@ -272,7 +278,7 @@ export async function addInventoryCategory(formData: FormData) {
 
 export async function deleteInventoryCategory(id: string, password?: string) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для удаления категории" };
     }
 
@@ -323,7 +329,7 @@ export async function deleteInventoryCategory(id: string, password?: string) {
 
         await logAction("Удаление категории", "inventory_category", id, { id, isSystem: category.isSystem });
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch (e) {
         console.error(e);
@@ -435,7 +441,7 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         // Recursively update full paths for children
         await updateChildrenPaths(id);
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch {
         return { error: "Failed to update category" };
@@ -444,7 +450,7 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
 
 export async function updateInventoryCategoriesOrder(items: { id: string; sortOrder: number }[]) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для изменения порядка категорий" };
     }
 
@@ -531,7 +537,12 @@ export async function getInventoryItems() {
         const items = await db.query.inventoryItems.findMany({
             where: eq(inventoryItems.isArchived, false),
             with: {
-                category: true
+                category: true,
+                stocks: {
+                    with: {
+                        storageLocation: true
+                    }
+                }
             },
             orderBy: desc(inventoryItems.createdAt)
         });
@@ -655,7 +666,7 @@ export async function autoArchiveStaleItems() {
 
 export async function addInventoryItem(formData: FormData) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для добавления товаров" };
     }
 
@@ -688,6 +699,13 @@ export async function addInventoryItem(formData: FormData) {
 
     const brandCodeRaw = formData.get("brandCode") as string;
     const brandCode = brandCodeRaw || null;
+
+    const costPriceRaw = formData.get("costPrice") as string;
+    const costPrice = costPriceRaw ? Number(costPriceRaw).toFixed(2) : null;
+
+    const sellingPriceRaw = formData.get("sellingPrice") as string;
+    const sellingPrice = sellingPriceRaw ? Number(sellingPriceRaw).toFixed(2) : null;
+
     const imageFile = formData.get("image") as File;
     const attributesStr = formData.get("attributes") as string;
     const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
@@ -788,6 +806,9 @@ export async function addInventoryItem(formData: FormData) {
                 imageBack: imageBackUrl,
                 imageSide: imageSideUrl,
                 imageDetails: imageDetailsUrls,
+                costPrice: costPrice,
+                sellingPrice: sellingPrice,
+                materialComposition: attributes.materialComposition || {},
                 reservedQuantity: 0
             }).returning();
             console.log("Item inserted, ID:", insertedItem.id);
@@ -810,6 +831,7 @@ export async function addInventoryItem(formData: FormData) {
                 type: "in",
                 reason: "Initial stock",
                 storageLocationId: storageLocationId || null,
+                costPrice: costPrice,
                 createdBy: session?.id,
             });
 
@@ -1017,7 +1039,7 @@ export async function deleteInventoryItems(ids: string[], password?: string) {
 
 export async function updateInventoryItem(id: string, formData: FormData) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для изменения товаров" };
     }
 
@@ -1150,6 +1172,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         if (newImageUrl) imageUrl = newImageUrl;
 
         const costPrice = formData.get("costPrice") ? String(formData.get("costPrice")) : null;
+        const sellingPrice = formData.get("sellingPrice") ? String(formData.get("sellingPrice")) : null;
         const materialCompositionStr = formData.get("materialComposition") as string;
         let materialComposition = {};
         try {
@@ -1184,6 +1207,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             reservedQuantity,
             unit: unit as "pcs" | "liters" | "meters" | "kg" | "шт" | "шт.",
             costPrice,
+            sellingPrice,
             materialComposition,
             isArchived,
             updatedAt: new Date()
@@ -1211,7 +1235,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
 
 export async function deleteInventoryItemImage(itemId: string, type: "front" | "back" | "side" | "details", index?: number) {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
         return { error: "Недостаточно прав для удаления изображений" };
     }
 
@@ -1443,6 +1467,15 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
 
     try {
         await db.transaction(async (tx) => {
+            // Fetch location names for better logging
+            const [fromLoc, toLoc] = await Promise.all([
+                tx.select().from(storageLocations).where(eq(storageLocations.id, fromLocationId)).limit(1),
+                tx.select().from(storageLocations).where(eq(storageLocations.id, toLocationId)).limit(1)
+            ]);
+
+            const fromName = fromLoc[0]?.name || "Неизвестный склад";
+            const toName = toLoc[0]?.name || "Неизвестный склад";
+
             // Source
             const [sourceStock] = await tx
                 .select()
@@ -1497,7 +1530,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
                 itemId,
                 changeAmount: -amount,
                 type: "transfer", // Using transfer type as intended for moves
-                reason: `Перемещение в другой склад. Причина: ${reason}`,
+                reason: `Перемещение со склада "${fromName}" на "${toName}". Причина: ${reason}`,
                 storageLocationId: fromLocationId,
                 createdBy: session?.id,
             });
@@ -1506,8 +1539,9 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
                 itemId,
                 changeAmount: amount,
                 type: "transfer",
-                reason: `Перемещение из другого склада. Причина: ${reason}`,
+                reason: `Получено со склада "${fromName}" на "${toName}". Причина: ${reason}`,
                 storageLocationId: toLocationId,
+                fromStorageLocationId: fromLocationId,
                 createdBy: session?.id,
             });
 
@@ -1628,7 +1662,7 @@ export async function deleteInventoryAttribute(id: string) {
             createdBy: session?.id,
         });
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch (error) {
         console.error("Delete attribute error:", error);
@@ -1657,7 +1691,7 @@ export async function createInventoryAttribute(type: string, name: string, value
             meta: meta || null
         }).returning();
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
 
         await db.insert(inventoryTransactions).values({
             type: "attribute_change",
@@ -1786,7 +1820,7 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
             createdBy: session?.id,
         });
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch (e) {
         console.error(e);
@@ -1910,7 +1944,7 @@ export async function regenerateAllItemSKUs() {
             { updatedCount, totalItems: items.length }
         );
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true, updatedCount, totalItems: items.length };
     } catch (e) {
         console.error(e);
@@ -2757,7 +2791,7 @@ export async function createInventoryAttributeType(name: string, slug: string, c
             categoryId: categoryId || null,
             isSystem
         });
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
 
         await db.insert(inventoryTransactions).values({
             type: "attribute_change",
@@ -2830,7 +2864,7 @@ export async function updateInventoryAttributeType(id: string, name: string, cat
             createdBy: session?.id,
         });
 
-        revalidatePath("/dashboard/warehouse");
+        refreshWarehouse();
         return { success: true };
     } catch (e) {
         console.error("Update Type Error", e);

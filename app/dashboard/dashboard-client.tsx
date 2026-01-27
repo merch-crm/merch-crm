@@ -84,7 +84,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
     ];
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-10">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
             {/* Top Navigation / Breadcrumbs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
                 <div className="flex items-center gap-3">

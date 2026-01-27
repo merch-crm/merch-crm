@@ -38,6 +38,7 @@ interface OrderInventoryItem {
     name: string;
     quantity: number;
     unit: string;
+    sellingPrice?: number | string | null;
     price?: number;
     orderQuantity?: number;
 }
@@ -175,7 +176,11 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
     const addItem = (item: OrderInventoryItem) => {
         if (selectedItems.find(i => i.id === item.id)) return;
-        setSelectedItems([...selectedItems, { ...item, orderQuantity: 1, price: 0 }]);
+        setSelectedItems([...selectedItems, {
+            ...item,
+            orderQuantity: 1,
+            price: Number(item.sellingPrice) || 0
+        }]);
     };
 
     const removeItem = (id: string) => {

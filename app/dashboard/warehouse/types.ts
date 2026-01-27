@@ -45,6 +45,7 @@ export interface ItemFormData {
     imageSidePreview?: string | null;
     imageDetailsPreviews?: string[];
     costPrice?: string;
+    sellingPrice?: string;
     isArchived?: boolean;
     materialComposition?: Record<string, number>;
     [key: string]: unknown;
@@ -126,6 +127,7 @@ export interface InventoryItem {
     attributes: Record<string, unknown>;
     thumbnailSettings?: ThumbnailSettings | null;
     costPrice: number | null;
+    sellingPrice: number | null;
     isArchived: boolean;
     archivedAt?: Date | string | null;
     archiveReason?: string | null;
@@ -143,6 +145,7 @@ export interface InventoryItem {
             icon?: string | null;
         } | null;
     } | null;
+    stocks?: { storageLocationId: string; quantity: number }[];
 }
 
 export interface ThumbnailSettings {

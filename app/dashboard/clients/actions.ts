@@ -527,6 +527,23 @@ export async function updateClientField(clientId: string, field: string, value: 
         return { success: true };
     } catch (error) {
         console.error("Error updating client field:", error);
-        return { error: "Failed to update field" };
+    }
+}
+
+export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.update(clients)
+            .set({ isArchived })
+            .where(inArray(clients.id, clientIds));
+
+        await logAction(isArchived ? "Групповая архивация клиентов" : "Групповая разархивация клиентов", "client", "bulk", { count: clientIds.length, isArchived });
+        revalidatePath("/dashboard/clients");
+        return { success: true };
+    } catch (error) {
+        console.error("Error in bulk archive:", error);
+        return { error: "Failed to archive clients" };
     }
 }

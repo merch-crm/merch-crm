@@ -66,7 +66,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-full">Новые</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-tight mb-1">{stats.new}</div>
+                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.new}</div>
                         <p className="text-xs font-bold text-slate-400">Требуют обработки</p>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-orange-600 bg-orange-50 px-2 py-1 rounded-full">В работе</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-tight mb-1">{stats.inProduction}</div>
+                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.inProduction}</div>
                         <p className="text-xs font-bold text-slate-400">На производстве</p>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                         <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <div>
-                        <div className="text-3xl font-bold text-slate-900 tracking-tight">{stats.completed}</div>
+                        <div className="text-3xl font-bold text-slate-900 tracking-normal">{stats.completed}</div>
                         <div className="text-sm font-bold text-slate-400">{pluralize(stats.completed, 'заказ выполнен', 'заказа выполнено', 'заказов выполнено')}</div>
                     </div>
                     <div className="ml-auto">

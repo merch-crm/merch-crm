@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
-import { Package, ArrowUpRight, ArrowDownLeft, User, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Eraser, Search, Filter, X as CloseIcon, FileDown, Book } from "lucide-react";
+import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Eraser, Search, Filter, X as CloseIcon, FileDown, Book } from "lucide-react";
 import { deleteInventoryTransactions, clearInventoryHistory } from "./actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -15,6 +15,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useRouter } from "next/navigation";
 import { pluralize, sentence } from "@/lib/pluralize";
+import { exportToCSV } from "@/lib/export-utils";
 
 export interface Transaction {
     id: string;
@@ -68,6 +69,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         const matchesFilter = activeFilter === "all" || t.type === activeFilter;
         const search = searchQuery.toLowerCase();
         const matchesSearch =
+            t.id.toLowerCase().includes(search) ||
             (t.item?.name?.toLowerCase() || "").includes(search) ||
             (t.item?.sku?.toLowerCase() || "").includes(search) ||
             (t.reason?.toLowerCase() || "").includes(search) ||
@@ -152,8 +154,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     return (
         <div className="space-y-6 relative pb-20">
             {/* Toolbar Panel */}
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-4 rounded-[var(--radius)] border border-slate-200/60 shadow-sm">
-                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-[var(--radius)] w-full md:w-fit border border-slate-200/50">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 backdrop-blur-md p-1.5 rounded-[18px] border border-slate-200/60 shadow-sm">
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 rounded-xl w-full md:w-fit border border-slate-200/50">
                     {[
                         { id: "all", label: "Все", icon: Filter },
                         { id: "in", label: "Приход", icon: ArrowUpRight, color: "emerald" },
@@ -170,9 +172,9 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setCurrentPage(1);
                             }}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-[var(--radius)] text-xs font-semibold transition-all duration-300",
+                                "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300",
                                 activeFilter === f.id
-                                    ? "bg-white text-primary shadow-sm ring-1 ring-black/5"
+                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
@@ -197,7 +199,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 setSearchQuery(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full h-11 pl-10 pr-4 rounded-[var(--radius)] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
+                            className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
                         />
                     </div>
                     {isAdmin && (
@@ -205,7 +207,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             variant="ghost"
                             onClick={handleClearHistory}
                             disabled={isDeleting || transactions.length === 0}
-                            className="h-11 px-4 rounded-[var(--radius)] border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
+                            className="h-11 px-4 rounded-xl border border-rose-100 bg-rose-50/20 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-xs gap-2 transition-all"
                         >
                             <Eraser className="w-4 h-4" />
                             <span className="hidden md:inline">Очистить</span>
@@ -215,50 +217,86 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             </div>
 
             {/* Selection Quick Actions Bar */}
-            {selectedIds.length > 0 && (
-                <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-10 fade-in duration-500">
-                    <div className="bg-slate-900 border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] rounded-[var(--radius)] px-8 py-4 flex items-center gap-8 backdrop-blur-xl">
-                        <div className="flex items-center gap-4 border-r border-white/10 pr-8">
-                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shadow-md shadow-primary/10">
-                                {selectedIds.length}
+            <AnimatePresence>
+                {selectedIds.length > 0 && (
+                    <>
+                        {/* Bottom Progressive Gradient Blur Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
+                            style={{
+                                backdropFilter: 'blur(40px)',
+                                WebkitBackdropFilter: 'blur(40px)',
+                                maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                            }}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                            exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                            className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                        >
+                            <div className="flex items-center gap-3 px-2">
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+                                    {selectedIds.length}
+                                </div>
+                                <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Записей выбрано</span>
                             </div>
-                            <div>
-                                <h4 className="text-white text-sm font-bold leading-none">{pluralize(selectedIds.length, 'Запись выбрана', 'Записи выбрано', 'Записей выбрано')}</h4>
-                                <p className="text-slate-400 text-xs font-medium mt-1">Панель действий</p>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => setSelectedIds([])}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius)] text-[11px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
-                            >
-                                <CloseIcon className="w-4 h-4" />
-                                Сбросить
-                            </button>
+                            <div className="w-px h-8 bg-slate-200 mx-2" />
 
-                            <button
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius)] text-[11px] font-bold text-slate-400 hover:text-primary hover:bg-primary/5 transition-all"
-                            >
-                                <FileDown className="w-4 h-4" />
-                                Экспорт
-                            </button>
-
-                            {isAdmin && (
+                            <div className="flex items-center gap-1">
                                 <button
-                                    onClick={handleDeleteSelected}
-                                    disabled={isDeleting}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-[var(--radius)] text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50"
+                                    onClick={() => {
+                                        const transactionsToExport = transactions.filter(t => selectedIds.includes(t.id));
+                                        exportToCSV(transactionsToExport, "history_export", [
+                                            { header: "ID", key: "id" },
+                                            { header: "Тип", key: (t) => t.type },
+                                            { header: "Товар", key: (t) => t.item?.name || "Справочник" },
+                                            { header: "Артикул", key: (t) => t.item?.sku || "" },
+                                            { header: "Количество", key: "changeAmount" },
+                                            { header: "Причина", key: (t) => t.reason || "" },
+                                            { header: "Склад", key: (t) => t.storageLocation?.name || "" },
+                                            { header: "Создал", key: (t) => t.creator?.name || "Система" },
+                                            { header: "Дата", key: (t) => new Date(t.createdAt) }
+                                        ]);
+                                        toast("Экспорт завершен", "success");
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
                                 >
-                                    <Trash2 className="w-4 h-4" />
-                                    Удалить
+                                    <FileDown className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                    <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
                                 </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
 
+                                {isAdmin && (
+                                    <button
+                                        onClick={handleDeleteSelected}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-rose-500/10 transition-all group"
+                                    >
+                                        <Trash2 className="w-4 h-4 text-slate-400 group-hover:text-rose-500 transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Удалить</span>
+                                    </button>
+                                )}
+
+                                <div className="w-px h-8 bg-slate-200 mx-2" />
+
+                                <button
+                                    onClick={() => setSelectedIds([])}
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
+                                >
+                                    <CloseIcon className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
             <div className="bg-white shadow-sm rounded-[var(--radius)] border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -425,10 +463,23 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             <div className="flex items-start gap-2">
                                                 <span className="text-sm font-medium text-slate-500 leading-snug">
                                                     {(() => {
-                                                        // 1. Try New Format: Перемещение со склада "A" на "B": comment
-                                                        const newMatch = t.reason?.match(/Перемещение со склада "(.+)" на "(.+)"(: (.+))?/);
-                                                        if (newMatch) {
-                                                            return newMatch[4] || "Перемещение";
+                                                        // 1. Try New Format: Перемещение со склада "A" на "B". Причина: comment
+                                                        // OR: Получено со склада "A" на "B". Причина: comment
+                                                        const transferMatch = t.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
+
+                                                        if (transferMatch) {
+                                                            const from = transferMatch[1];
+                                                            const to = transferMatch[2];
+                                                            const comment = transferMatch[3];
+
+                                                            return (
+                                                                <span className="flex flex-col gap-0.5">
+                                                                    <span className="font-bold text-slate-700 flex items-center gap-1.5">
+                                                                        {from} <ArrowRight className="w-3 h-3 text-slate-400" /> {to}
+                                                                    </span>
+                                                                    {comment && <span className="text-slate-500 font-normal">{comment}</span>}
+                                                                </span>
+                                                            );
                                                         }
 
                                                         // 2. Try Legacy Format: Перемещение (Transfer) ... : comment
@@ -444,19 +495,10 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                            <div className="flex items-center justify-end gap-2.5">
-                                                <div className="text-right">
-                                                    <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
-                                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
-                                                        {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
-                                                    </div>
-                                                </div>
-                                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0 relative">
-                                                    {t.creator?.avatar ? (
-                                                        <Image src={t.creator.avatar} alt={t.creator.name} width={32} height={32} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <User className="w-4 h-4" />
-                                                    )}
+                                            <div className="text-right">
+                                                <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
+                                                <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                                                    {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
                                                 </div>
                                             </div>
                                         </td>
@@ -468,15 +510,19 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 </div>
             </div>
 
-            {filteredTransactions.length > 0 && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalItems={filteredTransactions.length}
-                    pageSize={itemsPerPage}
-                    onPageChange={setCurrentPage}
-                    itemName={pluralize(filteredTransactions.length, 'запись', 'записи', 'записей')}
-                />
-            )}
+            {
+                filteredTransactions.length > 0 && (
+                    <div className="pt-2">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalItems={filteredTransactions.length}
+                            pageSize={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                            itemNames={['записи', 'записей', 'записей']}
+                        />
+                    </div>
+                )
+            }
 
             {/* Confirmation Dialogs */}
             <ConfirmDialog
@@ -500,6 +546,6 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 confirmText="Очистить всё"
                 variant="destructive"
             />
-        </div>
+        </div >
     );
 }

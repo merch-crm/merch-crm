@@ -294,9 +294,9 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                             x={forecastSplitX}
                             y={paddingTop - 5}
                             textAnchor="middle"
-                            className="text-[6px] font-bold fill-[#5d00ff] opacity-40 tracking-tighter"
+                            className="text-[6px] font-bold fill-[#5d00ff] opacity-40"
                         >
-                            СЕГОДНЯ
+                            Сегодня
                         </text>
 
                         {/* Minimalist Reference-style Grid */}
@@ -322,15 +322,15 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                 const date = subDays(new Date(), daysAgo);
                                 const x = paddingX + (i / 3) * (forecastSplitX - paddingX);
                                 labels.push(
-                                    <text key={`hist-${i}`} x={x} y={height - 5} textAnchor="middle" className="text-[7px] font-bold fill-slate-400 opacity-60 uppercase tracking-tight">
+                                    <text key={`hist-${i}`} x={x} y={height - 5} textAnchor="middle" className="text-[7px] font-bold fill-slate-400 opacity-60 uppercase tracking-normal">
                                         {format(date, "d MMM", { locale: ru })}
                                     </text>
                                 );
                             }
                             // Today
                             labels.push(
-                                <text key="today" x={forecastSplitX} y={height - 5} textAnchor="middle" className="text-[7px] font-black fill-[#5d00ff] opacity-80 uppercase">
-                                    СЕГОДНЯ
+                                <text key="today" x={forecastSplitX} y={height - 5} textAnchor="middle" className="text-[7px] font-black fill-[#5d00ff] opacity-80">
+                                    Сегодня
                                 </text>
                             );
                             // Forecast date (+10 days)
@@ -483,7 +483,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                                         <line x1={x} y1={paddingTop} x2={x} y2={height - paddingBottom} stroke="#ef4444" strokeWidth="1" strokeDasharray="2 2" />
                                                         <circle cx={x} cy={y} r="8" fill="#ef4444" />
                                                         <text x={x} y={y + 3} textAnchor="middle" className="text-[8px] font-bold fill-white">!</text>
-                                                        <text x={x} y={y - 12} textAnchor="middle" className="text-[7px] font-black fill-[#ef4444] uppercase tracking-tighter">
+                                                        <text x={x} y={y - 12} textAnchor="middle" className="text-[7px] font-black fill-[#ef4444] uppercase tracking-normaler">
                                                             Товар кончится
                                                         </text>
                                                     </motion.g>
@@ -527,7 +527,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                 </span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-lg font-black text-white">{hoveredData.value}</span>
-                                    <span className="text-[8px] font-black text-white/50 uppercase tracking-tighter">{unit}</span>
+                                    <span className="text-[8px] font-black text-white/50 uppercase tracking-normaler">{unit}</span>
                                 </div>
 
                                 {/* Little arrow pointer */}
@@ -543,7 +543,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
 
                     <div className="flex justify-between items-center mt-1 pt-2 border-t border-slate-50">
                         <div className="flex items-center gap-4">
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-100/30 px-3 py-1 rounded-full border border-slate-100/50">
+                            <span className="text-[10px] font-black text-slate-300 bg-slate-100/30 px-3 py-1 rounded-full border border-slate-100/50">
                                 {format(subDays(new Date(), 29), 'd MMMM', { locale: ru })}
                             </span>
                             <div className="h-px w-10 bg-slate-100" />
@@ -573,7 +573,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
             <div className="lg:col-span-9 bg-white rounded-[24px] p-5 border border-slate-100 flex flex-col h-fit">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-2">
                     <div className="space-y-1">
-                        <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">Аналитика движений</h4>
+                        <h4 className="text-[11px] font-black text-slate-400 leading-none">Аналитика движений</h4>
                         <p className="text-[13px] font-black text-slate-900 leading-none">Динамика за последние 30 дней</p>
                     </div>
 
@@ -613,10 +613,10 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                 <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
 
                 <div className="flex items-center gap-3 mb-6 shrink-0">
-                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-primary shadow-sm border border-primary/5">
+                    <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500/80 transition-all shadow-sm">
                         <Activity className="w-5 h-5" />
                     </div>
-                    <h5 className="text-[11px] font-black text-primary uppercase tracking-widest leading-tight">Таймлайн<br />остатков</h5>
+                    <h5 className="text-[11px] font-black text-primary leading-tight">Таймлайн<br />остатков</h5>
                 </div>
 
                 <div className="flex-1 relative mt-2">
@@ -631,16 +631,16 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                             </div>
                             <div className="space-y-1 min-w-0 flex-1">
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest truncate">Сегодня</span>
+                                    <span className="text-[10px] font-black text-emerald-600 truncate">Сегодня</span>
                                     <span className="text-[9px] font-black text-slate-400 shrink-0">{format(new Date(), 'd MMM', { locale: ru })}</span>
                                 </div>
                                 <div className="flex items-baseline gap-1.5 leading-none">
                                     <span className={cn(
-                                        "text-2xl font-black tracking-tighter",
+                                        "text-2xl font-black tracking-normaler",
                                         currentQuantity <= criticalStockThreshold ? "text-rose-600" :
                                             currentQuantity <= lowStockThreshold ? "text-amber-600" : "text-slate-900"
                                     )}>{currentQuantity}</span>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{unit}</span>
+                                    <span className="text-[10px] font-black text-slate-400">{unit}</span>
                                 </div>
                             </div>
                         </div>
@@ -655,7 +655,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                             </div>
                             <div className="space-y-1 min-w-0 flex-1">
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest truncate">Порог закупки</span>
+                                    <span className="text-[10px] font-black text-amber-600 truncate">Порог закупки</span>
                                     {analytics.daysToLow !== Infinity && (
                                         <span className="text-[9px] font-black text-slate-400 shrink-0">
                                             ~ {format(addDays(new Date(), analytics.daysToLow), 'd MMM', { locale: ru })}
@@ -665,7 +665,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                 <div className="flex items-center flex-wrap gap-2 leading-none">
                                     <div className="flex items-baseline gap-1">
                                         <span className={cn(
-                                            "text-2xl font-black tracking-tighter",
+                                            "text-2xl font-black tracking-normaler",
                                             analytics.daysToLow === 0 ? "text-amber-600" : "text-slate-900"
                                         )}>
                                             {analytics.daysToLow === 0 ? "—" : (analytics.daysToLow === Infinity ? "∞" : analytics.daysToLow)}
@@ -694,7 +694,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                             </div>
                             <div className="space-y-1 min-w-0 flex-1">
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest truncate">Критический</span>
+                                    <span className="text-[10px] font-black text-rose-600 truncate">Критический</span>
                                     {analytics.daysToCritical !== Infinity && (
                                         <span className="text-[9px] font-black text-slate-400 shrink-0">
                                             ~ {format(addDays(new Date(), analytics.daysToCritical), 'd MMM', { locale: ru })}
@@ -704,7 +704,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                 <div className="flex items-center flex-wrap gap-2 leading-none">
                                     <div className="flex items-baseline gap-1">
                                         <span className={cn(
-                                            "text-2xl font-black tracking-tighter",
+                                            "text-2xl font-black tracking-normaler",
                                             analytics.daysToCritical === 0 ? "text-rose-600" : "text-slate-900"
                                         )}>
                                             {analytics.daysToCritical === 0 ? "—" : (analytics.daysToCritical === Infinity ? "∞" : analytics.daysToCritical)}

@@ -79,7 +79,7 @@ export default function InvoiceDashboard() {
                         <div className="w-12 h-12 rounded-full border border-slate-900/10 flex items-center justify-center text-slate-600">
                             <FileText className="w-5 h-5" />
                         </div>
-                        <h1 className="text-7xl font-light text-slate-900 tracking-tight">
+                        <h1 className="text-7xl font-light text-slate-900 tracking-normal">
                             $ 68,575<span className="text-4xl text-slate-500 font-normal">.00</span>
                         </h1>
                     </div>

@@ -111,16 +111,16 @@ export const ChargingWidget = () => {
                         >
                             {charge}%
                         </motion.h1>
-                        <p className="text-white text-[1.8rem] font-medium mt-5 tracking-tight shadow-black drop-shadow-md">
+                        <p className="text-white text-[1.8rem] font-medium mt-5 tracking-normal shadow-black drop-shadow-md">
                             Charged
                         </p>
                     </div>
 
                     <div className="mb-[-2px]">
-                        <p className="text-white text-[1.7rem] font-bold tracking-tight leading-tight drop-shadow-md">
+                        <p className="text-white text-[1.7rem] font-bold tracking-normal leading-tight drop-shadow-md">
                             2,5 hours
                         </p>
-                        <p className="text-[#99999f] text-[1.4rem] font-medium tracking-tight mt-1 drop-shadow-md">
+                        <p className="text-[#99999f] text-[1.4rem] font-medium tracking-normal mt-1 drop-shadow-md">
                             for full charge
                         </p>
                     </div>
@@ -152,8 +152,8 @@ export default function ChargingWidgetCRM() {
                     className="relative w-80 h-80 bg-[#161617] rounded-[4.2rem] shadow-2xl flex flex-col justify-between p-11 overflow-hidden"
                 >
                     <div className="relative z-20">
-                        <h1 className="text-[6.8rem] font-[900] text-[#f2f207] leading-[0.7] tracking-tight drop-shadow-md">88%</h1>
-                        <p className="text-white text-[1.8rem] font-medium mt-5 tracking-tight drop-shadow-md">Charged</p>
+                        <h1 className="text-[6.8rem] font-[900] text-[#f2f207] leading-[0.7] tracking-normal drop-shadow-md">88%</h1>
+                        <p className="text-white text-[1.8rem] font-medium mt-5 tracking-normal drop-shadow-md">Charged</p>
                     </div>
                     <div className="relative z-20 mt-auto">
                         <p className="text-white text-[1.7rem] font-bold leading-tight drop-shadow-md">45 minutes</p>

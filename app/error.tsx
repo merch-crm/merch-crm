@@ -27,7 +27,7 @@ export default function Error({
 
                 {/* Text Section */}
                 <div className="space-y-4">
-                    <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight tracking-tight">
+                    <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight tracking-normal">
                         Упс! Что-то пошло не так
                     </h1>
                     <p className="text-[#64748B] text-lg font-medium leading-relaxed max-w-[320px] mx-auto">

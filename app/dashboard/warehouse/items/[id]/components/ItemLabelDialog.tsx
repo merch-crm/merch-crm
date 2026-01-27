@@ -127,7 +127,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                 <div className="p-8">
                     <DialogHeader className="mb-6">
                         <div className="flex items-center justify-between">
-                            <DialogTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase">Печать Этикетки</DialogTitle>
+                            <DialogTitle className="text-xl font-black text-slate-900 tracking-normaler uppercase">Печать Этикетки</DialogTitle>
                             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-400 hover:text-slate-900 transition-all">
                                 <X className="w-4 h-4" />
                             </button>
@@ -140,7 +140,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                             ref={printRef}
                             className="w-[280px] h-[180px] bg-white shadow-2xl rounded-xl p-6 flex flex-col border border-slate-200 relative"
                         >
-                            <div className="text-[14px] font-black text-slate-900 uppercase leading-tight mb-3 line-clamp-2 pr-4 tracking-tighter">
+                            <div className="text-[14px] font-black text-slate-900 uppercase leading-tight mb-3 line-clamp-2 pr-4 tracking-normaler">
                                 {item.name}
                             </div>
 

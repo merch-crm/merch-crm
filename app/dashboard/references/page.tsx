@@ -24,6 +24,7 @@ import SoftUiPanelsCRM from "./soft-ui-panels-crm";
 import TooltipShowcaseCRM from "./tooltip-showcase-crm";
 import SidebarNavigationCRM from "./sidebar-navigation-crm";
 import FileUploadShowcaseCRM from "./file-upload-showcase-crm";
+import IconsShowcaseCRM from "./icons-showcase-crm";
 
 export default function DesignShowcasePage() {
     return (
@@ -41,6 +42,9 @@ export default function DesignShowcasePage() {
                 <div className="flex flex-col gap-20">
                     {/* --- NEW REFERENCES (IMAGES FROM USER) --- */}
                     <NewReferencesCRM />
+
+                    {/* --- ICONS SHOWCASE --- */}
+                    <IconsShowcaseCRM />
 
                     {/* --- FILE MANAGER DESIGNS --- */}
                     <FileManagerCRM />

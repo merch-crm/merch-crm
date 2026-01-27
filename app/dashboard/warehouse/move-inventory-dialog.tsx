@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRightLeft, X, MapPin, Package, AlertCircle, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowRightLeft, X, AlertCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { InventoryItem } from "./inventory-client";
 import { StorageLocation } from "./storage-locations-tab";
 import { Button } from "@/components/ui/button";
-import { moveInventoryItem } from "./actions"; // Will be created
+import { moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
+import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
 
 
 interface MoveInventoryDialogProps {
@@ -37,8 +38,9 @@ export function MoveInventoryDialog({
 
     const [error, setError] = useState("");
     const [selectedItemId, setSelectedItemId] = useState(defaultItemId || "");
-    const [fromLocationId, setFromLocationId] = useState(locations[0]?.id || "");
-    const [toLocationId, setToLocationId] = useState(locations[1]?.id || locations[0]?.id || "");
+    // Initialize with default values directly to avoid setState in useEffect
+    const [fromLocationId, setFromLocationId] = useState(() => locations[0]?.id || "");
+    const [toLocationId, setToLocationId] = useState(() => locations[1]?.id || locations[0]?.id || "");
     const [quantity, setQuantity] = useState("");
     const [comment, setComment] = useState("");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -54,15 +56,11 @@ export function MoveInventoryDialog({
         }
     }, [isOpen]);
 
-    // Sync defaults if locations change
-    if (locations.length > 0 && !fromLocationId) {
-        setFromLocationId(locations[0].id);
-        if (locations.length > 1 && !toLocationId) {
-            setToLocationId(locations[1].id);
-        }
-    }
-
     async function handleSubmit(formData: FormData) {
+        formData.set("itemId", selectedItemId);
+        formData.set("fromLocationId", fromLocationId);
+        formData.set("toLocationId", toLocationId);
+
         const itemId = formData.get("itemId") as string;
         const fromLocId = formData.get("fromLocationId") as string;
         const toLocId = formData.get("toLocationId") as string;
@@ -108,6 +106,18 @@ export function MoveInventoryDialog({
         }
     }
 
+    const itemOptions: PremiumSelectOption[] = items.map(item => ({
+        id: item.id,
+        title: item.name,
+        description: item.sku ? `SKU: ${item.sku}` : `Остаток: ${item.quantity} шт.`
+    }));
+
+    const locationOptions: PremiumSelectOption[] = locations.map(loc => ({
+        id: loc.id,
+        title: loc.name,
+        description: loc.description || "Место хранения"
+    }));
+
     return (
         <>
             {!externalIsOpen && (
@@ -126,201 +136,158 @@ export function MoveInventoryDialog({
                         className="fixed inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="relative w-full max-w-lg bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
-                        <div className="flex items-center justify-between mb-8">
+                    <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 flex flex-col max-h-[90vh]">
+                        <div className="flex items-center justify-between mb-8 shrink-0">
                             <div>
-                                <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Перемещение</h2>
+                                <h2 className="text-3xl font-black text-slate-900 tracking-normaler uppercase leading-none">Перемещение</h2>
                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-3">Между складами</p>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-14 h-14 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[var(--radius-inner)] bg-slate-50 transition-all active:scale-95"
+                                className="w-14 h-14 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all active:scale-95"
                             >
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
 
-                        <form action={handleSubmit} noValidate className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
-                                    <Package className="w-3 h-3" /> Товар <span className="text-rose-500 font-bold">*</span>
-                                </label>
-                                <div className="relative group">
-                                    <select
-                                        name="itemId"
-                                        className={cn(
-                                            "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
-                                            fieldErrors.itemId
-                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
-                                        )}
+                        <div className="overflow-y-auto pr-2 flex-1 pb-2">
+                            <form action={handleSubmit} noValidate className="space-y-6">
+                                <div className="space-y-2">
+                                    <PremiumSelect
+                                        label="Товар"
+                                        options={itemOptions}
                                         value={selectedItemId}
-                                        onChange={(e) => {
-                                            setSelectedItemId(e.target.value);
+                                        onChange={(val) => {
+                                            setSelectedItemId(val);
                                             setFieldErrors(prev => ({ ...prev, itemId: "" }));
                                         }}
-                                    >
-                                        <option value="">Выберите товар...</option>
-                                        {items.map((item) => (
-                                            <option key={item.id} value={item.id}>
-                                                {item.name} {item.sku ? `(${item.sku})` : ""}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {fieldErrors.itemId && (
-                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
-                                        {fieldErrors.itemId}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
-                                        <MapPin className="w-3 h-3" /> Откуда <span className="text-rose-500 font-bold">*</span>
-                                    </label>
-                                    <select
-                                        name="fromLocationId"
-                                        className={cn(
-                                            "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
-                                            fieldErrors.fromLocationId
-                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
-                                        )}
-                                        value={fromLocationId}
-                                        onChange={(e) => {
-                                            setFromLocationId(e.target.value);
-                                            setFieldErrors(prev => ({ ...prev, fromLocationId: "" }));
-                                        }}
-                                    >
-                                        <option value="">Откуда...</option>
-                                        {locations.map((loc) => (
-                                            <option key={loc.id} value={loc.id}>
-                                                {loc.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {fieldErrors.fromLocationId && (
-                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
-                                            {fieldErrors.fromLocationId}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
-                                        <MapPin className="w-3 h-3" /> Куда <span className="text-rose-500 font-bold">*</span>
-                                    </label>
-                                    <select
-                                        name="toLocationId"
-                                        className={cn(
-                                            "input-premium w-full px-5 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none transition-all",
-                                            fieldErrors.toLocationId
-                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
-                                        )}
-                                        value={toLocationId}
-                                        onChange={(e) => {
-                                            setToLocationId(e.target.value);
-                                            setFieldErrors(prev => ({ ...prev, toLocationId: "" }));
-                                        }}
-                                    >
-                                        <option value="">Куда...</option>
-                                        {locations.map((loc) => (
-                                            <option key={loc.id} value={loc.id}>
-                                                {loc.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {fieldErrors.toLocationId && (
-                                        <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
-                                            {fieldErrors.toLocationId}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
-                                    Количество <span className="text-rose-500 font-bold">*</span>
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="number"
-                                        name="quantity"
-                                        placeholder="0"
-                                        value={quantity}
-                                        onChange={(e) => {
-                                            setQuantity(e.target.value);
-                                            setFieldErrors(prev => ({ ...prev, quantity: "" }));
-                                        }}
-                                        className={cn(
-                                            "input-premium w-full pl-5 pr-14 rounded-[var(--radius)] border bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
-                                            fieldErrors.quantity
-                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/10"
-                                                : "border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
-                                        )}
+                                        placeholder="Выберите товар..."
+                                        showSearch
                                     />
-                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
-                                        <button
-                                            type="button"
-                                            onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[var(--radius)] hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
-                                        >
-                                            <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-primary" />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
-                                            className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-[var(--radius)] hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
-                                        >
-                                            <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-primary" />
-                                        </button>
+                                    {fieldErrors.itemId && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1">
+                                            {fieldErrors.itemId}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <PremiumSelect
+                                            label="Откуда"
+                                            options={locationOptions}
+                                            value={fromLocationId}
+                                            onChange={(val) => {
+                                                setFromLocationId(val);
+                                                setFieldErrors(prev => ({ ...prev, fromLocationId: "" }));
+                                            }}
+                                            placeholder="Откуда..."
+                                        />
+                                        {fieldErrors.fromLocationId && (
+                                            <p className="text-[10px] font-bold text-rose-500 ml-1">
+                                                {fieldErrors.fromLocationId}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <PremiumSelect
+                                            label="Куда"
+                                            options={locationOptions}
+                                            value={toLocationId}
+                                            onChange={(val) => {
+                                                setToLocationId(val);
+                                                setFieldErrors(prev => ({ ...prev, toLocationId: "" }));
+                                            }}
+                                            placeholder="Куда..."
+                                        />
+                                        {fieldErrors.toLocationId && (
+                                            <p className="text-[10px] font-bold text-rose-500 ml-1">
+                                                {fieldErrors.toLocationId}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
-                                {fieldErrors.quantity && (
-                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
-                                        {fieldErrors.quantity}
-                                    </p>
-                                )}
-                            </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
-                                    Комментарий <span className="text-rose-500 font-bold">*</span>
-                                </label>
-                                <input
-                                    name="comment"
-                                    placeholder="Причина перемещения..."
-                                    className={cn(
-                                        "input-premium w-full px-5 rounded-[var(--radius)] border text-sm font-bold outline-none transition-all focus:ring-4",
-                                        fieldErrors.comment
-                                            ? "border-rose-300 bg-rose-50/50 text-rose-900 placeholder:text-rose-300 focus:border-rose-500 focus:ring-rose-500/10"
-                                            : "border-slate-100 bg-slate-50 focus:bg-white focus:border-primary focus:ring-primary/10"
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
+                                        Количество <span className="text-rose-500 font-bold">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            name="quantity"
+                                            placeholder="0"
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                setQuantity(e.target.value);
+                                                setFieldErrors(prev => ({ ...prev, quantity: "" }));
+                                            }}
+                                            className={cn(
+                                                "input-premium w-full pl-5 pr-14 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-bold outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:bg-white focus:border-primary",
+                                                fieldErrors.quantity && "border-rose-300 bg-rose-50/50 text-rose-900"
+                                            )}
+                                        />
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
+                                                className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
+                                            >
+                                                <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-primary" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
+                                                className="w-8 h-5 flex items-center justify-center bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95 group"
+                                            >
+                                                <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-primary" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {fieldErrors.quantity && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1">
+                                            {fieldErrors.quantity}
+                                        </p>
                                     )}
-                                    value={comment}
-                                    onChange={(e) => {
-                                        setComment(e.target.value);
-                                        setFieldErrors(prev => ({ ...prev, comment: "" }));
-                                    }}
-                                />
-                                {fieldErrors.comment && (
-                                    <p className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 fade-in duration-200">
-                                        {fieldErrors.comment}
-                                    </p>
-                                )}
-                            </div>
-
-                            {error && (
-                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-[var(--radius)] flex items-center gap-3 animate-in shake duration-500">
-                                    <AlertCircle className="w-5 h-5 text-rose-500" />
-                                    <p className="text-rose-600 text-xs font-bold">{error}</p>
                                 </div>
-                            )}
 
-                            <SubmitButton />
-                        </form>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-semibold text-slate-500 ml-1 flex items-center gap-1">
+                                        Комментарий <span className="text-rose-500 font-bold">*</span>
+                                    </label>
+                                    <input
+                                        name="comment"
+                                        placeholder="Причина перемещения..."
+                                        className={cn(
+                                            "input-premium w-full px-5 h-14 rounded-2xl border text-sm font-bold outline-none transition-all",
+                                            fieldErrors.comment
+                                                ? "border-rose-300 bg-rose-50/50 text-rose-900 focus:border-rose-500"
+                                                : "border-slate-100 bg-slate-50 focus:bg-white focus:border-primary"
+                                        )}
+                                        value={comment}
+                                        onChange={(e) => {
+                                            setComment(e.target.value);
+                                            setFieldErrors(prev => ({ ...prev, comment: "" }));
+                                        }}
+                                    />
+                                    {fieldErrors.comment && (
+                                        <p className="text-[10px] font-bold text-rose-500 ml-1">
+                                            {fieldErrors.comment}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {error && (
+                                    <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3">
+                                        <AlertCircle className="w-5 h-5 text-rose-500" />
+                                        <p className="text-rose-600 text-xs font-bold">{error}</p>
+                                    </div>
+                                )}
+
+                                <SubmitButton />
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
@@ -334,7 +301,7 @@ function SubmitButton() {
         <Button
             type="submit"
             disabled={pending}
-            className="w-full h-16 btn-primary rounded-[var(--radius)] font-bold text-sm shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4"
+            className="w-full h-16 btn-primary rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4"
         >
             {pending ? (
                 <div className="flex items-center gap-2">

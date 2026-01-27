@@ -12,6 +12,7 @@ import { updateOrderField, toggleOrderArchived } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { GlassEmptyState } from "@/components/ui/glass-empty-state";
 import { PackageOpen } from "lucide-react";
+import { exportToCSV } from "@/lib/export-utils";
 
 export interface Order {
     id: string;
@@ -60,6 +61,21 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
         setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
         );
+    };
+
+    const handleExport = () => {
+        const selectedOrders = orders.filter(o => selectedIds.includes(o.id));
+        exportToCSV(selectedOrders, "orders_export", [
+            { header: "ID", key: "id" },
+            { header: "Дата", key: (o) => new Date(o.createdAt) },
+            { header: "Клиент", key: (o) => o.client.name },
+            { header: "Сумма", key: "totalAmount" },
+            { header: "Статус", key: "status" },
+            { header: "Приоритет", key: "priority" },
+            { header: "Срочно", key: (o) => o.isUrgent ? "Да" : "Нет" },
+            { header: "Создал", key: (o) => o.creator?.name || "Система" }
+        ]);
+        toast("Экспорт завершен", "success");
     };
 
     if (error) {
@@ -181,6 +197,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 selectedIds={selectedIds}
                 onClear={() => setSelectedIds([])}
                 isAdmin={isAdmin}
+                onExport={handleExport}
             />
         </div>
     );

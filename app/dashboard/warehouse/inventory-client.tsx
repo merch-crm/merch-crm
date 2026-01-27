@@ -38,6 +38,8 @@ export interface InventoryItem {
     isArchived: boolean;
     archivedAt?: Date | string | null;
     archiveReason?: string | null;
+    costPrice?: number | string | null;
+    sellingPrice?: number | string | null;
     category?: Category;
 }
 

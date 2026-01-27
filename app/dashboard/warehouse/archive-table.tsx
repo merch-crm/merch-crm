@@ -244,13 +244,15 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
             </div>
 
             {filteredItems.length > 0 && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalItems={filteredItems.length}
-                    pageSize={itemsPerPage}
-                    onPageChange={setCurrentPage}
-                    itemName={pluralize(filteredItems.length, 'позиция', 'позиции', 'позиций')}
-                />
+                <div className="pt-2">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={filteredItems.length}
+                        pageSize={itemsPerPage}
+                        onPageChange={setCurrentPage}
+                        itemNames={['записи', 'записей', 'записей']}
+                    />
+                </div>
             )}
 
             <ConfirmDialog

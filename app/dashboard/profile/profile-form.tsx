@@ -136,7 +136,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     </div>
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-xl font-black text-slate-900 tracking-tight">{user.name}</h3>
+                    <h3 className="text-xl font-black text-slate-900 tracking-normal">{user.name}</h3>
                     <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-1">{deptName}</p>
                     <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
                         <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] font-black text-slate-500 uppercase tracking-widest">

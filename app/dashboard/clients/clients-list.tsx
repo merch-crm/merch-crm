@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { getClients, getManagers, bulkDeleteClients, bulkUpdateClientManager, updateClientField, toggleClientArchived } from "./actions";
+import { getClients, getManagers, bulkDeleteClients, bulkUpdateClientManager, updateClientField, toggleClientArchived, bulkArchiveClients } from "./actions";
 import { undoLastAction } from "../undo-actions";
+import { exportToCSV } from "@/lib/export-utils";
 import {
     Search,
     SlidersHorizontal,
@@ -14,8 +15,10 @@ import {
     Download,
     Archive,
     ArchiveRestore,
-    RotateCcw
+    RotateCcw,
+    X
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { ClientProfileDrawer } from "./client-profile-drawer";
@@ -105,11 +108,24 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
     const handleUpdateField = async (clientId: string, field: string, value: string | number | boolean | null) => {
         const res = await updateClientField(clientId, field, value);
-        if (res.success) {
+        if (res?.success) {
             toast("Обновлено", "success", { mutation: true });
             fetchClients();
         } else {
-            toast(res.error || "Ошибка обновления", "error");
+            toast(res?.error || "Ошибка обновления", "error");
+        }
+    };
+
+    const handleBulkArchive = async () => {
+        setIsBulkUpdating(true);
+        const res = await bulkArchiveClients(selectedIds, !showArchived);
+        setIsBulkUpdating(false);
+        if (res?.success) {
+            toast(showArchived ? "Клиенты восстановлены" : "Клиенты архивированы", "success");
+            setSelectedIds([]);
+            fetchClients();
+        } else {
+            toast(res?.error || "Ошибка архивации", "error");
         }
     };
 
@@ -224,32 +240,19 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
     const handleExport = () => {
         const selectedClients = clients.filter(c => selectedIds.includes(c.id));
-        const headers = ["ID", "Тип", "Фамилия", "Имя", "Компания", "Email", "Телефон", "Город", "Заказов", "Потрачено"];
-        const csvContent = [
-            headers.join(","),
-            ...selectedClients.map(c => [
-                c.id,
-                c.clientType,
-                `"${c.lastName}"`,
-                `"${c.firstName}"`,
-                `"${c.company || ""}"`,
-                c.email || "",
-                c.phone,
-                `"${c.city || ""}"`,
-                c.totalOrders,
-                c.totalSpent
-            ].join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", `clients_export_${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        exportToCSV(selectedClients, "clients_export", [
+            { header: "ID", key: "id" },
+            { header: "Тип", key: "clientType" },
+            { header: "Фамилия", key: "lastName" },
+            { header: "Имя", key: "firstName" },
+            { header: "Отчество", key: (item) => item.patronymic || "" },
+            { header: "Компания", key: (item) => item.company || "" },
+            { header: "Email", key: (item) => item.email || "" },
+            { header: "Телефон", key: "phone" },
+            { header: "Город", key: (item) => item.city || "" },
+            { header: "Заказов", key: "totalOrders" },
+            { header: "Потрачено", key: "totalSpent" }
+        ]);
         toast("Экспорт завершен", "success");
     };
 
@@ -487,7 +490,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
                                             <span className="text-sm font-medium text-slate-700">{client.email || "—"}</span>
-                                            <span className="text-xs text-slate-400 font-medium tracking-tight">
+                                            <span className="text-xs text-slate-400 font-medium tracking-normal">
                                                 {["Печатник", "Дизайнер"].includes(userRoleName || "")
                                                     ? "HIDDEN"
                                                     : client.phone}
@@ -645,141 +648,174 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             }
 
             {/* Mass Actions Panel */}
-            {
-                selectedIds.length > 0 && (
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-10 py-5 bg-slate-950 text-white rounded-[24px] shadow-2xl shadow-slate-900/40 border border-slate-800 z-50 animate-in slide-in-from-bottom-10 duration-500">
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-[18px] bg-slate-800 font-bold text-xs border border-slate-700">
-                                {selectedIds.length}
+            <AnimatePresence>
+                {selectedIds.length > 0 && (
+                    <>
+                        {/* Bottom Progressive Gradient Blur Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
+                            style={{
+                                backdropFilter: 'blur(40px)',
+                                WebkitBackdropFilter: 'blur(40px)',
+                                maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                background: 'linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 40%, transparent 100%)'
+                            }}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                            exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                            transition={{ type: "spring", damping: 20, stiffness: 200 }}
+                            className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white/90 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-200/60"
+                        >
+                            <div className="flex items-center gap-3 px-2">
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+                                    {selectedIds.length}
+                                </div>
+                                <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Клиентов выбрано</span>
                             </div>
-                            <div>
-                                <div className="text-[10px] font-bold  tracking-wider text-slate-400">{pluralize(selectedIds.length, 'Клиент выбран', 'Клиента выбрано', 'Клиентов выбрано')}</div>
-                                <div className="text-xs font-bold">Действия с группой</div>
-                            </div>
-                        </div>
 
-                        <div className="w-[1px] h-8 bg-slate-800" />
+                            <div className="w-px h-8 bg-slate-200 mx-2" />
 
-                        <div className="flex items-center gap-2">
-                            {/* Export */}
-                            {["Администратор", "Управляющий", "Отдел продаж"].includes(userRoleName || "") && (
-                                <button
-                                    onClick={handleExport}
-                                    className="bg-slate-800 hover:bg-slate-700 h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-white"
-                                >
-                                    <Download className="w-3.5 h-3.5" />
-                                    Экспорт (CSV)
-                                </button>
-                            )}
+                            <div className="flex items-center gap-1">
+                                {/* Export */}
+                                {["Администратор", "Управляющий", "Отдел продаж"].includes(userRoleName || "") && (
+                                    <button
+                                        onClick={handleExport}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                    >
+                                        <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
+                                    </button>
+                                )}
 
-                            {/* Manager Change */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setShowManagerSelect(!showManagerSelect)}
-                                    className={cn(
-                                        "h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2",
-                                        showManagerSelect ? "bg-white text-slate-900" : "bg-slate-800 hover:bg-slate-700 text-white"
-                                    )}
-                                >
-                                    <UsersIcon className="w-3.5 h-3.5" />
-                                    Назначить менеджера
-                                </button>
+                                {/* Manager Change */}
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setShowManagerSelect(!showManagerSelect)}
+                                        className={cn(
+                                            "h-11 px-6 rounded-full text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2",
+                                            showManagerSelect ? "bg-slate-900 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-600"
+                                        )}
+                                    >
+                                        <UsersIcon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Назначить менеджера</span>
+                                    </button>
 
-                                {showManagerSelect && (
-                                    <div className="absolute bottom-full left-0 mb-4 w-64 bg-slate-900 border border-slate-800 rounded-[18px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                                        <div className="p-3 border-b border-slate-800 bg-slate-800/50">
-                                            <div className="text-[10px] font-semibold text-slate-400">Выберите менеджера</div>
-                                        </div>
-                                        <div className="max-h-60 overflow-y-auto p-2">
-                                            <button
-                                                onClick={async () => {
-                                                    setIsBulkUpdating(true);
-                                                    const res = await bulkUpdateClientManager(selectedIds, "");
-                                                    setIsBulkUpdating(false);
-                                                    if (res.success) {
-                                                        toast("Менеджеры обновлены", "success");
-                                                        setShowManagerSelect(false);
-                                                        setSelectedIds([]);
-                                                        fetchClients();
-                                                    }
-                                                }}
-                                                className="w-full text-left px-4 py-3 rounded-[18px] hover:bg-slate-800 text-sm font-bold transition-colors"
-                                            >
-                                                Без менеджера
-                                            </button>
-                                            {managers.map(m => (
+                                    {showManagerSelect && (
+                                        <div className="absolute bottom-full left-0 mb-4 w-64 bg-white border border-slate-200 rounded-[18px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                                            <div className="p-3 border-b border-slate-100 bg-slate-50/50">
+                                                <div className="text-[10px] font-semibold text-slate-400">Выберите менеджера</div>
+                                            </div>
+                                            <div className="max-h-60 overflow-y-auto p-2">
                                                 <button
-                                                    key={m.id}
                                                     onClick={async () => {
                                                         setIsBulkUpdating(true);
-                                                        const res = await bulkUpdateClientManager(selectedIds, m.id);
+                                                        const res = await bulkUpdateClientManager(selectedIds, "");
                                                         setIsBulkUpdating(false);
                                                         if (res.success) {
-                                                            toast(`Назначен: ${m.name}`, "success");
+                                                            toast("Менеджеры обновлены", "success");
                                                             setShowManagerSelect(false);
                                                             setSelectedIds([]);
                                                             fetchClients();
                                                         }
                                                     }}
-                                                    className="w-full text-left px-4 py-3 rounded-[18px] hover:bg-slate-800 text-sm font-bold transition-colors"
+                                                    className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-sm font-bold text-slate-900 transition-colors"
                                                 >
-                                                    {m.name}
+                                                    Без менеджера
                                                 </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {userRoleName === "Администратор" && (
-                                <button
-                                    onClick={async () => {
-                                        if (confirm(`Вы уверены что хотите удалить ${selectedIds.length} ${pluralize(selectedIds.length, 'клиента', 'клиентов', 'клиентов')}? Это действие необратимо и удалит все связанные заказы.`)) {
-                                            setIsBulkUpdating(true);
-                                            const res = await bulkDeleteClients(selectedIds);
-                                            setIsBulkUpdating(false);
-                                            if (res.success) {
-                                                toast(`База очищена (${selectedIds.length} ${pluralize(selectedIds.length, 'человек', 'человека', 'человек')})`, "success", {
-                                                    action: {
-                                                        label: "Отменить",
-                                                        onClick: async () => {
-                                                            const undoRes = await undoLastAction();
-                                                            if (undoRes.success) {
-                                                                toast("Действие отменено", "success");
+                                                {managers.map(m => (
+                                                    <button
+                                                        key={m.id}
+                                                        onClick={async () => {
+                                                            setIsBulkUpdating(true);
+                                                            const res = await bulkUpdateClientManager(selectedIds, m.id);
+                                                            setIsBulkUpdating(false);
+                                                            if (res.success) {
+                                                                toast(`Назначен: ${m.name}`, "success");
+                                                                setShowManagerSelect(false);
+                                                                setSelectedIds([]);
                                                                 fetchClients();
-                                                            } else {
-                                                                toast(undoRes.error || "Не удалось отменить", "error");
+                                                            }
+                                                        }}
+                                                        className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-sm font-bold text-slate-900 transition-colors"
+                                                    >
+                                                        {m.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Archive/Restore */}
+                                {["Администратор", "Управляющий"].includes(userRoleName || "") && (
+                                    <button
+                                        onClick={handleBulkArchive}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-amber-500 hover:text-white transition-all group"
+                                    >
+                                        <Archive className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-white transition-colors">Архив</span>
+                                    </button>
+                                )}
+
+                                {userRoleName === "Администратор" && (
+                                    <button
+                                        onClick={async () => {
+                                            if (confirm(`Вы уверены что хотите удалить ${selectedIds.length} ${pluralize(selectedIds.length, 'клиента', 'клиентов', 'клиентов')}? Это действие необратимо и удалит все связанные заказы.`)) {
+                                                setIsBulkUpdating(true);
+                                                const res = await bulkDeleteClients(selectedIds);
+                                                setIsBulkUpdating(false);
+                                                if (res.success) {
+                                                    toast(`База очищена (${selectedIds.length} ${pluralize(selectedIds.length, 'человек', 'человека', 'человек')})`, "success", {
+                                                        action: {
+                                                            label: "Отменить",
+                                                            onClick: async () => {
+                                                                const undoRes = await undoLastAction();
+                                                                if (undoRes.success) {
+                                                                    toast("Действие отменено", "success");
+                                                                    fetchClients();
+                                                                } else {
+                                                                    toast(undoRes.error || "Не удалось отменить", "error");
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                });
-                                                setSelectedIds([]);
-                                                fetchClients();
-                                            } else {
-                                                toast(res.error || "Ошибка удаления", "error");
+                                                    });
+                                                    setSelectedIds([]);
+                                                    fetchClients();
+                                                } else {
+                                                    toast(res.error || "Ошибка удаления", "error");
+                                                }
                                             }
-                                        }
+                                        }}
+                                        disabled={isBulkUpdating}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-lg shadow-rose-500/10 disabled:opacity-50"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
+
+                                <div className="w-px h-8 bg-slate-200 mx-2" />
+
+                                <button
+                                    onClick={() => {
+                                        setSelectedIds([]);
+                                        setShowManagerSelect(false);
                                     }}
-                                    disabled={isBulkUpdating}
-                                    className="bg-rose-500/10 hover:bg-rose-500 hover:text-white h-11 px-6 rounded-[18px] text-[11px] font-bold transition-all active:scale-95 flex items-center gap-2 text-rose-500 disabled:opacity-50"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all"
                                 >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                    Удалить группу
+                                    <X className="w-4 h-4" />
                                 </button>
-                            )}
-                            <button
-                                onClick={() => {
-                                    setSelectedIds([]);
-                                    setShowManagerSelect(false);
-                                }}
-                                className="h-11 px-4 text-slate-400 hover:text-white transition-colors"
-                            >
-                                Отмена
-                            </button>
-                        </div>
-                    </div>
-                )
-            }
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
         </div>
     );

@@ -76,7 +76,7 @@ const FlightBubbles = () => {
                 className="relative cursor-pointer transition-shadow hover:shadow-xl"
             >
                 <div className="flex items-center gap-3 px-7 py-4 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-black">
-                    <span className="text-[16px] font-semibold tracking-tight">Смена аэропорта</span>
+                    <span className="text-[16px] font-semibold tracking-normal">Смена аэропорта</span>
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold tracking-wide">
                         <span>IST</span>
                         <ChevronRight className="w-2.5 h-2.5 opacity-30 mx-0.5" />
@@ -108,7 +108,7 @@ const FlightBubbles = () => {
                             "flex items-center gap-3 px-7 py-4 rounded-full shadow-xl transition-shadow",
                             item.variant === "dark" ? "bg-black text-white shadow-black/10" : "bg-white text-black shadow-black/5"
                         )}>
-                            <span className="text-[16px] font-semibold tracking-tight">{item.label}</span>
+                            <span className="text-[16px] font-semibold tracking-normal">{item.label}</span>
                             <div className={cn(
                                 "px-3.5 py-1.5 rounded-xl text-[13px] font-bold",
                                 item.variant === "dark" ? "bg-white text-black" : "bg-black text-white"
@@ -135,8 +135,8 @@ const DeliveryTracking = () => {
                 className="w-[400px] bg-white rounded-[48px] p-10 shadow-crm-lg border border-slate-50"
             >
                 <div className="space-y-1 mb-10">
-                    <h2 className="text-[32px] font-bold text-[#1A1B2E] tracking-tight">В пути</h2>
-                    <p className="text-[#1A1B2E]/50 text-[18px] font-medium tracking-tight">Ваш груз доставляется.</p>
+                    <h2 className="text-[32px] font-bold text-[#1A1B2E] tracking-normal">В пути</h2>
+                    <p className="text-[#1A1B2E]/50 text-[18px] font-medium tracking-normal">Ваш груз доставляется.</p>
                 </div>
 
                 <div className="bg-[#1A1B2E] rounded-[40px] p-8 relative overflow-hidden flex items-center justify-between mb-10 min-h-[120px]">
@@ -186,8 +186,8 @@ const DeliveryTracking = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <p className="text-[#1A1B2E]/50 text-[18px] font-bold tracking-tight">Ожидаемое время доставки</p>
-                    <h3 className="text-[54px] font-black text-[#1A1B2E] leading-none tracking-tighter">09:20</h3>
+                    <p className="text-[#1A1B2E]/50 text-[18px] font-bold tracking-normal">Ожидаемое время доставки</p>
+                    <h3 className="text-[54px] font-black text-[#1A1B2E] leading-none tracking-normaler">09:20</h3>
                 </div>
             </motion.div>
         </div>
@@ -226,7 +226,7 @@ const TaskelloCard = () => {
                                 />
                             </svg>
                             <div className="absolute top-[-10px] left-8 space-y-0.5 group-hover:translate-x-1 transition-transform">
-                                <h3 className="text-white text-[20px] font-bold tracking-tight">Ежедневник</h3>
+                                <h3 className="text-white text-[20px] font-bold tracking-normal">Ежедневник</h3>
                                 <p className="text-white/40 text-[14px] font-bold">Заметки и дневник</p>
                             </div>
                         </div>
@@ -234,10 +234,10 @@ const TaskelloCard = () => {
                         <div className="flex-1 bg-[#1A1A1A] relative px-10 pb-10 flex flex-col justify-end">
                             <div className="flex justify-between items-end">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-[44px] font-bold text-white tracking-tighter leading-none">05</span>
+                                    <span className="text-[44px] font-bold text-white tracking-normaler leading-none">05</span>
                                     <span className="text-[17px] font-bold text-white/50 leading-none">Док</span>
                                 </div>
-                                <div className="text-[17px] font-bold text-white tracking-tight pb-1">
+                                <div className="text-[17px] font-bold text-white tracking-normal pb-1">
                                     1270 заметок
                                 </div>
                             </div>
@@ -271,7 +271,7 @@ const SoftFolder = () => {
                             />
                         </svg>
                         <div className="absolute top-[-30px] left-8">
-                            <h3 className="text-black text-[15px] font-black tracking-tight">Дизайны</h3>
+                            <h3 className="text-black text-[15px] font-black tracking-normal">Дизайны</h3>
                             <p className="text-black/30 text-[11px] font-bold">Веб и приложения</p>
                         </div>
                     </div>
@@ -405,7 +405,7 @@ const DarkSchedule = () => {
         <div className="p-10 md:p-20 rounded-[40px] bg-[#EAEAEA] flex items-center justify-center overflow-hidden">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="w-[380px] bg-black rounded-[48px] p-10 shadow-3xl">
                 <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-[32px] font-semibold text-white tracking-tight">Март</h2>
+                    <h2 className="text-[32px] font-semibold text-white tracking-normal">Март</h2>
                     <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} className="w-10 h-10 rounded-xl bg-[#1A1A1A] flex items-center justify-center text-white border border-white/5 shadow-lg"><Plus className="w-6 h-6" /></motion.button>
                 </div>
                 <div className="space-y-4">
@@ -443,11 +443,11 @@ const CalendarWidgets = () => {
     };
     return (
         <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
-            <div className="flex flex-col xl:flex-row gap-10 items-center justify-center w-full max-w-7xl">
+            <div className="flex flex-col xl:flex-row gap-10 items-center justify-center w-full">
                 <motion.div whileHover={{ y: -10 }} className="w-[320px] bg-white rounded-[40px] p-8 shadow-2xl border border-slate-50 flex-shrink-0">
                     <div className="flex justify-between items-start mb-6">
                         <motion.div layout>
-                            <div className="text-[36px] font-bold text-black leading-none tracking-tighter">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
+                            <div className="text-[36px] font-bold text-black leading-none tracking-normaler">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
                             <div className="text-[18px] font-medium text-slate-300">{selectedDate ? format(selectedDate, "MMMM", { locale: ru }) : "Дата"}</div>
                         </motion.div>
                     </div>
@@ -580,7 +580,7 @@ const AIChatCards = () => {
                     </svg>
                 </div>
 
-                <h3 className="text-white text-[24px] font-bold text-center leading-tight tracking-tight">
+                <h3 className="text-white text-[24px] font-bold text-center leading-tight tracking-normal">
                     Чем я могу помочь сегодня?
                 </h3>
 
@@ -600,7 +600,7 @@ const AIChatCards = () => {
                     </svg>
                 </div>
 
-                <h3 className="text-black text-[24px] font-bold text-center leading-tight tracking-tight">
+                <h3 className="text-black text-[24px] font-bold text-center leading-tight tracking-normal">
                     What can I help you with today?
                 </h3>
 
@@ -743,7 +743,7 @@ const JobActionsGrid = () => {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-lg md:text-xl font-bold text-black tracking-tight">Add job</h3>
+                    <h3 className="text-lg md:text-xl font-bold text-black tracking-normal">Add job</h3>
                     <button className="text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 text-xs font-semibold">
                         More
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -784,7 +784,7 @@ const JobActionsGrid = () => {
                             </div>
 
                             {/* Label */}
-                            <span className="text-sm md:text-base font-bold text-black tracking-tight">
+                            <span className="text-sm md:text-base font-bold text-black tracking-normal">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -928,7 +928,7 @@ const WeatherWidget = () => {
 
                 {/* Temperature */}
                 <div className="text-center mb-8 relative z-20 mt-4">
-                    <div className="text-white text-[100px] font-thin leading-[0.9] tracking-tighter">16°</div>
+                    <div className="text-white text-[100px] font-thin leading-[0.9] tracking-normaler">16°</div>
                     <div className="flex items-center justify-center gap-4 text-white/80 text-base font-light mt-2">
                         <div className="flex items-center gap-1">
                             <ArrowDown className="w-4 h-4 text-white/60" />
@@ -1119,7 +1119,7 @@ const SmartHomeDashboard = () => {
                         {/* Center Info */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center mt-6">
                             <div className="text-[8px] font-bold text-slate-800 mb-1">24°</div>
-                            <div className="text-6xl font-black text-slate-800 tracking-tight">24°</div>
+                            <div className="text-6xl font-black text-slate-800 tracking-normal">24°</div>
                             <div className="text-slate-400 text-sm font-medium mt-1">Temperature</div>
 
                             <div className="flex items-center justify-between w-48 mt-8 text-xs font-bold text-slate-400 px-4">
@@ -1729,7 +1729,7 @@ export default function NewReferencesCRM() {
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-2">
                     <span className="text-blue-600 font-black uppercase tracking-[0.3em] text-[10px]">Reference Hub</span>
-                    <h2 className="text-6xl font-black text-slate-900 tracking-tighter leading-none">Библиотека референсов</h2>
+                    <h2 className="text-6xl font-black text-slate-900 tracking-normaler leading-none">Библиотека референсов</h2>
                     <p className="text-slate-400 text-lg font-medium max-w-xl">Коллекция интерактивных компонентов и премиальных UI-дизайнов для CRM системы.</p>
                 </div>
 

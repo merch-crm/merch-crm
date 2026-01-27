@@ -67,10 +67,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6 pb-20">
+        <div className="space-y-6 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Уведомления</h1>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Уведомления</h1>
                     <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Управление каналами связи и триггерами системы</p>
                 </div>
                 <Button

@@ -26,7 +26,7 @@ export default function FocusFlowDashboardCRM() {
                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 shrink-0">
                         <Sparkles className="w-5 h-5 font-bold" />
                     </div>
-                    <span className="hidden md:block font-bold text-xl tracking-tight text-slate-900">FocusFlow</span>
+                    <span className="hidden md:block font-bold text-xl tracking-normal text-slate-900">FocusFlow</span>
                 </div>
 
                 <nav className="flex-1 space-y-2">

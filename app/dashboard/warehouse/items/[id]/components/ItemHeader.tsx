@@ -45,25 +45,25 @@ export function ItemHeader({
 
     return (
         <div className={cn(
-            "space-y-6 animate-in fade-in duration-700 w-full mb-8",
+            "space-y-6 animate-in fade-in duration-700 w-full",
             item.isArchived && "opacity-80"
         )}>
             {/* Status Banner for Archive */}
             {item.isArchived && (
                 <div className="w-full bg-rose-50 border border-rose-100 p-4 rounded-3xl flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center">
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[11px] font-black text-rose-900 uppercase tracking-widest leading-none mb-1">Архив товара</p>
-                            <p className="text-[10px] font-bold text-rose-500/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
+                            <p className="text-[11px] font-black text-rose-900 leading-none mb-1">Архив товара</p>
+                            <p className="text-[10px] font-medium text-rose-500/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
                     <Button
                         size="sm"
                         onClick={onUnarchive}
-                        className="h-10 px-6 rounded-xl bg-rose-900 hover:bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-900/10 transition-all active:scale-95"
+                        className="h-10 px-6 rounded-full bg-rose-900 hover:bg-black text-white text-[13px] font-black shadow-lg shadow-rose-900/10 transition-all active:scale-95"
                     >
                         Восстановить
                     </Button>
@@ -81,7 +81,7 @@ export function ItemHeader({
                                     ref={textareaRef}
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
-                                    className="text-2xl md:text-4xl font-black text-slate-900 bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-2 tracking-tighter placeholder:text-slate-200 resize-none overflow-hidden"
+                                    className="text-2xl md:text-4xl font-black text-slate-900 bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-2 tracking-normaler placeholder:text-slate-200 resize-none overflow-hidden"
                                     placeholder="Название..."
                                     rows={1}
                                 />
@@ -92,21 +92,29 @@ export function ItemHeader({
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => router.push('/dashboard/warehouse')}
-                                    className="hidden md:flex w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-white hover:border-slate-900 hover:bg-slate-900 transition-all shadow-sm items-center justify-center mr-2 shrink-0 group"
+                                    className="hidden md:flex w-10 h-10 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all items-center justify-center mr-2 shrink-0 group"
                                 >
                                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                                 </Button>
                                 <h1
-                                    className="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-tighter line-clamp-2 pr-4 cursor-pointer"
+                                    className="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-normaler line-clamp-2 pr-4 cursor-pointer"
                                     onDoubleClick={onEdit}
                                 >
-                                    {item.name}
+                                    {(() => {
+                                        // Auto-convert to singular if category metadata allows
+                                        // This handles "Футболки ..." -> "Футболка ..."
+                                        const cat = item.category as { singularName?: string; name?: string } | null;
+                                        if (cat?.singularName && cat?.name && item.name.startsWith(cat.name)) {
+                                            return item.name.replace(cat.name, cat.singularName);
+                                        }
+                                        return item.name;
+                                    })()}
                                 </h1>
 
                                 {item.isArchived && (
                                     <div className="h-8 px-4 rounded-full bg-slate-900 text-white flex items-center gap-2">
                                         <Trash2 className="w-3.5 h-3.5" />
-                                        <span className="text-[9px] font-black uppercase tracking-widest">Архив</span>
+                                        <span className="text-[10px] font-black">Архив</span>
                                     </div>
                                 )}
                             </div>
@@ -120,7 +128,7 @@ export function ItemHeader({
                             <Button
                                 variant="ghost"
                                 onClick={onCancel}
-                                className="h-14 px-8 rounded-xl font-black text-[11px] uppercase tracking-widest text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200"
+                                className="h-14 px-8 rounded-full font-black text-[13px] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200"
                             >
                                 <X className="w-4 h-4 mr-2" />
                                 Отмена
@@ -128,14 +136,14 @@ export function ItemHeader({
                             <Button
                                 onClick={onSave}
                                 disabled={isSaving || isAnyUploading}
-                                className="h-14 px-10 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] uppercase tracking-widest shadow-lg shadow-slate-900/10 transition-all active:scale-95 border-none"
+                                className="h-14 px-10 rounded-full btn-primary font-black text-[13px] border-none"
                             >
                                 {isSaving ? (
                                     <RefreshCcw className="w-4 h-4 animate-spin" />
                                 ) : (
                                     <>
                                         <Save className="w-4 h-4 mr-3" />
-                                        {isAnyUploading ? "ЗАГРУЗКА..." : "СОХРАНИТЬ"}
+                                        {isAnyUploading ? "Загрузка..." : "Сохранить"}
                                     </>
                                 )}
                             </Button>
@@ -149,9 +157,9 @@ export function ItemHeader({
                                 <div className="flex items-center gap-2">
                                     <Button
                                         onClick={onEdit}
-                                        className="h-14 px-10 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] uppercase tracking-widest shadow-lg transition-all active:scale-95 group"
+                                        className="h-14 px-10 rounded-full btn-primary font-black text-[13px] group"
                                     >
-                                        <Edit3 className="w-4 h-4 mr-3 group-hover:-translate-y-0.5 transition-transform" />
+                                        <Edit3 className="w-5 h-5 mr-3 group-hover:-translate-y-0.5 transition-transform" />
                                         Редактировать
                                     </Button>
                                 </div>

@@ -94,7 +94,7 @@ export function DepartmentsTable() {
     if (loading) return <div className="text-slate-400 p-12 text-center text-sm font-medium">Загрузка отделов...</div>;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6 pb-20">
+        <div className="space-y-6 pb-20">
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {departments.map((dept) => {
@@ -113,7 +113,7 @@ export function DepartmentsTable() {
                                         <Icon className={`w-7 h-7 ${config.iconColor}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="text-xl font-bold text-slate-900 truncate tracking-tight">{dept.name}</h4>
+                                        <h4 className="text-xl font-bold text-slate-900 truncate tracking-normal">{dept.name}</h4>
                                         <p className={`text-[10px] font-bold  tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
                                     </div>
                                     <div className="flex flex-col gap-1 -mr-3 -mt-3">

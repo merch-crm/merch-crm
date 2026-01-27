@@ -60,7 +60,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                             <Clock className="w-6 h-6" />
                         </div>
                         <div>
-                            <div className="text-3xl font-bold text-amber-600 tracking-tight leading-none mb-1">{stats.pendingApproval}</div>
+                            <div className="text-3xl font-bold text-amber-600 tracking-normal leading-none mb-1">{stats.pendingApproval}</div>
                             <div className="text-sm font-bold text-amber-400  tracking-wide">На утверждении</div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Готово</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-tight mb-1">{stats.completed}</div>
+                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.completed}</div>
                         <p className="text-xs font-bold text-slate-400">Согласовано макетов</p>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-purple-600 bg-purple-50 px-2 py-1 rounded-full">Качество</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-tight mb-1">{stats.efficiency}%</div>
+                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.efficiency}%</div>
                         <p className="text-xs font-bold text-slate-400">Принято с первого раза</p>
                     </div>
                 </div>

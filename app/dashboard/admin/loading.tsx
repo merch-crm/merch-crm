@@ -13,7 +13,7 @@ export default function AdminLoading() {
             </div>
 
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Синхронизация данных</h2>
+                <h2 className="text-2xl font-black text-slate-900 tracking-normaler">Синхронизация данных</h2>
                 <p className="text-sm font-bold text-slate-400 uppercase tracking-widest animate-pulse">Загрузка модулей администрирования...</p>
             </div>
 

@@ -1,25 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Package, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, ChevronDown, Tag, GripVertical, Clock, Archive } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Package, ArrowLeft, Check, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
-import { deleteInventoryItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories, deleteInventoryCategory, updateInventoryCategoriesOrder, archiveInventoryItems } from "@/app/dashboard/warehouse/actions";
+import { deleteInventoryItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory, getInventoryCategories, deleteInventoryCategory, updateInventoryCategoriesOrder, archiveInventoryItems, getItemStocks } from "@/app/dashboard/warehouse/actions";
+import { exportToCSV } from "@/lib/export-utils";
 import { EditCategoryDialog } from "../edit-category-dialog";
 import { CategorySelect } from "../category-select";
 import { AdjustStockDialog } from "../adjust-stock-dialog";
 import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 
 import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ArchiveReasonDialog } from "../components/archive-reason-dialog";
+import { LabelPrinterDialog } from "../components/LabelPrinterDialog";
 import { createElement } from "react";
 import { getCategoryIcon, getColorStyles } from "../category-utils";
 
@@ -50,8 +54,8 @@ import { CSS } from "@dnd-kit/utilities";
 
 
 
-import type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute } from "../types";
-export type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute };
+import type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute, AttributeType } from "../types";
+export type { InventoryItem, Category, ThumbnailSettings, InventoryAttribute, AttributeType };
 
 interface CategoryDetailClientProps {
     category: Category;
@@ -59,7 +63,42 @@ interface CategoryDetailClientProps {
     subCategories?: Category[];
     items: InventoryItem[];
     storageLocations?: StorageLocation[];
+    attributeTypes: AttributeType[];
+    allAttributes: InventoryAttribute[];
     user: Session | null;
+}
+
+function ItemThumbnail({ item }: { item: InventoryItem }) {
+    const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+    const settings = (item.thumbnailSettings as ThumbnailSettings) || { zoom: 1, x: 0, y: 0 };
+
+    const baseScale = useMemo(() => {
+        if (!aspectRatio) return 1;
+        return Math.max(aspectRatio, 1 / aspectRatio);
+    }, [aspectRatio]);
+
+    if (!item.image) {
+        return (
+            <div className="w-full h-full flex items-center justify-center text-slate-300">
+                <Package className="w-5 h-5 opacity-20" />
+            </div>
+        );
+    }
+
+    return (
+        <Image
+            src={item.image}
+            alt={item.name}
+            fill
+            className="object-contain"
+            unoptimized
+            onLoadingComplete={(img) => setAspectRatio(img.naturalWidth / img.naturalHeight)}
+            style={{
+                transform: `scale(${(settings.zoom || 1) * baseScale}) translate(${settings.x ?? 0}%, ${settings.y ?? 0}%)`,
+                transformOrigin: 'center center'
+            }}
+        />
+    );
 }
 
 export function CategoryDetailClient({
@@ -68,12 +107,33 @@ export function CategoryDetailClient({
     subCategories: initialSubCategories = [],
     items,
     storageLocations = [],
+    attributeTypes = [],
+    allAttributes = [],
     user
 }: CategoryDetailClientProps) {
     const router = useRouter();
     const { toast } = useToast();
     const [subCategories, setSubCategories] = useState<Category[]>(initialSubCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const canSeeCost = user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж';
+
+    // Label Dialog States
+    const [showLabelDialog, setShowLabelDialog] = useState(false);
+    const [itemToPrint, setItemToPrint] = useState<InventoryItem | null>(null);
+
+    const handlePrintLabel = (item: InventoryItem) => {
+        setItemToPrint(item);
+        setShowLabelDialog(true);
+    };
+
+    const handleBulkPrint = () => {
+        if (selectedIds.length === 0) return;
+        const selectedItems = items.filter(i => selectedIds.includes(i.id));
+        if (selectedItems.length > 0) {
+            setItemToPrint(selectedItems[0]); // Dialog currently handles one at a time
+            setShowLabelDialog(true);
+        }
+    };
 
     useEffect(() => {
         setSubCategories(initialSubCategories);
@@ -142,6 +202,7 @@ export function CategoryDetailClient({
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
     const [showArchiveReason, setShowArchiveReason] = useState(false);
+    const [adjustingItemStocks, setAdjustingItemStocks] = useState<{ storageLocationId: string; quantity: number }[]>([]);
 
     // Set custom trail for breadcrumbs
     const { setCustomTrail } = useBreadcrumbs();
@@ -180,9 +241,46 @@ export function CategoryDetailClient({
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState<"all" | "in" | "low" | "out">("all");
     const [filterStorage, setFilterStorage] = useState<string>("all"); // New warehouse filter
-    const [isStorageOpen, setIsStorageOpen] = useState(false); // State for custom dropdown
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 24;
+
+    const itemCountsByStorage = useMemo(() => {
+        const counts: Record<string, number> = {};
+        items.forEach(item => {
+            let placed = false;
+            // Check stocks separately
+            if (item.stocks && item.stocks.length > 0) {
+                item.stocks.forEach((s) => {
+                    if (s.quantity > 0) {
+                        counts[s.storageLocationId] = (counts[s.storageLocationId] || 0) + 1;
+                        placed = true;
+                    }
+                });
+            }
+
+            // Fallback to main location if not placed by stocks (or if needed for legacy)
+            if (!placed) {
+                if (item.storageLocationId) {
+                    counts[item.storageLocationId] = (counts[item.storageLocationId] || 0) + 1;
+                } else if (item.location) {
+                    const key = `legacy:${item.location}`;
+                    counts[key] = (counts[key] || 0) + 1;
+                }
+            }
+        });
+        return counts;
+    }, [items]);
+
+    // Extract unique legacy locations for filter dropdown
+    const legacyLocations = useMemo(() => {
+        const locs = new Set<string>();
+        items.forEach(item => {
+            if (!item.storageLocationId && item.location) {
+                locs.add(item.location);
+            }
+        });
+        return Array.from(locs).sort();
+    }, [items]);
 
     const toggleSelectItem = (id: string, e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
@@ -199,6 +297,18 @@ export function CategoryDetailClient({
         }
     };
 
+    const handleOpenAdjust = async (item: InventoryItem) => {
+        setAdjustingItem(item);
+        setIsAdjustOpen(true);
+        // Fetch current stocks for this item to show in dialog
+        try {
+            const res = await getItemStocks(item.id);
+            if (res.data) setAdjustingItemStocks(res.data);
+        } catch (err) {
+            console.error("Failed to fetch item stocks", err);
+        }
+    };
+
     const filteredItems = items.filter(item => {
         const matchesSearch =
             item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -212,7 +322,13 @@ export function CategoryDetailClient({
 
         const matchesStorage =
             filterStorage === "all" ? true :
-                item.storageLocationId === filterStorage;
+                filterStorage.startsWith("legacy:")
+                    ? item.location === filterStorage.replace("legacy:", "") && !item.storageLocationId
+                    : (
+                        item.storageLocationId === filterStorage ||
+                        // Check stocks
+                        (item.stocks && item.stocks.some((s) => s.storageLocationId === filterStorage && s.quantity > 0))
+                    );
 
         return matchesSearch && matchesFilter && matchesStorage;
     }).sort((a, b) => (b.quantity || 0) - (a.quantity || 0));
@@ -290,135 +406,125 @@ export function CategoryDetailClient({
                 {/* Main Title Row */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                     <div className="flex items-center gap-5">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => router.back()}
-                            className="group w-12 h-12 rounded-full bg-white border border-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-all active:scale-95 shrink-0 shadow-sm"
+                            className="w-10 h-10 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center justify-center mr-2 shrink-0 group"
                         >
                             <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
-                        </button>
+                        </Button>
 
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-3xl font-bold text-slate-900 leading-none">{category.name}</h1>
-                                <div className="px-2.5 py-1 rounded-[var(--radius)] bg-slate-100 text-slate-500 text-xs font-bold border border-slate-200/50 self-start mt-1">
-                                    {items.length}
-                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {selectedIds.length > 0 && (
-                            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center bg-[#0F172A] text-white p-1.5 pl-2 gap-2 rounded-full shadow-2xl animate-in slide-in-from-bottom-6 fade-in duration-300 border border-slate-800">
-                                <div className="flex items-center gap-3 px-2">
-                                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold shadow-lg shadow-primary/30">
-                                        {selectedIds.length}
-                                    </div>
-                                    <span className="text-xs font-medium text-slate-300 whitespace-nowrap mr-2">Позиций выбрано</span>
-                                </div>
-
-                                <div className="w-px h-8 bg-slate-700/50" />
-
-                                <div className="flex items-center gap-1">
-                                    <button
-                                        onClick={() => setIsBulkMoveOpen(true)}
-                                        className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] hover:bg-white/10 transition-colors group"
+                        <AnimatePresence>
+                            {selectedIds.length > 0 && (
+                                <>
+                                    {/* Bottom Progressive Gradient Blur Overlay */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                        animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                                        exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                        transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                                        className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2 gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
                                     >
-                                        <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Переместить</span>
-                                    </button>
+                                        <div className="flex items-center gap-3 pl-1">
+                                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+                                                {selectedIds.length}
+                                            </div>
+                                            <span className="text-xs font-bold text-slate-500 whitespace-nowrap pr-2">Позиций выбрано</span>
+                                        </div>
 
-                                    <button
-                                        onClick={() => {
-                                            const printWindow = window.open('', '_blank');
-                                            if (printWindow) {
-                                                const itemsToPrint = items.filter(i => selectedIds.includes(i.id));
-                                                printWindow.document.write(`
-                                                    <html>
-                                                        <head>
-                                                            <title>Печать этикеток</title>
-                                                            <style>
-                                                                @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
-                                                                body { font-family: 'Manrope', sans-serif; padding: 20px; }
-                                                                .label { border: 1px solid #ccc; padding: 10px; margin: 10px; width: 200px; display: inline-block; text-align: center; }
-                                                                .sku { font-weight: bold; font-size: 1.2rem; }
-                                                                .name { font-size: 0.8rem; margin-top: 5px; }
-                                                            </style>
-                                                        </head>
-                                                        <body>
-                                                            ${itemsToPrint.map(item => `
-                                                                <div class="label">
-                                                                    <div class="sku">${item.sku || 'N/A'}</div>
-                                                                    <div class="name">${item.name}</div>
-                                                                </div>
-                                                            `).join('')}
-                                                            <script>window.print();</script>
-                                                        </body>
-                                                    </html>
-                                                `);
-                                                printWindow.document.close();
-                                            }
-                                        }}
-                                        className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] hover:bg-white/10 transition-colors group"
-                                    >
-                                        <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Этикетки</span>
-                                    </button>
+                                        <div className="w-px h-8 bg-slate-200" />
 
-                                    <button
-                                        onClick={() => {
-                                            const itemsToExport = items.filter(i => selectedIds.includes(i.id));
-                                            const csvContent = "data:text/csv;charset=utf-8,"
-                                                + ["ID,Название,Артикул,Количество,Ед.изм,Категория,Склад"].join(",") + "\n"
-                                                + itemsToExport.map(e => [
-                                                    e.id,
-                                                    `"${e.name.replace(/"/g, '""')}"`,
-                                                    e.sku || "",
-                                                    e.quantity,
-                                                    e.unit,
-                                                    e.category?.name || "",
-                                                    storageLocations.find(l => l.id === e.storageLocationId)?.name || ""
-                                                ].join(",")).join("\n");
-                                            const encodedUri = encodeURI(csvContent);
-                                            const link = document.createElement("a");
-                                            link.setAttribute("href", encodedUri);
-                                            link.setAttribute("download", "inventory_export.csv");
-                                            document.body.appendChild(link);
-                                            link.click();
-                                            document.body.removeChild(link);
-                                        }}
-                                        className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] hover:bg-white/10 transition-colors group"
-                                    >
-                                        <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Скачать</span>
-                                    </button>
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                onClick={() => setIsBulkMoveOpen(true)}
+                                                className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                            >
+                                                <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
+                                            </button>
 
-                                    <button
-                                        onClick={() => {
-                                            const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
-                                            const hasStock = itemsToArchive.some(i => i.quantity > 0);
+                                            <button
+                                                onClick={handleBulkPrint}
+                                                className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                            >
+                                                <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
+                                            </button>
 
-                                            if (hasStock) {
-                                                toast("Нельзя архивировать товары с остатком > 0", "error");
-                                                return;
-                                            }
-                                            setShowArchiveReason(true);
-                                        }}
-                                        className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] hover:bg-white/10 transition-colors group"
-                                    >
-                                        <Clock className="w-4 h-4 text-slate-400 group-hover:text-amber-500 transition-colors" />
-                                        <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Архив</span>
-                                    </button>
+                                            <button
+                                                onClick={() => {
+                                                    const itemsToExport = items.filter(i => selectedIds.includes(i.id));
+                                                    exportToCSV(itemsToExport, "inventory_export", [
+                                                        { header: "ID", key: "id" },
+                                                        { header: "Название", key: "name" },
+                                                        { header: "Артикул", key: (item) => item.sku || "" },
+                                                        { header: "Количество", key: "quantity" },
+                                                        { header: "Ед.изм", key: "unit" },
+                                                        { header: "Категория", key: (item) => item.category?.name || "" },
+                                                        {
+                                                            header: "Склад", key: (item) => {
+                                                                if (item.stocks && item.stocks.length > 0) {
+                                                                    const stocksStr = item.stocks
+                                                                        .filter((s) => s.quantity > 0)
+                                                                        .map((s) => {
+                                                                            const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
+                                                                            return `${locName} (${s.quantity})`;
+                                                                        })
+                                                                        .join("; ");
+                                                                    if (stocksStr) return stocksStr;
+                                                                }
+                                                                // Fallback
+                                                                return storageLocations.find(l => l.id === item.storageLocationId)?.name || item.location || "";
+                                                            }
+                                                        },
+                                                        { header: "Себестоимость", key: (item) => item.costPrice || 0 },
+                                                        { header: "Цена продажи", key: (item) => item.sellingPrice || 0 }
+                                                    ]);
+                                                }}
+                                                className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                            >
+                                                <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
+                                            </button>
 
-                                </div>
+                                            <div className="w-px h-8 bg-slate-200 mx-1" />
 
-                                <div className="w-px h-8 bg-slate-700/50 mx-2" />
+                                            <button
+                                                onClick={() => {
+                                                    const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
+                                                    const hasStock = itemsToArchive.some(i => i.quantity > 0);
 
-                                <button onClick={() => setSelectedIds([])} className="p-2 mr-1 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                        )}
+                                                    if (hasStock) {
+                                                        toast("Нельзя архивировать товары с остатком > 0", "error");
+                                                        return;
+                                                    }
+                                                    setShowArchiveReason(true);
+                                                }}
+                                                className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
+                                            >
+                                                <Archive className="w-4 h-4" />
+                                            </button>
+
+                                            <button
+                                                onClick={() => setSelectedIds([])}
+                                                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                </>
+                            )}
+                        </AnimatePresence>
                         {category.id !== "orphaned" && !category.parentId && (
                             <AddCategoryDialog
                                 categories={allCategories}
@@ -428,7 +534,7 @@ export function CategoryDetailClient({
                         )}
                         <Button
                             onClick={() => router.push(`/dashboard/warehouse/items/new?categoryId=${category.id}`)}
-                            className="h-12 bg-primary hover:bg-primary/90 text-white rounded-[var(--radius)] px-6 gap-2 font-bold shadow-xl shadow-primary/20 transition-all active:scale-95"
+                            className="h-12 btn-primary rounded-full px-6 gap-2 font-bold"
                         >
                             <Plus className="w-5 h-5" />
                             Добавить позицию
@@ -475,9 +581,13 @@ export function CategoryDetailClient({
                     <AdjustStockDialog
                         item={adjustingItem}
                         locations={storageLocations}
+                        itemStocks={adjustingItemStocks}
+                        user={user}
                         onClose={() => {
                             setIsAdjustOpen(false);
                             setAdjustingItem(null);
+                            setAdjustingItemStocks([]);
+                            router.refresh();
                         }}
                     />
                 )
@@ -485,83 +595,61 @@ export function CategoryDetailClient({
 
             {/* Remove drawer as we navigate to full page now */}
 
-            {/* Sub-header with Search and Filters */}
-            <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-6 rounded-[var(--radius)] border border-slate-200/60 shadow-sm transition-all hover:shadow-md">
-                <div className="relative flex-1 w-full group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-primary" />
+            {/* Sub-header with Search and Filters - Redesigned in Pill Style */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-200/40 backdrop-blur-md p-1.5 rounded-[28px] border border-white/40 shadow-inner">
+                {/* Search Input */}
+                <div className="relative flex-1 md:min-w-[400px]">
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
                         placeholder="Поиск по названию или артикулу..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-14 pl-14 pr-6 rounded-[var(--radius)] bg-slate-50 border border-transparent focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none font-medium text-slate-900 transition-all"
+                        className="w-full h-12 bg-white/80 border border-slate-200/50 rounded-[22px] pl-14 pr-10 text-[12px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
                     />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
 
-                <div className="flex items-center p-1.5 bg-slate-50 rounded-full border border-slate-200/60 shrink-0 gap-1 shadow-sm shadow-slate-100/50">
-                    <div className="relative pl-1">
-                        <button
-                            onClick={() => setIsStorageOpen(!isStorageOpen)}
-                            className="h-10 pl-5 pr-9 rounded-full bg-transparent text-xs font-bold text-primary outline-none transition-colors hover:bg-white hover:shadow-sm flex items-center whitespace-nowrap group"
-                        >
-                            <span className="group-hover:opacity-80 transition-opacity">
-                                {filterStorage === "all" ? "Все склады" : storageLocations.find(l => l.id === filterStorage)?.name}
-                            </span>
-                            <ChevronDown className={cn(
-                                "absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-primary stroke-[3] transition-transform",
-                                isStorageOpen && "rotate-180"
-                            )} />
-                        </button>
+                {/* Filters Group */}
+                <div className="flex items-center gap-1.5 px-1.5 h-12 bg-slate-900/5 rounded-[22px]">
+                    {/* Storage Select Premium */}
+                    <PremiumSelect
+                        options={[
+                            { id: "all", title: "Все склады" },
+                            ...storageLocations.map(loc => ({
+                                id: loc.id,
+                                title: loc.name,
+                                badge: itemCountsByStorage[loc.id] ? `${itemCountsByStorage[loc.id]} поз.` : undefined
+                            })),
+                            ...legacyLocations.map(locName => ({
+                                id: `legacy:${locName}`,
+                                title: locName, // Show just the name for legacy locations
+                                badge: itemCountsByStorage[`legacy:${locName}`] ? `${itemCountsByStorage[`legacy:${locName}`]} поз.` : undefined,
+                                className: "opacity-80 Italic" // Optional styling to differentiate
+                            }))
+                        ]}
+                        value={filterStorage}
+                        onChange={setFilterStorage}
+                        variant="minimal"
+                        className="min-w-[160px]"
+                    />
 
-                        {/* Custom Dropdown Menu */}
-                        {isStorageOpen && (
-                            <>
-                                <div className="fixed inset-0 z-40" onClick={() => setIsStorageOpen(false)} />
-                                <div className="absolute top-full mt-3 left-0 min-w-[200px] bg-slate-800/95 backdrop-blur-xl rounded-[var(--radius)] shadow-2xl shadow-slate-400/20 overflow-hidden z-50 flex flex-col p-1.5 animate-in fade-in zoom-in-95 duration-200 border border-slate-700">
-                                    <button
-                                        onClick={() => { setFilterStorage("all"); setIsStorageOpen(false); }}
-                                        className={cn(
-                                            "w-full text-left px-4 py-3 rounded-[var(--radius)] text-xs font-bold transition-all flex items-center gap-3",
-                                            filterStorage === "all"
-                                                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                                                : "text-slate-300 hover:bg-white/10 hover:text-white"
-                                        )}
-                                    >
-                                        <div className={cn("w-4 h-4 rounded-full border border-current flex items-center justify-center", filterStorage === "all" ? "border-white" : "border-slate-500")}>
-                                            {filterStorage === "all" && <div className="w-2 h-2 bg-white rounded-full" />}
-                                        </div>
-                                        <span>Все склады</span>
-                                    </button>
-                                    {storageLocations.map(loc => (
-                                        <button
-                                            key={loc.id}
-                                            onClick={() => { setFilterStorage(loc.id); setIsStorageOpen(false); }}
-                                            className={cn(
-                                                "w-full text-left px-4 py-3 rounded-[var(--radius)] text-xs font-bold transition-all flex items-center gap-3",
-                                                filterStorage === loc.id
-                                                    ? "bg-primary text-white shadow-lg shadow-primary/30"
-                                                    : "text-slate-300 hover:bg-white/10 hover:text-white"
-                                            )}
-                                        >
-                                            <div className={cn("w-4 h-4 rounded-full border border-current flex items-center justify-center", filterStorage === loc.id ? "border-white" : "border-slate-500")}>
-                                                {filterStorage === loc.id && <div className="w-2 h-2 bg-white rounded-full" />}
-                                            </div>
-                                            <span>{loc.name}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-                    </div>
+                    <div className="w-px h-6 bg-slate-900/10" />
 
-                    <div className="w-px h-8 bg-slate-200 mx-2" />
-
+                    {/* Status Pills */}
                     <div className="flex items-center gap-1">
                         {[
-                            { id: "all", label: "Все", color: "text-primary", activeBg: "shadow-primary/10" },
-                            { id: "in", label: "В наличии", color: "text-emerald-600", activeBg: "shadow-emerald-100" },
-                            { id: "low", label: "Заканчиваются", color: "text-amber-600", activeBg: "shadow-amber-100" },
-                            { id: "out", label: "Нет в наличии", color: "text-rose-600", activeBg: "shadow-rose-100" }
+                            { id: "all", label: "Все" },
+                            { id: "in", label: "В наличии", color: "emerald" },
+                            { id: "low", label: "Мало", color: "amber" },
+                            { id: "out", label: "Нет", color: "rose" }
                         ].map((f) => {
                             const isActive = filterStatus === f.id;
                             return (
@@ -569,10 +657,10 @@ export function CategoryDetailClient({
                                     key={f.id}
                                     onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                     className={cn(
-                                        "px-6 py-2.5 rounded-full text-xs font-bold transition-all",
+                                        "h-9 px-4 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
                                         isActive
-                                            ? `bg-white ${f.color} shadow-md ${f.activeBg}`
-                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-100/50"
+                                            ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                            : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
                                     )}
                                 >
                                     {f.label}
@@ -656,7 +744,7 @@ export function CategoryDetailClient({
                 {filteredItems.length > 0 ? (
                     <div className="space-y-4">
                         {/* Items Table View */}
-                        <div className="bg-white rounded-[24px] border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
+                        <div className="glass-panel p-0 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-slate-100">
                                     <thead className="bg-slate-50/50">
@@ -675,9 +763,11 @@ export function CategoryDetailClient({
                                                 </div>
                                             </th>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400">Товар</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400">Артикул</th>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400">Склад</th>
-                                            <th className="px-6 py-4 text-center text-xs font-semibold text-slate-400">Остаток</th>
+                                            {canSeeCost && <th className="px-6 py-4 text-center text-xs font-semibold text-slate-400">Себест.</th>}
+                                            {canSeeCost && <th className="px-6 py-4 text-center text-xs font-semibold text-slate-400">Цена</th>}
+                                            <th className="w-32 px-6 py-4 text-center text-xs font-semibold text-slate-400">Резерв</th>
+                                            <th className="w-32 px-6 py-4 text-center text-xs font-semibold text-slate-400">Остаток</th>
                                             <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400">Действия</th>
                                         </tr>
                                     </thead>
@@ -693,8 +783,8 @@ export function CategoryDetailClient({
                                                     key={item.id}
                                                     onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
                                                     className={cn(
-                                                        "group hover:bg-slate-50/80 transition-all cursor-pointer",
-                                                        isSelected && "bg-primary/5"
+                                                        "group hover:bg-slate-50 transition-all cursor-pointer",
+                                                        isSelected && "bg-slate-50"
                                                     )}
                                                 >
                                                     <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
@@ -713,50 +803,78 @@ export function CategoryDetailClient({
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
-                                                                {item.image ? (
-                                                                    <Image
-                                                                        src={item.image}
-                                                                        alt={item.name}
-                                                                        fill
-                                                                        className="object-cover"
-                                                                        unoptimized
-                                                                        style={(() => {
-                                                                            const settings = item.thumbnailSettings;
-                                                                            if (!settings) return {};
-                                                                            return {
-                                                                                transform: `scale(${settings.zoom || 1}) translate(${settings.x ?? 0}%, ${settings.y ?? 0}%)`
-                                                                            };
-                                                                        })()}
-                                                                    />
-                                                                ) : (
-                                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                                        <Package className="w-5 h-5 opacity-20" />
-                                                                    </div>
-                                                                )}
+                                                                <ItemThumbnail item={item} />
                                                             </div>
                                                             <div>
-                                                                <div className="text-sm font-bold text-slate-900 leading-tight group-hover:text-primary transition-colors">{item.name}</div>
-                                                                <div className="text-xs font-medium text-slate-400 mt-1">{item.category?.name || "Основная категория"}</div>
+                                                                <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
+                                                                    {(() => {
+                                                                        const cat = item.category as { singularName?: string; name?: string } | null;
+                                                                        if (cat?.singularName && cat?.name && item.name.startsWith(cat.name)) {
+                                                                            return item.name.replace(cat.name, cat.singularName);
+                                                                        }
+                                                                        return item.name;
+                                                                    })()}
+                                                                </div>
+                                                                <div className="text-xs font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
+                                                                    {item.sku || "N/A"}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-[18px] whitespace-nowrap">
-                                                            {item.sku || "N/A"}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-2 text-slate-500">
-                                                            <MapPin className="w-3.5 h-3.5" />
-                                                            <span className="text-xs font-bold">
-                                                                {storageLocations.find(l => l.id === item.storageLocationId)?.name || "—"}
-                                                            </span>
+                                                        <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
+                                                            {(() => {
+                                                                if (item.stocks && item.stocks.length > 0) {
+                                                                    const activeStocks = item.stocks.filter((s) => s.quantity > 0);
+                                                                    if (activeStocks.length > 0) {
+                                                                        return activeStocks.map((s) => {
+                                                                            const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
+                                                                            return (
+                                                                                <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
+                                                                                    <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                                    <span>{locName}</span>
+                                                                                    <span className="text-slate-400">({s.quantity})</span>
+                                                                                </div>
+                                                                            );
+                                                                        });
+                                                                    }
+                                                                }
+                                                                // Fallback
+                                                                return (
+                                                                    <div className="flex items-center gap-2 whitespace-nowrap">
+                                                                        <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                        <span>{storageLocations.find(l => l.id === item.storageLocationId)?.name || item.location || "—"}</span>
+                                                                    </div>
+                                                                );
+                                                            })()}
                                                         </div>
                                                     </td>
+                                                    {canSeeCost && (
+                                                        <td className="px-6 py-4 text-center">
+                                                            <span className="text-xs font-medium text-slate-400">
+                                                                {item.costPrice ? `${Number(item.costPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                            </span>
+                                                        </td>
+                                                    )}
+                                                    {canSeeCost && (
+                                                        <td className="px-6 py-4 text-center">
+                                                            <span className="text-sm font-black text-slate-900">
+                                                                {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                            </span>
+                                                        </td>
+                                                    )}
                                                     <td className="px-6 py-4 text-center">
-                                                        <div className="flex flex-col items-center gap-1">
+                                                        <span className={cn(
+                                                            "text-sm font-bold tabular-nums",
+                                                            (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
+                                                        )}>
+                                                            {item.reservedQuantity || 0}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <div className="flex flex-col items-center gap-1.5">
                                                             <div className={cn(
-                                                                "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0",
+                                                                "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
                                                                 isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
                                                                     isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :
                                                                         "bg-emerald-50 border-emerald-100 text-emerald-600"
@@ -767,14 +885,12 @@ export function CategoryDetailClient({
                                                                         isLowStock ? "bg-amber-500" :
                                                                             "bg-emerald-500"
                                                                 )} />
-                                                                <span className="tabular-nums">{available}</span>
-                                                                <span className="opacity-50 text-[9px] ml-px font-black uppercase tracking-tighter">
-                                                                    {(item.unit.toLowerCase() === 'pcs' || item.unit === 'шт.') ? 'шт' : item.unit}
-                                                                </span>
+                                                                <span className="tabular-nums whitespace-nowrap">{available} {(item.unit.toLowerCase() === 'pcs' || item.unit === 'шт.') ? 'шт' : item.unit}</span>
                                                             </div>
+
                                                             {(item.reservedQuantity || 0) > 0 && (
-                                                                <div className="text-[9px] font-black text-slate-300 mt-1 uppercase tracking-widest leading-none">
-                                                                    Всего: {item.quantity} (Рез: {item.reservedQuantity})
+                                                                <div className="flex items-center gap-2 text-[10px] font-medium text-slate-400 tabular-nums">
+                                                                    <span title="Всего на складе">Всего: {item.quantity}</span>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -782,15 +898,31 @@ export function CategoryDetailClient({
                                                     <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                                                         <div className="flex items-center justify-end gap-1 transition-all">
                                                             <button
+                                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handlePrintLabel(item);
+                                                                }}
+                                                                title="Печать этикетки"
+                                                            >
+                                                                <Tag className="w-4 h-4" />
+                                                            </button>
+                                                            <button
                                                                 className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all"
-                                                                onClick={() => { setAdjustingItem(item); setIsAdjustOpen(true); }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleOpenAdjust(item);
+                                                                }}
                                                                 title="Корректировка"
                                                             >
                                                                 <PlusSquare className="w-5 h-5" />
                                                             </button>
                                                             <button
                                                                 className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                                                                onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    router.push(`/dashboard/warehouse/items/${item.id}`);
+                                                                }}
                                                                 title="Редактировать"
                                                             >
                                                                 <Edit className="w-5 h-5" />
@@ -822,13 +954,13 @@ export function CategoryDetailClient({
 
                         {/* Pagination */}
                         {filteredItems.length > 0 && (
-                            <div className="pt-8 pb-4 flex justify-center">
+                            <div className="pt-2">
                                 <Pagination
                                     totalItems={filteredItems.length}
                                     pageSize={itemsPerPage}
                                     currentPage={currentPage}
                                     onPageChange={setCurrentPage}
-                                    itemName={pluralize(filteredItems.length, 'позиция', 'позиции', 'позиций')}
+                                    itemNames={['позиции', 'позиций', 'позиций']}
                                 />
                             </div>
                         )}
@@ -885,6 +1017,16 @@ export function CategoryDetailClient({
                     />
                 )
             }
+
+            {itemToPrint && (
+                <LabelPrinterDialog
+                    item={itemToPrint}
+                    isOpen={showLabelDialog}
+                    onClose={() => setShowLabelDialog(false)}
+                    attributeTypes={attributeTypes}
+                    allAttributes={allAttributes}
+                />
+            )}
         </div >
     );
 }

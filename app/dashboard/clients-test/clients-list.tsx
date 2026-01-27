@@ -35,7 +35,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string, valu
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-100 text-slate-900 text-[13px] rounded-[var(--radius)] focus:ring-4 focus:ring-primary/5 focus:border-primary/20 block p-4 pr-12 font-bold cursor-pointer group-hover:border-slate-200 transition-all  tracking-tight shadow-sm"
+                    className="w-full appearance-none bg-white border border-slate-100 text-slate-900 text-[13px] rounded-[var(--radius)] focus:ring-4 focus:ring-primary/5 focus:border-primary/20 block p-4 pr-12 font-bold cursor-pointer group-hover:border-slate-200 transition-all  tracking-normal shadow-sm"
                 >
                     {options.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -424,7 +424,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     <td className="px-5 py-6">
                                         <div className="flex flex-col max-w-[180px]">
                                             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                                                <span className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors tracking-tight line-clamp-1">
+                                                <span className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors tracking-normal line-clamp-1">
                                                     {client.lastName} {client.firstName}
                                                 </span>
                                                 {client.clientType === "b2b" && (
@@ -444,7 +444,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                         <div className="flex flex-col gap-1.5 max-w-[200px]">
                                             <div className="flex items-center gap-2.5 text-slate-500 group-hover:text-slate-900 transition-colors">
                                                 <Mail className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                                <span className="text-[11px] font-bold tracking-tight lowercase truncate">{client.email || "no-email@crm.com"}</span>
+                                                <span className="text-[11px] font-bold tracking-normal lowercase truncate">{client.email || "no-email@crm.com"}</span>
                                             </div>
                                             <div className="flex items-center gap-2.5 text-slate-500 group-hover:text-slate-900 transition-colors">
                                                 <Phone className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
@@ -482,7 +482,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             <div className="flex flex-col">
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.3)]" />
-                                                    <span className="text-[13px] font-bold text-slate-900 tracking-tight">
+                                                    <span className="text-[13px] font-bold text-slate-900 tracking-normal">
                                                         {new Date(client.lastOrderDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
                                                     </span>
                                                 </div>
@@ -581,23 +581,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 }
             </div>
 
-            {/* --- PREMIUM PAGINATION --- */}
+            {/* --- PAGINATION --- */}
             {sortedAndFilteredClients.length > 0 && (
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-4 py-8 border-t border-slate-100 mt-8">
-                    <div className="text-[10px] font-bold text-slate-400  tracking-[0.2em] bg-slate-50 px-6 py-3 rounded-full border border-slate-100/50 shadow-sm">
-                        Show <span className="text-slate-900 mx-1">{Math.min(currentPage * 10, sortedAndFilteredClients.length)}</span>
-                        of <span className="text-slate-900 ml-1">{sortedAndFilteredClients.length}</span> entries
-                    </div>
-
-                    <div className="glass-panel p-2 flex items-center gap-1 border-white/60 shadow-crm-md">
-                        <Pagination
-                            totalItems={sortedAndFilteredClients.length}
-                            pageSize={10}
-                            currentPage={currentPage}
-                            itemName="клиентов"
-                        />
-                    </div>
-                </div>
+                <Pagination
+                    totalItems={sortedAndFilteredClients.length}
+                    pageSize={10}
+                    currentPage={currentPage}
+                    itemNames={['клиента', 'клиентов', 'клиентов']}
+                />
             )}
 
             {/* Mass Actions Panel */}

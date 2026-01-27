@@ -48,7 +48,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-none">Расходы</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 tracking-normal leading-none">Расходы</h2>
                     <p className="text-slate-500 font-medium mt-1">Учет операционных затрат и закупок</p>
                 </div>
 

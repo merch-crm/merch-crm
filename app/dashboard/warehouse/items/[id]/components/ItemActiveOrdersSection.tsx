@@ -23,7 +23,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mx-auto mb-3 border border-slate-100">
                     <ShoppingBag className="w-6 h-6 text-slate-200" />
                 </div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Нет заказов</p>
+                <p className="text-[10px] font-black text-slate-400">Нет заказов</p>
             </div>
         );
     }
@@ -48,7 +48,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                         <div className="flex items-center justify-between mb-4">
                             <div className="h-7 px-3 rounded-full bg-white border border-slate-100 shadow-sm flex items-center gap-2 group-hover:border-primary/20 transition-colors">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest whitespace-nowrap">
+                                <span className="text-[9px] font-black text-slate-900 whitespace-nowrap">
                                     Заказ #{item.order.orderNumber}
                                 </span>
                             </div>
@@ -64,7 +64,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                                     <User className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Клиент</p>
+                                    <p className="text-[10px] font-black text-slate-400 mb-0.5">Клиент</p>
                                     <p className="text-[12px] font-bold text-slate-710 truncate">
                                         {item.order.client?.company || clientName}
                                     </p>
@@ -74,7 +74,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
 
                         {/* Footer Info */}
                         <div className="pt-4 border-t border-slate-100/60 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400">
                                 <Calendar className="w-3.5 h-3.5 text-slate-300" />
                                 <span>{format(new Date(item.order.createdAt), "dd MMM yyyy", { locale: ru })}</span>
                             </div>

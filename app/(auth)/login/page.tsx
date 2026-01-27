@@ -63,7 +63,7 @@ export default function LoginPage() {
                                     type="email"
                                     required
                                     className="h-12 pl-12 bg-secondary/50 border-none focus:bg-white"
-                                    placeholder="admin@crm.local"
+                                    placeholder="Введите логин"
                                 />
                             </div>
                         </div>
@@ -80,7 +80,7 @@ export default function LoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     required
                                     className="h-12 pl-12 pr-12 bg-secondary/50 border-none focus:bg-white"
-                                    placeholder="••••••••"
+                                    placeholder="Введите пароль"
                                 />
                                 <button
                                     type="button"

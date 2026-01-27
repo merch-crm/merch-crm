@@ -451,7 +451,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         className={cn(
                             "px-5 py-2.5 rounded-[18px] text-sm font-bold transition-all duration-300",
                             activeCategoryId === cat.id
-                                ? "bg-white text-primary shadow-sm"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
                         )}
                     >
@@ -464,7 +464,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         className={cn(
                             "px-5 py-2.5 rounded-[18px] text-sm font-bold transition-all duration-300",
                             activeCategoryId === "uncategorized"
-                                ? "bg-white text-primary shadow-sm"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
                                 : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
                         )}
                     >

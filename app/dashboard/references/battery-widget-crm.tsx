@@ -22,16 +22,16 @@ export const BatteryWidget = ({ charge = 52 }: { charge?: number }) => {
                         <h1 className="text-[5.8rem] font-[900] text-[#f2c94c] leading-[0.8] tracking-[-0.06em] drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
                             52%
                         </h1>
-                        <p className="text-[#b8b8bd] text-[1.65rem] font-medium mt-3 tracking-tight">
+                        <p className="text-[#b8b8bd] text-[1.65rem] font-medium mt-3 tracking-normal">
                             Charged
                         </p>
                     </div>
 
                     <div>
-                        <p className="text-[#b8b8bd] text-[1.65rem] font-semibold tracking-tight leading-tight">
+                        <p className="text-[#b8b8bd] text-[1.65rem] font-semibold tracking-normal leading-tight">
                             2,5 hours
                         </p>
-                        <p className="text-[#6e6e73] text-[1.35rem] font-medium tracking-tight mt-0.5">
+                        <p className="text-[#6e6e73] text-[1.35rem] font-medium tracking-normal mt-0.5">
                             for full charge
                         </p>
                     </div>

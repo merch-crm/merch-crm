@@ -151,7 +151,7 @@ export function TransactionsClient({
                                                 {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-bold text-slate-900  tracking-tight">{t.category}</div>
+                                                <div className="text-sm font-bold text-slate-900  tracking-normal">{t.category}</div>
                                                 {t.orderNumber && <div className="text-[10px] font-bold text-primary">Заказ #{t.orderNumber} • {t.clientName}</div>}
                                             </div>
                                         </div>
@@ -161,7 +161,7 @@ export function TransactionsClient({
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <div className={cn(
-                                            "text-lg font-bold tracking-tight",
+                                            "text-lg font-bold tracking-normal",
                                             t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                         )}>
                                             {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} ₽

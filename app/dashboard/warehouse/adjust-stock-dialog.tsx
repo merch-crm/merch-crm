@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Plus, Minus, X, AlertCircle, Package, MapPin, RefreshCw, ChevronUp, ChevronDown } from "lucide-react";
+import { Plus, Minus, X, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
-    const canSeeCost = user?.roleName === "Администратор" || user?.roleName === "Руководство";
+    const canSeeCost = user?.roleName === "Администратор" || user?.roleName === "Руководство" || user?.departmentName === "Отдел продаж";
 
     // Lock scroll on mount
     useEffect(() => {
@@ -84,13 +84,17 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
         try {
 
+            const finalCostPrice = (type === "in" || type === "out")
+                ? (costPrice ? parseFloat(costPrice) : (item.costPrice ? Number(item.costPrice) : undefined))
+                : undefined;
+
             const res = await adjustInventoryStock(
                 item.id,
                 amount,
                 type,
                 reason,
                 selectedLocationId,
-                type === "in" && costPrice ? parseFloat(costPrice) : undefined
+                finalCostPrice
             );
             if (res.success) {
                 if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
@@ -115,19 +119,19 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200/60 animate-in zoom-in-95 duration-500 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl border border-slate-200/60 animate-in zoom-in-95 duration-500 overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-50">
                     <div>
-                        <h2 className="text-3xl font-black text-slate-900 tracking-tighter leading-tight">Складская операция</h2>
+                        <h2 className="text-3xl font-black text-slate-900 tracking-normaler leading-tight">Складская операция</h2>
                         <div className="flex items-center gap-2 mt-2">
                             <Package className="w-4 h-4 text-primary" />
-                            <span className="text-[11px] font-bold text-slate-400 tracking-tight truncate max-w-[400px]">{item.name}</span>
+                            <span className="text-[11px] font-bold text-slate-400 tracking-normal truncate max-w-[400px]">{item.name}</span>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all active:scale-95"
+                        className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[24px] bg-slate-50 transition-all active:scale-95"
                     >
                         <X className="h-6 w-6" />
                     </button>
@@ -136,28 +140,28 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                 <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-visible flex-1">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                         {/* LEFT COLUMN */}
-                        <div className="space-y-6 relative z-30">
+                        <div className="space-y-5 relative z-30">
                             {/* Current Stock Indicator */}
-                            <div className="bg-primary/5 rounded-2xl p-6 flex items-center justify-between border border-primary/10">
-                                <div className="space-y-0.5">
-                                    <span className="text-[11px] font-bold text-primary tracking-tight block">Текущий остаток</span>
-                                    <span className="text-[10px] font-medium text-slate-400 truncate max-w-[150px] block">{selectedLocationName}</span>
+                            <div className="bg-primary/5 rounded-[24px] p-6 flex items-center justify-between border border-primary/10">
+                                <div className="space-y-1">
+                                    <span className="text-sm font-black text-slate-900 block">На складе</span>
+                                    <span className="text-[13px] font-bold text-slate-500 block truncate max-w-[200px]">{selectedLocationName}</span>
                                 </div>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-black text-slate-900 tracking-tighter tabular-nums">{selectedLocationId ? currentStockOnLocation : item.quantity}</span>
+                                    <span className="text-3xl font-black text-slate-900 tracking-normaler tabular-nums">{selectedLocationId ? currentStockOnLocation : item.quantity}</span>
                                     <span className="text-xs font-bold text-slate-400">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
                                 </div>
                             </div>
 
                             {/* Type Selector - Tile Style */}
-                            <div className="space-y-4">
-                                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Тип операции</label>
+                            <div className="space-y-2">
+                                <label className="text-sm font-black text-slate-900 ml-1 block">Тип операции</label>
                                 <div className="grid grid-cols-3 gap-3">
                                     <button
                                         type="button"
                                         onClick={() => { setType("in"); setAmount(1); if (navigator.vibrate) navigator.vibrate(10); }}
                                         className={cn(
-                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-2xl transition-all duration-300 overflow-hidden group border-2",
+                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-[24px] transition-all duration-300 overflow-hidden group border-2",
                                             type === "in"
                                                 ? "bg-emerald-50/50 border-emerald-200 shadow-sm"
                                                 : "bg-white border-slate-100 text-slate-400 hover:border-emerald-200/50 hover:bg-emerald-50/30"
@@ -181,7 +185,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                         type="button"
                                         onClick={() => { setType("out"); setAmount(1); if (navigator.vibrate) navigator.vibrate(10); }}
                                         className={cn(
-                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-2xl transition-all duration-300 overflow-hidden group border-2",
+                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-[24px] transition-all duration-300 overflow-hidden group border-2",
                                             type === "out"
                                                 ? "bg-rose-50/50 border-rose-200 shadow-sm"
                                                 : "bg-white border-slate-100 text-slate-400 hover:border-rose-200/50 hover:bg-rose-50/30"
@@ -205,7 +209,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                         type="button"
                                         onClick={() => { setType("set"); setAmount(item.quantity); if (navigator.vibrate) navigator.vibrate(10); }}
                                         className={cn(
-                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-2xl transition-all duration-300 overflow-hidden group border-2",
+                                            "relative flex flex-col items-center justify-center p-4 aspect-square rounded-[24px] transition-all duration-300 overflow-hidden group border-2",
                                             type === "set"
                                                 ? "bg-primary/5 border-primary/20 shadow-sm"
                                                 : "bg-white border-slate-100 text-slate-400 hover:border-primary/20 hover:bg-primary/5"
@@ -229,22 +233,24 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
                             {/* Warehouse Selector */}
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1 flex items-center gap-2">
-                                    <MapPin className="w-3.5 h-3.5" /> Выберите склад
+                                <label className="text-sm font-black text-slate-900 ml-1 block">
+                                    Выберите склад
                                 </label>
                                 <StorageLocationSelect
                                     value={selectedLocationId}
                                     onChange={setSelectedLocationId}
                                     options={Array.isArray(locations) ? locations : []}
+                                    stocks={itemStocks}
                                 />
                             </div>
+
                         </div>
 
                         {/* RIGHT COLUMN */}
-                        <div className="space-y-6">
+                        <div className="space-y-5">
                             {/* Amount Input */}
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">
+                                <label className="text-sm font-black text-slate-900 ml-1 block">
                                     {type === "set" ? "Установить значение" : "Количество"}
                                 </label>
                                 <div className="relative">
@@ -257,9 +263,9 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                         onChange={(e) => setAmount(Number(e.target.value))}
                                         name="quantity"
                                         placeholder="0"
-                                        className="input-premium w-full h-16 pl-6 pr-24 rounded-2xl border border-slate-100 bg-slate-50 text-2xl font-black focus:bg-white focus:border-primary outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none tracking-tighter"
+                                        className="input-premium w-full h-16 pl-6 pr-24 rounded-[24px] border border-slate-100 bg-slate-50 text-2xl font-black focus:bg-white focus:border-primary outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none tracking-normaler"
                                     />
-                                    <span className="absolute right-12 top-1/2 -translate-y-1/2 font-bold text-slate-300 pointer-events-none text-xs tracking-tight">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
+                                    <span className="absolute right-12 top-1/2 -translate-y-1/2 font-bold text-slate-300 pointer-events-none text-xs tracking-normal">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
 
                                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
                                         <button
@@ -282,42 +288,66 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
 
 
 
-                            {type === "in" && canSeeCost && (
+                            {(type === "in" || type === "out") && canSeeCost && (
                                 <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
-                                    <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">
-                                        Обновить себестоимость за шт. (опционально)
+                                    <label className="text-sm font-black text-slate-900 ml-1 block">
+                                        {type === "in" ? "Себестоимость за штуку" : "Учетная цена списания"}
                                     </label>
-                                    <div className="relative">
-                                        <input
-                                            type="number"
-                                            inputMode="decimal"
-                                            step="0.01"
-                                            value={costPrice}
-                                            onChange={(e) => setCostPrice(e.target.value)}
-                                            placeholder="0.00"
-                                            className="input-premium w-full h-14 pl-6 pr-14 rounded-2xl border border-slate-100 bg-slate-50 text-xl font-black focus:bg-white focus:border-primary outline-none transition-all tracking-tighter"
-                                        />
-                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 font-bold text-slate-300 pointer-events-none text-[10px]">RUB / шт.</span>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {/* Current/Previous Cost */}
+                                        <div className="bg-slate-50 rounded-[24px] p-6 border border-slate-100 flex flex-col items-center justify-center text-center h-[100px]">
+                                            <span className="text-[11px] font-black text-slate-900 block whitespace-nowrap">
+                                                {type === "in" ? "Прошлая поставка" : "Тек. себестоимость"}
+                                            </span>
+                                            <div className="flex items-baseline gap-1 mt-2">
+                                                <span className="text-2xl font-black text-slate-400 tabular-nums">
+                                                    {item.costPrice ? Number(item.costPrice).toLocaleString('ru-RU', { minimumFractionDigits: 2 }) : "---"}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* New Cost Input */}
+                                        <div className="relative bg-slate-50 rounded-[24px] p-6 border border-slate-100 h-[100px] flex flex-col items-center justify-center text-center focus-within:bg-white focus-within:border-primary/20 focus-within:ring-4 focus-within:ring-primary/5 transition-all">
+                                            <label className="text-[11px] font-black text-slate-900 block whitespace-nowrap">
+                                                {type === "in" ? "Новая цена" : "Цена списания"}
+                                            </label>
+                                            <div className="flex items-baseline gap-1 mt-1 relative w-full">
+                                                <input
+                                                    type="number"
+                                                    inputMode="decimal"
+                                                    step="0.01"
+                                                    value={costPrice}
+                                                    onChange={(e) => setCostPrice(e.target.value)}
+                                                    placeholder={item.costPrice ? String(item.costPrice) : "0.00"}
+                                                    className="w-full bg-transparent text-2xl font-black text-primary outline-none tabular-nums placeholder:text-primary/20 text-center"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
+                                    <p className="text-[10px] font-bold text-slate-300 ml-1">
+                                        {type === "in"
+                                            ? "* Если оставить поле пустым, применится прошлая цена"
+                                            : "* Будет использована для расчета суммы убытка"}
+                                    </p>
                                 </div>
                             )}
 
                             {/* Reason Input */}
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-slate-500 tracking-tight ml-1">Причина <span className="text-rose-500">*</span></label>
+                                <label className="text-sm font-black text-slate-900 ml-1 block">Причина <span className="text-rose-500">*</span></label>
                                 <textarea
                                     value={reason}
                                     required
                                     onChange={(e) => setReason(e.target.value)}
                                     placeholder="Опишите причину изменений..."
-                                    className="w-full min-h-[80px] p-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-medium text-slate-900 focus:bg-white focus:border-primary outline-none transition-all resize-none placeholder:text-slate-300"
+                                    className="w-full min-h-[80px] p-4 rounded-[24px] border border-slate-100 bg-slate-50 text-sm font-medium text-slate-900 focus:bg-white focus:border-primary outline-none transition-all resize-none placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {error && (
-                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
+                        <div className="flex items-center gap-3 p-4 rounded-[24px] bg-rose-50 text-rose-600 border border-rose-100">
                             <AlertCircle className="w-5 h-5 shrink-0" />
                             <p className="text-[12px] font-bold leading-tight">{error}</p>
                         </div>
@@ -328,7 +358,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                             type="submit"
                             disabled={isSubmitting || amount <= 0 || !reason.trim()}
                             className={cn(
-                                "w-full h-16 rounded-2xl font-black text-sm tracking-tight shadow-xl transition-all active:scale-95 disabled:opacity-50",
+                                "w-full h-16 rounded-[24px] font-black text-sm tracking-normal shadow-xl transition-all active:scale-95 disabled:opacity-50",
                                 type === "in"
                                     ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20 text-white"
                                     : type === "out" ? "bg-rose-600 hover:bg-rose-700 shadow-rose-600/20 text-white" : "btn-primary hover:bg-primary/90 shadow-primary/20 text-white"

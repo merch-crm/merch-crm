@@ -26,7 +26,7 @@ export default async function AdminLayout({
                         <ShieldAlert className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <span className="font-bold text-lg tracking-tight leading-none block">Админ-панель</span>
+                        <span className="font-bold text-lg tracking-normal leading-none block">Админ-панель</span>
                         <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Система</span>
                     </div>
                 </Link>

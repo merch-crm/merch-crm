@@ -88,7 +88,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
 
                     <div className="flex items-center justify-between mb-12">
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Рабочий план</h2>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-normaler">Рабочий план</h2>
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">управление временем и задачами</p>
                         </div>
                         <div className="flex -space-x-3">
@@ -118,7 +118,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                                                 <h3 className={cn(
-                                                    "text-lg font-black tracking-tight truncate",
+                                                    "text-lg font-black tracking-normal truncate",
                                                     task.status === 'done' ? "text-slate-300 line-through" : "text-slate-900 group-hover/item:text-primary transition-colors"
                                                 )}>
                                                     {task.title}
@@ -176,7 +176,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                         <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center mb-10 border border-white/10 group-hover/info:scale-110 group-hover/info:rotate-3 transition-all duration-500">
                             <Sparkles className="w-6 h-6 text-primary" />
                         </div>
-                        <h2 className="text-2xl font-black mb-8 tracking-tighter">Сводная информация</h2>
+                        <h2 className="text-2xl font-black mb-8 tracking-normaler">Сводная информация</h2>
 
                         <div className="space-y-6">
                             <div className="p-5 rounded-[24px] bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">

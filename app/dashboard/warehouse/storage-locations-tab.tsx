@@ -324,7 +324,7 @@ const LocationCardContent = memo(({
             </div>
 
             <div className="flex-1 flex flex-col justify-center py-4">
-                <div className="text-6xl font-black text-slate-900 tracking-tighter mb-1">
+                <div className="text-6xl font-black text-slate-900 tracking-normaler mb-1">
                     {totalItemsInLoc}
                 </div>
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -336,13 +336,13 @@ const LocationCardContent = memo(({
             <div className="space-y-6 mt-auto">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none text-balance">
+                        <h3 className="text-2xl font-black text-slate-900 tracking-normal leading-none text-balance">
                             {loc.name}
                         </h3>
                         {loc.isDefault && <Star className="w-4 h-4 text-primary fill-primary shrink-0" />}
                         {loc.isSystem && <Lock className="w-3 h-3 text-slate-300 shrink-0" />}
                     </div>
-                    <p className="text-[10px] font-bold text-slate-400 truncate tracking-tight">
+                    <p className="text-[10px] font-bold text-slate-400 truncate tracking-normal">
                         {loc.address || "Адрес не указан"}
                     </p>
                 </div>
@@ -365,7 +365,7 @@ const LocationCardContent = memo(({
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {categoriesList.slice(0, 2).map((cat, idx) => (
-                                <span key={idx} className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+                                <span key={idx} className="text-[9px] font-black text-slate-400 uppercase tracking-normaler">
                                     {cat.name}: <span className="text-slate-900">{cat.count}</span>
                                 </span>
                             ))}

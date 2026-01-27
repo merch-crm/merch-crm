@@ -2,14 +2,37 @@
 
 import { Search, Command } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function FloatingSearch() {
     const [isHovered, setIsHovered] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        // Проверяем наличие открытых диалогов/модалок
+        const checkModals = () => {
+            const hasDialog = document.querySelector('[role="dialog"]') ||
+                document.querySelector('[data-radix-portal]') ||
+                document.body.classList.contains('overflow-hidden') ||
+                document.body.style.overflow === 'hidden';
+            setIsModalOpen(!!hasDialog);
+        };
+
+        // Начальная проверка
+        checkModals();
+
+        // Следим за изменениями в DOM
+        const observer = new MutationObserver(checkModals);
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        return () => observer.disconnect();
+    }, []);
 
     const handleOpen = () => {
         window.dispatchEvent(new CustomEvent("open-command-menu"));
     };
+
+    if (isModalOpen) return null;
 
     return (
         <motion.button
@@ -21,7 +44,7 @@ export function FloatingSearch() {
             onClick={handleOpen}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="fixed bottom-8 right-8 z-[60] h-14 bg-white/80 backdrop-blur-xl border border-primary/20 rounded-full shadow-2xl shadow-primary/10 hover:shadow-primary/20 hover:border-primary/40 transition-shadow group flex items-center overflow-hidden"
+            className="fixed bottom-8 right-8 z-[110] h-14 bg-white/80 backdrop-blur-xl border border-primary/20 rounded-full shadow-2xl shadow-primary/10 hover:shadow-primary/20 hover:border-primary/40 transition-shadow group flex items-center overflow-hidden"
         >
             <div className="w-14 h-14 flex items-center justify-center shrink-0">
                 <Search className="w-6 h-6 text-primary" />

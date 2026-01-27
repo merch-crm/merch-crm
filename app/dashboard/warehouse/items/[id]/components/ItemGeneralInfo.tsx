@@ -9,7 +9,8 @@ import {
     Droplets,
     Search,
 } from "lucide-react";
-import { QualityDropdown } from "../../../quality-dropdown";
+import { CLOTHING_QUALITIES } from "../../../category-utils";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 import { Session } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -71,12 +72,42 @@ export function ItemGeneralInfo({
             "антрацит": "#1E293B",
             "бирюза": "#0D9488",
             "индиго": "#4F46E5",
+            "баблгам": "#FF69B4",
+            "молочный": "#FFFAF0",
+            "кремовый": "#FFFDD0",
+            "слоновая": "#FFFFF0",
+            "коричневый": "#8B4513",
+            "марсала": "#955251",
+            "коралл": "#FF7F50",
+            "лаванда": "#E6E6FA",
+            "сирень": "#C8A2C8",
+            "терракот": "#E2725B",
+            "пудра": "#F5E6E3",
+            "капучино": "#A67B5B",
+            "карамель": "#FFD59A",
+            "персик": "#FFCBA4",
+            "малина": "#E30B5C",
+            "вишня": "#DE3163",
+            "изумруд": "#50C878",
+            "морская волна": "#008B8B",
+            "небесный": "#87CEEB",
+            "сапфир": "#0F52BA",
+            "лимон": "#FFF44F",
+            "мокко": "#4A3728",
         };
         const lowerLabel = label.toLowerCase();
         for (const [key, hex] of Object.entries(colors)) {
             if (lowerLabel.includes(key)) return hex;
         }
         return null;
+    };
+
+    const isLightColor = (hex: string) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.65;
     };
 
     // Param mapping for Clean Minimal style
@@ -140,7 +171,7 @@ export function ItemGeneralInfo({
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Parameters Grid */}
             <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {allParams.map((param) => {
                         const attrLabel = getAttrLabel(param.slug, param.code as string | number | null);
                         const hexColor = getColorHex(attrLabel);
@@ -152,20 +183,29 @@ export function ItemGeneralInfo({
                                 {/* 3D-like Icon/Color Container */}
                                 <div
                                     className={cn(
-                                        "w-10 h-10 shrink-0 flex items-center justify-center relative transition-all duration-500 group-hover:scale-110",
+                                        "w-11 h-11 shrink-0 flex items-center justify-center relative transition-all duration-500 group-hover:scale-110",
                                         param.slug === 'color' ? "rounded-full" : "rounded-xl",
                                         !config.customHex ? "bg-slate-100 text-slate-500" : "text-white"
                                     )}
                                     style={config.customHex ? {
                                         backgroundColor: config.customHex,
                                         boxShadow: `0 4px 12px ${config.customHex}40`,
-                                        border: attrLabel.toLowerCase().includes('белый') ? '1px solid #e2e8f0' : 'none'
+                                        border: attrLabel.toLowerCase().includes('белый') || attrLabel.toLowerCase().includes('молочный')
+                                            ? '2px solid #fff'
+                                            : '2px solid rgba(255,255,255,0.7)',
+                                        outline: '1px solid rgba(0,0,0,0.05)'
                                     } : undefined}
                                 >
                                     {param.slug === 'color' && config.customHex ? (
                                         <div className="relative z-10 w-full h-full flex items-center justify-center">
-                                            <div className="absolute inset-0 rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]" />
-                                            <Icon className="w-5 h-5 text-slate-900/20" />
+                                            <div className={cn(
+                                                "absolute inset-0 rounded-full",
+                                                isLightColor(config.customHex) ? "shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" : "shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"
+                                            )} />
+                                            <Icon className={cn(
+                                                "w-5 h-5 transition-colors duration-500",
+                                                isLightColor(config.customHex) ? "text-slate-900/40" : "text-white/60"
+                                            )} />
                                         </div>
                                     ) : (
                                         <>
@@ -176,60 +216,72 @@ export function ItemGeneralInfo({
                                 </div>
 
                                 <div className="space-y-0.5 min-w-0">
+                                    <span className="block text-[11px] font-bold text-slate-400 transition-colors group-hover:text-slate-500 mb-1">
+                                        {param.label}
+                                    </span>
                                     <div className="min-w-0">
                                         {isEditing ? (
-                                            param.slug === 'quality' ? (
-                                                <QualityDropdown
-                                                    value={param.code as string || ""}
-                                                    onChange={(_name: string, code: string) => {
-                                                        onUpdateAttribute(param.slug, code);
-                                                        onUpdateField('qualityCode', code);
-                                                    }}
-                                                    compact={true}
-                                                    className="w-full"
-                                                />
-                                            ) : (
-                                                <select
-                                                    value={(param.code as string) || ""}
-                                                    onChange={(e) => {
-                                                        const val = e.target.value;
-                                                        onUpdateAttribute(param.slug, val);
-                                                        if (param.isSku) {
-                                                            const map: Record<string, string> = {
-                                                                'brand': 'brandCode',
-                                                                'material': 'materialCode',
-                                                                'size': 'sizeCode',
-                                                                'color': 'attributeCode'
+                                            <PremiumSelect
+                                                value={(param.code as string) || ""}
+                                                onChange={(val) => {
+                                                    onUpdateAttribute(param.slug, val);
+                                                    if (param.slug === 'quality') {
+                                                        onUpdateField('qualityCode', val);
+                                                    } else if (param.isSku) {
+                                                        const map: Record<string, string> = {
+                                                            'brand': 'brandCode',
+                                                            'material': 'materialCode',
+                                                            'size': 'sizeCode',
+                                                            'color': 'attributeCode'
+                                                        };
+                                                        if (map[param.slug]) onUpdateField(map[param.slug], val);
+                                                    }
+                                                }}
+                                                options={param.slug === 'quality'
+                                                    ? CLOTHING_QUALITIES.map(q => ({
+                                                        id: q.code,
+                                                        title: q.name,
+                                                    }))
+                                                    : allAttributes
+                                                        .filter(a => a.type === param.slug)
+                                                        .map(attr => {
+                                                            // For colors: first check meta.hex from DB, then fallback to name mapping
+                                                            let colorHex: string | undefined = undefined;
+                                                            if (param.slug === 'color') {
+                                                                // Robust meta parsing (meta can be object or JSON string)
+                                                                let meta: unknown = attr.meta;
+                                                                if (typeof meta === 'string') {
+                                                                    try { meta = JSON.parse(meta); } catch { meta = {}; }
+                                                                }
+                                                                const typedMeta = meta as { hex?: string } | null;
+                                                                colorHex = typedMeta?.hex || getColorHex(attr.name) || undefined;
+                                                            }
+                                                            return {
+                                                                id: attr.value,
+                                                                title: attr.name,
+                                                                color: colorHex
                                                             };
-                                                            if (map[param.slug]) onUpdateField(map[param.slug], val);
-                                                        }
-                                                    }}
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-[14px] font-bold text-slate-900 focus:bg-white focus:border-primary outline-none appearance-none transition-all"
-                                                >
-                                                    <option value="">—</option>
-                                                    {allAttributes.filter(a => a.type === param.slug).map(attr => (
-                                                        <option key={attr.id} value={attr.value}>{attr.name}</option>
-                                                    ))}
-                                                </select>
-                                            )
+                                                        })
+                                                }
+                                                placeholder="—"
+                                                compact={true}
+                                            />
                                         ) : (
                                             <div
-                                                className="text-lg font-bold text-slate-900 tracking-tight leading-tight group-hover:text-black transition-colors overflow-hidden text-ellipsis cursor-pointer"
+                                                className="text-lg font-bold text-slate-900 tracking-normal leading-tight group-hover:text-black transition-colors overflow-hidden text-ellipsis cursor-pointer"
                                                 onDoubleClick={onEdit}
                                             >
                                                 {attrLabel}
                                             </div>
                                         )}
                                     </div>
-                                    <span className="block text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-500 uppercase tracking-wider">
-                                        {param.label}
-                                    </span>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
             </div>
+
         </div>
     );
 }

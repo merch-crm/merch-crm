@@ -170,7 +170,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         <GraduationCap className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <span className="font-bold text-lg tracking-tight leading-none block">MerchCRM</span>
+                        <span className="font-bold text-lg tracking-normal leading-none block">MerchCRM</span>
                         <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Profile</span>
                     </div>
                 </div>
@@ -243,7 +243,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                 {/* Top Bar */}
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">
                             {view === "profile" && "Обзор профиля"}
                             {view === "settings" && "Настройки аккаунта"}
                             {view === "statistics" && "Аналитика и KPI"}

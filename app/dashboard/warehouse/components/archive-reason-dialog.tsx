@@ -43,40 +43,34 @@ export function ArchiveReasonDialog({
     return (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
             <div
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
+                className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-500"
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white rounded-[24px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col">
-                {/* Header */}
-                <div className="p-8 pb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500 shadow-sm">
-                            <Archive className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">{displayTitle}</h3>
-                            <div className="text-[10px] font-bold text-slate-400 mt-0.5">
-                                {pluralize(itemCount, 'Выбрана', 'Выбрано', 'Выбрано')} {itemCount} {pluralize(itemCount, 'позиция', 'позиции', 'позиций')}
-                            </div>
-                        </div>
+            <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-white/20 animate-in zoom-in-95 duration-500 overflow-hidden flex flex-col">
+                {/* Header Section */}
+                <div className="p-10 pb-6 flex flex-col items-center text-center">
+                    <div className="w-20 h-20 rounded-[28px] bg-amber-50 text-amber-500 flex items-center justify-center mb-6 shadow-sm shadow-amber-500/10">
+                        <Archive className="w-10 h-10" />
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 transition-all active:scale-95"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
+
+                    <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-tight px-4">
+                        {displayTitle}
+                    </h3>
+
+                    <div className="mt-2 inline-flex items-center px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                        {pluralize(itemCount, 'Выбрана', 'Выбрано', 'Выбрано')} {itemCount} {pluralize(itemCount, 'позиция', 'позиции', 'позиций')}
+                    </div>
                 </div>
 
-                <div className="p-8 pt-4 space-y-6">
+                <div className="px-10 space-y-6">
                     <div className="space-y-4">
-                        <p className="text-sm font-bold text-slate-600 leading-relaxed">
+                        <p className="text-[15px] font-bold text-slate-400 leading-relaxed text-center">
                             {displayDescription}
                         </p>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 ml-1">
+                        <div className="space-y-3 pt-2">
+                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">
                                 Причина архивации <span className="text-rose-500">*</span>
                             </label>
                             <textarea
@@ -86,40 +80,53 @@ export function ArchiveReasonDialog({
                                     setReason(e.target.value);
                                     if (error) setError(false);
                                 }}
-                                placeholder="Например: Снято с производства, поврежденная партия..."
+                                placeholder="Например: Снято с производства или технический брак..."
                                 className={cn(
-                                    "w-full min-h-[100px] p-5 rounded-2xl border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-300",
+                                    "w-full min-h-[120px] p-6 rounded-[28px] border text-[14px] font-semibold transition-all outline-none resize-none placeholder:text-slate-200",
                                     error
                                         ? "bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
-                                        : "bg-slate-50 border-slate-100 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
+                                        : "bg-slate-50 border-slate-100 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-inner"
                                 )}
                             />
                             {error && (
-                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1">
-                                    <AlertCircle className="w-3 h-3" />
-                                    <span>Пожалуйста, укажите причину</span>
+                                <div className="flex items-center gap-2 text-[11px] font-black text-rose-500 ml-2 animate-in slide-in-from-top-1">
+                                    <AlertCircle className="w-3.5 h-3.5" />
+                                    <span>Укажите причину для продолжения</span>
                                 </div>
                             )}
                         </div>
                     </div>
-
-                    <div className="flex gap-3">
-                        <Button
-                            variant="ghost"
-                            onClick={onClose}
-                            className="flex-1 h-14 rounded-2xl font-black text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all"
-                        >
-                            Отмена
-                        </Button>
-                        <Button
-                            onClick={handleConfirm}
-                            disabled={isLoading || !reason.trim()}
-                            className="flex-[2] h-14 rounded-2xl btn-primary shadow-xl shadow-primary/20 text-white font-black text-xs transition-all active:scale-95 disabled:opacity-50"
-                        >
-                            {isLoading ? "Архивация..." : "Архивировать"}
-                        </Button>
-                    </div>
                 </div>
+
+                <div className="p-10 flex flex-col sm:flex-row gap-4 pt-8">
+                    <Button
+                        variant="ghost"
+                        onClick={onClose}
+                        className="flex-1 h-14 rounded-2xl font-black text-[13px] text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent hover:border-slate-100"
+                    >
+                        Отмена
+                    </Button>
+                    <Button
+                        onClick={handleConfirm}
+                        disabled={isLoading || !reason.trim()}
+                        className="flex-[1.5] h-14 rounded-2xl bg-amber-500 hover:bg-amber-600 shadow-xl shadow-amber-500/20 text-white font-black text-[13px] transition-all active:scale-95 disabled:opacity-40"
+                    >
+                        {isLoading ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <span>Обработка</span>
+                            </div>
+                        ) : "Архивировать"}
+                    </Button>
+                </div>
+
+                {/* Top Close Button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-8 right-8 w-10 h-10 rounded-xl bg-slate-50 text-slate-300 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-all group"
+                >
+                    <X className="w-5 h-5 transition-transform group-hover:rotate-90 duration-300" />
+                </button>
             </div>
         </div>
     );

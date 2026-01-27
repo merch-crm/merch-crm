@@ -45,7 +45,7 @@ export default function LuminAnalytics() {
                         <span className="sr-only">Back</span>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
                     </button>
-                    <h1 className="text-4xl font-normal tracking-tight text-slate-900">Analytics</h1>
+                    <h1 className="text-4xl font-normal tracking-normal text-slate-900">Analytics</h1>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function LuminAnalytics() {
                     </div>
 
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
-                        <span className="text-xl font-mono tracking-tight">$28,460.00</span>
+                        <span className="text-xl font-mono tracking-normal">$28,460.00</span>
                         <span className="text-xs text-slate-400">This is $5,650.00 less than last year</span>
                     </div>
                 </div>

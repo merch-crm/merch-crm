@@ -24,7 +24,7 @@ export default function TwistyCRM() {
                     <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg italic">
                         T
                     </div>
-                    <span className="font-bold text-lg tracking-tight">TWISTY</span>
+                    <span className="font-bold text-lg tracking-normal">TWISTY</span>
                 </div>
 
                 <nav className="hidden md:flex items-center gap-8 bg-transparent text-sm font-medium text-slate-500">

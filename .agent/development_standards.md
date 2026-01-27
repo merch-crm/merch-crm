@@ -56,3 +56,116 @@
 - **Сохранение дизайна**: При исправлении ошибок линтинга, типов (TypeScript) или техническом рефакторинге СТРОГО ЗАПРЕЩЕНО менять визуальный вид страницы, расположение элементов, отступы или логику UI.
 - **Восстановление**: Если техническое исправление требует изменения структуры кода (например, разделения на компоненты), необходимо гарантировать, что итоговый рендер полностью соответствует оригиналу.
 - **Проверка**: Перед коммитом технических правок сверяйте текущий вид страницы с предыдущим состоянием.
+
+## 8. Компоновка PremiumSelect (выпадающие списки)
+
+Компонент `PremiumSelect` автоматически определяет оптимальный layout на основе количества опций и средней длины текста.
+
+### Правила автоматического выбора layout:
+
+| Опций | Средняя длина текста | Layout |
+|-------|---------------------|--------|
+| 1-3 | любая | Вертикальный список |
+| 4-8 | ≤ 10 символов | Grid 2 колонки |
+| 9-15 | ≤ 4 символов | Grid 3 колонки |
+| 16+ | любая | Вертикальный список + поиск |
+
+### Примеры:
+- **Статусы** (Активен, Архив) → вертикальный список
+- **Размеры** (XS, S, M, L, XL) → grid 2 колонки
+- **Короткие коды** (A, B, C, D, E...) → grid 3 колонки
+- **Бренды** (16+ названий) → вертикальный список с поиском
+
+### Использование:
+```tsx
+// Автоматический выбор layout (по умолчанию включен)
+<PremiumSelect options={options} value={value} onChange={onChange} />
+
+// Принудительный grid 2 колонки
+<PremiumSelect options={options} value={value} onChange={onChange} gridColumns={2} />
+
+// Отключить автоматический layout
+<PremiumSelect options={options} value={value} onChange={onChange} autoLayout={false} />
+```
+
+## 9. Динамический контраст (Светлое/Темное)
+
+При использовании динамических цветов (например, индикаторы цвета товара, метки категорий) необходимо автоматически подбирать контрастный цвет для иконок или текста.
+
+### Хелпер для определения яркости:
+```typescript
+const isLightColor = (hex: string) => {
+    // Убираем # если он есть
+    const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
+    const r = parseInt(cleanHex.slice(0, 2), 16);
+    const g = parseInt(cleanHex.slice(2, 4), 16);
+    const b = parseInt(cleanHex.slice(4, 6), 16);
+    
+    // Формула яркости (Luminance)
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Порог 0.65 оптимален для большинства интерфейсов
+    return luminance > 0.65;
+};
+```
+
+### Пример использования в UI:
+```tsx
+const hexColor = "#FF69B4"; // Динамический цвет
+const isLight = isLightColor(hexColor);
+
+return (
+    <div 
+        style={{ backgroundColor: hexColor }} 
+        className="w-10 h-10 rounded-full flex items-center justify-center"
+    >
+        <Droplets className={cn(
+            "w-5 h-5 transition-colors",
+            isLight ? "text-slate-900/40" : "text-white/60"
+        )} />
+    </div>
+);
+```
+
+### Правила:
+1. **Автоматизация**: Не задавайте цвет иконки вручную для динамических подложек.
+2. **Порог**: Для светлых тем проекта используйте порог яркости `0.65`.
+3. **Объем**: Для создания эффекта объема на светлых цветах используйте темные внутренние тени (`shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]`), на темных — светлые.
+
+## 10. Панели быстрых действий (Bulk Actions Panel)
+
+Все всплывающие панели массовых действий в приложении должны иметь одинаковый дизайн.
+
+### Стандарт оформления:
+- **Расположение**: `fixed bottom-10 left-1/2 -translate-x-1/2 z-[100]`.
+- **Контейнер**:
+  - **Стиль**: `bg-white/90` (чистый системный белый).
+  - **Эффекты**: `backdrop-blur-3xl`, `border border-slate-200/60`, `shadow-[0_20px_50px_rgba(0,0,0,0.1)]`.
+  - **Форма**: `rounded-full` (стиль "pill").
+  - **Внутренние отступы**: `p-2.5 px-8` (обязательно широкие края, чтобы текст не прижимался).
+  - **Расстояние (Gap)**: `gap-4` или `gap-6` (для просторности).
+  - **Анимация**: `animate-in slide-in-from-bottom-10 fade-in duration-500`.
+- **Элементы внутри**:
+  - **Счетчик**: Круглый индикатор (`w-10 h-10 rounded-full`) цвета `bg-primary` с текстом `text-white` и тенью `shadow-lg shadow-primary/20`.
+  - **Кнопки действий**: `rounded-full`, эффект `hover:bg-slate-100`, плавный переход `transition-all`.
+  - **Текст и иконки**: Основной цвет `text-slate-500`, при наведении `text-slate-900`.
+  - **Разделители**: `w-px h-8 bg-slate-200`.
+
+### Пример структуры:
+```tsx
+<div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] flex items-center bg-white/90 backdrop-blur-3xl p-2.5 px-8 gap-6 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] animate-in slide-in-from-bottom-10 fade-in duration-500 border border-slate-200/60">
+    <div className="flex items-center gap-3 px-2">
+        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+            {selectedIds.length}
+        </div>
+        <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Выбрано</span>
+    </div>
+    
+    <div className="w-px h-8 bg-slate-200 mx-2" />
+    
+    <button className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group">
+        <Icon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Действие</span>
+    </button>
+</div>
+```

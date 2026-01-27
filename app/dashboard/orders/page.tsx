@@ -10,7 +10,6 @@ import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { pluralize } from "@/lib/pluralize";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -111,7 +110,7 @@ export default async function OrdersPage({
                     totalItems={total}
                     pageSize={10}
                     currentPage={page}
-                    itemName={pluralize(total, 'заказ', 'заказа', 'заказов')}
+                    itemNames={['заказа', 'заказов', 'заказов']}
                 />
             </div>
         </div>

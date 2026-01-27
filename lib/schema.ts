@@ -229,6 +229,7 @@ export const inventoryItems = pgTable("inventory_items", {
     reservedQuantity: integer("reserved_quantity").default(0).notNull(),
     materialComposition: jsonb("material_composition").default("{}"), // Состав материалов (%)
     costPrice: decimal("cost_price", { precision: 10, scale: 2 }), // Себестоимость
+    sellingPrice: decimal("selling_price", { precision: 10, scale: 2 }), // Продажная стоимость
     isArchived: boolean("is_archived").default(false).notNull(), // Архивация
     archivedAt: timestamp("archived_at"),
     archivedBy: uuid("archived_by").references(() => users.id),

@@ -11,8 +11,7 @@ import { Session } from "@/lib/auth";
 import { Lock } from "lucide-react";
 
 import { Category } from "./inventory-client";
-import { CategorySelect } from "./category-select";
-import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS, getIconGroupForIcon } from "./category-utils";
+import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS } from "./category-utils";
 
 interface EditCategoryDialogProps {
     category: Category & { prefix?: string | null, isSystem?: boolean };
@@ -31,11 +30,10 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         return getIconNameFromName(category.name);
     });
     const [selectedColor, setSelectedColor] = useState(category.color || "primary");
-    const [selectedParentId, setSelectedParentId] = useState(category.parentId || "");
+    const selectedParentId = category.parentId || "";
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
     const [showIcons, setShowIcons] = useState(false);
-    const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
 
     const [subPending, setSubPending] = useState(false);
 
@@ -113,7 +111,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             />
 
             <div className="relative w-full max-w-4xl bg-white rounded-[var(--radius)] shadow-2xl border border-white/20 animate-in zoom-in-95 fade-in duration-300 overflow-visible max-h-[95vh] flex flex-col">
-                <div className="flex items-center justify-between p-10 pb-6 shrink-0">
+                <div className="flex items-center justify-between p-6 pb-4 shrink-0">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
                             <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center", getColorStyles(selectedColor))}>
@@ -132,7 +130,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </button>
                 </div>
 
-                <form id="edit-category-form" onSubmit={handleSubmit} className="px-8 py-3 flex flex-col overflow-y-auto custom-scrollbar overflow-x-visible">
+                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-2 flex flex-col overflow-visible custom-scrollbar overflow-x-visible">
                     {error && (
                         <div className="mb-6 p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-[var(--radius)] border border-rose-100 animate-in shake duration-500">
                             {error}
@@ -144,93 +142,33 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         isParentCategory ? "grid-cols-2" : "grid-cols-1"
                     )}>
                         {/* LEFT COLUMN: All Category Information */}
-                        <div className={cn(isParentCategory ? "col-span-1" : "col-span-1", "space-y-2")}>
+                        <div className={cn(isParentCategory ? "col-span-1" : "col-span-1", "space-y-1")}>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-2 col-span-2">
-                                    <label className="text-xs font-semibold text-slate-500 ml-1">Название категории</label>
-                                    <input
-                                        name="name"
-                                        required
-                                        defaultValue={category.name}
-                                        placeholder="Напр. Футболки"
-                                        className="input-premium w-full px-4 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4 col-span-2">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-500 ml-1">Единственное число</label>
+                                <div className="grid grid-cols-3 gap-4 col-span-2">
+                                    <div className="space-y-2 col-span-2">
+                                        <label className="text-xs font-semibold text-slate-500 ml-1">Название категории</label>
                                         <input
-                                            name="singularName"
-                                            defaultValue={category.singularName || ""}
-                                            placeholder="Напр. Футболка"
-                                            className="input-premium w-full px-4 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-400  ml-1">Множественное число</label>
-                                        <input
-                                            name="pluralName"
-                                            defaultValue={(category as Category & { pluralName?: string }).pluralName || ""}
+                                            name="name"
+                                            required
+                                            defaultValue={category.name}
                                             placeholder="Напр. Футболки"
                                             className="input-premium w-full px-4 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-lg"
                                         />
                                     </div>
-                                </div>
-
-                                <div className="space-y-2 col-span-2">
-                                    <label className="text-xs font-semibold text-slate-500 ml-1">Грамматический род</label>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {[
-                                            { id: 'masculine', label: 'Мужской (он)', hint: 'Белый' },
-                                            { id: 'feminine', label: 'Женский (она)', hint: 'Белая' },
-                                            { id: 'neuter', label: 'Средний (оно)', hint: 'Белое' }
-                                        ].map((g) => (
-                                            <label key={g.id} className={cn(
-                                                "relative flex flex-col items-center justify-center p-3 rounded-[var(--radius)] border-2 cursor-pointer transition-all",
-                                                (category.gender === g.id || (!category.gender && g.id === 'masculine'))
-                                                    ? "border-primary bg-primary/10"
-                                                    : "border-slate-100 bg-slate-50/30 hover:bg-slate-50 hover:border-slate-200"
-                                            )}>
-                                                <input
-                                                    type="radio"
-                                                    name="gender"
-                                                    value={g.id}
-                                                    defaultChecked={category.gender === g.id || (!category.gender && g.id === 'masculine')}
-                                                    className="sr-only"
-                                                />
-                                                <span className={cn(
-                                                    "text-[10px] font-bold mb-1",
-                                                    (category.gender === g.id || (!category.gender && g.id === 'masculine')) ? "text-primary" : "text-slate-400"
-                                                )}>{g.label}</span>
-                                                <span className="text-[12px] font-bold text-slate-500">{g.hint}</span>
-                                            </label>
-                                        ))}
+                                    <div className="space-y-2 col-span-1">
+                                        <label className="text-xs font-semibold text-slate-500 ml-1">Артикул</label>
+                                        <input
+                                            name="prefix"
+                                            defaultValue={category.prefix || ""}
+                                            placeholder="TS"
+                                            className="input-premium w-full px-4 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center text-lg"
+                                            onInput={(e) => {
+                                                const val = e.currentTarget.value;
+                                                if (/[а-яА-ЯёЁ]/.test(val)) alert("Используйте латиницу");
+                                                e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '');
+                                            }}
+                                        />
                                     </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-500 ml-1">Артикул</label>
-                                    <input
-                                        name="prefix"
-                                        defaultValue={category.prefix || ""}
-                                        placeholder="TS"
-                                        className="input-premium w-full px-4 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 placeholder:text-slate-300 bg-slate-50/50 hover:bg-white text-center"
-                                        onInput={(e) => {
-                                            const val = e.currentTarget.value;
-                                            if (/[а-яА-ЯёЁ]/.test(val)) alert("Используйте латиницу");
-                                            e.currentTarget.value = val.replace(/[^a-zA-Z0-9-]/g, '');
-                                        }}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-500 ml-1">Приоритет</label>
-                                    <input
-                                        type="number"
-                                        name="sortOrder"
-                                        defaultValue={category.sortOrder || 0}
-                                        className="w-full h-14 px-6 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-slate-900 bg-slate-50/50 hover:bg-white text-center h-12 px-4"
-                                    />
                                 </div>
                             </div>
 
@@ -241,44 +179,75 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         name="description"
                                         defaultValue={category.description || ""}
                                         placeholder="Краткое описание для сайта или склада..."
-                                        className="w-full min-h-[80px] p-5 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed p-5 min-h-[80px]"
+                                        className="w-full min-h-[60px] p-3 rounded-[var(--radius)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium text-sm placeholder:text-slate-300 resize-none bg-slate-50/50 hover:bg-white leading-relaxed"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-xs font-semibold text-slate-500 ml-1">Визуальное оформление</label>
-                                    <div className="p-4 bg-white rounded-[var(--radius)] border border-slate-100 shadow-sm space-y-4 min-h-[140px] flex flex-col justify-center p-4 bg-white">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <div className="flex items-center gap-3 shrink-0">
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm",
-                                                    selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300"
-                                                )}>
-                                                    {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-5 h-5" })}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {/* ICON BLOCK */}
+                                        <div className="relative p-3 bg-white rounded-[var(--radius)] border border-slate-100 shadow-sm flex flex-col justify-center gap-2">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 shadow-sm", selectedIcon ? "text-slate-900 ring-4 ring-slate-100/50" : "text-slate-300")}>
+                                                        {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-5 h-5" })}
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-[10px] font-bold text-slate-500 block leading-none mb-1">ИКОНКА</span>
+                                                        <span className="text-[11px] font-bold text-slate-700 block leading-none truncate max-w-[100px]">
+                                                            {ICONS.find(i => i.name === selectedIcon)?.label || "Не выбрана"}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <span className="text-[10px] font-bold text-slate-500 block leading-none mb-1">ИКОНКА</span>
-                                                    <span className="text-[11px] font-bold text-slate-700 block leading-none truncate max-w-[70px]">
-                                                        {ICONS.find(i => i.name === selectedIcon)?.label || "Не выбрана"}
-                                                    </span>
-                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowIcons(!showIcons)}
+                                                    className="h-8 px-3 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 text-[9px] font-bold text-slate-500 shrink-0 shadow-sm active:scale-95"
+                                                >
+                                                    {showIcons ? "СВЕРНУТЬ" : "ВЫБРАТЬ"}
+                                                    <ChevronDown className={cn("w-2.5 h-2.5 transition-transform", showIcons && "rotate-180")} />
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setShowIcons(!showIcons);
-                                                    if (!showIcons && selectedIcon) {
-                                                        setExpandedGroupId(getIconGroupForIcon(selectedIcon)?.id || ICON_GROUPS[0].id);
-                                                    }
-                                                }}
-                                                className="h-8 px-3 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 text-[9px] font-bold text-slate-500 shrink-0 shadow-sm active:scale-95"
-                                            >
-                                                {showIcons ? "СВЕРНУТЬ" : "ВЫБРАТЬ"}
-                                                <ChevronDown className={cn("w-2.5 h-2.5 transition-transform", showIcons && "rotate-180")} />
-                                            </button>
+
+                                            {showIcons && (
+                                                <div className="absolute top-[110%] left-0 w-[400px] z-50 bg-white rounded-[18px] shadow-xl border border-slate-100 p-4 animate-in fade-in zoom-in-95 duration-200 max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                    <div className="space-y-4">
+                                                        {ICON_GROUPS.map((group) => (
+                                                            <div key={group.id} className="space-y-2">
+                                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1">{group.label}</div>
+                                                                <div className="grid grid-cols-6 gap-2">
+                                                                    {group.icons.map((item) => {
+                                                                        const Icon = item.icon;
+                                                                        const isSelected = selectedIcon === item.name;
+                                                                        return (
+                                                                            <button
+                                                                                key={item.name}
+                                                                                type="button"
+                                                                                onClick={() => {
+                                                                                    setSelectedIcon(item.name);
+                                                                                    setShowIcons(false);
+                                                                                }}
+                                                                                className={cn(
+                                                                                    "w-10 h-10 rounded-full flex items-center justify-center transition-all bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary/50 hover:shadow-md hover:scale-110 hover:text-primary active:scale-95",
+                                                                                    isSelected && "bg-primary border-primary text-white hover:bg-primary hover:text-white"
+                                                                                )}
+                                                                                title={item.label}
+                                                                            >
+                                                                                <Icon className="w-5 h-5" />
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
 
-                                        <div className="space-y-3 pt-1">
+                                        {/* COLOR BLOCK */}
+                                        <div className="p-3 bg-white rounded-[var(--radius)] border border-slate-100 shadow-sm flex flex-col justify-center gap-2">
                                             <span className="text-[10px] font-bold text-slate-500 block">Цвет карточки</span>
                                             <div className="flex flex-wrap gap-1.5">
                                                 {colors.map((color) => {
@@ -304,71 +273,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 </div>
                             </div>
 
-                            {/* Icon Selection Panel (Overlays or expands below) */}
-                            {showIcons && (
-                                <div className="p-8 bg-slate-50/50 rounded-[var(--radius)] border border-slate-100 animate-in slide-in-from-top-4 duration-300">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {ICON_GROUPS.map((group) => {
-                                            const isExpanded = expandedGroupId === group.id;
-                                            return (
-                                                <div key={group.id} className="space-y-3">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setExpandedGroupId(isExpanded ? null : group.id)}
-                                                        className={cn(
-                                                            "w-full flex items-center justify-between h-12 px-5 rounded-[var(--radius)] transition-all border",
-                                                            isExpanded
-                                                                ? "bg-white border-slate-200 text-slate-900 shadow-sm"
-                                                                : "bg-transparent border-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600 hover:border-slate-100"
-                                                        )}
-                                                    >
-                                                        <span className="text-[11px] font-bold">{group.label}</span>
-                                                        <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", isExpanded && "rotate-180")} />
-                                                    </button>
 
-                                                    {isExpanded && (
-                                                        <div className="grid grid-cols-6 gap-3 p-4 bg-white rounded-[var(--radius)] shadow-sm border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
-                                                            {group.icons.map((item) => {
-                                                                const Icon = item.icon;
-                                                                const isSelected = selectedIcon === item.name;
-                                                                return (
-                                                                    <button
-                                                                        key={item.name}
-                                                                        type="button"
-                                                                        onClick={() => setSelectedIcon(item.name)}
-                                                                        className={cn(
-                                                                            "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 border active:scale-95 group",
-                                                                            isSelected
-                                                                                ? "bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110"
-                                                                                : "bg-white border-slate-50 text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
-                                                                        )}
-                                                                        title={item.label}
-                                                                    >
-                                                                        <Icon className={cn("w-5 h-5", isSelected ? "scale-110" : "group-hover:scale-110")} />
-                                                                    </button>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
 
-                            {category.parentId && (
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-semibold text-slate-500 ml-1">Родительская категория</label>
-                                    <CategorySelect
-                                        categories={categories}
-                                        value={selectedParentId}
-                                        onChange={setSelectedParentId}
-                                        excludeId={category.id}
-                                        placeholder="Выберите родителя..."
-                                    />
-                                </div>
-                            )}
                         </div>
 
 
@@ -451,7 +357,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         className="h-14 px-8 rounded-[var(--radius)] flex items-center gap-2.5 text-xs font-bold transition-all active:scale-95 shadow-md bg-white text-rose-500 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 hover:text-rose-600 shadow-slate-100/50"
                     >
                         <Trash2 className="w-5 h-5" />
-                        УДАЛИТЬ КАТЕГОРИЮ
+                        Удалить категорию
                     </button>
 
                     <div className="flex items-center gap-5">

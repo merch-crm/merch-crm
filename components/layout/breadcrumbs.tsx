@@ -37,7 +37,7 @@ export function Breadcrumbs() {
     // If custom trail is provided, render it instead of pathname logic
     if (customTrail) {
         return (
-            <nav className="flex items-center gap-2 mb-6 animate-in fade-in slide-in-from-left-2 duration-500">
+            <nav className="flex items-center gap-2 mb-10 animate-in fade-in slide-in-from-left-2 duration-500">
                 <Link
                     href="/dashboard"
                     className="text-slate-400 hover:text-primary transition-colors hover:scale-110 active:scale-95"
@@ -76,7 +76,7 @@ export function Breadcrumbs() {
     if (paths.length <= 1) return null;
 
     return (
-        <nav className="flex items-center gap-2 mb-6 animate-in fade-in slide-in-from-left-2 duration-500">
+        <nav className="flex items-center gap-2 mb-10 animate-in fade-in slide-in-from-left-2 duration-500">
             <Link
                 href="/dashboard"
                 className="text-slate-400 hover:text-primary transition-colors hover:scale-110 active:scale-95"

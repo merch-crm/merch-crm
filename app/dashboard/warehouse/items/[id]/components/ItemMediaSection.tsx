@@ -130,12 +130,12 @@ export function ItemMediaSection({
         <div className="space-y-6">
             <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
                         <ImageIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-slate-900 tracking-tighter">Галерея</h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                        <h3 className="text-xl font-black text-slate-900 tracking-normaler">Галерея</h3>
+                        <p className="text-[11px] font-bold text-slate-400 mt-1">
                             Загружено {allImages.filter(i => i.src).length} из 6 фото
                         </p>
                     </div>
@@ -162,7 +162,7 @@ export function ItemMediaSection({
                             />
                             <div className="h-10 px-6 rounded-xl bg-slate-900 hover:bg-black text-white flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-slate-900/10 group">
                                 <ImagePlus className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Добавить больше</span>
+                                <span className="text-[10px] font-black">Добавить больше</span>
                             </div>
                         </label>
                     )}
@@ -223,7 +223,7 @@ export function ItemMediaSection({
 
                                         {/* Glassmorphism Overlay */}
                                         <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">{img.label}</p>
+                                            <p className="text-[10px] font-black text-white">{img.label}</p>
                                         </div>
 
                                         <div className="absolute inset-0 bg-slate-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -304,10 +304,10 @@ export function ItemMediaSection({
                                                         {uploadStates[img.type].progress}%
                                                     </span>
                                                 </div>
-                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">Загрузка...</span>
+                                                <span className="text-[9px] font-bold text-slate-400 animate-pulse">Загрузка...</span>
                                             </div>
                                         ) : !isEditing ? (
-                                            <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                                            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center">
                                                 <ImageIcon className="w-5 h-5 text-slate-300" />
                                             </div>
                                         ) : (
@@ -327,7 +327,7 @@ export function ItemMediaSection({
                                                 <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
                                                     <Plus className="w-5 h-5" />
                                                 </div>
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 group-hover/upload:text-primary transition-colors">Добавить</span>
+                                                <span className="text-[8px] font-black text-slate-400 group-hover/upload:text-primary transition-colors">Добавить</span>
                                             </label>
                                         )}
                                     </div>

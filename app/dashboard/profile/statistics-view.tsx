@@ -113,7 +113,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                         </div>
 
                         <div className="relative z-10">
-                            <div className="text-3xl font-black text-slate-900 tracking-tighter mb-1 group-hover:text-white transition-colors">{stat.value}</div>
+                            <div className="text-3xl font-black text-slate-900 tracking-normaler mb-1 group-hover:text-white transition-colors">{stat.value}</div>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-slate-500 transition-colors">{stat.title}</div>
                             <div className="text-xs text-slate-400 font-bold group-hover:text-slate-500 transition-colors">{stat.description}</div>
                         </div>
@@ -134,7 +134,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
 
                     <div className="flex items-center justify-between mb-12">
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Распределение задач</h2>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-normaler">Распределение задач</h2>
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">статистика текущей нагрузки</p>
                         </div>
                         <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-900/20">
@@ -189,7 +189,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
 
                     <div className="flex items-center justify-between mb-12">
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Индекс КПД</h2>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-normaler">Индекс КПД</h2>
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">персональная продуктивность</p>
                         </div>
                         <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-xl shadow-emerald-500/20">
@@ -230,7 +230,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                                     initial={{ opacity: 0, scale: 0.5 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 1.5 }}
-                                    className="text-5xl font-black text-slate-900 tracking-tighter"
+                                    className="text-5xl font-black text-slate-900 tracking-normaler"
                                 >
                                     {data.efficiency || 0}<span className="text-2xl font-black opacity-30">%</span>
                                 </motion.div>

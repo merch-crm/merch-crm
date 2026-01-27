@@ -9,7 +9,7 @@
   --primary-foreground: #ffffff;
 
   /* Background - "Aurora" Base */
-  --background: #f8fafc;
+  --background: #f2f2f2;
   /* Fallback */
   --foreground: #0f172a;
 
@@ -52,10 +52,10 @@
   --radius-padding: 32px;
 
   /* Shadows - "Glow" & Depth */
-  --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -2px rgba(0, 0, 0, 0.05);
-  --crm-shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.04);
-  --crm-shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 4px 16px -4px rgba(0, 0, 0, 0.08);
-  --crm-shadow-xl: 0 24px 64px -12px rgba(0, 0, 0, 0.15), 0 8px 32px -8px rgba(0, 0, 0, 0.10);
+  --crm-shadow-sm: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --crm-shadow-md: 0 4px 12px -3px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+  --crm-shadow-lg: 0 10px 24px -6px rgba(0, 0, 0, 0.1), 0 4px 10px -4px rgba(0, 0, 0, 0.05);
+  --crm-shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 8px 16px -6px rgba(0, 0, 0, 0.08);
 
   /* Grid & Spacing */
   --crm-blur: 24px;
@@ -106,10 +106,17 @@
   --font-sans: var(--font-manrope);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --shadow-crm-sm: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
-  --shadow-crm-md: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-  --shadow-crm-lg: 0 20px 48px -10px rgba(0, 0, 0, 0.18), 0 10px 20px -8px rgba(0, 0, 0, 0.12);
-  --shadow-crm-xl: 0 32px 64px -16px rgba(0, 0, 0, 0.35), 0 16px 32px -12px rgba(0, 0, 0, 0.2);
+  --shadow-crm-sm: var(--crm-shadow-sm);
+  --shadow-crm-md: var(--crm-shadow-md);
+  --shadow-crm-lg: var(--crm-shadow-lg);
+  --shadow-crm-xl: var(--crm-shadow-xl);
+
+  /* Override Defaults for Global Softness */
+  --shadow-sm: var(--shadow-crm-sm);
+  --shadow-md: var(--shadow-crm-md);
+  --shadow-lg: var(--shadow-crm-lg);
+  --shadow-xl: var(--shadow-crm-xl);
+  --shadow-2xl: 0 32px 64px -12px rgba(0, 0, 0, 0.14);
 }
 
 @layer base {
@@ -124,14 +131,14 @@
   }
 
   body {
-    background-color: #f8fafc;
+    background-color: #f2f2f2;
     color: var(--foreground);
     font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
     @apply antialiased selection:bg-primary/20 selection:text-primary relative min-h-screen overflow-x-hidden;
   }
 
-  /* Aurora Background Effect */
-  body::before {
+  /* Aurora Background Effect - Disabled for solid background preference */
+  /* body::before {
     content: "";
     position: fixed;
     top: -20%;
@@ -142,9 +149,9 @@
     filter: blur(80px);
     z-index: -2;
     pointer-events: none;
-  }
+  } */
 
-  body::after {
+  /* body::after {
     content: "";
     position: fixed;
     bottom: -20%;
@@ -155,7 +162,7 @@
     filter: blur(80px);
     z-index: -2;
     pointer-events: none;
-  }
+  } */
 
   /* Bold headings as per standard */
   h1,
@@ -164,7 +171,7 @@
   h4,
   h5,
   h6 {
-    @apply font-bold tracking-tight;
+    @apply font-bold tracking-normal;
   }
 }
 
@@ -172,11 +179,11 @@
 
   /* Glass Panel - The Core Building Block */
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl shadow-crm-md rounded-2xl p-[var(--radius-padding)] transition-all duration-300;
+    @apply bg-white shadow-crm-md rounded-2xl p-[var(--radius-padding)] transition-all duration-300;
   }
 
   .glass-panel:hover {
-    @apply bg-white/80 shadow-crm-lg scale-[1.005];
+    @apply bg-white shadow-crm-lg scale-[1.005];
   }
 
   /* High-Contrast Card for Critical Data */
@@ -190,11 +197,11 @@
 
   /* Sticky Glass Header */
   .sticky-glass-header {
-    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-[1480px] rounded-[var(--radius-outer)] bg-white/80 backdrop-blur-2xl border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
+    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-[1480px] rounded-[var(--radius-outer)] bg-white border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
   }
 
   .sticky-glass-header.scrolled {
-    @apply bg-white/90 shadow-crm-xl translate-y-1;
+    @apply bg-white shadow-crm-xl translate-y-1;
   }
 
   /* Button Styles Overrides for Premium Feel */

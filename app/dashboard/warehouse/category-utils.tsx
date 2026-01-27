@@ -1,32 +1,99 @@
 import {
-    Shirt, Package, Layers, Zap, Scissors, Box, Hourglass, Tag,
-    ShoppingBag, Footprints, GraduationCap,
-    Baby, Crown, User, Users, Gem, Handbag, Glasses,
+    Package, Scissors, Box, Zap, Hourglass,
     Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, ClipboardList,
     Pencil, Brush, Ruler, Hammer, Wrench, Eraser, PenTool, Pipette,
     Palette, Printer, FlaskConical,
     Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
-    Eye
+    Eye, Layers
 } from "lucide-react";
+
+// Phosphor Icons for clothing (much better clothing-specific icons)
 import { Category } from "./inventory-client";
 
+// Custom Clothing Icons (High quality, thematic)
+import {
+    TshirtIcon as CustomTshirt,
+    HoodieIcon as CustomHoodie,
+    SweatshirtIcon as CustomSweatshirt,
+    LongsleeveIcon as CustomLongsleeve,
+    AnorakIcon as CustomAnorak,
+    ZipHoodieIcon as CustomZipHoodie,
+    PantsIcon as CustomPants,
+    PoloIcon as CustomPolo,
+    CapIcon as CustomCap,
+    PackageIcon as CustomPackage,
+    SuppliesIcon as CustomSupplies,
+    ToteBagIcon as CustomTote,
+    BackpackIcon as CustomBackpack,
+    SocksIcon as CustomSocks,
+    BeanieIcon as CustomBeanie,
+    JacketIcon as CustomJacket,
+    SneakersIcon as CustomSneakers,
+    ShortsIcon as CustomShorts,
+    SkirtIcon as CustomSkirt,
+    VestIcon as CustomVest,
+    GlovesIcon as CustomGloves,
+    ScarfIcon as CustomScarf,
+    BadgeIcon as CustomBadge,
+    StickerIcon as CustomSticker,
+    MugIcon as CustomMug,
+    NotebookIcon as CustomNotebook,
+    UmbrellaIcon as CustomUmbrella
+} from "./custom-clothing-icons";
+
 export const ICON_GROUPS = [
+    {
+        id: "merch_custom",
+        label: "Merch CRM (Эксклюзив)",
+        icons: [
+            { name: "tshirt-custom", icon: CustomTshirt, label: "Футболка" },
+            { name: "hoodie-custom", icon: CustomHoodie, label: "Худи" },
+            { name: "sweatshirt-custom", icon: CustomSweatshirt, label: "Свитшот" },
+            { name: "longsleeve-custom", icon: CustomLongsleeve, label: "Лонгслив" },
+            { name: "anorak-custom", icon: CustomAnorak, label: "Анорак" },
+            { name: "ziphoodie-custom", icon: CustomZipHoodie, label: "Зип-худи" },
+            { name: "pants-custom", icon: CustomPants, label: "Штаны" },
+            { name: "polo-custom", icon: CustomPolo, label: "Поло" },
+            { name: "cap-custom", icon: CustomCap, label: "Кепка" },
+            { name: "jacket-custom", icon: CustomJacket, label: "Куртка" },
+            { name: "sneakers-custom", icon: CustomSneakers, label: "Кроссовки" },
+            { name: "beanie-custom", icon: CustomBeanie, label: "Шапка" },
+            { name: "backpack-custom", icon: CustomBackpack, label: "Рюкзак" },
+            { name: "totebag-custom", icon: CustomTote, label: "Шоппер" },
+            { name: "socks-custom", icon: CustomSocks, label: "Носки" },
+            { name: "packaging-custom", icon: CustomPackage, label: "Упаковка" },
+            { name: "supplies-custom", icon: CustomSupplies, label: "Расходники" },
+            { name: "shorts-custom", icon: CustomShorts, label: "Шорты" },
+            { name: "skirt-custom", icon: CustomSkirt, label: "Юбка" },
+            { name: "vest-custom", icon: CustomVest, label: "Жилетка" },
+            { name: "gloves-custom", icon: CustomGloves, label: "Перчатки" },
+            { name: "scarf-custom", icon: CustomScarf, label: "Шарф" },
+            { name: "badge-custom", icon: CustomBadge, label: "Значок" },
+            { name: "sticker-custom", icon: CustomSticker, label: "Стикер" },
+            { name: "mug-custom", icon: CustomMug, label: "Кружка" },
+            { name: "notebook-custom", icon: CustomNotebook, label: "Блокнот" },
+            { name: "umbrella-custom", icon: CustomUmbrella, label: "Зонт" },
+        ]
+    },
     {
         id: "clothing",
         label: "Одежда",
         icons: [
-            { name: "shirt", icon: Shirt, label: "Футболка" },
-            { name: "handbag", icon: Handbag, label: "Сумки и аксессуары" },
-            { name: "footprints", icon: Footprints, label: "Обувь" },
-            { name: "graduation-cap", icon: GraduationCap, label: "Головные уборы" },
-            { name: "tag", icon: Tag, label: "Бирки и этикетки" },
-            { name: "shopping-bag", icon: ShoppingBag, label: "Шопперы" },
-            { name: "crown", icon: Crown, label: "Премиум" },
-            { name: "gem", icon: Gem, label: "Ювелирные изделия" },
-            { name: "user", icon: User, label: "Мужская коллекция" },
-            { name: "users", icon: Users, label: "Унисекс / Женская" },
-            { name: "baby", icon: Baby, label: "Детская одежда" },
-            { name: "glasses", icon: Glasses, label: "Очки и мерч" }
+            { name: "tshirt", icon: CustomTshirt, label: "Футболка" },
+            { name: "hoodie", icon: CustomHoodie, label: "Худи" },
+            { name: "pants", icon: CustomPants, label: "Штаны / Брюки" },
+            { name: "coat", icon: CustomAnorak, label: "Куртка / Анорак" },
+            { name: "sneaker", icon: CustomSneakers, label: "Кроссовки" },
+            { name: "baseball-cap", icon: CustomCap, label: "Кепка" },
+        ]
+    },
+    {
+        id: "accessories",
+        label: "Аксессуары",
+        icons: [
+            { name: "backpack", icon: CustomBackpack, label: "Рюкзак" },
+            { name: "tote", icon: CustomTote, label: "Шоппер" },
+            { name: "socks", icon: CustomSocks, label: "Носки" }
         ]
     },
     {
@@ -106,17 +173,24 @@ export const COLORS = [
 
 export const getIconNameFromName = (name: string): string => {
     const n = name.toLowerCase();
-    if (n.includes("футболк") || n.includes("лонгслив") || n.includes("поло")) return "shirt";
-    if (n.includes("худи")) return "hourglass";
-    if (n.includes("свитшот")) return "layers";
-    if (n.includes("анорак")) return "wind";
-    if (n.includes("зип")) return "zap";
-    if (n.includes("штаны")) return "package";
-    if (n.includes("упаковка") || n.includes("кепки")) return "box";
-    if (n.includes("расходники")) return "scissors";
-    if (n.includes("бирка")) return "tag";
-    if (n.includes("пакет")) return "shopping-bag";
-    return "package";
+    if (n.includes("футболк") || n.includes("лонгслив") || n.includes("поло")) return "tshirt-custom";
+    if (n.includes("худи")) return "hoodie-custom";
+    if (n.includes("свитшот")) return "sweatshirt-custom";
+    if (n.includes("анорак") || n.includes("куртк") || n.includes("ветровк")) return "anorak-custom";
+    if (n.includes("зип")) return "ziphoodie-custom";
+    if (n.includes("штан") || n.includes("брюк")) return "pants-custom";
+    if (n.includes("кепк") || n.includes("бейсболк")) return "cap-custom";
+    if (n.includes("обув") || n.includes("кроссовк")) return "sneakers-custom";
+    if (n.includes("ботинк")) return "sneakers-custom";
+    if (n.includes("плать")) return "anorak-custom";
+    if (n.includes("сумк")) return "totebag-custom";
+    if (n.includes("шоппер") || n.includes("тот")) return "totebag-custom";
+    if (n.includes("рюкзак")) return "backpack-custom";
+    if (n.includes("очк")) return "eye";
+    if (n.includes("упаковка")) return "packaging-custom";
+    if (n.includes("расходник")) return "supplies-custom";
+    if (n.includes("бирк")) return "tag";
+    return "tshirt-custom";
 };
 
 export const getCategoryIcon = (category: Partial<Category>) => {

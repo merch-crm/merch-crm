@@ -109,7 +109,7 @@ export function AddClientDialog({ variant = "default" }: { variant?: "default" |
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-50">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Новый клиент</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-normal">Новый клиент</h3>
                         <p className="text-sm text-slate-500 font-medium">Заполните данные для CRM</p>
                     </div>
                     <button

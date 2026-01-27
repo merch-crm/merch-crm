@@ -144,7 +144,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                 <Building className="w-8 h-8" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{department.name}</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 tracking-normal">{department.name}</h3>
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className={`px-2 py-0.5 rounded-md ${colorStyle.badge} ${colorStyle.badgeText} text-[10px] font-bold  tracking-normal`}>
                                         Настройки отдела
@@ -275,7 +275,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                                             </div>
                                                             <div>
                                                                 <span className="text-sm font-bold text-slate-700 block leading-tight">{role.name}</span>
-                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-tight">Активная роль</span>
+                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-normal">Активная роль</span>
                                                             </div>
                                                         </div>
                                                         <button
@@ -324,7 +324,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                                             <span className="text-sm font-bold text-slate-700">{role.name}</span>
                                                             <div className="flex items-center gap-1.5">
                                                                 <Building className="w-3 h-3 text-slate-300" />
-                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-tight">
+                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-normal">
                                                                     {role.department ? role.department.name : "Без отдела"}
                                                                 </span>
                                                             </div>

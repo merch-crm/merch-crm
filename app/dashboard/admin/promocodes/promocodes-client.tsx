@@ -80,14 +80,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
     );
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 pb-20">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-5">
                     <div className="w-14 h-14 bg-primary/5 rounded-[22px] flex items-center justify-center border border-primary/10">
                         <Ticket className="w-7 h-7 text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal flex items-center gap-3">
                             Промокоды
                             <span className="bg-primary/10 text-primary text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
                                 {data.length}
@@ -190,7 +190,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         <div className="pt-4 flex items-center justify-between relative z-10">
                             <div className="flex items-center gap-2 text-slate-400">
                                 <Calendar className="w-3.5 h-3.5 opacity-60" />
-                                <span className="text-[9px] font-bold  tracking-tight">
+                                <span className="text-[9px] font-bold  tracking-normal">
                                     {promo.expiresAt
                                         ? format(new Date(promo.expiresAt), "dd.MM.yyyy", { locale: ru })
                                         : "БЕССРОЧНО"
@@ -224,7 +224,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
 
                         <div className="flex items-center justify-between mb-8 relative z-10">
                             <div>
-                                <h2 className="text-xl font-bold text-slate-900 tracking-tight ">
+                                <h2 className="text-xl font-bold text-slate-900 tracking-normal ">
                                     {editingPromo ? "Редактировать" : "Новый промокод"}
                                 </h2>
                                 <p className="text-slate-400 text-[10px] font-bold  tracking-normal mt-1">Заполните данные для купона</p>

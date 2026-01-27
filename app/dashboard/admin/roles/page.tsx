@@ -92,10 +92,10 @@ export default function AdminRolesPage() {
     if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка ролей системы...</div>;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6 pb-20">
+        <div className="space-y-6 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Роли и права</h1>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Роли и права</h1>
                     <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Настройка доступов и полномочий сотрудников</p>
                 </div>
                 <AddRoleDialog onSuccess={fetchRoles} />
@@ -118,7 +118,7 @@ export default function AdminRolesPage() {
                                         <Icon className={`w-5 h-5 ${style.color}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-bold text-slate-900 truncate tracking-tight group-hover:text-primary transition-colors">
+                                        <h3 className="text-lg font-bold text-slate-900 truncate tracking-normal group-hover:text-primary transition-colors">
                                             {role.name}
                                         </h3>
                                         <div className="mt-0.5 flex items-center gap-2">

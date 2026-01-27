@@ -11,7 +11,7 @@ export default async function KnowledgeBasePage() {
     const pages = await getWikiPages();
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700 pb-10">
+        <div className="space-y-8 animate-in fade-in duration-700">
             <div className="sm:flex sm:items-end sm:justify-between px-1">
                 <div>
                     <h1 className="text-4xl font-bold text-slate-900 tracking-normal  leading-none">База знаний</h1>

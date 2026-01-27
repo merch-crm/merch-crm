@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
     Image as ImageIcon,
     MapPin,
     ClipboardList,
     Printer,
+    Book,
     X,
     LayoutGrid,
     TrendingUp,
@@ -18,18 +20,19 @@ import {
     SlidersHorizontal,
     ArrowRightLeft,
     Bell,
-    CheckCircle2,
     Package,
-    Download,
-    Trash2,
+    FileDown,
     Tag,
     ChevronLeft,
     ChevronRight,
     RotateCcw,
-    Archive
+    Archive,
+    Banknote
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
+import { pluralize } from "@/lib/pluralize";
 
 import {
     InventoryItem,
@@ -70,7 +73,7 @@ import { TransferItemDialog } from "./transfer-item-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ArchiveReasonDialog } from "../../components/archive-reason-dialog";
 import { ItemActiveOrdersSection } from "./components/ItemActiveOrdersSection";
-import { LabelPrinterDialog } from "./components/LabelPrinterDialog";
+import { LabelPrinterDialog } from "../../components/LabelPrinterDialog";
 import { QRScanner } from "@/components/ui/qr-scanner";
 import { Session } from "@/lib/auth";
 
@@ -113,6 +116,7 @@ export function ItemDetailClient({
         brandCode: initialItem.brandCode || "",
         thumbnailSettings: initialItem.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
         costPrice: initialItem.costPrice || 0,
+        sellingPrice: initialItem.sellingPrice || 0,
         isArchived: initialItem.isArchived || false,
         materialComposition: initialItem.materialComposition || {},
     });
@@ -127,6 +131,8 @@ export function ItemDetailClient({
     const [pendingDraft, setPendingDraft] = useState<Partial<InventoryItem> | null>(null);
     const [showUnsavedChangesConfirm, setShowUnsavedChangesConfirm] = useState(false);
     const [pendingExitAction, setPendingExitAction] = useState<(() => void) | null>(null);
+    const [costTimeframe, setCostTimeframe] = useState<'5pts' | '1m' | '6m' | 'all'>('5pts');
+    const [hoverPoint, setHoverPoint] = useState<{ index: number, x: number } | null>(null);
 
     // Thumbnail settings logic
     const [aspectRatio, setAspectRatio] = useState<number | null>(null);
@@ -146,6 +152,16 @@ export function ItemDetailClient({
     const resetThumbSettings = () => {
         setEditData(prev => ({ ...prev, thumbnailSettings: { zoom: 1, x: 0, y: 0 } }));
     };
+
+    // Cost History Scrolling
+    const costHistoryRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll cost history to end on load
+    useEffect(() => {
+        if (costHistoryRef.current) {
+            costHistoryRef.current.scrollLeft = costHistoryRef.current.scrollWidth;
+        }
+    }, [history, item.costPrice]);
 
     // Calculate base scale to achieve 'cover' fit
     const baseScale = useMemo(() => {
@@ -172,6 +188,7 @@ export function ItemDetailClient({
 
     // Auto-clamp X/Y when bounds change
     useEffect(() => {
+        if (!aspectRatio) return;
         const { x, y } = thumbSettings;
         let newX = x;
         let newY = y;
@@ -192,7 +209,7 @@ export function ItemDetailClient({
                 y: newY
             });
         }
-    }, [maxBounds, thumbSettings, updateThumb]);
+    }, [maxBounds, thumbSettings, updateThumb, aspectRatio]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -349,76 +366,97 @@ export function ItemDetailClient({
     }, [item.unit]);
 
     const lastInCostPrice = useMemo(() => {
-        const lastInTx = history.find(tx => tx.type === 'in' && tx.costPrice);
-        if (lastInTx?.costPrice) return Number(lastInTx.costPrice);
-        return item.costPrice || 0;
+        const supplyTxs = history.filter(tx => tx.type === 'in' && Number(tx.costPrice) > 0);
+        if (supplyTxs.length > 0) {
+            // history usually sorted DESC (newest first)
+            return Number(supplyTxs[0].costPrice);
+        }
+        return Number(item.costPrice) || 0;
     }, [history, item.costPrice]);
 
 
 
     const costHistoryStats = useMemo(() => {
+        // 1. Get all supply transactions with costPrice
+        const supplyTxs = history
+            .filter(tx => tx.type === 'in' && tx.costPrice)
+            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()); // Chronological
+
+        const lastPriceFromHistory = supplyTxs.length > 0 ? Number(supplyTxs[supplyTxs.length - 1].costPrice) : 0;
+        const currentPrice = (Number(item.costPrice) > 0) ? Number(item.costPrice) : (lastPriceFromHistory || 0);
+
+        // 2. Map to points format
+        const supplyPoints = supplyTxs.map(tx => ({
+            id: tx.id,
+            date: new Date(tx.createdAt),
+            costs: [Number(tx.costPrice)],
+            label: format(new Date(tx.createdAt), 'd MMM', { locale: ru }),
+            avg: Number(tx.costPrice),
+            hasData: true,
+            lastDate: new Date(tx.createdAt)
+        }));
+
+        // 3. Filter based on timeframe
+        let filteredPoints = [...supplyPoints];
         const now = new Date();
-        const basePrice = item.costPrice || 0;
 
-        // Prepare 12 months of data
-        const monthData: { date: Date; key: string; costs: number[]; label: string; avg: number; hasData: boolean; lastDate?: Date }[] = [];
-        for (let i = 11; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            monthData.push({
-                date,
-                key: `${date.getFullYear()}-${date.getMonth()}`,
-                costs: [],
-                label: format(date, 'MMM', { locale: ru }),
-                avg: 0,
-                hasData: false
-            });
+        if (costTimeframe === '5pts') {
+            filteredPoints = supplyPoints.slice(-4);
+        } else if (costTimeframe === '1m') {
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(now.getMonth() - 1);
+            filteredPoints = supplyPoints.filter(p => p.date >= oneMonthAgo);
+        } else if (costTimeframe === '6m') {
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(now.getMonth() - 6);
+            filteredPoints = supplyPoints.filter(p => p.date >= sixMonthsAgo);
         }
 
-        // Fill with history
-        history.forEach(tx => {
-            if (tx.type === 'in' && tx.costPrice) {
-                const txDate = new Date(tx.createdAt);
-                const key = `${txDate.getFullYear()}-${txDate.getMonth()}`;
-                const m = monthData.find(md => md.key === key);
-                if (m) {
-                    m.costs.push(Number(tx.costPrice));
-                    m.hasData = true;
-                    // Keep the latest date for this month
-                    if (!m.lastDate || txDate > m.lastDate) {
-                        m.lastDate = txDate;
-                    }
-                }
-            }
+        // 4. Add "Current" point - USE currentPrice instead of raw item.costPrice to avoid drops to 0
+        filteredPoints.push({
+            id: 'current',
+            date: new Date(),
+            costs: [currentPrice],
+            label: "Тек.",
+            avg: currentPrice,
+            hasData: currentPrice > 0,
+            lastDate: new Date()
         });
 
-        // Calculate averages for those that HAVE data
-        monthData.forEach(m => {
-            if (m.hasData && m.costs.length > 0) {
-                m.avg = m.costs.reduce((a, b) => a + b, 0) / m.costs.length;
-            }
-        });
+        const points = filteredPoints;
 
-        // SPECIAL CASE: The current month always shows a price if we have item.costPrice
-        const currentMonthIdx = monthData.length - 1;
-        if (!monthData[currentMonthIdx].hasData && basePrice > 0) {
-            monthData[currentMonthIdx].avg = basePrice;
-            // Note: we don't necessarily set hasData = true here if we want to show it specifically, 
-            // but for the "current" bar we usually want a height.
+        // Calculate stats
+        const allIndividualCosts = points.map(p => p.avg).filter(v => v > 0);
+
+        let minVal = allIndividualCosts.length > 0 ? Math.min(...allIndividualCosts) : currentPrice;
+        let maxVal = allIndividualCosts.length > 0 ? Math.max(...allIndividualCosts) : currentPrice;
+
+        // Add 10% vertical padding to the scale for aesthetics
+        const diff = maxVal - minVal;
+        if (diff === 0) {
+            minVal = minVal * 0.8;
+            maxVal = maxVal * 1.2;
+        } else {
+            minVal = Math.max(0, minVal - diff * 0.15);
+            maxVal = maxVal + diff * 0.15;
         }
 
-        const dataPoints = monthData.filter(p => p.hasData || p === monthData[currentMonthIdx]);
-        const values = dataPoints.map(p => p.avg);
-        const maxVal = Math.max(...values, basePrice) || 1;
-        const minVal = Math.min(...values.filter(v => v > 0), basePrice) || basePrice;
-        const avgVal = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : basePrice;
+        const firstPoint = supplyPoints[0];
+        let yearlyChange = 0;
+        if (firstPoint && firstPoint.avg > 0) {
+            yearlyChange = ((currentPrice - firstPoint.avg) / firstPoint.avg) * 100;
+        }
 
         return {
-            points: monthData,
+            points,
             max: maxVal,
             min: minVal,
-            avg: avgVal
+            actualMax: allIndividualCosts.length > 0 ? Math.max(...allIndividualCosts) : currentPrice,
+            actualMin: allIndividualCosts.length > 0 ? Math.min(...allIndividualCosts) : currentPrice,
+            avg: allIndividualCosts.length > 0 ? allIndividualCosts.reduce((a, b) => a + b, 0) / allIndividualCosts.length : currentPrice,
+            yearlyChange: yearlyChange
         };
-    }, [history, item.costPrice]);
+    }, [history, item.costPrice, costTimeframe]);
 
     // Set custom trail for breadcrumbs
     const { setCustomTrail } = useBreadcrumbs();
@@ -539,7 +577,13 @@ export function ItemDetailClient({
         }
 
         trail.push({
-            label: item.name,
+            label: (() => {
+                const cat = item.category as { singularName?: string; name?: string } | null;
+                if (cat?.singularName && cat?.name && item.name.startsWith(cat.name)) {
+                    return item.name.replace(cat.name, cat.singularName);
+                }
+                return item.name;
+            })(),
             href: `/dashboard/warehouse/items/${item.id}`
         });
 
@@ -690,6 +734,30 @@ export function ItemDetailClient({
         }
     }
 
+    const handleStartEdit = () => {
+        setEditData({
+            name: item.name,
+            sku: item.sku || "",
+            description: item.description || "",
+            unit: item.unit,
+            lowStockThreshold: item.lowStockThreshold || 10,
+            criticalStockThreshold: item.criticalStockThreshold || 0,
+            attributes: (item.attributes as Record<string, string>) || {},
+            categoryId: item.categoryId || "",
+            qualityCode: item.qualityCode || "",
+            attributeCode: item.attributeCode || "",
+            sizeCode: item.sizeCode || "",
+            materialCode: item.materialCode || "",
+            brandCode: item.brandCode || "",
+            thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+            costPrice: Number(item.costPrice) || lastInCostPrice || 0,
+            sellingPrice: Number(item.sellingPrice) || 0,
+            isArchived: item.isArchived || false,
+            materialComposition: item.materialComposition || {},
+        });
+        setIsEditing(true);
+    };
+
     const handleAttributeChange = (key: string, value: string) => {
         setEditData(prev => ({
             ...prev,
@@ -759,6 +827,7 @@ export function ItemDetailClient({
             formData.append("sizeCode", editData.sizeCode || "");
             formData.append("brandCode", editData.brandCode || "");
             formData.append("costPrice", String(editData.costPrice || 0));
+            formData.append("sellingPrice", String(editData.sellingPrice || 0));
             formData.append("materialComposition", JSON.stringify(editData.materialComposition || {}));
             formData.append("isArchived", String(editData.isArchived || false));
 
@@ -907,990 +976,1311 @@ export function ItemDetailClient({
         toast("Файл загружен", "success");
     };
 
+    const handleExportHistory = () => {
+        if (!history || history.length === 0) {
+            toast("История пуста", "error");
+            return;
+        }
+
+        const headers = ["ID", "Дата", "Тип", "Изменение", "Локация", "Причина", "Автор", "Роль"];
+        const rows = history.map(h => {
+            const typeMap = {
+                in: "Приход",
+                out: "Расход",
+                transfer: "Перемещение",
+                attribute_change: "Обновление",
+                archive: "Архив",
+                restore: "Восстановление"
+            };
+
+            return [
+                h.id,
+                format(new Date(h.createdAt), "dd.MM.yyyy HH:mm"),
+                typeMap[h.type as keyof typeof typeMap] || h.type,
+                h.changeAmount,
+                h.storageLocation?.name || "—",
+                h.reason || "—",
+                h.creator?.name || "Система",
+                (h.creator as { role?: { name?: string } } | null)?.role?.name || (h.creator ? "Оператор" : "Система")
+            ].map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(";");
+        });
+
+        const csvContent = "\uFEFF" + headers.join(";") + "\n" + rows.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `history_${item.sku || item.id}_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        toast("История операций загружена", "success");
+    };
+
     return (
         <>
             <div className="flex flex-col font-sans relative">
                 {/* Main Content */}
-                <div className="flex-1 w-full mx-auto p-4 md:p-12 space-y-12">
-                    <div className="max-w-[1600px] mx-auto w-full pb-20 space-y-4">
-                        {/* HEADER REGION */}
-                        <ItemHeader
-                            item={item}
-                            isEditing={isEditing}
-                            isSaving={isSaving}
-                            isAnyUploading={isAnyUploading}
-                            editName={editData.name || ""}
-                            onEditNameChange={(name) => setEditData(prev => ({ ...prev, name }))}
-                            onCancel={() => {
-                                const hasChanges = JSON.stringify({
-                                    name: editData.name,
-                                    sku: editData.sku,
-                                    description: editData.description,
-                                    unit: editData.unit,
-                                    lowStockThreshold: editData.lowStockThreshold,
-                                    criticalStockThreshold: editData.criticalStockThreshold,
-                                    attributes: editData.attributes,
-                                    categoryId: editData.categoryId,
-                                }) !== JSON.stringify({
-                                    name: item.name,
-                                    sku: item.sku || "",
-                                    description: item.description || "",
-                                    unit: item.unit,
-                                    lowStockThreshold: item.lowStockThreshold || 10,
-                                    criticalStockThreshold: item.criticalStockThreshold || 0,
-                                    attributes: (item.attributes as Record<string, string>) || {},
-                                    categoryId: item.categoryId || "",
-                                });
+                <div className="flex-1 w-full mx-auto space-y-4">
+                    {/* HEADER REGION */}
+                    <ItemHeader
+                        item={item}
+                        isEditing={isEditing}
+                        isSaving={isSaving}
+                        isAnyUploading={isAnyUploading}
+                        editName={editData.name || ""}
+                        onEditNameChange={(name) => setEditData(prev => ({ ...prev, name }))}
+                        onCancel={() => {
+                            const hasChanges = JSON.stringify({
+                                name: editData.name,
+                                sku: editData.sku,
+                                description: editData.description,
+                                unit: editData.unit,
+                                lowStockThreshold: editData.lowStockThreshold,
+                                criticalStockThreshold: editData.criticalStockThreshold,
+                                attributes: editData.attributes,
+                                categoryId: editData.categoryId,
+                            }) !== JSON.stringify({
+                                name: item.name,
+                                sku: item.sku || "",
+                                description: item.description || "",
+                                unit: item.unit,
+                                lowStockThreshold: item.lowStockThreshold || 10,
+                                criticalStockThreshold: item.criticalStockThreshold || 0,
+                                attributes: (item.attributes as Record<string, string>) || {},
+                                categoryId: item.categoryId || "",
+                            });
 
-                                if (hasChanges) {
-                                    setShowUnsavedChangesConfirm(true);
-                                    // Action to perform if user confirms "exit without saving"
-                                    setPendingExitAction(() => () => {
-                                        setIsEditing(false);
-                                        setEditData(prev => ({ ...prev, ...item }));
-                                        localStorage.removeItem(`item_draft_${item.id}`);
-                                    });
-                                } else {
+                            if (hasChanges) {
+                                setShowUnsavedChangesConfirm(true);
+                                // Action to perform if user confirms "exit without saving"
+                                setPendingExitAction(() => () => {
                                     setIsEditing(false);
+                                    setEditData(prev => ({ ...prev, ...item }));
                                     localStorage.removeItem(`item_draft_${item.id}`);
-                                }
-                            }}
-                            onSave={() => handleSave()}
-                            onEdit={() => setIsEditing(true)}
-                            onUnarchive={handleRestore}
-                        />
+                                });
+                            } else {
+                                setIsEditing(false);
+                                localStorage.removeItem(`item_draft_${item.id}`);
+                            }
+                        }}
+                        onSave={() => handleSave()}
+                        onEdit={() => setIsEditing(true)}
+                        onUnarchive={handleRestore}
+                    />
 
-                        {/* SPLIT LAYOUT */}
-                        <div className="flex flex-col lg:flex-row items-start gap-4 animate-in fade-in duration-500 delay-100">
+                    {/* SPLIT LAYOUT */}
+                    <div className="flex flex-col lg:flex-row items-start gap-4 animate-in fade-in duration-500 delay-100">
 
-                            {/* LEFT: Main Image */}
-                            <div className={cn(
-                                "w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:sticky lg:top-[112px] z-[60]",
-                                item.isArchived && "grayscale opacity-70"
-                            )}>
-                                <div className="group relative w-full aspect-square glass-panel rounded-2xl overflow-hidden shadow-crm-lg">
-                                    <div
-                                        className={cn(
-                                            "absolute inset-0 bg-slate-50 overflow-hidden",
-                                            isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
-                                        )}
-                                        onMouseDown={handleMainMouseDown}
-                                        onClick={() => !isEditing && item.image && openGallery(item.image)}
-                                    >
-                                        {item.image ? (
-                                            <Image
-                                                src={item.image}
-                                                alt={item.name}
-                                                fill
-                                                className="object-contain transition-transform duration-500 ease-out select-none pointer-events-none"
-                                                unoptimized
-                                                priority
-                                                style={{
-                                                    transform: `scale(${((isEditing ? thumbSettings?.zoom : item.thumbnailSettings?.zoom) ?? 1) * baseScale}) translate(${(isEditing ? thumbSettings?.x : item.thumbnailSettings?.x) ?? 0}%, ${(isEditing ? thumbSettings?.y : item.thumbnailSettings?.y) ?? 0}%)`,
-                                                    transformOrigin: 'center center',
-                                                }}
-                                                onLoadingComplete={(img) => {
-                                                    setAspectRatio(img.naturalWidth / img.naturalHeight);
-                                                }}
-                                            />
-                                        ) : (
+                        {/* LEFT: Main Image */}
+                        <div className={cn(
+                            "w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:sticky lg:top-[112px] z-[10]",
+                            item.isArchived && "grayscale opacity-70"
+                        )}>
+                            <div className="group relative w-full aspect-square glass-panel rounded-2xl overflow-hidden shadow-crm-lg">
+                                <div
+                                    className={cn(
+                                        "absolute inset-0 bg-slate-50 overflow-hidden",
+                                        isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+                                    )}
+                                    onMouseDown={handleMainMouseDown}
+                                    onClick={() => !isEditing && item.image && openGallery(item.image)}
+                                >
+                                    {item.image ? (
+                                        <Image
+                                            src={item.image}
+                                            alt={item.name}
+                                            fill
+                                            className="object-contain transition-transform duration-500 ease-out select-none pointer-events-none"
+                                            unoptimized
+                                            priority
+                                            style={{
+                                                transform: `scale(${((isEditing ? thumbSettings?.zoom : item.thumbnailSettings?.zoom) ?? 1) * baseScale}) translate(${(isEditing ? thumbSettings?.x : item.thumbnailSettings?.x) ?? 0}%, ${(isEditing ? thumbSettings?.y : item.thumbnailSettings?.y) ?? 0}%)`,
+                                                transformOrigin: 'center center',
+                                            }}
+                                            onLoadingComplete={(img) => {
+                                                setAspectRatio(img.naturalWidth / img.naturalHeight);
+                                            }}
+                                        />
+                                    ) : (
 
-                                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-200 bg-slate-50">
-                                                <div className="w-20 h-20 rounded-3xl bg-white shadow-inner flex items-center justify-center mb-4">
-                                                    <ImageIcon className="w-10 h-10 opacity-30" />
-                                                </div>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">Нет фото</p>
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-200 bg-slate-50">
+                                            <div className="w-20 h-20 rounded-3xl bg-white shadow-inner flex items-center justify-center mb-4">
+                                                <ImageIcon className="w-10 h-10 opacity-30" />
                                             </div>
-                                        )}
-                                    </div>
-
-                                    {/* Removed overlay slider */}
+                                            <p className="text-[10px] font-bold text-slate-300">Нет фото</p>
+                                        </div>
+                                    )}
                                 </div>
 
-                                {isEditing && (
-                                    <div className="glass-panel rounded-2xl p-4 animate-in fade-in slide-in-from-top-4 duration-500 shadow-crm-lg border border-slate-200/50">
-                                        <div className="space-y-4">
-                                            {/* ZOOM SLIDER */}
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex-1 space-y-0.5">
+                                {/* Removed overlay slider */}
+                            </div>
+
+                            {isEditing && (
+                                <div className="glass-panel rounded-2xl p-4 animate-in fade-in slide-in-from-top-4 duration-500 shadow-crm-lg border border-slate-200/50">
+                                    <div className="space-y-4">
+                                        {/* ZOOM SLIDER */}
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex-1 space-y-0.5">
+                                                <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
+                                                    <span>Масштаб</span>
+                                                    <span className="text-primary">{Math.round((thumbSettings.zoom ?? 1) * 100)}%</span>
+                                                </div>
+                                                <div className="relative h-6 flex items-center select-none touch-none">
+                                                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
+                                                        <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
+                                                        <div
+                                                            className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
+                                                            style={{
+                                                                left: '0%',
+                                                                width: `${(thumbSettings.zoom - 1) / 2 * 100}%`
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        className={cn(
+                                                            "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
+                                                            thumbSettings.zoom !== 1 && "border-primary/20 ring-2 ring-primary/10"
+                                                        )}
+                                                        style={{
+                                                            left: `${(thumbSettings.zoom - 1) / 2 * 100}%`
+                                                        }}
+                                                    />
+                                                    <input
+                                                        type="range"
+                                                        min="1"
+                                                        max="3"
+                                                        step="0.05"
+                                                        value={thumbSettings.zoom ?? 1}
+                                                        onChange={(e) => updateThumb({ zoom: parseFloat(e.target.value) })}
+                                                        onDoubleClick={() => updateThumb({ zoom: 1 })}
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={resetThumbSettings}
+                                                className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
+                                                title="Сбросить"
+                                            >
+                                                <RotateCcw className="w-3 h-3" />
+                                            </button>
+                                        </div>
+
+                                        {/* X/Y Sliders */}
+                                        <div className="flex items-start gap-4">
+                                            <div className="flex-1 grid grid-cols-2 gap-3">
+                                                <div className="space-y-1">
                                                     <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
-                                                        <span>Масштаб</span>
-                                                        <span className="text-primary">{Math.round((thumbSettings.zoom ?? 1) * 100)}%</span>
+                                                        <span className="whitespace-nowrap">По горизонтали</span>
                                                     </div>
                                                     <div className="relative h-6 flex items-center select-none touch-none">
                                                         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
-                                                            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
+                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
                                                             <div
                                                                 className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
                                                                 style={{
-                                                                    left: '0%',
-                                                                    width: `${(thumbSettings.zoom - 1) / 2 * 100}%`
+                                                                    left: (thumbSettings.x !== undefined && thumbSettings.x < 0 && maxBounds.x > 0)
+                                                                        ? `${50 + (Math.max(-1, Math.min(1, thumbSettings.x / maxBounds.x)) * 50)}%`
+                                                                        : '50%',
+                                                                    width: (thumbSettings.x !== undefined && maxBounds.x > 0)
+                                                                        ? `${Math.abs(Math.max(-1, Math.min(1, thumbSettings.x / maxBounds.x))) * 50}%`
+                                                                        : '0%'
                                                                 }}
                                                             />
                                                         </div>
                                                         <div
                                                             className={cn(
                                                                 "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
-                                                                thumbSettings.zoom !== 1 && "border-primary/20 ring-2 ring-primary/10"
+                                                                maxBounds.x <= 0 && "bg-slate-300",
+                                                                thumbSettings.x !== 0 && "border-primary/20 ring-2 ring-primary/10"
                                                             )}
                                                             style={{
-                                                                left: `${(thumbSettings.zoom - 1) / 2 * 100}%`
+                                                                left: (maxBounds.x > 0)
+                                                                    ? `${50 + (Math.max(-1, Math.min(1, (thumbSettings.x ?? 0) / maxBounds.x)) * 50)}%`
+                                                                    : '50%'
                                                             }}
                                                         />
                                                         <input
                                                             type="range"
-                                                            min="1"
-                                                            max="3"
-                                                            step="0.05"
-                                                            value={thumbSettings.zoom ?? 1}
-                                                            onChange={(e) => updateThumb({ zoom: parseFloat(e.target.value) })}
-                                                            onDoubleClick={() => updateThumb({ zoom: 1 })}
-                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0"
+                                                            min={-Math.max(1, maxBounds.x)}
+                                                            max={Math.max(1, maxBounds.x)}
+                                                            step="1"
+                                                            value={thumbSettings.x ?? 0}
+                                                            disabled={maxBounds.x <= 0}
+                                                            onChange={(e) => updateThumb({ x: parseInt(e.target.value) })}
+                                                            onDoubleClick={() => updateThumb({ x: 0 })}
+                                                            className={cn(
+                                                                "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
+                                                                maxBounds.x <= 0 && "cursor-not-allowed"
+                                                            )}
                                                         />
                                                     </div>
                                                 </div>
-                                                <button
-                                                    onClick={resetThumbSettings}
-                                                    className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
-                                                    title="Сбросить"
-                                                >
-                                                    <RotateCcw className="w-3 h-3" />
-                                                </button>
-                                            </div>
 
-                                            {/* X/Y Sliders */}
-                                            <div className="flex items-start gap-4">
-                                                <div className="flex-1 grid grid-cols-2 gap-3">
-                                                    <div className="space-y-1">
-                                                        <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
-                                                            <span className="whitespace-nowrap">По горизонтали</span>
-                                                        </div>
-                                                        <div className="relative h-6 flex items-center select-none touch-none">
-                                                            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
-                                                                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
-                                                                <div
-                                                                    className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
-                                                                    style={{
-                                                                        left: (thumbSettings.x !== undefined && thumbSettings.x < 0 && maxBounds.x > 0)
-                                                                            ? `${50 + (Math.max(-1, Math.min(1, thumbSettings.x / maxBounds.x)) * 50)}%`
-                                                                            : '50%',
-                                                                        width: (thumbSettings.x !== undefined && maxBounds.x > 0)
-                                                                            ? `${Math.abs(Math.max(-1, Math.min(1, thumbSettings.x / maxBounds.x))) * 50}%`
-                                                                            : '0%'
-                                                                    }}
-                                                                />
-                                                            </div>
+                                                <div className="space-y-1">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
+                                                        <span className="whitespace-nowrap">По вертикали</span>
+                                                    </div>
+                                                    <div className="relative h-6 flex items-center select-none touch-none">
+                                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
+                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
                                                             <div
-                                                                className={cn(
-                                                                    "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
-                                                                    maxBounds.x <= 0 && "bg-slate-300",
-                                                                    thumbSettings.x !== 0 && "border-primary/20 ring-2 ring-primary/10"
-                                                                )}
+                                                                className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
                                                                 style={{
-                                                                    left: (maxBounds.x > 0)
-                                                                        ? `${50 + (Math.max(-1, Math.min(1, (thumbSettings.x ?? 0) / maxBounds.x)) * 50)}%`
-                                                                        : '50%'
+                                                                    left: (thumbSettings.y !== undefined && thumbSettings.y < 0 && maxBounds.y > 0)
+                                                                        ? `${50 + (Math.max(-1, Math.min(1, thumbSettings.y / maxBounds.y)) * 50)}%`
+                                                                        : '50%',
+                                                                    width: (thumbSettings.y !== undefined && maxBounds.y > 0)
+                                                                        ? `${Math.abs(Math.max(-1, Math.min(1, thumbSettings.y / maxBounds.y))) * 50}%`
+                                                                        : '0%'
                                                                 }}
                                                             />
-                                                            <input
-                                                                type="range"
-                                                                min={-Math.max(1, maxBounds.x)}
-                                                                max={Math.max(1, maxBounds.x)}
-                                                                step="1"
-                                                                value={thumbSettings.x ?? 0}
-                                                                disabled={maxBounds.x <= 0}
-                                                                onChange={(e) => updateThumb({ x: parseInt(e.target.value) })}
-                                                                onDoubleClick={() => updateThumb({ x: 0 })}
-                                                                className={cn(
-                                                                    "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
-                                                                    maxBounds.x <= 0 && "cursor-not-allowed"
-                                                                )}
-                                                            />
+                                                        </div>
+                                                        <div
+                                                            className={cn(
+                                                                "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
+                                                                maxBounds.y <= 0 && "bg-slate-300",
+                                                                thumbSettings.y !== 0 && "border-primary/20 ring-2 ring-primary/10"
+                                                            )}
+                                                            style={{
+                                                                left: (maxBounds.y > 0)
+                                                                    ? `${50 + (Math.max(-1, Math.min(1, (thumbSettings.y ?? 0) / maxBounds.y)) * 50)}%`
+                                                                    : '50%'
+                                                            }}
+                                                        />
+                                                        <input
+                                                            type="range"
+                                                            min={-Math.max(1, maxBounds.y)}
+                                                            max={Math.max(1, maxBounds.y)}
+                                                            step="1"
+                                                            value={thumbSettings.y ?? 0}
+                                                            disabled={maxBounds.y <= 0}
+                                                            onChange={(e) => updateThumb({ y: parseInt(e.target.value) })}
+                                                            onDoubleClick={() => updateThumb({ y: 0 })}
+                                                            className={cn(
+                                                                "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
+                                                                maxBounds.y <= 0 && "cursor-not-allowed"
+                                                            )}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="w-6 shrink-0" aria-hidden="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="glass-panel rounded-2xl p-6 flex flex-col justify-between overflow-hidden shadow-crm-lg">
+                                <div className="mb-4 pb-4 border-b border-slate-100/60">
+                                    <h3 className="text-[11px] font-bold text-slate-400 mb-1">Артикул / SKU</h3>
+                                    <p className="text-[14px] font-black text-slate-900 tracking-normal leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
+                                </div>
+                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <h2 className="text-[11px] font-bold text-slate-400 mb-1">Резерв и остаток</h2>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-5xl md:text-6xl font-black text-slate-900 tracking-normaler leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
+                                                <span className="text-base font-black text-slate-400">{displayUnit}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2">
+                                            <div className={cn(
+                                                "inline-flex items-center px-4 py-2 rounded-xl text-[11px] font-black border",
+                                                item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
+                                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")
+                                            )}>
+                                                {item.quantity === 0 ? "Нет на складе" :
+                                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ? "Критично" : "В наличии")}
+                                            </div>
+                                            <div className="px-4 py-2 rounded-xl text-[11px] font-black border bg-amber-100/50 text-amber-600 border-amber-200/50">
+                                                Резерв: {reservedQuantity} {displayUnit}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* BLOCK: Quick Actions (Adjustment/Transfer) - App Tile Style */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => setAdjustType("set")}
+                                    className="group relative flex flex-col justify-between p-4 aspect-square bg-primary rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-95 text-left overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-6 -mt-6 transition-transform group-hover:scale-150 duration-700" />
+                                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center text-white relative z-10">
+                                        <SlidersHorizontal className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-[13px] font-black text-white leading-tight relative z-10">
+                                        Корректировка<br />остатка
+                                    </span>
+                                </button>
+
+                                <button
+                                    onClick={() => setShowTransfer(true)}
+                                    className="group relative flex flex-col justify-between p-4 aspect-square bg-[#0F172A] rounded-2xl shadow-xl shadow-slate-900/10 transition-all active:scale-95 text-left overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform group-hover:scale-150 duration-700" />
+                                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white relative z-10">
+                                        <ArrowRightLeft className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-[13px] font-black text-white leading-tight relative z-10">
+                                        Перемещение<br />товара
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* RIGHT: Bento Grid */}
+                        <div className={cn(
+                            "flex-1 w-full grid grid-cols-1 md:grid-cols-12 gap-4",
+                            item.isArchived && "grayscale opacity-70"
+                        )}>
+                            {/* LEFT COLUMN: Specs & Finance */}
+                            <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
+                                {/* BLOCK: Specification */}
+                                <div className="glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
+                                    <div className="flex items-center justify-between gap-4 mb-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                                <LayoutGrid className="w-6 h-6" />
+                                            </div>
+                                            <h3 className="text-xl font-black text-slate-900 tracking-normaler">Характеристика</h3>
+                                        </div>
+
+                                        {isEditing && (
+                                            <Link
+                                                href="/dashboard/warehouse?tab=dictionary"
+                                                target="_blank"
+                                                className="flex items-center gap-2 px-4 h-11 rounded-xl text-[12px] font-bold text-slate-400 hover:text-primary hover:bg-primary/5 transition-all border border-transparent hover:border-primary/10"
+                                            >
+                                                <Book className="w-4 h-4" />
+                                                Перейти в справочник
+                                            </Link>
+                                        )}
+                                    </div>
+                                    <ItemGeneralInfo
+                                        item={item}
+                                        isEditing={isEditing}
+                                        allAttributes={allAttributes}
+                                        attributeTypes={attributeTypes}
+                                        editData={editData as unknown as InventoryItem}
+                                        onUpdateField={(field, value) => {
+                                            setEditData(prev => ({ ...prev, [field]: value }))
+                                        }}
+                                        onUpdateAttribute={handleAttributeChange}
+                                        user={user}
+                                        totalStock={stocks.reduce((acc, s) => acc + s.quantity, 0)}
+                                        onEdit={handleStartEdit}
+                                    />
+                                </div>
+
+                                {/* BLOCK: Financial Metrics */}
+                                {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж') && (
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <div className="crm-card p-8 transition-all border border-slate-100 bg-white shadow-crm-md">
+                                            <div className="flex items-center gap-4 mb-10 relative z-10">
+                                                <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm shadow-slate-900/20">
+                                                    <Banknote className="w-6 h-6" />
+                                                </div>
+                                                <h3 className="text-xl font-black text-slate-900 tracking-normaler">Стоимость товара</h3>
+                                            </div>
+
+                                            <div className="flex flex-col md:flex-row gap-8">
+                                                {/* Left Side: Per Item Prices */}
+                                                <div className="flex-1 space-y-6">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center text-violet-600">
+                                                            <Tag className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <span className="block text-[11px] font-bold text-slate-400 leading-none">Себестоимость</span>
+                                                            {isEditing ? (
+                                                                <div className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={editData.costPrice ?? ""}
+                                                                        onChange={(e) => setEditData(prev => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
+                                                                        className="text-2xl font-black text-slate-900 bg-slate-50 border-none p-0 w-24 focus:ring-0"
+                                                                    />
+                                                                    <span className="text-xl font-black text-slate-400">₽</span>
+                                                                </div>
+                                                            ) : (
+                                                                <p className="text-3xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>
+                                                                    {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(lastInCostPrice)}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     </div>
 
-                                                    <div className="space-y-1">
-                                                        <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.12em] text-slate-400">
-                                                            <span className="whitespace-nowrap">По вертикали</span>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                                            <Banknote className="w-6 h-6" />
                                                         </div>
-                                                        <div className="relative h-6 flex items-center select-none touch-none">
-                                                            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
-                                                                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
-                                                                <div
-                                                                    className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
-                                                                    style={{
-                                                                        left: (thumbSettings.y !== undefined && thumbSettings.y < 0 && maxBounds.y > 0)
-                                                                            ? `${50 + (Math.max(-1, Math.min(1, thumbSettings.y / maxBounds.y)) * 50)}%`
-                                                                            : '50%',
-                                                                        width: (thumbSettings.y !== undefined && maxBounds.y > 0)
-                                                                            ? `${Math.abs(Math.max(-1, Math.min(1, thumbSettings.y / maxBounds.y))) * 50}%`
-                                                                            : '0%'
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            <div
-                                                                className={cn(
-                                                                    "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
-                                                                    maxBounds.y <= 0 && "bg-slate-300",
-                                                                    thumbSettings.y !== 0 && "border-primary/20 ring-2 ring-primary/10"
-                                                                )}
-                                                                style={{
-                                                                    left: (maxBounds.y > 0)
-                                                                        ? `${50 + (Math.max(-1, Math.min(1, (thumbSettings.y ?? 0) / maxBounds.y)) * 50)}%`
-                                                                        : '50%'
-                                                                }}
-                                                            />
-                                                            <input
-                                                                type="range"
-                                                                min={-Math.max(1, maxBounds.y)}
-                                                                max={Math.max(1, maxBounds.y)}
-                                                                step="1"
-                                                                value={thumbSettings.y ?? 0}
-                                                                disabled={maxBounds.y <= 0}
-                                                                onChange={(e) => updateThumb({ y: parseInt(e.target.value) })}
-                                                                onDoubleClick={() => updateThumb({ y: 0 })}
-                                                                className={cn(
-                                                                    "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
-                                                                    maxBounds.y <= 0 && "cursor-not-allowed"
-                                                                )}
-                                                            />
+                                                        <div className="space-y-1">
+                                                            <span className="block text-[11px] font-bold text-slate-400 leading-none">Продажная цена</span>
+                                                            {isEditing ? (
+                                                                <div className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={editData.sellingPrice ?? ""}
+                                                                        onChange={(e) => setEditData(prev => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
+                                                                        className="text-2xl font-black text-slate-900 bg-slate-50 border-none p-0 w-24 focus:ring-0"
+                                                                    />
+                                                                    <span className="text-xl font-black text-slate-400">₽</span>
+                                                                </div>
+                                                            ) : (
+                                                                <p className="text-3xl font-black text-emerald-600 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>
+                                                                    {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(Number(item.sellingPrice) || 0)}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="w-6 shrink-0" aria-hidden="true" />
+
+                                                {/* Vertical Divider */}
+                                                <div className="hidden md:block w-px bg-slate-100" />
+
+                                                {/* Right Side: Total Warehouse Value */}
+                                                <div className="flex-[1.5] space-y-6">
+                                                    <div className="space-y-4">
+                                                        <span className="block text-[11px] font-bold text-slate-400">Общая стоимость</span>
+                                                        <div className="grid grid-cols-2 gap-6">
+                                                            <div className="space-y-1 p-5 rounded-3xl bg-violet-500/5 border border-violet-100/50 overflow-hidden flex flex-col items-center justify-center min-h-[100px]">
+                                                                <div className="flex flex-col items-start">
+                                                                    <span className="text-[11px] font-bold text-slate-500 leading-none mb-1">По себестоимости</span>
+                                                                    {(() => {
+                                                                        const val = item.quantity * lastInCostPrice;
+                                                                        const str = val.toLocaleString('ru-RU') + ' ₽';
+                                                                        const fontSize = str.length > 20 ? 'text-xs' : str.length > 17 ? 'text-sm' : str.length > 14 ? 'text-base' : str.length > 12 ? 'text-lg' : str.length > 10 ? 'text-xl' : 'text-2xl';
+                                                                        return (
+                                                                            <p className={cn(fontSize, "font-black text-slate-900 whitespace-nowrap")}>
+                                                                                {str}
+                                                                            </p>
+                                                                        );
+                                                                    })()}
+                                                                </div>
+                                                            </div>
+                                                            <div className="space-y-1 p-5 rounded-3xl bg-emerald-50 border border-emerald-100/50 overflow-hidden flex flex-col items-center justify-center min-h-[100px]">
+                                                                <div className="flex flex-col items-start">
+                                                                    <span className="text-[11px] font-bold text-slate-500 leading-none mb-1">По продаже</span>
+                                                                    {(() => {
+                                                                        const val = item.quantity * (Number(item.sellingPrice) || 0);
+                                                                        const str = val.toLocaleString('ru-RU') + ' ₽';
+                                                                        const fontSize = str.length > 20 ? 'text-xs' : str.length > 17 ? 'text-sm' : str.length > 14 ? 'text-base' : str.length > 12 ? 'text-lg' : str.length > 10 ? 'text-xl' : 'text-2xl';
+                                                                        return (
+                                                                            <p className={cn(fontSize, "font-black text-slate-900 whitespace-nowrap")}>
+                                                                                {str}
+                                                                            </p>
+                                                                        );
+                                                                    })()}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
-                                {/* BLOCK: Stats (Moved specifically under photo) */}
-                                <div className="glass-panel rounded-2xl p-8 flex flex-col justify-between overflow-hidden shadow-crm-lg">
-                                    <div className="mb-4 pb-4 border-b border-slate-100/60">
-                                        <h3 className="text-[10px] font-black text-slate-400 tracking-widest mb-1 uppercase">Артикул / SKU</h3>
-                                        <p className="text-[13px] font-black text-slate-900 tracking-tight leading-tight break-all cursor-text select-all" onDoubleClick={() => setIsEditing(true)}>{item.sku || "—"}</p>
-                                    </div>
-                                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                        <div className="space-y-4">
-                                            <div>
-                                                <h2 className="text-[10px] font-black text-slate-400 tracking-widest mb-1 uppercase">Резерв и остаток</h2>
-                                                <div className="flex items-baseline gap-2">
-                                                    <span className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none cursor-pointer" onDoubleClick={() => setIsEditing(true)}>{item.quantity}</span>
-                                                    <span className="text-base font-black text-slate-400 tracking-widest uppercase">{displayUnit}</span>
+                                {/* BLOCK: Cost History Graph - ULTRA PREMIUM VERSION */}
+                                {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж') && (
+                                    <div className="glass-panel rounded-3xl p-10 flex flex-col shadow-crm-lg group flex-1 bg-white border border-slate-100 relative overflow-hidden">
+
+                                        <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-4 relative z-10">
+                                            <div className="space-y-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 shrink-0 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-900/20">
+                                                        <TrendingUp className="w-6 h-6" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xl font-black text-slate-900">История себестоимости</h3>
+                                                        <p className="text-[11px] font-bold text-slate-400 mt-1">Аналитика закупочных цен</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Hero Price Display */}
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-baseline gap-3">
+                                                        <motion.span
+                                                            key={item.costPrice}
+                                                            initial={{ opacity: 0, y: 10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            className="text-5xl font-black text-slate-900"
+                                                        >
+                                                            {(Number(item.costPrice) || lastInCostPrice || 0).toLocaleString()}
+                                                        </motion.span>
+                                                        <span className="text-2xl font-black text-slate-300">₽</span>
+
+                                                        {costHistoryStats.points.length > 1 && (
+                                                            <div className={cn(
+                                                                "ml-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black",
+                                                                costHistoryStats.yearlyChange > 0
+                                                                    ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                                                    : costHistoryStats.yearlyChange < 0
+                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                        : "bg-slate-50 text-slate-500 border border-slate-100"
+                                                            )}>
+                                                                {costHistoryStats.yearlyChange !== 0 && (
+                                                                    costHistoryStats.yearlyChange > 0
+                                                                        ? <ChevronRight className="w-4 h-4 rotate-[-90deg] stroke-[3]" />
+                                                                        : <ChevronRight className="w-4 h-4 rotate-[90deg] stroke-[3]" />
+                                                                )}
+                                                                {Math.abs(costHistoryStats.yearlyChange).toFixed(1)}%
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-[11px] font-extrabold text-slate-400 mt-2">Текущая цена изделия во всех филиалах</p>
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-wrap gap-2">
-                                                <div className={cn(
-                                                    "inline-flex items-center px-4 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase border",
-                                                    item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
-                                                        (item.quantity <= (item.criticalStockThreshold ?? 0) ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")
-                                                )}>
-                                                    {item.quantity === 0 ? "Нет на складе" :
-                                                        (item.quantity <= (item.criticalStockThreshold ?? 0) ? "Критично" : "В наличии")}
+                                            <div className="flex flex-col items-end gap-6">
+                                                {/* Timeframe Switcher - Premium Style */}
+                                                <div className="flex bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/50 backdrop-blur-sm">
+                                                    {(['5pts', '1m', '6m', 'all'] as const).map((tf) => (
+                                                        <button
+                                                            key={tf}
+                                                            onClick={() => setCostTimeframe(tf)}
+                                                            className={cn(
+                                                                "relative px-5 py-2 text-[10px] font-black transition-all duration-500 rounded-xl overflow-hidden",
+                                                                costTimeframe === tf ? "text-white" : "text-slate-400 hover:text-slate-900"
+                                                            )}
+                                                        >
+                                                            {costTimeframe === tf && (
+                                                                <motion.div
+                                                                    layoutId="premium-tf-bg"
+                                                                    className="absolute inset-0 bg-primary shadow-2xl shadow-primary/30"
+                                                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                                />
+                                                            )}
+                                                            <span className="relative z-10">
+                                                                {tf === '5pts' ? 'Поставки' : tf === '1m' ? 'Месяц' : tf === '6m' ? 'Полгода' : 'Все'}
+                                                            </span>
+                                                        </button>
+                                                    ))}
                                                 </div>
-                                                <div className="px-4 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase border bg-amber-100/50 text-amber-600 border-amber-200/50">
-                                                    Резерв: {reservedQuantity} {displayUnit}
+
+                                                {/* Min/Max Benchmarks */}
+                                                <div className="flex gap-10">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-black text-slate-300 leading-none mb-1">Максимум</span>
+                                                        <span className="text-xl font-black text-slate-900">{Math.round(costHistoryStats.actualMax).toLocaleString()} <span className="text-sm text-slate-300">₽</span></span>
+                                                    </div>
+                                                    <div className="w-px h-10 bg-slate-100" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-black text-slate-300 leading-none mb-1">Минимум</span>
+                                                        <span className="text-xl font-black text-slate-900">{Math.round(costHistoryStats.actualMin).toLocaleString()} <span className="text-sm text-slate-300">₽</span></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {/* Chart Area */}
+                                        <div
+                                            className="relative h-[120px] w-full mt-4 group/chart cursor-crosshair"
+                                            onMouseLeave={() => setHoverPoint(null)}
+                                            onMouseMove={(e) => {
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const pts = costHistoryStats.points;
+                                                if (pts.length < 2) return;
+
+                                                const paddingX = 40;
+                                                const graphWidth = rect.width - paddingX * 2;
+                                                const relativeX = (x - paddingX) / graphWidth;
+                                                const index = Math.round(relativeX * (pts.length - 1));
+
+                                                if (index >= 0 && index < pts.length) {
+                                                    setHoverPoint({ index, x });
+                                                }
+                                            }}
+                                        >
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={costTimeframe}
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    transition={{ duration: 0.4 }}
+                                                    className="absolute inset-0"
+                                                >
+                                                    <svg width="100%" height="100%" viewBox="0 0 1000 120" preserveAspectRatio="none" className="overflow-visible">
+                                                        <defs>
+                                                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                                                <stop offset="0%" stopColor="#5d00ff" stopOpacity="0.1" />
+                                                                <stop offset="100%" stopColor="#5d00ff" stopOpacity="0" />
+                                                            </linearGradient>
+                                                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                                                <feGaussianBlur stdDeviation="5" result="blur" />
+                                                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                                            </filter>
+                                                        </defs>
+
+                                                        {/* Grid Lines - Subtle */}
+                                                        {[0, 30, 60, 90, 120].map(y => (
+                                                            <line key={y} x1="0" y1={y} x2="1000" y2={y} stroke="#f1f5f9" strokeWidth="0.5" strokeDasharray="4 4" />
+                                                        ))}
+
+                                                        {/* The Line Graph Logic */}
+                                                        {(() => {
+                                                            const pts = costHistoryStats.points;
+                                                            if (pts.length < 2) return null;
+
+                                                            const paddingX = 40;
+                                                            const paddingY = 20;
+                                                            const graphWidth = 1000 - paddingX * 2;
+                                                            const graphHeight = 120 - paddingY * 2;
+
+                                                            const range = Math.max(1, costHistoryStats.max - costHistoryStats.min);
+
+                                                            const getY = (val: number) => 120 - paddingY - ((val - costHistoryStats.min) / range) * graphHeight;
+                                                            const getX = (i: number) => paddingX + (i / (pts.length - 1)) * graphWidth;
+
+                                                            // Smooth Path Calculation
+                                                            let linePath = `M ${getX(0)} ${getY(pts[0].avg)}`;
+                                                            for (let i = 0; i < pts.length - 1; i++) {
+                                                                const x1 = getX(i);
+                                                                const y1 = getY(pts[i].avg);
+                                                                const x2 = getX(i + 1);
+                                                                const y2 = getY(pts[i + 1].avg);
+                                                                const cx = (x1 + x2) / 2;
+                                                                linePath += ` C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
+                                                            }
+
+                                                            const areaPath = `${linePath} L ${getX(pts.length - 1)} 120 L ${getX(0)} 120 Z`;
+
+                                                            return (
+                                                                <>
+                                                                    <motion.path
+                                                                        d={areaPath}
+                                                                        fill="rgba(93, 0, 255, 0.03)"
+                                                                        initial={{ opacity: 0 }}
+                                                                        animate={{ opacity: 1 }}
+                                                                    />
+                                                                    <motion.path
+                                                                        d={linePath}
+                                                                        fill="none"
+                                                                        stroke="#5d00ff"
+                                                                        strokeWidth="2.5"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        filter="url(#glow)"
+                                                                        initial={{ pathLength: 0 }}
+                                                                        animate={{ pathLength: 1 }}
+                                                                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                                                                    />
+
+                                                                    {/* Scanner Line */}
+                                                                    {hoverPoint && (
+                                                                        <motion.line
+                                                                            x1={getX(hoverPoint.index)}
+                                                                            y1="0"
+                                                                            x2={getX(hoverPoint.index)}
+                                                                            y2="120"
+                                                                            stroke="#5d00ff"
+                                                                            strokeWidth="1"
+                                                                            strokeDasharray="4 4"
+                                                                            initial={{ opacity: 0 }}
+                                                                            animate={{ opacity: 1 }}
+                                                                        />
+                                                                    )}
+
+                                                                    {/* Data Points */}
+                                                                    {pts.map((p, i) => (
+                                                                        <motion.circle
+                                                                            key={p.id || i}
+                                                                            cx={getX(i)}
+                                                                            cy={getY(p.avg)}
+                                                                            r={hoverPoint?.index === i ? "6" : "4"}
+                                                                            fill="white"
+                                                                            stroke={hoverPoint?.index === i ? "#5d00ff" : "#5d00ff80"}
+                                                                            strokeWidth="2"
+                                                                            initial={{ scale: 0 }}
+                                                                            animate={{ scale: 1 }}
+                                                                            transition={{ delay: 0.2 + i * 0.05 }}
+                                                                        />
+                                                                    ))}
+                                                                </>
+                                                            );
+                                                        })()}
+                                                    </svg>
+
+                                                    {/* Floating Tooltip */}
+                                                    {hoverPoint && (
+                                                        <div
+                                                            className="absolute z-50 pointer-events-none bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 flex flex-col items-center gap-1 transition-all duration-200"
+                                                            style={{
+                                                                left: `${(hoverPoint.index / (costHistoryStats.points.length - 1)) * 100}%`,
+                                                                top: `20%`,
+                                                                transform: `translateX(-50%)`
+                                                            }}
+                                                        >
+                                                            <span className="text-[8px] font-black text-white/50 leading-none">{costHistoryStats.points[hoverPoint.index].label}</span>
+                                                            <span className="text-sm font-black tracking-tight">{Math.round(costHistoryStats.points[hoverPoint.index].avg).toLocaleString()} ₽</span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Labels Row */}
+                                                    <div className="absolute -bottom-8 inset-x-0 flex justify-between px-2">
+                                                        {costHistoryStats.points.map((p, i) => (
+                                                            <span key={i} className="text-[10px] font-bold text-slate-300">
+                                                                {p.label}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
+                                            </AnimatePresence>
+
+                                            {/* Hover Interactive Layer would go here if we want a custom ticker tooltip */}
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* BLOCK: Quick Actions (Adjustment/Transfer) - App Tile Style */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button
-                                        onClick={() => setAdjustType("set")}
-                                        className="group relative flex flex-col justify-between p-4 aspect-square bg-primary rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-95 text-left overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-6 -mt-6 transition-transform group-hover:scale-150 duration-700" />
-                                        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center text-white relative z-10">
-                                            <SlidersHorizontal className="w-5 h-5" />
-                                        </div>
-                                        <span className="text-[11px] font-black text-white uppercase tracking-wider leading-tight relative z-10">
-                                            Корректировка<br />остатка
-                                        </span>
-                                    </button>
-
-                                    <button
-                                        onClick={() => setShowTransfer(true)}
-                                        className="group relative flex flex-col justify-between p-4 aspect-square bg-[#0F172A] rounded-2xl shadow-xl shadow-slate-900/10 transition-all active:scale-95 text-left overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform group-hover:scale-150 duration-700" />
-                                        <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white relative z-10">
-                                            <ArrowRightLeft className="w-5 h-5" />
-                                        </div>
-                                        <span className="text-[11px] font-black text-white uppercase tracking-wider leading-tight relative z-10">
-                                            Перемещение<br />товара
-                                        </span>
-                                    </button>
-                                </div>
+                                )}
                             </div>
 
-                            {/* RIGHT: Bento Grid */}
-                            <div className={cn(
-                                "flex-1 w-full grid grid-cols-1 md:grid-cols-12 gap-4",
-                                item.isArchived && "grayscale opacity-70"
-                            )}>
-                                {/* LEFT COLUMN: Specs & Finance */}
-                                <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
-                                    {/* BLOCK: Specification */}
-                                    <div className="glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
-                                        <div className="flex items-center gap-4 mb-8">
-                                            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                                <LayoutGrid className="w-6 h-6" />
-                                            </div>
-                                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">Характеристика</h3>
-                                        </div>
-                                        <ItemGeneralInfo
-                                            item={item}
-                                            isEditing={isEditing}
-                                            allAttributes={allAttributes}
-                                            attributeTypes={attributeTypes}
-                                            editData={editData as unknown as InventoryItem}
-                                            onUpdateField={(field, value) => {
-                                                setEditData(prev => ({ ...prev, [field]: value }))
-                                            }}
-                                            onUpdateAttribute={handleAttributeChange}
-                                            user={user}
-                                            totalStock={stocks.reduce((acc, s) => acc + s.quantity, 0)}
-                                            onEdit={() => setIsEditing(true)}
-                                        />
-                                    </div>
-
-                                    {/* BLOCK: Financial Metrics */}
-                                    {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство') && (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div className="group relative overflow-hidden bg-white p-6 rounded-[24px] shadow-crm-lg border border-slate-100 transition-all hover:-translate-y-1 flex items-center gap-5">
-                                                <div className="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white relative shadow-lg shadow-purple-500/20 transition-transform duration-500 group-hover:scale-110">
-                                                    <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-full blend-overlay" />
-                                                    <Tag className="w-6 h-6 relative z-10" />
-                                                </div>
-
-
-                                                <div className="space-y-1">
-                                                    <span className="block text-xs font-bold text-slate-400 transition-colors">
-                                                        Себестоимость изделия
-                                                    </span>
-                                                    {isEditing ? (
-                                                        <input
-                                                            type="number"
-                                                            inputMode="numeric"
-                                                            value={editData.costPrice || ""}
-                                                            onChange={(e) => {
-                                                                const val = parseFloat(e.target.value);
-                                                                setEditData(prev => ({ ...prev, costPrice: val }));
-                                                            }}
-                                                            className="text-2xl font-black text-slate-900 bg-slate-50 border border-slate-100 rounded-lg px-3 py-1 focus:bg-white focus:border-primary outline-none w-32 transition-all placeholder:text-slate-300"
-                                                            placeholder="0"
-                                                        />
-                                                    ) : (
-                                                        <p className="text-3xl font-black text-slate-900 tracking-tighter leading-none transition-colors cursor-pointer" onDoubleClick={() => setIsEditing(true)}>
-                                                            {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(lastInCostPrice)}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className="group relative overflow-hidden bg-white p-6 rounded-[24px] shadow-crm-lg border border-slate-100 transition-all hover:-translate-y-1 flex items-center gap-5">
-                                                <div className="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white relative shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-110">
-                                                    <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-full blend-overlay" />
-                                                    <CheckCircle2 className="w-6 h-6 relative z-10" />
-                                                </div>
-
-
-                                                <div className="space-y-1">
-                                                    <span className="block text-xs font-bold text-slate-400 transition-colors">
-                                                        Общая стоимость всех<br />изделий на складе
-                                                    </span>
-                                                    <p className="text-3xl font-black text-slate-900 tracking-tighter leading-none transition-colors cursor-pointer" onDoubleClick={() => setIsEditing(true)}>
-                                                        {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(stocks.reduce((acc, s) => acc + s.quantity, 0) * (item.costPrice || 0))}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* BLOCK: Cost History Graph */}
-                                    {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство') && (
-                                        <div className="glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg group flex-1">
-                                            <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4 mb-10">
-                                                <div className="flex-1 min-w-[200px] space-y-4">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 shrink-0 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600 transition-transform group-hover:scale-110">
-                                                            <TrendingUp className="w-6 h-6" />
-                                                        </div>
-                                                        <h3 className="text-xl font-black text-slate-900 tracking-tighter truncate">История себестоимости</h3>
-                                                    </div>
-                                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black border border-emerald-100/50">
-                                                        <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                                                        -2.4% (ГОД)
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex items-center gap-4 sm:gap-6 py-2 px-4 bg-slate-50 rounded-2xl border border-slate-100 transition-all duration-300 group-hover:bg-white group-hover:border-violet-100 group-hover:shadow-md">
-                                                    <div className="flex flex-col gap-1">
-                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Макс.</span>
-                                                        <div className="flex items-baseline gap-1">
-                                                            <span className="text-base font-black text-slate-900 tabular-nums break-keep">
-                                                                {Number(Math.round(costHistoryStats.max)).toLocaleString()}
-                                                            </span>
-                                                            <span className="text-[10px] font-bold text-slate-400">₽</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-px h-6 bg-slate-200/60 group-hover:bg-violet-100" />
-                                                    <div className="flex flex-col gap-1">
-                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none text-center">Сред.</span>
-                                                        <div className="flex items-baseline gap-1">
-                                                            <span className="text-base font-black text-slate-900 tabular-nums">
-                                                                {Number(Math.round(costHistoryStats.avg)).toLocaleString()}
-                                                            </span>
-                                                            <span className="text-[10px] font-bold text-slate-400">₽</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-px h-6 bg-slate-200/60 group-hover:bg-violet-100" />
-                                                    <div className="flex flex-col gap-1 items-end">
-                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Мин.</span>
-                                                        <div className="flex items-baseline gap-1">
-                                                            <span className="text-base font-black text-slate-900 tabular-nums break-keep">
-                                                                {Number(Math.round(costHistoryStats.min)).toLocaleString()}
-                                                            </span>
-                                                            <span className="text-[10px] font-bold text-slate-400">₽</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Stylized Bar Chart */}
-                                            <div className="flex items-end justify-between h-20 gap-1.5 px-1 relative">
-                                                {costHistoryStats.points.map((p, i) => {
-                                                    const isCurrent = i === 11;
-                                                    const hasActualData = p.hasData;
-                                                    const height = costHistoryStats.max > 0 ? (p.avg / costHistoryStats.max) * 100 : 0;
-
-                                                    // If no data and not current month, height should be 0
-                                                    const displayHeight = (hasActualData || isCurrent) ? Math.max(10, height) : 0;
-
-                                                    return (
-                                                        <div key={i} className="flex-1 group/bar relative h-full flex items-end">
-                                                            <div
-                                                                className={cn(
-                                                                    "w-full rounded-t-sm transition-all duration-700 ease-out group-hover/bar:brightness-110",
-                                                                    isCurrent ? "bg-[#5d00ff] shadow-[0_0_15px_rgba(93,0,255,0.3)]" : (hasActualData ? "bg-slate-100 group-hover/bar:bg-slate-200" : "bg-transparent")
-                                                                )}
-                                                                style={{ height: `${displayHeight}%` }}
-                                                            />
-                                                            {/* Tooltip */}
-                                                            <div className="absolute -top-[52px] left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-3 py-2 rounded-xl opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none z-30 shadow-2xl border border-white/10 scale-90 group-hover/bar:scale-100 min-w-max text-center">
-                                                                {(hasActualData || isCurrent) ? (
-                                                                    <>
-                                                                        {p.lastDate && (
-                                                                            <span className="block text-[8px] text-white/50 uppercase tracking-widest mb-0.5">
-                                                                                {format(p.lastDate, 'd MMM yyyy', { locale: ru })}
-                                                                            </span>
-                                                                        )}
-                                                                        <span className="block text-xs font-black">
-                                                                            {Math.round(p.avg).toLocaleString()} ₽
-                                                                        </span>
-                                                                    </>
-                                                                ) : (
-                                                                    "Нет поставок"
-                                                                )}
-                                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45" />
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-
-                                            <div className="flex justify-between mt-4 px-1 border-t border-slate-50 pt-3">
-                                                {costHistoryStats.points.map((p, idx) => {
-                                                    // Only show labels for specific indices: 0, 3, 6, 9, 11
-                                                    if (![0, 3, 6, 9, 11].includes(idx)) return null;
-                                                    let label = p.label;
-                                                    if (idx === 11) label = "Тек.";
-
-                                                    return (
-                                                        <span key={idx} className={cn(
-                                                            "text-[9px] font-black uppercase tracking-widest transition-colors",
-                                                            idx === 11 ? "text-[#5d00ff]" : "text-slate-300"
-                                                        )}>
-                                                            {label}
-                                                        </span>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
+                            {/* RIGHT: Bento Grid Column */}
+                            <div className="col-span-12 md:col-span-4 flex flex-col gap-4">
+                                {/* Actions Grid (Vertical above Alerts) */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    <button
+                                        onClick={() => setShowLabelDialog(true)}
+                                        className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
+                                        title="Печать этикетки"
+                                    >
+                                        <Printer className="w-8 h-8 transition-transform group-hover:scale-110" />
+                                    </button>
+                                    <button
+                                        onClick={handleDownload}
+                                        className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400"
+                                        title="Экспорт PDF"
+                                    >
+                                        <FileDown className="w-8 h-8 transition-transform group-hover:scale-110" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (item.quantity > 0) {
+                                                toast("Нельзя архивировать товар с остатком > 0", "error");
+                                                return;
+                                            }
+                                            setShowArchiveReason(true);
+                                        }}
+                                        className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/20 transition-all text-slate-400"
+                                        title="В архив"
+                                    >
+                                        <Archive className="w-8 h-8 transition-transform group-hover:scale-110" />
+                                    </button>
                                 </div>
 
-                                {/* RIGHT: Bento Grid Column */}
-                                <div className="col-span-12 md:col-span-4 flex flex-col gap-4">
-                                    {/* Actions Grid (Vertical above Alerts) */}
-                                    <div className="grid grid-cols-3 gap-3">
-                                        <button
-                                            onClick={() => setShowLabelDialog(true)}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-primary/20 hover:text-primary hover:-translate-y-0.5 transition-all text-slate-400"
-                                            title="Печать этикетки"
-                                        >
-                                            <Printer className="w-8 h-8" />
-                                        </button>
-                                        <button
-                                            onClick={handleDownload}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-emerald-500/20 hover:text-emerald-500 hover:-translate-y-0.5 transition-all text-slate-400"
-                                            title="Скачать Excel"
-                                        >
-                                            <Download className="w-8 h-8" />
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                if (item.quantity > 0) {
-                                                    toast("Нельзя архивировать товар с остатком > 0", "error");
-                                                    return;
-                                                }
-                                                setShowArchiveReason(true);
-                                            }}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-[20px] border border-slate-100 shadow-crm-lg hover:border-orange-500/20 hover:text-orange-500 hover:-translate-y-0.5 transition-all text-slate-400"
-                                            title="В архив"
-                                        >
-                                            <Archive className="w-8 h-8" />
-                                        </button>
+                                {/* SUB-BLOCK: Stock Alerts */}
+                                <div className="glass-panel rounded-2xl p-8 shadow-crm-lg relative group/alerts overflow-hidden">
+
+                                    <div className="flex items-center gap-4 mb-8 relative z-10">
+                                        <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                            <Bell className="w-5 h-5 animate-pulse" />
+                                        </div>
+                                        <h3 className="text-xl font-black text-slate-900 tracking-normaler">Оповещения</h3>
                                     </div>
 
-                                    {/* SUB-BLOCK: Stock Alerts */}
-                                    <div className="glass-panel rounded-2xl p-8 shadow-crm-lg relative group/alerts overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 blur-2xl transition-opacity group/alerts:opacity-100 opacity-50" />
-
-                                        <div className="flex items-center gap-4 mb-8 relative z-10">
-                                            <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600">
-                                                <Bell className="w-5 h-5 animate-pulse" />
-                                            </div>
-                                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">Оповещения</h3>
-                                        </div>
-
-                                        <div className="space-y-3 relative z-10">
-                                            {/* Min Stock Widget */}
-                                            <div className="relative p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all hover:border-primary/60 hover:ring-1 hover:ring-primary/10 group/card">
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest transition-colors group-hover/card:text-amber-600">Минимальный остаток</span>
-                                                    <div className="flex gap-1">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                                                    </div>
+                                    <div className="space-y-3 relative z-10">
+                                        {/* Min Stock Widget */}
+                                        <div className="relative p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all hover:border-primary/60 hover:ring-1 hover:ring-primary/10 group/card">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <span className="text-[11px] font-bold text-slate-400 transition-colors group-hover/card:text-amber-600">Минимальный остаток</span>
+                                                <div className="flex gap-1">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                                 </div>
+                                            </div>
 
-                                                {isEditing ? (
-                                                    <div className="space-y-4">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-baseline gap-1.5">
-                                                                <input
-                                                                    type="number"
-                                                                    value={editData.lowStockThreshold || 0}
-                                                                    onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
-                                                                    className="text-3xl font-black text-slate-900 tracking-tighter leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
-                                                                />
-                                                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">шт.</span>
-                                                            </div>
-                                                            <div className="px-3 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
-                                                                <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest leading-none">ЗАКАНЧИВАЕТСЯ</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="relative h-2.5 bg-slate-100 rounded-full group/slider">
-                                                            <input
-                                                                type="range"
-                                                                min="0"
-                                                                max="30"
-                                                                value={Math.min(30, editData.lowStockThreshold || 0)}
-                                                                onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) }))}
-                                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
-                                                            />
-                                                            <div
-                                                                className="absolute top-0 left-0 h-full bg-amber-500 rounded-full transition-all duration-300 z-10"
-                                                                style={{ width: `${(Math.min(30, editData.lowStockThreshold || 0) / 30) * 100}%` }}
-                                                            />
-                                                            <div
-                                                                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-amber-500 rounded-full shadow-xl transition-all duration-300 z-20 pointer-events-none"
-                                                                style={{ left: `calc(${(Math.min(30, editData.lowStockThreshold || 0) / 30) * 100}% - 6px)` }}
-                                                            />
-
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex items-end justify-between">
+                                            {isEditing ? (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center justify-between">
                                                         <div className="flex items-baseline gap-1.5">
-                                                            <span className="text-3xl font-black text-slate-900 tracking-tighter leading-none cursor-pointer" onDoubleClick={() => setIsEditing(true)}>{item.lowStockThreshold}</span>
-                                                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">шт.</span>
+                                                            <input
+                                                                type="number"
+                                                                value={editData.lowStockThreshold || 0}
+                                                                onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                                                className="text-3xl font-black text-slate-900 tracking-normaler leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
+                                                            />
+                                                            <span className="text-[13px] font-black text-slate-400">шт.</span>
                                                         </div>
                                                         <div className="px-3 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
-                                                            <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest leading-none">ЗАКАНЧИВАЕТСЯ</span>
+                                                            <span className="text-[11px] font-bold text-amber-600 leading-none">Заканчивается</span>
                                                         </div>
                                                     </div>
-                                                )}
-                                            </div>
+                                                    <div className="relative h-2.5 bg-slate-100 rounded-full group/slider">
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="30"
+                                                            value={Math.min(30, editData.lowStockThreshold || 0)}
+                                                            onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) }))}
+                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
+                                                        />
+                                                        <div
+                                                            className="absolute top-0 left-0 h-full bg-amber-500 rounded-full transition-all duration-300 z-10"
+                                                            style={{ width: `${(Math.min(30, editData.lowStockThreshold || 0) / 30) * 100}%` }}
+                                                        />
+                                                        <div
+                                                            className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-[3px] border-amber-500 rounded-full shadow-xl transition-all duration-300 z-20 pointer-events-none"
+                                                            style={{ left: `calc(${(Math.min(30, editData.lowStockThreshold || 0) / 30) * 100}% - 10px)` }}
+                                                        />
 
-                                            {/* Critical Stock Widget */}
-                                            <div className="relative p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all hover:border-primary/60 hover:ring-1 hover:ring-primary/10 group/card">
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest transition-colors group-hover/card:text-rose-600">Критический остаток</span>
-                                                    <div className="flex gap-1">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                                                     </div>
                                                 </div>
-
-                                                {isEditing ? (
-                                                    <div className="space-y-4">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-baseline gap-1.5">
-                                                                <input
-                                                                    type="number"
-                                                                    value={editData.criticalStockThreshold || 0}
-                                                                    onChange={(e) => setEditData(prev => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
-                                                                    className="text-3xl font-black text-slate-900 tracking-tighter leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
-                                                                />
-                                                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">шт.</span>
-                                                            </div>
-                                                            <div className="px-3 py-1 bg-rose-50 rounded-full border border-rose-100 flex items-center justify-center">
-                                                                <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest leading-none">КРИТИЧЕСКИЙ</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="relative h-2.5 bg-slate-100 rounded-full group/slider">
-                                                            <input
-                                                                type="range"
-                                                                min="0"
-                                                                max="30"
-                                                                value={Math.min(30, editData.criticalStockThreshold || 0)}
-                                                                onChange={(e) => setEditData(prev => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) }))}
-                                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
-                                                            />
-                                                            <div
-                                                                className="absolute top-0 left-0 h-full bg-rose-500 rounded-full transition-all duration-300 z-10"
-                                                                style={{ width: `${(Math.min(30, editData.criticalStockThreshold || 0) / 30) * 100}%` }}
-                                                            />
-                                                            <div
-                                                                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-rose-500 rounded-full shadow-xl transition-all duration-300 z-20 pointer-events-none"
-                                                                style={{ left: `calc(${(Math.min(30, editData.criticalStockThreshold || 0) / 30) * 100}% - 6px)` }}
-                                                            />
-
-                                                        </div>
+                                            ) : (
+                                                <div className="flex items-end justify-between">
+                                                    <div className="flex items-baseline gap-1.5">
+                                                        <span className="text-3xl font-black text-slate-900 tracking-normaler leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.lowStockThreshold}</span>
+                                                        <span className="text-[11px] font-bold text-slate-400">шт.</span>
                                                     </div>
-                                                ) : (
-                                                    <div className="flex items-end justify-between">
+                                                    <div className="px-3 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
+                                                        <span className="text-[11px] font-bold text-amber-600 leading-none">Заканчивается</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Critical Stock Widget */}
+                                        <div className="relative p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all hover:border-primary/60 hover:ring-1 hover:ring-primary/10 group/card">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <span className="text-[11px] font-bold text-slate-400 transition-colors group-hover/card:text-rose-600">Критический остаток</span>
+                                                <div className="flex gap-1">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                                </div>
+                                            </div>
+
+                                            {isEditing ? (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center justify-between">
                                                         <div className="flex items-baseline gap-1.5">
-                                                            <span className="text-3xl font-black text-slate-900 tracking-tighter leading-none cursor-pointer" onDoubleClick={() => setIsEditing(true)}>{item.criticalStockThreshold}</span>
-                                                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">шт.</span>
+                                                            <input
+                                                                type="number"
+                                                                value={editData.criticalStockThreshold || 0}
+                                                                onChange={(e) => setEditData(prev => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                                                className="text-3xl font-black text-slate-900 tracking-normaler leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
+                                                            />
+                                                            <span className="text-[13px] font-black text-slate-400">шт.</span>
                                                         </div>
                                                         <div className="px-3 py-1 bg-rose-50 rounded-full border border-rose-100 flex items-center justify-center">
-                                                            <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest leading-none">КРИТИЧЕСКИЙ</span>
+                                                            <span className="text-[11px] font-bold text-rose-600 leading-none">Критический</span>
                                                         </div>
                                                     </div>
-                                                )}
+                                                    <div className="relative h-2.5 bg-slate-100 rounded-full group/slider">
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="30"
+                                                            value={Math.min(30, editData.criticalStockThreshold || 0)}
+                                                            onChange={(e) => setEditData(prev => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) }))}
+                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
+                                                        />
+                                                        <div
+                                                            className="absolute top-0 left-0 h-full bg-rose-500 rounded-full transition-all duration-300 z-10"
+                                                            style={{ width: `${(Math.min(30, editData.criticalStockThreshold || 0) / 30) * 100}%` }}
+                                                        />
+                                                        <div
+                                                            className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-[3px] border-rose-500 rounded-full shadow-xl transition-all duration-300 z-20 pointer-events-none"
+                                                            style={{ left: `calc(${(Math.min(30, editData.criticalStockThreshold || 0) / 30) * 100}% - 10px)` }}
+                                                        />
+
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-end justify-between">
+                                                    <div className="flex items-baseline gap-1.5">
+                                                        <span className="text-3xl font-black text-slate-900 tracking-normaler leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.criticalStockThreshold}</span>
+                                                        <span className="text-[11px] font-bold text-slate-400">шт.</span>
+                                                    </div>
+                                                    <div className="px-3 py-1 bg-rose-50 rounded-full border border-rose-100 flex items-center justify-center">
+                                                        <span className="text-[11px] font-bold text-rose-600 leading-none">Критический</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* SUB-BLOCK: Warehouses List */}
+                                <div className="glass-panel rounded-2xl p-8 shadow-crm-lg flex flex-col flex-1">
+                                    <div className="flex items-center justify-between mb-8 text-left">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                                <MapPin className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-xl font-black text-slate-900 tracking-normaler">Размещение</h3>
+                                                <p className="text-[11px] font-bold text-slate-400 mt-1">
+                                                    Всего {storageLocations.length} {pluralize(storageLocations.length, 'локация', 'локации', 'локаций')}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* SUB-BLOCK: Warehouses List */}
-                                    <div className="glass-panel rounded-2xl p-8 shadow-crm-lg flex flex-col flex-1">
-                                        <div className="flex justify-between items-center mb-8">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/10">
-                                                    <MapPin className="w-6 h-6" />
+                                    <div className="space-y-3">
+                                        {(() => {
+                                            const sortedStocks = storageLocations
+                                                .map(loc => {
+                                                    const stockEntry = stocks.find(s => s.storageLocationId === loc.id);
+                                                    return {
+                                                        storageLocation: loc,
+                                                        quantity: stockEntry?.quantity || 0,
+                                                        storageLocationId: loc.id
+                                                    };
+                                                })
+                                                .sort((a, b) => b.quantity - a.quantity);
+
+                                            if (sortedStocks.length === 0) return (
+                                                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                                    <Package className="w-8 h-8 text-slate-300 mx-auto mb-2 opacity-50" />
+                                                    <p className="text-[10px] font-bold text-slate-400">Нет данных о размещении</p>
                                                 </div>
-                                                <h3 className="text-xl font-black text-slate-900 tracking-tighter">Размещение</h3>
-                                            </div>
-                                            <div className="w-10 h-10 bg-slate-50 rounded-full border border-slate-100 flex flex-col items-center justify-center shadow-sm">
-                                                <span className="text-[12px] font-black text-slate-900 leading-none">
-                                                    {storageLocations.length}
-                                                </span>
-                                                <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
-                                                    лок.
-                                                </span>
-                                            </div>
-                                        </div>
+                                            );
 
-                                        <div className="space-y-3">
-                                            {(() => {
-                                                const sortedStocks = storageLocations
-                                                    .map(loc => {
-                                                        const stockEntry = stocks.find(s => s.storageLocationId === loc.id);
-                                                        return {
-                                                            storageLocation: loc,
-                                                            quantity: stockEntry?.quantity || 0,
-                                                            storageLocationId: loc.id
-                                                        };
-                                                    })
-                                                    .sort((a, b) => b.quantity - a.quantity);
+                                            const mainStock = sortedStocks[0];
+                                            const otherStocks = sortedStocks.slice(1);
 
-                                                if (sortedStocks.length === 0) return (
-                                                    <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                                        <Package className="w-8 h-8 text-slate-300 mx-auto mb-2 opacity-50" />
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Нет данных о размещении</p>
-                                                    </div>
-                                                );
-
-                                                const mainStock = sortedStocks[0];
-                                                const otherStocks = sortedStocks.slice(1);
-
-                                                return (
-                                                    <>
-                                                        {/* Main Stock Card (Full Width) */}
-                                                        <div className="group p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-primary/60 hover:ring-1 hover:ring-primary/10 transition-all flex flex-col justify-between min-h-[110px]">
-                                                            <div className="flex justify-between items-start gap-2">
-                                                                <span className="text-[16px] font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors line-clamp-2">
-                                                                    {mainStock.storageLocation?.name}
+                                            return (
+                                                <>
+                                                    {/* Main Stock Card (Full Width) */}
+                                                    <div className="group p-5 rounded-2xl bg-emerald-50/30 border border-emerald-200 hover:border-emerald-400 hover:ring-1 hover:ring-emerald-500/10 transition-all flex flex-col justify-between min-h-[110px] text-left">
+                                                        <div className="flex flex-col gap-1 text-left">
+                                                            <span className="text-[16px] font-bold text-slate-900 tracking-normal group-hover:text-primary transition-colors">
+                                                                {mainStock.storageLocation?.name}
+                                                            </span>
+                                                            <div className="flex items-baseline gap-1 mt-1">
+                                                                <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">
+                                                                    {mainStock.quantity}
                                                                 </span>
-                                                                <div className="flex items-baseline gap-1 shrink-0">
-                                                                    <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">
-                                                                        {mainStock.quantity}
-                                                                    </span>
-                                                                    <span className="text-[11px] font-bold text-slate-400 uppercase">
-                                                                        шт.
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex items-center justify-between mt-6">
-                                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                                                                    ОСНОВНОЙ ОБЪЕМ
+                                                                <span className="text-[11px] font-bold text-slate-400">
+                                                                    шт.
                                                                 </span>
                                                             </div>
                                                         </div>
+                                                        <div className="flex items-center justify-between mt-6">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                                                                <span className="text-[11px] font-bold text-slate-400 whitespace-nowrap">
+                                                                    Основной объем
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                                        {/* Other Stocks in a row with navigation */}
-                                                        {otherStocks.length > 0 && (
-                                                            <div className="relative group/warehouses mt-2">
-                                                                {/* Side Navigation Arrows - Moved further out */}
-                                                                <button
-                                                                    onClick={() => scrollWarehouses('left')}
-                                                                    className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border border-slate-200 shadow-crm-md flex items-center justify-center text-slate-400 opacity-0 group-hover/warehouses:opacity-100 transition-all z-20 hover:text-primary active:scale-95"
-                                                                >
-                                                                    <ChevronLeft className="w-4 h-4" />
-                                                                </button>
+                                                    {/* Other Stocks in a row with navigation */}
+                                                    {otherStocks.length > 0 && (
+                                                        <div className="relative group/warehouses mt-2">
+                                                            {/* Side Navigation Arrows - Moved further out */}
+                                                            <button
+                                                                onClick={() => scrollWarehouses('left')}
+                                                                className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border border-slate-200 shadow-crm-md flex items-center justify-center text-slate-400 opacity-0 group-hover/warehouses:opacity-100 transition-all z-20 hover:text-primary active:scale-95"
+                                                            >
+                                                                <ChevronLeft className="w-4 h-4" />
+                                                            </button>
 
-                                                                <button
-                                                                    onClick={() => scrollWarehouses('right')}
-                                                                    className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border border-slate-200 shadow-crm-md flex items-center justify-center text-slate-400 opacity-0 group-hover/warehouses:opacity-100 transition-all z-20 hover:text-primary active:scale-95"
-                                                                >
-                                                                    <ChevronRight className="w-4 h-4" />
-                                                                </button>
+                                                            <button
+                                                                onClick={() => scrollWarehouses('right')}
+                                                                className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border border-slate-200 shadow-crm-md flex items-center justify-center text-slate-400 opacity-0 group-hover/warehouses:opacity-100 transition-all z-20 hover:text-primary active:scale-95"
+                                                            >
+                                                                <ChevronRight className="w-4 h-4" />
+                                                            </button>
 
-                                                                <div
-                                                                    ref={scrollContainerRef}
-                                                                    onMouseDown={handleMouseDown}
-                                                                    onMouseLeave={handleMouseLeave}
-                                                                    onMouseUp={handleMouseUp}
-                                                                    onMouseMove={handleMouseMove}
-                                                                    className="flex gap-2 overflow-x-auto no-scrollbar pb-1 cursor-grab select-none active:cursor-grabbing touch-pan-x scroll-smooth snap-x snap-proximity"
-                                                                >
-                                                                    {otherStocks.map((s, idx) => (
-                                                                        <div
-                                                                            key={idx}
-                                                                            className="aspect-square w-[calc(50%-4px)] flex-shrink-0 group p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-primary/60 hover:ring-1 hover:ring-primary/10 transition-all flex flex-col justify-between snap-start"
-                                                                        >
-                                                                            <div className="flex flex-col gap-1">
-                                                                                <span className="text-[14px] font-bold text-slate-800 tracking-tight group-hover:text-primary transition-colors line-clamp-2">
-                                                                                    {s.storageLocation?.name}
+                                                            <div
+                                                                ref={scrollContainerRef}
+                                                                onMouseDown={handleMouseDown}
+                                                                onMouseLeave={handleMouseLeave}
+                                                                onMouseUp={handleMouseUp}
+                                                                onMouseMove={handleMouseMove}
+                                                                className="flex gap-2 overflow-x-auto no-scrollbar pb-1 cursor-grab select-none active:cursor-grabbing touch-pan-x scroll-smooth snap-x snap-proximity"
+                                                            >
+                                                                {otherStocks.map((s, idx) => (
+                                                                    <div
+                                                                        key={idx}
+                                                                        className="w-[calc(50%-4px)] min-h-[110px] flex-shrink-0 group p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-primary/60 hover:ring-1 hover:ring-primary/10 transition-all flex flex-col justify-between snap-start"
+                                                                    >
+                                                                        <div className="flex flex-col gap-1">
+                                                                            <span className="text-[14px] font-bold text-slate-800 tracking-normal group-hover:text-primary transition-colors">
+                                                                                {s.storageLocation?.name}
+                                                                            </span>
+                                                                            <div className="flex items-baseline gap-0.5 mt-1">
+                                                                                <span className="text-xl font-black text-slate-900 tabular-nums leading-none">
+                                                                                    {s.quantity}
                                                                                 </span>
-                                                                                <div className="flex items-baseline gap-0.5 mt-1">
-                                                                                    <span className="text-xl font-black text-slate-900 tabular-nums leading-none">
-                                                                                        {s.quantity}
-                                                                                    </span>
-                                                                                    <span className="text-[9px] font-bold text-slate-400 uppercase ml-0.5">
-                                                                                        шт.
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="mt-auto">
-                                                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest whitespace-nowrap">
-                                                                                    ДОП. СКЛАД
+                                                                                <span className="text-[11px] font-bold text-slate-400 ml-0.5">
+                                                                                    шт.
                                                                                 </span>
                                                                             </div>
                                                                         </div>
-                                                                    ))}
-                                                                </div>
+                                                                        <div className="mt-auto">
+                                                                            <span className="text-[11px] font-bold text-slate-400 whitespace-nowrap">
+                                                                                Доп. склад
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
                                                             </div>
-                                                        )}
-                                                    </>
-                                                );
-                                            })()}
-                                        </div>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* BLOCK: Gallery */}
-                                <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
-                                    <ItemMediaSection
-                                        item={item}
-                                        isEditing={isEditing}
-                                        onImageChange={handleImageUpdate}
-                                        onImageRemove={handleImageRemove}
-                                        onSetMain={handleSetMain}
-                                        onImageClick={(idx) => {
-                                            const getMediaImages = (it: InventoryItem) => [
-                                                { src: it.image || null },
-                                                { src: it.imageBack || null },
-                                                { src: it.imageSide || null },
-                                                { src: (it.imageDetails && it.imageDetails[0]) || null },
-                                                { src: (it.imageDetails && it.imageDetails[1]) || null },
-                                                { src: (it.imageDetails && it.imageDetails[2]) || null },
-                                            ];
-                                            const src = getMediaImages(item)[idx]?.src;
-                                            if (src) openGallery(src);
-                                        }}
-                                        uploadStates={uploadStates}
-                                    />
-                                </div>
+                            {/* BLOCK: Gallery */}
+                            <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
+                                <ItemMediaSection
+                                    item={item}
+                                    isEditing={isEditing}
+                                    onImageChange={handleImageUpdate}
+                                    onImageRemove={handleImageRemove}
+                                    onSetMain={handleSetMain}
+                                    onImageClick={(idx) => {
+                                        const getMediaImages = (it: InventoryItem) => [
+                                            { src: it.image || null },
+                                            { src: it.imageBack || null },
+                                            { src: it.imageSide || null },
+                                            { src: (it.imageDetails && it.imageDetails[0]) || null },
+                                            { src: (it.imageDetails && it.imageDetails[1]) || null },
+                                            { src: (it.imageDetails && it.imageDetails[2]) || null },
+                                        ];
+                                        const src = getMediaImages(item)[idx]?.src;
+                                        if (src) openGallery(src);
+                                    }}
+                                    uploadStates={uploadStates}
+                                />
+                            </div>
 
-                                {/* BLOCK: Orders (Moved below Specification) */}
-                                <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600">
-                                                <ShoppingBag className="w-6 h-6" />
-                                            </div>
-                                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">Зарезервировано в заказах</h3>
+                            {/* BLOCK: Orders (Moved below Specification) */}
+                            <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                            <ShoppingBag className="w-6 h-6" />
                                         </div>
-                                        {activeOrders.length > 0 && (
-                                            <div className="px-4 py-2 bg-amber-100/50 rounded-xl border border-amber-200/50 flex items-center gap-3">
-                                                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                                                <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest">
-                                                    Всего в заказах: {reservedQuantity} {displayUnit}
-                                                </span>
-                                            </div>
-                                        )}
+                                        <h3 className="text-xl font-black text-slate-900 tracking-normaler">Зарезервировано в заказах</h3>
                                     </div>
-                                    <ItemActiveOrdersSection orders={activeOrders} />
-                                </div>
-
-                                {/* BLOCK: Analytics */}
-                                <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                            <BarChart3 className="w-6 h-6" />
+                                    {activeOrders.length > 0 && (
+                                        <div className="px-4 py-2 bg-amber-100/50 rounded-xl border border-amber-200/50 flex items-center gap-3">
+                                            <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                                            <span className="text-[10px] font-black text-amber-700">
+                                                Всего в заказах: {reservedQuantity} {displayUnit}
+                                            </span>
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900 tracking-tighter">Аналитика</h3>
-                                    </div>
-                                    <ItemAnalyticsSection
-                                        history={history}
-                                        currentQuantity={item.quantity}
-                                        unit={displayUnit}
-                                        lowStockThreshold={item.lowStockThreshold}
-                                        criticalStockThreshold={item.criticalStockThreshold}
-                                    />
+                                    )}
                                 </div>
+                                <ItemActiveOrdersSection orders={activeOrders} />
+                            </div>
 
-                                {/* BLOCK: History */}
-                                <div className="col-span-12 glass-panel rounded-2xl p-8 shadow-crm-lg">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
-                                                <ClipboardList className="w-6 h-6" />
-                                            </div>
-                                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">История операций</h3>
-                                        </div>
-                                        <Button variant="outline" size="sm" className="h-10 px-4 rounded-lg text-[10px] font-black tracking-widest border-slate-200 hover:bg-slate-50 transition-all uppercase">
-                                            <Printer className="w-3.5 h-3.5 mr-2" />
-                                            Экспорт PDF
-                                        </Button>
+                            {/* BLOCK: Analytics */}
+                            <div className="col-span-12 glass-panel rounded-2xl p-8 flex flex-col shadow-crm-lg">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                        <BarChart3 className="w-6 h-6" />
                                     </div>
-                                    <ItemHistorySection history={history} />
+                                    <h3 className="text-xl font-black text-slate-900 tracking-normaler">Аналитика</h3>
                                 </div>
+                                <ItemAnalyticsSection
+                                    history={history}
+                                    currentQuantity={item.quantity}
+                                    unit={displayUnit}
+                                    lowStockThreshold={item.lowStockThreshold}
+                                    criticalStockThreshold={item.criticalStockThreshold}
+                                />
+                            </div>
+
+                            {/* BLOCK: History */}
+                            <div className="col-span-12 glass-panel rounded-2xl p-8 shadow-crm-lg">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                            <ClipboardList className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-xl font-black text-slate-900 tracking-normaler">История операций</h3>
+                                    </div>
+                                    <Button
+                                        size="sm"
+                                        onClick={handleExportHistory}
+                                        className="h-10 px-6 rounded-xl bg-slate-900 border-none text-white text-[13px] font-black hover:bg-black hover:text-white hover:scale-105 active:scale-95 shadow-lg shadow-slate-900/20 transition-all"
+                                    >
+                                        <Printer className="w-4 h-4 mr-2" />
+                                        Скачать
+                                    </Button>
+                                </div>
+                                <ItemHistorySection history={history} />
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
 
                 {/* Editing Bar */}
-                {
-                    isEditing && (
-                        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 duration-500">
-                            <div className="bg-slate-900/90 backdrop-blur-2xl px-6 py-4 rounded-3xl border border-white/10 shadow-2xl flex items-center gap-6">
-                                <div className="flex flex-col pr-6 border-r border-white/10">
-                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Режим Правки</span>
-                                    <span className="text-[11px] font-bold text-white truncate max-w-[150px]">{editData.name || item.name}</span>
-                                </div>
+                <AnimatePresence>
+                    {
+                        isEditing && (
+                            <>
+                                {/* Bottom Progressive Gradient Blur Overlay */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
+                                    style={{
+                                        backdropFilter: 'blur(40px)',
+                                        WebkitBackdropFilter: 'blur(40px)',
+                                        maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                        WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                        background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                                    }}
+                                />
 
-                                <div className="flex items-center gap-3">
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            const hasChanges = JSON.stringify(editData) !== JSON.stringify({
-                                                name: item.name,
-                                                sku: item.sku || "",
-                                                description: item.description || "",
-                                                unit: item.unit,
-                                                lowStockThreshold: item.lowStockThreshold || 10,
-                                                criticalStockThreshold: item.criticalStockThreshold || 0,
-                                                attributes: (item.attributes as Record<string, string>) || {},
-                                                categoryId: item.categoryId || "",
-                                                qualityCode: item.qualityCode || "",
-                                                attributeCode: item.attributeCode || "",
-                                                sizeCode: item.sizeCode || "",
-                                                materialCode: item.materialCode || "",
-                                                brandCode: item.brandCode || "",
-                                                thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
-                                                costPrice: item.costPrice || 0,
-                                                isArchived: item.isArchived || false,
-                                                materialComposition: item.materialComposition || {},
-                                            });
+                                <motion.div
+                                    initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                                    exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                    transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                                    className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-10 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                                >
+                                    {/* Left Side: Info */}
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.1 }}
+                                        className="flex items-center gap-6"
+                                    >
+                                        <div className="flex flex-col relative">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-xs font-black text-slate-400">Режим правки</span>
+                                                {JSON.stringify(editData) !== JSON.stringify({
+                                                    name: item.name,
+                                                    sku: item.sku || "",
+                                                    description: item.description || "",
+                                                    unit: item.unit,
+                                                    lowStockThreshold: item.lowStockThreshold || 10,
+                                                    criticalStockThreshold: item.criticalStockThreshold || 0,
+                                                    attributes: (item.attributes as Record<string, string>) || {},
+                                                    categoryId: item.categoryId || "",
+                                                    qualityCode: item.qualityCode || "",
+                                                    attributeCode: item.attributeCode || "",
+                                                    sizeCode: item.sizeCode || "",
+                                                    materialCode: item.materialCode || "",
+                                                    brandCode: item.brandCode || "",
+                                                    thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+                                                    costPrice: item.costPrice || 0,
+                                                    isArchived: item.isArchived || false,
+                                                    materialComposition: item.materialComposition || {},
+                                                }) && (
+                                                        <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]" title="Есть несохраненные изменения" />
+                                                    )}
+                                            </div>
+                                            <span className="text-[15px] font-bold text-slate-900 truncate max-w-[200px] leading-none">
+                                                {editData.name || item.name}
+                                            </span>
+                                        </div>
+                                        <div className="w-px h-8 bg-slate-100" />
+                                    </motion.div>
 
-                                            if (hasChanges) {
-                                                setShowUnsavedChangesConfirm(true);
-                                                setPendingExitAction(() => () => {
-                                                    setIsEditing(false);
-                                                    setEditData({
-                                                        name: item.name,
-                                                        sku: item.sku || "",
-                                                        description: item.description || "",
-                                                        unit: item.unit,
-                                                        lowStockThreshold: item.lowStockThreshold || 10,
-                                                        criticalStockThreshold: item.criticalStockThreshold || 0,
-                                                        attributes: (item.attributes as Record<string, string>) || {},
-                                                        categoryId: item.categoryId || "",
-                                                        qualityCode: item.qualityCode || "",
-                                                        attributeCode: item.attributeCode || "",
-                                                        sizeCode: item.sizeCode || "",
-                                                        materialCode: item.materialCode || "",
-                                                        brandCode: item.brandCode || "",
-                                                        thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
-                                                        costPrice: item.costPrice || 0,
-                                                        isArchived: item.isArchived || false,
-                                                        materialComposition: item.materialComposition || {},
-                                                    });
+                                    {/* Right Side: Actions */}
+                                    <motion.div
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="flex items-center gap-6"
+                                    >
+                                        <button
+                                            onClick={() => {
+                                                const hasChanges = JSON.stringify(editData) !== JSON.stringify({
+                                                    name: item.name,
+                                                    sku: item.sku || "",
+                                                    description: item.description || "",
+                                                    unit: item.unit,
+                                                    lowStockThreshold: item.lowStockThreshold || 10,
+                                                    criticalStockThreshold: item.criticalStockThreshold || 0,
+                                                    attributes: (item.attributes as Record<string, string>) || {},
+                                                    categoryId: item.categoryId || "",
+                                                    qualityCode: item.qualityCode || "",
+                                                    attributeCode: item.attributeCode || "",
+                                                    sizeCode: item.sizeCode || "",
+                                                    materialCode: item.materialCode || "",
+                                                    brandCode: item.brandCode || "",
+                                                    thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+                                                    costPrice: item.costPrice || 0,
+                                                    isArchived: item.isArchived || false,
+                                                    materialComposition: item.materialComposition || {},
                                                 });
-                                            } else {
-                                                setIsEditing(false);
-                                            }
-                                        }}
-                                        className="h-12 px-6 rounded-2xl font-black text-[10px] uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/5 transition-all"
-                                    >
-                                        Отмена
-                                    </Button>
 
-                                    <Button
-                                        onClick={() => handleSave()}
-                                        disabled={isSaving || isAnyUploading}
-                                        className="h-12 px-10 rounded-2xl btn-primary text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 transition-all active:scale-95 border-none"
-                                    >
-                                        {isSaving ? (
-                                            <RefreshCcw className="w-4 h-4 animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Save className="w-4 h-4 mr-2" />
-                                                СОХРАНИТЬ
-                                            </>
-                                        )}
-                                    </Button>
+                                                if (hasChanges) {
+                                                    setShowUnsavedChangesConfirm(true);
+                                                    setPendingExitAction(() => () => {
+                                                        setIsEditing(false);
+                                                        setEditData({
+                                                            name: item.name,
+                                                            sku: item.sku || "",
+                                                            description: item.description || "",
+                                                            unit: item.unit,
+                                                            lowStockThreshold: item.lowStockThreshold || 10,
+                                                            criticalStockThreshold: item.criticalStockThreshold || 0,
+                                                            attributes: (item.attributes as Record<string, string>) || {},
+                                                            categoryId: item.categoryId || "",
+                                                            qualityCode: item.qualityCode || "",
+                                                            attributeCode: item.attributeCode || "",
+                                                            sizeCode: item.sizeCode || "",
+                                                            materialCode: item.materialCode || "",
+                                                            brandCode: item.brandCode || "",
+                                                            thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+                                                            costPrice: item.costPrice || 0,
+                                                            isArchived: item.isArchived || false,
+                                                            materialComposition: item.materialComposition || {},
+                                                        });
+                                                    });
+                                                } else {
+                                                    setIsEditing(false);
+                                                }
+                                            }}
+                                            className="text-sm font-black text-slate-400 hover:text-slate-900 transition-all"
+                                        >
+                                            Отмена
+                                        </button>
 
-                                    <Button
-                                        onClick={() => setShowDeleteConfirm(true)}
-                                        disabled={isSaving || isAnyUploading}
-                                        className="w-12 h-12 flex items-center justify-center rounded-2xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all active:scale-95 border-none shadow-sm ml-2 group"
-                                        title="Удалить позицию"
-                                    >
-                                        <Trash2 className="w-5 h-5 transition-transform group-hover:scale-110" />
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                }
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => handleSave()}
+                                                disabled={isSaving || isAnyUploading}
+                                                className="h-12 px-10 rounded-full bg-primary hover:brightness-110 text-white font-black text-sm flex items-center gap-3 shadow-xl shadow-primary/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 relative group/save"
+                                            >
+                                                {isSaving ? (
+                                                    <RefreshCcw className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <Save className="w-4 h-4" />
+                                                        Сохранить
+                                                    </>
+                                                )}
+                                                {/* Shortcut Hint Overlay */}
+                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-slate-900 rounded-xl text-[9px] font-black text-white opacity-0 group-hover/save:opacity-100 transition-all pointer-events-none shadow-xl translate-y-2 group-hover:translate-y-0">
+                                                    ⌘ S
+                                                </div>
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleDelete()}
+                                                disabled={isSaving || isAnyUploading}
+                                                className="w-11 h-11 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-slate-100 hover:border-amber-500 group/archive"
+                                                title="Архивировать"
+                                            >
+                                                <Archive className="w-5 h-5 transition-transform group-hover/archive:scale-110" />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                </motion.div>
+                            </>
+                        )
+                    }
+                </AnimatePresence >
 
                 {/* Dialogs */}
                 {
@@ -1970,7 +2360,7 @@ export function ItemDetailClient({
                     onConfirm={() => {
                         if (pendingDraft) {
                             setEditData(prev => ({ ...prev, ...pendingDraft }));
-                            setIsEditing(true);
+                            handleStartEdit();
                             if (navigator.vibrate) navigator.vibrate([10, 30, 10]);
                         }
                         setShowDraftConfirm(false);
@@ -2003,8 +2393,8 @@ export function ItemDetailClient({
                             {/* Header Info */}
                             <div className="absolute top-0 inset-x-0 p-8 flex justify-between items-center z-10">
                                 <div className="flex flex-col">
-                                    <h3 className="text-white text-xl font-black uppercase tracking-wider">{item.name}</h3>
-                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">
+                                    <h3 className="text-white text-xl font-black">{item.name}</h3>
+                                    <p className="text-white/40 text-[10px] font-bold mt-1">
                                         {allGalleryImages[currentGalleryIndex]?.label} — {currentGalleryIndex + 1} / {allGalleryImages.length}
                                     </p>
                                 </div>
@@ -2053,7 +2443,7 @@ export function ItemDetailClient({
 
                                 {/* Centered Caption */}
                                 <div className="mt-8 px-6 py-2.5 bg-white/5 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                    <p className="text-white text-sm font-black uppercase tracking-[0.4em]">
+                                    <p className="text-white text-sm font-black">
                                         {allGalleryImages[currentGalleryIndex]?.label}
                                     </p>
                                 </div>
@@ -2106,14 +2496,14 @@ export function ItemDetailClient({
                                     <RefreshCcw className="w-10 h-10" />
                                 </div>
                                 <div className="space-y-2">
-                                    <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Соединение потеряно</h3>
+                                    <h3 className="text-2xl font-black text-slate-900 tracking-normaler">Соединение потеряно</h3>
                                     <p className="text-sm font-medium text-slate-400 leading-relaxed">Интерфейс временно заблокирован для безопасности данных. Ждем возврата в сеть...</p>
                                 </div>
                             </div>
                         </div>
                     )
                 }
-            </div>
+            </div >
         </>
     );
 }

@@ -92,7 +92,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                             {getFileIcon(file.contentType || "")}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-900 truncate  tracking-tight">{file.fileName}</p>
+                            <p className="text-xs font-bold text-slate-900 truncate  tracking-normal">{file.fileName}</p>
                             <p className="text-[10px] font-bold text-slate-400  tracking-normal">{file.fileSize ? formatSize(file.fileSize) : "0 B"}</p>
                         </div>
                         <Download className="w-4 h-4 text-slate-200 group-hover:text-primary transition-colors shrink-0" />

@@ -14,6 +14,7 @@ import { ArrowRightLeft } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { PremiumSelect } from "@/components/ui/premium-select";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
@@ -152,21 +153,22 @@ export function EditStorageLocationDialog({ users, locations, location, isOpen, 
                                     <User className="w-3 h-3" /> Ответственный за хранение
                                 </label>
                                 <div className="relative group">
-                                    <select
-                                        name="responsibleUserId"
-                                        defaultValue={location.responsibleUserId || ""}
-                                        className="input-premium w-full px-5 rounded-[18px] border border-slate-100 bg-slate-50 text-sm font-bold appearance-none cursor-pointer outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
-                                    >
-                                        <option value="">Не назначен</option>
-                                        {users.map((user) => (
-                                            <option key={user.id} value={user.id}>
-                                                {user.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-indigo-500 transition-colors">
-                                        <Plus className="w-4 h-4 rotate-45" />
-                                    </div>
+                                    <PremiumSelect
+                                        options={[
+                                            { id: "", title: "Не назначен", icon: <User className="w-4 h-4 opacity-50" /> },
+                                            ...users.map(u => ({ id: u.id, title: u.name, icon: <User className="w-4 h-4 opacity-50" /> }))
+                                        ]}
+                                        value={location.responsibleUserId || ""}
+                                        onChange={(val) => {
+                                            // Since we're using a hidden input for form submission
+                                            const input = document.querySelector('input[name="responsibleUserId"]') as HTMLInputElement;
+                                            if (input) {
+                                                input.value = val;
+                                            }
+                                        }}
+                                        placeholder="Выберите ответственного..."
+                                    />
+                                    <input type="hidden" name="responsibleUserId" defaultValue={location.responsibleUserId || ""} />
                                 </div>
                                 <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-[18px] border border-slate-100 hover:border-primary/20 hover:bg-white transition-all cursor-pointer group relative">
                                     <input
@@ -320,6 +322,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose }: {
     const { toast } = useToast();
     const router = useRouter();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [selectedToLocation, setSelectedToLocation] = useState("");
 
     async function handleTransfer(formData: FormData) {
         const toLocationId = formData.get("toLocationId") as string;
@@ -388,20 +391,26 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose }: {
                         <label className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
                             Куда переместить <span className="text-rose-500 font-bold">*</span>
                         </label>
-                        <select
-                            name="toLocationId"
+                        <PremiumSelect
+                            options={locations
+                                .filter(l => l.id !== currentLocationId)
+                                .map(l => ({
+                                    id: l.id,
+                                    title: l.name,
+                                    icon: <MapPin className="w-4 h-4 opacity-50" />
+                                }))
+                            }
+                            value={selectedToLocation}
+                            onChange={(val) => {
+                                setSelectedToLocation(val);
+                                setFieldErrors(prev => ({ ...prev, toLocationId: "" }));
+                            }}
+                            placeholder="Выберите склад..."
                             className={cn(
-                                "w-full h-12 px-4 rounded-[18px] border bg-slate-50 text-sm font-bold outline-none transition-all appearance-none cursor-pointer",
-                                fieldErrors.toLocationId
-                                    ? "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5 text-rose-900"
-                                    : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                                fieldErrors.toLocationId && "border-rose-400 bg-rose-50/30 ring-4 ring-rose-500/5"
                             )}
-                        >
-                            <option value="">Выберите склад...</option>
-                            {locations.filter(l => l.id !== currentLocationId).map(l => (
-                                <option key={l.id} value={l.id}>{l.name}</option>
-                            ))}
-                        </select>
+                        />
+                        <input type="hidden" name="toLocationId" value={selectedToLocation} />
                         {fieldErrors.toLocationId && (
                             <div className="text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1 duration-200">
                                 {fieldErrors.toLocationId}

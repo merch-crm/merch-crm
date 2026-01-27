@@ -12,7 +12,9 @@ import {
     Pencil,
     Plus,
     Minus,
-    Check
+    Check,
+    Tag,
+    Banknote
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -268,6 +270,49 @@ export function StockStep({
                                         </div>
                                     </div>
 
+                                    <div className="space-y-5">
+                                        <div className="text-[10px] font-bold text-slate-400 tracking-[0.2em] text-center">
+                                            Финансовые параметры
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-5 text-left">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-bold text-violet-500 tracking-[0.12em] px-1 flex items-center gap-2">
+                                                    <Tag className="w-3.5 h-3.5" />
+                                                    Себестоимость
+                                                </label>
+                                                <div className="relative group/input">
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        value={formData.costPrice || "0"}
+                                                        onChange={(e) => updateFormData({ costPrice: e.target.value })}
+                                                        className="w-full h-11 px-5 pr-12 rounded-[var(--radius)] border border-slate-100 bg-slate-50/50 font-bold text-slate-900 focus:border-violet-500 transition-all outline-none shadow-inner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                    <div className="absolute right-4 inset-y-0 flex items-center">
+                                                        <span className="text-[10px] font-bold text-slate-400">₽</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-bold text-emerald-500 tracking-[0.12em] px-1 flex items-center gap-2">
+                                                    <Banknote className="w-3.5 h-3.5" />
+                                                    Цена продажи
+                                                </label>
+                                                <div className="relative group/input">
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        value={formData.sellingPrice || "0"}
+                                                        onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
+                                                        className="w-full h-11 px-5 pr-12 rounded-[var(--radius)] border border-slate-100 bg-slate-50/50 font-bold text-slate-900 focus:border-emerald-500 transition-all outline-none shadow-inner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                    <div className="absolute right-4 inset-y-0 flex items-center">
+                                                        <span className="text-[10px] font-bold text-slate-400">₽</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className="space-y-5">
                                         <div className="text-[10px] font-bold text-slate-400 tracking-[0.2em] text-center">
                                             Порог остатков

@@ -53,7 +53,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                         <CalendarIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal">
                             {format(currentMonth, "LLLL yyyy", { locale: ru })}
                         </h2>
                         <p className="text-xs font-bold text-slate-400  tracking-normal">

@@ -14,7 +14,7 @@ export default function AquaflowLanding() {
                     <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
                         <div className="w-4 h-4 rounded-full border-2 border-white" />
                     </div>
-                    <span className="font-bold text-xl tracking-tight">Aquaflow</span>
+                    <span className="font-bold text-xl tracking-normal">Aquaflow</span>
                 </div>
 
                 <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">

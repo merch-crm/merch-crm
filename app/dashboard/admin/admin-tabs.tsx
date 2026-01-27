@@ -33,7 +33,7 @@ interface AdminSidebarProps {
     user: AdminUser | null;
 }
 
-export function AdminSidebar({ user }: AdminSidebarProps) {
+export function AdminSidebar({ }: AdminSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -89,7 +89,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                             isActive ? "text-[#5d00ff] scale-110" : "text-slate-500 group-hover:text-slate-300"
                         )} />
 
-                        <span className="relative z-10 tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                        <span className="relative z-10 tracking-normal transition-transform duration-300 group-hover:translate-x-1">
                             {item.name}
                         </span>
 

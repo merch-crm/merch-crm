@@ -104,7 +104,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                         База клиентов
                         <Sparkles className="w-8 h-8 text-primary animate-pulse" />
                     </h1>
-                    <p className="text-slate-400 font-bold text-sm tracking-tight border-l-2 border-slate-100 pl-4 py-1 mt-2">
+                    <p className="text-slate-400 font-bold text-sm tracking-normal border-l-2 border-slate-100 pl-4 py-1 mt-2">
                         Управление контрагентами и аналитика лояльности в едином интерфейсе.
                     </p>
                 </div>
@@ -227,7 +227,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                                         <LayoutGrid className="w-10 h-10 text-primary" />
                                     </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 tracking-tight ">Режим сетки в разработке</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 tracking-normal ">Режим сетки в разработке</h3>
                                 <p className="text-slate-400 text-sm max-w-xs mx-auto mt-3 font-medium">
                                     Мы проектируем идеальные интерактивные карточки для вашей базы.
                                 </p>
@@ -287,7 +287,7 @@ export function ClientsTestClient({ stats, userRoleName, showFinancials }: Clien
                 <div className="lg:col-span-5 glass-panel p-10 bg-white/80 border-white/60 shadow-crm-lg flex flex-col min-h-[340px]">
                     <div className="flex items-center justify-between mb-10">
                         <div>
-                            <h3 className="text-xl font-bold text-slate-900  tracking-tight">Рабочие задачи</h3>
+                            <h3 className="text-xl font-bold text-slate-900  tracking-normal">Рабочие задачи</h3>
                             <p className="text-[10px] text-slate-400 font-bold  tracking-normal mt-1">Клиентский сервис</p>
                         </div>
                         <button className="w-10 h-10 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all shadow-sm">

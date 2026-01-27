@@ -95,7 +95,7 @@ export function ItemInventorySection({
                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                                 <TrendingDown className="w-5 h-5 text-rose-400" />
                             </div>
-                            <span className="text-[12px] font-bold text-slate-500">Система оповещений</span>
+                            <span className="text-[11px] font-bold text-slate-500">Система оповещений</span>
                         </div>
 
                         <div className="space-y-6">
@@ -151,7 +151,7 @@ export function ItemInventorySection({
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-2">
                         <Map className="w-4 h-4 text-primary" />
-                        <h4 className="text-[12px] font-bold text-slate-400">Геолокация запасов</h4>
+                        <h4 className="text-[11px] font-bold text-slate-400">Геолокация запасов</h4>
                     </div>
                     <Badge className="bg-slate-900 text-white rounded-full font-bold text-[10px] px-3">
                         {stocks.length} локаций
@@ -179,7 +179,7 @@ export function ItemInventorySection({
                             <div className="flex flex-col items-end gap-3">
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-3xl font-bold text-slate-950 tabular-nums leading-none">{stock.quantity}</span>
-                                    <span className="text-[12px] font-bold text-slate-400">{item.unit || "шт"}</span>
+                                    <span className="text-[11px] font-bold text-slate-400">{item.unit || "шт"}</span>
                                 </div>
 
                                 <div className="flex gap-2">

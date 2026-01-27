@@ -145,11 +145,11 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[8px] font-bold  tracking-tight">
+                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[8px] font-bold  tracking-normal">
                                                             {task.type || "OTHER"}
                                                         </span>
                                                         {task.order && (
-                                                            <span className="px-2 py-0.5 bg-primary/5 text-primary rounded-md text-[8px] font-bold  tracking-tight">
+                                                            <span className="px-2 py-0.5 bg-primary/5 text-primary rounded-md text-[8px] font-bold  tracking-normal">
                                                                 №{task.order.orderNumber}
                                                             </span>
                                                         )}

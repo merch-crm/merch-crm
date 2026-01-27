@@ -65,7 +65,7 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                                             "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border transition-all shadow-sm",
                                             isCritical ? "bg-rose-50 border-rose-100 text-rose-600" : "bg-amber-50 border-amber-100 text-amber-600"
                                         )}>
-                                            <div className={cn("w-1 h-1 rounded-full", isCritical ? "bg-rose-500 animate-pulse" : "bg-amber-500")} />
+                                            <div className={cn("w-1 h-1 rounded-full animate-pulse", isCritical ? "bg-rose-500" : "bg-amber-500")} />
                                             <span className="tabular-nums">{item.quantity}</span>
                                             <span className="opacity-50 text-[8px] font-black uppercase">{(item.unit.toLowerCase() === 'pcs' || item.unit === 'шт.') ? 'шт' : item.unit}</span>
                                         </div>
@@ -87,9 +87,9 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
             {/* Right Column Stats - Span 4 */}
             <div className="col-span-12 lg:col-span-4 flex flex-col gap-5">
                 {/* Total Items */}
-                <div className="flex-1 bg-white rounded-[var(--radius-outer)] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
+                <div className="flex-1 bg-white rounded-[36px] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
                     <div className="flex justify-between items-start relative z-10">
-                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-[var(--radius)] bg-primary/5 flex items-center justify-center backdrop-blur-sm border border-primary/10">
+                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-primary/5 flex items-center justify-center backdrop-blur-sm border border-primary/10">
                             <Layers className="w-5 h-5 xl:w-6 xl:h-6 text-primary" />
                         </div>
                         <span className="text-xs font-bold bg-primary/5 px-2 py-1 rounded-[6px] text-primary">Всего</span>
@@ -102,11 +102,11 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                 </div>
 
                 {/* Unique Positions Count */}
-                <div className="flex-1 bg-white rounded-[var(--radius-outer)] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
+                <div className="flex-1 bg-white rounded-[36px] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50/50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50" />
 
                     <div className="flex justify-between items-start relative z-10">
-                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-[var(--radius)] bg-slate-50 flex items-center justify-center backdrop-blur-sm border border-slate-100">
+                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-slate-50 flex items-center justify-center backdrop-blur-sm border border-slate-100">
                             <Package className="w-5 h-5 xl:w-6 xl:h-6 text-slate-400" />
                         </div>
                         <span className="text-xs font-bold bg-slate-50 px-2 py-1 rounded-[6px] text-slate-400">Активно</span>
@@ -119,11 +119,11 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                 </div>
 
                 {/* Archived Items Count */}
-                <div className="flex-1 bg-white rounded-[var(--radius-outer)] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
+                <div className="flex-1 bg-white rounded-[36px] p-6 xl:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-200/50 border border-slate-100">
                     <div className="absolute bottom-0 right-0 w-32 h-32 bg-rose-50/50 rounded-full -mr-10 -mb-10 blur-2xl opacity-50" />
 
                     <div className="flex justify-between items-start relative z-10">
-                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-[var(--radius)] bg-rose-50 flex items-center justify-center backdrop-blur-sm border border-rose-100">
+                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-rose-50 flex items-center justify-center backdrop-blur-sm border border-rose-100">
                             <Clock className="w-5 h-5 xl:w-6 xl:h-6 text-rose-500" />
                         </div>
                         <span className="text-xs font-bold bg-rose-50 px-2 py-1 rounded-[6px] text-rose-500 border border-rose-100">Архив</span>
