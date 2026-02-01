@@ -2299,7 +2299,7 @@ export async function moveInventoryItem(formData: FormData) {
             const toName = toLocation.name;
             const logMessage = `Перемещение со склада «${fromName}» на «${toName}»${comment ? `. Причина: ${comment}` : ""}`;
             // 1. Get/Init Source Stock
-            let sourceStock = await tx.query.inventoryStocks.findFirst({
+            const sourceStock = await tx.query.inventoryStocks.findFirst({
                 where: and(
                     eq(inventoryStocks.itemId, itemId),
                     eq(inventoryStocks.storageLocationId, fromLocationId)

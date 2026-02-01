@@ -10,58 +10,7 @@ import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
 
-export interface InventoryItem {
-    id: string;
-    name: string;
-    sku: string | null;
-    quantity: number;
-    unit: string;
-    lowStockThreshold: number;
-    criticalStockThreshold: number;
-    categoryId: string | null;
-    description?: string | null;
-    location?: string | null;
-    image?: string | null;
-    imageBack?: string | null;
-    imageSide?: string | null;
-    imageDetails?: string[] | null;
-    reservedQuantity?: number;
-    qualityCode?: string | null;
-    materialCode?: string | null;
-    attributeCode?: string | null;
-    sizeCode?: string | null;
-    storageLocationId?: string | null;
-    attributes?: Record<string, string | number | boolean | null | undefined>;
-    categoryName?: string;
-    categorySingularName?: string | null;
-    categoryPluralName?: string | null;
-    isArchived: boolean;
-    archivedAt?: Date | string | null;
-    archiveReason?: string | null;
-    costPrice?: number | string | null;
-    sellingPrice?: number | string | null;
-    category?: Category;
-}
-
-export interface Category {
-    id: string;
-    name: string;
-    description: string | null;
-    color: string | null;
-    icon: string | null;
-    prefix?: string | null;
-    parentId?: string | null;
-    sortOrder?: number | null;
-    isActive?: boolean | null;
-    isSystem?: boolean;
-    gender?: string;
-    singularName?: string | null;
-    pluralName?: string | null;
-    slug?: string | null;
-    fullPath?: string | null;
-    items?: InventoryItem[];
-    parent?: Category | null;
-}
+import { InventoryItem, Category, AttributeType, InventoryAttribute } from "./types";
 
 interface InventoryClientProps {
     items: InventoryItem[];

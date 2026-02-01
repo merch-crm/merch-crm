@@ -2,6 +2,7 @@ import { getInventoryCategories, getInventoryItems, getInventoryHistory, getStor
 import { getSession } from "@/lib/auth";
 // Auto-deploy trigger v1.1 - Restarting...
 import { WarehouseClient } from "./warehouse-client";
+import { InventoryItem } from "./types";
 
 export const dynamic = "force-dynamic";
 
@@ -47,8 +48,8 @@ export default async function WarehousePage() {
     // CRITICAL SYNC: Ensure item quantity is always the sum of its stocks across all locations
     // This fixes the discrepancy between the T-shirt total and the warehouse card counts
     const finalItems = items.map(item => {
-        const totalFromStocks = (item as any).stocks?.reduce((sum: number, s: any) => sum + s.quantity, 0) ?? 0;
-        const stocksExist = (item as any).stocks && (item as any).stocks.length > 0;
+        const totalFromStocks = item.stocks?.reduce((sum: number, s) => sum + s.quantity, 0) ?? 0;
+        const stocksExist = item.stocks && item.stocks.length > 0;
 
         return {
             ...item,
@@ -61,8 +62,8 @@ export default async function WarehousePage() {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
             <WarehouseClient
-                items={finalItems as any}
-                archivedItems={archivedItemsResponse as any}
+                items={finalItems as InventoryItem[]}
+                archivedItems={archivedItemsResponse as InventoryItem[]}
                 categories={categories}
                 history={history}
                 storageLocations={storageLocations}

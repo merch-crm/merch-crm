@@ -168,7 +168,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                             <button
                                                 key={op.id}
                                                 type="button"
-                                                onClick={() => { setType(op.id as any); setAmount(op.id === 'set' ? item.quantity : 1); }}
+                                                onClick={() => { setType(op.id as "in" | "out" | "set"); setAmount(op.id === 'set' ? item.quantity : 1); }}
                                                 className={cn(
                                                     "flex flex-col items-center justify-center p-2.5 rounded-[var(--radius-inner)] border transition-all active:scale-95 shadow-sm group/op",
                                                     isActive

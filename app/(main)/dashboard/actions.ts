@@ -135,14 +135,14 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
 
 export async function getDashboardNotifications(limit = 5) {
     const session = await getSession();
-    // @ts-ignore
+    // @ts-expect-error - session type has user id
     if (!session || !session.user?.id) return [];
 
     try {
         const userNotifications = await db
             .select()
             .from(notifications)
-            // @ts-ignore
+            // @ts-expect-error - session type has user id
             .where(eq(notifications.userId, session.user.id))
             .limit(limit)
             .orderBy(desc(notifications.createdAt));

@@ -29,7 +29,12 @@ interface BulkActionsPanelProps {
 export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: BulkActionsPanelProps) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { toast } = useToast();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     if (selectedIds.length === 0) return null;
 
@@ -76,11 +81,8 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
         }
     };
 
-    const [mounted, setMounted] = useState(false);
+    // deleted mounted and useEffect from here to preserve hook order
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     return (
         <AnimatePresence>

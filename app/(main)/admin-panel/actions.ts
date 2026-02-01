@@ -183,7 +183,7 @@ export async function createUser(formData: FormData) {
     const roleId = formData.get("roleId") as string;
     const departmentId = formData.get("departmentId") as string;
 
-    let finalDeptId = departmentId || null;
+    const finalDeptId = departmentId || null;
 
     if (!name || !email || !password || !roleId) {
         return { error: "Заполните все обязательные поля" };
@@ -549,7 +549,7 @@ export async function updateUser(userId: string, formData: FormData) {
     const departmentId = formData.get("departmentId") as string;
     const password = formData.get("password") as string;
 
-    let finalDeptId = departmentId || null;
+    const finalDeptId = departmentId || null;
 
     if (!name || !email || !roleId) {
         return { error: "ФИО, Email и Роль обязательны для заполнения" };

@@ -1,7 +1,7 @@
 "use client";
 
 import { StorageLocation } from "./storage-locations-tab";
-import { InventoryItem } from "./inventory-client";
+import { InventoryItem } from "./types";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Plus, X, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
@@ -162,9 +162,10 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                         { id: "office", title: "Офис", icon: <Building className="w-4 h-4" /> }
                                     ]}
                                     value={localType}
-                                    onChange={(val: any) => {
-                                        setLocalType(val);
-                                        handleAutoSave({ type: val });
+                                    onChange={(val) => {
+                                        const typeVal = val as "warehouse" | "production" | "office";
+                                        setLocalType(typeVal);
+                                        handleAutoSave({ type: typeVal });
                                     }}
                                     variant="default"
                                 />

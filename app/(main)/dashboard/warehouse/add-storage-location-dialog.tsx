@@ -130,7 +130,7 @@ export function AddStorageLocationDialog({ users, trigger }: AddStorageLocationD
                                     { id: "office", title: "Офис", icon: <Building className="w-4 h-4" /> }
                                 ]}
                                 value={type}
-                                onChange={(val: any) => setType(val)}
+                                onChange={(val) => setType(val as "warehouse" | "production" | "office")}
                                 variant="default"
                             />
                         </div>

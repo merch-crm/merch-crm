@@ -13,7 +13,7 @@ import { StorageLocationsTab } from "./storage-locations-tab";
 import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
 import { ArchiveTable } from "./archive-table";
-import { InventoryItem, Category } from "./inventory-client";
+import { InventoryItem, Category } from "./types";
 
 import { StorageLocation } from "./storage-locations-tab";
 import { Transaction } from "./history-table";
@@ -206,7 +206,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         return (
                             <button
                                 key={tab.id}
-                                onClick={() => handleTabChange(tab.id as any)}
+                                onClick={() => handleTabChange(tab.id as "inventory" | "storage" | "history" | "dictionary" | "archive")}
                                 className={cn(
                                     "flex-1 h-full relative flex items-center justify-center gap-2.5 px-6 !rounded-[16px] text-[13px] font-bold group min-w-[140px] whitespace-nowrap",
                                     isActive ? "text-white" : "text-slate-500 hover:text-slate-900"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, User, Phone, Mail, MapPin, Briefcase, Plus, Save, Loader2, Building2, Link as LinkIcon, MessageSquare } from "lucide-react";
+import { X, User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, MessageSquare } from "lucide-react";
 import { updateClient, getManagers } from "./actions";
 import { useToast } from "@/components/ui/toast";
 

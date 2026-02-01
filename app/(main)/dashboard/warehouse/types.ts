@@ -55,14 +55,18 @@ export interface Category {
     id: string;
     name: string;
     description: string | null;
-    prefix: string | null;
+    prefix?: string | null;
     parentId?: string | null;
     color: string | null;
     icon: string | null;
     gender?: 'masculine' | 'feminine' | 'neuter' | string;
     singularName?: string | null;
+    pluralName?: string | null;
     slug?: string | null;
     fullPath?: string | null;
+    sortOrder?: number | null;
+    isActive?: boolean | null;
+    isSystem?: boolean;
 }
 
 export interface StorageLocation {
@@ -112,8 +116,6 @@ export interface InventoryItem {
     lowStockThreshold: number;
     criticalStockThreshold: number;
     description: string | null;
-    location: string | null;
-    storageLocationId: string | null;
     image: string | null;
     imageBack: string | null;
     imageSide: string | null;
@@ -126,15 +128,18 @@ export interface InventoryItem {
     sizeCode: string | null;
     brandCode: string | null;
     materialCode: string | null;
-    attributes: Record<string, unknown>;
+    attributes: Record<string, string | number | boolean | null | undefined>;
     thumbnailSettings?: ThumbnailSettings | null;
-    costPrice: number | null;
-    sellingPrice: number | null;
+    costPrice: number | string | null;
+    sellingPrice: number | string | null;
     isArchived: boolean;
     archivedAt?: Date | string | null;
     archiveReason?: string | null;
     materialComposition: Record<string, number>;
-    category?: {
+    categoryName?: string;
+    categorySingularName?: string | null;
+    categoryPluralName?: string | null;
+    category?: Category | {
         id: string;
         name: string;
         prefix?: string | null;
