@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, createElement } from "react";
 import { ChevronDown, Check, Package, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Category } from "./inventory-client";
+import { Category } from "./types";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { GlassEmptyState } from "@/components/ui/glass-empty-state";
 

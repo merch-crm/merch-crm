@@ -267,15 +267,7 @@ export function CategoryDetailClient({
     }, [items]);
 
     // Extract unique legacy locations for filter dropdown
-    const legacyLocations = useMemo(() => {
-        const locs = new Set<string>();
-        items.forEach(item => {
-            if (!item.storageLocationId && item.location) {
-                locs.add(item.location);
-            }
-        });
-        return Array.from(locs).sort();
-    }, [items]);
+    // legacyLocations calculation removed
 
     const toggleSelectItem = (id: string, e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
@@ -317,13 +309,7 @@ export function CategoryDetailClient({
 
         const matchesStorage =
             filterStorage === "all" ? true :
-                filterStorage.startsWith("legacy:")
-                    ? item.location === filterStorage.replace("legacy:", "") && !item.storageLocationId
-                    : (
-                        item.storageLocationId === filterStorage ||
-                        // Check stocks
-                        (item.stocks && item.stocks.some((s) => s.storageLocationId === filterStorage && s.quantity > 0))
-                    );
+                (item.stocks && item.stocks.some((s) => s.storageLocationId === filterStorage && s.quantity > 0));
 
         return matchesSearch && matchesFilter && matchesStorage;
     }).sort((a, b) => (b.quantity || 0) - (a.quantity || 0));
@@ -494,8 +480,7 @@ export function CategoryDetailClient({
                                                                             .join("; ");
                                                                         if (stocksStr) return stocksStr;
                                                                     }
-                                                                    // Fallback
-                                                                    return storageLocations.find(l => l.id === item.storageLocationId)?.name || item.location || "";
+                                                                    return "";
                                                                 }
                                                             },
                                                             { header: "Себестоимость", key: (item) => item.costPrice || 0 },
@@ -643,12 +628,6 @@ export function CategoryDetailClient({
                                 id: loc.id,
                                 title: loc.name,
                                 badge: itemCountsByStorage[loc.id] ? `${itemCountsByStorage[loc.id]} поз.` : undefined
-                            })),
-                            ...legacyLocations.map(locName => ({
-                                id: `legacy:${locName}`,
-                                title: locName,
-                                badge: itemCountsByStorage[`legacy:${locName}`] ? `${itemCountsByStorage[`legacy:${locName}`]} поз.` : undefined,
-                                className: "opacity-80 Italic"
                             }))
                         ]}
                         value={filterStorage}
@@ -850,7 +829,7 @@ export function CategoryDetailClient({
                                                                 return (
                                                                     <div className="flex items-center gap-2 whitespace-nowrap">
                                                                         <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
-                                                                        <span>{storageLocations.find(l => l.id === item.storageLocationId)?.name || item.location || "—"}</span>
+                                                                        <span>—</span>
                                                                     </div>
                                                                 );
                                                             })()}

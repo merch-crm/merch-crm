@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "../../../attribute-selector";
-import { Category } from "../../../inventory-client";
+import { Category } from "../../../types";
 import { InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
 import { getCategoryIcon, getColorStyles } from "../../../category-utils";
 

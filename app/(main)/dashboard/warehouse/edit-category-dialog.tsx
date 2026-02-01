@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Session } from "@/lib/auth";
 import { Lock } from "lucide-react";
 
-import { Category } from "./inventory-client";
+import { Category } from "./types";
 import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS } from "./category-utils";
 
 interface EditCategoryDialogProps {

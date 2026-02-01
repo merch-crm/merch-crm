@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRightLeft, X, AlertCircle, ChevronUp, ChevronDown, RefreshCw } from "lucide-react";
-import { InventoryItem } from "./inventory-client";
+import { InventoryItem } from "./types";
 import { StorageLocation } from "./storage-locations-tab";
 import { Button } from "@/components/ui/button";
 import { moveInventoryItem } from "./actions";

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useToast } from "@/components/ui/toast";
-import { InventoryItem } from "./inventory-client";
+import { InventoryItem } from "./types";
 import { restoreInventoryItems, deleteInventoryItems } from "./actions";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PremiumPagination } from "@/components/ui/premium-pagination";

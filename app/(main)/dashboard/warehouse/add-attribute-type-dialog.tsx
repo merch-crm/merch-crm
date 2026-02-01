@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createInventoryAttributeType } from "./actions";
 import { cn } from "@/lib/utils";
-import { Category } from "./inventory-client";
+import { Category } from "./types";
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',

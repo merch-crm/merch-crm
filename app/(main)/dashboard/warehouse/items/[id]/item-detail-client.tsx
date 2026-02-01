@@ -966,7 +966,9 @@ export function ItemDetailClient({
         // Prepare CSV content
         const headers = ["ID", "Название", "Артикул (SKU)", "Категория", "Количество", "Ед. изм.", "Себестоимость", "Склад", "Описание"];
         const categoryName = item.category ? item.category.name : (categories.find(c => c.id === item.categoryId)?.name || "");
-        const locationName = storageLocations.find(l => l.id === item.storageLocationId)?.name || "";
+        const locationName = item.stocks && item.stocks.length > 0 && item.stocks[0]
+            ? storageLocations.find(l => l.id === item.stocks![0].storageLocationId)?.name || ""
+            : "";
 
         const row = [
             item.id,
@@ -2245,10 +2247,7 @@ export function ItemDetailClient({
                 {
                     adjustType && (
                         <AdjustStockDialog
-                            item={{
-                                ...item,
-                                storageLocationId: selectedLocationForAdjust || item.storageLocationId
-                            }}
+                            item={item}
                             locations={storageLocations}
                             itemStocks={stocks}
                             initialType={adjustType}

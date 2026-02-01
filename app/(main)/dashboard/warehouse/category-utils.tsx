@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 // Phosphor Icons for clothing (much better clothing-specific icons)
-import { Category } from "./inventory-client";
+import { Category } from "./types";
 
 // Custom Clothing Icons (High quality, thematic)
 import {

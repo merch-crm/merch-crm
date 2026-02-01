@@ -67,6 +67,12 @@ export interface Category {
     sortOrder?: number | null;
     isActive?: boolean | null;
     isSystem?: boolean;
+    parent?: {
+        id: string;
+        name: string;
+        color?: string | null;
+        icon?: string | null;
+    } | null;
 }
 
 export interface StorageLocation {

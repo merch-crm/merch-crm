@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2 } from "lucide-react";
-import { InventoryItem, Category } from "./inventory-client";
+import { InventoryItem, Category } from "./types";
 import { Transaction } from "./history-table";
 import { getColorStyles } from "./category-utils";
 import Link from "next/link";

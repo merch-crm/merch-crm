@@ -4,16 +4,7 @@ import { createElement } from "react";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getColorStyles } from "../../../category-utils";
-
-interface Category {
-    id: string;
-    name: string;
-    description: string | null;
-    prefix: string | null;
-    parentId?: string | null;
-    color: string | null;
-    icon: string | null;
-}
+import { Category } from "../../../types";
 
 interface CategorySelectorProps {
     categories: Category[];

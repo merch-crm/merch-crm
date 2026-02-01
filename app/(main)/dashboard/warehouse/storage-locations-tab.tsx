@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
-import { InventoryItem } from "./inventory-client";
+import { InventoryItem } from "./types";
 import {
     DndContext,
     closestCenter,
