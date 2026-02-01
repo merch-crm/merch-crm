@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Search, User, ShoppingCart, Package, Book, CheckCircle2, Command, Tag, Layout, MapPin, CreditCard, Folder, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { globalSearch } from "@/app/dashboard/search-actions";
+import { globalSearch } from "@/app/(main)/dashboard/search-actions";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -81,32 +81,36 @@ export function CommandMenu() {
         <>
             <AnimatePresence>
                 {open && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setOpen(false)}
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
                         />
 
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                            initial={{ opacity: 0, scale: 0.96, y: -20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                            className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border border-slate-200 overflow-hidden"
+                            exit={{ opacity: 0, scale: 0.96, y: -20 }}
+                            transition={{
+                                duration: 0.4,
+                                ease: [0.23, 1, 0.32, 1]
+                            }}
+                            className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-[0_32px_80px_-16px_rgba(0,0,0,0.3)] border border-slate-200 overflow-hidden"
                         >
-                            <div className="flex items-center px-6 py-4 border-b border-slate-100">
+                            <div className="flex items-center px-6 py-5 border-b border-slate-200 bg-slate-50/30">
                                 <Search className="w-5 h-5 text-slate-400 mr-4" />
                                 <input
                                     autoFocus
                                     placeholder="Поиск по клиентам, заказам, складу..."
-                                    className="flex-1 bg-transparent border-none outline-none text-slate-900 text-lg placeholder:text-slate-400"
+                                    className="flex-1 bg-transparent border-none outline-none text-slate-900 text-lg placeholder:text-slate-400 font-medium"
                                     value={query}
                                     onChange={(e) => handleSearch(e.target.value)}
                                 />
                                 <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1 px-2 py-1 rounded-[18px] bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-400">
+                                    <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-[12px] bg-white border border-slate-200 text-[10px] font-black text-slate-400 shadow-sm">
                                         <Command className="w-3 h-3" />
                                         <span>K</span>
                                     </div>
@@ -119,19 +123,19 @@ export function CommandMenu() {
                                 </div>
                             </div>
 
-                            <div className="max-h-[60vh] overflow-y-auto p-2">
+                            <div className="max-h-[60vh] overflow-y-auto p-3 custom-scrollbar">
                                 {loading && (
-                                    <div className="px-6 py-12 text-center text-slate-400 text-sm">Поиск...</div>
+                                    <div className="px-6 py-12 text-center text-slate-400 text-sm font-bold animate-pulse">Поиск...</div>
                                 )}
 
                                 {!loading && results.length === 0 && query.length >= 2 && (
-                                    <div className="px-6 py-12 text-center text-slate-400 text-sm">Ничего не найдено</div>
+                                    <div className="px-6 py-12 text-center text-slate-400 text-sm font-bold">Ничего не найдено</div>
                                 )}
 
                                 {!loading && results.length === 0 && query.length < 2 && (
-                                    <div className="p-4">
-                                        <div className="text-[10px] font-bold text-slate-400 px-4 mb-2">Быстрый переход</div>
-                                        <div className="grid grid-cols-2 gap-2">
+                                    <div className="p-2">
+                                        <div className="text-[10px] font-black text-slate-400 px-4 mb-3 uppercase tracking-widest">Быстрый переход</div>
+                                        <div className="grid grid-cols-2 gap-3">
                                             {[
                                                 { label: 'Заказы', href: '/dashboard/orders', icon: icons.order },
                                                 { label: 'Клиенты', href: '/dashboard/clients', icon: icons.client },
@@ -141,9 +145,11 @@ export function CommandMenu() {
                                                 <button
                                                     key={item.href}
                                                     onClick={() => onSelect(item.href)}
-                                                    className="flex items-center gap-3 px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-all text-sm font-bold text-slate-700"
+                                                    className="flex items-center gap-4 px-5 py-4 rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
                                                 >
-                                                    {item.icon}
+                                                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                                        {item.icon}
+                                                    </div>
                                                     {item.label}
                                                 </button>
                                             ))}
@@ -151,23 +157,23 @@ export function CommandMenu() {
                                     </div>
                                 )}
 
-                                <div className="space-y-1">
+                                <div className="space-y-1.5 pt-1">
                                     {results.map((res) => (
                                         <button
                                             key={`${res.type}-${res.id}`}
                                             onClick={() => onSelect(res.href)}
-                                            className="w-full flex items-center justify-between px-4 py-3 rounded-[18px] hover:bg-slate-50 transition-all group"
+                                            className="w-full flex items-center justify-between px-4 py-3.5 rounded-[22px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-[18px] bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all shadow-sm">
+                                                <div className="w-12 h-12 rounded-[18px] bg-white border border-slate-200 flex items-center justify-center group-hover:scale-110 transition-all shadow-sm">
                                                     {icons[res.type as keyof typeof icons]}
                                                 </div>
                                                 <div className="text-left">
                                                     <div className="text-sm font-bold text-slate-900 leading-tight">{res.title}</div>
-                                                    <div className="text-[11px] text-slate-400 font-medium">{res.subtitle}</div>
+                                                    <div className="text-[11px] text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
                                                 </div>
                                             </div>
-                                            <div className="px-2 py-1 rounded-lg bg-slate-100 text-[9px] font-bold text-slate-400 group-hover:bg-[#5d00ff]/5 group-hover:text-[#5d00ff] transition-colors">
+                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                                                 {res.type === 'item' ? 'Товар' :
                                                     res.type === 'order' ? 'Заказ' :
                                                         res.type === 'client' ? 'Клиент' :

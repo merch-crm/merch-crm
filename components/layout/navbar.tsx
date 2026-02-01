@@ -41,6 +41,7 @@ const navigation = [
 
 import Image from "next/image";
 import { UserNav } from "./user-nav";
+import { NotificationCenter } from "@/components/notifications/notification-center";
 
 interface BrandingSettings {
     companyName: string;
@@ -51,9 +52,10 @@ interface BrandingSettings {
 
 
 
-export function Navbar({ user, branding }: {
+export function Navbar({ user, branding, notifications }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     branding: BrandingSettings;
+    notifications: any[];
 }) {
     const pathname = usePathname();
 
@@ -64,7 +66,7 @@ export function Navbar({ user, branding }: {
 
     return (
         <header className="sticky top-0 z-50 p-3 md:p-4 md:px-6">
-            <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center shadow-crm-lg border-white/50">
+            <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center">
                 <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     {/* Left: Logo */}
                     <div className="flex items-center shrink-0">
@@ -110,10 +112,7 @@ export function Navbar({ user, branding }: {
 
                     {/* Right Side: Notifications & Profile */}
                     <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
-                        <Button variant="ghost" size="icon" className="relative text-slate-400 hover:text-primary hover:bg-primary/10 transition-all rounded-lg">
-                            <Bell className="h-5.5 w-5.5" />
-                            <span className="absolute top-3 right-3 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
-                        </Button>
+                        <NotificationCenter notifications={notifications} />
 
                         <div className="h-6 w-px bg-slate-200 mx-1 md:mx-2" />
 

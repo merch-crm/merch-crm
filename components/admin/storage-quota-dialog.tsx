@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Settings } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
-import { getStorageQuotaSettings, updateStorageQuotaSettings, StorageQuotaSettings } from "@/app/dashboard/admin/storage-actions";
+import { getStorageQuotaSettings, updateStorageQuotaSettings, StorageQuotaSettings } from "@/app/(main)/admin-panel/storage-actions";
 
 interface Props {
     open: boolean;
@@ -114,7 +114,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                         </div>
                         <div className="space-y-3">
                             <label className="font-bold text-slate-700 text-sm block mb-2">Порог предупреждения (%)</label>
-                            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-[18px] shadow-sm border border-slate-100">
+                            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-[18px] shadow-sm border border-slate-200">
                                 <input
                                     type="range"
                                     min="10"

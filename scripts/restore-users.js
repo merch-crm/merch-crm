@@ -76,7 +76,7 @@ async function restoreUsers() {
                 const query = `
                     INSERT INTO users (
                         id, name, email, password_hash, role_id, phone, birthday, avatar, 
-                        telegram, instagram, social_max, department_legacy, department_id, created_at
+                        telegram, instagram, social_max, department, department_id, created_at
                     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
                     ON CONFLICT (id) DO UPDATE SET
                         name = EXCLUDED.name,
@@ -89,7 +89,7 @@ async function restoreUsers() {
                         telegram = EXCLUDED.telegram,
                         instagram = EXCLUDED.instagram,
                         social_max = EXCLUDED.social_max,
-                        department_legacy = EXCLUDED.department_legacy,
+                        department = EXCLUDED.department,
                         department_id = EXCLUDED.department_id,
                         created_at = EXCLUDED.created_at
                 `;
@@ -106,7 +106,7 @@ async function restoreUsers() {
                     user.telegram || null,
                     user.instagram || null,
                     user.socialMax || null,
-                    user.departmentLegacy || null,
+                    user.department || user.departmentLegacy || null,
                     user.departmentId || null,
                     user.createdAt
                 ];

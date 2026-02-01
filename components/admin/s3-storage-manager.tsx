@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { useEffect, useState, useCallback } from "react";
-import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/dashboard/admin/actions";
+import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/(main)/admin-panel/actions";
 import {
     HardDrive,
     RefreshCw,
@@ -286,7 +286,7 @@ export function S3StorageManager() {
         <div className="space-y-6">
             {/* Header Info */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-indigo-50 text-#5d00ff rounded-[18px]">
@@ -301,7 +301,7 @@ export function S3StorageManager() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-emerald-50 text-emerald-600 rounded-[18px]">
@@ -321,7 +321,7 @@ export function S3StorageManager() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
                     <CardContent className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-slate-100 text-slate-600 rounded-[18px]">
@@ -340,7 +340,7 @@ export function S3StorageManager() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* S3 Storage Management */}
                 <div className="lg:col-span-2 space-y-6">
-                    <Card className="border-slate-100 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
+                    <Card className="border-slate-200 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
                         <CardHeader className="p-8 pb-4">
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -421,12 +421,12 @@ export function S3StorageManager() {
                                 )}
 
                                 {/* Breadcrumbs */}
-                                <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-100 overflow-x-auto scrollbar-hide">
+                                <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-200 overflow-x-auto scrollbar-hide">
                                     <button
                                         onClick={() => navigateTo("")}
                                         className={cn(
                                             "flex items-center gap-1.5 px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal shrink-0",
-                                            currentPrefix === "" ? "bg-white text-#5d00ff shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                            currentPrefix === "" ? "bg-white text-#5d00ff shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
                                         <Home size={12} />
@@ -441,7 +441,7 @@ export function S3StorageManager() {
                                                     onClick={() => navigateTo(path)}
                                                     className={cn(
                                                         "px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
-                                                        currentPrefix === path ? "bg-white text-#5d00ff shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                                        currentPrefix === path ? "bg-white text-#5d00ff shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                                     )}
                                                 >
                                                     {crumb}
@@ -468,7 +468,7 @@ export function S3StorageManager() {
                                     </div>
                                 ) : (
                                     <table className="w-full text-left border-collapse">
-                                        <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-50">
+                                        <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
                                             <tr>
                                                 {isMultiSelectMode && (
                                                     <th className="px-4 py-4 w-12"></th>
@@ -665,7 +665,7 @@ export function S3StorageManager() {
 
                 {/* Local Storage Info & Actions */}
                 <div className="space-y-6">
-                    <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                    <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-slate-100 text-slate-600 rounded-[18px]">
@@ -678,7 +678,7 @@ export function S3StorageManager() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4 pt-4">
-                            <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-100 space-y-3">
+                            <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-200 space-y-3">
                                 <div className="flex justify-between items-center">
                                     <span className="text-[11px] font-bold text-slate-500  tracking-tight">Путь системы</span>
                                     <code className="text-[10px] font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-600 max-w-[150px] truncate" title={data?.local.path}>
@@ -704,7 +704,7 @@ export function S3StorageManager() {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                    <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
@@ -866,7 +866,7 @@ export function S3StorageManager() {
                             </button>
                         </div>
 
-                        <div className="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <div className="p-8 border-b border-slate-200 bg-slate-50/50">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-#5d00ff text-white rounded-[18px] shadow-lg shadow-indigo-100">
                                     <File size={24} />
@@ -896,7 +896,7 @@ export function S3StorageManager() {
 
             {/* Loading Overlay for Preview */}
             {isPreviewLoading && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center gap-4 text-white">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex flex-col items-center justify-center gap-4 text-white">
                     <RefreshCw className="animate-spin" size={48} />
                     <p className="text-xs font-bold  tracking-normal">Генерация ссылки...</p>
                 </div>

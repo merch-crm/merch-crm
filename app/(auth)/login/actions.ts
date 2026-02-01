@@ -94,7 +94,7 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             email: user[0].email,
             roleId: user[0].role_id || "",
             roleName: role?.name || "User",
-            departmentName: department?.name || user[0].department_legacy || "",
+            departmentName: department?.name || user[0].department || "",
             name: user[0].name || "",
             expires,
         };
@@ -102,11 +102,17 @@ export async function loginAction(prevState: unknown, formData: FormData) {
         const session = await encrypt(sessionData);
 
         console.log(`[Login] Session encrypted, setting cookie...`);
-        (await cookies()).set("session", session, {
+        const cookieStore = await cookies();
+
+        // Debug cookie
+        cookieStore.set("test_cookie", "ok", { path: "/" });
+
+        cookieStore.set("session", session, {
             expires,
-            httpOnly: true,
-            secure: false, // process.env.NODE_ENV === "production", // Temprary disabled for HTTP access
+            httpOnly: false, // TEMPORARY DEBUG: Allow JS access to check if cookie exists
+            secure: false,
             sameSite: "lax",
+            path: "/",
         });
 
         // Log successful login to security events
@@ -136,7 +142,7 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             console.error("Audit logging failed:", auditError);
         }
 
-        console.log(`[Login] Cookie set, redirecting to dashboard...`);
+        console.log(`[Login] Cookie set, redirecting...`);
     } catch (error) {
         await logError({
             error,
@@ -148,5 +154,6 @@ export async function loginAction(prevState: unknown, formData: FormData) {
         return { error: `Ошибка сервера: ${(error as Error).message}` };
     }
 
+    // Redirect after successful login
     redirect("/dashboard");
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Undo2, X } from "lucide-react";
-import { undoLastAction } from "@/app/dashboard/undo-actions";
+import { undoLastAction } from "@/app/(main)/dashboard/undo-actions";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 

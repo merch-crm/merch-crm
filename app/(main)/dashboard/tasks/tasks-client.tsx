@@ -1,0 +1,214 @@
+"use client";
+
+import { useState } from "react";
+import {
+    Search,
+    Filter,
+    Calendar,
+    ListTodo,
+    BarChart3
+} from "lucide-react";
+import { CreateTaskDialog } from "./create-task-dialog";
+import { KanbanBoard } from "./kanban-board";
+import { CalendarView } from "./calendar-view";
+import { TaskAnalytics } from "./task-analytics";
+import { TaskDetailsDialog } from "./task-details-dialog";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Task } from "./types";
+import { X } from "lucide-react";
+
+
+interface User {
+    id: string;
+    name: string;
+}
+
+interface Department {
+    id: string;
+    name: string;
+}
+
+interface Order {
+    id: string;
+    orderNumber: string;
+}
+
+interface TasksClientProps {
+    initialTasks: Task[];
+    users: User[];
+    departments: Department[];
+    orders: Order[];
+    currentUserId: string;
+    currentUserDepartmentId?: string | null;
+}
+
+export function TasksClient({ initialTasks, users, departments, orders, currentUserId, currentUserDepartmentId }: TasksClientProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState("");
+
+    // Initialize from URL params
+    const initialTab = searchParams.get("tab");
+    const initialView = searchParams.get("view");
+
+    const [activeTab, setActiveTab] = useState(
+        initialTab && ["all", "my", "role"].includes(initialTab) ? initialTab : "all"
+    );
+    const [view, setView] = useState<'kanban' | 'calendar' | 'analytics'>(
+        initialView && ['kanban', 'calendar', 'analytics'].includes(initialView)
+            ? initialView as 'kanban' | 'calendar' | 'analytics'
+            : 'kanban'
+    );
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+
+
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", tab);
+        router.replace(`?${params.toString()}`, { scroll: false });
+    };
+
+
+
+    const filteredTasks = initialTasks.filter(task => {
+        const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (task.description?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+
+        let matchesTab = true;
+        // For Kanban, we don't filter by 'done' here, as 'done' is a column.
+        // We only filter by 'my' and 'department' for active tasks.
+        if (activeTab === "my") matchesTab = task.assignedToUserId === currentUserId;
+        else if (activeTab === "role") matchesTab = task.assignedToDepartmentId === currentUserDepartmentId;
+
+        return matchesSearch && matchesTab;
+    });
+
+    const tabs = [
+        { id: "all", label: "Все потоки", icon: ListTodo },
+        { id: "my", label: "Моя работа", icon: Filter },
+        { id: "role", label: "Отдел", icon: Filter },
+    ];
+
+    const viewTabs = [
+        { id: 'kanban' as const, label: 'Доска', icon: ListTodo },
+        { id: 'calendar' as const, label: 'Календарь', icon: Calendar },
+        { id: 'analytics' as const, label: 'Аналитика', icon: BarChart3 },
+    ];
+
+    return (
+        <div className="space-y-4 animate-in fade-in duration-500 h-full flex flex-col">
+            {/* Premium Header */}
+            <div className="relative overflow-hidden bg-white rounded-[24px] p-8 border border-slate-200 shadow-xl shadow-slate-200/50 shrink-0 mb-6">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
+
+                <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Рабочие процессы</h1>
+                        <p className="text-slate-400 font-medium max-w-md text-[13px] leading-relaxed">Контролируйте движение задач в реальном времени на интерактивной доске</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="relative group flex-1 sm:flex-none">
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+                            <input
+                                type="text"
+                                placeholder="Найти поручение..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-12 pr-10 h-12 bg-slate-50 border-none rounded-[16px] text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 w-full sm:w-72 transition-all"
+                            />
+                            {searchQuery && (
+                                <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                        <CreateTaskDialog users={users} departments={departments} orders={orders} />
+                    </div>
+                </div>
+
+                {/* Filter Toolbar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-6">
+                    <div className="crm-filter-tray !p-1 !gap-1 w-full sm:w-fit">
+                        {tabs.map((tab) => {
+                            const isActive = activeTab === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleTabChange(tab.id)}
+                                    className={cn(
+                                        "relative flex items-center gap-2.5 px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group flex-1 sm:flex-none whitespace-nowrap",
+                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                    )}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeTaskTab"
+                                            className="absolute inset-0 bg-slate-900 rounded-[14px] shadow-lg shadow-slate-900/20"
+                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        />
+                                    )}
+                                    <tab.icon className="w-3.5 h-3.5 relative z-10" />
+                                    <span className="relative z-10">{tab.label}</span>
+                                    {isActive && (
+                                        <span className="relative z-10 ml-1.5 px-1.5 py-0.5 bg-primary rounded-full text-[10px] text-white">
+                                            {filteredTasks.length}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="crm-filter-tray !p-1 !gap-1 w-full sm:w-fit">
+                        {viewTabs.map((tab) => {
+                            const isActive = view === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setView(tab.id)}
+                                    className={cn(
+                                        "relative flex items-center gap-2.5 px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group flex-1 sm:flex-none whitespace-nowrap",
+                                        isActive ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
+                                    )}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeTaskView"
+                                            className="absolute inset-0 bg-white rounded-[14px] shadow-sm"
+                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        />
+                                    )}
+                                    <tab.icon className="w-3.5 h-3.5 relative z-10" />
+                                    <span className="relative z-10">{tab.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-hidden min-h-0">
+                {view === 'kanban' && (
+                    <KanbanBoard tasks={filteredTasks} currentUserId={currentUserId} currentUserDepartmentId={currentUserDepartmentId} />
+                )}
+                {view === 'calendar' && (
+                    <CalendarView tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                )}
+                {view === 'analytics' && (
+                    <TaskAnalytics tasks={initialTasks} users={users} />
+                )}
+            </div>
+
+            {selectedTask && (
+                <TaskDetailsDialog task={selectedTask} onClose={() => setSelectedTask(null)} />
+            )}
+        </div>
+    );
+}

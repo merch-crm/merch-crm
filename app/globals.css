@@ -4,7 +4,7 @@
   /* MerchCRM Final Design System */
   /* Accent Color */
   --primary: #5d00ff;
-  --primary-hover: #4a00cc;
+  --primary-hover: #731cff;
   --primary-light: rgba(93, 0, 255, 0.1);
   --primary-foreground: #ffffff;
 
@@ -43,19 +43,16 @@
   --ring: #5d00ff;
 
   /* Radii - Unified Rounding System */
-  /* Outer blocks (panels, cards): 16px */
-  /* Inner elements (nested cards, buttons): 8px */
-  /* Rule: Visual harmony with p-8 (32px) padding */
-  --radius: 16px;
-  --radius-outer: 16px;
-  --radius-inner: 8px;
-  --radius-padding: 32px;
+  --radius: 18px;
+  --radius-outer: 18px;
+  --radius-inner: 12px;
+  --radius-padding: 24px;
 
-  /* Shadows - "Glow" & Depth */
-  --crm-shadow-sm: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-  --crm-shadow-md: 0 4px 12px -3px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
-  --crm-shadow-lg: 0 10px 24px -6px rgba(0, 0, 0, 0.1), 0 4px 10px -4px rgba(0, 0, 0, 0.05);
-  --crm-shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 8px 16px -6px rgba(0, 0, 0, 0.08);
+  /* Shadows - "Premium Soft" */
+  --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
+  --crm-shadow-md: 0 12px 32px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04);
+  --crm-shadow-lg: 0 24px 64px -12px rgba(0, 0, 0, 0.12), 0 8px 24px -8px rgba(0, 0, 0, 0.08);
+  --crm-shadow-xl: 0 40px 96px -16px rgba(0, 0, 0, 0.16), 0 16px 48px -12px rgba(0, 0, 0, 0.12);
 
   /* Grid & Spacing */
   --crm-blur: 24px;
@@ -137,33 +134,6 @@
     @apply antialiased selection:bg-primary/20 selection:text-primary relative min-h-screen overflow-x-hidden;
   }
 
-  /* Aurora Background Effect - Disabled for solid background preference */
-  /* body::before {
-    content: "";
-    position: fixed;
-    top: -20%;
-    left: -10%;
-    width: 60%;
-    height: 60%;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, rgba(255, 255, 255, 0) 70%);
-    filter: blur(80px);
-    z-index: -2;
-    pointer-events: none;
-  } */
-
-  /* body::after {
-    content: "";
-    position: fixed;
-    bottom: -20%;
-    right: -10%;
-    width: 50%;
-    height: 50%;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, rgba(255, 255, 255, 0) 70%);
-    filter: blur(80px);
-    z-index: -2;
-    pointer-events: none;
-  } */
-
   /* Bold headings as per standard */
   h1,
   h2,
@@ -175,67 +145,348 @@
   }
 }
 
-@layer components {
+/* Custom Utilities for v4 - Must be at top level, minimal nesting */
+@utility btn-primary {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Glass Panel - The Core Building Block */
-  .glass-panel {
-    @apply bg-white shadow-crm-md rounded-2xl p-[var(--radius-padding)] transition-all duration-300;
+  &:hover {
+    background-color: var(--primary-hover);
+
   }
 
-  .glass-panel:hover {
-    @apply bg-white shadow-crm-lg scale-[1.005];
+  &:active {
+
+    opacity: 0.9;
+  }
+}
+
+@utility btn-destructive {
+  background-color: #ff463c;
+  color: white;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+
+  &:hover {
+    background-color: #e32419;
   }
 
-  /* High-Contrast Card for Critical Data */
-  .crm-card {
-    @apply bg-white text-card-foreground rounded-2xl p-[var(--radius-padding)] shadow-crm-md overflow-hidden transition-all duration-300 relative z-0;
+  &:active {}
+}
+
+@utility btn-destructive-ghost {
+  background-color: transparent;
+  color: #ff463c;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #fff5f5;
+    color: #e32419;
   }
 
-  .crm-card:hover {
-    @apply shadow-crm-lg scale-[1.005];
+
+
+  &:active {}
+}
+
+
+@utility btn-emerald {
+  background-color: #10b981;
+  color: white;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: #059669;
+
   }
 
-  /* Sticky Glass Header */
-  .sticky-glass-header {
-    @apply sticky top-2 z-40 mx-auto w-[calc(100%-2rem)] max-w-[1480px] rounded-[var(--radius-outer)] bg-white border border-white/40 shadow-crm-lg mb-2 transition-all duration-300;
+  &:active {}
+}
+
+@utility btn-black {
+  background-color: #0f172a;
+  color: white;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: #1e293b;
+
   }
 
-  .sticky-glass-header.scrolled {
-    @apply bg-white shadow-crm-xl translate-y-1;
+  &:active {}
+}
+
+@utility btn-dark {
+  background-color: #1f1f1f;
+  color: white;
+  box-shadow: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  z-index: 1;
+
+  &:hover {
+    background-color: #000000;
   }
 
-  /* Button Styles Overrides for Premium Feel */
-  .btn-primary {
-    @apply bg-primary text-white shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:bg-[#4a00cc] active:scale-[0.98] transition-all;
+  &:active {
+
+    transform: translateY(0px);
+  }
+}
+
+@utility btn-secondary {
+  background-color: white;
+  color: var(--foreground);
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+
   }
 
-  .btn-secondary {
-    @apply bg-white text-foreground border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98];
+  &:active {}
+}
+
+@utility btn-dialog {
+  height: 44px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@utility btn-dialog-primary {
+  height: 44px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 14px;
+  background-color: var(--primary);
+  color: white;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: var(--primary-hover);
+
   }
 
-  /* Inputs with presence */
-  .input-premium {
-    @apply h-12 bg-slate-50 border-transparent hover:bg-white hover:border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 font-medium;
+  &:active {}
+}
+
+@utility btn-dialog-dark {
+  height: 44px;
+  padding-left: 32px;
+  padding-right: 32px;
+  background-color: #1f1f1f;
+  color: white;
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: #000000;
+
   }
 
-  /* Placeholder animation: fade out on focus */
-  input::placeholder,
-  textarea::placeholder {
-    transition: opacity 0.2s ease, transform 0.2s ease;
+  &:active {}
+}
+
+@utility btn-dialog-secondary {
+  height: 44px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 14px;
+  background-color: white;
+  color: var(--foreground);
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05);
   }
 
-  input:focus::placeholder,
-  textarea:focus::placeholder {
-    opacity: 0;
-    transform: translateX(4px);
+  &:active {}
+}
+
+@utility btn-dialog-destructive {
+  @apply btn-destructive;
+  height: 44px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@utility btn-dialog-ghost {
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 14px;
+  background-color: transparent;
+  color: var(--foreground);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: #f1f5f9;
+
   }
 
-  /* Bento Grid Layouts */
-  .bento-grid {
-    display: grid;
-    @apply gap-[var(--crm-grid-gap)];
-    grid-template-columns: repeat(12, 1fr);
+  &:active {}
+}
+
+@utility dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  /* slate-600 */
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: #f8fafc;
+    /* slate-50 */
+    color: var(--primary);
   }
+
+  &:active {
+    scale: 0.98;
+  }
+}
+
+@utility input-premium {
+  height: 48px;
+  background-color: #f8fafc;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+/* Regular CSS classes for elements with hover/focus states */
+.glass-panel {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--crm-shadow-sm);
+  border-radius: var(--radius-outer);
+  transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+  box-shadow: var(--crm-shadow-md);
+}
+
+.glass-panel:focus,
+.glass-panel:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.crm-card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  color: var(--card-foreground);
+  border-radius: var(--radius-outer);
+  padding: var(--radius-padding);
+  box-shadow: var(--crm-shadow-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 0;
+}
+
+.crm-card:hover {
+  box-shadow: var(--crm-shadow-md);
+}
+
+.sticky-glass-header {
+  position: sticky;
+  top: 8px;
+  z-index: 40;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100% - 32px);
+  max-width: 1480px;
+  border-radius: var(--radius-outer);
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--crm-shadow-sm);
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.sticky-glass-header.scrolled {
+  background-color: white;
+  box-shadow: var(--crm-shadow-md);
+  transform: translateY(4px);
+}
+
+.bento-grid {
+  display: grid;
+  gap: var(--crm-grid-gap);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.crm-filter-tray {
+  background-color: rgba(226, 232, 240, 1);
+  padding: 6px;
+  border-radius: var(--radius-outer);
+  border: 1px solid rgba(203, 213, 225, 0.4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 /* react-day-picker custom styles */
@@ -266,7 +517,7 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  @apply ring-0;
+  box-shadow: none;
 }
 
 /* Hide spin buttons */
@@ -279,4 +530,16 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+/* Placeholder animation */
+input::placeholder,
+textarea::placeholder {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  opacity: 0;
+  transform: translateX(4px);
 }

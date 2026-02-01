@@ -95,6 +95,8 @@ export const expenseCategoryEnum = pgEnum("expense_category", ["rent", "salary",
 
 export const productionStageStatusEnum = pgEnum("production_stage_status", ["pending", "in_progress", "done", "failed"]);
 
+export const storageLocationTypeEnum = pgEnum("storage_location_type", ["warehouse", "production", "office"]);
+
 export const inventoryAttributes = pgTable("inventory_attributes", {
     id: uuid("id").defaultRandom().primaryKey(),
     type: text("type").notNull(), // 'color' or 'material'
@@ -149,7 +151,7 @@ export const users = pgTable("users", {
     telegram: text("telegram"),
     instagram: text("instagram"),
     socialMax: text("social_max"),
-    departmentLegacy: text("department_legacy"),
+    department: text("department"),
     departmentId: uuid("department_id").references(() => departments.id),
     lastActiveAt: timestamp("last_active_at"),
     isSystem: boolean("is_system").default(false).notNull(),
@@ -213,8 +215,6 @@ export const inventoryItems = pgTable("inventory_items", {
     lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
     criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
-    location: text("location"),
-    storageLocationId: uuid("storage_location_id").references(() => storageLocations.id),
     qualityCode: text("quality_code"),
     materialCode: text("material_code"),
     brandCode: text("brand_code"),
@@ -363,6 +363,8 @@ export const storageLocations = pgTable("storage_locations", {
     responsibleUserId: uuid("responsible_user_id").references(() => users.id),
     isSystem: boolean("is_system").default(false).notNull(),
     isDefault: boolean("is_default").default(false).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    type: storageLocationTypeEnum("type").default("warehouse").notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -600,10 +602,6 @@ export const inventoryItemsRelations = relations(inventoryItems, ({ one, many })
         fields: [inventoryItems.categoryId],
         references: [inventoryCategories.id],
     }),
-    storageLocation: one(storageLocations, {
-        fields: [inventoryItems.storageLocationId],
-        references: [storageLocations.id],
-    }),
     transactions: many(inventoryTransactions),
     stocks: many(inventoryStocks),
     transfers: many(inventoryTransfers),
@@ -745,8 +743,6 @@ export const storageLocationsRelations = relations(storageLocations, ({ one, man
         fields: [storageLocations.responsibleUserId],
         references: [users.id],
     }),
-    // items теперь должны получаться через stocks, но старую связь можно оставить для legacy
-    items: many(inventoryItems),
     stocks: many(inventoryStocks),
     transfersIn: many(inventoryTransfers, { relationName: "transfersIn" }),
     transfersOut: many(inventoryTransfers, { relationName: "transfersOut" }),

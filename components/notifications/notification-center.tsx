@@ -64,13 +64,14 @@ export function NotificationCenter({ notifications }: NotificationCenterProps) {
             {/* Bell Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 rounded-[12px] hover:bg-slate-100 transition-all group"
+                className={cn(
+                    "relative p-2.5 rounded-xl transition-all group",
+                    isOpen ? "bg-primary/10 text-primary" : "text-slate-400 hover:text-primary hover:bg-primary/10"
+                )}
             >
-                <Bell className="w-5 h-5 text-slate-600 group-hover:text-slate-900 transition-colors" />
+                <Bell className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-110" />
                 {unreadCount > 0 && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                    </div>
+                    <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white animate-in fade-in zoom-in duration-300" />
                 )}
             </button>
 
@@ -78,7 +79,7 @@ export function NotificationCenter({ notifications }: NotificationCenterProps) {
             {isOpen && (
                 <div className="absolute top-[calc(100%+8px)] right-0 w-[380px] bg-white/90 backdrop-blur-xl border border-white/50 rounded-[18px] shadow-crm-xl z-[100] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                     {/* Header */}
-                    <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                    <div className="p-4 border-b border-slate-200 flex items-center justify-between">
                         <div>
                             <h3 className="text-sm font-bold text-slate-900">Уведомления</h3>
                             <p className="text-xs text-slate-400 mt-0.5">{unreadCount} непрочитанных</p>
@@ -110,7 +111,7 @@ export function NotificationCenter({ notifications }: NotificationCenterProps) {
                                     <div
                                         key={notification.id}
                                         className={cn(
-                                            "p-4 border-b border-slate-50 hover:bg-slate-50/50 transition-all group",
+                                            "p-4 border-b border-slate-200 hover:bg-slate-50/50 transition-all group",
                                             !notification.isRead && "bg-indigo-50/30"
                                         )}
                                     >

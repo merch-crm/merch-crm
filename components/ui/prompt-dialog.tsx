@@ -49,9 +49,9 @@ export function PromptDialog({
     };
 
     return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
             <div
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
+                className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
                 onClick={onClose}
             />
 
@@ -103,7 +103,7 @@ export function PromptDialog({
                                 "w-full h-12 px-5 rounded-2xl border text-sm font-semibold transition-all outline-none placeholder:text-slate-300",
                                 error
                                     ? "bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
-                                    : "bg-slate-50 border-slate-100 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
+                                    : "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                             )}
                             {...inputProps}
                         />
@@ -119,14 +119,14 @@ export function PromptDialog({
                         <Button
                             variant="ghost"
                             onClick={onClose}
-                            className="flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all"
+                            className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all"
                         >
                             {cancelText}
                         </Button>
                         <Button
                             onClick={handleConfirm}
                             disabled={isLoading || !value.trim()}
-                            className="flex-[2] h-14 rounded-2xl btn-primary shadow-xl shadow-primary/20 text-white font-black text-xs uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                            className="flex-[2] h-11 rounded-[var(--radius-inner)] bg-primary shadow-xl shadow-primary/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 border-none"
                         >
                             {isLoading ? "Сохранение..." : confirmText}
                         </Button>

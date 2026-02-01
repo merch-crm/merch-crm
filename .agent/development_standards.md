@@ -169,3 +169,59 @@ return (
     </button>
 </div>
 ```
+## 11. Панели фильтров и тулбары таблиц (Filter Trays)
+
+Все основные таблицы и списки должны использовать единую систему фильтрации и поиска (стиль "Photo 2").
+
+### Основные правила оформления:
+- **Контейнер**: Класс `.crm-filter-tray`.
+  - **Стиль**: `bg-slate-100/50`, `p-1.5`, `rounded-[20px]`, `border border-slate-200/30`.
+  - **Эффекты**: `shadow-inner` (внутренняя тень для эффекта "утопленности").
+  - **Layout**: `flex flex-row items-center gap-6`.
+- **Поисковая строка**:
+  - **Контейнер**: `relative flex-1`.
+  - **Input**: Высота `h-11`, скругление `rounded-[14px]`, фон `bg-white`, `shadow-sm`.
+  - **Шрифт**: `text-[13px] font-bold text-slate-900`.
+- **Переключатели (Tabs / Filters)**:
+  - **Анимация**: ОБЯЗАТЕЛЬНО Использовать `framer-motion` и `layoutId` для создания эффекта перетекающего фона.
+  - **Кнопка**: `px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300`.
+  - **Активное состояние**: Текст `text-white`, индикатор `bg-primary` с тенью `shadow-lg shadow-primary/25`.
+  - **Неактивное состояние**: Текст `text-slate-500`, при наведении `text-slate-900`.
+
+### Пример структуры (Toolbar):
+```tsx
+<div className="crm-filter-tray gap-6 mb-8">
+    {/* Search Box */}
+    <div className="relative flex-1">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <input 
+            type="text" 
+            placeholder="Поиск..." 
+            className="w-full h-11 bg-white border-none rounded-[14px] pl-12 pr-10 text-[13px] font-bold text-slate-900 placeholder:text-slate-400 shadow-sm"
+        />
+    </div>
+
+    {/* Animated Tabs */}
+    <div className="flex items-center px-1 gap-2">
+        {tabs.map((tab) => (
+            <button
+                key={tab.id}
+                onClick={() => setActive(tab.id)}
+                className={cn(
+                    "relative px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group",
+                    active === tab.id ? "text-white" : "text-slate-500 hover:text-slate-900"
+                )}
+            >
+                {active === tab.id && (
+                    <motion.div
+                        layoutId="activeTabIndicator"
+                        className="absolute inset-0 bg-primary rounded-[14px] shadow-lg shadow-primary/25"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                )}
+                <span className="relative z-10">{tab.label}</span>
+            </button>
+        ))}
+    </div>
+</div>
+```

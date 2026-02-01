@@ -75,10 +75,10 @@ export function Sidebar({ className, user }: SidebarProps) {
                             key={item.name}
                             href={item.href}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[14px] font-medium transition-all duration-200",
+                                "flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-inner)] text-[14px] font-medium transition-all duration-200",
                                 isActive
-                                    ? "bg-indigo-50 text-[#5d00ff]"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                    ? "bg-indigo-50 text-[#5d00ff] shadow-sm"
+                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:scale-[1.02] hover:shadow-sm"
                             )}
                         >
                             <item.icon className={cn("h-5 w-5", isActive ? "text-[#5d00ff]" : "text-slate-400")} />

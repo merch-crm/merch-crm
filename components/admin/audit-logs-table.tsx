@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getAuditLogs, clearAuditLogs, getUsers } from "@/app/dashboard/admin/actions";
+import { getAuditLogs, clearAuditLogs, getUsers } from "@/app/(main)/admin-panel/actions";
 import { Search, Activity, Calendar, Clock, Trash2, Database, User, Shield, Package, HardDrive, Layout, Server, Folder } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { Pagination } from "@/components/ui/pagination";
+import { PremiumPagination } from "@/components/ui/premium-pagination";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
@@ -305,7 +305,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                                 <div>
                                                     <div className="font-bold text-slate-700 text-sm leading-tight">{log.action}</div>
                                                     {log.details && (
-                                                        <div className="text-[10px] text-slate-400 mt-1 line-clamp-1 font-medium bg-slate-50/50 px-2 py-0.5 rounded-md border border-slate-100/50 w-fit">
+                                                        <div className="text-[10px] text-slate-400 mt-1 line-clamp-1 font-medium bg-slate-50/50 px-2 py-0.5 rounded-md border border-slate-200/50 w-fit">
                                                             {log.details?.fileName ||
                                                                 log.details?.name ||
                                                                 log.details?.reason ||
@@ -376,11 +376,11 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 </table>
             </div>
 
-            <Pagination
+            <PremiumPagination
                 totalItems={totalLogs}
                 pageSize={20}
                 currentPage={page}
-                itemName="записей"
+                itemNames={['запись', 'записи', 'записей']}
             />
         </div >
     );

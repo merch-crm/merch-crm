@@ -17,11 +17,12 @@ export async function middleware(request: NextRequest) {
 
     // 2. Auth Check
     const sessionCookie = request.cookies.get("session")?.value;
+
     let session = null;
     if (sessionCookie) {
         try {
             session = await decrypt(sessionCookie);
-        } catch {
+        } catch (err) {
             // Session invalid
         }
     }
@@ -33,14 +34,12 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    // If user is NOT logged in -> redirect from protected pages
-    // Protected pages: /dashboard and everything under it
     if (!session && path.startsWith("/dashboard")) {
         return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // RBAC: Protect Admin Routes
-    if (session && path.startsWith("/dashboard/admin")) {
+    if (session && path.startsWith("/admin-panel")) {
         if (session.roleName !== "Администратор") {
             return NextResponse.redirect(new URL("/dashboard", request.url));
         }

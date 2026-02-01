@@ -5,7 +5,7 @@ import { Cloud, HardDrive, AlertTriangle, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { S3StorageManager } from "./s3-storage-manager";
 import { LocalStorageManager } from "./local-storage-manager";
-import { checkStorageQuotas, StorageQuotaUsage } from "@/app/dashboard/admin/storage-actions";
+import { checkStorageQuotas, StorageQuotaUsage } from "@/app/(main)/admin-panel/storage-actions";
 import { StorageQuotaDialog } from "./storage-quota-dialog";
 
 type StorageTab = "s3" | "local";
@@ -41,13 +41,13 @@ export function StorageManager() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
-                <div className="flex items-center gap-3 p-2 bg-slate-50/50 rounded-[24px] border border-slate-100 w-fit">
+                <div className="flex items-center gap-3 p-2 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit">
                     <button
                         onClick={() => setActiveTab("s3")}
                         className={cn(
                             "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
                             activeTab === "s3"
-                                ? "bg-white text-#5d00ff shadow-sm border border-slate-100"
+                                ? "bg-white text-#5d00ff shadow-sm border border-slate-200"
                                 : "text-slate-400 hover:text-slate-600"
                         )}
                     >
@@ -59,7 +59,7 @@ export function StorageManager() {
                         className={cn(
                             "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
                             activeTab === "local"
-                                ? "bg-white text-emerald-600 shadow-sm border border-slate-100"
+                                ? "bg-white text-emerald-600 shadow-sm border border-slate-200"
                                 : "text-slate-400 hover:text-slate-600"
                         )}
                     >
@@ -70,7 +70,7 @@ export function StorageManager() {
 
                 <button
                     onClick={() => setIsSettingsOpen(true)}
-                    className="p-3 bg-white text-slate-500 hover:text-#5d00ff hover:bg-slate-50 rounded-[18px] border border-slate-100 shadow-sm transition-all active:scale-95"
+                    className="p-3 bg-white text-slate-500 hover:text-#5d00ff hover:bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm transition-all active:scale-95"
                     title="Настройки лимитов"
                 >
                     <Settings2 size={20} />

@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { stopImpersonating } from "@/app/dashboard/admin/actions";
+import { stopImpersonating } from "@/app/(main)/admin-panel/actions";
 import { useToast } from "@/components/ui/toast";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackActivity } from "@/app/dashboard/admin/actions";
+import { trackActivity } from "@/app/(main)/admin-panel/actions";
 
 export function useActivityTracker() {
     useEffect(() => {

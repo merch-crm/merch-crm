@@ -17,7 +17,7 @@ import {
   getCurrentUserAction,
   clearSecurityErrors,
   clearFailedLogins,
-} from "@/app/dashboard/admin/actions";
+} from "@/app/(main)/admin-panel/actions";
 import { AuditLogsTable } from "./audit-logs-table";
 import {
   Activity,
@@ -779,7 +779,7 @@ export function SystemStats() {
                         {monitoringData.activeUsers.map((user) => (
                           <div
                             key={user.id}
-                            className="flex items-center gap-3 min-w-fit pr-4 border-r border-slate-100 last:border-0"
+                            className="flex items-center gap-3 min-w-fit pr-4 border-r border-slate-200 last:border-0"
                           >
                             <div className="relative">
                               <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 overflow-hidden relative">
@@ -839,7 +839,7 @@ export function SystemStats() {
                   ].map((item) => (
                     <div
                       key={item.key}
-                      className="p-3 rounded-[18px] bg-slate-50/50 border border-slate-100"
+                      className="p-3 rounded-[18px] bg-slate-50/50 border border-slate-200"
                     >
                       <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">
                         {item.label}
@@ -911,7 +911,7 @@ export function SystemStats() {
                 <button
                   onClick={handleClearRam}
                   disabled={clearingRam}
-                  className="px-5 py-2.5 bg-slate-50 text-slate-600 text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-indigo-50 hover:text-#5d00ff border border-slate-100 transition-all active:scale-95 disabled:opacity-50"
+                  className="px-5 py-2.5 bg-slate-50 text-slate-600 text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-indigo-50 hover:text-#5d00ff border border-slate-200 transition-all active:scale-95 disabled:opacity-50"
                 >
                   {clearingRam ? "Очистка..." : "Очистить"}
                 </button>
@@ -945,8 +945,8 @@ export function SystemStats() {
           {/* Activity Graph - Full Width in separate section now */}
           <div className="mt-6">
             {/* Activity Graph */}
-            <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between pb-6 pt-7 px-8 bg-white border-b border-slate-50">
+            <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+              <CardHeader className="flex flex-row items-center justify-between pb-6 pt-7 px-8 bg-white border-b border-slate-200">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 bg-indigo-50 text-indigo-500 rounded-[18px]">
@@ -1078,7 +1078,7 @@ export function SystemStats() {
                   </div>
 
                   {/* Time Labels Row */}
-                  <div className="w-full flex gap-1 px-1 border-t border-slate-100 pt-2">
+                  <div className="w-full flex gap-1 px-1 border-t border-slate-200 pt-2">
                     {[...Array(24)].map((_, i) => (
                       <div key={i} className="flex-1 text-center">
                         {i % 4 === 0 && (
@@ -1093,7 +1093,7 @@ export function SystemStats() {
 
                 {/* Action Breakdown Legend */}
                 {monitoringData && monitoringData.entityStats.length > 0 && (
-                  <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-50">
+                  <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-200">
                     {monitoringData.entityStats.map((stat) => (
                       <div key={stat.type} className="flex items-center gap-2">
                         <div
@@ -1152,7 +1152,7 @@ export function SystemStats() {
               </div>
               <button
                 onClick={() => fetchStats(true)}
-                className="p-2.5 bg-white border border-slate-100 text-slate-400 rounded-[18px] hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
+                className="p-2.5 bg-white border border-slate-200 text-slate-400 rounded-[18px] hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
                 title="Обновить данные"
               >
                 <RefreshCw size={16} />
@@ -1161,7 +1161,7 @@ export function SystemStats() {
 
             <div className="flex flex-col gap-6 pb-4">
               {/* Maintenance Mode */}
-              <Card className="border-slate-100 shadow-sm overflow-hidden bg-white rounded-[32px] border">
+              <Card className="border-slate-200 shadow-sm overflow-hidden bg-white rounded-[32px] border">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -1190,7 +1190,7 @@ export function SystemStats() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-2 pb-6">
-                  <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-[18px] border border-slate-100/50">
+                  <div className="flex items-center justify-between gap-8 bg-slate-50/50 p-6 rounded-[18px] border border-slate-200/50">
                     <div className="space-y-1">
 
                       <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-[320px]">
@@ -1204,7 +1204,7 @@ export function SystemStats() {
                       }
                       disabled={togglingMaintenance}
                       className={cn(
-                        "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
                         securityData?.maintenanceMode
                           ? "bg-#5d00ff shadow-[0_0_15px_rgba(79,70,229,0.4)]"
                           : "bg-slate-200",
@@ -1224,8 +1224,8 @@ export function SystemStats() {
               </Card>
 
               {/* Failed Logins Table */}
-              <Card className="border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden bg-white rounded-[32px] border">
-                <CardHeader className="pb-4 border-b border-slate-50 bg-slate-50/10">
+              <Card className="border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden bg-white rounded-[32px] border">
+                <CardHeader className="pb-4 border-b border-slate-200 bg-slate-50/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-rose-50 text-rose-600 rounded-[18px]">
@@ -1427,7 +1427,7 @@ export function SystemStats() {
       {activeTab === "diagnostics" && (
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300 px-1">
           <Card className="border-slate-200/60 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-200 pb-4">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-lg font-bold text-slate-800">
@@ -1467,7 +1467,7 @@ export function SystemStats() {
                         "p-4 rounded-[18px] border transition-all",
                         healthData?.database.status === "ok"
                           ? "bg-emerald-50/30 border-emerald-100"
-                          : "bg-slate-50/50 border-slate-100",
+                          : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1516,7 +1516,7 @@ export function SystemStats() {
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.storage.status === "error"
                             ? "bg-red-50/30 border-red-100"
-                            : "bg-slate-50/50 border-slate-100",
+                            : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1572,7 +1572,7 @@ export function SystemStats() {
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.env.status === "warning"
                             ? "bg-amber-50/30 border-amber-100"
-                            : "bg-slate-50/50 border-slate-100",
+                            : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1630,7 +1630,7 @@ export function SystemStats() {
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.fs.status === "error"
                             ? "bg-red-50/30 border-red-100"
-                            : "bg-slate-50/50 border-slate-100",
+                            : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1680,7 +1680,7 @@ export function SystemStats() {
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.backup.status === "warning"
                             ? "bg-amber-50/30 border-amber-100"
-                            : "bg-slate-50/50 border-slate-100",
+                            : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1736,7 +1736,7 @@ export function SystemStats() {
                           ? "bg-emerald-50/30 border-emerald-100"
                           : healthData?.jwt.status === "error"
                             ? "bg-red-50/30 border-red-100"
-                            : "bg-slate-50/50 border-slate-100",
+                            : "bg-slate-50/50 border-slate-200",
                         diagnosing && "animate-pulse",
                       )}
                     >
@@ -1791,7 +1791,7 @@ export function SystemStats() {
                           System Core Output
                         </div>
                       </div>
-                      <div className="bg-slate-900/90 backdrop-blur-xl p-5 font-mono text-[11px] leading-relaxed">
+                      <div className="bg-black/90 backdrop-blur-xl p-5 font-mono text-[11px] leading-relaxed">
                         <div className="flex items-center gap-2 mb-3 pb-2 border-b border-white/5">
                           <span className="text-emerald-500/50 font-bold">
                             ●
@@ -2006,7 +2006,7 @@ export function SystemStats() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-slate-50/50 border-b border-slate-100">
+                      <tr className="bg-slate-50/50 border-b border-slate-200">
                         <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
                           Имя файла
                         </th>
@@ -2025,7 +2025,7 @@ export function SystemStats() {
                       {backups.map((backup) => (
                         <tr
                           key={backup.name}
-                          className="border-b border-slate-100 hover:bg-slate-50/30 transition-colors group"
+                          className="border-b border-slate-200 hover:bg-slate-50/30 transition-colors group"
                         >
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
@@ -2114,10 +2114,10 @@ export function SystemStats() {
 
       {
         isRestarting && (
-          <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
+          <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
             <div className="bg-white p-8 rounded-[18px] shadow-2xl max-w-md w-full text-center space-y-6">
               <div className="relative w-20 h-20 mx-auto">
-                <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-slate-200"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-#5d00ff border-t-transparent animate-spin"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Server className="w-8 h-8 text-#5d00ff" />
@@ -2184,7 +2184,7 @@ export function SystemStats() {
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400  tracking-normal">Оригинальное сообщение</label>
-              <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-100 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
+              <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-200 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
                 {selectedError?.message}
               </div>
             </div>
@@ -2220,7 +2220,7 @@ export function SystemStats() {
             </div>
           </div>
 
-          <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+          <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
             <Button
               onClick={() => setSelectedError(null)}
               className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-sm font-bold rounded-[18px]"

@@ -37,10 +37,10 @@ export function Breadcrumbs() {
     // If custom trail is provided, render it instead of pathname logic
     if (customTrail) {
         return (
-            <nav className="flex items-center gap-2 mb-10 animate-in fade-in slide-in-from-left-2 duration-500">
+            <nav className="flex items-center gap-2 mb-6 animate-in fade-in slide-in-from-left-2 duration-500">
                 <Link
                     href="/dashboard"
-                    className="text-slate-400 hover:text-primary transition-colors hover:scale-110 active:scale-95"
+                    className="text-slate-400 hover:text-primary transition-all hover:scale-125 active:scale-90"
                 >
                     <Home className="w-3.5 h-3.5" />
                 </Link>
@@ -54,7 +54,7 @@ export function Breadcrumbs() {
                             {item.href && !isLast ? (
                                 <Link
                                     href={item.href}
-                                    className="text-[12px] font-bold tracking-tight text-slate-400 hover:text-primary transition-all"
+                                    className="text-[12px] font-bold tracking-tight text-slate-400 hover:text-primary transition-all hover:scale-[1.05] inline-block active:scale-95"
                                 >
                                     {item.label}
                                 </Link>
@@ -76,10 +76,10 @@ export function Breadcrumbs() {
     if (paths.length <= 1) return null;
 
     return (
-        <nav className="flex items-center gap-2 mb-10 animate-in fade-in slide-in-from-left-2 duration-500">
+        <nav className="flex items-center gap-2 mb-6 animate-in fade-in slide-in-from-left-2 duration-500">
             <Link
                 href="/dashboard"
-                className="text-slate-400 hover:text-primary transition-colors hover:scale-110 active:scale-95"
+                className="text-slate-400 hover:text-primary transition-all hover:scale-125 active:scale-90"
             >
                 <Home className="w-3.5 h-3.5" />
             </Link>
@@ -99,7 +99,7 @@ export function Breadcrumbs() {
                                 "text-[12px] font-bold tracking-tight transition-all",
                                 isLast
                                     ? "text-slate-900"
-                                    : "text-slate-400 hover:text-primary"
+                                    : "text-slate-400 hover:text-primary hover:scale-[1.05] active:scale-95"
                             )}
                         >
                             {label}

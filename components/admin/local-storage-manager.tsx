@@ -8,7 +8,7 @@ import {
     deleteLocalFileAction,
     renameLocalFileAction,
     deleteMultipleLocalFilesAction
-} from "@/app/dashboard/admin/actions";
+} from "@/app/(main)/admin-panel/actions";
 import {
     RefreshCw,
     Trash2,
@@ -269,7 +269,7 @@ export function LocalStorageManager() {
         <div className="space-y-6">
             {/* Header Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-emerald-50 text-emerald-600 rounded-[18px]">
@@ -284,7 +284,7 @@ export function LocalStorageManager() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden">
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-amber-50 text-amber-600 rounded-[18px]">
@@ -299,7 +299,7 @@ export function LocalStorageManager() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-100 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
+                <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fetchData(true)}>
                     <CardContent className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-slate-100 text-slate-600 rounded-[18px]">
@@ -316,7 +316,7 @@ export function LocalStorageManager() {
             </div>
 
             {/* File Browser */}
-            <Card className="border-slate-100 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
+            <Card className="border-slate-200 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
                 <CardHeader className="p-8 pb-4">
                     <div className="flex flex-col gap-6">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -397,12 +397,12 @@ export function LocalStorageManager() {
                         )}
 
                         {/* Breadcrumbs */}
-                        <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-100 overflow-x-auto scrollbar-hide">
+                        <nav className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-[18px] border border-slate-200 overflow-x-auto scrollbar-hide">
                             <button
                                 onClick={() => navigateTo("")}
                                 className={cn(
                                     "flex items-center gap-1.5 px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
-                                    currentPrefix === "" ? "bg-white text-emerald-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                    currentPrefix === "" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                 )}
                             >
                                 <Home size={12} />
@@ -417,7 +417,7 @@ export function LocalStorageManager() {
                                             onClick={() => navigateTo(path)}
                                             className={cn(
                                                 "px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
-                                                currentPrefix === path ? "bg-white text-emerald-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"
+                                                currentPrefix === path ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                             )}
                                         >
                                             {crumb}
@@ -444,7 +444,7 @@ export function LocalStorageManager() {
                             </div>
                         ) : (
                             <table className="w-full text-left border-collapse">
-                                <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-50">
+                                <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
                                     <tr>
                                         {isMultiSelectMode && <th className="px-4 py-4 w-12"></th>}
                                         <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Наименование</th>
@@ -731,7 +731,7 @@ export function LocalStorageManager() {
                             </button>
                         </div>
 
-                        <div className="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <div className="p-8 border-b border-slate-200 bg-slate-50/50">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-emerald-600 text-white rounded-[18px] shadow-lg shadow-emerald-100">
                                     <File size={24} />

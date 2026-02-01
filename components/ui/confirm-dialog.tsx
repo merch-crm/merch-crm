@@ -39,7 +39,7 @@ export function ConfirmDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden rounded-[32px] border-none bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)] [&>button:last-child]:hidden">
+            <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden rounded-[var(--radius-outer)] border-none bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)] [&>button:last-child]:hidden">
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
@@ -73,15 +73,17 @@ export function ConfirmDialog({
                                         }}
                                         className={cn(
                                             "absolute inset-0 rounded-[28px] blur-xl",
-                                            isDestructive ? "bg-rose-500" : "bg-primary"
+                                            isDestructive ? "bg-[#ff463c]" : "bg-indigo-500"
+
                                         )}
                                     />
 
                                     <motion.div
                                         whileHover={{ scale: 1.05 }}
                                         className={cn(
-                                            "w-16 h-16 rounded-[22px] flex items-center justify-center relative z-10 shadow-sm transition-colors",
-                                            isDestructive ? "bg-rose-50 text-rose-500" : "bg-primary/5 text-primary"
+                                            "w-16 h-16 rounded-[var(--radius-inner)] flex items-center justify-center relative z-10 shadow-sm transition-colors text-slate-900 border border-slate-200",
+                                            isDestructive ? "bg-red-50 text-[#ff463c] border-red-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
+
                                         )}
                                     >
                                         {isDestructive ? <AlertCircle className="w-8 h-8" /> : <HelpCircle className="w-8 h-8" />}
@@ -95,7 +97,7 @@ export function ConfirmDialog({
                                         opacity: 1,
                                     }}
                                 >
-                                    <DialogTitle className="text-xl font-black text-slate-900 tracking-tight leading-tight px-4 text-center">
+                                    <DialogTitle className="text-xl font-bold text-slate-900 tracking-tight leading-tight px-4 text-center">
                                         {title}
                                     </DialogTitle>
                                 </motion.div>
@@ -106,7 +108,7 @@ export function ConfirmDialog({
                                         y: 0,
                                         opacity: 1,
                                     }}
-                                    className="mt-3 text-[14px] font-bold text-slate-400 leading-relaxed px-6"
+                                    className="mt-3 text-sm font-medium text-slate-500 leading-relaxed px-6"
                                 >
                                     {description}
                                 </motion.p>
@@ -136,18 +138,17 @@ export function ConfirmDialog({
                                     variant="ghost"
                                     onClick={onClose}
                                     disabled={isLoading}
-                                    className="flex-1 h-12 rounded-full font-black text-[13px] text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent hover:border-slate-100"
+                                    className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent hover:border-slate-200 hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     {cancelText}
                                 </Button>
                                 <Button
+                                    variant={isDestructive ? "destructive" : "btn-dark"}
                                     onClick={onConfirm}
                                     disabled={isLoading || isConfirmDisabled}
                                     className={cn(
-                                        "flex-[1.5] h-12 rounded-full font-black text-[13px] text-white transition-all active:scale-95 shadow-xl border-none",
-                                        isDestructive
-                                            ? "bg-rose-500 hover:bg-rose-600 shadow-rose-500/25"
-                                            : "bg-primary hover:brightness-110 shadow-primary/25"
+                                        "flex-[1.5] h-11 rounded-[var(--radius-inner)] font-bold text-sm text-white transition-all active:scale-95 border-none",
+                                        isDestructive && "btn-destructive"
                                     )}
                                 >
                                     {isLoading ? (
@@ -164,7 +165,7 @@ export function ConfirmDialog({
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 onClick={onClose}
-                                className="absolute top-5 right-5 w-9 h-9 rounded-2xl bg-slate-50 text-slate-300 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-all group"
+                                className="absolute top-5 right-5 w-9 h-9 rounded-[var(--radius-inner)] bg-slate-50 text-slate-300 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-all group hover:scale-110 active:scale-95"
                             >
                                 <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
                             </motion.button>

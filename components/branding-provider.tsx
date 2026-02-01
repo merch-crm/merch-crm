@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getBrandingAction } from "@/app/dashboard/admin/actions";
+import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
 
 export interface BrandingSettings {
     primary_color?: string;

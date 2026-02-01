@@ -1,297 +1,598 @@
-# Lumin-Apple Design System
+# MerchCRM Design System
 
-> **Философия**: Премиальная лаконичность Apple + функциональность Bento-раскладок + высокая контрастность типографики.
+> Единый документ дизайн-системы  
+> Последнее обновление: 01.02.2026
 
 ---
 
-## 🎨 Геометрия и Отступы
+## 🎨 Основные принципы
 
-### Радиусы (Border Radius)
+1. **Радиусы**: 18px (outer), 12px (inner) для всех элементов
+2. **Акцентный цвет**: #5d00ff (фиолетовый)
+3. **Темный цвет**: Графитовый (используется минимально)
+4. **Типографика**: Manrope, стандартные веса, без сжатия букв
+5. **Кавычки**: Строгий запрет на прямые кавычки (" "). Использовать только кавычки-ёлочки (« ») для всех текстовых элементов.
+6. **Регистр**: Строгий запрет на `uppercase` (капс). Использовать только обычный регистр предложений.
+
+---
+
+## 📐 Геометрия и Отступы
+
+### Радиусы (Unified System)
 ```css
---radius-outer: 24px;  /* Внешние контейнеры, основные страницы */
---radius-inner: 14px;  /* Внутренние элементы, карточки, кнопки */
+--radius-outer: 18px;       /* Панели, карточки, модальные окна */
+--radius-inner: 12px;       /* Кнопки, инпуты, вложенные элементы */
+--radius-padding: 24px;     /* Стандартный padding для контента */
 ```
 
-**Применение:**
-- **Страницы и секции**: `rounded-[var(--radius-outer)]`
-- **Карточки, кнопки, инпуты**: `rounded-[var(--radius-inner)]`
-- **Иконки в контейнерах**: `rounded-[var(--radius-inner)]`
-
-### Сетка (Bento Grid)
+### Отступы
 ```css
---crm-grid-gap: 16px;
+--spacing-xs: 4px;
+--spacing-sm: 8px;
+--spacing-md: 16px;
+--spacing-lg: 24px;
+--spacing-xl: 32px;
+--spacing-2xl: 48px;
+
+--grid-gap: 16px;           /* Между блоками Bento */
 ```
 
-**Применение:**
-```tsx
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
-  {/* Карточки */}
-</div>
+---
+
+## 🎨 Цветовая палитра
+
+### Основные цвета
+```css
+/* Акцентный */
+--primary: #5d00ff;
+--primary-hover: #731cff;
+--primary-light: rgba(93, 0, 255, 0.1);
+--primary-foreground: #ffffff;
+
+/* Фон */
+--background-main: #f8fafc;
+--background-card: #ffffff;
+
+/* Текст */
+--text-primary: #0f172a;
+--text-secondary: #64748b;
+--text-tertiary: #94a3b8;
+
+/* Границы */
+--border-light: #e2e8f0;
+--border-medium: #cbd5e1;
 ```
 
-### Утилита `.crm-card`
-Базовый класс для всех карточек:
+### Графитовый (минимальное использование)
 ```css
-.crm-card {
-  @apply bg-white border border-slate-200/60 rounded-[var(--radius-outer)] shadow-sm;
-}
+--graphite-dark: #2d3748;
+--graphite-medium: #4a5568;
+--graphite-light: #718096;
 ```
 
-### Scrollbars
-Все скроллбары скрыты для эффекта нативного приложения:
+**Использование графитового:**
+- Только для особо важных блоков на дашборде
+- Не более 1-2 карточек на странице
+- Всегда с белым текстом
+
+### Статусы
 ```css
-* {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-*::-webkit-scrollbar {
-  display: none;
-}
+--status-success: #10b981;
+--status-warning: #f59e0b;
+--status-error: #ef4444;
+--status-info: #3b82f6;
+```
+
+### Деструктивные действия
+```css
+--destructive: #f43f5e;
+--destructive-hover: #ff5a75;
+--destructive-light: rgba(244, 63, 94, 0.1);
 ```
 
 ---
 
 ## ✍️ Типографика
 
-### Заголовки страниц
-```tsx
-<h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">
-  Заголовок
-</h1>
-<p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-3">
-  Описание под заголовком
-</p>
+### Шрифт
+```css
+font-family: var(--font-manrope), 'Manrope', sans-serif;
 ```
 
-**Правила:**
-- Всегда `font-black` (не `font-bold`)
-- `tracking-tighter` для заголовков
-- `tracking-widest` для подписей
-- `uppercase` для всех важных текстов
-- `leading-none` для компактности
+### Размеры и веса
 
-### Заголовки карточек
-```tsx
-<h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none uppercase">
-  Название карточки
-</h3>
+#### Заголовки
+```css
+/* H1 */
+font-size: 32px;
+font-weight: 700;
+line-height: 1.2;
+letter-spacing: normal; /* НЕ сжимать */
+
+/* H2 */
+font-size: 24px;
+font-weight: 700;
+line-height: 1.3;
+
+/* H3 */
+font-size: 20px;
+font-weight: 600;
+line-height: 1.4;
+
+/* H4 */
+font-size: 18px;
+font-weight: 600;
+line-height: 1.4;
 ```
 
-### Подписи и метки
-```tsx
-<span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-  МЕТКА
-</span>
+#### Основной текст
+```css
+/* Body Large */
+font-size: 16px;
+font-weight: 400;
+line-height: 1.5;
+
+/* Body */
+font-size: 14px;
+font-weight: 400;
+line-height: 1.5;
+
+/* Body Small */
+font-size: 13px;
+font-weight: 400;
+line-height: 1.5;
 ```
 
-### Данные и числа
-```tsx
-{/* Крупные показатели */}
-<p className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
-  {value}
-</p>
+#### Числа и метрики
+```css
+/* Крупные числа (дашборд) */
+font-size: 48px;
+font-weight: 700;
+line-height: 1;
 
-{/* ID и коды */}
-<span className="font-mono tracking-tighter text-slate-600">
-  ORD-12345
-</span>
+/* Средние числа (карточки) */
+font-size: 32px;
+font-weight: 600;
+line-height: 1.1;
+
+/* Маленькие числа (таблицы) */
+font-size: 14px;
+font-weight: 500;
+line-height: 1.5;
+```
+
+#### Labels и подписи
+```css
+font-size: 12px;
+font-weight: 500;
+line-height: 1.4;
+text-transform: none; /* НЕ uppercase */
+letter-spacing: normal;
+color: var(--text-secondary);
+```
+
+#### Пунктуация
+- **Кавычки**: Всегда «ёлочки», никогда "прямые"
+- **Пример**: Удалить «Баблгам»?
+
+**❌ КАТЕГОРИЧЕСКИ НЕ ИСПОЛЬЗОВАТЬ:**
+- `text-transform: uppercase` (никаких исключений)
+- `letter-spacing: tight` или `tracking-tighter` / `tracking-widest`
+- `font-weight: 900` (класс `font-black`)
+- Прямые кавычки `" "` в тексте (использовать « »)
+
+---
+
+## 🃏 Карточки
+
+### Светлая карточка (основная)
+```css
+.card {
+  background: var(--background-card);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+```
+
+### Графитовая карточка (минимально)
+```css
+.card-graphite {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  color: #ffffff;
+}
+```
+
+**Правила использования графитовых карточек:**
+- Максимум 1-2 на странице
+- Только для ключевых метрик
+- Акценты внутри — фиолетовый (#5d00ff)
+
+---
+
+## 🔘 Кнопки
+
+### Primary
+```css
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px -5px rgba(93, 0, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: scale(1.02);
+  box-shadow: 0 15px 30px -5px rgba(93, 0, 255, 0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+```
+
+### Destructive (для опасных действий)
+```css
+.btn-destructive {
+  background: var(--destructive);
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 8px 20px -5px rgba(244, 63, 94, 0.3);
+}
+
+.btn-destructive:hover {
+  background: var(--destructive-hover);
+  transform: scale(1.02);
+  box-shadow: 0 15px 25px -5px rgba(244, 63, 94, 0.45);
+}
+```
+
+### Destructive Ghost (для иконок удаления)
+```css
+.btn-destructive-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+}
+
+.btn-destructive-ghost:hover {
+  background: var(--destructive-light);
+  color: var(--destructive);
+}
+```
+
+### Secondary
+```css
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: var(--border-medium);
+}
+```
+
+### Ghost
+```css
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 18px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+```
+
+### Кнопки диалоговых окон
+Стандарт для всех диалогов — высота **h-11** (44px).
+
+```css
+.btn-dialog {
+  height: 44px; /* h-11 */
+  border-radius: 12px; /* --radius-inner */
+  font-weight: 700;
+  font-size: 14px;
+}
 ```
 
 ---
 
-## 🎨 Цвета и Эффекты
+## 📝 Формы и инпуты
 
-### Основная палитра
-- **Primary**: `indigo-600` (кнопки, акценты)
-- **Success**: `emerald-600` (положительные статусы)
-- **Warning**: `amber-500` (предупреждения)
-- **Danger**: `rose-600` (ошибки, удаление)
-- **Neutral**: `slate-900` (основной текст)
+### Input
+```css
+.input {
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
 
-### Фоны статусов
-Используем пастельные фоны с яркими текстами:
-```tsx
-<div className="bg-emerald-50 text-emerald-600">Активно</div>
-<div className="bg-rose-50 text-rose-600">Критично</div>
-<div className="bg-amber-50 text-amber-600">Ожидание</div>
+.input:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(93, 0, 255, 0.1);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
 ```
 
-### Glassmorphism
-Для навигации и модальных окон:
-```tsx
-<div className="bg-white/95 backdrop-blur-xl border border-slate-200/50">
-  {/* Контент */}
-</div>
+### Label
+```css
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  display: block;
+}
 ```
 
-### Тени
+### Переключатели (Switches)
+Минималистичный «пул» стиль: сплошной контрастный фон и крупный белый бегунок.
+
 ```tsx
-{/* Покой */}
-<div className="shadow-sm">
+/* Контейнер (Трэк) */
+const trackClass = cn(
+  "w-10 h-6 rounded-full transition-all duration-300 flex items-center px-0.5 relative z-10",
+  isActive ? "bg-primary" : "bg-slate-300" // Акцентный цвет зависит от контекста
+);
 
-{/* Hover */}
-<div className="hover:shadow-xl hover:shadow-indigo-500/10">
-
-{/* Акцентные элементы */}
-<div className="shadow-2xl shadow-indigo-500/15">
+/* Бегунок (Thumb) */
+const thumbClass = cn(
+  "w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm",
+  isActive ? "translate-x-4" : "translate-x-0"
+);
 ```
+
+**Правила цветов для Switch:**
+- **Общие настройки**: `bg-primary` (#5d00ff)
+- **Статус активности (Active/Online)**: `bg-emerald-500`
+- **Выключенное состояние**: `bg-slate-300`
 
 ---
 
-## ⚡️ Интерактивность
-
-### Hover-эффекты карточек
-```tsx
-<div className="crm-card hover:-translate-y-1 hover:shadow-xl transition-all duration-500">
-  {/* Контент */}
-</div>
-```
-
-### Кнопки
-```tsx
-{/* Primary */}
-<button className="h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[var(--radius-inner)] font-black text-[11px] uppercase tracking-widest shadow-xl shadow-indigo-500/20 transition-all active:scale-95">
-  Действие
-</button>
-
-{/* Secondary */}
-<button className="h-14 px-8 bg-white hover:bg-slate-50 text-slate-900 rounded-[var(--radius-inner)] font-black text-[11px] uppercase tracking-widest border border-slate-200 transition-all">
-  Отмена
-</button>
-```
-
-### Иконки в контейнерах
-```tsx
-<div className="h-14 w-14 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-lg group-hover:scale-110 transition-all duration-500">
-  <Icon className="w-7 h-7" />
-</div>
-```
-
-### Анимации появления
-```tsx
-<div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-  {/* Контент */}
-</div>
-```
-
----
-
-## 📦 Компоненты
-
-### Статистическая карточка (Bento)
-```tsx
-<div className="crm-card p-6 bg-white flex items-center justify-between group hover:-translate-y-1 transition-all duration-500 border-none">
-  <div>
-    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">
-      Метка
-    </p>
-    <p className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
-      {value}
-    </p>
-  </div>
-  <div className="h-14 w-14 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg shadow-indigo-500/5">
-    <Icon className="w-7 h-7 text-indigo-600" />
-  </div>
-</div>
-```
-
-### Модальное окно
-```tsx
-<div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-  <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" />
-  <div className="relative w-full max-w-md bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8">
-    <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
-      Заголовок
-    </h2>
-    <p className="text-slate-400 text-xs font-black uppercase tracking-widest leading-loose mb-10">
-      Описание действия
-    </p>
-    {/* Кнопки */}
-  </div>
-</div>
-```
-
-### Таблица
-```tsx
-<div className="crm-card overflow-hidden">
-  <table className="w-full">
-    <thead className="bg-slate-50/50">
-      <tr>
-        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          Колонка
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr className="border-t border-slate-100 hover:bg-slate-50/50 transition-colors">
-        <td className="px-6 py-4 text-sm font-black text-slate-900">
-          Данные
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-```
+## 🏷️ Badges и статусы
 
 ### Badge
-```tsx
-<span className="inline-flex items-center px-4 py-2 rounded-[10px] bg-indigo-50 border border-indigo-100 text-[9px] font-black text-indigo-600 uppercase tracking-widest">
-  Статус
-</span>
+```css
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Success */
+.badge-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+/* Warning */
+.badge-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+/* Error */
+.badge-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Info */
+.badge-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
 ```
+
+---
+
+## 📊 Графики
+
+### Прогресс-бар
+```css
+.progress {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 18px;
+  transition: width 0.3s ease;
+}
+```
+
+### Круговая диаграмма
+- Толщина: 12-16px
+- Активный цвет: var(--primary)
+- Фон: #e2e8f0
+- Центр: крупное число (32-48px)
+
+---
+
+## 🎭 Тени
+
+```css
+--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+--shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04);
+--shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+--shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+--shadow-2xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+```
+
+---
+
+## 🎬 Анимации
+
+### Hover
+```css
+transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+```
+
+### Появление
+```css
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+animation: fadeIn 0.3s ease-out;
+```
+
+### Загрузка (Skeleton)
+```css
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+animation: pulse 1.5s ease-in-out infinite;
+```
+
+### Переключение табов (Framer Motion)
+Строгий стандарт для всех переключателей и табов (`layoutId`):
+```tsx
+transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+```
+**Запрещено:** использовать `bounce > 0` (эффект пружины) для табов.
+
+---
+
+## 📱 Адаптивность
+
+### Breakpoints
+```css
+--breakpoint-mobile: 640px;
+--breakpoint-tablet: 768px;
+--breakpoint-desktop: 1024px;
+--breakpoint-wide: 1280px;
+```
+
+### Bento Grid
+```css
+/* Desktop */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+---
+
+## ✅ Чек-лист применения
+
+При создании нового компонента проверь:
+
+- [ ] Радиус 18px (outer) / 12px (inner)
+- [ ] Акцентный цвет #5d00ff
+- [ ] Графитовый используется минимально
+- [ ] НЕТ uppercase
+- [ ] НЕТ letter-spacing: tight
+- [ ] Стандартные font-weight (400, 500, 600, 700)
+- [ ] Тени мягкие
+- [ ] Hover эффекты плавные (0.2s)
+- [ ] Анимация табов строгая (bounce: 0, duration: 0.4)
+- [ ] Отступы из системы spacing
+- [ ] Кавычки только «ёлочки»
+- [ ] Деструктивные кнопки используют btn-destructive / btn-destructive-ghost
+- [ ] Переключатели (Switch) имеют сплошной фон и белый бегунок (Minimal Pool Style)
 
 ---
 
 ## 🚫 Антипаттерны
 
-### ❌ Избегать:
-```tsx
-{/* Старые стили */}
-<h1 className="text-2xl font-bold">Заголовок</h1>
-<p className="text-sm font-medium">Текст</p>
-<button className="rounded-lg">Кнопка</button>
-<div className="rounded-xl">Карточка</div>
+**НЕ делать:**
+
+```css
+/* ❌ Неправильно */
+border-radius: 12px;         /* для карточек */
+border-radius: 24px;
+text-transform: uppercase;
+letter-spacing: -0.02em;
+font-weight: 900;
+background: #000000;         /* только графитовый */
 ```
 
-### ✅ Правильно:
-```tsx
-{/* Lumin-Apple */}
-<h1 className="text-4xl font-black tracking-tighter uppercase">Заголовок</h1>
-<p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Текст</p>
-<button className="rounded-[var(--radius-inner)] font-black uppercase tracking-widest">Кнопка</button>
-<div className="rounded-[var(--radius-outer)]">Карточка</div>
+```css
+/* ✅ Правильно */
+border-radius: 18px;
+text-transform: none;
+letter-spacing: normal;
+font-weight: 700;
+background: #2d3748;         /* графитовый, минимально */
+```
+
+**НЕ использовать в текстах:**
+```
+❌ "Баблгам"
+✅ «Баблгам»
 ```
 
 ---
 
-## 📐 Размерная сетка
-
-### Высоты элементов
-- **Кнопки**: `h-14` (56px)
-- **Инпуты**: `h-12` (48px)
-- **Иконки в контейнерах**: `h-14 w-14` или `h-16 w-16`
-- **Аватары**: `h-10 w-10` (малые), `h-16 w-16` (большие)
-
-### Отступы (Padding)
-- **Карточки**: `p-6` или `p-8`
-- **Модальные окна**: `p-8` или `p-10`
-- **Кнопки**: `px-8 py-4`
-
----
-
-## 🎯 Контрольный чеклист
-
-Перед коммитом проверьте:
-- [ ] Все заголовки используют `font-black`
-- [ ] Все важные тексты в `uppercase`
-- [ ] Радиусы только `var(--radius-outer)` или `var(--radius-inner)`
-- [ ] Трекинг: `tracking-tighter` для заголовков, `tracking-widest` для меток
-- [ ] Высота строк: `leading-none` для компактных блоков
-- [ ] Hover-эффекты на всех интерактивных элементах
-- [ ] Анимации `transition-all duration-500` для плавности
-- [ ] Тени используют `shadow-{color}/10` или `/20`
-
----
-
-**Последнее обновление**: 19.01.2026  
-**Версия**: 1.0 (Lumin-Apple)
+**Статус**: Утверждено и готово к применению  
+**Версия**: 2.0
