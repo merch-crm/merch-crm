@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { markAsRead, markAllAsRead } from "./actions";
 import { useRouter } from "next/navigation";
 
-interface Notification {
+export interface Notification {
     id: string;
     title: string;
     message: string;

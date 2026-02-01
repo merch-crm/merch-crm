@@ -20,7 +20,7 @@ export interface Session extends JWTPayload {
     expires?: Date;
 }
 
-export async function encrypt(payload: any) {
+export async function encrypt(payload: Session) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -28,11 +28,11 @@ export async function encrypt(payload: any) {
         .sign(key);
 }
 
-export async function decrypt(input: string): Promise<any> {
+export async function decrypt(input: string): Promise<Session> {
     const { payload } = await jwtVerify(input, key, {
         algorithms: ["HS256"],
     });
-    return payload;
+    return payload as unknown as Session;
 }
 
 export async function getSession(): Promise<Session | null> {

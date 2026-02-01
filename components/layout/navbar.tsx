@@ -52,10 +52,12 @@ interface BrandingSettings {
 
 
 
+import { Notification } from "@/components/notifications/notification-center";
+
 export function Navbar({ user, branding, notifications }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     branding: BrandingSettings;
-    notifications: any[];
+    notifications: Notification[];
 }) {
     const pathname = usePathname();
 

@@ -1,4 +1,3 @@
-import { Archive, ArchiveRestore } from "lucide-react";
 import { OrdersTable, Order } from "./orders-table";
 import { OrdersWidgets } from "./orders-widgets";
 import { OrdersToolbar } from "./orders-toolbar";
