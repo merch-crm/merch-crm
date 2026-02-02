@@ -71,21 +71,20 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     if (locations !== prevPropsLocations) {
         setPrevPropsLocations(locations);
         setLocalLocations(locations);
-    }
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMounted(true);
-    }, []);
-
-    useEffect(() => {
+        // Sync editing location if it changed in props
         if (editingLocation) {
             const updated = locations.find(l => l.id === editingLocation.id);
             if (updated && JSON.stringify(updated) !== JSON.stringify(editingLocation)) {
                 setEditingLocation(updated);
             }
         }
-    }, [locations, editingLocation]);
+    }
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true);
+    }, []);
 
     const handleDeleteClick = (e: React.MouseEvent, id: string, name: string, isSystem: boolean) => {
         e.stopPropagation();
