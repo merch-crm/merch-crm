@@ -13,15 +13,7 @@ export default async function WarehousePage() {
     const { data: storageLocations = [] } = await getStorageLocations();
     const { data: users = [] } = await getAllUsers();
     const { data: attributes = [] } = await getInventoryAttributes();
-    const { getMeasurementUnits, seedMeasurementUnits, seedSystemCategories, seedSystemAttributes, getInventoryAttributeTypes } = await import("./actions");
-    let { data: measurementUnits = [] } = await getMeasurementUnits();
-
-    if (measurementUnits.length === 0) {
-        await seedMeasurementUnits();
-        const res = await getMeasurementUnits();
-        measurementUnits = res.data || [];
-    }
-
+    const { seedSystemCategories, seedSystemAttributes, getInventoryAttributeTypes } = await import("./actions");
     const { data: attributeTypes = [] } = await getInventoryAttributeTypes();
 
     if (categoriesFromDb.length === 0 || categoriesFromDb.some(c => ["Футболки", "Кепки"].includes(c.name) && !c.parentId)) {

@@ -38,7 +38,7 @@ const generateCategoryPrefix = (name: string): string => {
         .toUpperCase();
 };
 
-export function AddCategoryDialog({ parentId, buttonText = "Добавить категорию" }: { categories?: unknown[], parentId?: string, buttonText?: string }) {
+export function AddCategoryDialog({ parentId, buttonText = "Добавить категорию" }: { parentId?: string, buttonText?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedIcon, setSelectedIcon] = useState("");

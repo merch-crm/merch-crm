@@ -5,7 +5,6 @@ import { Pencil, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
@@ -19,13 +18,10 @@ interface InventoryClientProps {
 }
 
 import { EditCategoryDialog } from "./edit-category-dialog";
-import { deleteInventoryCategory } from "./actions";
 
 export function InventoryClient({ items, categories, user }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
     const { toast } = useToast();
 
     const topLevelCategories = categories
@@ -67,23 +63,7 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
         setIsEditDialogOpen(true);
     };
 
-    const handleDeleteConfirm = async () => {
-        if (!categoryToDelete) return;
-        setIsDeleting(true);
-        try {
-            const result = await deleteInventoryCategory(categoryToDelete.id);
-            if (result.success) {
-                toast("Категория удалена", "success");
-                setCategoryToDelete(null);
-            } else {
-                toast(result.error || "Ошибка при удалении", "error");
-            }
-        } catch {
-            toast("Произошла ошибка", "error");
-        } finally {
-            setIsDeleting(false);
-        }
-    };
+
 
     return (
         <>
@@ -109,7 +89,6 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
                     />
                 )}
             </div>
-
             {editingCategory && (
                 <EditCategoryDialog
                     key={editingCategory.id}
@@ -120,17 +99,6 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
                     user={user}
                 />
             )}
-
-            <ConfirmDialog
-                isOpen={!!categoryToDelete}
-                onClose={() => setCategoryToDelete(null)}
-                onConfirm={handleDeleteConfirm}
-                title="Удаление категории"
-                description={`Вы уверены, что хотите удалить категорию «${categoryToDelete?.name}»? Это действие необратимо.`}
-                confirmText="Удалить"
-                variant="destructive"
-                isLoading={isDeleting}
-            />
         </>
     );
 }
