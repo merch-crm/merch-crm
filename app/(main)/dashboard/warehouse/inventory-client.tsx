@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Pencil, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/toast";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
@@ -22,7 +21,6 @@ import { EditCategoryDialog } from "./edit-category-dialog";
 export function InventoryClient({ items, categories, user }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const { toast } = useToast();
 
     const topLevelCategories = categories
         .filter(c => !c.parentId || c.parentId === "")
