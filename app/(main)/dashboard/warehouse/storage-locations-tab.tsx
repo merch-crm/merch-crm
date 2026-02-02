@@ -63,10 +63,29 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     const [deletePassword, setDeletePassword] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const [localLocations, setLocalLocations] = useState(locations);
+    const [prevPropsLocations, setPrevPropsLocations] = useState(locations);
+
+    // State during render pattern for synchronizing props with local state
+    if (locations !== prevPropsLocations) {
+        setPrevPropsLocations(locations);
+        setLocalLocations(locations);
+    }
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
+
+    useEffect(() => {
+        if (editingLocation) {
+            const updated = locations.find(l => l.id === editingLocation.id);
+            if (updated && JSON.stringify(updated) !== JSON.stringify(editingLocation)) {
+                setEditingLocation(updated);
+            }
+        }
+    }, [locations, editingLocation]);
 
     const handleDeleteClick = (e: React.MouseEvent, id: string, name: string, isSystem: boolean) => {
         e.stopPropagation();
@@ -91,40 +110,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         e.stopPropagation();
         setEditingLocation(loc);
     };
-
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const [localLocations, setLocalLocations] = useState(locations);
-
-    useEffect(() => {
-        // Core synchronization logic between Server Props and Local DnD State
-        setLocalLocations(prev => {
-            // We sync if IDs, order, default status OR internal items (quantities) changed
-            const hasIdChange = JSON.stringify(locations.map(l => l.id)) !== JSON.stringify(prev.map(l => l.id));
-            const hasOrderChange = locations.some((l, i) => l.sortOrder !== prev[i]?.sortOrder);
-            const hasDefaultChange = locations.some((l, i) => l.isDefault !== prev[i]?.isDefault);
-            const hasResponsibleChange = locations.some((l, i) => l.responsibleUserId !== prev[i]?.responsibleUserId);
-            const hasNameChange = locations.some((l, i) => l.name !== prev[i]?.name);
-            const hasAddressChange = locations.some((l, i) => (l.address || "") !== (prev[i]?.address || ""));
-            const hasActiveChange = locations.some((l, i) => l.isActive !== prev[i]?.isActive);
-            const hasTypeChange = locations.some((l, i) => l.type !== prev[i]?.type);
-
-            // This is critical for real-time updates after moves/transfers
-            const hasItemsChange = JSON.stringify(locations.map(l => l.items?.map(i => ({ id: i.id, q: i.quantity }))))
-                !== JSON.stringify(prev.map(l => l.items?.map(i => ({ id: i.id, q: i.quantity }))));
-
-            if (hasIdChange || hasOrderChange || hasDefaultChange || hasItemsChange || hasResponsibleChange || hasNameChange || hasAddressChange || hasActiveChange || hasTypeChange) {
-                return locations;
-            }
-            return prev;
-        });
-
-        if (editingLocation) {
-            const updated = locations.find(l => l.id === editingLocation.id);
-            if (updated && JSON.stringify(updated) !== JSON.stringify(editingLocation)) {
-                setEditingLocation(updated);
-            }
-        }
-    }, [locations, editingLocation]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -277,7 +262,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     users={users}
                     locations={locations}
                     location={editingLocation}
-                    isOpen={!!editingLocation}
                     onClose={() => setEditingLocation(null)}
                 />
             )}

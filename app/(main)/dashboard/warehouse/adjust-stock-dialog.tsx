@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import { Plus, Minus, X, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
-import { Button } from "@/components/ui/button";
+
 import { cn } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";

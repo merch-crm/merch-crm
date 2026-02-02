@@ -9,7 +9,6 @@ import {
     users,
     inventoryStocks,
     inventoryTransfers,
-    notifications,
     orderItems,
     inventoryAttributes,
     inventoryAttributeTypes

@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, createElement } from "react";
-import { X, Package, Check, Trash2, ChevronDown, AlertCircle } from "lucide-react";
+import { X, Check, Trash2, ChevronDown, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Session } from "@/lib/auth";
-import { Lock } from "lucide-react";
+
 
 import { Category } from "./types";
 import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS } from "./category-utils";
@@ -99,7 +99,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setSubToDelete(null);
     }
 
-    const colors = COLORS;
+
 
     if (!isOpen) return null;
 

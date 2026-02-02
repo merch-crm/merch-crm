@@ -28,7 +28,6 @@ import {
     RotateCcw,
     Archive,
     Banknote,
-    Plus,
     Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -217,7 +216,7 @@ export function ItemDetailClient({
         }
     }, [maxBounds, thumbSettings, updateThumb, aspectRatio]);
 
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
 
 
 

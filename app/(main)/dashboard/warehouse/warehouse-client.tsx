@@ -1,8 +1,8 @@
 "use client";
 
-import { LayoutGrid, History, MapPin, Plus, Book, Clock, QrCode, RefreshCw, Eraser } from "lucide-react";
+import { LayoutGrid, History, MapPin, Plus, Book, Clock, Eraser } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
@@ -23,7 +23,7 @@ import { WarehouseDictionary } from "./warehouse-dictionary";
 import { InventoryAttribute, AttributeType } from "./types";
 import { QRScanner } from "@/components/ui/qr-scanner";
 import { AddAttributeTypeDialog } from "./add-attribute-type-dialog";
-import { findItemBySKU, seedSystemCategories, regenerateAllItemSKUs, clearInventoryHistory, syncAllInventoryQuantities } from "./actions";
+import { findItemBySKU, clearInventoryHistory } from "./actions";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 
@@ -44,7 +44,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
     const searchParams = useSearchParams();
     const { toast } = useToast();
     const [isScannerOpen, setIsScannerOpen] = useState(false);
-    const [isSyncingCategories, setIsSyncingCategories] = useState(false);
+
     const [isClearHistoryOpen, setIsClearHistoryOpen] = useState(false);
     const [isClearingHistory, setIsClearingHistory] = useState(false);
 

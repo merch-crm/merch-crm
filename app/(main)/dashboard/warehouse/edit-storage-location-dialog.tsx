@@ -53,17 +53,19 @@ function EditStorageLocationInner({ users, locations, location, onClose }: EditS
     const [localIsActive, setLocalIsActive] = useState(location.isActive ?? true);
     const [localType, setLocalType] = useState<"warehouse" | "production" | "office">(location.type || "warehouse");
 
-    // Sync from props if location changes (e.g. from parent)
-    useEffect(() => {
+    const [prevLocation, setPrevLocation] = useState(location);
+
+    if (location.id !== prevLocation.id) {
+        setPrevLocation(location);
         setLocalName(location.name);
         setLocalDescription(location.description || "");
         setLocalAddress(location.address || "");
         setLocalResponsibleUserId(location.responsibleUserId || "none");
         setLocalIsDefault(!!location.isDefault);
         setLocalIsActive(location.isActive ?? true);
-        setLocalType(location.type || "warehouse"); // Keep original type values
+        setLocalType(location.type || "warehouse");
         setLocalItems(location.items || []);
-    }, [location]);
+    }
 
     async function handleAutoSave(updates: Partial<StorageLocation>) {
         setIsSaving(true);
