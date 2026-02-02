@@ -526,7 +526,6 @@ export function CategoryDetailClient({
                         )}
                         {category.id !== "orphaned" && !category.parentId && (
                             <AddCategoryDialog
-                                categories={allCategories}
                                 parentId={category.id}
                                 buttonText="Добавить подкатегорию"
                             />

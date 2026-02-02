@@ -98,7 +98,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         </div>
                     ) : activeTab === "inventory" ? (
                         <div key="inventory-actions" className="flex items-center gap-3">
-                            <AddCategoryDialog categories={categories} />
+                            <AddCategoryDialog />
                             <Link
                                 href="/dashboard/warehouse/items/new"
                                 className="h-11 btn-primary rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm whitespace-nowrap border-none shadow-lg shadow-primary/20 hover:shadow-primary/30"
