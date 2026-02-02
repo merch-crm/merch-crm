@@ -92,74 +92,7 @@ export function WarehouseClient({ items, archivedItems, categories, history, sto
                         </div>
                     ) : activeTab === "dictionary" ? (
                         <div key="dictionary-actions" className="flex items-center gap-3">
-                            {/* Dev tools hidden
-                            <button
-                                onClick={async () => {
-                                    setIsSyncingCategories(true);
-                                    toast("Синхронизация категорий...", "info");
-                                    try {
-                                        const res = await seedSystemCategories();
-                                        if (res.success) {
-                                            toast("Категории обновлены", "success");
-                                            router.refresh();
-                                        } else {
-                                            toast(res.error || "Ошибка синхронизации", "error");
-                                        }
-                                    } catch {
-                                        toast("Ошибка синхронизации", "error");
-                                    } finally {
-                                        setIsSyncingCategories(false);
-                                    }
-                                }}
-                                disabled={isSyncingCategories}
-                                className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm whitespace-nowrap disabled:opacity-50 border-none shadow-none"
-                            >
-                                <RefreshCw className={cn("w-5 h-5", isSyncingCategories && "animate-spin")} />
-                                <span className="hidden sm:inline">Синхронизировать категории</span>
-                            </button>
 
-                            <button
-                                onClick={async () => {
-                                    toast("Обновление артикулов...", "info");
-                                    try {
-                                        const res = await regenerateAllItemSKUs();
-                                        if (res.success) {
-                                            toast(`Обновлено ${res.updatedCount} артикулов`, "success");
-                                            router.refresh();
-                                        } else {
-                                            toast("Ошибка при обновлении", "error");
-                                        }
-                                    } catch {
-                                        toast("Ошибка при обновлении", "error");
-                                    }
-                                }}
-                                className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm whitespace-nowrap border-none shadow-none"
-                            >
-                                <RefreshCw className="w-5 h-5" />
-                                <span className="hidden sm:inline">Обновить SKU</span>
-                            </button>
-
-                            <button
-                                onClick={async () => {
-                                    toast("Синхронизация остатков...", "info");
-                                    try {
-                                        const res = await syncAllInventoryQuantities();
-                                        if (res.success) {
-                                            toast("Остатки синхронизированы", "success");
-                                            router.refresh();
-                                        } else {
-                                            toast(res.error || "Ошибка синхронизации", "error");
-                                        }
-                                    } catch {
-                                        toast("Ошибка синхронизации", "error");
-                                    }
-                                }}
-                                className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm whitespace-nowrap border-none shadow-none"
-                            >
-                                <RefreshCw className="w-5 h-5" />
-                                <span className="hidden sm:inline">Синхронизировать остатки</span>
-                            </button>
-                            */}
 
                             <AddAttributeTypeDialog categories={categories} />
                         </div>
