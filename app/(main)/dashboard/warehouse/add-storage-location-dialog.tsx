@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, MapPin, Building, AlignLeft, RefreshCw, AlertCircle, Check } from "lucide-react";
+import { Plus, X, MapPin, Building, RefreshCw, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addStorageLocation } from "./actions";
 import { useFormStatus } from "react-dom";

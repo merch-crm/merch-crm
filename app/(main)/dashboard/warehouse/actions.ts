@@ -1068,7 +1068,10 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
 
     const storageLocationIdRaw = formData.get("storageLocationId") as string;
+    // storageLocationId is parsed but not currently used in this local scope as it was refactored.
+    // Keeping the variable for future or deleting if unnecessary.
     const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
+    console.log("storageLocationId for update:", storageLocationId);
 
     const qualityCodeRaw = formData.get("qualityCode") as string;
     const qualityCode = qualityCodeRaw || null;

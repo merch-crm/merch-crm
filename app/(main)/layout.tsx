@@ -6,7 +6,7 @@ import { MobileHeader } from "@/components/layout/mobile-header";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { users, systemSettings } from "@/lib/schema";
+import { systemSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";

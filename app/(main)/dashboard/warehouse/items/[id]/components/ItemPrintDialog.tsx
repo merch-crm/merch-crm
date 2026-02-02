@@ -1,7 +1,7 @@
 "use client";
 
 import { X, Printer, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { QRCode } from "@/components/ui/qr-code";
 import { InventoryItem } from "../../../types";
 import { useState } from "react";

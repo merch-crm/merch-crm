@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, X, Lock, RefreshCw, Check, ChevronDown } from "lucide-react";
+import { Plus, Lock, RefreshCw, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams } from "next/navigation";

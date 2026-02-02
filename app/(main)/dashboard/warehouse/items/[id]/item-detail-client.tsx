@@ -30,19 +30,6 @@ import {
     Banknote,
     Plus,
     Loader2,
-    Check,
-    Pencil,
-    History,
-    ChevronDown,
-    ChevronUp,
-    Search,
-    Filter,
-    ArrowUpDown,
-    CheckCircle2,
-    AlertTriangle,
-    Share2,
-    MessageSquare,
-    ArrowRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -232,54 +219,7 @@ export function ItemDetailClient({
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    const scrollWarehouses = (direction: 'left' | 'right') => {
-        if (scrollContainerRef.current) {
-            const { current } = scrollContainerRef;
-            const scrollAmount = current.offsetWidth * 0.8;
-            current.scrollBy({
-                left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
 
-    // Drag-to-scroll logic
-    const isDragging = useRef(false);
-    const startX = useRef(0);
-    const scrollLeft = useRef(0);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (!scrollContainerRef.current) return;
-        isDragging.current = true;
-        startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
-        scrollLeft.current = scrollContainerRef.current.scrollLeft;
-        scrollContainerRef.current.style.cursor = 'grabbing';
-        scrollContainerRef.current.style.userSelect = 'none';
-    };
-
-    const handleMouseLeave = () => {
-        isDragging.current = false;
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.style.cursor = 'grab';
-            scrollContainerRef.current.style.removeProperty('user-select');
-        }
-    };
-
-    const handleMouseUp = () => {
-        isDragging.current = false;
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.style.cursor = 'grab';
-            scrollContainerRef.current.style.removeProperty('user-select');
-        }
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging.current || !scrollContainerRef.current) return;
-        e.preventDefault();
-        const x = e.pageX - scrollContainerRef.current.offsetLeft;
-        const walk = (x - startX.current) * 2;
-        scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
-    };
 
     // Main Image Draggable Logic (Zoom/Pan)
     const isMainDragging = useRef(false);
@@ -331,7 +271,6 @@ export function ItemDetailClient({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showDuplicateConfirm, setShowDuplicateConfirm] = useState<{ open: boolean, item?: { id: string, name: string, sku: string | null } }>({ open: false });
     const [adjustType, setAdjustType] = useState<"in" | "out" | "set" | null>(null);
-    const [selectedLocationForAdjust, setSelectedLocationForAdjust] = useState<string | null>(null);
     const [showTransfer, setShowTransfer] = useState(false);
 
     // Image update states
@@ -2254,7 +2193,6 @@ export function ItemDetailClient({
                             user={user}
                             onClose={() => {
                                 setAdjustType(null);
-                                setSelectedLocationForAdjust(null);
                                 fetchData();
                                 router.refresh();
                             }}

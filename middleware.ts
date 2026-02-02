@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
     if (sessionCookie) {
         try {
             session = await decrypt(sessionCookie);
-        } catch (err) {
+        } catch {
             // Session invalid
         }
     }

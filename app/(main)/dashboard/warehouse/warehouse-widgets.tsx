@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2 } from "lucide-react";
 import { InventoryItem, Category } from "./types";
 import { Transaction } from "./history-table";
-import { getColorStyles } from "./category-utils";
+
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
@@ -23,7 +22,7 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
     // Stats calculations
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalReserved = items.reduce((sum, item) => sum + (item.reservedQuantity || 0), 0);
-    const totalPos = items.length;
+
 
     // Real activity metrics within last 30 days
     const thirtyDaysAgo = new Date();

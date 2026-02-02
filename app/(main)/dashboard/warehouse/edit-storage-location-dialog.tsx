@@ -1,7 +1,6 @@
 "use client";
 
 import { StorageLocation } from "./storage-locations-tab";
-import { InventoryItem } from "./types";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Plus, X, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,7 +15,6 @@ interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
     locations: StorageLocation[];
     location: StorageLocation | null;
-    isOpen: boolean;
     onClose: () => void;
 }
 
@@ -33,11 +31,11 @@ type StorageLocationItem = {
 };
 
 export function EditStorageLocationDialog(props: EditStorageLocationDialogProps) {
-    if (!props.isOpen || !props.location) return null;
+    if (!props.location) return null;
     return <EditStorageLocationInner {...props} location={props.location} />;
 }
 
-function EditStorageLocationInner({ users, locations, location, isOpen, onClose }: EditStorageLocationDialogProps & { location: StorageLocation }) {
+function EditStorageLocationInner({ users, locations, location, onClose }: EditStorageLocationDialogProps & { location: StorageLocation }) {
     const { toast } = useToast();
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,10 +58,10 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
         setLocalName(location.name);
         setLocalDescription(location.description || "");
         setLocalAddress(location.address || "");
-        setLocalResponsibleUserId(location.responsibleUserId || "");
-        setLocalIsDefault(location.isDefault || false);
+        setLocalResponsibleUserId(location.responsibleUserId || "none");
+        setLocalIsDefault(!!location.isDefault);
         setLocalIsActive(location.isActive ?? true);
-        setLocalType(location.type || "warehouse");
+        setLocalType(location.type || "warehouse"); // Keep original type values
         setLocalItems(location.items || []);
     }, [location]);
 

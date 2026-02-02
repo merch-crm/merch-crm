@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, AlertCircle, ArrowRight, ChevronUp, ChevronDown, Check } from "lucide-react";
+import { X, AlertCircle, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";

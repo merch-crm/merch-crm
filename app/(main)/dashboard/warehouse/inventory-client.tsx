@@ -10,7 +10,7 @@ import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
 
-import { InventoryItem, Category, AttributeType, InventoryAttribute } from "./types";
+import { InventoryItem, Category } from "./types";
 
 interface InventoryClientProps {
     items: InventoryItem[];

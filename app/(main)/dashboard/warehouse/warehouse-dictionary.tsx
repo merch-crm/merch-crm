@@ -3,17 +3,16 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Plus, Trash, Check, Pencil, Book, Settings, Pipette, X } from "lucide-react";
+import { Plus, Trash, Check, Pencil, Book, Settings, Pipette } from "lucide-react";
 import { HexColorPicker } from "react-colorful";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";
-import { ChevronDown, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Session } from "@/lib/auth";
 import { InventoryAttribute as Attribute, AttributeType } from "./types";
 
@@ -25,9 +24,7 @@ const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     ' ': '_'
 };
 
-const transliterateToSlug = (text: string) => {
-    return text.toLowerCase().split('').map(char => RUSSIAN_TO_LATIN_MAP[char] || char).join('').replace(/[^a-z0-9_]/g, '');
-};
+
 
 
 

@@ -5,10 +5,9 @@ import Image from "next/image";
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+
 import { Printer, X } from "lucide-react";
 import { InventoryItem } from "../../../types";
 
