@@ -6,12 +6,10 @@ import {
     Briefcase
 } from "lucide-react";
 import { pluralize } from "@/lib/pluralize";
+import { SalaryStats } from "./actions";
 
 interface SalaryClientProps {
-    salaryData: {
-        totalBudget: number;
-        employeePayments: any[];
-    };
+    salaryData: SalaryStats;
 }
 
 export function SalaryClient({ salaryData }: SalaryClientProps) {
@@ -60,11 +58,11 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                         if (!acc[dept]) acc[dept] = [];
                         acc[dept].push(emp);
                         return acc;
-                    }, {} as Record<string, any[]>)
-                ).map(([deptName, emps]: [string, any], idx) => {
-                    const deptTotal = (emps as any[]).reduce((sum: number, e: any) => sum + e.total, 0);
+                    }, {} as Record<string, SalaryStats['employeePayments']>)
+                ).map(([deptName, emps]) => {
+                    const deptTotal = emps.reduce((sum, e) => sum + e.total, 0);
                     return (
-                        <div key={idx} className="crm-card border-none bg-white shadow-md overflow-hidden !rounded-[24px]">
+                        <div key={deptName} className="crm-card border-none bg-white shadow-md overflow-hidden !rounded-[24px]">
                             <div className="px-8 py-7 bg-slate-50/70 border-b border-slate-200/60 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-[20px] bg-white flex items-center justify-center text-primary shadow-sm border border-slate-100 group-hover:scale-105 transition-all">
@@ -92,7 +90,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
-                                        {emps.map((emp: any) => (
+                                        {emps.map((emp) => (
                                             <tr key={emp.id} className="group hover:bg-slate-50/50 transition-colors">
                                                 <td className="px-8 py-6">
                                                     <div className="font-extrabold text-slate-900 mb-0.5 text-[15px]">{emp.name}</div>

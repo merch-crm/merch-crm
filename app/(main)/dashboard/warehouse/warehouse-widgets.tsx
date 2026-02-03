@@ -1,8 +1,6 @@
 "use client";
 
 import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2, Loader2 } from "lucide-react";
-import { InventoryItem, Category } from "./types";
-import { Transaction } from "./history-table";
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";

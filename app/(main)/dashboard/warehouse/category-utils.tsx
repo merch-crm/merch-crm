@@ -1,7 +1,7 @@
 import {
     Package, Scissors, Box, Zap, Hourglass,
     Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, FileText,
-    Pencil, Brush, Ruler, Hammer, Wrench, Eraser, PenTool, Pipette,
+    Pencil, Brush, Ruler, Hammer, Wrench, PenTool, Pipette,
     Palette, Printer, FlaskConical, Factory,
     Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
     Eye, Layers, CircleDollarSign, TrendingUp, Wallet, Users, UserCheck, Phone,
@@ -318,17 +318,29 @@ export const ALL_ICONS_MAP: Record<string, React.ComponentType<{ className?: str
     "wallet-custom": CustomWallet,
 };
 
+// Types for icon group serialization
+export interface IconGroupInput {
+    name: string;
+    groupIcon?: React.ComponentType<{ className?: string }>;
+    groupIconName?: string;
+    icons: Array<{ name: string; label: string; svgContent?: string; icon?: React.ComponentType<{ className?: string }> }>;
+}
+
+export interface SerializedIconGroup {
+    name: string;
+    groupIconName: string;
+    icons: Array<{ name: string; label: string; svgContent?: string }>;
+}
+
 // Functions to serialize/deserialize for DB storage
-export function serializeIconGroups(groups: any[]) {
+export function serializeIconGroups(groups: IconGroupInput[]): SerializedIconGroup[] {
     return groups.map(group => ({
-        ...group,
+        name: group.name,
         // Store groupIcon as string name only if it's a function (component)
         groupIconName: typeof group.groupIcon === 'function' ?
             Object.keys(ALL_ICONS_MAP).find(key => ALL_ICONS_MAP[key] === group.groupIcon) || "box"
             : group.groupIconName || "box",
-        // Remove actual component references
-        groupIcon: undefined,
-        icons: group.icons.map((icon: any) => ({
+        icons: group.icons.map((icon) => ({
             name: icon.name,
             label: icon.label,
             svgContent: icon.svgContent
@@ -337,7 +349,7 @@ export function serializeIconGroups(groups: any[]) {
 }
 
 export const createSvgIcon = (svgContent: string) => {
-    return ({ className }: { className?: string }) => (
+    const SvgIcon = ({ className }: { className?: string }) => (
         <div
             className={cn("flex items-center justify-center", className)}
             dangerouslySetInnerHTML={{
@@ -345,9 +357,11 @@ export const createSvgIcon = (svgContent: string) => {
             }}
         />
     );
+    SvgIcon.displayName = 'SvgIcon';
+    return SvgIcon;
 };
 
-export function hydrateIconGroups(storedGroups: any[]) {
+export function hydrateIconGroups(storedGroups: SerializedIconGroup[]) {
     if (!storedGroups || !Array.isArray(storedGroups)) return ICON_GROUPS;
 
     return storedGroups.map(group => {
@@ -357,7 +371,7 @@ export function hydrateIconGroups(storedGroups: any[]) {
         return {
             ...group,
             groupIcon: GroupIconComponent,
-            icons: group.icons.map((icon: any) => ({
+            icons: group.icons.map((icon) => ({
                 ...icon,
                 icon: icon.svgContent ? createSvgIcon(icon.svgContent) : (ALL_ICONS_MAP[icon.name] || Box)
             }))

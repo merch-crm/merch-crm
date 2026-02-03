@@ -10,7 +10,7 @@ import { useFormStatus } from "react-dom";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
-import { playSound, useSoundEffect } from "@/lib/sounds";
+import { playSound } from "@/lib/sounds";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];

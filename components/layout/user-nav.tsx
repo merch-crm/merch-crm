@@ -11,9 +11,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { RoleBadge } from "@/components/ui/role-badge";
 
+interface BrandingSettings {
+    socialTelegram?: string | null;
+    socialWhatsapp?: string | null;
+    socialWebsite?: string | null;
+    [key: string]: unknown;
+}
+
 export function UserNav({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null },
-    branding?: any
+    branding?: BrandingSettings
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);

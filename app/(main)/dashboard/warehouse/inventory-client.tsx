@@ -11,14 +11,14 @@ import { pluralize } from "@/lib/pluralize";
 import { InventoryItem, Category } from "./types";
 
 interface InventoryClientProps {
-    items: InventoryItem[];
+    items?: InventoryItem[];
     categories: Category[];
     user: Session | null;
 }
 
 import { EditCategoryDialog } from "./edit-category-dialog";
 
-export function InventoryClient({ items, categories, user }: InventoryClientProps) {
+export function InventoryClient({ categories, user }: InventoryClientProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -43,8 +43,8 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
         const children = subCategories.filter(sc => sc.parentId === category.id);
 
         // Sum itemCount: category itself + its directly subcategories
-        const totalItemsCount = (category as any).itemCount +
-            children.reduce((sum, child) => sum + ((child as any).itemCount || 0), 0);
+        const totalItemsCount = (category.itemCount ?? 0) +
+            children.reduce((sum, child) => sum + (child.itemCount ?? 0), 0);
 
         return {
             ...category,

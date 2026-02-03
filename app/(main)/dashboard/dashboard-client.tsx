@@ -54,7 +54,7 @@ export function DashboardClient({ initialStats, period, userName, branding }: Da
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        setTime(new Date());
+        setTimeout(() => setTime(new Date()), 0);
         const fetchData = async () => {
             try {
                 const [stats, notifs] = await Promise.all([

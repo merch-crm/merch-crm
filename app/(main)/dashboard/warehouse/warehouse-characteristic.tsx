@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { Plus, Settings, Check, Book, Pencil, Trash, Lock, Pipette, BookOpen } from "lucide-react";
+import { Plus, Settings, Check, Book, Pencil, Trash, Lock } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

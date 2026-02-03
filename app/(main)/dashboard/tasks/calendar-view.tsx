@@ -17,7 +17,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
     const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
 
     useEffect(() => {
-        setCurrentMonth(new Date());
+        setTimeout(() => setCurrentMonth(new Date()), 0);
     }, []);
 
     const monthToRender = currentMonth || new Date();

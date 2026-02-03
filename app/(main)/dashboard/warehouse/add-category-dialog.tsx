@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createElement } from "react";
-import { X, FolderPlus, Package, Check, AlertCircle } from "lucide-react";
+import { X, FolderPlus, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";

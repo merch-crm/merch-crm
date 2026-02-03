@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, createElement, useMemo } from "react";
+import { useState, createElement } from "react";
 import {
-    Search, Upload, Copy, Check, Plus, X,
+    Search, Upload, Plus, X,
     Sparkles, AlertCircle, Pencil, Save, Trash2, Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { ICON_GROUPS as INITIAL_ICON_GROUPS, hydrateIconGroups, serializeIconGroups, ALL_ICONS_MAP } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { ICON_GROUPS as INITIAL_ICON_GROUPS, hydrateIconGroups, serializeIconGroups, ALL_ICONS_MAP, IconGroupInput, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { updateIconGroups } from "./actions";
 import { createSvgIcon } from "@/app/(main)/dashboard/warehouse/category-utils";
@@ -38,8 +38,12 @@ export function IconManager({ initialData }: { initialData?: IconGroup[] }) {
 
     // Categories state
     const [iconGroups, setIconGroups] = useState<IconGroup[]>(() => {
-        if (initialData) return hydrateIconGroups(initialData);
-        return INITIAL_ICON_GROUPS;
+        const rawGroups: any[] = initialData ? hydrateIconGroups(initialData as unknown as SerializedIconGroup[]) : INITIAL_ICON_GROUPS;
+        return rawGroups.map(g => ({
+            ...g,
+            id: g.id || `cat-${Math.random().toString(36).substr(2, 9)}`,
+            label: g.label || g.name || "Без названия"
+        }));
     });
     const [editingCategory, setEditingCategory] = useState<IconGroup | null>(null);
     const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
@@ -76,12 +80,17 @@ export function IconManager({ initialData }: { initialData?: IconGroup[] }) {
         setIconGroups(updatedGroups);
 
         try {
-            const result = await updateIconGroups(serializeIconGroups(updatedGroups));
+            const groupsToSave: IconGroupInput[] = updatedGroups.map(g => ({
+                name: g.label,
+                groupIcon: g.groupIcon,
+                icons: g.icons.map(i => ({ ...i, label: i.label || i.name }))
+            }));
+            const result = await updateIconGroups(serializeIconGroups(groupsToSave));
             if (result.error) {
                 alert("Ошибка при сохранении: " + result.error);
                 // In a real app we might want to revert local state here
             }
-        } catch (e) {
+        } catch {
             alert("Неизвестная ошибка при сохранении");
         } finally {
             setIsSaving(false);
@@ -104,11 +113,16 @@ export function IconManager({ initialData }: { initialData?: IconGroup[] }) {
         setIconGroups(updatedGroups);
 
         try {
-            const result = await updateIconGroups(serializeIconGroups(updatedGroups));
+            const groupsToSave: IconGroupInput[] = updatedGroups.map(g => ({
+                name: g.label,
+                groupIcon: g.groupIcon,
+                icons: g.icons.map(i => ({ ...i, label: i.label || i.name }))
+            }));
+            const result = await updateIconGroups(serializeIconGroups(groupsToSave));
             if (result.error) {
                 alert("Ошибка при сохранении: " + result.error);
             }
-        } catch (e) {
+        } catch {
             alert("Неизвестная ошибка при сохранении");
         } finally {
             setIsSaving(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Search, User, ShoppingCart, Package, Book, CheckCircle2, Command, Tag, Layout, MapPin, CreditCard, Folder, X } from "lucide-react";
+import { Search, User, ShoppingCart, Package, Book, CheckCircle2, Tag, Layout, MapPin, CreditCard, Folder, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { globalSearch } from "@/app/(main)/dashboard/search-actions";
 

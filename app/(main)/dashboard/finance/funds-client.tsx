@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { FundStats } from "./actions";
+
 interface FundsClientProps {
-    fundsData: {
-        funds: any[];
-    };
+    fundsData: FundStats;
 }
 
 export function FundsClient({ fundsData }: FundsClientProps) {

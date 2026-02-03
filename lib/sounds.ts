@@ -159,8 +159,8 @@ export const SOUND_CATEGORIES = {
     },
 };
 
-// Кэш для предзагруженных звуков
-const audioCache: Map<string, HTMLAudioElement> = new Map();
+// Кэш для предзагруженных звуков (unused, kept for potential future usage)
+// const audioCache: Map<string, HTMLAudioElement> = new Map();
 
 // Настройки звука
 let soundEnabled = true;
@@ -246,7 +246,7 @@ export function vibrate(pattern: number | number[] = 200) {
 
     try {
         navigator.vibrate(pattern);
-    } catch (e) {
+    } catch {
         // Ignore errors
     }
 }

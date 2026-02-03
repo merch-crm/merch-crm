@@ -36,7 +36,7 @@ interface BrandingSettings {
     dateFormat?: string;
     timezone?: string;
     soundConfig?: Record<string, SoundConfig>;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default async function DashboardLayout({
@@ -175,7 +175,6 @@ export default async function DashboardLayout({
                     <ActivityTracker />
                     <NotificationManager
                         initialUnreadCount={notifications.filter(n => !n.isRead).length}
-                        userId={session?.id || "debug-user"}
                         customSoundUrl={branding.notificationSound as string}
                     />
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Search, Package, User, Database, Users, CheckCircle2, Loader2, X } from "lucide-react";
+import { Search, Package, User, Database, Users, CheckCircle2, X } from "lucide-react";
 import { globalSearch, SearchResult } from "@/app/(main)/dashboard/search-actions";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";

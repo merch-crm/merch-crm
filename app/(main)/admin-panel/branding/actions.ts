@@ -43,7 +43,7 @@ interface BrandingSettings {
     [key: string]: unknown;
 }
 
-import { serializeIconGroups, ICON_GROUPS } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 export async function getBrandingSettings(): Promise<BrandingSettings> {
     const defaultBranding: BrandingSettings = {
@@ -280,7 +280,7 @@ export async function getIconGroups() {
     }
 }
 
-export async function updateIconGroups(groups: Record<string, unknown>[]) {
+export async function updateIconGroups(groups: SerializedIconGroup[]) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 

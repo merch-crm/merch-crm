@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, users, promocodes, payments, expenses, inventoryTransactions } from "@/lib/schema";
+import { orders, users, payments, expenses, inventoryTransactions } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
 import { subDays } from "date-fns";
@@ -237,12 +237,12 @@ export async function getSalaryStats(from?: Date, to?: Date) {
             };
         });
 
-        const totalBudget = employeePayments.reduce((sum: number, e: any) => sum + e.total, 0);
+        const totalBudget = employeePayments.reduce((sum: number, e) => sum + e.total, 0);
 
         return {
             data: {
                 totalBudget,
-                employeePayments: employeePayments.sort((a: any, b: any) => b.total - a.total)
+                employeePayments: employeePayments.sort((a, b) => b.total - a.total)
             } as SalaryStats
         };
 
@@ -316,7 +316,7 @@ export async function getFundsStats(from?: Date, to?: Date) {
 
 import { validatePromocode as validatePromoLib } from "@/lib/promocodes";
 
-export async function validatePromocode(code: string, totalAmount: number = 0, cartItems: any[] = []) {
+export async function validatePromocode(code: string, totalAmount: number = 0, cartItems: Array<{ inventoryId?: string; price: number; quantity: number; category?: string }> = []) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 

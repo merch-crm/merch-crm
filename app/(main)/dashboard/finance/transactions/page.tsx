@@ -38,10 +38,13 @@ export default async function TransactionsPage({
         getFinanceTransactions('expense', fromDate, toDate)
     ]);
 
+    type PaymentData = Parameters<typeof TransactionsClient>[0]['initialPayments'][number];
+    type ExpenseData = Parameters<typeof TransactionsClient>[0]['initialExpenses'][number];
+
     return (
         <TransactionsClient
-            initialPayments={(paymentsRes.data || []) as any[]}
-            initialExpenses={(expensesRes.data || []) as any[]}
+            initialPayments={(paymentsRes.data || []) as PaymentData[]}
+            initialExpenses={(expensesRes.data || []) as ExpenseData[]}
         />
     );
 }

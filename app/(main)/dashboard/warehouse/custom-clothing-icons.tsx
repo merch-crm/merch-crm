@@ -18,53 +18,55 @@ import {
 
 type PhosphorIcon = ComponentType<IconProps>;
 
-const wrap = (Icon: PhosphorIcon): ComponentType<LucideProps> => {
-    return (props: LucideProps) => createElement(Icon, {
+const wrap = (Icon: PhosphorIcon, displayName: string): ComponentType<LucideProps> => {
+    const WrappedIcon = (props: LucideProps) => createElement(Icon, {
         weight: "light",
         ...props
-    } as any);
+    } as IconProps);
+    WrappedIcon.displayName = displayName;
+    return WrappedIcon;
 };
 
 // Одежда
-export const TshirtIcon = wrap(TShirt);
-export const HoodieIcon = wrap(Hoodie);
-export const PantsIcon = wrap(Pants);
-export const JacketIcon = wrap(CoatHanger); // В сете Phosphor для куртки используется вешалка
-export const DressIcon = wrap(Dress);
-export const SneakersIcon = wrap(Sneaker);
-export const BootsIcon = wrap(Boot);
-export const CapIcon = wrap(BaseballCap);
-export const ShortsIcon = wrap(Pants); // У Phosphor нет отдельных шорт, используем Pants или другое
-export const SkirtIcon = wrap(Dress); // Аналогично
+export const TshirtIcon = wrap(TShirt, "TshirtIcon");
+export const HoodieIcon = wrap(Hoodie, "HoodieIcon");
+export const PantsIcon = wrap(Pants, "PantsIcon");
+export const JacketIcon = wrap(CoatHanger, "JacketIcon"); // В сете Phosphor для куртки используется вешалка
+export const DressIcon = wrap(Dress, "DressIcon");
+export const SneakersIcon = wrap(Sneaker, "SneakersIcon");
+export const BootsIcon = wrap(Boot, "BootsIcon");
+export const CapIcon = wrap(BaseballCap, "CapIcon");
+export const ShortsIcon = wrap(Pants, "ShortsIcon"); // У Phosphor нет отдельных шорт, используем Pants или другое
+export const SkirtIcon = wrap(Dress, "SkirtIcon"); // Аналогично
 
 // Аксессуары
-export const GlassesIcon = wrap(Eyeglasses);
-export const WatchIcon = wrap(Watch);
-export const HandbagIcon = wrap(Handbag);
-export const BackpackIcon = wrap(Backpack);
-export const ToteBagIcon = wrap(ShoppingBag);
-export const WalletIcon = wrap(Wallet);
-export const BeltIcon = wrap(Belt);
-export const UmbrellaIcon = wrap(Umbrella);
+export const GlassesIcon = wrap(Eyeglasses, "GlassesIcon");
+export const WatchIcon = wrap(Watch, "WatchIcon");
+export const HandbagIcon = wrap(Handbag, "HandbagIcon");
+export const BackpackIcon = wrap(Backpack, "BackpackIcon");
+export const ToteBagIcon = wrap(ShoppingBag, "ToteBagIcon");
+export const WalletIcon = wrap(Wallet, "WalletIcon");
+export const BeltIcon = wrap(Belt, "BeltIcon");
+export const UmbrellaIcon = wrap(Umbrella, "UmbrellaIcon");
 
 // Статусы и маркеры
-export const MugIcon = wrap(Coffee);
-export const TagIcon = wrap(Tag);
-export const BabyIcon = wrap(Baby);
-export const CrownIcon = wrap(Crown);
-export const SparklesIcon = wrap(Sparkle);
-export const DiscountIcon = wrap(Percent);
-export const HeartIcon = wrap(Heart);
-export const StarIcon = wrap(Star);
-export const FlameIcon = wrap(Flame);
+export const MugIcon = wrap(Coffee, "MugIcon");
+export const TagIcon = wrap(Tag, "TagIcon");
+export const BabyIcon = wrap(Baby, "BabyIcon");
+export const CrownIcon = wrap(Crown, "CrownIcon");
+export const SparklesIcon = wrap(Sparkle, "SparklesIcon");
+export const DiscountIcon = wrap(Percent, "DiscountIcon");
+export const HeartIcon = wrap(Heart, "HeartIcon");
+export const StarIcon = wrap(Star, "StarIcon");
+export const FlameIcon = wrap(Flame, "FlameIcon");
 
 // Склад и производство (для совместимости)
-export const PackageIcon = wrap(Package);
-export const SuppliesIcon = wrap(Scissors);
-export const NotebookIcon = wrap(Notebook);
-export const TruckIcon = wrap(Truck);
-export const WarehouseIcon = wrap(Warehouse);
-export const VanIcon = wrap(Van);
+export const PackageIcon = wrap(Package, "PackageIcon");
+export const SuppliesIcon = wrap(Scissors, "SuppliesIcon");
+export const NotebookIcon = wrap(Notebook, "NotebookIcon");
+export const TruckIcon = wrap(Truck, "TruckIcon");
+export const WarehouseIcon = wrap(Warehouse, "WarehouseIcon");
+export const VanIcon = wrap(Van, "VanIcon");
 
 // Экспорт всех иконок в объекте
 export const CUSTOM_CLOTHING_ICONS = {

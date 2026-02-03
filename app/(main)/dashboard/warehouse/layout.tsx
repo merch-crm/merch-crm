@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LayoutGrid, MapPin, Book, History, Clock, Plus, Eraser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, useCallback } from "react";
 import { AddCategoryDialog } from "./add-category-dialog";
 import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
@@ -13,8 +13,10 @@ import { AddAttributeTypeDialog } from "./add-attribute-type-dialog";
 import { QRScanner } from "@/components/ui/qr-scanner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getInventoryCategories, getAllUsers, getInventoryHistory, getSession } from "./actions";
+import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession } from "./actions";
 import { playSound } from "@/lib/sounds";
+import { InventoryItem, StorageLocation, Category } from "./types";
+import { Session } from "@/lib/auth";
 
 const TABS = [
     { id: "categories", label: "Категории", icon: LayoutGrid, href: "/dashboard/warehouse/categories" },
@@ -32,17 +34,24 @@ const TAB_INFO: Record<string, { title: string; description: string }> = {
     "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" }
 };
 
+interface HistoryEntry {
+    id: string;
+    type: string;
+    changeAmount: number;
+    createdAt: Date;
+}
+
 export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const { toast } = useToast();
 
-    const [items, setItems] = useState<any[]>([]);
-    const [locations, setLocations] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [users, setUsers] = useState<any[]>([]);
-    const [session, setSession] = useState<any>(null);
-    const [history, setHistory] = useState<any[]>([]);
+    const [items, setItems] = useState<InventoryItem[]>([]);
+    const [locations, setLocations] = useState<StorageLocation[]>([]);
+    const [categories] = useState<Category[]>([]);
+    const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
+    const [session, setSession] = useState<Session | null>(null);
+    const [history, setHistory] = useState<HistoryEntry[]>([]);
 
     const [isScannerOpen, setIsScannerOpen] = useState(false);
     const [isClearHistoryOpen, setIsClearHistoryOpen] = useState(false);
@@ -58,16 +67,16 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const isRootPage = TABS.some(tab => pathname === tab.href);
     const currentInfo = TAB_INFO[pathname] || TAB_INFO["/dashboard/warehouse/categories"];
 
+    const fetchSession = useCallback(async () => {
+        if (!session) {
+            const s = await getSession();
+            setSession(s);
+        }
+    }, [session]);
+
     useEffect(() => {
-        // Only fetch session for UI permission checks
-        const fetchSession = async () => {
-            if (!session) {
-                const s = await getSession();
-                setSession(s);
-            }
-        };
         fetchSession();
-    }, [pathname]);
+    }, [fetchSession]);
 
     // Simple helper to load data for dialogs only when needed
     const loadDialogData = async (type: string) => {

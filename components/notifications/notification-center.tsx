@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, Check, Info, AlertCircle, CheckCircle2, AlertTriangle, ArrowRightLeft } from "lucide-react";
+import { Bell, Info, AlertCircle, CheckCircle2, AlertTriangle, ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { markAsRead, markAllAsRead } from "./actions";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ export interface Notification {
 
 interface NotificationCenterProps {
     notifications: Notification[];
-    branding?: { dateFormat?: string; timezone?: string;[key: string]: any };
+    branding?: { dateFormat?: string; timezone?: string;[key: string]: unknown };
 }
 
 const typeConfig = {
@@ -36,8 +36,15 @@ export function NotificationCenter({ notifications, branding }: NotificationCent
     const [loading, setLoading] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const [now, setNow] = useState<Date | null>(null);
 
     const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    useEffect(() => {
+        setTimeout(() => setNow(new Date()), 0);
+        const interval = setInterval(() => setNow(new Date()), 60000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -150,7 +157,7 @@ export function NotificationCenter({ notifications, branding }: NotificationCent
                                                             title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
                                                         >
                                                             {/* Show relative time if less than 24h, else showing formatted date */}
-                                                            {(Date.now() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
+                                                            {now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
                                                                 ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: ru })
                                                                 : formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')
                                                             }

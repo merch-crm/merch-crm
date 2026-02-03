@@ -53,7 +53,10 @@ export default async function WarehouseCategoriesPage() {
     );
 }
 
-async function InventoryListContainer({ session }: { session: any }) {
+import { Category } from "../types";
+import { Session } from "@/lib/auth";
+
+async function InventoryListContainer({ session }: { session: Session | null }) {
     const [
         { data: categoriesRes = [] },
         { count: orphanedCount }
@@ -63,7 +66,7 @@ async function InventoryListContainer({ session }: { session: any }) {
     ]);
 
     const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
-    const categories = [...categoriesRes];
+    const categories: Category[] = [...categoriesRes];
 
     if (orphanedCount > 0) {
         categories.push({
@@ -74,7 +77,7 @@ async function InventoryListContainer({ session }: { session: any }) {
             color: "slate",
             icon: "box",
             isSystem: true
-        } as any);
+        });
     }
 
     const sortedCategories = categories.sort((a, b) => {
@@ -88,8 +91,7 @@ async function InventoryListContainer({ session }: { session: any }) {
 
     return (
         <InventoryClient
-            items={[]}
-            categories={sortedCategories as any}
+            categories={sortedCategories}
             user={session}
         />
     );

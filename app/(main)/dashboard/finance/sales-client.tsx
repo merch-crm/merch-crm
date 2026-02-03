@@ -14,12 +14,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { FinancialStats } from "./actions";
 
 interface SalesClientProps {
-    salesData: {
-        summary: any;
-        categories: any[];
-    };
+    salesData: FinancialStats;
 }
 
 export function SalesClient({ salesData }: SalesClientProps) {

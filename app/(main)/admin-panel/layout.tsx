@@ -1,11 +1,8 @@
 import {
-    ShieldAlert,
-    Search,
-    Bell
+    ShieldAlert
 } from "lucide-react";
 import React from "react";
 import { getCurrentUserAction } from "./actions";
-import Image from "next/image";
 import { AdminSidebar, AdminUserCard } from "./admin-tabs";
 import Link from "next/link";
 import { AdminSearch } from "./admin-search";
@@ -30,8 +27,8 @@ export default async function AdminLayout({
         name: currentUser.name,
         email: currentUser.email,
         avatar: currentUser.avatar,
-        roleName: (currentUser.role as any)?.name || "Администратор",
-        departmentName: (currentUser as any).department?.name || "Руководство"
+        roleName: currentUser.role?.name || "Администратор",
+        departmentName: currentUser.department?.name || "Руководство"
     } : null;
 
     return (

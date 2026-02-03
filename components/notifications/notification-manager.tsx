@@ -6,11 +6,10 @@ import { playSound } from "@/lib/sounds";
 
 interface NotificationManagerProps {
     initialUnreadCount: number;
-    userId: string;
     customSoundUrl?: string | null;
 }
 
-export function NotificationManager({ initialUnreadCount, userId, customSoundUrl }: NotificationManagerProps) {
+export function NotificationManager({ initialUnreadCount, customSoundUrl }: NotificationManagerProps) {
     const pathname = usePathname();
     const [unreadCount, setUnreadCount] = useState(initialUnreadCount);
     const [orderCount, setOrderCount] = useState<number | null>(null);
@@ -23,9 +22,10 @@ export function NotificationManager({ initialUnreadCount, userId, customSoundUrl
     // Reset new orders indicator when visiting the orders page
     useEffect(() => {
         if (pathname?.includes("/dashboard/orders")) {
-            setHasNewOrders(false);
+            setTimeout(() => setHasNewOrders(false), 0);
         }
     }, [pathname]);
+
 
     const updateFavicon = (count: number, showOrderDot: boolean) => {
         if (typeof window === "undefined") return;
@@ -123,7 +123,7 @@ export function NotificationManager({ initialUnreadCount, userId, customSoundUrl
     useEffect(() => {
         if (orderCount !== null && prevOrderCount.current !== null && orderCount > prevOrderCount.current) {
             playSound("order_created");
-            setHasNewOrders(true);
+            setTimeout(() => setHasNewOrders(true), 0);
         }
         prevOrderCount.current = orderCount;
     }, [orderCount, customSoundUrl]);
@@ -147,7 +147,7 @@ export function NotificationManager({ initialUnreadCount, userId, customSoundUrl
                     const oData = await oRes.json();
                     if (typeof oData.count === "number") setOrderCount(oData.count);
                 }
-            } catch (err) {
+            } catch {
                 // Ignore
             }
         }, 15000);

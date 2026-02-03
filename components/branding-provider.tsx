@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
 import { initSoundSettings, setGlobalSoundConfig } from "@/lib/sounds";
+import { SoundConfig } from "@/lib/sounds";
 
 export interface BrandingSettings {
     primary_color?: string;
@@ -10,8 +11,8 @@ export interface BrandingSettings {
     system_logo?: string | null;
     radius_outer?: number;
     radius_inner?: number;
-    soundConfig?: any;
-    [key: string]: any;
+    soundConfig?: Record<string, SoundConfig>;
+    [key: string]: unknown;
 }
 
 export function BrandingProvider({ children }: { children: React.ReactNode }) {

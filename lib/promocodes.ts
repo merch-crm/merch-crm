@@ -2,11 +2,13 @@ import { db } from "@/lib/db";
 import { promocodes } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 
+import { type InferSelectModel } from "drizzle-orm";
+
 export interface ValidationResult {
     isValid: boolean;
     discount: number;
     error?: string;
-    promo?: any;
+    promo?: InferSelectModel<typeof promocodes> | null;
     message?: string;
 }
 
@@ -59,20 +61,23 @@ export async function validatePromocode(
 
         // --- Логика ограничений (Исключения товаров/категорий) ---
         let applicableAmount = totalAmount;
-        const constraints = (promo.constraints as any) || {};
+        const rawConstraints = promo.constraints as Record<string, string[] | null | undefined> | null;
+        const includedProducts = rawConstraints?.includedProducts ?? [];
+        const excludedProducts = rawConstraints?.excludedProducts ?? [];
+        const excludedCategories = rawConstraints?.excludedCategories ?? [];
 
-        if (constraints.excludedProducts || constraints.excludedCategories || constraints.includedProducts) {
+        if (excludedProducts.length > 0 || excludedCategories.length > 0 || includedProducts.length > 0) {
             const validItems = cartItems.filter(item => {
                 // Если есть список разрешенных товаров и товара в нем нет - скидка не действует
-                if (constraints.includedProducts?.length > 0 && !constraints.includedProducts.includes(item.inventoryId)) {
+                if (includedProducts.length > 0 && item.inventoryId && !includedProducts.includes(item.inventoryId)) {
                     return false;
                 }
                 // Если товар в списке исключений
-                if (constraints.excludedProducts?.includes(item.inventoryId)) {
+                if (item.inventoryId && excludedProducts.includes(item.inventoryId)) {
                     return false;
                 }
                 // Если категория в списке исключений
-                if (constraints.excludedCategories?.includes(item.category)) {
+                if (item.category && excludedCategories.includes(item.category)) {
                     return false;
                 }
                 return true;
