@@ -141,14 +141,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
 
     const items = categoryItems.map(item => ({
         ...item,
-        createdAt: item.createdAt.toISOString(),
+        createdAt: new Date(item.createdAt).toISOString(),
         attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},
     }));
 
     // Fallback object for UI if orphaned
     const finalCategory = category ? {
         ...category,
-        createdAt: category.createdAt.toISOString()
+        createdAt: new Date(category.createdAt).toISOString()
     } : {
         id: "orphaned",
         name: "Без категории",

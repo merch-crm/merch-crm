@@ -35,5 +35,5 @@ export default async function FundsPage({
 
     const res = await getFundsStats(fromDate, toDate);
 
-    return <FundsClient fundsData={res.data || { funds: [] }} />;
+    return <FundsClient fundsData={res.data || { totalRevenue: 0, funds: [] }} />;
 }

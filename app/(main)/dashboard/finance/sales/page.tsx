@@ -63,5 +63,10 @@ export default async function FinanceSalesPage({
         return <div className="p-10 text-center text-rose-500">{salesRes.error}</div>;
     }
 
-    return <SalesClient salesData={salesRes.data || { summary: {}, categories: [] }} />;
+    return <SalesClient salesData={salesRes.data || {
+        summary: { totalRevenue: 0, orderCount: 0, avgOrderValue: 0, netProfit: 0, averageCost: 0, writeOffs: 0 },
+        chartData: [],
+        categories: [],
+        recentTransactions: []
+    }} />;
 }

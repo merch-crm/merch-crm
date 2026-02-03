@@ -35,5 +35,5 @@ export default async function PLPage({
 
     const res = await getPLReport(fromDate, toDate);
 
-    return <PLClient plReport={res.data} />;
+    return <PLClient plReport={res.data || { totalRevenue: 0, totalCOGS: 0, grossProfit: 0, totalOverhead: 0, netProfit: 0, margin: 0 }} />;
 }
