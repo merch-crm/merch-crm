@@ -1,7 +1,7 @@
 import { getFinanceTransactions } from "../actions";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { ExpensesClient } from "../expenses-client";
+import { ExpensesClient, Expense } from "../expenses-client";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 
 export const dynamic = "force-dynamic";
@@ -35,5 +35,5 @@ export default async function ExpensesPage({
 
     const res = await getFinanceTransactions('expense', fromDate, toDate);
 
-    return <ExpensesClient initialData={(res.data || []) as any[]} />;
+    return <ExpensesClient initialData={(res.data || []) as unknown as Expense[]} />;
 }

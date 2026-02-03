@@ -18,6 +18,9 @@ import {
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+
+type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 import { getDashboardStatsByPeriod, getDashboardNotifications } from "./actions";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -36,7 +39,7 @@ interface DashboardClientProps {
     initialStats: DashboardStats;
     period: string;
     userName: string;
-    branding?: any;
+    branding?: BrandingSettings | null;
 }
 
 interface Notification {

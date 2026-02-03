@@ -107,14 +107,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         const cartTotal = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
         const res = await validatePromocode(promoInput, cartTotal, selectedItems.map(i => ({
             inventoryId: i.id,
-            price: i.price,
-            quantity: i.orderQuantity
+            price: i.price || 0,
+            quantity: i.orderQuantity || 0
         })));
         setIsApplyingPromo(false);
         if (res.error || !res.data) {
             toast(res.error || "Промокод не найден", "error");
         } else {
-            setDetails({ ...details, appliedPromo: res.data, promocodeId: res.data.id });
+            setDetails({ ...details, appliedPromo: res.data as any, promocodeId: res.data.id || "" });
             const message = res.data.message || `Промокод ${promoInput} применен!`;
             toast(message, "success");
         }
@@ -584,7 +584,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         <span>
                                                             {(() => {
                                                                 const total = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
-                                                                const disc = (details.appliedPromo as any)?.calculatedDiscount || 0;
+                                                                const disc = details.appliedPromo?.calculatedDiscount || 0;
                                                                 return Math.max(0, Math.round(total - disc));
                                                             })()} ₽
                                                         </span>

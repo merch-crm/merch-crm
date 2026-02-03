@@ -1,7 +1,15 @@
 "use client";
 
+interface PLReport {
+    totalRevenue: number;
+    totalCOGS: number;
+    totalOverhead: number;
+    netProfit: number;
+    margin: number;
+}
+
 interface PLClientProps {
-    plReport: any;
+    plReport: PLReport;
 }
 
 export function PLClient({ plReport }: PLClientProps) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Command } from "lucide-react";
+import { Search } from "lucide-react";
 
 export function AdminSearch() {
     return (

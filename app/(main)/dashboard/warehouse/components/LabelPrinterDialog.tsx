@@ -44,8 +44,9 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [showQuality, setShowQuality] = useState(false);
     const [showCategory, setShowCategory] = useState(false);
     const [showLogo, setShowLogo] = useState(false);
+    type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
-    const [branding, setBranding] = useState<any>(null);
+    const [branding, setBranding] = useState<BrandingSettings | null>(null);
 
     useEffect(() => {
         getBrandingSettings().then(setBranding);

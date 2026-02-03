@@ -420,7 +420,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             const values = {
                                 name: formData.get("name") as string,
                                 code: (formData.get("code") as string).toUpperCase(),
-                                discountType: formData.get("discountType") as any,
+                                discountType: formData.get("discountType") as "percentage" | "fixed" | "free_shipping" | "gift",
                                 value: Number(formData.get("value")),
                                 minOrderAmount: Number(formData.get("minOrderAmount")),
                                 usageLimit: formData.get("usageLimit")?.toString(),
@@ -583,7 +583,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             const values = {
                                 name: formData.get("name") as string,
                                 code: "BULK", // Not used for bulk
-                                discountType: formData.get("discountType") as any,
+                                discountType: formData.get("discountType") as "percentage" | "fixed" | "free_shipping" | "gift",
                                 value: Number(formData.get("value")),
                                 minOrderAmount: Number(formData.get("minOrderAmount")),
                                 usageLimit: "1", // One-time use for each bulk code

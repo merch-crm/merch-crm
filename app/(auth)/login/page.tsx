@@ -5,13 +5,16 @@ import { Loader2, User, Lock, Eye, EyeOff, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+
+type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [branding, setBranding] = useState<any>(null);
+    const [branding, setBranding] = useState<BrandingSettings | null>(null);
 
     useEffect(() => {
         getBrandingSettings().then(setBranding);
@@ -52,7 +55,7 @@ export default function LoginPage() {
     }
 
     const primaryColor = branding?.primaryColor || "#5d00ff";
-    const logoUrl = branding?.logoUrl || branding?.logo_url;
+    const logoUrl = branding?.logoUrl || ((branding as Record<string, unknown> | null)?.['logo_url'] as string);
     const bgUrl = branding?.loginBackgroundUrl;
     const slogan = branding?.loginSlogan || "Система управления производством";
     const companyName = branding?.companyName || "MerchCRM";
@@ -62,7 +65,7 @@ export default function LoginPage() {
             className="min-h-screen bg-background flex items-center justify-center p-4 font-sans antialiased relative overflow-hidden transition-colors duration-500"
             style={{
                 '--primary': primaryColor,
-            } as any}
+            } as React.CSSProperties & { [key: string]: string | undefined }}
         >
             {/* Background Image or Gradient */}
             {bgUrl ? (
@@ -82,11 +85,11 @@ export default function LoginPage() {
             <Card className="w-full max-w-md p-8 shadow-2xl bg-white/80 backdrop-blur-xl border-white/20 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500 rounded-[32px]">
                 <div className="flex flex-col items-center mb-10 space-y-5">
                     <div
-                        className="p-4 rounded-2xl shadow-lg transform transition-transform group-hover:scale-110 duration-300 w-20 h-20 flex items-center justify-center overflow-hidden"
+                        className="p-4 rounded-2xl shadow-lg transform transition-transform group-hover:scale-110 duration-300 w-20 h-20 flex items-center justify-center overflow-hidden relative"
                         style={{ backgroundColor: primaryColor }}
                     >
                         {logoUrl ? (
-                            <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                            <Image src={logoUrl} alt="Logo" fill className="object-contain" priority />
                         ) : (
                             <Building2 className="w-10 h-10 text-white" />
                         )}

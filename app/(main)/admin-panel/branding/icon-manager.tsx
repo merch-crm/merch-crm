@@ -38,12 +38,12 @@ export function IconManager({ initialData }: { initialData?: IconGroup[] }) {
 
     // Categories state
     const [iconGroups, setIconGroups] = useState<IconGroup[]>(() => {
-        const rawGroups: any[] = initialData ? hydrateIconGroups(initialData as unknown as SerializedIconGroup[]) : INITIAL_ICON_GROUPS;
+        const rawGroups = (initialData ? hydrateIconGroups(initialData as unknown as SerializedIconGroup[]) : INITIAL_ICON_GROUPS) as Array<{ name: string; id?: string; label?: string } & Record<string, unknown>>;
         return rawGroups.map(g => ({
             ...g,
             id: g.id || `cat-${Math.random().toString(36).substr(2, 9)}`,
             label: g.label || g.name || "Без названия"
-        }));
+        })) as unknown as IconGroup[];
     });
     const [editingCategory, setEditingCategory] = useState<IconGroup | null>(null);
     const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
