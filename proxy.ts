@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decrypt } from "@/lib/auth";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
     // 1. Exclude static assets and API routes
@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
 }
 
-// Ensure middleware runs on relevant paths
+// Ensure proxy runs on relevant paths
 export const config = {
     matcher: [
         /*

@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { updateNotificationSettingsAction, NotificationSettings } from "../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface NotificationsClientProps {
     initialSettings: NotificationSettings;
@@ -40,8 +41,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
         const res = await updateNotificationSettingsAction(settings);
         if (res.success) {
             toast("Настройки уведомлений сохранены", "success");
+            playSound("notification_success");
         } else {
             toast(res.error || "Ошибка при сохранении", "error");
+            playSound("notification_error");
         }
         setLoading(false);
     };
@@ -69,9 +72,14 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
     return (
         <div className="space-y-6 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Уведомления</h1>
-                    <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Управление каналами связи и триггерами системы</p>
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
+                        <Bell className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Уведомления</h1>
+                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Управление каналами связи и триггерами системы</p>
+                    </div>
                 </div>
                 <Button
                     onClick={handleSave}
@@ -236,7 +244,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 {item.icon}
                             </div>
                             <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic group-hover:text-primary transition-colors">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-primary transition-colors">
                                 {(settings.events[item.key] || settings.telegram[`notifyOn${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`]) ? "Активно" : "Выключено"}
                             </p>
                         </div>

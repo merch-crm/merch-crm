@@ -38,22 +38,21 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
             return vA - vB;
         });
 
-    const itemsByCategory = topLevelCategories.map(category => ({
-        ...category,
-        items: items.filter(item => {
-            // Include items directly in this category
-            if (item.categoryId === category.id) return true;
-            // Also include items from ALL subcategories of this category for the count
-            const childIds = subCategories.filter(sc => sc.parentId === category.id).map(sc => sc.id);
-            return item.categoryId && childIds.includes(item.categoryId);
-        }),
-        children: subCategories.filter(sc => sc.parentId === category.id).map(sc => ({
-            ...sc,
-            items: items.filter(i => i.categoryId === sc.id)
-        }))
-    }));
+    const itemsByCategory = topLevelCategories.map(category => {
+        // Find subcategories
+        const children = subCategories.filter(sc => sc.parentId === category.id);
 
-    const orphanedItems = items.filter(item => !item.categoryId);
+        // Sum itemCount: category itself + its directly subcategories
+        const totalItemsCount = (category as any).itemCount +
+            children.reduce((sum, child) => sum + ((child as any).itemCount || 0), 0);
+
+        return {
+            ...category,
+            itemCount: totalItemsCount,
+            children: children
+        };
+    });
+
 
     const handleEditCategory = (cat: Category) => {
         if (cat.id === "orphaned") return;
@@ -74,18 +73,6 @@ export function InventoryClient({ items, categories, user }: InventoryClientProp
                     />
                 ))}
 
-                {orphanedItems.length > 0 && (
-                    <CategoryCard
-                        category={{
-                            id: "orphaned",
-                            name: "Без категории",
-                            items: orphanedItems,
-                            description: "Позиции без привязки к категории",
-                            color: "slate",
-                            icon: "box"
-                        }}
-                    />
-                )}
             </div>
             {editingCategory && (
                 <EditCategoryDialog
@@ -107,7 +94,7 @@ function CategoryCard({
     category,
     onEdit,
 }: {
-    category: Category & { items: InventoryItem[], children?: Category[] },
+    category: Category & { children?: Category[] },
     onEdit?: (cat: Category) => void,
 }) {
     const router = useRouter();
@@ -123,7 +110,7 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group glass-panel p-6 cursor-pointer flex flex-col gap-4 overflow-hidden relative focus:outline-none focus:ring-0 transition-all duration-500 hover:border-primary/30"
+            className="group bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 cursor-pointer flex flex-col gap-4 overflow-hidden relative focus:outline-none focus:ring-0 transition-all duration-500 hover:border-primary/30"
         >
 
             <div className="flex items-start justify-between relative z-10">
@@ -140,7 +127,7 @@ function CategoryCard({
                         </h3>
                         <div className="flex items-center gap-2 mt-2">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-slate-500 transition-colors duration-500">
-                                {category.items.length} {pluralize(category.items.length, 'позиция', 'позиции', 'позиций')}
+                                {category.itemCount || 0} {pluralize(category.itemCount || 0, 'позиция', 'позиции', 'позиций')}
                             </span>
                         </div>
                     </div>

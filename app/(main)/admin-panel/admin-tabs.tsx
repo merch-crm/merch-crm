@@ -8,7 +8,6 @@ import {
     Building,
     HardDrive,
     Palette,
-    Ticket,
     ChevronRight,
     LayoutGrid,
     Bell,
@@ -43,8 +42,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
         { name: "Отделы", href: "/admin-panel/departments", icon: Building },
         { name: "Роли и права", href: "/admin-panel/roles", icon: Shield },
         { name: "Уведомления", href: "/admin-panel/notifications", icon: Bell },
-        { name: "Брендинг", href: "/admin-panel/branding", icon: Palette },
-        { name: "Промокоды", href: "/admin-panel/promocodes", icon: Ticket },
+        { name: "Внешний вид", href: "/admin-panel/branding", icon: Palette },
         { name: "Хранилище", href: "/admin-panel/storage", icon: HardDrive },
         { name: "Мониторинг", href: "/admin-panel/monitoring", icon: Settings },
     ];
@@ -73,20 +71,20 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                             className={cn(
                                 "absolute left-0 top-1/2 -translate-y-1/2 w-1.5 rounded-r-full transition-all duration-500 ease-out z-20",
                                 isActive
-                                    ? "h-6 bg-[#5d00ff] opacity-100 shadow-[0_0_20px_rgba(93,0,255,0.6)]"
-                                    : "h-0 bg-[#5d00ff]/50 opacity-0 group-hover:h-4 group-hover:opacity-80 group-hover:shadow-[0_0_15px_rgba(93,0,255,0.4)]"
+                                    ? "h-6 bg-primary opacity-100 shadow-[0_0_20px_var(--primary)] text-primary"
+                                    : "h-0 bg-primary/50 opacity-0 group-hover:h-4 group-hover:opacity-80 group-hover:shadow-[0_0_15px_var(--primary)]"
                             )}
                             style={{ left: '-6px' }}
                         />
 
                         <div className={cn(
-                            "absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#5d00ff]/10 to-transparent pointer-events-none transition-opacity duration-500",
+                            "absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none transition-opacity duration-500",
                             isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                         )} />
 
                         <item.icon className={cn(
                             "w-6 h-6 relative z-10 transition-all duration-300",
-                            isActive ? "text-[#5d00ff] scale-110" : "text-slate-500 group-hover:text-slate-300"
+                            isActive ? "text-primary scale-110" : "text-slate-500 group-hover:text-slate-300"
                         )} />
 
                         <span className="relative z-10 tracking-normal transition-transform duration-300 group-hover:translate-x-1">
@@ -96,7 +94,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                         <ChevronRight className={cn(
                             "ml-auto w-5 h-5 relative z-10 transition-all duration-500",
                             isActive
-                                ? "opacity-100 text-[#5d00ff] translate-x-0"
+                                ? "opacity-100 text-primary translate-x-0"
                                 : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-slate-600"
                         )} />
                     </button>

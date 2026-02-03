@@ -115,7 +115,10 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap text-right">
                                         <span className="text-[10px] font-bold text-slate-300">
-                                            {format(new Date(tx.createdAt), "dd.MM.yy HH:mm")}
+                                            {(() => {
+                                                const d = new Date(tx.createdAt);
+                                                return isNaN(d.getTime()) ? "—" : format(d, "dd.MM.yy HH:mm");
+                                            })()}
                                         </span>
                                     </td>
                                 </tr>
@@ -140,7 +143,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Header / Controls - Photo 2 Style */}
-            <div className="crm-filter-tray gap-6 mb-8">
+            <div className="crm-filter-tray-light">
                 {/* Search Input Box */}
                 <div className="relative flex-1">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -152,7 +155,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full h-11 bg-white border-none rounded-[var(--radius-inner)] pl-14 pr-10 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none transition-all shadow-sm"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
                     />
                     {searchQuery && (
                         <button
@@ -168,7 +171,8 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                 </div>
 
                 {/* Filters - Right Aligned */}
-                <div className="flex items-center px-1 gap-2">
+                <div className="flex items-center gap-[6px]">
+                    <div className="w-px h-6 bg-slate-500/40 mx-1" />
                     {[
                         { id: null, label: 'Все' },
                         { id: 'in', label: 'Приход' },
@@ -184,14 +188,14 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     setCurrentPage(1);
                                 }}
                                 className={cn(
-                                    "relative px-6 py-2.5 rounded-[var(--radius-inner)] text-[13px] font-bold transition-all duration-300 whitespace-nowrap group",
-                                    isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                    "crm-filter-tray-tab",
+                                    isActive && "active"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
-                                        layoutId="activeTabHistory"
-                                        className="absolute inset-0 bg-primary rounded-[var(--radius-inner)] shadow-lg shadow-primary/25"
+                                        layoutId="activeItemHistoryTab"
+                                        className="absolute inset-0 bg-primary rounded-[16px] z-0"
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}

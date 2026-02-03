@@ -5,6 +5,9 @@ import { Bell, Check, Info, AlertCircle, CheckCircle2, AlertTriangle, ArrowRight
 import { cn } from "@/lib/utils";
 import { markAsRead, markAllAsRead } from "./actions";
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
+import { formatDate } from "@/lib/formatters";
 
 export interface Notification {
     id: string;
@@ -12,11 +15,12 @@ export interface Notification {
     message: string;
     type: "info" | "warning" | "success" | "error" | "transfer";
     isRead: boolean;
-    createdAt: Date;
+    createdAt: string | Date;
 }
 
 interface NotificationCenterProps {
     notifications: Notification[];
+    branding?: { dateFormat?: string; timezone?: string;[key: string]: any };
 }
 
 const typeConfig = {
@@ -27,7 +31,7 @@ const typeConfig = {
     transfer: { icon: ArrowRightLeft, color: "text-indigo-500", bg: "bg-indigo-50" },
 };
 
-export function NotificationCenter({ notifications }: NotificationCenterProps) {
+export function NotificationCenter({ notifications, branding }: NotificationCenterProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -65,88 +69,117 @@ export function NotificationCenter({ notifications }: NotificationCenterProps) {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "relative p-2.5 rounded-xl transition-all group",
-                    isOpen ? "bg-primary/10 text-primary" : "text-slate-400 hover:text-primary hover:bg-primary/10"
+                    "relative p-3 rounded-2xl transition-all duration-300 group",
+                    isOpen ? "bg-primary text-white shadow-lg shadow-primary/25" : "text-slate-400 hover:text-primary hover:bg-white hover:shadow-md hover:shadow-slate-200/50"
                 )}
             >
-                <Bell className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-110" />
+                <Bell className={cn("w-6 h-6 transition-transform duration-500", isOpen ? "rotate-12" : "group-hover:scale-110")} />
                 {unreadCount > 0 && (
-                    <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white animate-in fade-in zoom-in duration-300" />
+                    <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
                 )}
             </button>
 
             {/* Dropdown Panel */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+8px)] right-0 w-[380px] bg-white/90 backdrop-blur-xl border border-white/50 rounded-[18px] shadow-crm-xl z-[100] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-[calc(100%+16px)] -right-16 sm:right-0 w-[calc(100vw-32px)] sm:w-[420px] bg-white rounded-[28px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] ring-1 ring-slate-100 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 origin-top-right">
                     {/* Header */}
-                    <div className="p-4 border-b border-slate-200 flex items-center justify-between">
+                    <div className="p-8 pb-6 flex items-center justify-between bg-white z-10 relative">
                         <div>
-                            <h3 className="text-sm font-bold text-slate-900">Уведомления</h3>
-                            <p className="text-xs text-slate-400 mt-0.5">{unreadCount} непрочитанных</p>
+                            <h3 className="text-xl font-bold text-slate-900 tracking-normal">Уведомления</h3>
+                            <p className="text-slate-400 text-[10px] font-bold tracking-normal mt-1 uppercase">
+                                {unreadCount > 0
+                                    ? `${unreadCount} непрочитанных сообщений`
+                                    : "Все уведомления прочитаны"}
+                            </p>
                         </div>
                         {unreadCount > 0 && (
                             <button
                                 onClick={handleMarkAllAsRead}
                                 disabled={loading === "all"}
-                                className="text-xs font-bold text-#5d00ff hover:text-indigo-700 transition-colors disabled:opacity-50"
+                                className="h-9 px-4 rounded-[var(--radius-inner)] bg-primary/5 text-primary text-[10px] font-bold hover:bg-primary/10 transition-colors disabled:opacity-50 uppercase tracking-normal"
                             >
-                                {loading === "all" ? "..." : "Прочитать все"}
+                                {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
                             </button>
                         )}
                     </div>
 
                     {/* Notifications List */}
-                    <div className="max-h-[400px] overflow-y-auto">
+                    <div className="max-h-[450px] overflow-y-auto custom-scrollbar px-2 pb-2">
                         {notifications.length === 0 ? (
-                            <div className="p-8 text-center">
-                                <Bell className="w-12 h-12 mx-auto mb-3 text-slate-200" />
-                                <p className="text-sm text-slate-400">Нет уведомлений</p>
+                            <div className="py-16 text-center flex flex-col items-center justify-center">
+                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                    <Bell className="w-8 h-8 text-slate-300" />
+                                </div>
+                                <h4 className="text-slate-900 font-bold mb-1">Нет новых уведомлений</h4>
+                                <p className="text-sm text-slate-400 max-w-[200px] leading-relaxed">В данный момент у вас нет непрочитанных сообщений</p>
                             </div>
                         ) : (
-                            notifications.map((notification) => {
-                                const config = typeConfig[notification.type];
-                                const Icon = config.icon;
+                            <div className="space-y-1">
+                                {notifications.map((notification) => {
+                                    const config = typeConfig[notification.type];
+                                    const Icon = config.icon;
 
-                                return (
-                                    <div
-                                        key={notification.id}
-                                        className={cn(
-                                            "p-4 border-b border-slate-200 hover:bg-slate-50/50 transition-all group",
-                                            !notification.isRead && "bg-indigo-50/30"
-                                        )}
-                                    >
-                                        <div className="flex gap-3">
-                                            <div className={cn("w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0", config.bg)}>
-                                                <Icon className={cn("w-4 h-4", config.color)} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-start justify-between gap-2 mb-1">
-                                                    <h4 className="text-sm font-bold text-slate-900 leading-tight">{notification.title}</h4>
+                                    return (
+                                        <div
+                                            key={notification.id}
+                                            className={cn(
+                                                "p-4 rounded-[20px] transition-all group border border-transparent",
+                                                !notification.isRead ? "bg-primary/[0.03] hover:bg-primary/[0.06]" : "hover:bg-slate-50 hover:border-slate-100"
+                                            )}
+                                        >
+                                            <div className="flex gap-4">
+                                                {/* Icon */}
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm mt-1",
+                                                    config.bg
+                                                )}>
+                                                    <Icon className={cn("w-5 h-5", config.color)} />
+                                                </div>
+
+                                                {/* Content */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-4 mb-1">
+                                                        <h4 className={cn(
+                                                            "text-[14px] leading-snug transition-colors",
+                                                            !notification.isRead ? "font-extrabold text-slate-900" : "font-bold text-slate-700"
+                                                        )}>
+                                                            {notification.title}
+                                                        </h4>
+                                                        <span
+                                                            className="text-[11px] font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
+                                                            title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
+                                                        >
+                                                            {/* Show relative time if less than 24h, else showing formatted date */}
+                                                            {(Date.now() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
+                                                                ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: ru })
+                                                                : formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')
+                                                            }
+                                                        </span>
+                                                    </div>
+
+                                                    <p className="text-[13px] text-slate-500 leading-relaxed mb-3 pr-2 break-words">
+                                                        {notification.message}
+                                                    </p>
+
                                                     {!notification.isRead && (
                                                         <button
-                                                            onClick={() => handleMarkAsRead(notification.id)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleMarkAsRead(notification.id);
+                                                            }}
                                                             disabled={loading === notification.id}
-                                                            className="shrink-0 p-1 rounded-[6px] hover:bg-slate-100 transition-all opacity-0 group-hover:opacity-100"
-                                                            title="Отметить как прочитанное"
+                                                            className="flex items-center gap-1.5 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors bg-white px-2 py-1 rounded-lg border border-primary/10 hover:border-primary/20 shadow-sm"
                                                         >
-                                                            <Check className="w-3.5 h-3.5 text-slate-400" />
+                                                            <CheckCircle2 className="w-3.5 h-3.5" />
+                                                            Отметить прочитанным
                                                         </button>
                                                     )}
                                                 </div>
-                                                <p className="text-xs text-slate-600 leading-relaxed mb-2">{notification.message}</p>
-                                                <p className="text-[10px] text-slate-400 font-medium">
-                                                    {new Date(notification.createdAt).toLocaleString('ru-RU', {
-                                                        day: 'numeric',
-                                                        month: 'short',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit'
-                                                    })}
-                                                </p>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })
+                                    );
+                                })}
+                            </div>
                         )}
                     </div>
                 </div>

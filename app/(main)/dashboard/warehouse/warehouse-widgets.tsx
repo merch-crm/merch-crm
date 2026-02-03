@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2 } from "lucide-react";
+import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2, Loader2 } from "lucide-react";
 import { InventoryItem, Category } from "./types";
 import { Transaction } from "./history-table";
 
@@ -9,52 +9,37 @@ import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
 
 interface WarehouseWidgetsProps {
-    items: InventoryItem[];
-    archivedItems: InventoryItem[];
-    categories: Category[];
-    history: Transaction[];
+    stats: {
+        totalStock: number;
+        totalReserved: number;
+        archivedCount: number;
+        criticalItems: Array<{ id: string; name: string; quantity: number; unit: string }>;
+        activity: {
+            ins: number;
+            usage: number;
+            waste: number;
+            transfers: number;
+        };
+    };
 }
 
+export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
+    if (!stats) return null;
 
-export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWidgetsProps) {
-    const criticalItems = items.filter(item => item.quantity <= item.lowStockThreshold);
-
-    // Stats calculations
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-    const totalReserved = items.reduce((sum, item) => sum + (item.reservedQuantity || 0), 0);
-
-
-    // Real activity metrics within last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    thirtyDaysAgo.setHours(0, 0, 0, 0);
-
-    const recentTransactions = history.filter(t => new Date(t.createdAt) >= thirtyDaysAgo);
-
-    const recentIns = recentTransactions.filter(t => t.type === 'in').length;
-
-    // Расход: все "out", которые не списание брака
-    const recentUsage = recentTransactions.filter(t =>
-        t.type === 'out' &&
-        !t.reason?.toLowerCase().includes('брак') &&
-        !t.reason?.toLowerCase().includes('списание')
-    ).length;
-
-    // Списание: "out" с пометкой брак или списание
-    const recentWaste = recentTransactions.filter(t =>
-        t.type === 'out' &&
-        (t.reason?.toLowerCase().includes('брак') || t.reason?.toLowerCase().includes('списание'))
-    ).length;
-
-    // Перемещения: считаем пары за одну операцию (только записи об уходе)
-    const recentTransfers = recentTransactions.filter(t => t.type === 'transfer' && t.changeAmount < 0).length;
+    const {
+        totalStock = 0,
+        totalReserved = 0,
+        archivedCount = 0,
+        criticalItems = [],
+        activity = { ins: 0, usage: 0, waste: 0, transfers: 0 }
+    } = stats;
 
     return (
         <div className="space-y-4">
             {/* Top Row: Combined Stats & Expanded Deficit */}
             <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
                 {/* Combined Stats Block */}
-                <div className="col-span-12 lg:col-span-4 glass-panel p-6 flex flex-col justify-between">
+                <div className="col-span-12 lg:col-span-4 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col justify-between shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -70,7 +55,7 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                                 </div>
                                 <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">всего позиций на складе</span>
                             </div>
-                            <div className="text-xl font-black text-slate-900 tabular-nums">{totalItems}</div>
+                            <div className="text-xl font-black text-slate-900 tabular-nums">{totalStock}</div>
                         </div>
 
                         <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
@@ -90,14 +75,14 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                                 </div>
                                 <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Архив</span>
                             </div>
-                            <div className="text-xl font-black text-slate-900 tabular-nums">{archivedItems.length}</div>
+                            <div className="text-xl font-black text-slate-900 tabular-nums">{archivedCount}</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Expanded Deficit (Replenishment) */}
                 <div className={cn(
-                    "col-span-12 lg:col-span-8 glass-panel p-6 flex flex-col",
+                    "col-span-12 lg:col-span-8 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col shadow-sm",
                     criticalItems.length > 0 ? "!border-rose-200 ring-1 ring-rose-500/10" : ""
                 )}>
                     <div className="flex items-center justify-between mb-6">
@@ -164,7 +149,7 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
             </div>
 
             {/* Activity Trend - Ultra Compact Status Bar */}
-            <div className="glass-panel p-6 flex flex-col md:flex-row items-center gap-4 md:gap-10 transition-all">
+            <div className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col md:flex-row items-center gap-4 md:gap-10 transition-all shadow-sm">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200 shrink-0">
                         <Activity className="w-4.5 h-4.5" />
@@ -181,8 +166,8 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                             <ArrowUpRight className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{recentIns}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(recentIns, 'поставка', 'поставки', 'поставок')}</div>
+                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.ins}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.ins, 'поставка', 'поставки', 'поставок')}</div>
                         </div>
                     </div>
 
@@ -191,7 +176,7 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                             <ArrowDownRight className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{recentUsage}</div>
+                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.usage}</div>
                             <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">отгрузок</div>
                         </div>
                     </div>
@@ -201,8 +186,8 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                             <Trash2 className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{recentWaste}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(recentWaste, 'списание', 'списания', 'списаний')}</div>
+                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.waste}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.waste, 'списание', 'списания', 'списаний')}</div>
                         </div>
                     </div>
 
@@ -211,10 +196,90 @@ export function WarehouseWidgets({ items, archivedItems, history }: WarehouseWid
                             <ArrowLeftRight className="w-3 h-3" />
                         </div>
                         <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{recentTransfers}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(recentTransfers, 'перемещение', 'перемещения', 'перемещений')}</div>
+                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.transfers}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.transfers, 'перемещение', 'перемещения', 'перемещений')}</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export function WarehouseWidgetsSkeleton() {
+    return (
+        <div className="space-y-4">
+            {/* Top Row Skeleton */}
+            <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
+                {/* Stats Skeleton */}
+                <div className="col-span-12 lg:col-span-4 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
+                        <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                            <Layers className="w-4 h-4 text-indigo-600 opacity-50" />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                        {[
+                            { icon: Package, color: "text-primary", bg: "bg-primary/10", label: "всего позиций на складе" },
+                            { icon: Clock, color: "text-orange-500", bg: "bg-orange-50", label: "Зарезервировано" },
+                            { icon: Clock, color: "text-slate-500", bg: "bg-slate-100", label: "Архив" }
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-8 h-8 rounded-[var(--radius-inner)] ${item.bg} flex items-center justify-center`}>
+                                        <item.icon className={`w-4 h-4 ${item.color}`} />
+                                    </div>
+                                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">{item.label}</span>
+                                </div>
+                                <Loader2 className="w-4 h-4 text-slate-300 animate-spin" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Replenishment Skeleton */}
+                <div className="col-span-12 lg:col-span-8 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                                <TrendingUp className="w-5 h-5 text-emerald-500 opacity-50" />
+                            </div>
+                            <div>
+                                <div className="h-5 w-32 bg-slate-100 rounded animate-pulse mb-2" />
+                                <div className="h-3 w-48 bg-slate-100 rounded animate-pulse" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 flex items-center justify-center border border-dashed border-slate-200 rounded-[var(--radius-inner)] bg-slate-50/50 min-h-[140px]">
+                        <div className="flex flex-col items-center gap-3 opacity-50">
+                            <Loader2 className="w-8 h-8 text-slate-300 animate-spin" />
+                            <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Activity Skeleton */}
+            <div className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex items-center gap-10 shadow-sm">
+                <div className="flex items-center gap-4 shrink-0">
+                    <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200">
+                        <Activity className="w-4.5 h-4.5" />
+                    </div>
+                    <div>
+                        <div className="h-4 w-32 bg-slate-100 rounded animate-pulse mb-1" />
+                    </div>
+                </div>
+                <div className="flex gap-8">
+                    {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="flex items-center gap-3">
+                            <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-slate-100 animate-pulse" />
+                            <div className="space-y-1">
+                                <Loader2 className="w-4 h-4 text-slate-300 animate-spin" />
+                                <div className="h-2 w-16 bg-slate-100 rounded animate-pulse" />
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

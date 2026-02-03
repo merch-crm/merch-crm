@@ -190,7 +190,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                             {client.comments && (
                                 <div className="pt-4 border-t border-slate-200">
                                     <div className="text-[10px] font-bold text-slate-400  tracking-normal mb-2">Комментарий</div>
-                                    <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded-[18px] italic">
+                                    <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded-[18px]">
                                         &quot;{client.comments}&quot;
                                     </div>
                                 </div>

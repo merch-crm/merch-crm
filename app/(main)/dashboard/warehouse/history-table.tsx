@@ -10,6 +10,7 @@ import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, Arr
 import { deleteInventoryTransactions } from "./actions";
 
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -118,10 +119,12 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             const res = await deleteInventoryTransactions(selectedIds);
             if (res.success) {
                 toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }), "success");
+                playSound("notification_success");
                 setSelectedIds([]);
                 setIsDeleteDialogOpen(false);
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         } finally {
             setIsDeleting(false);
@@ -144,8 +147,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     return (
         <div className="space-y-6 relative pb-20">
-            {/* Toolbar Panel - Photo 2 Style */}
-            <div className="crm-filter-tray gap-6 mb-6">
+            {/* Toolbar Panel */}
+            <div className="crm-filter-tray">
                 {/* Left: Search Box */}
                 <div className="relative flex-1">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -157,7 +160,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full h-11 bg-white border-none !rounded-[var(--radius-inner)] pl-12 pr-10 text-sm font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none transition-all shadow-sm"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
                     />
                     {searchQuery && (
                         <button
@@ -173,8 +176,9 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 </div>
 
                 {/* Right: Filters & Actions */}
-                <div className="flex flex-wrap items-center gap-4 w-full md:w-fit order-none md:order-1 px-1">
-                    <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-[6px]">
+                    <div className="w-px h-6 bg-slate-500/40 mx-1" />
+                    <div className="flex items-center gap-[6px]">
                         {[
                             { id: "all", label: "Все" },
                             { id: "in", label: "Приход" },
@@ -183,31 +187,32 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             { id: "attribute_change", label: "Изменения" },
                             { id: "archive", label: "Архив" },
                             { id: "restore", label: "Восстановление" },
-                        ].map(f => (
-                            <button
-                                key={f.id}
-                                onClick={() => {
-                                    setActiveFilter(f.id as typeof activeFilter);
-                                    setCurrentPage(1);
-                                }}
-                                className={cn(
-                                    "relative px-6 py-2.5 rounded-[12px] text-sm font-bold transition-all duration-300 whitespace-nowrap group hover:scale-[1.02]",
-                                    activeFilter === f.id ? "text-white" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
-                                )}
-                            >
-                                {activeFilter === f.id && (
-                                    <motion.div
-                                        layoutId="activeTabHistoryTable"
-                                        className="absolute inset-0 bg-primary rounded-[12px] shadow-lg shadow-primary/25"
-                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                    />
-                                )}
-                                <span className="relative z-10">{f.label}</span>
-                            </button>
-                        ))}
+                        ].map(f => {
+                            const isActive = activeFilter === f.id;
+                            return (
+                                <button
+                                    key={f.id}
+                                    onClick={() => {
+                                        setActiveFilter(f.id as typeof activeFilter);
+                                        setCurrentPage(1);
+                                    }}
+                                    className={cn(
+                                        "crm-filter-tray-tab",
+                                        isActive && "active"
+                                    )}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeFilterHistory"
+                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">{f.label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
-
-
                 </div>
             </div>
 
@@ -224,11 +229,9 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 transition={{ duration: 0.5 }}
                                 className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
                                 style={{
-                                    backdropFilter: 'blur(40px)',
-                                    WebkitBackdropFilter: 'blur(40px)',
                                     maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
                                     WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                    background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                                    background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
                                 }}
                             />
                             <motion.div
@@ -236,7 +239,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                                 exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                                 transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                                className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                                className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white p-2 gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
                             >
                                 <div className="flex items-center gap-3 px-2">
                                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
@@ -263,6 +266,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 { header: "Дата", key: (t) => new Date(t.createdAt) }
                                             ]);
                                             toast("Экспорт завершен", "success");
+                                            playSound("notification_success");
                                         }}
                                         className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
                                     >
@@ -294,7 +298,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     )}
                 </AnimatePresence>,
                 document.body
-            )}
+            )
+            }
             <div className="glass-panel overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">

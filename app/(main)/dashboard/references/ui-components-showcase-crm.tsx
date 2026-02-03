@@ -178,7 +178,7 @@ export default function UiComponentsShowcaseCRM() {
                                 ))}
                             </div>
                             <div className="flex-1 p-6">
-                                <p className="text-sm font-medium text-slate-900 leading-relaxed italic opacity-40">
+                                <p className="text-sm font-medium text-slate-900 leading-relaxed opacity-40">
                                     Capture your vision here...
                                 </p>
                             </div>

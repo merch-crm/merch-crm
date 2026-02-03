@@ -120,8 +120,8 @@ export function PremiumSelect({
                                 compact ? "h-10 px-3.5" : "h-11 px-4",
                                 open && "ring-4 ring-primary/5 border-primary/20 shadow-md"
                             ] : [
-                                "bg-white rounded-[var(--radius-inner)] shadow-sm hover:shadow-md h-11 px-5 border-none",
-                                open && "shadow-md ring-4 ring-primary/5 border-primary/20"
+                                "bg-white rounded-[var(--radius-inner)] h-11 px-5 border border-slate-200/60 hover:border-slate-300",
+                                open && "ring-4 ring-primary/5 border-primary/20"
                             ]
                         )}
                     >

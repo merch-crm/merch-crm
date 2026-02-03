@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { refundOrder } from "../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import {
     Dialog,
     DialogContent,
@@ -32,10 +33,12 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
     const handleRefund = async () => {
         if (!amount || Number(amount) <= 0) {
             toast("Укажите корректную сумму", "error");
+            playSound("notification_error");
             return;
         }
         if (!reason) {
             toast("Укажите причину возврата", "error");
+            playSound("notification_error");
             return;
         }
 
@@ -45,10 +48,12 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
 
         if (res.success) {
             toast("Возврат оформлен", "success");
+            playSound("expense_added");
             setIsOpen(false);
             window.location.reload();
         } else {
             toast(res.error || "Ошибка при оформлении возврата", "error");
+            playSound("notification_error");
         }
     };
 
@@ -91,7 +96,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                 </div>
                 <DialogFooter className="gap-3 sm:gap-0">
                     <Button variant="outline" onClick={() => setIsOpen(false)} className="h-11 flex-1 rounded-[var(--radius-inner)] font-bold text-sm">Отмена</Button>
-                    <Button onClick={handleRefund} disabled={isPending} className="h-11 flex-[1.5] rounded-[var(--radius-inner)] font-bold text-sm btn-destructive">
+                    <Button variant="destructive" onClick={handleRefund} disabled={isPending} className="h-11 flex-[1.5] rounded-[var(--radius-inner)] font-bold text-sm">
                         {isPending ? "Обработка..." : "Подтвердить возврат"}
                     </Button>
                 </DialogFooter>

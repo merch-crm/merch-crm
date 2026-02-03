@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -14,10 +14,16 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
-    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
 
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(currentMonth);
+    useEffect(() => {
+        setCurrentMonth(new Date());
+    }, []);
+
+    const monthToRender = currentMonth || new Date();
+
+    const monthStart = startOfMonth(monthToRender);
+    const monthEnd = endOfMonth(monthToRender);
     const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
     const getTasksForDay = (day: Date) => {
@@ -54,7 +60,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900 tracking-normal">
-                            {format(currentMonth, "LLLL yyyy", { locale: ru })}
+                            {format(monthToRender, "LLLL yyyy", { locale: ru })}
                         </h2>
                         <p className="text-xs font-bold text-slate-400  tracking-normal">
                             Календарь задач
@@ -64,7 +70,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                        onClick={() => setCurrentMonth(subMonths(monthToRender, 1))}
                         className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
                     >
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
@@ -76,7 +82,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                         СЕГОДНЯ
                     </button>
                     <button
-                        onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                        onClick={() => setCurrentMonth(addMonths(monthToRender, 1))}
                         className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
                     >
                         <ChevronRight className="w-5 h-5 text-slate-400" />
@@ -99,7 +105,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             <div className="grid grid-cols-7 gap-2 flex-1">
                 {days.map((day) => {
                     const dayTasks = getTasksForDay(day);
-                    const isCurrentMonth = isSameMonth(day, currentMonth);
+                    const isCurrentMonth = isSameMonth(day, monthToRender);
                     const isCurrentDay = isToday(day);
 
                     return (

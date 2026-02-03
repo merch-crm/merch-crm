@@ -14,6 +14,7 @@ interface PremiumPaginationProps {
     className?: string;
     itemName?: string;
     itemNames?: [string, string, string];
+    variant?: "default" | "light";
 }
 
 export function PremiumPagination({
@@ -23,7 +24,8 @@ export function PremiumPagination({
     onPageChange,
     className,
     itemName = "позиций",
-    itemNames
+    itemNames,
+    variant = "light"
 }: PremiumPaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -87,23 +89,26 @@ export function PremiumPagination({
                     <ChevronLeft className="w-5 h-5" />
                 </button>
 
-                <div className="crm-filter-tray">
+                <div className={cn(
+                    variant === "light" ? "crm-filter-tray-light" : "crm-filter-tray",
+                    "!rounded-full"
+                )}>
                     {getPages().map((page, idx) => (
                         <React.Fragment key={idx}>
                             {typeof page === "number" ? (
                                 <button
                                     onClick={() => handlePageChange(page)}
                                     className={cn(
-                                        "w-9 h-9 rounded-[10px] text-[13px] font-black transition-all active:scale-90",
+                                        "w-11 h-11 rounded-full text-[13px] font-black transition-all active:scale-90 flex items-center justify-center",
                                         currentPage === page
-                                            ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10"
-                                            : "text-slate-400 hover:text-slate-900 hover:bg-white"
+                                            ? "bg-slate-950 text-white shadow-lg shadow-slate-900/10"
+                                            : "text-slate-500/80 hover:text-slate-950 hover:bg-white/50"
                                     )}
                                 >
                                     {page}
                                 </button>
                             ) : (
-                                <div className="w-9 h-9 flex items-center justify-center text-slate-300">
+                                <div className="w-11 h-11 flex items-center justify-center text-slate-400">
                                     <MoreHorizontal className="w-4 h-4" />
                                 </div>
                             )}

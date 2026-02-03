@@ -147,6 +147,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             </tbody>
                             {showFinancials && (
                                 <tfoot className="bg-slate-50/80">
+                                    {Number(order.discountAmount || 0) > 0 && (
+                                        <tr>
+                                            <td colSpan={3} className="px-8 py-3 text-right text-xs font-bold text-slate-400  tracking-wider">Скидка:</td>
+                                            <td className="px-8 py-3 text-right text-sm text-rose-500 font-bold">-{order.discountAmount} ₽</td>
+                                        </tr>
+                                    )}
                                     <tr>
                                         <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500  tracking-wider">Итого к оплате:</td>
                                         <td className="px-8 py-6 text-right text-2xl text-primary font-bold">{order.totalAmount} ₽</td>
@@ -232,7 +238,25 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-slate-500">Общая сумма:</span>
+                                    <span className="text-slate-500">Сумма товаров:</span>
+                                    <span className="font-bold text-slate-400">{(Number(order.totalAmount) + Number(order.discountAmount || 0)).toFixed(2)} ₽</span>
+                                </div>
+                                {order.promocode && (
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500 font-bold">Промокод:</span>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="font-bold text-slate-900">{order.promocode.code}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {Number(order.discountAmount || 0) > 0 && (
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500 font-bold">Скидка:</span>
+                                        <span className="font-bold text-rose-500">-{order.discountAmount} ₽</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-500">Итого:</span>
                                     <span className="font-bold text-slate-900">{order.totalAmount} ₽</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">

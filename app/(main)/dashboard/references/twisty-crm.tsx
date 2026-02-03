@@ -21,7 +21,7 @@ export default function TwistyCRM() {
             {/* --- HEADER --- */}
             <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg italic">
+                    <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg">
                         T
                     </div>
                     <span className="font-bold text-lg tracking-normal">TWISTY</span>

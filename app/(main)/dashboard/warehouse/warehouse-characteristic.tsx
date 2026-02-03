@@ -3,16 +3,14 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Plus, Trash, Check, Pencil, Book, Settings, Pipette } from "lucide-react";
-import { HexColorPicker } from "react-colorful";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { Plus, Settings, Check, Book, Pencil, Trash, Lock, Pipette, BookOpen } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";
-import { Lock } from "lucide-react";
 import { Session } from "@/lib/auth";
 import { InventoryAttribute as Attribute, AttributeType } from "./types";
 
@@ -94,17 +92,30 @@ interface Category {
     parentId?: string | null;
 }
 
-interface DictionaryProps {
+interface CharacteristicProps {
     attributes?: Attribute[];
     attributeTypes?: AttributeType[];
     categories?: Category[];
     user?: Session | null;
 }
 
-export function WarehouseDictionary({ attributes = [], attributeTypes = [], categories = [], user }: DictionaryProps) {
+export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], categories = [], user }: CharacteristicProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const rootCategories = categories.filter(c => !c.parentId);
+
+    // Explicitly sort categories to match the main warehouse view
+    const desiredOrder = ["Одежда", "Упаковка", "Расходники"];
+    const rootCategories = categories
+        .filter(c => !c.parentId)
+        .sort((a, b) => {
+            const indexA = desiredOrder.indexOf(a.name);
+            const indexB = desiredOrder.indexOf(b.name);
+            if (indexA === -1 && indexB === -1) return 0;
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+
     const hasUncategorized = attributeTypes.some(t => !t.categoryId);
 
     const [activeCategoryId, setActiveCategoryId] = useState<string>(() => {
@@ -407,7 +418,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                             return (
                                 <div
                                     key={type.id}
-                                    className="glass-panel group flex flex-col h-full p-6"
+                                    className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col h-full group shadow-sm"
                                 >
                                     <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-200">
                                         <div className="flex items-center gap-3">
@@ -456,7 +467,7 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                                                 </button>
                                             ))}
                                             {typeAttributes.length === 0 && (
-                                                <div className="text-sm text-slate-400 italic py-2">Нет значений</div>
+                                                <div className="text-sm text-slate-400 py-2">Нет значений</div>
                                             )}
                                         </div>
                                     </div>
@@ -710,42 +721,11 @@ export function WarehouseDictionary({ attributes = [], attributeTypes = [], cate
                         </div>
 
                         {targetTypeSlug === "color" && (
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Цвет (Hex)</label>
-                                <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-[var(--radius-inner)] shadow-sm">
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <button type="button" className="relative w-11 h-11 shrink-0 group active:scale-95 transition-transform">
-                                                <div
-                                                    className="w-full h-full rounded-lg border-2 border-white shadow-md ring-1 ring-slate-100 transition-all group-hover:ring-primary/30"
-                                                    style={{ backgroundColor: newItemColorHex }}
-                                                />
-                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10 rounded-lg">
-                                                    <Pipette className="w-3.5 h-3.5 text-white drop-shadow-md" />
-                                                </div>
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-56 p-2 bg-white shadow-2xl rounded-[var(--radius-inner)] border-slate-200 z-[10000]" side="top" align="start">
-                                            <div className="custom-color-picker">
-                                                <HexColorPicker color={newItemColorHex} onChange={setNewItemColorHex} className="!w-full !h-36" />
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <div className="relative flex-1">
-                                        <input
-                                            value={newItemColorHex}
-                                            onChange={e => {
-                                                const val = e.target.value;
-                                                if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
-                                                    setNewItemColorHex(val);
-                                                }
-                                            }}
-                                            className="w-full h-11 px-4 font-mono text-sm font-bold text-slate-900 bg-slate-50 border-none rounded-[var(--radius-inner)] focus:ring-2 focus:ring-slate-200 transition-all outline-none"
-                                        />
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-slate-300">Hex</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ColorPicker
+                                label="Цвет (Hex)"
+                                color={newItemColorHex}
+                                onChange={setNewItemColorHex}
+                            />
                         )}
 
                         <div className="space-y-3 bg-white p-4 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">

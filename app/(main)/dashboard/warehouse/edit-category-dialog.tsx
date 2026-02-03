@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createElement } from "react";
-import { X, Check, Trash2, ChevronDown, AlertCircle } from "lucide-react";
+import { X, Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
@@ -11,7 +11,7 @@ import { Session } from "@/lib/auth";
 
 
 import { Category } from "./types";
-import { getCategoryIcon, getColorStyles, ICONS, COLORS, getIconNameFromName, ICON_GROUPS } from "./category-utils";
+import { getCategoryIcon, getColorStyles, COLORS, getIconNameFromName } from "./category-utils";
 
 interface EditCategoryDialogProps {
     category: Category & { prefix?: string | null, isSystem?: boolean };
@@ -25,16 +25,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
     const [isPending, setIsPending] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const [selectedIcon, setSelectedIcon] = useState(() => {
-        if (category.icon) return category.icon;
-        return getIconNameFromName(category.name);
-    });
+    const [categoryName, setCategoryName] = useState(category.name);
     const [selectedColor, setSelectedColor] = useState(category.color || "primary");
     const selectedParentId = category.parentId || "";
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
-    const [showIcons, setShowIcons] = useState(false);
-
     const [subPending, setSubPending] = useState(false);
 
     const router = useRouter();
@@ -49,7 +44,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setError(null);
 
         const formData = new FormData(event.currentTarget);
-        formData.set("icon", selectedIcon || "");
+        const nameInput = (event.currentTarget.elements.namedItem("name") as HTMLInputElement).value;
+        formData.set("icon", getIconNameFromName(nameInput));
         formData.set("color", selectedColor);
         formData.set("parentId", selectedParentId);
 
@@ -114,7 +110,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shadow-sm shrink-0", getColorStyles(selectedColor))}>
-                            {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-6 h-6" })}
+                            {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6" })}
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
@@ -151,6 +147,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 required
                                 defaultValue={category.name}
                                 placeholder="Напр. Футболки"
+                                onChange={(e) => setCategoryName(e.target.value)}
                                 className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50/30 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
                             />
                         </div>
@@ -169,60 +166,13 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 overflow-visible">
-                        <div className="relative p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 overflow-visible shadow-sm">
+                        <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 overflow-visible shadow-sm">
                             <span className="text-sm font-bold text-slate-500 leading-none">Иконка</span>
-                            <div className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-3 overflow-hidden">
-                                    <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5", getColorStyles(selectedColor))}>
-                                        {createElement(getCategoryIcon({ icon: selectedIcon, name: category.name }), { className: "w-5 h-5" })}
-                                    </div>
-                                    <span className="text-[11px] font-bold text-slate-700 truncate">
-                                        {ICONS.find(i => i.name === selectedIcon)?.label || "Авто"}
-                                    </span>
+                            <div className="flex items-center justify-center py-2">
+                                <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5", getColorStyles(selectedColor))}>
+                                    {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5" })}
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowIcons(!showIcons)}
-                                    className="h-8 w-8 rounded-[var(--radius-inner)] border border-slate-200 bg-white hover:border-primary/30 transition-all flex items-center justify-center shrink-0 active:scale-95 shadow-sm group"
-                                >
-                                    <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform duration-300 group-hover:text-primary", showIcons && "rotate-180")} />
-                                </button>
                             </div>
-
-                            {showIcons && (
-                                <div className="absolute top-[105%] left-0 w-[300px] z-[70] bg-white rounded-[var(--radius-inner)] shadow-2xl border border-slate-200 p-4 animate-in fade-in zoom-in-95 duration-200 max-h-[320px] overflow-y-auto custom-scrollbar ring-1 ring-slate-900/5">
-                                    <div className="space-y-5">
-                                        {ICON_GROUPS.map((group) => (
-                                            <div key={group.id} className="space-y-3">
-                                                <div className="text-[9px] font-bold text-slate-400 px-1">{group.label}</div>
-                                                <div className="grid grid-cols-5 gap-2">
-                                                    {group.icons.map((item) => {
-                                                        const Icon = item.icon;
-                                                        const isSelected = selectedIcon === item.name;
-                                                        return (
-                                                            <button
-                                                                key={item.name}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    setSelectedIcon(item.name);
-                                                                    setShowIcons(false);
-                                                                }}
-                                                                className={cn(
-                                                                    "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center transition-all bg-slate-50 border border-slate-200 hover:bg-white hover:border-primary/50 hover:shadow-md hover:text-primary active:scale-95 group/icon",
-                                                                    isSelected && "bg-primary border-primary text-white hover:bg-primary hover:text-white shadow-lg shadow-primary/20"
-                                                                )}
-                                                                title={item.label}
-                                                            >
-                                                                <Icon className="w-4.5 h-4.5 group-hover/icon:scale-110 transition-transform" />
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
                         <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">

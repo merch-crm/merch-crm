@@ -11,6 +11,7 @@ const routeLabels: Record<string, string> = {
     orders: "Заказы",
     clients: "Клиенты",
     warehouse: "Склад",
+    categories: "Категории",
     items: "Товары",
     production: "Производство",
     design: "Дизайн",
@@ -25,8 +26,17 @@ const routeLabels: Record<string, string> = {
     promocodes: "Промокоды",
     monitoring: "Мониторинг",
     storage: "Хранилище",
+    characteristics: "Характеристики",
+    history: "История",
+    archive: "Архив",
     new: "Создание",
     profile: "Профиль",
+    salary: "Зарплата",
+    funds: "Фонды",
+    transactions: "Транзакции",
+    expenses: "Расходы",
+    pl: "P&L отчет",
+    sales: "Продажи",
 };
 
 export function Breadcrumbs() {

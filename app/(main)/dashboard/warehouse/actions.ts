@@ -14,10 +14,81 @@ import {
     inventoryAttributeTypes
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, sql, inArray, and, asc, isNotNull, lte, lt, ne, type InferInsertModel } from "drizzle-orm";
+import { desc, eq, sql, inArray, and, asc, isNotNull, isNull, lte, lt, gte, ne, type InferInsertModel } from "drizzle-orm";
 import { AnyPgColumn } from "drizzle-orm/pg-core";
-import { getSession } from "@/lib/auth";
+import { getSession as getAuthSession } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
+import { InventoryItem } from "./types";
+
+export async function getSession() {
+    return await getAuthSession();
+}
+
+export async function getWarehouseStats() {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+        const [stockRes, archivedRes, criticalRes, activityRes] = await Promise.all([
+            db.select({
+                totalStock: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)`,
+                totalReserved: sql<number>`COALESCE(SUM(${inventoryItems.reservedQuantity}), 0)`,
+            }).from(inventoryItems).where(eq(inventoryItems.isArchived, false)),
+
+            db.select({ count: sql<number>`count(*)` })
+                .from(inventoryItems)
+                .where(eq(inventoryItems.isArchived, true)),
+
+            db.select({
+                id: inventoryItems.id,
+                name: inventoryItems.name,
+                quantity: inventoryItems.quantity,
+                unit: inventoryItems.unit
+            })
+                .from(inventoryItems)
+                .where(and(
+                    eq(inventoryItems.isArchived, false),
+                    sql`${inventoryItems.quantity} <= ${inventoryItems.lowStockThreshold}`
+                ))
+                .limit(20),
+
+            db.select({
+                type: inventoryTransactions.type,
+                reason: inventoryTransactions.reason,
+                count: sql<number>`count(*)`
+            })
+                .from(inventoryTransactions)
+                .where(gte(inventoryTransactions.createdAt, thirtyDaysAgo))
+                .groupBy(inventoryTransactions.type, inventoryTransactions.reason)
+        ]);
+
+        const stock = stockRes[0];
+        const activity = { ins: 0, usage: 0, waste: 0, transfers: 0 };
+        activityRes.forEach(row => {
+            if (row.type === 'in') activity.ins += Number(row.count);
+            else if (row.type === 'transfer') activity.transfers += Number(row.count);
+            else if (row.type === 'out') {
+                const isWaste = row.reason?.toLowerCase().includes('брак') || row.reason?.toLowerCase().includes('списание');
+                if (isWaste) activity.waste += Number(row.count);
+                else activity.usage += Number(row.count);
+            }
+        });
+
+        return {
+            data: {
+                totalStock: Number(stock?.totalStock || 0),
+                totalReserved: Number(stock?.totalReserved || 0),
+                archivedCount: Number(archivedRes[0]?.count || 0),
+                criticalItems: criticalRes,
+                activity
+            }
+        };
+    } catch (error) {
+        console.error("DEBUG: getWarehouseStats error", error);
+        return { error: "Failed to fetch warehouse statistics" };
+    }
+}
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { slugify } from "@/lib/utils";
@@ -184,16 +255,28 @@ async function saveFile(file: File | null, directoryPath: string): Promise<strin
 
 export async function getInventoryCategories() {
     try {
-        const categories = await db.query.inventoryCategories.findMany({
-            with: {
-                parent: true
-            },
-            orderBy: [
+        const categories = await db.select({
+            id: inventoryCategories.id,
+            name: inventoryCategories.name,
+            description: inventoryCategories.description,
+            icon: inventoryCategories.icon,
+            color: inventoryCategories.color,
+            parentId: inventoryCategories.parentId,
+            sortOrder: inventoryCategories.sortOrder,
+            itemCount: sql<number>`(
+                SELECT count(*)::int 
+                FROM ${inventoryItems} 
+                WHERE ${inventoryItems.categoryId} = ${inventoryCategories.id} 
+                AND ${inventoryItems.isArchived} = false
+            )`
+        })
+            .from(inventoryCategories)
+            .orderBy(
                 sql`CASE WHEN ${inventoryCategories.sortOrder} = 0 THEN 1 ELSE 0 END ASC`,
                 sql`${inventoryCategories.sortOrder} ASC`,
                 desc(inventoryCategories.createdAt)
-            ]
-        });
+            );
+
         return { data: categories };
     } catch (error) {
         console.error(error);
@@ -545,7 +628,7 @@ export async function getInventoryItems() {
             },
             orderBy: desc(inventoryItems.createdAt)
         });
-        return { data: items };
+        return { data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getInventoryItems error", error);
         return { error: "Failed to fetch inventory items" };
@@ -561,7 +644,7 @@ export async function getArchivedItems() {
             },
             orderBy: desc(inventoryItems.archivedAt)
         });
-        return { data: items };
+        return { data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getArchivedItems error", error);
         return { error: "Failed to fetch archived items" };
@@ -1908,7 +1991,7 @@ export async function regenerateAllItemSKUs() {
             const qualityName = getAttrName("quality", item.qualityCode);
             // Note: Material logic could be added here if we want it in name
 
-            // Note: We deliberately INCLUDE "Base" quality in the name now (unless hidden in dictionary)
+            // Note: We deliberately INCLUDE "Base" quality in the name now (unless hidden in characteristics)
             const nameParts = [
                 cat.name,
                 brandName,
@@ -2885,5 +2968,20 @@ export async function syncAllInventoryQuantities() {
     } catch (error) {
         console.error("Sync error:", error);
         return { error: "Ошибка при синхронизации остатков" };
+    }
+}
+
+export async function getOrphanedItemCount() {
+    try {
+        const result = await db.select({ count: sql<number>`count(*)` })
+            .from(inventoryItems)
+            .where(and(
+                isNull(inventoryItems.categoryId),
+                eq(inventoryItems.isArchived, false)
+            ));
+        return { count: Number(result[0]?.count || 0) };
+    } catch (error) {
+        console.error("Error getting orphaned item count:", error);
+        return { count: 0 };
     }
 }

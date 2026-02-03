@@ -47,9 +47,11 @@ interface BrandingSettings {
     logoUrl: string | null;
     primaryColor: string;
     faviconUrl: string | null;
+    currencySymbol?: string;
+    dateFormat?: string;
+    timezone?: string;
+    [key: string]: unknown;
 }
-
-
 
 import { Notification } from "@/components/notifications/notification-center";
 
@@ -66,13 +68,13 @@ export function Navbar({ user, branding, notifications }: {
     });
 
     return (
-        <header className="sticky top-0 z-50 p-3 md:p-4 md:px-6">
+        <header className="hidden md:block sticky top-0 z-50 p-3 md:p-4 md:px-6">
             <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center">
                 <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     {/* Left: Logo */}
                     <div className="flex items-center shrink-0">
                         <Link href="/dashboard" className="flex items-center gap-3 group">
-                            <div className="bg-primary rounded-[18px] p-2 shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                            <div className="bg-primary rounded-[18px] p-2 shadow-lg shadow-indigo-200 transition-all duration-500">
                                 {branding.logoUrl ? (
                                     <div className="relative h-5 w-5">
                                         <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" />
@@ -113,11 +115,11 @@ export function Navbar({ user, branding, notifications }: {
 
                     {/* Right Side: Notifications & Profile */}
                     <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
-                        <NotificationCenter notifications={notifications} />
+                        <NotificationCenter notifications={notifications} branding={branding} />
 
                         <div className="h-6 w-px bg-slate-200 mx-1 md:mx-2" />
 
-                        <UserNav user={user} />
+                        <UserNav user={user} branding={branding} />
                     </div>
                 </div>
             </div>

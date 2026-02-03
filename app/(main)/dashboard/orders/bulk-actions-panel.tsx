@@ -96,11 +96,9 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         transition={{ duration: 0.5 }}
                         className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
                         style={{
-                            backdropFilter: 'blur(40px)',
-                            WebkitBackdropFilter: 'blur(40px)',
                             maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
                             WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                            background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                            background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
                         }}
                     />
                     <motion.div
@@ -108,7 +106,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                         exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                        className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                        className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
                     >
 
                         {/* Selection Badge Section */}

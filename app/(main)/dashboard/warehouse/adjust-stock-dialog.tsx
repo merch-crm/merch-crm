@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 import { Plus, Minus, X, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
+import { playSound } from "@/lib/sounds";
 
 import { cn } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
@@ -97,13 +98,20 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                 finalCostPrice
             );
             if (res.success) {
+                if (type === "in") {
+                    playSound("stock_replenished");
+                } else {
+                    playSound("item_updated");
+                }
                 if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
                 onClose();
             } else {
                 setError(res.error || "Ошибка при обновлении");
+                playSound("notification_error");
             }
         } catch {
             setError("Произошла системная ошибка");
+            playSound("notification_error");
         } finally {
             setIsSubmitting(false);
         }
@@ -234,7 +242,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, onClose, initia
                                         {type === "in" ? "Цена закупки" : "Цена списания"}
                                     </label>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="bg-slate-50/50 border border-slate-200 rounded-[var(--radius-inner)] p-2.5 flex flex-col justify-center shadow-sm">
+                                        <div className="h-11 bg-slate-50/50 border border-slate-200 rounded-[var(--radius-inner)] p-2.5 flex flex-col justify-center shadow-sm">
                                             <span className="text-[8px] font-bold text-slate-400 text-center block leading-none">Тек. цена</span>
                                             <span className="text-sm font-bold text-slate-500 text-center block mt-1 leading-none tabular-nums">
                                                 {item.costPrice ? Number(item.costPrice).toLocaleString('ru-RU', { minimumFractionDigits: 0 }) : "---"}

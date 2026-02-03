@@ -4,15 +4,12 @@ import React from "react";
 
 // Custom Clothing Icons (designed for this CRM)
 import {
-    TshirtCustomIcon, HoodieCustomIcon, SweatshirtCustomIcon,
-    LongsleeveCustomIcon, AnorakCustomIcon, ZipHoodieCustomIcon,
-    PantsCustomIcon, PoloCustomIcon, CapCustomIcon,
+    TshirtCustomIcon, HoodieCustomIcon,
+    PantsCustomIcon, CapCustomIcon,
     PackagingCustomIcon, SuppliesCustomIcon, ToteBagCustomIcon,
-    BackpackCustomIcon, SocksCustomIcon, BeanieCustomIcon,
+    BackpackCustomIcon,
     JacketCustomIcon, SneakersCustomIcon,
-    ShortsCustomIcon, SkirtCustomIcon, VestCustomIcon,
-    GlovesCustomIcon, ScarfCustomIcon, BadgeCustomIcon,
-    StickerCustomIcon, MugCustomIcon, NotebookCustomIcon,
+    MugCustomIcon, NotebookCustomIcon,
     UmbrellaCustomIcon
 } from "../warehouse/custom-clothing-icons";
 
@@ -102,31 +99,17 @@ const phosphorIcons = [
 const customIcons = [
     { name: "TshirtCustomIcon", icon: TshirtCustomIcon, label: "Футболка" },
     { name: "HoodieCustomIcon", icon: HoodieCustomIcon, label: "Худи" },
-    { name: "SweatshirtCustomIcon", icon: SweatshirtCustomIcon, label: "Свитшот" },
-    { name: "LongsleeveCustomIcon", icon: LongsleeveCustomIcon, label: "Лонгслив" },
-    { name: "AnorakCustomIcon", icon: AnorakCustomIcon, label: "Анорак" },
-    { name: "ZipHoodieCustomIcon", icon: ZipHoodieCustomIcon, label: "Зип-худи" },
     { name: "PantsCustomIcon", icon: PantsCustomIcon, label: "Штаны" },
-    { name: "PoloCustomIcon", icon: PoloCustomIcon, label: "Поло" },
-    { name: "CapCustomIcon", icon: CapCustomIcon, label: "Кепка" },
-    { name: "PackagingCustomIcon", icon: PackagingCustomIcon, label: "Упаковка" },
-    { name: "SuppliesCustomIcon", icon: SuppliesCustomIcon, label: "Расходники" },
-    { name: "ToteBagCustomIcon", icon: ToteBagCustomIcon, label: "Шоппер" },
-    { name: "BackpackCustomIcon", icon: BackpackCustomIcon, label: "Рюкзак" },
-    { name: "SocksCustomIcon", icon: SocksCustomIcon, label: "Носки" },
-    { name: "BeanieCustomIcon", icon: BeanieCustomIcon, label: "Шапка" },
     { name: "JacketCustomIcon", icon: JacketCustomIcon, label: "Куртка" },
     { name: "SneakersCustomIcon", icon: SneakersCustomIcon, label: "Кроссовки" },
-    { name: "ShortsCustomIcon", icon: ShortsCustomIcon, label: "Шорты" },
-    { name: "SkirtCustomIcon", icon: SkirtCustomIcon, label: "Юбка" },
-    { name: "VestCustomIcon", icon: VestCustomIcon, label: "Жилетка" },
-    { name: "GlovesCustomIcon", icon: GlovesCustomIcon, label: "Перчатки" },
-    { name: "ScarfCustomIcon", icon: ScarfCustomIcon, label: "Шарф" },
-    { name: "BadgeCustomIcon", icon: BadgeCustomIcon, label: "Значок" },
-    { name: "StickerCustomIcon", icon: StickerCustomIcon, label: "Стикер" },
+    { name: "CapCustomIcon", icon: CapCustomIcon, label: "Кепка" },
+    { name: "BackpackCustomIcon", icon: BackpackCustomIcon, label: "Рюкзак" },
+    { name: "ToteBagCustomIcon", icon: ToteBagCustomIcon, label: "Шоппер" },
+    { name: "UmbrellaCustomIcon", icon: UmbrellaCustomIcon, label: "Зонт" },
+    { name: "PackagingCustomIcon", icon: PackagingCustomIcon, label: "Упаковка" },
+    { name: "SuppliesCustomIcon", icon: SuppliesCustomIcon, label: "Расходники" },
     { name: "MugCustomIcon", icon: MugCustomIcon, label: "Кружка" },
     { name: "NotebookCustomIcon", icon: NotebookCustomIcon, label: "Блокнот" },
-    { name: "UmbrellaCustomIcon", icon: UmbrellaCustomIcon, label: "Зонт" },
 ];
 
 const tablerIcons = [

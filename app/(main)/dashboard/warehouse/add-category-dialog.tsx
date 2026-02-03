@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, createElement } from "react";
-import { X, FolderPlus, Package, Check, ChevronDown, AlertCircle } from "lucide-react";
+import { X, FolderPlus, Package, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getIconNameFromName, getColorStyles, ICONS, COLORS, ICON_GROUPS, getCategoryIcon } from "./category-utils";
+import { getIconNameFromName, getColorStyles, getCategoryIcon, COLORS } from "./category-utils";
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -41,9 +41,6 @@ const generateCategoryPrefix = (name: string): string => {
 export function AddCategoryDialog({ parentId, buttonText = "Добавить категорию" }: { parentId?: string, buttonText?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [selectedIcon, setSelectedIcon] = useState("");
-    const [iconManuallySelected, setIconManuallySelected] = useState(false);
-    const [showIcons, setShowIcons] = useState(false);
     const [categoryName, setCategoryName] = useState("");
     const [categoryPrefix, setCategoryPrefix] = useState("");
     const [prefixManuallyEdited, setPrefixManuallyEdited] = useState(false);
@@ -71,7 +68,7 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
         setError(null);
         setFieldErrors({});
 
-        formData.set("icon", selectedIcon);
+        formData.set("icon", getIconNameFromName(name));
         formData.set("color", selectedColor);
         formData.set("parentId", _selectedParentId);
         const result = await addInventoryCategory(formData);
@@ -91,13 +88,11 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
                     setCategoryName("");
                     setCategoryPrefix("");
                     setPrefixManuallyEdited(false);
-                    setSelectedIcon("");
-                    setIconManuallySelected(false);
                     setFieldErrors({});
                     setError(null);
                     setIsOpen(true);
                 }}
-                className="h-11 btn-primary rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm border-none shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                className="h-11 btn-primary rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm border-none"
             >
                 <FolderPlus className="w-5 h-5" />
                 {buttonText}
@@ -114,10 +109,7 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
                         <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                             <div className="flex items-center gap-4">
                                 <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-all duration-500 shadow-sm border border-black/5", getColorStyles(selectedColor))}>
-                                    {(() => {
-                                        const Icon = ICONS.find(i => i.name === selectedIcon)?.icon || Package;
-                                        return <Icon className="w-6 h-6 text-white" />;
-                                    })()}
+                                    {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6" })}
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-bold text-slate-900 leading-tight">
@@ -147,9 +139,6 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
                                         onChange={(e) => {
                                             const name = e.target.value;
                                             setCategoryName(name);
-                                            if (!iconManuallySelected && name) {
-                                                setSelectedIcon(getIconNameFromName(name));
-                                            }
                                             if (!prefixManuallyEdited) {
                                                 setCategoryPrefix(generateCategoryPrefix(name));
                                             }
@@ -191,64 +180,13 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="relative p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-2 overflow-visible shadow-sm">
-                                    <label className="text-sm font-bold text-slate-500 ml-1">Визуализация</label>
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md", getColorStyles(selectedColor))}>
-                                                {createElement(getCategoryIcon({ icon: selectedIcon, name: categoryName }), { className: "w-5 h-5 text-white" })}
-                                            </div>
-                                            <div className="flex flex-col min-w-0">
-                                                <span className="text-[11px] font-bold text-slate-900 truncate mt-0.5">
-                                                    {ICONS.find(i => i.name === selectedIcon)?.label || "Авто"}
-                                                </span>
-                                                <span className="text-[9px] font-bold text-slate-400">Иконка</span>
-                                            </div>
+                                <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-2 overflow-visible shadow-sm">
+                                    <label className="text-sm font-bold text-slate-500 ml-1">Иконка</label>
+                                    <div className="flex items-center justify-center py-1">
+                                        <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md", getColorStyles(selectedColor))}>
+                                            {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5" })}
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowIcons(!showIcons)}
-                                            className="h-8 w-8 rounded-[var(--radius-inner)] border border-slate-200 bg-white hover:border-primary/30 hover:text-primary transition-all flex items-center justify-center shrink-0 active:scale-95 shadow-sm"
-                                        >
-                                            <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform", showIcons && "rotate-180")} />
-                                        </button>
                                     </div>
-
-                                    {showIcons && (
-                                        <div className="absolute top-[110%] left-0 w-[280px] z-[110] bg-white rounded-[var(--radius-inner)] shadow-2xl border border-slate-200 p-3 animate-in fade-in zoom-in-95 duration-200 max-h-[300px] overflow-y-auto custom-scrollbar">
-                                            <div className="space-y-4">
-                                                {ICON_GROUPS.map((group) => (
-                                                    <div key={group.id} className="space-y-2">
-                                                        <div className="text-[9px] font-bold text-slate-400 px-1">{group.label}</div>
-                                                        <div className="grid grid-cols-5 gap-1.5">
-                                                            {group.icons.map((item) => {
-                                                                const Icon = item.icon;
-                                                                const isSelected = selectedIcon === item.name;
-                                                                return (
-                                                                    <button
-                                                                        key={item.name}
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            setSelectedIcon(item.name);
-                                                                            setIconManuallySelected(true);
-                                                                            setShowIcons(false);
-                                                                        }}
-                                                                        className={cn(
-                                                                            "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center transition-all bg-slate-50 border border-slate-200 hover:bg-white hover:border-primary/50 hover:shadow-md hover:text-primary active:scale-95",
-                                                                            isSelected && "bg-primary border-primary text-white hover:bg-primary hover:text-white"
-                                                                        )}
-                                                                        title={item.label}
-                                                                    >
-                                                                        <Icon className="w-4 h-4" />
-                                                                    </button>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
 
                                 <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { updateOrderStatus } from "../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 const statuses = [
     { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-500", bgColor: "bg-blue-500", lightBg: "bg-blue-50" },
@@ -65,13 +66,24 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             const res = await updateOrderStatus(orderId, newStatusId, reason);
             if (res.error) {
                 toast(res.error, "error");
+                playSound("notification_error");
                 setStatusId(currentStatus); // Rollback local state
             } else {
                 toast(`Статус заказа успешно изменен на «${statuses.find(s => s.id === newStatusId)?.label}»`, "success", { mutation: true });
+
+                // Play appropriate sound based on new status
+                if (newStatusId === "done" || newStatusId === "shipped") {
+                    playSound("order_completed");
+                } else if (newStatusId === "cancelled") {
+                    playSound("order_cancelled");
+                } else {
+                    playSound("order_status_changed");
+                }
             }
         } catch (error) {
             console.error("Failed to update status", error);
             toast("Ошибка соединения с сервером", "error");
+            playSound("notification_error");
             setStatusId(currentStatus);
         } finally {
             setLoading(false);

@@ -66,7 +66,7 @@ export function CommandMenu() {
     const icons = {
         client: <User className="w-4 h-4 text-emerald-500" />,
         order: <ShoppingCart className="w-4 h-4 text-amber-500" />,
-        item: <Package className="w-4 h-4 text-[#5d00ff]" />,
+        item: <Package className="w-4 h-4 text-primary" />,
         user: <User className="w-4 h-4 text-blue-500" />,
         task: <CheckCircle2 className="w-4 h-4 text-rose-500" />,
         wiki: <Book className="w-4 h-4 text-slate-500" />,
@@ -110,10 +110,7 @@ export function CommandMenu() {
                                     onChange={(e) => handleSearch(e.target.value)}
                                 />
                                 <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-[12px] bg-white border border-slate-200 text-[10px] font-black text-slate-400 shadow-sm">
-                                        <Command className="w-3 h-3" />
-                                        <span>K</span>
-                                    </div>
+
                                     <button
                                         onClick={() => setOpen(false)}
                                         className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"

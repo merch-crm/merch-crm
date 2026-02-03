@@ -84,56 +84,65 @@ export async function getFinancialStats(from?: Date, to?: Date) {
 
         const finalWhere = whereClause.length > 0 ? and(...whereClause) : undefined;
 
-        // 1. Общая выручка и количество заказов
-        const stats = await db.select({
-            totalRevenue: sql<number>`sum(total_amount)`,
-            orderCount: sql<number>`count(*)`,
-            avgOrderValue: sql<number>`avg(total_amount)`
-        })
-            .from(orders)
-            .where(finalWhere);
+        // Запускаем все запросы параллельно для максимальной скорости
+        const [
+            stats,
+            dailyStats,
+            categoryStats,
+            recentOrders,
+            cogsRes
+        ] = await Promise.all([
+            // 1. Общая выручка и количество заказов
+            db.select({
+                totalRevenue: sql<number>`sum(total_amount)`,
+                orderCount: sql<number>`count(*)`,
+                avgOrderValue: sql<number>`avg(total_amount)`
+            })
+                .from(orders)
+                .where(finalWhere),
 
-        // 2. Динамика по дням (для графика)
-        const dailyStats = await db.select({
-            date: sql<string>`date_trunc('day', created_at)`,
-            revenue: sql<number>`sum(total_amount)`,
-            count: sql<number>`count(*)`
-        })
-            .from(orders)
-            .where(finalWhere)
-            .groupBy(sql`date_trunc('day', created_at)`)
-            .orderBy(sql`date_trunc('day', created_at)`);
+            // 2. Динамика по дням (для графика)
+            db.select({
+                date: sql<string>`date_trunc('day', created_at)`,
+                revenue: sql<number>`sum(total_amount)`,
+                count: sql<number>`count(*)`
+            })
+                .from(orders)
+                .where(finalWhere)
+                .groupBy(sql`date_trunc('day', created_at)`)
+                .orderBy(sql`date_trunc('day', created_at)`),
 
-        // 3. Выручка по категориям
-        const categoryStats = await db.select({
-            category: orders.category,
-            revenue: sql<number>`sum(total_amount)`,
-            count: sql<number>`count(*)`
-        })
-            .from(orders)
-            .where(finalWhere)
-            .groupBy(orders.category);
+            // 3. Выручка по категориям
+            db.select({
+                category: orders.category,
+                revenue: sql<number>`sum(total_amount)`,
+                count: sql<number>`count(*)`
+            })
+                .from(orders)
+                .where(finalWhere)
+                .groupBy(orders.category),
 
-        // 4. Последние транзакции (заказы)
-        const recentOrders = await db.query.orders.findMany({
-            where: finalWhere,
-            orderBy: [desc(orders.createdAt)],
-            limit: 5,
-            with: {
-                client: true
-            }
-        });
+            // 4. Последние транзакции (заказы)
+            db.query.orders.findMany({
+                where: finalWhere,
+                orderBy: [desc(orders.createdAt)],
+                limit: 5,
+                with: {
+                    client: true
+                }
+            }),
 
-        // 5. Calculate actual COGS from inventory transactions
-        const cogsRes = await db.select({
-            total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
-        })
-            .from(inventoryTransactions)
-            .where(and(
-                eq(inventoryTransactions.type, 'out'),
-                from ? gte(inventoryTransactions.createdAt, from) : undefined,
-                to ? lte(inventoryTransactions.createdAt, to) : undefined
-            ));
+            // 5. Calculate actual COGS from inventory transactions
+            db.select({
+                total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
+            })
+                .from(inventoryTransactions)
+                .where(and(
+                    eq(inventoryTransactions.type, 'out'),
+                    from ? gte(inventoryTransactions.createdAt, from) : undefined,
+                    to ? lte(inventoryTransactions.createdAt, to) : undefined
+                ))
+        ]);
 
         const actualCOGS = Number(cogsRes[0]?.total || 0);
 
@@ -200,17 +209,21 @@ export async function getSalaryStats(from?: Date, to?: Date) {
             }
         });
 
-        // Получаем выполненные заказы для расчета бонусов (сдельной части)
-        const doneOrders = await db.query.orders.findMany({
-            where: finalWhere,
-        });
+        // Получаем статистику выполненных заказов по сотрудникам через один группированный запрос
+        const ordersStats = await db.select({
+            userId: orders.createdBy,
+            count: sql<number>`count(*)`
+        })
+            .from(orders)
+            .where(finalWhere)
+            .groupBy(orders.createdBy);
 
-        // В реальности здесь должна быть сложная логика расчета по KPI или ставкам
-        // Для демонстрации: каждый заказ дает 500р бонуса создателю
+        const ordersMap = new Map(ordersStats.map(s => [s.userId, Number(s.count || 0)]));
+
         const employeePayments = allUsers.map(user => {
-            const userOrders = doneOrders.filter(o => o.createdBy === user.id);
+            const ordersCount = ordersMap.get(user.id) || 0;
             const baseSalary = 30000; // Условный оклад
-            const bonus = userOrders.length * 500; // 500р за каждый готовый заказ
+            const bonus = ordersCount * 500; // 500р за каждый готовый заказ
 
             return {
                 id: user.id,
@@ -220,18 +233,19 @@ export async function getSalaryStats(from?: Date, to?: Date) {
                 baseSalary,
                 bonus,
                 total: baseSalary + bonus,
-                ordersCount: userOrders.length
+                ordersCount
             };
         });
 
-        const totalBudget = employeePayments.reduce((sum, e) => sum + e.total, 0);
+        const totalBudget = employeePayments.reduce((sum: number, e: any) => sum + e.total, 0);
 
         return {
             data: {
                 totalBudget,
-                employeePayments: employeePayments.sort((a, b) => b.total - a.total)
+                employeePayments: employeePayments.sort((a: any, b: any) => b.total - a.total)
             } as SalaryStats
         };
+
 
     } catch (error) {
         await logError({
@@ -298,85 +312,35 @@ export async function getFundsStats(from?: Date, to?: Date) {
 
 // --- Promocodes ---
 
-export async function getPromocodes() {
+
+
+import { validatePromocode as validatePromoLib } from "@/lib/promocodes";
+
+export async function validatePromocode(code: string, totalAmount: number = 0, cartItems: any[] = []) {
     const session = await getSession();
     if (!session) return { error: "Unauthorized" };
 
     try {
-        const data = await db.query.promocodes.findMany({
-            orderBy: [desc(promocodes.createdAt)]
-        });
-        return { data };
+        const result = await validatePromoLib(code, totalAmount, cartItems);
+
+        if (!result.isValid) {
+            return { error: result.error || "Промокод невалиден" };
+        }
+
+        return {
+            success: true,
+            data: {
+                ...result.promo,
+                calculatedDiscount: result.discount,
+                message: result.message
+            }
+        };
     } catch (error) {
         return { error: error instanceof Error ? error.message : "Internal error" };
     }
 }
 
-export interface CreatePromocodeData {
-    code: string;
-    discountType: "percentage" | "fixed_amount";
-    value: number | string;
-    minOrderAmount?: number | string;
-    maxDiscountAmount?: number | string;
-    startDate?: string | Date;
-    endDate?: string | Date;
-    usageLimit?: number | null;
-}
 
-export async function createPromocode(data: CreatePromocodeData) {
-    const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
-    try {
-        const [newPromo] = await db.insert(promocodes).values({
-            code: data.code.toUpperCase(),
-            discountType: data.discountType,
-            value: String(data.value),
-            minOrderAmount: String(data.minOrderAmount || 0),
-            maxDiscountAmount: String(data.maxDiscountAmount || 0),
-            startDate: data.startDate ? new Date(data.startDate) : null,
-            expiresAt: data.endDate ? new Date(data.endDate) : null,
-            usageLimit: data.usageLimit || null,
-            isActive: true,
-        }).returning();
-
-        return { success: true, data: newPromo };
-    } catch (error) {
-        return { error: error instanceof Error ? error.message : "Internal error" };
-    }
-}
-
-export async function validatePromocode(code: string) {
-    const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
-    try {
-        const promo = await db.query.promocodes.findFirst({
-            where: and(
-                eq(promocodes.code, code.toUpperCase()),
-                eq(promocodes.isActive, true)
-            )
-        });
-
-        if (!promo) return { error: "Промокод не найден или не активен" };
-
-        return { success: true, data: promo };
-    } catch (error) {
-        return { error: error instanceof Error ? error.message : "Internal error" };
-    }
-}
-
-export async function togglePromocode(id: string, isActive: boolean) {
-    const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
-    try {
-        await db.update(promocodes).set({ isActive }).where(eq(promocodes.id, id));
-        return { success: true };
-    } catch (error) {
-        return { error: error instanceof Error ? error.message : "Internal error" };
-    }
-}
 
 // --- Payments & Expenses ---
 
@@ -446,35 +410,37 @@ export async function getPLReport(from?: Date, to?: Date) {
         const fromDate = from || subDays(new Date(), 30);
         const toDate = to || new Date();
 
-        // 1. Revenue (Payments received)
-        const revenueStats = await db.select({
-            total: sql<number>`sum(amount)`
-        })
-            .from(payments)
-            .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate)));
+        // 1. Parallel fetching of all P&L components
+        const [revenueRes, cogsRes, overheadRes] = await Promise.all([
+            // Revenue (Payments received)
+            db.select({
+                total: sql<number>`sum(amount)`
+            })
+                .from(payments)
+                .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate))),
 
-        // 2. Direct Costs (COGS from real transactions)
-        const cogsStats = await db.select({
-            total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
-        })
-            .from(inventoryTransactions)
-            .where(and(
-                eq(inventoryTransactions.type, 'out'),
-                gte(inventoryTransactions.createdAt, fromDate),
-                lte(inventoryTransactions.createdAt, toDate)
-            ));
+            // Direct Costs (COGS)
+            db.select({
+                total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
+            })
+                .from(inventoryTransactions)
+                .where(and(
+                    eq(inventoryTransactions.type, 'out'),
+                    gte(inventoryTransactions.createdAt, fromDate),
+                    lte(inventoryTransactions.createdAt, toDate)
+                )),
 
-        // 3. Overhead Expenses
-        const overheadStats = await db.select({
-            total: sql<number>`sum(amount)`,
-            categories: sql<{ category: string; amount: string }[]>`json_agg(json_build_object('category', category, 'amount', amount))`
-        })
-            .from(expenses)
-            .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)));
+            // Overhead Expenses (OPEX)
+            db.select({
+                total: sql<number>`sum(amount)`
+            })
+                .from(expenses)
+                .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)))
+        ]);
 
-        const totalRevenue = Number(revenueStats[0]?.total || 0);
-        const totalCOGS = Number(cogsStats[0]?.total || 0);
-        const totalOverhead = Number(overheadStats[0]?.total || 0);
+        const totalRevenue = Number(revenueRes[0]?.total || 0);
+        const totalCOGS = Number(cogsRes[0]?.total || 0);
+        const totalOverhead = Number(overheadRes[0]?.total || 0);
 
         const grossProfit = totalRevenue - totalCOGS;
         const netProfit = grossProfit - totalOverhead;

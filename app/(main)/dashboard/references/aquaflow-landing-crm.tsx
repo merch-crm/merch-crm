@@ -65,7 +65,7 @@ export default function AquaflowLandingCRM() {
                             New Collection
                         </div>
                         <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-8">
-                            Purity in <span className="text-primary italic">Every</span> Drop
+                            Purity in <span className="text-primary">Every</span> Drop
                         </h1>
                         <p className="text-white/60 text-lg leading-relaxed mb-10 font-medium">
                             Discover our new titanium-grade filtered bottles. Designed for a lifetime of hydration and sustainable living.

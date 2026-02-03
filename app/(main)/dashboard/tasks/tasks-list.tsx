@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 import { Task } from "./types";
@@ -46,6 +47,8 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
             const res = await toggleTaskStatus(taskId, status);
             if (res.success) {
                 toast(status === "done" ? "Задача выполнена" : "Задача возвращена в работу", "success");
+                if (status !== "done") playSound("task_completed");
+                else playSound("notification_success");
             }
         });
     };
@@ -62,13 +65,16 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
             const res = await deleteTask(taskToDelete);
             if (res.success) {
                 toast("Задача удалена", "success");
+                playSound("notification_success");
                 setTaskToDelete(null);
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         } catch (error) {
             console.error(error);
             toast("Произошла ошибка", "error");
+            playSound("notification_error");
         } finally {
             setIsDeleting(false);
         }

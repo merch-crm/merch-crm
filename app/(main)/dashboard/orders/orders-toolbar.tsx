@@ -41,7 +41,7 @@ export function OrdersToolbar() {
     };
 
     return (
-        <div className="crm-filter-tray gap-6 mb-8">
+        <div className="crm-filter-tray">
             {/* Search Box */}
             <div className="relative flex-1">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -50,7 +50,7 @@ export function OrdersToolbar() {
                     placeholder="Поиск по заказам..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-11 bg-white border-none rounded-[14px] pl-12 pr-10 text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all shadow-sm"
+                    className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
                 />
                 {searchQuery && (
                     <button
@@ -74,16 +74,16 @@ export function OrdersToolbar() {
                             key={tab.id}
                             onClick={() => handleTabChange(tab.id === "archived")}
                             className={cn(
-                                "relative flex items-center gap-2.5 px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group",
-                                tab.active ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                "crm-filter-tray-tab",
+                                tab.active && "active"
                             )}
                         >
                             {tab.active && (
                                 <motion.div
                                     layoutId="activeOrderTab"
                                     className={cn(
-                                        "absolute inset-0 rounded-[14px] shadow-lg shadow-primary/25",
-                                        tab.id === "archived" ? "bg-amber-500" : "bg-primary"
+                                        "absolute inset-0 rounded-[16px] z-0",
+                                        tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
                                     )}
                                     transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                 />
@@ -102,7 +102,7 @@ export function OrdersToolbar() {
 
                 <Link
                     href="/dashboard/orders/new"
-                    className="h-11 bg-primary text-white rounded-[14px] px-6 gap-2 font-bold transition-all active:scale-95 inline-flex items-center shadow-lg shadow-primary/20 text-[13px]"
+                    className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6"
                 >
                     <Plus className="w-4 h-4" />
                     Создать заказ

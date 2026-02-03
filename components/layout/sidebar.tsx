@@ -58,7 +58,7 @@ export function Sidebar({ className, user }: SidebarProps) {
     return (
         <div className={cn("flex flex-col h-full bg-white py-4", className)}>
             <div className="px-6 mb-6 flex items-center gap-3">
-                <div className="bg-[#5d00ff] rounded-[14px] p-1.5 shadow-md shadow-indigo-200">
+                <div className="bg-primary rounded-[14px] p-1.5 shadow-md shadow-primary/20">
                     <Printer className="h-4 w-4 text-white" />
                 </div>
                 <span className="text-xl font-bold text-slate-900 tracking-tight">MerchCRM</span>
@@ -77,11 +77,11 @@ export function Sidebar({ className, user }: SidebarProps) {
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-inner)] text-[14px] font-medium transition-all duration-200",
                                 isActive
-                                    ? "bg-indigo-50 text-[#5d00ff] shadow-sm"
+                                    ? "bg-primary/5 text-primary shadow-sm"
                                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:scale-[1.02] hover:shadow-sm"
                             )}
                         >
-                            <item.icon className={cn("h-5 w-5", isActive ? "text-[#5d00ff]" : "text-slate-400")} />
+                            <item.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-slate-400")} />
                             {item.name}
                         </Link>
                     );

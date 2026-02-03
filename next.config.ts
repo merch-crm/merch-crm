@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    localPatterns: [
+      {
+        pathname: "/api/storage/local/**",
+      },
+    ],
     remotePatterns: [
       {
         protocol: "https",

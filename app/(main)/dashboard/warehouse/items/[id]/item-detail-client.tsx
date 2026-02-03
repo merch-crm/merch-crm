@@ -60,6 +60,7 @@ import {
 } from "../../actions";
 
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import { compressImage } from "@/lib/image-processing";
 import { Button } from "@/components/ui/button";
 
@@ -347,7 +348,10 @@ export function ItemDetailClient({
             id: tx.id,
             date: new Date(tx.createdAt),
             costs: [Number(tx.costPrice)],
-            label: format(new Date(tx.createdAt), 'd MMM', { locale: ru }),
+            label: (() => {
+                const d = new Date(tx.createdAt);
+                return isNaN(d.getTime()) ? "—" : format(d, 'd MMM', { locale: ru });
+            })(),
             avg: Number(tx.costPrice),
             hasData: true,
             lastDate: new Date(tx.createdAt)
@@ -743,6 +747,7 @@ export function ItemDetailClient({
         // Initial status check for notifications (Stage 7)
         if (item.quantity <= item.criticalStockThreshold && !item.isArchived) {
             toast(`Критический остаток: на складе всего ${item.quantity} ${item.unit}`, "error");
+            playSound("stock_low");
         } else if (item.quantity <= item.lowStockThreshold && !item.isArchived) {
             toast(`Низкий остаток: рекомендуется пополнение`, "info");
         }
@@ -810,12 +815,14 @@ export function ItemDetailClient({
             const res = await updateInventoryItem(item.id, formData);
             if (res.success) {
                 toast("Товар успешно обновлен", "success");
+                playSound("item_updated");
                 setIsEditing(false);
                 localStorage.removeItem(`item_draft_${item.id}`);
                 if (navigator.vibrate) navigator.vibrate(50); // Haptic feedback
                 await fetchData();
             } else {
                 toast("Ошибка при обновлении товара", "error");
+                playSound("notification_error");
             }
             setNewImageFile(null);
             setNewImageBackFile(null);
@@ -826,6 +833,7 @@ export function ItemDetailClient({
         } catch (error) {
             console.error("Save error:", error);
             toast("Ошибка при сохранении", "error");
+            playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
@@ -837,13 +845,16 @@ export function ItemDetailClient({
             const res = await archiveInventoryItems([item.id], reason || "Ручная архивация");
             if (res.success) {
                 toast("Товар перемещен в архив", "success");
+                playSound("notification_success");
                 setShowArchiveReason(false);
                 await fetchData();
             } else {
                 toast(res.error || "Ошибка при архивации", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Ошибка при архивации", "error");
+            playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
@@ -855,12 +866,15 @@ export function ItemDetailClient({
             const res = await restoreInventoryItems([item.id], "Восстановление из архива");
             if (res.success) {
                 toast("Товар восстановлен из архива", "success");
+                playSound("notification_success");
                 await fetchData();
             } else {
                 toast(res.error || "Ошибка при восстановлении", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Ошибка при восстановлении", "error");
+            playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
@@ -879,10 +893,12 @@ export function ItemDetailClient({
         if (isEditing) {
             setEditData(prev => ({ ...prev, sku: decodedText }));
             toast(`SKU обновлен: ${decodedText}`, "success");
+            playSound("scan_success");
             setShowScanner(false);
         } else {
             if (decodedText === item.sku || decodedText === item.id) {
                 toast("Товар подтвержден (SKU совпадает)", "success");
+                playSound("scan_success");
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 setShowScanner(false);
             } else {
@@ -890,9 +906,11 @@ export function ItemDetailClient({
                 const foundId = await findItemBySKU(decodedText);
                 if (foundId) {
                     toast("Товар найден, переходим...", "success");
+                    playSound("scan_success");
                     router.push(`/dashboard/warehouse/items/${foundId}`);
                 } else {
                     toast(`Товар с SKU ${decodedText} не найден`, "error");
+                    playSound("scan_error");
                 }
                 setShowScanner(false);
             }
@@ -954,7 +972,10 @@ export function ItemDetailClient({
 
             return [
                 h.id,
-                format(new Date(h.createdAt), "dd.MM.yyyy HH:mm"),
+                (() => {
+                    const d = new Date(h.createdAt);
+                    return isNaN(d.getTime()) ? "—" : format(d, "dd.MM.yyyy HH:mm");
+                })(),
                 typeMap[h.type as keyof typeof typeMap] || h.type,
                 h.changeAmount,
                 h.storageLocation?.name || "—",
@@ -1313,7 +1334,7 @@ export function ItemDetailClient({
 
                                         {isEditing && (
                                             <Link
-                                                href="/dashboard/warehouse?tab=dictionary"
+                                                href="/dashboard/warehouse?tab=characteristic"
                                                 target="_blank"
                                                 className="flex items-center gap-2 px-4 h-11 rounded-[var(--radius-inner)] text-[12px] font-bold text-slate-400 hover:text-primary hover:bg-primary/5 transition-all border border-transparent"
                                             >
@@ -1399,8 +1420,8 @@ export function ItemDetailClient({
                                             {/* Right Side: Total Value */}
                                             <div className="flex-[1.5] space-y-6">
                                                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest text-left">Общая стоимость</span>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-100 flex flex-col items-center justify-center min-h-[120px]">
+                                                <div className="grid grid-cols-2 gap-4 h-full">
+                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-100 flex flex-col items-center justify-center min-h-[120px] h-full">
                                                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Закупки</span>
                                                         {(() => {
                                                             const val = item.quantity * lastInCostPrice;
@@ -1411,7 +1432,7 @@ export function ItemDetailClient({
                                                             );
                                                         })()}
                                                     </div>
-                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-emerald-50/50 border border-emerald-100 flex flex-col items-center justify-center min-h-[120px]">
+                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-emerald-50/50 border border-emerald-100 flex flex-col items-center justify-center min-h-[120px] h-full">
                                                         <span className="text-[10px] font-bold text-emerald-600/60 uppercase tracking-widest mb-2">Продажи</span>
                                                         {(() => {
                                                             const val = item.quantity * (Number(item.sellingPrice) || 0);
@@ -1972,7 +1993,7 @@ export function ItemDetailClient({
                             </div>
 
                             {/* BLOCK: Orders (Moved below Specification) */}
-                            <div className="col-span-12 glass-panel rounded-[var(--radius-inner)] p-8 flex flex-col">
+                            <div className="col-span-12 glass-panel rounded-[var(--radius-inner)] p-8 flex flex-col space-y-4">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
@@ -1994,7 +2015,7 @@ export function ItemDetailClient({
 
 
                             {/* BLOCK: History */}
-                            <div className="col-span-12 glass-panel rounded-[var(--radius-inner)] p-8">
+                            <div className="col-span-12 glass-panel rounded-[var(--radius-inner)] p-8 space-y-4">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
@@ -2030,11 +2051,9 @@ export function ItemDetailClient({
                                     transition={{ duration: 0.5 }}
                                     className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
                                     style={{
-                                        backdropFilter: 'blur(40px)',
-                                        WebkitBackdropFilter: 'blur(40px)',
                                         maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
                                         WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                        background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 100%)'
+                                        background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
                                     }}
                                 />
                                 <motion.div
@@ -2042,7 +2061,7 @@ export function ItemDetailClient({
                                     animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                                     exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                                     transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                                    className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2.5 px-8 gap-10 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
+                                    className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-2.5 px-8 gap-10 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
                                     data-dialog-open="true"
                                 >
                                     {/* Left Side: Info */}
@@ -2282,7 +2301,7 @@ export function ItemDetailClient({
                 {
                     isMainImageZoomed && allGalleryImages.length > 0 && (
                         <div
-                            className="fixed inset-0 z-[300] bg-black/90 backdrop-blur-xl flex items-center justify-center animate-in fade-in duration-300"
+                            className="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center animate-in fade-in duration-300"
                             onClick={() => setIsMainImageZoomed(false)}
                         >
                             {/* Header Info */}
@@ -2337,7 +2356,7 @@ export function ItemDetailClient({
                                 </div>
 
                                 {/* Centered Caption */}
-                                <div className="mt-8 px-6 py-2.5 bg-white/5 backdrop-blur-2xl rounded-[var(--radius-inner)] border border-white/10 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                <div className="mt-8 px-6 py-2.5 bg-white/10 rounded-[var(--radius-inner)] border border-white/10 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
                                     <p className="text-white text-sm font-black">
                                         {allGalleryImages[currentGalleryIndex]?.label}
                                     </p>

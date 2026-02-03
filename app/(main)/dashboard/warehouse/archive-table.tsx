@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import { InventoryItem } from "./types";
 import { restoreInventoryItems, deleteInventoryItems } from "./actions";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -49,10 +50,12 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
             const res = await restoreInventoryItems(ids, "Восстановление из архива");
             if (res.success) {
                 toast(`Восстановлено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                playSound("notification_success");
                 setSelectedIds([]);
                 router.refresh();
             } else {
                 toast(res.error || "Ошибка при восстановлении", "error");
+                playSound("notification_error");
             }
         } finally {
             setIsRestoring(false);
@@ -69,12 +72,14 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
             const res = await deleteInventoryItems(ids, password);
             if (res.success) {
                 toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                playSound("client_deleted");
                 setSelectedIds([]);
                 setIdsToDelete([]);
                 setPassword("");
                 router.refresh();
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         } finally {
             setIsDeleting(false);
@@ -83,8 +88,8 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
 
     if (items.length === 0 && searchQuery === "") {
         return (
-            <div className="glass-panel p-20 flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-[var(--radius-inner)] flex items-center justify-center text-slate-300 mb-6 border border-slate-200 shadow-sm">
+            <div className="bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[var(--radius-inner)] p-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center text-slate-300 mb-6 border border-slate-200 shadow-sm">
                     <Clock className="w-10 h-10" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">Архив пуст</h3>
@@ -130,7 +135,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 )}
             </div>
 
-            <div className="glass-panel shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-[var(--radius-outer)] border border-slate-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

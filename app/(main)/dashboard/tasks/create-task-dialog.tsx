@@ -14,6 +14,7 @@ import {
     PlusCircle
 } from "lucide-react";
 import { createTask } from "./actions";
+import { playSound } from "@/lib/sounds";
 
 interface User {
     id: string;
@@ -65,8 +66,10 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
             if (res.error) {
                 setError(res.error);
+                playSound("notification_error");
                 setLoading(false);
             } else {
+                playSound("task_created");
                 setIsOpen(false);
                 setLoading(false);
                 router.refresh();

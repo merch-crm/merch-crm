@@ -210,7 +210,7 @@ const TaskelloCard = () => {
                             className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-[40px] rounded-full"
                         />
                         <div className="absolute top-10 right-10 text-right">
-                            <div className="text-white font-bold text-[17px] leading-tight flex flex-col italic">
+                            <div className="text-white font-bold text-[17px] leading-tight flex flex-col">
                                 <span>Taskello App</span>
                                 <span>Card Design</span>
                             </div>
@@ -422,7 +422,7 @@ const DarkSchedule = () => {
                             </div>
                             <div className={cn("flex-1 px-6 py-5 rounded-[22px] transition-all", item.active ? "bg-[#7C3AED] text-white shadow-xl shadow-[#7C3AED]/20" : "bg-[#181818] text-[#666] group-hover:bg-[#202020]")}>
                                 <h4 className="text-[14px] font-bold leading-tight">{item.t}</h4>
-                                {item.sub && <p className="text-[12px] opacity-70 mt-1 font-medium italic">{item.sub}</p>}
+                                {item.sub && <p className="text-[12px] opacity-70 mt-1 font-medium">{item.sub}</p>}
                             </div>
                         </motion.div>
                     ))}

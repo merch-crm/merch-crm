@@ -21,6 +21,7 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { createOrder, searchClients } from "../actions";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface Client {
     id: string;
@@ -88,7 +89,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         advanceAmount: "0",
         promocodeId: "",
         paymentMethod: "cash",
-        appliedPromo: null as { id: string; code: string; discountType: string; value: string } | null
+        appliedPromo: null as {
+            id: string;
+            code: string;
+            discountType: string;
+            value: string;
+            message?: string;
+            calculatedDiscount?: number;
+        } | null
     });
     const [promoInput, setPromoInput] = useState("");
     const [isApplyingPromo, setIsApplyingPromo] = useState(false);
@@ -96,13 +104,19 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     const handleApplyPromo = async () => {
         if (!promoInput) return;
         setIsApplyingPromo(true);
-        const res = await validatePromocode(promoInput);
+        const cartTotal = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
+        const res = await validatePromocode(promoInput, cartTotal, selectedItems.map(i => ({
+            inventoryId: i.id,
+            price: i.price,
+            quantity: i.orderQuantity
+        })));
         setIsApplyingPromo(false);
         if (res.error || !res.data) {
             toast(res.error || "Промокод не найден", "error");
         } else {
             setDetails({ ...details, appliedPromo: res.data, promocodeId: res.data.id });
-            toast(`Промокод ${promoInput} применен!`, "success");
+            const message = res.data.message || `Промокод ${promoInput} применен!`;
+            toast(message, "success");
         }
     };
 
@@ -167,7 +181,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
         if (res.error) {
             toast(res.error, "error");
+            playSound("notification_error");
         } else {
+            playSound("order_created");
             toast("Заказ успешно создан", "success");
             router.push("/dashboard/orders");
             router.refresh();
@@ -521,9 +537,19 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             </button>
                                         </div>
                                         {details.appliedPromo && (
-                                            <p className="text-xs font-bold text-emerald-600 ml-1">
-                                                Применен промокод: {details.appliedPromo.code} (-{details.appliedPromo.discountType === 'percentage' ? `${details.appliedPromo.value}%` : `${details.appliedPromo.value} ₽`})
-                                            </p>
+                                            <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-[18px] animate-in fade-in slide-in-from-top-2">
+                                                <p className="text-xs font-bold text-emerald-700 flex items-center justify-between">
+                                                    <span>Промокод: {details.appliedPromo.code}</span>
+                                                    <span className="uppercase">
+                                                        {details.appliedPromo.discountType === 'percentage' ? `-${details.appliedPromo.value}%` :
+                                                            details.appliedPromo.discountType === 'fixed' ? `-${details.appliedPromo.value} ₽` :
+                                                                details.appliedPromo.discountType === 'free_shipping' ? "БЕСПЛ. ДОСТАВКА" : "ПОДАРОК"}
+                                                    </span>
+                                                </p>
+                                                {details.appliedPromo.message && (
+                                                    <p className="text-[10px] text-emerald-600 font-medium mt-1 uppercase italic">{details.appliedPromo.message}</p>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -558,14 +584,8 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         <span>
                                                             {(() => {
                                                                 const total = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
-                                                                const promo = details.appliedPromo;
-                                                                let final = total;
-                                                                if (promo.discountType === 'percentage') {
-                                                                    final = total * (1 - Number(promo.value) / 100);
-                                                                } else if (promo.discountType === 'fixed') {
-                                                                    final = Math.max(0, total - Number(promo.value));
-                                                                }
-                                                                return Math.round(final);
+                                                                const disc = (details.appliedPromo as any)?.calculatedDiscount || 0;
+                                                                return Math.max(0, Math.round(total - disc));
                                                             })()} ₽
                                                         </span>
                                                     </>

@@ -287,7 +287,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                             </tr>
                         ) : logs.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="py-20 text-center text-slate-400 italic text-sm">
+                                <td colSpan={4} className="py-20 text-center text-slate-400 text-sm">
                                     Логи не найдены
                                 </td>
                             </tr>
@@ -353,7 +353,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                                     <span className="text-sm text-slate-900 truncate max-w-[150px] font-medium">{log.user?.name}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-slate-400 italic text-sm font-medium">Система</span>
+                                                <span className="text-slate-400 text-sm font-medium">Система</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">

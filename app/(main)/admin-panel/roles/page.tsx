@@ -94,9 +94,14 @@ export default function AdminRolesPage() {
     return (
         <div className="space-y-6 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Роли и права</h1>
-                    <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Настройка доступов и полномочий сотрудников</p>
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
+                        <Shield className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Роли и права</h1>
+                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Настройка доступов и полномочий сотрудников</p>
+                    </div>
                 </div>
                 <AddRoleDialog onSuccess={fetchRoles} />
             </div>

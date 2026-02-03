@@ -35,7 +35,10 @@ export async function getCurrentUserAction() {
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
-        with: { role: true }
+        with: {
+            role: true,
+            department: true
+        }
     });
 
     return { data: currentUser };
@@ -1619,7 +1622,9 @@ export async function getBrandingAction() {
             data: {
                 ...defaultBranding,
                 ...val,
-                primary_color: (val.primary_color as string) || (val.primaryColor as string) || "#5d00ff"
+                primary_color: (val.primary_color as string) || (val.primaryColor as string) || "#5d00ff",
+                system_logo: (val.system_logo as string) || (val.logoUrl as string) || (val.logo_url as string) || null,
+                faviconUrl: (val.faviconUrl as string) || (val.favicon_url as string) || null
             }
         };
     } catch (error) {

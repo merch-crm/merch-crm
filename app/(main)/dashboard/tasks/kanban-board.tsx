@@ -14,6 +14,7 @@ import { updateTask } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
+import { playSound } from "@/lib/sounds";
 
 import { Task } from "./types";
 
@@ -72,6 +73,11 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
 
         const task = tasks.find(t => t.id === taskId);
         if (task && task.status !== status) {
+            // Play sound based on new status
+            if (status === "done") {
+                playSound("task_completed");
+            }
+
             startTransition(async () => {
                 await updateTask(taskId, { status: status as Task['status'] });
             });

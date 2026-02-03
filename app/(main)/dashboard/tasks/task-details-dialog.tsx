@@ -29,6 +29,7 @@ import {
     toggleChecklistItem,
     deleteChecklistItem,
 } from "./actions";
+import { playSound } from "@/lib/sounds";
 import { useTransition, useRef, useState, useEffect } from "react";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -71,9 +72,12 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             const res = await toggleTaskStatus(task.id, task.status);
             if (res.success) {
                 toast(task.status === "done" ? "Задача возвращена в работу" : "Задача выполнена", "success");
+                if (task.status !== "done") playSound("task_completed");
+                else playSound("notification_success");
                 onClose();
             } else {
                 toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
             }
         });
     };
@@ -83,9 +87,11 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             const res = await deleteTask(task.id);
             if (res.success) {
                 toast("Задача удалена", "success");
+                playSound("notification_success");
                 onClose();
             } else {
                 toast(res.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         });
     };
@@ -101,8 +107,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             const res = await uploadTaskFile(task.id, formData);
             if (res.error) {
                 toast(res.error, "error");
+                playSound("notification_error");
             } else {
                 toast("Файл загружен", "success");
+                playSound("notification_success");
             }
         });
     };
@@ -120,8 +128,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             if (res.success) {
                 setNewComment("");
                 toast("Комментарий добавлен", "success");
+                playSound("notification_success");
             } else {
                 toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
             }
         });
     };
@@ -133,8 +143,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             if (res.success) {
                 setNewChecklistItem("");
                 toast("Пункт добавлен", "success");
+                playSound("notification_success");
             } else {
                 toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
             }
         });
     };
@@ -142,15 +154,23 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     const handleToggleChecklist = (id: string, completed: boolean) => {
         startTransition(async () => {
             const res = await toggleChecklistItem(id, completed);
-            if (!res.success) toast(res.error || "Ошибка", "error");
+            if (!res.success) {
+                toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
+            }
         });
     };
 
     const handleDeleteChecklist = (id: string) => {
         startTransition(async () => {
             const res = await deleteChecklistItem(id);
-            if (!res.success) toast(res.error || "Ошибка", "error");
-            else toast("Пункт удален", "success");
+            if (!res.success) {
+                toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
+            } else {
+                toast("Пункт удален", "success");
+                playSound("notification_success");
+            }
         });
     };
 

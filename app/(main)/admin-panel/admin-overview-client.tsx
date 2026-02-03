@@ -79,9 +79,14 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
     return (
         <div className="space-y-4 pb-20">
             {/* Page Header */}
-            <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">Обзор системы</h1>
-                <p className="text-slate-400 font-bold text-sm uppercase tracking-wider mt-1">Основные показатели и состояние платформы MerchCRM</p>
+            <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
+                    <ShieldCheck className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Обзор системы</h1>
+                    <p className="text-slate-500 text-[11px] font-medium mt-0.5">Основные показатели и состояние платформы MerchCRM</p>
+                </div>
             </div>
 
             {/* Row 1: Greetings & Recommended Items (Platform Health) */}

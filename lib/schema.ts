@@ -252,6 +252,7 @@ export const orders = pgTable("orders", {
         "0"
     ),
     advanceAmount: decimal("advance_amount", { precision: 10, scale: 2 }).default("0"),
+    discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).default("0"),
     priority: text("priority").default("normal"), // low, normal, high
     isUrgent: boolean("is_urgent").default(false).notNull(),
     deadline: timestamp("deadline"),
@@ -473,8 +474,9 @@ export const expenses = pgTable("expenses", {
 // Promocodes
 export const promocodes = pgTable("promocodes", {
     id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name"), // Human-readable name like "Летняя акция"
     code: text("code").notNull().unique(),
-    discountType: text("discount_type").notNull(), // 'percentage' or 'fixed'
+    discountType: text("discount_type").notNull(), // 'percentage', 'fixed', 'free_shipping', 'gift'
     value: decimal("value", { precision: 10, scale: 2 }).notNull(),
     minOrderAmount: decimal("min_order_amount", { precision: 10, scale: 2 }).default("0"),
     maxDiscountAmount: decimal("max_discount_amount", { precision: 10, scale: 2 }).default("0"),
@@ -483,6 +485,8 @@ export const promocodes = pgTable("promocodes", {
     usageLimit: integer("usage_limit"),
     usageCount: integer("usage_count").default(0).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
+    adminComment: text("admin_comment"),
+    constraints: jsonb("constraints").default("{}"), // { includedProducts: [], excludedCategories: [] }
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Search, Calendar, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { playSound } from "@/lib/sounds";
 
 export interface Expense {
     id: string;
@@ -46,15 +48,10 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
 
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-900 tracking-normal leading-none">Расходы</h2>
-                    <p className="text-slate-500 font-medium mt-1">Учет операционных затрат и закупок</p>
-                </div>
-
+            <div className="flex flex-col md:flex-row md:items-center justify-end gap-6">
                 <Button
                     onClick={() => setIsAdding(true)}
-                    className="h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-[var(--radius)] px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95"
+                    className="h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-[18px] px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none"
                 >
                     <Plus className="w-5 h-5" />
                     Добавить расход
@@ -158,12 +155,15 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             const res = await createExpense(data);
             if (res.success) {
                 toast("Расход добавлен", "success");
+                playSound("expense_added");
                 onSuccess(res.data as Expense);
             } else {
                 toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Ошибка", "error");
+            playSound("notification_error");
         } finally {
             setIsLoading(false);
         }
@@ -216,5 +216,5 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
 }
 
 function revalidateData() {
-    // In a real app we might use router.refresh() or specialized hooks
+    window.location.reload();
 }

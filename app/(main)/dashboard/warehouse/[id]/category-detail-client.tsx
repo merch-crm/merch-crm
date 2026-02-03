@@ -19,6 +19,7 @@ import { StorageLocation } from "../storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -329,10 +330,12 @@ export function CategoryDetailClient({
             const res = await deleteInventoryItems(ids);
             if (res?.success) {
                 toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                playSound("client_deleted");
                 setSelectedIds(prev => prev.filter(id => !ids.includes(id)));
                 router.refresh();
             } else {
                 toast(res?.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Произошла ошибка", "error");
@@ -348,11 +351,13 @@ export function CategoryDetailClient({
             const res = await archiveInventoryItems(selectedIds, reason || "Массовая архивация");
             if (res?.success) {
                 toast(`Архивировано: ${selectedIds.length} ${pluralize(selectedIds.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                playSound("notification_success");
                 setSelectedIds(prev => prev.filter(id => !selectedIds.includes(id)));
                 setShowArchiveReason(false);
                 router.refresh();
             } else {
                 toast(res?.error || "Ошибка при архивации", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Произошла ошибка", "error");
@@ -367,9 +372,11 @@ export function CategoryDetailClient({
             const res = await deleteInventoryCategory(id);
             if (res?.success) {
                 toast("Категория удалена", "success");
+                playSound("client_deleted");
                 router.refresh();
             } else {
                 toast(res?.error || "Ошибка при удалении", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Произошла ошибка", "error");
@@ -382,230 +389,52 @@ export function CategoryDetailClient({
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Group */}
-            <div className="space-y-4">
-                {/* Breadcrumbs */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
+                <div className="flex items-center gap-5">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => router.back()}
+                        className="w-11 h-11 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center mr-2 shrink-0 group"
+                    >
+                        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
+                    </Button>
 
-                {/* Main Title Row */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-[var(--crm-grid-gap)]">
-                    <div className="flex items-center gap-5">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => router.back()}
-                            className="w-11 h-11 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-900 hover:bg-transparent transition-all flex items-center justify-center mr-2 shrink-0 group"
-                        >
-                            <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
-                        </Button>
-
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h1 className="text-3xl font-bold text-slate-900 leading-none">{category.name}</h1>
-                            </div>
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-3xl font-bold text-slate-900 leading-none">{category.name}</h1>
                         </div>
                     </div>
+                </div>
 
-                    <div className="flex items-center gap-3">
-                        {mounted && createPortal(
-                            <AnimatePresence>
-                                {selectedIds.length > 0 && (
-                                    <>
-                                        {/* Bottom Progressive Gradient Blur Overlay */}
-                                        <motion.div
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.5 }}
-                                            className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[100]"
-                                            style={{
-                                                backdropFilter: 'blur(24px)',
-                                                WebkitBackdropFilter: 'blur(24px)',
-                                                maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                                WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                                background: 'linear-gradient(to top, #f2f2f2 0%, rgba(242, 242, 242, 0.8) 40%, transparent 100%)'
-                                            }}
-                                        />
-
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                                            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                                            exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                                            transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                                            className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white/95 backdrop-blur-3xl p-2 gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-white/60"
-                                        >
-                                            <div className="flex items-center gap-3 pl-1">
-                                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-white">
-                                                    {selectedIds.length}
-                                                </div>
-                                                <span className="text-xs font-bold text-slate-500 whitespace-nowrap pr-2">Позиций выбрано</span>
-                                            </div>
-
-                                            <div className="w-px h-8 bg-slate-200" />
-
-                                            <div className="flex items-center gap-1">
-                                                <button
-                                                    onClick={() => setIsBulkMoveOpen(true)}
-                                                    className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                                >
-                                                    <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                                    <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
-                                                </button>
-
-                                                <button
-                                                    onClick={handleBulkPrint}
-                                                    className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                                >
-                                                    <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                                    <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
-                                                </button>
-
-                                                <button
-                                                    onClick={() => {
-                                                        const itemsToExport = items.filter(i => selectedIds.includes(i.id));
-                                                        exportToCSV(itemsToExport, "inventory_export", [
-                                                            { header: "ID", key: "id" },
-                                                            { header: "Название", key: "name" },
-                                                            { header: "Артикул", key: (item) => item.sku || "" },
-                                                            { header: "Количество", key: "quantity" },
-                                                            { header: "Ед.изм", key: "unit" },
-                                                            { header: "Категория", key: (item) => item.category?.name || "" },
-                                                            {
-                                                                header: "Склад", key: (item) => {
-                                                                    if (item.stocks && item.stocks.length > 0) {
-                                                                        const stocksStr = item.stocks
-                                                                            .filter((s) => s.quantity > 0)
-                                                                            .map((s) => {
-                                                                                const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
-                                                                                return `${locName} (${s.quantity})`;
-                                                                            })
-                                                                            .join("; ");
-                                                                        if (stocksStr) return stocksStr;
-                                                                    }
-                                                                    return "";
-                                                                }
-                                                            },
-                                                            { header: "Себестоимость", key: (item) => item.costPrice || 0 },
-                                                            { header: "Цена продажи", key: (item) => item.sellingPrice || 0 }
-                                                        ]);
-                                                    }}
-                                                    className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                                >
-                                                    <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                                    <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
-                                                </button>
-
-                                                <div className="w-px h-8 bg-slate-200 mx-1" />
-
-                                                <button
-                                                    onClick={() => {
-                                                        const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
-                                                        const hasStock = itemsToArchive.some(i => i.quantity > 0);
-
-                                                        if (hasStock) {
-                                                            toast("Нельзя архивировать товары с остатком > 0", "error");
-                                                            return;
-                                                        }
-                                                        setShowArchiveReason(true);
-                                                    }}
-                                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
-                                                >
-                                                    <Archive className="w-4 h-4" />
-                                                </button>
-
-                                                <button
-                                                    onClick={() => setSelectedIds([])}
-                                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>,
-                            document.body
-                        )}
-                        {category.id !== "orphaned" && !category.parentId && (
-                            <AddCategoryDialog
-                                parentId={category.id}
-                                buttonText="Добавить подкатегорию"
-                            />
-                        )}
-                        <Button
-                            onClick={() => router.push(`/dashboard/warehouse/items/new?categoryId=${category.id}`)}
-                            className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold border-none"
-                        >
-                            <Plus className="w-5 h-5" />
-                            Добавить позицию
-                        </Button>
-                    </div>
+                <div className="flex items-center gap-3">
+                    {category.id !== "orphaned" && !category.parentId && (
+                        <AddCategoryDialog
+                            parentId={category.id}
+                            buttonText="Добавить подкатегорию"
+                        />
+                    )}
+                    <Button
+                        onClick={() => router.push(`/dashboard/warehouse/items/new?categoryId=${category.id}`)}
+                        className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold border-none"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Добавить позицию
+                    </Button>
                 </div>
             </div>
 
-            {/* Mass Actions Bar */}
-
-            {/* Modals */}
-
-
-            {
-                isBulkMoveOpen && (
-                    <BulkMoveDialog
-                        selectedIds={selectedIds}
-                        storageLocations={storageLocations}
-                        onClose={() => setIsBulkMoveOpen(false)}
-                        onSuccess={() => {
-                            setIsBulkMoveOpen(false);
-                            setSelectedIds([]);
-                            router.refresh();
-                        }}
-                    />
-                )
-            }
-
-            {
-                isBulkCategoryOpen && (
-                    <BulkCategoryDialog
-                        selectedIds={selectedIds}
-                        categories={allCategories}
-                        onClose={() => setIsBulkCategoryOpen(false)}
-                        onSuccess={() => {
-                            setIsBulkCategoryOpen(false);
-                            setSelectedIds([]);
-                            router.refresh();
-                        }}
-                    />
-                )
-            }
-
-            {
-                isAdjustOpen && adjustingItem && (
-                    <AdjustStockDialog
-                        item={adjustingItem}
-                        locations={storageLocations}
-                        itemStocks={adjustingItemStocks}
-                        user={user}
-                        onClose={() => {
-                            setIsAdjustOpen(false);
-                            setAdjustingItem(null);
-                            setAdjustingItemStocks([]);
-                            router.refresh();
-                        }}
-                    />
-                )
-            }
-
-            {/* Remove drawer as we navigate to full page now */}
-
             {/* Sub-header with Search and Filters - Redesigned in Photo 2 Style */}
-            <div className="crm-filter-tray !rounded-[var(--radius-outer)] p-[6px] h-[54px] flex items-center gap-[var(--crm-grid-gap)]">
+            <div className="crm-filter-tray">
                 {/* Search Input */}
-                <div className="relative flex-1 h-full">
+                <div className="relative flex-1">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
                         placeholder="Поиск по названию, артикулу или характеристикам..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-full pl-12 pr-4 !rounded-[var(--radius-inner)] border-none bg-white text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:ring-0 transition-all outline-none"
+                        className="crm-filter-tray-search w-full pl-12 pr-4 focus:outline-none"
                     />
                     {searchQuery && (
                         <button
@@ -618,7 +447,7 @@ export function CategoryDetailClient({
                 </div>
 
                 {/* Filters Group */}
-                <div className="flex items-center gap-2 px-1">
+                <div className="flex items-center gap-[6px]">
                     {/* Storage Select Premium */}
                     <PremiumSelect
                         options={[
@@ -632,13 +461,13 @@ export function CategoryDetailClient({
                         value={filterStorage}
                         onChange={setFilterStorage}
                         variant="minimal"
-                        className="min-w-[220px]"
+                        className="min-w-[220px] h-11 !rounded-[16px]"
                     />
 
-                    <div className="w-px h-6 bg-slate-200" />
+                    <div className="w-px h-6 bg-slate-500/40 mx-1" />
 
                     {/* Status Pills */}
-                    <div className="flex items-center gap-1 h-full">
+                    <div className="flex items-center gap-[6px]">
                         {[
                             { id: "all", label: "Все" },
                             { id: "in", label: "В наличии", color: "emerald" },
@@ -651,14 +480,14 @@ export function CategoryDetailClient({
                                     key={f.id}
                                     onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                     className={cn(
-                                        "relative h-full px-6 !rounded-[16px] text-[13px] font-bold transition-all duration-300 whitespace-nowrap group overflow-hidden",
-                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                        "crm-filter-tray-tab",
+                                        isActive && "active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
-                                            layoutId="activeStatusTab"
-                                            className="absolute inset-0 bg-primary !rounded-[16px] shadow-lg shadow-primary/25"
+                                            layoutId="activeItemStatusTab"
+                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
@@ -673,7 +502,7 @@ export function CategoryDetailClient({
             {/* Subcategories Grid - Show if this is a parent category */}
             {
                 subCategories.length > 0 && (
-                    <div className="space-y-4">
+                    <div className="space-y-4 mt-8">
                         <div className="flex items-center gap-4 px-2">
                             <h2 className="text-sm font-bold text-slate-500">Подкатегории</h2>
                             <div className="h-px flex-1 bg-[#e2e8f0]" />
@@ -721,8 +550,8 @@ export function CategoryDetailClient({
                 )
             }
 
-            {/* Items Grid */}
-            <div className="space-y-4">
+            {/* Items Table Section */}
+            <div className="space-y-4 mt-8">
                 <div className="flex items-center gap-4 px-2">
                     <h2 className="text-sm font-bold text-slate-500">Позиции</h2>
                     <div className="h-px flex-1 bg-[#e2e8f0]" />
@@ -741,7 +570,7 @@ export function CategoryDetailClient({
                 {filteredItems.length > 0 ? (
                     <div className="space-y-4">
                         {/* Items Table View */}
-                        <div className="glass-panel p-0 overflow-hidden">
+                        <div className="glass-panel overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-slate-100">
                                     <thead className="bg-slate-50/50">
@@ -918,6 +747,7 @@ export function CategoryDetailClient({
                                                                     e.stopPropagation();
                                                                     if (item.quantity > 0) {
                                                                         toast("Нельзя архивировать товар с остатком > 0", "error");
+                                                                        playSound("notification_error");
                                                                         return;
                                                                     }
                                                                     setSelectedIds([item.id]);
@@ -1013,7 +843,174 @@ export function CategoryDetailClient({
                     />
                 )
             }
-        </div>
+
+            {/* Mass Actions Bar */}
+            {mounted && createPortal(
+                <AnimatePresence>
+                    {selectedIds.length > 0 && (
+                        <>
+                            {/* Bottom Progressive Gradient Blur Overlay */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[100]"
+                                style={{
+                                    maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                    WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                    background: 'linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
+                                }}
+                            />
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                                exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                                className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-2 gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
+                            >
+                                <div className="flex items-center gap-3 pl-1">
+                                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-white">
+                                        {selectedIds.length}
+                                    </div>
+                                    <span className="text-xs font-bold text-slate-500 whitespace-nowrap pr-2">Позиций выбрано</span>
+                                </div>
+
+                                <div className="w-[1.5px] h-6 bg-slate-500/40" />
+
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => setIsBulkMoveOpen(true)}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                    >
+                                        <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
+                                    </button>
+
+                                    <button
+                                        onClick={handleBulkPrint}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                    >
+                                        <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            const itemsToExport = items.filter(i => selectedIds.includes(i.id));
+                                            exportToCSV(itemsToExport, "inventory_export", [
+                                                { header: "ID", key: "id" },
+                                                { header: "Название", key: "name" },
+                                                { header: "Артикул", key: (item) => item.sku || "" },
+                                                { header: "Количество", key: "quantity" },
+                                                { header: "Ед.изм", key: "unit" },
+                                                { header: "Категория", key: (item) => item.category?.name || "" },
+                                                {
+                                                    header: "Склад", key: (item) => {
+                                                        if (item.stocks && item.stocks.length > 0) {
+                                                            const stocksStr = item.stocks
+                                                                .filter((s) => s.quantity > 0)
+                                                                .map((s) => {
+                                                                    const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
+                                                                    return `${locName} (${s.quantity})`;
+                                                                })
+                                                                .join("; ");
+                                                            if (stocksStr) return stocksStr;
+                                                        }
+                                                        return "";
+                                                    }
+                                                },
+                                                { header: "Себестоимость", key: (item) => item.costPrice || 0 },
+                                                { header: "Цена продажи", key: (item) => item.sellingPrice || 0 }
+                                            ]);
+                                        }}
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                    >
+                                        <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
+                                    </button>
+
+                                    <div className="w-px h-8 bg-slate-200 mx-1" />
+
+                                    <button
+                                        onClick={() => {
+                                            const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
+                                            const hasStock = itemsToArchive.some(i => i.quantity > 0);
+
+                                            if (hasStock) {
+                                                toast("Нельзя архивировать товары с остатком > 0", "error");
+                                                return;
+                                            }
+                                            setShowArchiveReason(true);
+                                        }}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
+                                    >
+                                        <Archive className="w-4 h-4" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => setSelectedIds([])}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )
+            }
+
+            {
+                isBulkMoveOpen && (
+                    <BulkMoveDialog
+                        selectedIds={selectedIds}
+                        storageLocations={storageLocations}
+                        onClose={() => setIsBulkMoveOpen(false)}
+                        onSuccess={() => {
+                            setIsBulkMoveOpen(false);
+                            setSelectedIds([]);
+                            router.refresh();
+                        }}
+                    />
+                )
+            }
+
+            {
+                isBulkCategoryOpen && (
+                    <BulkCategoryDialog
+                        selectedIds={selectedIds}
+                        categories={allCategories}
+                        onClose={() => setIsBulkCategoryOpen(false)}
+                        onSuccess={() => {
+                            setIsBulkCategoryOpen(false);
+                            setSelectedIds([]);
+                            router.refresh();
+                        }}
+                    />
+                )
+            }
+
+            {
+                isAdjustOpen && adjustingItem && (
+                    <AdjustStockDialog
+                        item={adjustingItem}
+                        locations={storageLocations}
+                        itemStocks={adjustingItemStocks}
+                        user={user}
+                        onClose={() => {
+                            setIsAdjustOpen(false);
+                            setAdjustingItem(null);
+                            setAdjustingItemStocks([]);
+                            router.refresh();
+                        }}
+                    />
+                )
+            }
+        </div >
     );
 }
 
@@ -1058,7 +1055,7 @@ function SortableSubCategoryCard({
             style={style}
             onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
             className={cn(
-                "group glass-panel p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 hover:border-primary/30",
+                "group bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 hover:border-primary/30 shadow-sm",
                 isDragging && "opacity-0 scale-95" // Hide the original one while dragging
             )}
         >
@@ -1280,4 +1277,3 @@ function BulkCategoryDialog({ selectedIds, categories, onClose, onSuccess }: { s
         </div>
     );
 }
-

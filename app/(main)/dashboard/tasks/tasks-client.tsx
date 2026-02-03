@@ -120,7 +120,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                 placeholder="Найти поручение..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-12 pr-10 h-12 bg-slate-50 border-none rounded-[16px] text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 w-full sm:w-72 transition-all"
+                                className="crm-filter-tray-search pl-12 pr-10 focus:outline-none w-full sm:w-72"
                             />
                             {searchQuery && (
                                 <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
@@ -134,7 +134,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
                 {/* Filter Toolbar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-6">
-                    <div className="crm-filter-tray !p-1 !gap-1 w-full sm:w-fit">
+                    <div className="crm-filter-tray w-full sm:w-fit">
                         {tabs.map((tab) => {
                             const isActive = activeTab === tab.id;
                             return (
@@ -142,21 +142,21 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                     key={tab.id}
                                     onClick={() => handleTabChange(tab.id)}
                                     className={cn(
-                                        "relative flex items-center gap-2.5 px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group flex-1 sm:flex-none whitespace-nowrap",
-                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                        "crm-filter-tray-tab flex-1 sm:flex-none",
+                                        isActive && "active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeTaskTab"
-                                            className="absolute inset-0 bg-slate-900 rounded-[14px] shadow-lg shadow-slate-900/20"
+                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
                                     <tab.icon className="w-3.5 h-3.5 relative z-10" />
                                     <span className="relative z-10">{tab.label}</span>
                                     {isActive && (
-                                        <span className="relative z-10 ml-1.5 px-1.5 py-0.5 bg-primary rounded-full text-[10px] text-white">
+                                        <span className="relative z-10 ml-1.5 px-1.5 py-0.5 bg-white/20 rounded-full text-[10px] text-white">
                                             {filteredTasks.length}
                                         </span>
                                     )}
@@ -165,7 +165,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                         })}
                     </div>
 
-                    <div className="crm-filter-tray !p-1 !gap-1 w-full sm:w-fit">
+                    <div className="crm-filter-tray w-full sm:w-fit">
                         {viewTabs.map((tab) => {
                             const isActive = view === tab.id;
                             return (
@@ -173,14 +173,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                     key={tab.id}
                                     onClick={() => setView(tab.id)}
                                     className={cn(
-                                        "relative flex items-center gap-2.5 px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group flex-1 sm:flex-none whitespace-nowrap",
-                                        isActive ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
+                                        "crm-filter-tray-tab flex-1 sm:flex-none",
+                                        isActive && "active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeTaskView"
-                                            className="absolute inset-0 bg-white rounded-[14px] shadow-sm"
+                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
@@ -206,9 +206,11 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                 )}
             </div>
 
-            {selectedTask && (
-                <TaskDetailsDialog task={selectedTask} onClose={() => setSelectedTask(null)} />
-            )}
-        </div>
+            {
+                selectedTask && (
+                    <TaskDetailsDialog task={selectedTask} onClose={() => setSelectedTask(null)} />
+                )
+            }
+        </div >
     );
 }

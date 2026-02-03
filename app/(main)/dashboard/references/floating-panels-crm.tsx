@@ -62,7 +62,7 @@ export default function FloatingPanelsCRM() {
                     <div className="flex items-center gap-2">
                         <IconButton icon={Type} className="text-slate-600" />
                         <span className="text-slate-400 font-medium px-2">Aa</span>
-                        <span className="text-slate-400 font-serif italic px-2">T<span className="text-xs align-sub">T</span></span>
+                        <span className="text-slate-400 font-serif px-2">T<span className="text-xs align-sub">T</span></span>
                     </div>
 
                     <Divider />

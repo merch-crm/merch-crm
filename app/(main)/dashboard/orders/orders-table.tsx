@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/toast";
 import { GlassEmptyState } from "@/components/ui/glass-empty-state";
 import { PackageOpen } from "lucide-react";
 import { exportToCSV } from "@/lib/export-utils";
+import { playSound } from "@/lib/sounds";
 
 export interface Order {
     id: string;
@@ -42,8 +43,10 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
         const res = await updateOrderField(orderId, field, value);
         if (res.error) {
             toast(res.error, "error");
+            playSound("notification_error");
         } else {
             toast("Заказ обновлен", "success");
+            playSound("notification_success");
         }
     };
 
@@ -76,6 +79,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
             { header: "Создал", key: (o) => o.creator?.name || "Система" }
         ]);
         toast("Экспорт завершен", "success");
+        playSound("notification_success");
     };
 
     if (error) {
@@ -165,6 +169,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                 const res = await toggleOrderArchived(order.id, !showArchived);
                                                 if (res.success) {
                                                     toast(showArchived ? "Заказ восстановлен" : "Заказ архивирован", "success");
+                                                    playSound("notification_success");
                                                     window.location.reload(); // Quick reach to re-fetch
                                                 }
                                             }}

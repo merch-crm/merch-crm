@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { manrope } from "@/app/fonts";
 import "./globals.css";
 import { ToastContainer } from "@/components/ui/toast";
 
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBrandingSettings();
@@ -13,19 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: {
       index: false,
       follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
     },
-    ...(branding && (branding as { faviconUrl?: string }).faviconUrl
-      ? {
-        icons: {
-          icon: (branding as { faviconUrl?: string }).faviconUrl,
-        },
-      }
-      : {}),
-    viewport: "width=device-width, initial-scale=1, maximum-scale=1", // Prevent zoom on mobile inputs
+    icons: {
+      icon: branding?.faviconUrl || "/icon.png",
+      apple: "/apple-icon.png",
+    },
   };
 }
 

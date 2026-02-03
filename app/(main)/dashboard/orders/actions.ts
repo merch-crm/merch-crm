@@ -251,22 +251,73 @@ export async function createOrder(formData: FormData) {
                 totalAmount += (item.quantity * item.price);
             }
 
-            // Apply promocode if any
+            // 2.3 Apply promocode if any
+            let discountAmount = 0;
             if (promocodeId) {
                 const promo = await tx.query.promocodes.findFirst({
                     where: eq(promocodes.id, promocodeId)
                 });
+
                 if (promo && promo.isActive) {
-                    if (promo.discountType === 'percentage') {
-                        totalAmount = totalAmount * (1 - Number(promo.value) / 100);
-                    } else if (promo.discountType === 'fixed') {
-                        totalAmount = Math.max(0, totalAmount - Number(promo.value));
+                    const now = new Date();
+                    const isExpired = promo.expiresAt && new Date(promo.expiresAt) < now;
+                    const isBelowLimit = promo.usageLimit === null || promo.usageCount < promo.usageLimit;
+                    const isAtMinAmount = totalAmount >= Number(promo.minOrderAmount || 0);
+
+                    if (!isExpired && isBelowLimit && isAtMinAmount) {
+                        if (promo.discountType === 'percentage') {
+                            discountAmount = (totalAmount * Number(promo.value)) / 100;
+                            const maxDisc = Number(promo.maxDiscountAmount || 0);
+                            if (maxDisc > 0 && discountAmount > maxDisc) {
+                                discountAmount = maxDisc;
+                            }
+                        } else if (promo.discountType === 'fixed') {
+                            discountAmount = Number(promo.value);
+                        } else if (promo.discountType === 'gift') {
+                            // Automatically add gift product if promo.value is a valid inventory ID
+                            try {
+                                const giftItem = await tx.query.inventoryItems.findFirst({
+                                    where: eq(inventoryItems.id, promo.value)
+                                });
+                                if (giftItem) {
+                                    await tx.insert(orderItems).values({
+                                        orderId: newOrder.id,
+                                        description: `🎁 ПОДАРОК: ${giftItem.name}`,
+                                        quantity: 1,
+                                        price: "0",
+                                        inventoryId: giftItem.id,
+                                    });
+                                    // Reserve the gift
+                                    await tx.update(inventoryItems)
+                                        .set({ reservedQuantity: (giftItem.reservedQuantity || 0) + 1 })
+                                        .where(eq(inventoryItems.id, giftItem.id));
+                                }
+                            } catch (e) {
+                                console.error("Error adding gift item:", e);
+                            }
+                            discountAmount = 0;
+                        } else if (promo.discountType === 'free_shipping') {
+                            // Logic for shipping cost would go here if tracked
+                            discountAmount = 0;
+                        }
+
+                        // Increment usage count
+                        await tx.update(promocodes)
+                            .set({ usageCount: (promo.usageCount || 0) + 1 })
+                            .where(eq(promocodes.id, promo.id));
                     }
                 }
             }
 
-            // Update total
-            await tx.update(orders).set({ totalAmount: String(totalAmount) }).where(eq(orders.id, newOrder.id));
+            const finalTotal = Math.max(0, totalAmount - discountAmount);
+
+            // 2.4 Update Order Total and Discount
+            await tx.update(orders)
+                .set({
+                    totalAmount: String(finalTotal),
+                    discountAmount: String(discountAmount)
+                })
+                .where(eq(orders.id, newOrder.id));
 
             // 3. Create initial payment if any
             if (Number(advanceAmount) > 0) {
@@ -578,6 +629,7 @@ export async function getOrderById(id: string) {
                 creator: true,
                 attachments: true,
                 payments: true,
+                promocode: true,
             }
         });
 

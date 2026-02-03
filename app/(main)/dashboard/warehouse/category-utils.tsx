@@ -1,153 +1,149 @@
 import {
     Package, Scissors, Box, Zap, Hourglass,
-    Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, ClipboardList,
+    Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, FileText,
     Pencil, Brush, Ruler, Hammer, Wrench, Eraser, PenTool, Pipette,
-    Palette, Printer, FlaskConical,
+    Palette, Printer, FlaskConical, Factory,
     Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
-    Eye, Layers
+    Eye, Layers, CircleDollarSign, TrendingUp, Wallet, Users, UserCheck, Phone,
+    CheckCircle2, Sparkles, Ship, Database, DollarSign, User, Trash
 } from "lucide-react";
 
 // Phosphor Icons for clothing (much better clothing-specific icons)
 import { Category } from "./types";
+import { cn } from "@/lib/utils";
 
 // Custom Clothing Icons (High quality, thematic)
 import {
     TshirtIcon as CustomTshirt,
     HoodieIcon as CustomHoodie,
-    SweatshirtIcon as CustomSweatshirt,
-    LongsleeveIcon as CustomLongsleeve,
-    AnorakIcon as CustomAnorak,
-    ZipHoodieIcon as CustomZipHoodie,
     PantsIcon as CustomPants,
-    PoloIcon as CustomPolo,
+    JacketIcon as CustomJacket,
+    DressIcon as CustomDress,
+    SneakersIcon as CustomSneakers,
+    BootsIcon as CustomBoots,
     CapIcon as CustomCap,
+    GlassesIcon as CustomGlasses,
+    WatchIcon as CustomWatch,
+    HandbagIcon as CustomHandbag,
+    BackpackIcon as CustomBackpack,
+    ToteBagIcon as CustomToteBag,
+    TagIcon as CustomTag,
+    BabyIcon as CustomBaby,
+    CrownIcon as CustomCrown,
+    SparklesIcon as CustomSparkles,
+    DiscountIcon as CustomDiscount,
+    HeartIcon as CustomHeart,
+    StarIcon as CustomStar,
+    FlameIcon as CustomFlame,
+    BeltIcon as CustomBelt,
+    WalletIcon as CustomWallet,
+    UmbrellaIcon as CustomUmbrella,
     PackageIcon as CustomPackage,
     SuppliesIcon as CustomSupplies,
-    ToteBagIcon as CustomTote,
-    BackpackIcon as CustomBackpack,
-    SocksIcon as CustomSocks,
-    BeanieIcon as CustomBeanie,
-    JacketIcon as CustomJacket,
-    SneakersIcon as CustomSneakers,
-    ShortsIcon as CustomShorts,
-    SkirtIcon as CustomSkirt,
-    VestIcon as CustomVest,
-    GlovesIcon as CustomGloves,
-    ScarfIcon as CustomScarf,
-    BadgeIcon as CustomBadge,
-    StickerIcon as CustomSticker,
     MugIcon as CustomMug,
-    NotebookIcon as CustomNotebook,
-    UmbrellaIcon as CustomUmbrella
+    NotebookIcon as CustomNotebook
 } from "./custom-clothing-icons";
 
 export const ICON_GROUPS = [
     {
-        id: "merch_custom",
-        label: "Merch CRM (Эксклюзив)",
+        name: "ОДЕЖДА",
         icons: [
             { name: "tshirt-custom", icon: CustomTshirt, label: "Футболка" },
             { name: "hoodie-custom", icon: CustomHoodie, label: "Худи" },
-            { name: "sweatshirt-custom", icon: CustomSweatshirt, label: "Свитшот" },
-            { name: "longsleeve-custom", icon: CustomLongsleeve, label: "Лонгслив" },
-            { name: "anorak-custom", icon: CustomAnorak, label: "Анорак" },
-            { name: "ziphoodie-custom", icon: CustomZipHoodie, label: "Зип-худи" },
             { name: "pants-custom", icon: CustomPants, label: "Штаны" },
-            { name: "polo-custom", icon: CustomPolo, label: "Поло" },
-            { name: "cap-custom", icon: CustomCap, label: "Кепка" },
             { name: "jacket-custom", icon: CustomJacket, label: "Куртка" },
+            { name: "dress-custom", icon: CustomDress, label: "Платье" },
             { name: "sneakers-custom", icon: CustomSneakers, label: "Кроссовки" },
-            { name: "beanie-custom", icon: CustomBeanie, label: "Шапка" },
+            { name: "boots-custom", icon: CustomBoots, label: "Ботинки" },
+            { name: "cap-custom", icon: CustomCap, label: "Кепка" },
+            { name: "glasses-custom", icon: CustomGlasses, label: "Очки" },
+            { name: "watch-custom", icon: CustomWatch, label: "Часы" },
+            { name: "handbag-custom", icon: CustomHandbag, label: "Сумка" },
             { name: "backpack-custom", icon: CustomBackpack, label: "Рюкзак" },
-            { name: "totebag-custom", icon: CustomTote, label: "Шоппер" },
-            { name: "socks-custom", icon: CustomSocks, label: "Носки" },
-            { name: "packaging-custom", icon: CustomPackage, label: "Упаковка" },
-            { name: "supplies-custom", icon: CustomSupplies, label: "Расходники" },
-            { name: "shorts-custom", icon: CustomShorts, label: "Шорты" },
-            { name: "skirt-custom", icon: CustomSkirt, label: "Юбка" },
-            { name: "vest-custom", icon: CustomVest, label: "Жилетка" },
-            { name: "gloves-custom", icon: CustomGloves, label: "Перчатки" },
-            { name: "scarf-custom", icon: CustomScarf, label: "Шарф" },
-            { name: "badge-custom", icon: CustomBadge, label: "Значок" },
-            { name: "sticker-custom", icon: CustomSticker, label: "Стикер" },
-            { name: "mug-custom", icon: CustomMug, label: "Кружка" },
-            { name: "notebook-custom", icon: CustomNotebook, label: "Блокнот" },
+            { name: "totebag-custom", icon: CustomToteBag, label: "Шоппер" },
+            { name: "tag-custom", icon: CustomTag, label: "Бирка" },
+            { name: "baby-custom", icon: CustomBaby, label: "Детское" },
+            { name: "crown-custom", icon: CustomCrown, label: "Премиум" },
+            { name: "sparkles-custom", icon: CustomSparkles, label: "Блеск" },
+            { name: "discount-custom", icon: CustomDiscount, label: "Скидка" },
+            { name: "heart-custom", icon: CustomHeart, label: "Любимое" },
+            { name: "star-custom", icon: CustomStar, label: "Хит" },
+            { name: "flame-custom", icon: CustomFlame, label: "Горячее" },
+            { name: "belt-custom", icon: CustomBelt, label: "Ремень" },
+            { name: "wallet-custom", icon: CustomWallet, label: "Кошелек" },
             { name: "umbrella-custom", icon: CustomUmbrella, label: "Зонт" },
         ]
     },
     {
-        id: "clothing",
-        label: "Одежда",
-        icons: [
-            { name: "tshirt", icon: CustomTshirt, label: "Футболка" },
-            { name: "hoodie", icon: CustomHoodie, label: "Худи" },
-            { name: "pants", icon: CustomPants, label: "Штаны / Брюки" },
-            { name: "coat", icon: CustomAnorak, label: "Куртка / Анорак" },
-            { name: "sneaker", icon: CustomSneakers, label: "Кроссовки" },
-            { name: "baseball-cap", icon: CustomCap, label: "Кепка" },
-        ]
-    },
-    {
-        id: "accessories",
-        label: "Аксессуары",
-        icons: [
-            { name: "backpack", icon: CustomBackpack, label: "Рюкзак" },
-            { name: "tote", icon: CustomTote, label: "Шоппер" },
-            { name: "socks", icon: CustomSocks, label: "Носки" }
-        ]
-    },
-    {
-        id: "packaging",
-        label: "Упаковка",
+        name: "СКЛАД И ЛОГИСТИКА",
         icons: [
             { name: "box", icon: Box, label: "Коробка" },
             { name: "package", icon: Package, label: "Посылка" },
-            { name: "archive", icon: Archive, label: "Архив" },
-            { name: "truck", icon: Truck, label: "Доставка" },
-            { name: "barcode", icon: Barcode, label: "Штрих-код" },
-            { name: "scale", icon: Scale, label: "Весы" },
-            { name: "plane", icon: Plane, label: "Авиадоставка" },
-            { name: "gift", icon: Gift, label: "Подарочная упаковка" },
-            { name: "shopping-cart", icon: ShoppingCart, label: "Корзины" },
-            { name: "layers", icon: Layers, label: "Слои" },
             { name: "warehouse", icon: Warehouse, label: "Склад" },
-            { name: "clipboard-list", icon: ClipboardList, label: "Накладные" }
+            { name: "truck", icon: Truck, label: "Грузовик" },
+            { name: "plane", icon: Plane, label: "Самолет" },
+            { name: "ship", icon: Ship, label: "Корабль" },
+            { name: "barcode", icon: Barcode, label: "Штрихкод" },
+            { name: "layers", icon: Layers, label: "Слои" },
+            { name: "database", icon: Database, label: "База данных" },
+            { name: "scale", icon: Scale, label: "Весы" },
+            { name: "inventory-custom", icon: CustomPackage, label: "Инвентарь" },
         ]
     },
     {
-        id: "supplies",
-        label: "Расходники",
+        name: "ПРОИЗВОДСТВО И ИНСТРУМЕНТЫ",
         icons: [
-            { name: "pencil", icon: Pencil, label: "Карандаш" },
-            { name: "brush", icon: Brush, label: "Кисть" },
+            { name: "factory", icon: Factory, label: "Завод" },
+            { name: "printer", icon: Printer, label: "Принтер" },
+            { name: "pen-tool", icon: PenTool, label: "Дизайн" },
             { name: "palette", icon: Palette, label: "Палитра" },
             { name: "scissors", icon: Scissors, label: "Ножницы" },
-            { name: "ruler", icon: Ruler, label: "Линейка" },
             { name: "hammer", icon: Hammer, label: "Молоток" },
             { name: "wrench", icon: Wrench, label: "Ключ" },
-            { name: "eraser", icon: Eraser, label: "Ластик" },
-            { name: "pen-tool", icon: PenTool, label: "Перо" },
+            { name: "ruler", icon: Ruler, label: "Линейка" },
+            { name: "brush", icon: Brush, label: "Кисть" },
             { name: "pipette", icon: Pipette, label: "Пипетка" },
-            { name: "flask", icon: FlaskConical, label: "Химия" },
-            { name: "printer", icon: Printer, label: "Печать" }
+            { name: "flask-conical", icon: FlaskConical, label: "Химия" },
+            { name: "supplies-custom", icon: CustomSupplies, label: "Расходники" },
         ]
     },
     {
-        id: "general",
-        label: "Общее",
+        name: "ФИНАНСЫ И ПРОДАЖИ",
         icons: [
-            { name: "zap", icon: Zap, label: "Быстро" },
-            { name: "shield", icon: Shield, label: "Защита" },
-            { name: "info", icon: Info, label: "Инфо" },
-            { name: "settings", icon: Settings, label: "Настройки" },
-            { name: "search", icon: Search, label: "Поиск" },
-            { name: "bell", icon: Bell, label: "Уведомление" },
-            { name: "calendar", icon: Calendar, label: "Календарь" },
-            { name: "home", icon: Home, label: "Главная" },
+            { name: "dollar-sign", icon: DollarSign, label: "Доллар" },
+            { name: "wallet", icon: Wallet, label: "Кошелек" },
+            { name: "trending-up", icon: TrendingUp, label: "Рост" },
+            { name: "shopping-cart", icon: ShoppingCart, label: "Корзина" },
+            { name: "gift", icon: Gift, label: "Подарок / Бонус" },
+            { name: "wallet-custom", icon: CustomWallet, label: "Кошелек (Ph)" },
+        ]
+    },
+    {
+        name: "БИЗНЕС И КЛИЕНТЫ",
+        icons: [
+            { name: "users", icon: Users, label: "Клиенты" },
+            { name: "user", icon: User, label: "Профиль" },
             { name: "mail", icon: Mail, label: "Почта" },
-            { name: "lock", icon: Lock, label: "Замок" },
+            { name: "phone", icon: Phone, label: "Телефон" },
+            { name: "home", icon: Home, label: "Главная" },
+            { name: "file-text", icon: FileText, label: "Документ" },
+            { name: "mug-custom", icon: CustomMug, label: "Кружка" },
+        ]
+    },
+    {
+        name: "СИСТЕМНЫЕ И СТАТУС",
+        icons: [
+            { name: "settings", icon: Settings, label: "Настройки" },
+            { name: "bell", icon: Bell, label: "Уведомления" },
+            { name: "shield", icon: Shield, label: "Безопасность" },
+            { name: "check-circle", icon: CheckCircle2, label: "Готово" },
+            { name: "zap", icon: Zap, label: "Быстро" },
+            { name: "info", icon: Info, label: "Инфо" },
+            { name: "search", icon: Search, label: "Поиск" },
+            { name: "trash", icon: Trash, label: "Корзина" },
+            { name: "calendar", icon: Calendar, label: "Календарь" },
+            { name: "hourglass", icon: Hourglass, label: "Ожидание" },
             { name: "eye", icon: Eye, label: "Обзор" },
-            { name: "hourglass", icon: Hourglass, label: "Ожидание" }
         ]
     }
 ];
@@ -165,10 +161,12 @@ export const COLORS = [
     { name: "rose", class: "bg-rose-500" },
     { name: "emerald", class: "bg-emerald-500" },
     { name: "amber", class: "bg-amber-500" },
-    { name: "violet", class: "bg-violet-600" },
-    { name: "cyan", class: "bg-cyan-500" },
+    { name: "lime", class: "bg-lime-500" },
+    { name: "blue", class: "bg-blue-600" },
     { name: "slate", class: "bg-slate-600" },
     { name: "orange", class: "bg-orange-500" },
+    { name: "sky", class: "bg-sky-500" },
+    { name: "fuchsia", class: "bg-fuchsia-500" },
 ];
 
 export const getIconNameFromName = (name: string): string => {
@@ -182,11 +180,11 @@ export const getIconNameFromName = (name: string): string => {
     if (n.includes("кепк") || n.includes("бейсболк")) return "cap-custom";
     if (n.includes("обув") || n.includes("кроссовк")) return "sneakers-custom";
     if (n.includes("ботинк")) return "sneakers-custom";
-    if (n.includes("плать")) return "anorak-custom";
+    if (n.includes("плать")) return "dress-custom";
     if (n.includes("сумк")) return "totebag-custom";
     if (n.includes("шоппер") || n.includes("тот")) return "totebag-custom";
     if (n.includes("рюкзак")) return "backpack-custom";
-    if (n.includes("очк")) return "eye";
+    if (n.includes("очк")) return "glasses-custom";
     if (n.includes("упаковка")) return "packaging-custom";
     if (n.includes("расходник")) return "supplies-custom";
     if (n.includes("бирк")) return "tag";
@@ -256,3 +254,113 @@ export const CLOTHING_MATERIALS = [
     { name: "Кулирка", code: "KUL" },
     { name: "Френч-терри", code: "FT" },
 ];
+
+// --- Icon Registry & Serialization Helpers ---
+
+export const ALL_ICONS_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+    // Lucide Icons
+    "box": Box, "package": Package, "warehouse": Warehouse, "truck": Truck, "plane": Plane,
+    "archive": Archive, "barcode": Barcode, "layers": Layers, "file-text": FileText, "scale": Scale,
+    "factory": Factory, "printer": Printer, "brush": Brush, "palette": Palette, "scissors": Scissors,
+    "hammer": Hammer, "wrench": Wrench, "ruler": Ruler, "pencil": Pencil, "pen-tool": PenTool,
+    "pipette": Pipette, "flask-conical": FlaskConical, "flask": FlaskConical,
+    "circle-dollar-sign": CircleDollarSign, "dollar": CircleDollarSign, "wallet": Wallet,
+    "trending-up": TrendingUp, "shopping-cart": ShoppingCart, "gift": Gift,
+    "users": Users, "user-check": UserCheck, "mail": Mail, "phone": Phone, "home": Home,
+    "settings": Settings, "lock": Lock, "shield": Shield, "check-circle": CheckCircle2,
+    "zap": Zap, "info": Info, "search": Search, "bell": Bell, "calendar": Calendar,
+    "hourglass": Hourglass, "eye": Eye, "sparkles": Sparkles,
+    "ship": Ship, "database": Database, "dollar-sign": DollarSign, "user": User, "trash": Trash,
+
+    // Custom Icons (Legacy Mapping to Phosphor Set)
+    "tshirt-custom": CustomTshirt,
+    "hoodie-custom": CustomHoodie,
+    "sweatshirt-custom": CustomHoodie, // Redirect to Hoodie
+    "longsleeve-custom": CustomTshirt, // Redirect to Tshirt
+    "anorak-custom": CustomJacket,     // Redirect to Jacket
+    "ziphoodie-custom": CustomHoodie,  // Redirect to Hoodie
+    "pants-custom": CustomPants,
+    "polo-custom": CustomTshirt,       // Redirect to Tshirt
+    "cap-custom": CustomCap,
+    "jacket-custom": CustomJacket,
+    "sneakers-custom": CustomSneakers,
+    "beanie-custom": CustomCap,        // Redirect to Cap
+    "backpack-custom": CustomBackpack,
+    "totebag-custom": CustomToteBag,
+    "socks-custom": CustomBoots,       // Redirect to Boots
+    "shorts-custom": CustomPants,      // Redirect to Pants
+    "skirt-custom": CustomDress,       // Redirect to Dress
+    "vest-custom": CustomJacket,       // Redirect to Jacket
+    "gloves-custom": CustomBackpack,   // Redirect to Backpack
+    "scarf-custom": CustomBelt,        // Redirect to Belt
+    "badge-custom": CustomTag,         // Redirect to Tag
+    "sticker-custom": CustomSparkles,  // Redirect to Sparkles
+    "mug-custom": CustomMug,
+    "notebook-custom": CustomNotebook,
+    "umbrella-custom": CustomUmbrella,
+    "inventory-custom": CustomPackage,
+    "packaging-custom": CustomPackage,
+    "supplies-custom": CustomSupplies,
+    "dress-custom": CustomDress,
+    "boots-custom": CustomBoots,
+    "glasses-custom": CustomGlasses,
+    "watch-custom": CustomWatch,
+    "handbag-custom": CustomHandbag,
+    "tag-custom": CustomTag,
+    "baby-custom": CustomBaby,
+    "crown-custom": CustomCrown,
+    "sparkles-custom": CustomSparkles,
+    "discount-custom": CustomDiscount,
+    "heart-custom": CustomHeart,
+    "star-custom": CustomStar,
+    "flame-custom": CustomFlame,
+    "belt-custom": CustomBelt,
+    "wallet-custom": CustomWallet,
+};
+
+// Functions to serialize/deserialize for DB storage
+export function serializeIconGroups(groups: any[]) {
+    return groups.map(group => ({
+        ...group,
+        // Store groupIcon as string name only if it's a function (component)
+        groupIconName: typeof group.groupIcon === 'function' ?
+            Object.keys(ALL_ICONS_MAP).find(key => ALL_ICONS_MAP[key] === group.groupIcon) || "box"
+            : group.groupIconName || "box",
+        // Remove actual component references
+        groupIcon: undefined,
+        icons: group.icons.map((icon: any) => ({
+            name: icon.name,
+            label: icon.label,
+            svgContent: icon.svgContent
+        }))
+    }));
+}
+
+export const createSvgIcon = (svgContent: string) => {
+    return ({ className }: { className?: string }) => (
+        <div
+            className={cn("flex items-center justify-center", className)}
+            dangerouslySetInnerHTML={{
+                __html: svgContent.includes('<svg') ? svgContent : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgContent}</svg>`
+            }}
+        />
+    );
+};
+
+export function hydrateIconGroups(storedGroups: any[]) {
+    if (!storedGroups || !Array.isArray(storedGroups)) return ICON_GROUPS;
+
+    return storedGroups.map(group => {
+        // Find group icon component
+        const GroupIconComponent = ALL_ICONS_MAP[group.groupIconName] || Box;
+
+        return {
+            ...group,
+            groupIcon: GroupIconComponent,
+            icons: group.icons.map((icon: any) => ({
+                ...icon,
+                icon: icon.svgContent ? createSvgIcon(icon.svgContent) : (ALL_ICONS_MAP[icon.name] || Box)
+            }))
+        };
+    });
+}

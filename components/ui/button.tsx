@@ -10,15 +10,15 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] shadow-lg active:scale-[0.98] transition-all",
+                default: "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] [box-shadow:0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.08)] hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none active:scale-[0.98] transition-all",
                 destructive:
-                    "bg-[#ff463c] text-white hover:bg-[#e32419] shadow-md shadow-red-600/10",
-                "btn-dark": "bg-[#1f1f1f] text-white hover:bg-black shadow-xl shadow-slate-900/20 transition-all",
-                "btn-black": "bg-[#0f172a] text-white hover:bg-black shadow-lg transition-all",
+                    "bg-[#ff463c] text-white hover:bg-[#e32419] [box-shadow:0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.08)] hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none",
+                "btn-dark": "bg-[#1f1f1f] text-white hover:bg-black [box-shadow:0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.08)] hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none transition-all",
+                "btn-black": "bg-[#0f172a] text-white hover:bg-black [box-shadow:0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.08)] hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none transition-all",
                 outline:
                     "border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors",
                 secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-slate-200",
+                    "bg-secondary text-secondary-foreground hover:bg-slate-200 [box-shadow:0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.08)] hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
             },

@@ -76,7 +76,12 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                         <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between">
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
                                 <Calendar className="w-3.5 h-3.5 text-slate-300" />
-                                <span>{format(new Date(item.order.createdAt), "dd MMM yyyy", { locale: ru })}</span>
+                                <span>
+                                    {(() => {
+                                        const d = new Date(item.order.createdAt);
+                                        return isNaN(d.getTime()) ? "—" : format(d, "dd MMM yyyy", { locale: ru });
+                                    })()}
+                                </span>
                             </div>
                             <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary/60 group-hover:text-primary transition-colors">
                                 <span>Открыть</span>

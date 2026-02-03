@@ -6,6 +6,7 @@ import { InventoryItem, AttributeType, InventoryAttribute } from "../types";
 import { Printer, X, AlignLeft, AlignCenter, RotateCw, Download, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 // Check if Switch exists, if not I will need to replace it.
 // I'll assume standard shadcn components pattern.
@@ -42,7 +43,13 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [showColor, setShowColor] = useState(true);
     const [showQuality, setShowQuality] = useState(false);
     const [showCategory, setShowCategory] = useState(false);
+    const [showLogo, setShowLogo] = useState(false);
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
+    const [branding, setBranding] = useState<any>(null);
+
+    useEffect(() => {
+        getBrandingSettings().then(setBranding);
+    }, []);
 
     const [alignment, setAlignment] = useState<'center' | 'left'>('center');
     const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('side-by-side');
@@ -283,6 +290,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
         (hasComposition ? 8 : 0) + // Increased weight for composition
         (item.name.length / 8) +
         (customText ? 5 : 0) +
+        (showBarcode ? 2 : 0) +
+        (showLogo ? 4 : 0) +
         (showArticle ? 2 : 0) +
         (showCategory ? 2 : 0);
 
@@ -452,6 +461,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                         ))}
 
                                     <ToggleItem label="Категория" checked={showCategory} onChange={setShowCategory} compact />
+                                    {branding?.printLogoUrl && <ToggleItem label="Логотип" checked={showLogo} onChange={setShowLogo} compact />}
                                 </div>
                             </div>
 
@@ -582,6 +592,15 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                     <div style={{ fontSize: `${(layoutStyle === 'minimal' ? 14 : 14.5) * scale * finalNameScale}px`, hyphens: 'auto' } as React.CSSProperties} className="font-bold text-black leading-[1.05] break-words">
                                         {item.name}
                                     </div>
+                                    {showLogo && branding?.printLogoUrl && (
+                                        <div className="mt-1 mb-1">
+                                            <img
+                                                src={branding.printLogoUrl}
+                                                alt="Brand Logo"
+                                                style={{ height: `${(paperSize === 'a4' ? 24 : 10) * scale}mm`, maxWidth: '100%', objectFit: 'contain' }}
+                                            />
+                                        </div>
+                                    )}
                                     {layoutStyle === 'minimal' && item.sizeCode && (
                                         <div style={{ fontSize: `${12 * scale * finalAttrScale}px` }} className="font-bold text-slate-900 mt-1 bg-slate-50 px-2 py-0.5 rounded-[var(--radius-inner)] border border-slate-200">
                                             Размер: {getAttrLabel('size', item.sizeCode)}

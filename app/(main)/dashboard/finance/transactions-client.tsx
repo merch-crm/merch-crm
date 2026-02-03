@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
+import { playSound } from "@/lib/sounds";
 
 interface Transaction {
     id: string;
@@ -98,7 +99,7 @@ export function TransactionsClient({
 
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="crm-filter-tray gap-[var(--crm-grid-gap)]">
+            <div className="crm-filter-tray">
                 {/* Search Box */}
                 <div className="relative flex-1">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -107,7 +108,7 @@ export function TransactionsClient({
                         placeholder="Поиск транзакций, заказов, клиентов..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-12 bg-white border-none rounded-[14px] pl-12 pr-10 text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all shadow-sm"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
                     />
                     {searchQuery && (
                         <button
@@ -123,8 +124,8 @@ export function TransactionsClient({
                     <div className="flex items-center p-1 gap-1">
                         {[
                             { id: 'all', label: 'Все' },
-                            { id: 'payments', label: 'Доходы', activeColor: 'bg-emerald-500' },
-                            { id: 'expenses', label: 'Расходы', activeColor: 'bg-rose-500' }
+                            { id: 'payments', label: 'Доходы', activeColor: 'bg-emerald-500', shadowColor: 'shadow-emerald-500/20' },
+                            { id: 'expenses', label: 'Расходы', activeColor: 'bg-rose-500', shadowColor: 'shadow-rose-500/20' }
                         ].map((t) => {
                             const isActive = view === t.id;
                             return (
@@ -132,17 +133,17 @@ export function TransactionsClient({
                                     key={t.id}
                                     onClick={() => setView(t.id as "all" | "payments" | "expenses")}
                                     className={cn(
-                                        "relative px-6 py-2.5 rounded-[14px] text-[13px] font-bold transition-all duration-300 group",
-                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
+                                        "crm-filter-tray-tab",
+                                        isActive && "active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
-                                            layoutId="activeFinanceView"
+                                            layoutId="activeFinanceTab"
                                             className={cn(
-                                                "absolute inset-0 rounded-[14px] shadow-lg",
+                                                "absolute inset-0 rounded-[16px] z-0",
                                                 t.activeColor || "bg-primary",
-                                                isActive ? (t.id === 'payments' ? "shadow-emerald-500/25" : t.id === 'expenses' ? "shadow-rose-500/25" : "shadow-primary/25") : ""
+                                                t.shadowColor
                                             )}
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
@@ -157,7 +158,7 @@ export function TransactionsClient({
 
                     <Button
                         onClick={() => setIsAddingExpense(true)}
-                        className="h-11 bg-primary text-white rounded-[14px] px-6 gap-2 font-bold transition-all active:scale-95 inline-flex items-center shadow-lg shadow-primary/20 text-[13px]"
+                        className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 border-none"
                     >
                         <Plus className="w-4 h-4" />
                         Добавить расход
@@ -251,12 +252,15 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             const res = await createExpense(data);
             if (res.success) {
                 toast("Расход записан", "success");
+                playSound("expense_added");
                 onSuccess();
             } else {
                 toast(res.error || "Ошибка", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Ошибка", "error");
+            playSound("notification_error");
         } finally {
             setIsLoading(false);
         }

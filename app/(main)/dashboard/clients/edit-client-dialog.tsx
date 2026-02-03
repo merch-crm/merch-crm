@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X, User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, MessageSquare } from "lucide-react";
 import { updateClient, getManagers } from "./actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface EditClientDialogProps {
     client: {
@@ -57,8 +58,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         setLoading(false);
         if (res?.error) {
             toast(res.error, "error");
+            playSound("notification_error");
         } else {
             toast("Данные клиента обновлены", "success");
+            playSound("client_updated");
             onClose();
         }
     }

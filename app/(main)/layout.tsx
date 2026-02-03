@@ -19,12 +19,24 @@ import { PullToRefresh } from "@/components/pull-to-refresh";
 import { GlobalUndo } from "@/components/global-undo";
 import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 import { FloatingSearch } from "@/components/layout/floating-search";
+import { SoundConfig } from "@/lib/sounds";
 
 interface BrandingSettings {
     companyName: string;
     logoUrl: string | null;
     primaryColor: string;
     faviconUrl: string | null;
+    notificationSound?: string | null;
+    printLogoUrl?: string | null;
+    backgroundColor?: string | null;
+    crmBackgroundUrl?: string | null;
+    crmBackgroundBlur?: number;
+    crmBackgroundBrightness?: number;
+    currencySymbol?: string;
+    dateFormat?: string;
+    timezone?: string;
+    soundConfig?: Record<string, SoundConfig>;
+    [key: string]: any;
 }
 
 export default async function DashboardLayout({
@@ -85,7 +97,8 @@ export default async function DashboardLayout({
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",
-        faviconUrl: null
+        faviconUrl: null,
+        backgroundColor: "#f2f2f2"
     };
 
     // Maintenance Mode Check
@@ -122,13 +135,35 @@ export default async function DashboardLayout({
 
     return (
         <BreadcrumbsProvider>
-            {/* Dynamic Primary Color */}
+            {/* Dynamic Branding Styles */}
             <style dangerouslySetInnerHTML={{
-                __html: `:root { --primary: ${branding.primaryColor}; }`
+                __html: `
+                    :root { 
+                        --primary: ${branding.primaryColor}; 
+                        --background: ${branding.backgroundColor || "#f2f2f2"};
+                    }
+                    ${branding.crmBackgroundUrl ? `
+                        .crm-background {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            z-index: -1;
+                            background-image: url('${branding.crmBackgroundUrl}');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                            filter: blur(${branding.crmBackgroundBlur || 0}px) brightness(${branding.crmBackgroundBrightness || 100}%);
+                            transform: scale(1.1); /* To avoid white edges when blurred */
+                        }
+                    ` : ''}
+                `
             }} />
 
             <PullToRefresh>
-                <div className="min-h-screen pb-24 md:pb-0">
+                <div className="min-h-screen pb-24 md:pb-0 relative">
+                    {branding.crmBackgroundUrl && <div className="crm-background" />}
                     {session?.impersonatorId && (
                         <ImpersonationBanner
                             impersonatorName={session.impersonatorName || "Admin"}
@@ -141,13 +176,14 @@ export default async function DashboardLayout({
                     <NotificationManager
                         initialUnreadCount={notifications.filter(n => !n.isRead).length}
                         userId={session?.id || "debug-user"}
+                        customSoundUrl={branding.notificationSound as string}
                     />
 
                     {/* Desktop Header - Floating Glass */}
                     <DesktopHeader user={user} branding={branding} notifications={notifications} />
 
                     {/* Mobile Header - Top Fixed */}
-                    <MobileHeader user={user} branding={branding} />
+                    <MobileHeader user={user} branding={branding} notifications={notifications} />
 
                     {/* Mobile Bottom Nav - Bottom Fixed */}
                     <MobileBottomNav user={user} />

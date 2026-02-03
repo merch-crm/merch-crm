@@ -67,6 +67,7 @@ export interface Category {
     sortOrder?: number | null;
     isActive?: boolean | null;
     isSystem?: boolean;
+    itemCount?: number;
     parent?: {
         id: string;
         name: string;
@@ -140,6 +141,7 @@ export interface InventoryItem {
     sellingPrice: number | string | null;
     isArchived: boolean;
     archivedAt?: Date | string | null;
+    createdAt: Date | string;
     archiveReason?: string | null;
     materialComposition: Record<string, number>;
     categoryName?: string;

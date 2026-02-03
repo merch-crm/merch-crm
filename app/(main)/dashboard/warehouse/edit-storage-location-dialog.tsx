@@ -10,6 +10,7 @@ import { useFormStatus } from "react-dom";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { playSound, useSoundEffect } from "@/lib/sounds";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
@@ -81,6 +82,9 @@ function EditStorageLocationInner({ users, locations, location, onClose }: EditS
         const res = await updateStorageLocation(location.id, formData);
         if (res?.error) {
             toast(res.error, "error");
+            playSound("notification_error");
+        } else {
+            playSound("notification_success");
         }
         setIsSaving(false);
         router.refresh();
@@ -419,8 +423,10 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
         const res = await moveInventoryItem(formData);
         if (res?.error) {
             toast(res.error, "error");
+            playSound("notification_error");
         } else {
             toast(`Товар перемещен`, "success");
+            playSound("stock_replenished");
             onSuccess(item.id, qty);
             router.refresh();
             onClose();

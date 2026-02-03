@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 import { LocationSelect } from "../../location-select";
 
@@ -67,11 +68,12 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
         try {
             const res = await transferInventoryStock(item.id, fromLocationId, toLocationId, amount, reason);
             if (res.success) {
-                if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
                 toast("Перемещение выполнено успешно", "success");
+                playSound("stock_replenished");
                 onClose();
             } else {
                 setError(res.error || "Ошибка при перемещении");
+                playSound("notification_error");
             }
         } catch {
             setError("Произошла ошибка");

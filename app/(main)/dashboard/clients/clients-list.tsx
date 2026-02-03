@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
 import { ClientProfileDrawer } from "./client-profile-drawer";
 import { EditClientDialog } from "./edit-client-dialog";
@@ -260,6 +261,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             { header: "Потрачено", key: "totalSpent" }
         ]);
         toast("Экспорт завершен", "success");
+        playSound("notification_success");
     };
 
     if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка клиентов...</div>;
@@ -267,7 +269,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     return (
         <div className="space-y-6">
             {/* New Filter Panel - Photo 2 Style */}
-            <div className="crm-filter-tray gap-3 h-14 mb-4">
+            <div className="crm-filter-tray">
                 <Search className="h-4 w-4 text-slate-400" />
                 <div className="flex-1 relative">
                     <input
@@ -288,7 +290,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 (e.target as HTMLInputElement).blur();
                             }
                         }}
-                        className="w-full h-11 bg-white border-none rounded-[14px] pl-12 pr-10 text-[13px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all shadow-sm"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
                     />
                     {showHistory && searchHistory.length > 0 && (
                         <div className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-[18px] shadow-xl z-[60] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
@@ -325,23 +327,39 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 <button
                     onClick={() => setShowFilters(!showFilters)}
                     className={cn(
-                        "flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-[12px] font-bold transition-all",
-                        showFilters ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                        "crm-filter-tray-tab",
+                        showFilters && "active"
                     )}
                 >
-                    <SlidersHorizontal className="h-4 w-4" />
-                    Параметры
-                    <ChevronDown className={cn("h-4 w-4 transition-all duration-300", showFilters && "rotate-180")} />
+                    {showFilters && (
+                        <motion.div
+                            layoutId="activeClientFilters"
+                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                        />
+                    )}
+                    <SlidersHorizontal className="h-4 w-4 relative z-10" />
+                    <span className="relative z-10">Параметры</span>
+                    <ChevronDown className={cn("h-4 w-4 relative z-10 transition-all duration-300", showFilters && "rotate-180")} />
                 </button>
                 <button
                     onClick={() => setShowArchived(!showArchived)}
                     className={cn(
-                        "flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-[12px] font-bold transition-all",
-                        showArchived ? "bg-amber-100 text-amber-700 shadow-sm" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                        "crm-filter-tray-tab",
+                        showArchived && "active"
                     )}
                 >
-                    {showArchived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
-                    {showArchived ? "Архив" : "База"}
+                    {showArchived && (
+                        <motion.div
+                            layoutId="activeClientArchive"
+                            className="absolute inset-0 bg-amber-100 rounded-[16px] z-0"
+                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                        />
+                    )}
+                    <span className={cn("flex items-center gap-2 relative z-10", showArchived && "text-amber-700")}>
+                        {showArchived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+                        {showArchived ? "Архив" : "База"}
+                    </span>
                 </button>
             </div>
 
@@ -432,7 +450,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
                 <div className="px-1 flex items-center justify-between">
                     <p className="text-[11px] font-semibold text-slate-500">Найдено: <span className="text-slate-900">{sortedAndFilteredClients.length} {pluralize(sortedAndFilteredClients.length, 'клиент', 'клиента', 'клиентов')}</span></p>
-                    <div className="text-[10px] font-medium text-slate-400 italic">Обновлено: {new Date().toLocaleTimeString()}</div>
+                    <div className="text-[10px] font-medium text-slate-400">Обновлено: {new Date().toLocaleTimeString()}</div>
                 </div>
 
                 {/* Table */}
@@ -569,6 +587,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                                 const res = await toggleClientArchived(client.id, !showArchived);
                                                                 if (res.success) {
                                                                     toast(showArchived ? "Клиент восстановлен" : "Клиент архивирован", "success");
+                                                                    playSound("client_updated");
                                                                     fetchClients();
                                                                 }
                                                             }}
@@ -669,11 +688,9 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 transition={{ duration: 0.5 }}
                                 className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[80]"
                                 style={{
-                                    backdropFilter: 'blur(40px)',
-                                    WebkitBackdropFilter: 'blur(40px)',
                                     maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
                                     WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                    background: 'linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 40%, transparent 100%)'
+                                    background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
                                 }}
                             />
                             <motion.div
@@ -681,7 +698,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                                 exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                                 transition={{ type: "spring", damping: 20, stiffness: 200 }}
-                                className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white/90 backdrop-blur-3xl p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-200/60"
+                                className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
                             >
                                 <div className="flex items-center gap-3 px-2">
                                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
@@ -730,6 +747,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                             setIsBulkUpdating(false);
                                                             if (res.success) {
                                                                 toast("Менеджеры обновлены", "success");
+                                                                playSound("client_updated");
                                                                 setShowManagerSelect(false);
                                                                 setSelectedIds([]);
                                                                 fetchClients();
@@ -748,6 +766,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                                 setIsBulkUpdating(false);
                                                                 if (res.success) {
                                                                     toast(`Назначен: ${m.name}`, "success");
+                                                                    playSound("client_updated");
                                                                     setShowManagerSelect(false);
                                                                     setSelectedIds([]);
                                                                     fetchClients();
@@ -789,17 +808,21 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                                     const undoRes = await undoLastAction();
                                                                     if (undoRes.success) {
                                                                         toast("Действие отменено", "success");
+                                                                        playSound("notification_success");
                                                                         fetchClients();
                                                                     } else {
                                                                         toast(undoRes.error || "Не удалось отменить", "error");
+                                                                        playSound("notification_error");
                                                                     }
                                                                 }
                                                             }
                                                         });
+                                                        playSound("client_deleted");
                                                         setSelectedIds([]);
                                                         fetchClients();
                                                     } else {
                                                         toast(res.error || "Ошибка удаления", "error");
+                                                        playSound("notification_error");
                                                     }
                                                 }
                                             }}

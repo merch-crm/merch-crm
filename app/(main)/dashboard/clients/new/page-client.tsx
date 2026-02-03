@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { addClient } from "../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface NewClientPageClientProps {
     managers: { id: string; name: string }[];
@@ -138,11 +139,14 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
             if (res.duplicates) {
                 setDuplicates(res.duplicates);
                 toast("Найдены похожие клиенты", "warning");
+                playSound("notification_warning");
             } else {
                 toast(res.error, "error");
+                playSound("notification_error");
             }
         } else {
             toast("Клиент успешно добавлен", "success");
+            playSound("client_created");
             router.push("/dashboard/clients");
             router.refresh();
         }

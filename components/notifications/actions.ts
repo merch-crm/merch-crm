@@ -17,7 +17,10 @@ export async function getNotifications() {
             limit: 20,
         });
 
-        return userNotifications;
+        return userNotifications.map(n => ({
+            ...n,
+            createdAt: n.createdAt.toISOString()
+        }));
     } catch (error) {
         console.error("Error fetching notifications:", error);
         return [];

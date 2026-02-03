@@ -2,6 +2,7 @@ import { getDashboardStatsByPeriod } from "./actions";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { DashboardClient } from "./dashboard-client";
+import { getBrandingSettings } from "../admin-panel/branding/actions";
 
 export default async function DashboardPage({
     searchParams,
@@ -16,6 +17,7 @@ export default async function DashboardPage({
     const { period = "month" } = await searchParams;
 
     const statsData = await getDashboardStatsByPeriod(period);
+    const branding = await getBrandingSettings();
 
     // Use session name directly or refactor to raw SQL if needed
     // const userData = null; // Removed failing query
@@ -25,6 +27,7 @@ export default async function DashboardPage({
             initialStats={statsData}
             period={period}
             userName={session.name || "Пользователь"}
+            branding={branding}
         />
     );
 }

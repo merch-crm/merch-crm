@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { reportProductionDefect } from "./actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 import {
     Dialog,
     DialogContent,
@@ -42,10 +43,12 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
 
         if (res.success) {
             toast("Брак зафиксирован. Остатки списаны.", "success");
+            playSound("notification_success");
             setIsOpen(false);
             window.location.reload();
         } else {
             toast(res.error || "Ошибка при списании брака", "error");
+            playSound("notification_error");
         }
     };
 

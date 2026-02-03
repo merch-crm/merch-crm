@@ -140,7 +140,7 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
             { title: "Заказы", href: "/dashboard/orders", keywords: ["заказы", "продажи"], deps: ["Руководство", "Отдел продаж", "Производство"] },
             { title: "Клиенты", href: "/dashboard/clients", keywords: ["клиенты", "заказчики", "база"], deps: ["Руководство", "Отдел продаж"] },
             { title: "Склад", href: "/dashboard/warehouse", keywords: ["склад", "остатки", "товары", "инвентарь"], deps: ["Руководство", "Отдел продаж", "Производство", "Дизайн"] },
-            { title: "Промокоды", href: "/admin-panel/promocodes", keywords: ["промокоды", "скидки", "акции", "админ"], deps: ["Руководство", "Отдел продаж"] },
+            { title: "Промокоды", href: "/dashboard/finance/promocodes", keywords: ["промокоды", "скидки", "акции"], deps: ["Руководство", "Отдел продаж"] },
             { title: "Финансы", href: "/dashboard/finance", keywords: ["финансы", "деньги", "касса", "отчеты"], deps: ["Руководство"] },
             { title: "Сотрудники", href: "/admin-panel/users", keywords: ["сотрудники", "пользователи", "права", "админ"], deps: ["Руководство"] },
             { title: "Задачи", href: "/dashboard/tasks", keywords: ["задачи", "дела", "план"], deps: [] }, // Everyone
@@ -201,7 +201,7 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
                 type: "promocode" as const,
                 title: p.code,
                 subtitle: `${p.discountType === 'percentage' ? p.value + '%' : p.value + '₽'} скидка`,
-                href: `/admin-panel/promocodes?id=${p.id}`,
+                href: `/dashboard/finance/promocodes?id=${p.id}`,
                 status: p.isActive ? "Активен" : "Неактивен"
             })),
             ...foundWiki.map(w => ({

@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import { playSound } from "@/lib/sounds";
 import { createInventoryAttributeType } from "./actions";
 import { cn } from "@/lib/utils";
 import { Category } from "./types";
@@ -116,10 +117,12 @@ export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogPro
             const res = await createInventoryAttributeType(label, slug, catIdToSave, isSystem);
             if (res.success) {
                 toast("Новый раздел создан", "success");
+                playSound("notification_success");
                 setIsOpen(false);
                 router.refresh();
             } else {
                 toast(res.error || "Ошибка создания", "error");
+                playSound("notification_error");
             }
         } catch {
             toast("Ошибка создания", "error");

@@ -36,6 +36,7 @@ interface DashboardClientProps {
     initialStats: DashboardStats;
     period: string;
     userName: string;
+    branding?: any;
 }
 
 interface Notification {
@@ -47,12 +48,13 @@ interface Notification {
     isRead: boolean;
 }
 
-export function DashboardClient({ initialStats, period, userName }: DashboardClientProps) {
+export function DashboardClient({ initialStats, period, userName, branding }: DashboardClientProps) {
     const [statsData, setStatsData] = useState<DashboardStats>(initialStats);
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [time, setTime] = useState(new Date());
+    const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
+        setTime(new Date());
         const fetchData = async () => {
             try {
                 const [stats, notifs] = await Promise.all([
@@ -95,7 +97,7 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
             name: "Загрузить дизайн",
             icon: UploadCloud,
             color: "bg-violet-500",
-            href: "/dashboard/design/upload",
+            href: "/dashboard/design",
         },
         {
             name: "Склад",
@@ -120,11 +122,11 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-[18px] border border-slate-200 shadow-sm text-xs font-bold text-slate-600">
                         <Timer className="w-3.5 h-3.5 text-primary" />
-                        {time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                        {time ? time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : "--:--"}
                     </div>
                     <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-900 rounded-[18px] text-xs font-bold text-white shadow-lg shadow-primary/10">
                         <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
-                        {time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
+                        {time ? time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : "..."}
                     </div>
                 </div>
             </div>
@@ -148,7 +150,9 @@ export function DashboardClient({ initialStats, period, userName }: DashboardCli
                             </div>
 
                             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
-                                Привет, <span className="text-primary">{userName.split(' ')[0]}</span>
+                                {branding?.dashboardWelcome?.includes('%name%')
+                                    ? branding.dashboardWelcome.replace('%name%', userName.split(' ')[0])
+                                    : (branding?.dashboardWelcome || "Привет") + `, `} <span className="text-primary">{userName.split(' ')[0]}</span>
                             </h2>
                         </div>
 

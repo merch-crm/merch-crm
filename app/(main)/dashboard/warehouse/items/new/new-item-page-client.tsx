@@ -13,6 +13,7 @@ import { StockStep } from "./components/stock-step";
 import { StepFooter } from "./components/step-footer";
 import { InventoryAttribute, AttributeType, ItemFormData, Category, StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -424,15 +425,18 @@ export function NewItemPageClient({
 
             if (result?.error) {
                 setValidationError(result.error);
+                playSound("notification_error");
                 setIsSubmitting(false);
             } else {
                 clearDraft();
+                playSound("item_created");
                 toast("Позиция создана", "success");
                 router.push(result?.id ? `/dashboard/warehouse/items/${result.id}` : "/dashboard/warehouse");
                 router.refresh();
             }
         } catch {
             setValidationError("Произошла ошибка при создании позиции");
+            playSound("notification_error");
             setIsSubmitting(false);
         }
     };

@@ -2,13 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { initSoundSettings, setGlobalSoundConfig } from "@/lib/sounds";
 
 export interface BrandingSettings {
     primary_color?: string;
     system_name?: string;
-    system_logo?: string;
+    system_logo?: string | null;
     radius_outer?: number;
     radius_inner?: number;
+    soundConfig?: any;
+    [key: string]: any;
 }
 
 export function BrandingProvider({ children }: { children: React.ReactNode }) {
@@ -18,7 +21,14 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
         async function loadBranding() {
             const result = await getBrandingAction();
             if (result.data) {
-                setBranding(result.data);
+                const data = result.data as BrandingSettings;
+                setBranding(data);
+
+                // Initialize sounds
+                initSoundSettings();
+                if (data.soundConfig) {
+                    setGlobalSoundConfig(data.soundConfig);
+                }
             }
         }
         loadBranding();

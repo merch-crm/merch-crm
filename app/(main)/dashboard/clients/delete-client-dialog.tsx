@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { deleteClient } from "./actions";
 import { Loader2, AlertTriangle, X } from "lucide-react";
+import { playSound } from "@/lib/sounds";
 
 interface DeleteClientDialogProps {
     client: {
@@ -29,11 +30,14 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
             const result = await deleteClient(client.id);
             if (result.error) {
                 setError(result.error);
+                playSound("notification_error");
             } else {
+                playSound("client_deleted");
                 onClose();
             }
         } catch {
             setError("Произошла ошибка при удалении");
+            playSound("notification_error");
         } finally {
             setIsLoading(false);
         }

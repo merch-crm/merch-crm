@@ -11,6 +11,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { impersonateUser } from "../actions";
 import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
 
 interface User {
     id: string;
@@ -279,9 +280,11 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                     const res = await impersonateUser(userId);
                     if (res.success) {
                         toast(`Вы вошли как ${impersonateUserConfirm.name}`, "success");
+                        playSound("notification_success");
                         window.location.href = "/dashboard";
                     } else {
                         toast(res.error || "Ошибка", "destructive");
+                        playSound("notification_error");
                         setIsImpersonatingLoading(null);
                     }
                 }}

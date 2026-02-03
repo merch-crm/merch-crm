@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, LogOut, ChevronDown, Shield, Package, BarChart3 } from "lucide-react";
+import { User, LogOut, ChevronDown, Shield, Package, BarChart3, Globe, MessageCircle, Send } from "lucide-react";
 import { logout } from "@/app/(main)/dashboard/profile/actions";
 
 import { useRouter } from "next/navigation";
@@ -11,7 +11,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { RoleBadge } from "@/components/ui/role-badge";
 
-export function UserNav({ user }: { user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null } }) {
+export function UserNav({ user, branding }: {
+    user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null },
+    branding?: any
+}) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -30,7 +33,7 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 p-1.5 rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 focus:outline-none group active:scale-95 hover:scale-[1.02] hover:shadow-sm"
+                className="flex items-center gap-3 p-1.5 rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 focus:outline-none group hover:shadow-sm"
             >
                 <div className="h-10 w-10 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center text-indigo-400 border border-indigo-100/50 overflow-hidden shrink-0 relative shadow-sm">
                     {user.avatar ? (
@@ -43,7 +46,7 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
                     <div className="text-[12px] text-slate-400 font-medium">{user.roleName}</div>
                 </div>
-                <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-[#5d00ff]")} />
+                <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-primary")} />
             </button>
 
             <AnimatePresence>
@@ -121,6 +124,31 @@ export function UserNav({ user }: { user: { name: string, email: string, roleNam
                                 </Link>
                             )}
                         </div>
+
+                        {/* Social Links from Branding */}
+                        {(branding?.socialTelegram || branding?.socialWhatsapp || branding?.socialWebsite) && (
+                            <div className="p-2.5 bg-slate-50/50 border-t border-slate-200/60 space-y-1">
+                                <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Ресурсы компании</p>
+                                {branding.socialTelegram && (
+                                    <a href={branding.socialTelegram} target="_blank" rel="noopener noreferrer" className="dropdown-item hover:bg-sky-50 hover:text-sky-600">
+                                        <Send className="h-4 w-4" />
+                                        Telegram
+                                    </a>
+                                )}
+                                {branding.socialWhatsapp && (
+                                    <a href={branding.socialWhatsapp} target="_blank" rel="noopener noreferrer" className="dropdown-item hover:bg-emerald-50 hover:text-emerald-600">
+                                        <MessageCircle className="h-4 w-4" />
+                                        WhatsApp
+                                    </a>
+                                )}
+                                {branding.socialWebsite && (
+                                    <a href={branding.socialWebsite} target="_blank" rel="noopener noreferrer" className="dropdown-item hover:bg-indigo-50 hover:text-indigo-600">
+                                        <Globe className="h-4 w-4" />
+                                        Сайт компании
+                                    </a>
+                                )}
+                            </div>
+                        )}
 
                         {/* Exit Section */}
                         <div className="p-2.5 bg-rose-50/30">
