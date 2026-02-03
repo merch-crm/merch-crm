@@ -418,7 +418,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                             return (
                                 <div
                                     key={type.id}
-                                    className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col h-full group shadow-sm"
+                                    className="crm-card flex flex-col h-full group shadow-sm"
                                 >
                                     <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-200">
                                         <div className="flex items-center gap-3">

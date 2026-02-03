@@ -21,7 +21,7 @@ export default function WarehouseLoading() {
             {/* Content Skeleton - Consistent with Categories Page */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                    <div key={i} className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col gap-4 relative overflow-hidden">
+                    <div key={i} className="crm-card flex flex-col gap-4 shadow-sm">
                         <div className="flex items-start justify-between relative z-10">
                             <div className="flex items-center gap-5">
                                 <div className="w-14 h-14 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center animate-pulse" />

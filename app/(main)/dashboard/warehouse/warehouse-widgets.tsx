@@ -37,7 +37,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
             {/* Top Row: Combined Stats & Expanded Deficit */}
             <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
                 {/* Combined Stats Block */}
-                <div className="col-span-12 lg:col-span-4 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col justify-between shadow-sm">
+                <div className="col-span-12 lg:col-span-4 crm-card shadow-sm flex flex-col justify-between">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -80,7 +80,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
 
                 {/* Expanded Deficit (Replenishment) */}
                 <div className={cn(
-                    "col-span-12 lg:col-span-8 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col shadow-sm",
+                    "col-span-12 lg:col-span-8 crm-card flex flex-col shadow-sm",
                     criticalItems.length > 0 ? "!border-rose-200 ring-1 ring-rose-500/10" : ""
                 )}>
                     <div className="flex items-center justify-between mb-6">
@@ -147,7 +147,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
             </div>
 
             {/* Activity Trend - Ultra Compact Status Bar */}
-            <div className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col md:flex-row items-center gap-4 md:gap-10 transition-all shadow-sm">
+            <div className="crm-card flex flex-col md:flex-row items-center gap-4 md:gap-10 transition-all shadow-sm">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200 shrink-0">
                         <Activity className="w-4.5 h-4.5" />
@@ -210,7 +210,7 @@ export function WarehouseWidgetsSkeleton() {
             {/* Top Row Skeleton */}
             <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
                 {/* Stats Skeleton */}
-                <div className="col-span-12 lg:col-span-4 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 shadow-sm">
+                <div className="col-span-12 lg:col-span-4 crm-card shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -237,7 +237,7 @@ export function WarehouseWidgetsSkeleton() {
                 </div>
 
                 {/* Replenishment Skeleton */}
-                <div className="col-span-12 lg:col-span-8 bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex flex-col shadow-sm">
+                <div className="col-span-12 lg:col-span-8 crm-card flex flex-col shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-emerald-50 border border-emerald-100 flex items-center justify-center">
@@ -259,7 +259,7 @@ export function WarehouseWidgetsSkeleton() {
             </div>
 
             {/* Activity Skeleton */}
-            <div className="bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 flex items-center gap-10 shadow-sm">
+            <div className="crm-card flex items-center gap-10 shadow-sm">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200">
                         <Activity className="w-4.5 h-4.5" />

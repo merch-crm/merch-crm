@@ -1055,7 +1055,7 @@ function SortableSubCategoryCard({
             style={style}
             onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
             className={cn(
-                "group bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 hover:border-primary/30 shadow-sm",
+                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm hover:translate-y-[-2px] hover:shadow-md",
                 isDragging && "opacity-0 scale-95" // Hide the original one while dragging
             )}
         >

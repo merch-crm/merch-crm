@@ -151,7 +151,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     if (localLocations.length === 0) {
         return (
-            <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white border border-slate-200 rounded-[var(--radius-outer)] shadow-sm">
+            <div className="py-24 flex flex-col items-center justify-center text-center px-4 crm-card shadow-sm">
                 <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center mb-6 text-slate-300 shadow-sm ring-1 ring-slate-200">
                     <MapPin className="w-10 h-10" />
                 </div>
@@ -307,7 +307,7 @@ const LocationCardContent = memo(({
 
     return (
         <div className={cn(
-            "group relative flex flex-col p-8 transition-all duration-300 overflow-hidden h-full min-h-[380px] bg-white border border-slate-200 rounded-[var(--radius-outer)] shadow-sm",
+            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault

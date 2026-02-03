@@ -165,11 +165,11 @@ export function PremiumSelect({
                                     opacity: { duration: 0.2 }
                                 }}
                                 className={cn(
-                                    "rounded-[18px] bg-white !shadow-[0_12px_40px_-10px_rgba(0,0,0,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] border border-slate-200/60",
+                                    "rounded-[22px] bg-white !shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border border-slate-200/60",
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
                                 <div className={cn(
-                                    "bg-white rounded-[var(--radius-outer)] p-1.5 overflow-hidden flex flex-col max-h-[300px]",
+                                    "bg-white rounded-[22px] p-1.5 overflow-hidden flex flex-col max-h-[320px]",
                                     "w-full h-full"
                                 )}>
                                     {effectiveShowSearch && (
@@ -205,13 +205,13 @@ export function PremiumSelect({
                                                             type="button"
                                                             onClick={() => handleSelect(option.id)}
                                                             className={cn(
-                                                                "transition-all text-left group/item",
+                                                                "transition-all text-left group/item rounded-[14px]",
                                                                 effectiveGridColumns ? [
-                                                                    "flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] gap-1",
-                                                                    isSelected ? "bg-primary/10 ring-2 ring-primary/30" : "bg-slate-50 hover:bg-slate-100"
+                                                                    "flex flex-col items-center justify-center p-3 gap-1",
+                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20" : "bg-slate-50/50 hover:bg-slate-100"
                                                                 ] : [
-                                                                    "flex items-center gap-2 p-2.5 rounded-[var(--radius-inner)]",
-                                                                    isSelected ? "bg-primary/5" : "hover:bg-slate-50"
+                                                                    "flex items-center gap-2 p-2.5",
+                                                                    isSelected ? "bg-indigo-50/30" : "hover:bg-slate-50"
                                                                 ]
                                                             )}
                                                         >
@@ -253,8 +253,8 @@ export function PremiumSelect({
                                                                     <div className="flex items-center gap-2 min-w-0">
                                                                         <span className={cn(
                                                                             "font-bold leading-none",
-                                                                            effectiveGridColumns ? "text-[13px]" : "text-[12px] whitespace-nowrap",
-                                                                            isSelected ? "text-primary" : "text-slate-900"
+                                                                            effectiveGridColumns ? "text-[13px]" : "text-[13px] whitespace-nowrap",
+                                                                            isSelected ? "text-indigo-600" : "text-slate-600 group-hover/item:text-slate-900"
                                                                         )}>
                                                                             {option.title}
                                                                         </span>

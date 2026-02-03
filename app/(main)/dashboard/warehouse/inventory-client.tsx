@@ -110,7 +110,7 @@ function CategoryCard({
             onClick={() => {
                 router.push(`/dashboard/warehouse/${category.id}`);
             }}
-            className="group bg-white border border-slate-200 rounded-[var(--radius-outer)] p-6 cursor-pointer flex flex-col gap-4 overflow-hidden relative focus:outline-none focus:ring-0 transition-all duration-500 hover:border-primary/30"
+            className="group crm-card cursor-pointer flex flex-col gap-4 focus:outline-none focus:ring-0 transition-all duration-500 shadow-sm hover:shadow-md hover:translate-y-[-4px]"
         >
 
             <div className="flex items-start justify-between relative z-10">

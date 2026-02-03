@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, RotateCcw } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { addInventoryItem } from "../../actions";
@@ -176,6 +176,7 @@ export function NewItemPageClient({
 
     const [validationError, setValidationError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const updateFormData = (updates: Partial<ItemFormData>) => {
         setFormData(prev => ({ ...prev, ...updates }));
@@ -184,6 +185,7 @@ export function NewItemPageClient({
 
     // Save draft on changes
     useEffect(() => {
+        setIsSaving(true);
         const timer = setTimeout(() => {
             const dataToSave = {
                 formData: {
@@ -201,6 +203,7 @@ export function NewItemPageClient({
                 selectedCategoryId: selectedCategory?.id
             };
             localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
+            setIsSaving(false);
         }, 1000); // Debounce saving
 
         return () => clearTimeout(timer);
@@ -505,12 +508,12 @@ export function NewItemPageClient({
                                     }}
                                     className={cn(
                                         "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                        isActive ? "bg-slate-900 text-white shadow-md" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                        isActive ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                     )}
                                 >
                                     <div className={cn(
                                         "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
-                                        isActive ? "bg-white/10 border-white/20" : isCompleted ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-200"
+                                        isActive ? "bg-white/20 border-white/30" : isCompleted ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-200"
                                     )}>
                                         {isCompleted ? (
                                             <Check className="w-5 h-5" />
@@ -528,7 +531,7 @@ export function NewItemPageClient({
                                     </div>
 
                                     {isActive && (
-                                        <div className="absolute right-4 w-1 h-1 rounded-full bg-slate-400" />
+                                        <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                                     )}
                                 </button>
                             );
@@ -539,11 +542,17 @@ export function NewItemPageClient({
                         <div className="flex items-center justify-between gap-3 w-full">
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-[var(--radius)] bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                    {isSaving ? (
+                                        <Loader2 className="w-3.5 h-3.5 text-indigo-500 animate-spin" />
+                                    ) : (
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                    )}
                                 </div>
                                 <div>
                                     <div className="text-[9px] font-bold  text-slate-400 mb-0.5">Черновик</div>
-                                    <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">Сохранено</div>
+                                    <div className="text-[10px] font-bold text-slate-900 whitespace-nowrap">
+                                        {isSaving ? "Сохранение..." : "Сохранено"}
+                                    </div>
                                 </div>
                             </div>
 
@@ -578,7 +587,7 @@ export function NewItemPageClient({
                                                         <div className="flex items-center gap-3 mb-2">
                                                             <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
                                                             <h3 className="text-xs font-bold text-slate-900 ">
-                                                                Выберите подкатегорию для &quot;{selectedCategory.name}&quot;
+                                                                Выберите подкатегорию для «{selectedCategory.name}»
                                                             </h3>
                                                         </div>
                                                     </div>

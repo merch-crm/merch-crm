@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface StepFooterProps {
     onBack: () => void;
@@ -11,7 +12,7 @@ interface StepFooterProps {
     validationError?: string;
     hint?: string;
     nextIcon?: ReactNode;
-    className?: string; // in case we need mt-auto or not
+    className?: string;
 }
 
 /**
@@ -31,16 +32,17 @@ export function StepFooter({
     className
 }: StepFooterProps) {
     return (
-        <div className={cn("h-[72px] shrink-0 bg-white border-t border-slate-200 z-30 px-10 flex items-center", className)}>
+        <div className={cn("h-[82px] shrink-0 bg-white border-t border-slate-200 z-30 px-8 flex items-center", className)}>
             <div className="max-w-6xl mx-auto flex items-center justify-between w-full">
-                <button
+                <Button
+                    variant="ghost"
                     onClick={onBack}
                     disabled={isSubmitting}
-                    className="group px-6 h-11 rounded-[var(--radius)] text-slate-400 font-bold text-[10px] hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                    className="h-11 px-10 gap-2 rounded-[var(--radius)] text-slate-500 hover:text-slate-900 transition-all font-bold text-sm"
                 >
-                    <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                    Назад
-                </button>
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Назад</span>
+                </Button>
 
                 <div className="flex items-center gap-6">
                     {validationError && (
@@ -57,10 +59,11 @@ export function StepFooter({
                     )}
 
                     {onNext && (
-                        <button
+                        <Button
+                            variant="default"
                             onClick={onNext}
                             disabled={isNextDisabled || isSubmitting}
-                            className="pl-8 pr-7 h-11 bg-slate-900 text-white rounded-[var(--radius)] font-bold text-[10px] hover:bg-black hover:pr-5 shadow-md transition-all duration-300 active:scale-95 disabled:opacity-50 flex items-center group relative overflow-hidden"
+                            className="h-11 px-10 rounded-[var(--radius)] font-bold text-sm shadow-lg shadow-primary/20 transition-all gap-3"
                         >
                             {isSubmitting ? (
                                 <div className="flex items-center gap-3">
@@ -68,14 +71,12 @@ export function StepFooter({
                                     <span>Загрузка...</span>
                                 </div>
                             ) : (
-                                <>
-                                    <span className="relative z-10">{nextLabel}</span>
-                                    <div className="w-0 overflow-hidden opacity-0 transition-all duration-300 group-hover:w-4 group-hover:opacity-100 group-hover:ml-3 flex items-center justify-center">
-                                        {nextIcon || <ChevronRight className="w-4 h-4 text-white" strokeWidth={3} />}
-                                    </div>
-                                </>
+                                <div className="flex items-center justify-center gap-3">
+                                    <span>{nextLabel}</span>
+                                    {nextIcon || <ChevronRight className="w-4 h-4 text-white" strokeWidth={3} />}
+                                </div>
                             )}
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
