@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, createElement, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { X, Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
@@ -68,7 +68,7 @@ interface EditCategoryDialogProps {
     user: Session | null;
 }
 
-export function EditCategoryDialog({ category, categories, isOpen, onClose }: EditCategoryDialogProps) {
+export function EditCategoryDialog({ category, categories, isOpen, onClose, user }: EditCategoryDialogProps) {
     const [isPending, setIsPending] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -76,14 +76,13 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
     const [selectedColor, setSelectedColor] = useState(category.color || "primary");
     const [showInSku, setShowInSku] = useState(category.showInSku ?? true);
     const [showInName, setShowInName] = useState(category.showInName ?? true);
-    const selectedParentId = category.parentId || "";
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
     const [subPending, setSubPending] = useState(false);
 
     const router = useRouter();
 
-    // Find children using parentId
+    const selectedParentId = category.parentId || "";
     const subCategories = categories.filter(c => c.parentId === category.id);
     const isParentCategory = !category.parentId;
 
@@ -119,7 +118,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             setError(result.error);
             setIsPending(false);
             setShowDeleteModal(false);
-            setDeletePassword(""); // Clear password on error
+            setDeletePassword("");
         } else {
             setShowDeleteModal(false);
             onClose();
@@ -127,7 +126,6 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             router.refresh();
         }
     }
-
 
     async function handleDeleteSubcategory(subId: string) {
         setSubToDelete(subId);
@@ -137,7 +135,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         if (!subToDelete) return;
         setSubPending(true);
         const result = await deleteInventoryCategory(subToDelete);
-        if (result.success) {
+        if (result?.success) {
             router.refresh();
         } else {
             alert("Ошибка при удалении");
@@ -146,9 +144,9 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setSubToDelete(null);
     }
 
-
-
     if (!isOpen) return null;
+
+    const MainIcon = getCategoryIcon({ name: categoryName });
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
@@ -161,7 +159,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shadow-sm shrink-0", getColorStyles(selectedColor))}>
-                            {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6" })}
+                            <MainIcon className="w-6 h-6" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
@@ -170,7 +168,6 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             </p>
                         </div>
                     </div>
-
 
                     <button
                         type="button"
@@ -189,7 +186,6 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         </div>
                     )}
 
-                    {/* Name & Prefix */}
                     <div className="flex gap-4">
                         <div className="space-y-2 flex-1">
                             <label className="text-sm font-bold text-slate-500 ml-1">Название категории</label>
@@ -221,7 +217,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <span className="text-sm font-bold text-slate-500 leading-none">Иконка</span>
                             <div className="flex items-center justify-center py-2">
                                 <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5", getColorStyles(selectedColor))}>
-                                    {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5" })}
+                                    <MainIcon className="w-5 h-5" />
                                 </div>
                             </div>
                         </div>
@@ -297,7 +293,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
                                             <div className={cn("w-9 h-9 rounded-[var(--radius-inner)] flex items-center justify-center shadow-md ring-1 ring-black/5 mb-1.5 transition-all group-hover:scale-110", getColorStyles(sub.color || 'primary'))}>
-                                                {createElement(IconComponent, { className: "w-4.5 h-4.5 shadow-sm" })}
+                                                <IconComponent className="w-4.5 h-4.5 shadow-sm" />
                                             </div>
                                             <span className="text-[8px] font-bold text-slate-500 truncate w-full text-center px-0.5 leading-none">{sub.name}</span>
                                         </div>
@@ -395,6 +391,6 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 }
