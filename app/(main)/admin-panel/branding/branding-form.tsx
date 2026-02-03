@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Save, Upload, Palette, Database, Building2, Image as ImageIcon, Loader2, X, Monitor, Share2, Printer, Volume2, MessageCircle, CheckCircle2, AlertCircle, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, ListTodo, Cpu, ScanLine, Stars, MousePointer2, VolumeX, Mail, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { updateBrandingSettings, uploadBrandingFile } from "./actions";
 import { useRouter } from "next/navigation";
-import { IconManager, IconGroup } from "./icon-manager";
+import { IconManager } from "./icon-manager";
 import { SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
