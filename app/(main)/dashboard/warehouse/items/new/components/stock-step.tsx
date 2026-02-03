@@ -1,23 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import {
-    MapPin,
     AlertTriangle,
-    CheckCircle2,
-    Box,
-    Shirt,
-    Info,
     Warehouse,
-    Pencil,
     Plus,
     Minus,
     Check,
     Tag,
-    Banknote,
-    User
+    Banknote
 } from "lucide-react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, ItemFormData } from "../../../types";
 import { AddStorageLocationDialog } from "../../../add-storage-location-dialog";
@@ -37,7 +28,6 @@ interface StockStepProps {
 }
 
 export function StockStep({
-    category,
     storageLocations,
     users,
     formData,
@@ -47,22 +37,6 @@ export function StockStep({
     validationError,
     isSubmitting
 }: StockStepProps) {
-    const [isEditingName, setIsEditingName] = useState(false);
-
-    const itemTotal = parseInt(formData.quantity || "0") || 0;
-    const lowStock = parseInt(formData.lowStockThreshold || "10") || 10;
-    const critStock = parseInt(formData.criticalStockThreshold || "0") || 0;
-
-    let statusColor = "text-emerald-500";
-    let statusText = "В наличии";
-
-    if (itemTotal <= critStock) {
-        statusColor = "text-rose-500";
-        statusText = "Критический остаток";
-    } else if (itemTotal <= lowStock) {
-        statusColor = "text-amber-500";
-        statusText = "Заканчивается";
-    }
 
     const adjustValue = (field: keyof ItemFormData, delta: number) => {
         const value = formData[field];

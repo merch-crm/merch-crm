@@ -66,7 +66,6 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
     const [formData, setFormData] = useState<BrandingFormProps['initialSettings']>(initialSettings);
     const [activeMainTab, setActiveMainTab] = useState("main");
     const [activeSoundTab, setActiveSoundTab] = useState<string>("notifications");
-    const [hasMounted, setHasMounted] = useState(false);
 
     const timezoneOptions: PremiumSelectOption[] = [
         { id: "Europe/Kaliningrad", title: "Калининград (UTC+2)" },
@@ -82,9 +81,6 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
         { id: "Asia/Kamchatka", title: "Камчатка (UTC+12)" },
     ];
 
-    useEffect(() => {
-        setHasMounted(true);
-    }, []);
 
     // Sync sound config to global state for preview
     useEffect(() => {

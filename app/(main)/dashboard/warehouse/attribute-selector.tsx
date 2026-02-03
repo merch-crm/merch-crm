@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Plus, X, Search, Check } from "lucide-react";
+import { X } from "lucide-react";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
-import { QualityDropdown } from "./quality-dropdown";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AttributeSelectorProps {
@@ -26,7 +25,7 @@ interface DbAttribute {
     meta: Record<string, unknown> | null;
 }
 
-export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true, label, description, required }: AttributeSelectorProps) {
+export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true, label, required }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");
@@ -272,18 +271,6 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
         );
     }
 
-    const getDefaultDescription = (type: string, label?: string) => {
-        const t = (type || "").toLowerCase();
-        const l = (label || "").toLowerCase();
-
-        if (t === "brand" || l.includes("бренд")) return "Производитель или торговая марка";
-        if (t === "material" || l.includes("материал")) return "Тип и текстура ткани";
-        if (t === "size" || l.includes("размер")) return "Размер по международной сетке";
-        if (t === "quality" || l.includes("качество")) return "Плотность и сорт полотна";
-        if (t === "composition" || l.includes("состав")) return "Процентное соотношение волокон";
-
-        return "Укажите характеристику";
-    };
 
     if (type === "brand" || type === "quality" || !["color"].includes(type)) {
         const displayLabel = label || (

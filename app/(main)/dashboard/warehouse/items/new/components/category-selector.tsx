@@ -1,7 +1,7 @@
 "use client";
 
 import { createElement } from "react";
-import { ChevronRight, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getColorStyles } from "../../../category-utils";
 import { Category } from "../../../types";
