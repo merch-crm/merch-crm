@@ -39,9 +39,9 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
     // Categories state
     const [iconGroups, setIconGroups] = useState<IconGroup[]>(() => {
         const rawGroups = (initialData ? hydrateIconGroups(initialData) : INITIAL_ICON_GROUPS) as Array<{ name: string; id?: string; label?: string } & Record<string, unknown>>;
-        return rawGroups.map(g => ({
+        return rawGroups.map((g, idx) => ({
             ...g,
-            id: g.id || `cat-${Math.random().toString(36).substr(2, 9)}`,
+            id: g.id || g.name?.toLowerCase().replace(/\s+/g, '-') || `cat-${idx}`,
             label: g.label || g.name || "Без названия"
         })) as unknown as IconGroup[];
     });

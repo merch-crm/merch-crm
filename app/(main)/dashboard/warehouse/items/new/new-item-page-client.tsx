@@ -451,8 +451,8 @@ export function NewItemPageClient({
     const currentStepIndex = step;
 
     return (
-        <div className="h-[calc(100vh-130px)] flex flex-col overflow-hidden bg-slate-50/50">
-            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4">
+        <div className="flex flex-col">
+            <div className="flex min-h-[calc(100vh-160px)] gap-6">
                 {/* Sidebar (Vertical Studio Navigation) */}
                 <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden text-medium">
                     <div className="p-6 shrink-0">

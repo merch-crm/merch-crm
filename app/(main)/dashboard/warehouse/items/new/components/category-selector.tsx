@@ -46,10 +46,10 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     key={category.id}
                                     onClick={() => onSelect(category)}
                                     className={cn(
-                                        "group flex flex-row items-center gap-3 p-3 rounded-[var(--radius-inner)] border transition-all text-left shadow-sm hover:shadow-md",
+                                        "group flex flex-row items-center gap-3 p-4 rounded-[var(--radius-outer)] border transition-all text-left shadow-md",
                                         selectedCategoryId === category.id
-                                            ? "border-slate-900 bg-slate-50 shadow-md"
-                                            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
+                                            ? "border-slate-900 bg-slate-50 shadow-lg"
+                                            : "border-slate-100 bg-white hover:border-slate-200 hover:shadow-lg hover:translate-y-[-1px]"
                                     )}
                                 >
                                     <div className={cn(
@@ -73,14 +73,14 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 key={category.id}
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center gap-2 p-3 rounded-[var(--radius-inner)] border-2 transition-all text-center",
+                                    "group flex flex-col items-center gap-4 p-6 rounded-[var(--radius-outer)] border transition-all text-center shadow-md",
                                     selectedCategoryId === category.id
-                                        ? "border-slate-900 bg-slate-50 shadow-lg"
-                                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
+                                        ? "border-slate-900 bg-slate-50 shadow-lg scale-[1.02]"
+                                        : "border-slate-100 bg-white hover:border-slate-200 hover:shadow-lg hover:translate-y-[-2px]"
                                 )}
                             >
                                 <div className={cn(
-                                    "w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-transform duration-500 shadow-md",
+                                    "w-14 h-14 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-transform duration-500 shadow-sm",
                                     colorStyle
                                 )}>
                                     {createElement(IconComponent, { className: "w-7 h-7" })}
@@ -97,8 +97,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-2 text-slate-900 font-bold text-sm group-hover:gap-3 transition-all">
-                                    <span>Выбрать</span>
+                                <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-900 group-hover:gap-3 transition-all">
                                     <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </div>
                             </button>
