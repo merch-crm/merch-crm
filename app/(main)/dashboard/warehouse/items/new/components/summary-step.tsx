@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Info, Pencil, Check, Shirt, Tag, Star, Layers, Ruler, Component, Banknote, AlertCircle, Package, Warehouse } from "lucide-react";
+import { CheckCircle2, Info, Pencil, Check, Shirt, Tag, Star, Layers, Ruler, AlertCircle, Package, Warehouse } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from "../../../types";

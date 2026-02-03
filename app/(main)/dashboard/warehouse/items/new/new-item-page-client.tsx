@@ -191,7 +191,7 @@ export function NewItemPageClient({
         }, 1000); // Debounce saving
 
         return () => clearTimeout(timer);
-    }, [formData, step, selectedCategory]);
+    }, [formData, step, selectedCategory, mounted]);
 
     const clearDraft = () => {
         localStorage.removeItem("merch_crm_new_item_draft");
