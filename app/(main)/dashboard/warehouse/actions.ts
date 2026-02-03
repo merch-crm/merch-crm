@@ -303,6 +303,8 @@ export async function addInventoryCategory(formData: FormData) {
     const gender = formData.get("gender") as string || "masculine";
     const singularName = formData.get("singularName") as string;
     const pluralName = formData.get("pluralName") as string;
+    const showInSku = formData.get("showInSku") === "on" || formData.get("showInSku") === "true";
+    const showInName = formData.get("showInName") === "on" || formData.get("showInName") === "true";
 
     if (!name) {
         return { error: "Name is required" };
@@ -327,6 +329,8 @@ export async function addInventoryCategory(formData: FormData) {
                 singularName,
                 pluralName,
                 slug,
+                showInSku: formData.has("showInSku") ? showInSku : true,
+                showInName: formData.has("showInName") ? showInName : true,
                 fullPath: finalFullPath
             });
 
@@ -469,6 +473,8 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
     const gender = formData.get("gender") as string || "masculine";
     const singularName = formData.get("singularName") as string;
     const pluralName = formData.get("pluralName") as string;
+    const showInSku = formData.get("showInSku") === "on" || formData.get("showInSku") === "true";
+    const showInName = formData.get("showInName") === "on" || formData.get("showInName") === "true";
 
     if (!name) {
         return { error: "Name is required" };
@@ -510,6 +516,8 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
                 singularName,
                 pluralName,
                 slug,
+                showInSku: formData.has("showInSku") ? showInSku : true,
+                showInName: formData.has("showInName") ? showInName : true,
                 fullPath: finalFullPath
             })
             .where(eq(inventoryCategories.id, id));
@@ -2804,7 +2812,14 @@ export async function getInventoryAttributeTypes() {
     }
 }
 
-export async function createInventoryAttributeType(name: string, slug: string, categoryId?: string, isSystem: boolean = false) {
+export async function createInventoryAttributeType(
+    name: string,
+    slug: string,
+    categoryId?: string,
+    isSystem: boolean = false,
+    showInSku: boolean = true,
+    showInName: boolean = true
+) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
         return { error: "Недостаточно прав" };
@@ -2818,7 +2833,9 @@ export async function createInventoryAttributeType(name: string, slug: string, c
             name,
             slug: cleanSlug,
             categoryId: categoryId || null,
-            isSystem
+            isSystem,
+            showInSku,
+            showInName
         });
         refreshWarehouse();
 
@@ -2880,11 +2897,18 @@ export async function deleteInventoryAttributeType(id: string, password?: string
 }
 
 
-export async function updateInventoryAttributeType(id: string, name: string, categoryId: string | null, isSystem: boolean = false) {
+export async function updateInventoryAttributeType(
+    id: string,
+    name: string,
+    categoryId: string | null,
+    isSystem: boolean = false,
+    showInSku: boolean = true,
+    showInName: boolean = true
+) {
     const session = await getSession();
     try {
         await db.update(inventoryAttributeTypes)
-            .set({ name, categoryId, isSystem })
+            .set({ name, categoryId, isSystem, showInSku, showInName })
             .where(eq(inventoryAttributeTypes.id, id));
 
         await db.insert(inventoryTransactions).values({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode, type ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ColorPicker } from "@/components/ui/color-picker";
@@ -47,8 +47,8 @@ function Switch({
     checked: boolean,
     onChange: (val: boolean) => void,
     disabled?: boolean,
-    label?: string,
-    icon?: React.ComponentType<{ className?: string }>,
+    label?: ReactNode,
+    icon?: ComponentType<{ className?: string }>,
     description?: string
 }) {
     return (
@@ -58,12 +58,12 @@ function Switch({
         )}>
             <div className="flex flex-col gap-0.5">
                 {label && (
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-bold text-slate-900">{label}</span>
-                        {Icon && <Icon className="w-3.5 h-3.5 text-slate-400" />}
+                    <div className="flex flex-col">
+                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">{label}</span>
+                        {Icon && <Icon className="w-3.5 h-3.5 text-slate-400 mt-1" />}
                     </div>
                 )}
-                {description && <span className="text-xs text-slate-500 font-medium">{description}</span>}
+                {description && <span className="text-[9px] text-slate-500 font-bold leading-tight uppercase tracking-wider mt-0.5">{description}</span>}
             </div>
             <button
                 type="button"
@@ -160,8 +160,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     const [newItemName, setNewItemName] = useState("");
     const [newItemCode, setNewItemCode] = useState("");
     const [newItemColorHex, setNewItemColorHex] = useState("#000000");
-    const [showInName, setShowInName] = useState(true);
-    const [showInSku, setShowInSku] = useState(true);
     const [error, setError] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [isCodeManuallyEdited, setIsCodeManuallyEdited] = useState(false);
@@ -181,6 +179,8 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     const [editTypeName, setEditTypeName] = useState("");
     const [editTypeCategoryId, setEditTypeCategoryId] = useState<string>("uncategorized");
     const [editTypeIsSystem, setEditTypeIsSystem] = useState(false);
+    const [editTypeShowInSku, setEditTypeShowInSku] = useState(true);
+    const [editTypeShowInName, setEditTypeShowInName] = useState(true);
     const [isEditTypeLoading, setIsEditTypeLoading] = useState(false);
 
     // Computed Editing Data
@@ -203,8 +203,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         setNewItemCode("");
         setIsCodeManuallyEdited(false);
         setNewItemColorHex("#000000");
-        setShowInName(true);
-        setShowInSku(true);
         setError("");
         setIsValueDialogOpen(true);
     }
@@ -227,8 +225,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         setNewItemCode(attr.value);
         setIsCodeManuallyEdited(true);
         setNewItemColorHex(typedMeta?.hex || "#000000");
-        setShowInName(typedMeta?.showInName ?? true);
-        setShowInSku(typedMeta?.showInSku ?? true);
         setError("");
         setIsValueDialogOpen(true);
     }
@@ -243,8 +239,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
 
         const meta = {
             ...(targetTypeSlug === "color" ? { hex: newItemColorHex } : {}),
-            showInName,
-            showInSku,
         };
 
         try {
@@ -322,6 +316,8 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         setEditTypeName(type.name);
         setEditTypeCategoryId(type.categoryId || "uncategorized");
         setEditTypeIsSystem(type.isSystem || false);
+        setEditTypeShowInSku(type.showInSku ?? true);
+        setEditTypeShowInName(type.showInName ?? true);
     }
 
     async function handleUpdateType() {
@@ -329,11 +325,17 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         setIsEditTypeLoading(true);
         try {
             const catId = editTypeCategoryId === "uncategorized" ? null : editTypeCategoryId;
-            const res = await updateInventoryAttributeType(editingType.id, editTypeName, catId, editTypeIsSystem);
+            const res = await updateInventoryAttributeType(
+                editingType.id,
+                editTypeName,
+                catId,
+                editTypeIsSystem,
+                editTypeShowInSku,
+                editTypeShowInName
+            );
             if (res.success) {
                 toast("Раздел обновлен", "success");
-                // Don't close immediately, user might want to edit values
-                // setEditingType(null); 
+                setEditingType(null);
                 router.refresh();
             } else {
                 toast(res.error || "Ошибка обновления", "error");
@@ -548,15 +550,30 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                             </div>
                         </div>
 
-                        <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
+                        <div className="flex flex-col gap-3 p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden">
                             <Switch
                                 checked={editTypeIsSystem}
                                 onChange={setEditTypeIsSystem}
                                 disabled={user?.roleName !== "Администратор"}
                                 label="Системная характеристика"
                                 icon={Lock}
-                                description={editTypeIsSystem && user?.roleName !== "Администратор" ? "(только для Администратора)" : "Будет доступна во всех категориях"}
+                                description={editTypeIsSystem && user?.roleName !== "Администратор" ? "(только для Администратора)" : "Доступна везде"}
                             />
+                            <div className="h-px bg-slate-200/80" />
+                            <div className="grid grid-cols-2 gap-x-4 pt-1">
+                                <Switch
+                                    checked={editTypeShowInSku}
+                                    onChange={setEditTypeShowInSku}
+                                    label={<>Добавлять<br />в артикул</>}
+                                    description="Будет в SKU"
+                                />
+                                <Switch
+                                    checked={editTypeShowInName}
+                                    onChange={setEditTypeShowInName}
+                                    label={<>Добавлять<br />в название</>}
+                                    description="Будет в имени"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -728,21 +745,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                             />
                         )}
 
-                        <div className="space-y-3 bg-white p-4 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
-                            <Switch
-                                checked={showInName}
-                                onChange={setShowInName}
-                                label="В составе имени"
-                                description="Будет участвовать в генерации названия"
-                            />
-                            <div className="h-px bg-slate-50 mx-1" />
-                            <Switch
-                                checked={showInSku}
-                                onChange={setShowInSku}
-                                label="В составе SKU"
-                                description="Будет участвовать в генерации артикула"
-                            />
-                        </div>
+
 
                         {error && (
                             <div className="flex items-center gap-2 p-3 rounded-[var(--radius-inner)] bg-rose-50 text-rose-600 border border-rose-100 animate-in shake duration-500">

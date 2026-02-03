@@ -795,7 +795,7 @@ export function SystemStats() {
                                   user.name?.[0]
                                 )}
                               </div>
-                              <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full translate-x-1 translate-y-1"></div>
+                              <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full translate-x-1 translate-y-1 animate-crm-blink shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                             </div>
                             <div>
                               <p className="text-sm font-bold text-slate-800 truncate max-w-[120px]">

@@ -48,6 +48,7 @@ export function UserNav({ user, branding }: {
                     ) : (
                         <User className="h-5.5 w-5.5" />
                     )}
+                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full translate-x-0.5 translate-y-0.5 animate-crm-blink shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                 </div>
                 <div className="hidden lg:block text-left">
                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
@@ -78,6 +79,7 @@ export function UserNav({ user, branding }: {
                                     ) : (
                                         <User className="h-8 w-8" />
                                     )}
+                                    <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-[3px] border-white rounded-full translate-x-1 translate-y-1 animate-crm-blink shadow-[0_0_12px_rgba(16,185,129,0.5)]"></div>
                                 </div>
                                 <div className="flex flex-col gap-1 min-w-0 flex-1">
                                     <span className="text-lg font-bold text-slate-900 leading-tight truncate">{user.name}</span>

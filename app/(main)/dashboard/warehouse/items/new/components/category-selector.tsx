@@ -16,7 +16,7 @@ interface CategorySelectorProps {
 
 export function CategorySelector({ categories, onSelect, variant = "default", hideTitle = false, selectedCategoryId }: CategorySelectorProps) {
     return (
-        <div className={cn("px-10 pb-6", hideTitle ? "pt-4" : "pt-10")}>
+        <div className={cn("px-10 pb-6", hideTitle ? "pt-2" : "pt-10")}>
             <div className="max-w-6xl mx-auto w-full space-y-6">
                 {!hideTitle && (
                     <div className="flex items-center gap-4">
@@ -25,7 +25,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900">Выберите тип позиции</h2>
-                            <p className="text-[11px] text-slate-500 font-bold opacity-60">От типа зависят доступные поля и характеристики</p>
+                            <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">От типа зависят доступные поля и характеристики</p>
                         </div>
                     </div>
                 )}
@@ -49,7 +49,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                         "group flex flex-row items-center gap-3 p-4 rounded-[var(--radius-outer)] border border-slate-200 transition-all text-left shadow-sm",
                                         selectedCategoryId === category.id
                                             ? "border-slate-900 bg-slate-50 shadow-md"
-                                            : "bg-white hover:border-slate-300 hover:shadow-md hover:translate-y-[-1px]"
+                                            : "bg-white hover:border-slate-300 hover:shadow-md"
                                     )}
                                 >
                                     <div className={cn(
@@ -75,8 +75,8 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 className={cn(
                                     "group flex flex-col items-center gap-4 p-6 rounded-[var(--radius-outer)] border border-slate-200 transition-all text-center shadow-sm",
                                     selectedCategoryId === category.id
-                                        ? "border-slate-900 bg-slate-50 shadow-md scale-[1.02]"
-                                        : "bg-white hover:border-slate-300 hover:shadow-md hover:translate-y-[-2px]"
+                                        ? "border-slate-900 bg-slate-50 shadow-md"
+                                        : "bg-white hover:border-slate-300 hover:shadow-md"
                                 )}
                             >
                                 <div className={cn(

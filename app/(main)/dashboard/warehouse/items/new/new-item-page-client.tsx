@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, RotateCcw, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, RotateCcw, Loader2, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { addInventoryItem } from "../../actions";
@@ -10,6 +10,7 @@ import { CategorySelector } from "./components/category-selector";
 import { BasicInfoStep } from "./components/basic-info-step";
 import { MediaStep } from "./components/media-step";
 import { StockStep } from "./components/stock-step";
+import { SummaryStep } from "./components/summary-step";
 import { StepFooter } from "./components/step-footer";
 import { InventoryAttribute, AttributeType, ItemFormData, Category, StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
@@ -45,146 +46,129 @@ export function NewItemPageClient({
     // 3: Media
     // 4: Stock
     // State with lazy initialization
-    const [step, setStep] = useState(() => {
-        if (typeof window === 'undefined') return 0;
+    const [mounted, setMounted] = useState(false);
+    const [step, setStep] = useState(0);
 
-        // 1. Initial params from URL
-        if (initialCategoryId || initialSubcategoryId) {
-            // If we have initial category/subcategory, we usually jump to basic info (step 2)
-            // unless the initial category has subcategories and no subcategory is provided.
-            const catIdToFind = initialSubcategoryId
-                ? categories.find(c => c.id === initialSubcategoryId)?.parentId
-                : initialCategoryId;
-            const cat = catIdToFind ? categories.find(c => c.id === catIdToFind) : null;
-            if (cat) {
-                const hasSubs = categories.some(c => c.parentId === cat.id);
-                if (hasSubs && !initialSubcategoryId) {
-                    return 0; // Stay on category selection if parent has subs but no sub is selected
-                }
-            }
-            return 2; // Jump to basic info
-        }
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-        // 2. Draft
-        const saved = localStorage.getItem("merch_crm_new_item_draft");
-        if (saved) {
-            try { return JSON.parse(saved).step || 0; } catch { return 0; }
-        }
-        return 0;
-    });
-
-    const [selectedCategory, setSelectedCategory] = useState<Category | null>(() => {
-        if (typeof window === 'undefined') return null;
-
-        // 1. Initial params
-        const catIdToFind = initialSubcategoryId
-            ? categories.find(c => c.id === initialSubcategoryId)?.parentId
-            : initialCategoryId;
-
-        if (catIdToFind) {
-            return categories.find(c => c.id === catIdToFind) || null;
-        }
-
-        // 2. Draft
-        const saved = localStorage.getItem("merch_crm_new_item_draft");
-        if (saved) {
-            try {
-                const draft = JSON.parse(saved);
-                if (draft.selectedCategoryId) {
-                    return categories.find(c => c.id === draft.selectedCategoryId) || null;
-                }
-            } catch { return null; }
-        }
-        return null;
-    });
-
-    const [formData, setFormData] = useState<ItemFormData>(() => {
-        const defaultData: ItemFormData = {
-            subcategoryId: "",
-            brandCode: "",
-            qualityCode: "",
-            materialCode: "",
-            attributeCode: "",
-            sizeCode: "",
-            itemName: "",
-            sku: "",
-            unit: "шт",
-            description: "",
-            width: "",
-            height: "",
-            depth: "",
-            department: "",
-            imageFile: null,
-            imageBackFile: null,
-            imageSideFile: null,
-            imageDetailsFiles: [],
-            imagePreview: null,
-            imageBackPreview: null,
-            imageSidePreview: null,
-            imageDetailsPreviews: [],
-            thumbSettings: { zoom: 1, x: 0, y: 0 },
-            storageLocationId: "",
-            quantity: "0",
-            criticalStockThreshold: "0",
-            lowStockThreshold: "10",
-            costPrice: "0",
-            sellingPrice: "0",
-            attributes: {}
-        };
-
-        if (typeof window === 'undefined') return defaultData;
-
-        // 1. Initial params
-        if (initialSubcategoryId) {
-            const subCat = categories.find(c => c.id === initialSubcategoryId);
-            const isClothing = subCat?.name.toLowerCase().includes("одежда");
-            return {
-                ...defaultData,
-                subcategoryId: initialSubcategoryId,
-                unit: isClothing ? "шт" : "шт"
-            };
-        } else if (initialCategoryId) {
-            const cat = categories.find(c => c.id === initialCategoryId);
-            const isClothing = cat?.name.toLowerCase().includes("одежда");
-            return {
-                ...defaultData,
-                unit: isClothing ? "шт" : "шт"
-            };
-        }
-
-        // 2. Draft
-        const saved = localStorage.getItem("merch_crm_new_item_draft");
-        if (saved) {
-            try {
-                const draft = JSON.parse(saved);
-                if (draft.formData) {
-                    return {
-                        ...defaultData,
-                        ...draft.formData,
-                        // Clear files/previews as they cannot be serialized
-                        imageFile: null, imageBackFile: null, imageSideFile: null,
-                        imageDetailsFiles: [], imagePreview: null,
-                        imageBackPreview: null, imageSidePreview: null,
-                        imageDetailsPreviews: []
-                    };
-                }
-            } catch { return defaultData; }
-        }
-
-        return defaultData;
+    const [formData, setFormData] = useState<ItemFormData>({
+        subcategoryId: "",
+        brandCode: "",
+        qualityCode: "",
+        materialCode: "",
+        attributeCode: "",
+        sizeCode: "",
+        itemName: "",
+        sku: "",
+        unit: "шт",
+        description: "",
+        width: "",
+        height: "",
+        depth: "",
+        department: "",
+        imageFile: null,
+        imageBackFile: null,
+        imageSideFile: null,
+        imageDetailsFiles: [],
+        imagePreview: null,
+        imageBackPreview: null,
+        imageSidePreview: null,
+        imageDetailsPreviews: [],
+        thumbSettings: { zoom: 1, x: 0, y: 0 },
+        storageLocationId: "",
+        quantity: "0",
+        criticalStockThreshold: "0",
+        lowStockThreshold: "10",
+        costPrice: "0",
+        sellingPrice: "0",
+        responsibleUserId: "",
+        attributes: {}
     });
 
     const [validationError, setValidationError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    const updateFormData = (updates: Partial<ItemFormData>) => {
+    const updateFormData = useCallback((updates: Partial<ItemFormData>) => {
         setFormData(prev => ({ ...prev, ...updates }));
         if (validationError) setValidationError("");
-    };
+    }, [validationError]);
+
+    // Load initial state and draft after mount
+    useEffect(() => {
+        setMounted(true);
+
+        // 1. Initial params
+        let initialStep = 0;
+        let initialCat: Category | null = null;
+        let initialForm = { ...formData };
+
+        if (initialSubcategoryId || initialCategoryId) {
+            let resolvedSubId = initialSubcategoryId;
+            let resolvedCatId = initialCategoryId;
+
+            // Если передана только категория, но у нее есть родитель - значит это подкатегория
+            if (!resolvedSubId && resolvedCatId) {
+                const cat = categories.find(c => c.id === resolvedCatId);
+                if (cat?.parentId) {
+                    resolvedSubId = resolvedCatId;
+                    resolvedCatId = cat.parentId;
+                }
+            }
+
+            initialCat = resolvedCatId ? (categories.find(c => c.id === resolvedCatId) || null) : null;
+
+            if (initialCat) {
+                const hasSubs = categories.some(c => c.parentId === initialCat?.id);
+                if (!hasSubs || resolvedSubId) {
+                    initialStep = 2;
+                }
+            }
+
+            if (resolvedSubId) {
+                const subCat = categories.find(c => c.id === resolvedSubId);
+                const isClothing = subCat?.name.toLowerCase().includes("одежда") || initialCat?.name.toLowerCase().includes("одежда");
+                initialForm = {
+                    ...initialForm,
+                    subcategoryId: resolvedSubId,
+                    unit: isClothing ? "шт" : initialForm.unit
+                };
+            }
+        } else {
+            // 2. Draft
+            const saved = localStorage.getItem("merch_crm_new_item_draft");
+            if (saved) {
+                try {
+                    const draft = JSON.parse(saved);
+                    initialStep = draft.step || 0;
+                    if (draft.selectedCategoryId) {
+                        initialCat = categories.find(c => c.id === draft.selectedCategoryId) || null;
+                    }
+                    if (draft.formData) {
+                        initialForm = {
+                            ...initialForm,
+                            ...draft.formData,
+                            imageFile: null, imageBackFile: null, imageSideFile: null,
+                            imageDetailsFiles: [], imagePreview: null,
+                            imageBackPreview: null, imageSidePreview: null,
+                            imageDetailsPreviews: []
+                        };
+                    }
+                } catch (e) {
+                    console.error("Error parsing draft:", e);
+                }
+            }
+        }
+
+        setStep(initialStep);
+        setSelectedCategory(initialCat);
+        setFormData(initialForm);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Save draft on changes
     useEffect(() => {
+        if (!mounted) return;
         setIsSaving(true);
         const timer = setTimeout(() => {
             const dataToSave = {
@@ -448,7 +432,8 @@ export function NewItemPageClient({
         { id: 0, title: "Тип позиции", desc: "Категория и вид" },
         { id: 2, title: "Описание", desc: "Характеристики" },
         { id: 3, title: "Галерея", desc: "Фото и медиа" },
-        { id: 4, title: "Склад", desc: "Остатки и хранение" }
+        { id: 4, title: "Склад", desc: "Остатки и хранение" },
+        { id: 5, title: "Итог", desc: "Проверка и создание" }
     ];
 
     const currentStepIndex = step;
@@ -457,7 +442,7 @@ export function NewItemPageClient({
         <div className="flex flex-col">
             <div className="flex min-h-[calc(100vh-160px)] gap-6">
                 {/* Sidebar (Vertical Studio Navigation) */}
-                <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden text-medium">
+                <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden text-medium">
                     <div className="p-6 shrink-0">
                         <button
                             onClick={handleBack}
@@ -508,7 +493,7 @@ export function NewItemPageClient({
                                     }}
                                     className={cn(
                                         "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                        isActive ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                        isActive ? "bg-primary text-white shadow-md shadow-black/10" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                     )}
                                 >
                                     <div className={cn(
@@ -522,10 +507,10 @@ export function NewItemPageClient({
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <div className={cn("text-xs font-bold  leading-none mb-1", isActive ? "text-white" : "text-slate-900")}>
+                                        <div className={cn("text-sm font-bold leading-none mb-1.5", isActive ? "text-white" : "text-slate-900")}>
                                             {s.title}
                                         </div>
-                                        <div className={cn("text-[10px] font-bold truncate", isActive ? "text-white/60" : "text-slate-400")}>
+                                        <div className={cn("text-[11px] font-bold truncate", isActive ? "text-white/60" : "text-slate-400")}>
                                             {s.desc}
                                         </div>
                                     </div>
@@ -543,9 +528,9 @@ export function NewItemPageClient({
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-[var(--radius)] bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                                     {isSaving ? (
-                                        <Loader2 className="w-3.5 h-3.5 text-indigo-500 animate-spin" />
+                                        <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />
                                     ) : (
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-crm-blink shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                                     )}
                                 </div>
                                 <div>
@@ -567,9 +552,9 @@ export function NewItemPageClient({
                     </div>
                 </aside>
 
-                <main className="flex-1 overflow-hidden relative h-full flex flex-col gap-4">
+                <main className="flex-1 relative h-full flex flex-col gap-4 pb-8 px-1">
                     <div className="relative z-10 flex-1 flex flex-col min-h-0">
-                        <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-0 relative">
+                        <div className="bg-white rounded-[24px] shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
                                 <div className="flex flex-col h-full min-h-0">
                                     <div className="flex-1 overflow-y-auto min-h-0">
@@ -582,13 +567,16 @@ export function NewItemPageClient({
 
                                         {selectedCategory && (
                                             <div className="animate-in fade-in slide-in-from-top-4 duration-500 border-t border-slate-200 bg-slate-50/30 pb-6">
-                                                <div className="px-10 pt-6 pb-0 font-medium">
+                                                <div className="px-10 pt-6 pb-0">
                                                     <div className="max-w-6xl mx-auto w-full">
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
-                                                            <h3 className="text-xs font-bold text-slate-900 ">
-                                                                Выберите подкатегорию для «{selectedCategory.name}»
-                                                            </h3>
+                                                        <div className="mb-4 flex items-center gap-4">
+                                                            <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
+                                                                <LayoutGrid className="w-6 h-6 text-white" />
+                                                            </div>
+                                                            <div>
+                                                                <h4 className="text-2xl font-bold text-slate-900">Подкатегория</h4>
+                                                                <p className="text-[10px] text-slate-500 font-bold opacity-60 mt-1">Выберите уточняющий тип для «{selectedCategory.name}»</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -660,6 +648,22 @@ export function NewItemPageClient({
                                     category={selectedCategory}
                                     storageLocations={storageLocations}
                                     users={users}
+                                    formData={formData}
+                                    updateFormData={updateFormData}
+                                    onNext={handleNext}
+                                    onBack={handleBack}
+                                    validationError={validationError}
+                                    isSubmitting={isSubmitting}
+                                />
+                            )}
+
+                            {step === 5 && selectedCategory && (
+                                <SummaryStep
+                                    category={selectedCategory}
+                                    subCategories={subCategories}
+                                    storageLocations={storageLocations}
+                                    dynamicAttributes={dynamicAttributes}
+                                    attributeTypes={attributeTypes}
                                     formData={formData}
                                     updateFormData={updateFormData}
                                     onSubmit={handleSubmit}

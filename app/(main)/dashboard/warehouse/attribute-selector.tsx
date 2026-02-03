@@ -14,6 +14,8 @@ interface AttributeSelectorProps {
     onCodeChange?: (code: string) => void;
     allowCustom?: boolean;
     label?: string;
+    description?: string;
+    required?: boolean;
 }
 
 interface DbAttribute {
@@ -24,7 +26,7 @@ interface DbAttribute {
     meta: Record<string, unknown> | null;
 }
 
-export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true, label }: AttributeSelectorProps) {
+export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true, label, description, required }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");
@@ -158,10 +160,14 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
     if (type === "color") {
         return (
-            <div className="space-y-4 w-full relative">
-                <div className="flex items-center justify-between px-1">
-                    <label className="text-xs font-semibold text-slate-900">Цвет изделия</label>
-                    {value && <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-[var(--radius-inner)]">{value}</span>}
+            <div className="space-y-2 w-full relative">
+                <div className="mb-2 flex items-start justify-between">
+                    <div>
+                        <h4 className="text-xl font-bold text-slate-900">
+                            Цвет изделия {required && <span className="text-rose-500 ml-1">*</span>}
+                        </h4>
+                    </div>
+
                 </div>
                 <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
                     {filteredOptions.map(c => (
@@ -174,10 +180,10 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius-inner)] border transition-all duration-300",
+                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border transition-all duration-300 shadow-sm",
                                 value === c.code
-                                    ? "bg-white border-slate-900 shadow-xl shadow-slate-200 z-10"
-                                    : "bg-white border-slate-200 hover:border-slate-900 hover:shadow-lg hover:shadow-slate-200/60"
+                                    ? "bg-white border-slate-900 shadow-md z-10"
+                                    : "bg-white border-slate-200 hover:border-slate-400 hover:shadow-md"
                             )}
                         >
                             <div
@@ -195,60 +201,89 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             type="button"
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "group h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius-inner)] border border-dashed transition-all duration-300",
+                                "group h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border border-dashed transition-all duration-300 shadow-sm hover:shadow-md",
                                 showCustom
-                                    ? "bg-slate-100 border-slate-300 text-slate-900"
+                                    ? "bg-slate-100 border-slate-300 text-slate-900 shadow-md"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
-                            <Plus className="w-5 h-5 opacity-20 group-hover:opacity-100 transition-opacity" />
                             <span className="text-[10px] font-bold">Добавить</span>
                         </button>
                     )}
                 </div>
 
-                {showCustom && (
-                    <div className="absolute -inset-3 z-[100] bg-white shadow-2xl rounded-[22px] border border-slate-200/60 p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200 h-fit">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-900 leading-none">Создание цвета</span>
-                            <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
-                                <X className="w-4 h-4" />
-                            </button>
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <div className="relative w-12 h-12 rounded-[var(--radius)] overflow-hidden border-2 border-slate-200 shrink-0 shadow-inner">
-                                <input
-                                    type="color"
-                                    className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
-                                    value={customHex}
-                                    onChange={(e) => setCustomHex(e.target.value)}
-                                />
-                            </div>
-                            <div className="flex-1 space-y-3">
-                                <input
-                                    type="text"
-                                    placeholder="Название цвета..."
-                                    className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
-                                    value={customName}
-                                    onChange={(e) => setCustomName(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleCustomSubmit}
-                                    disabled={isSaving || !customName.trim()}
-                                    className="w-full h-12 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
-                                >
-                                    {isSaving ? "..." : "Добавить"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <AnimatePresence>
+                    {showCustom && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-[95] bg-slate-900/5 backdrop-blur-[2px]"
+                                onClick={() => setShowCustom(false)}
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                                className="absolute -inset-3 z-[100] bg-white shadow-2xl rounded-[22px] border border-slate-200/60 p-6 space-y-5 h-fit"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-900 leading-none">Создание цвета</span>
+                                    <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="relative w-12 h-12 rounded-[var(--radius)] overflow-hidden border-2 border-slate-200 shrink-0 shadow-inner">
+                                        <input
+                                            type="color"
+                                            className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
+                                            value={customHex}
+                                            onChange={(e) => setCustomHex(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-3">
+                                        <input
+                                            type="text"
+                                            placeholder="Название цвета..."
+                                            className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                            value={customName}
+                                            onChange={(e) => setCustomName(e.target.value)}
+                                            onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
+                                            autoFocus
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleCustomSubmit}
+                                            disabled={isSaving || !customName.trim()}
+                                            className="w-full h-12 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                        >
+                                            {isSaving ? "..." : "Добавить"}
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         );
     }
 
+    const getDefaultDescription = (type: string, label?: string) => {
+        const t = (type || "").toLowerCase();
+        const l = (label || "").toLowerCase();
+
+        if (t === "brand" || l.includes("бренд")) return "Производитель или торговая марка";
+        if (t === "material" || l.includes("материал")) return "Тип и текстура ткани";
+        if (t === "size" || l.includes("размер")) return "Размер по международной сетке";
+        if (t === "quality" || l.includes("качество")) return "Плотность и сорт полотна";
+        if (t === "composition" || l.includes("состав")) return "Процентное соотношение волокон";
+
+        return "Укажите характеристику";
+    };
 
     if (type === "brand" || type === "quality" || !["color"].includes(type)) {
         const displayLabel = label || (
@@ -272,17 +307,20 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         `Выберите ${displayLabel.toLowerCase()}...`;
 
         return (
-            <div className="space-y-4 relative">
-                <div className="flex items-center justify-between px-1">
-                    <label className="text-xs font-semibold text-slate-900">{displayLabel}</label>
+            <div className="space-y-2 relative w-full">
+                <div className="mb-2 flex items-baseline justify-between gap-4 overflow-hidden">
+                    <div className="min-w-0">
+                        <h4 className="text-xl font-bold text-slate-900 truncate">
+                            {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
+                        </h4>
+                    </div>
                     {allowCustom && (
                         <button
                             type="button"
                             onClick={() => setShowCustom(true)}
-                            className="text-xs font-bold text-slate-400 flex items-center gap-1.5 hover:text-slate-600 transition-colors"
+                            className="flex items-center py-1 text-slate-400 hover:text-slate-900 transition-all active:scale-95 group/add shrink-0"
                         >
-                            <Plus className="w-3.5 h-3.5" />
-                            {addLabel}
+                            <span className="text-[9px] font-bold uppercase tracking-wider whitespace-nowrap">{addLabel}</span>
                         </button>
                     )}
                 </div>
@@ -305,42 +343,59 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                     showSearch={type === "brand"}
                 />
 
-                {showCustom && (
-                    <div className="absolute -inset-3 z-[100] bg-white shadow-2xl rounded-[22px] border border-slate-200/60 p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200 h-fit">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-900 leading-none">
-                                {type === "brand" ? "Создание бренда" :
-                                    type === "material" ? "Создание материала" :
-                                        type === "size" ? "Создание размера" :
-                                            type === "quality" ? "Создание качества" :
-                                                displayLabel.toLowerCase() === "состав" ? "Создание состава" :
-                                                    `Создание опции: ${displayLabel}`}
-                            </span>
-                            <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
-                                <X className="w-4 h-4" />
-                            </button>
-                        </div>
-                        <div className="space-y-3">
-                            <input
-                                type="text"
-                                placeholder="Название..."
-                                className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
-                                value={customName}
-                                onChange={(e) => setCustomName(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
-                                autoFocus
+                <AnimatePresence>
+                    {showCustom && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-[95] bg-slate-900/5 backdrop-blur-[2px]"
+                                onClick={() => setShowCustom(false)}
                             />
-                            <button
-                                type="button"
-                                onClick={handleCustomSubmit}
-                                disabled={isSaving || !customName.trim()}
-                                className="w-full h-12 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                                className="absolute -inset-3 z-[100] bg-white shadow-2xl rounded-[22px] border border-slate-200/60 p-6 space-y-5 h-fit"
                             >
-                                {isSaving ? "..." : "Добавить"}
-                            </button>
-                        </div>
-                    </div>
-                )}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-900 leading-none">
+                                        {type === "brand" ? "Создание бренда" :
+                                            type === "material" ? "Создание материала" :
+                                                type === "size" ? "Создание размера" :
+                                                    type === "quality" ? "Создание качества" :
+                                                        displayLabel.toLowerCase() === "состав" ? "Создание состава" :
+                                                            `Создание опции: ${displayLabel}`}
+                                    </span>
+                                    <button type="button" onClick={() => setShowCustom(false)} className="text-slate-400 hover:text-slate-600 p-1">
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    <input
+                                        type="text"
+                                        placeholder="Название..."
+                                        className="w-full h-12 px-5 text-sm font-bold rounded-[var(--radius)] border border-slate-200 focus:border-slate-900 outline-none transition-all"
+                                        value={customName}
+                                        onChange={(e) => setCustomName(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
+                                        autoFocus
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleCustomSubmit}
+                                        disabled={isSaving || !customName.trim()}
+                                        className="w-full h-12 bg-slate-900 text-white rounded-[var(--radius)] text-xs font-bold hover:bg-black shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                    >
+                                        {isSaving ? "..." : "Добавить"}
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         );
     }

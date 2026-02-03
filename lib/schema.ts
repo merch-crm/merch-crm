@@ -113,6 +113,8 @@ export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     isSystem: boolean("is_system").default(false).notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
+    showInSku: boolean("show_in_sku").default(true).notNull(),
+    showInName: boolean("show_in_name").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -200,6 +202,8 @@ export const inventoryCategories = pgTable("inventory_categories", {
     gender: text("gender").default("masculine").notNull(), // 'masculine', 'feminine', 'neuter'
     singularName: text("singular_name"),
     pluralName: text("plural_name"),
+    showInSku: boolean("show_in_sku").default(true).notNull(),
+    showInName: boolean("show_in_name").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

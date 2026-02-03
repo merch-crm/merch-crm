@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, createElement } from "react";
+import { useState, createElement, type ReactNode } from "react";
 import { X, Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
@@ -12,6 +12,53 @@ import { Session } from "@/lib/auth";
 
 import { Category } from "./types";
 import { getCategoryIcon, getColorStyles, COLORS, getIconNameFromName } from "./category-utils";
+
+function Switch({
+    checked,
+    onChange,
+    disabled,
+    label,
+    description
+}: {
+    checked: boolean,
+    onChange: (val: boolean) => void,
+    disabled?: boolean,
+    label?: ReactNode,
+    description?: string
+}) {
+    return (
+        <div className={cn(
+            "flex items-center justify-between group w-full",
+            disabled && "opacity-50"
+        )}>
+            <div className="flex flex-col gap-0.5">
+                {label && (
+                    <div className="flex flex-col">
+                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">{label}</span>
+                    </div>
+                )}
+                {description && <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">{description}</span>}
+            </div>
+            <button
+                type="button"
+                disabled={disabled}
+                onClick={() => onChange(!checked)}
+                className={cn(
+                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-inner",
+                    checked ? "bg-primary" : "bg-slate-200",
+                    disabled && "cursor-not-allowed"
+                )}
+            >
+                <span
+                    className={cn(
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                        checked ? "translate-x-5" : "translate-x-0"
+                    )}
+                />
+            </button>
+        </div>
+    );
+}
 
 interface EditCategoryDialogProps {
     category: Category & { prefix?: string | null, isSystem?: boolean };
@@ -27,6 +74,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
     const [error, setError] = useState<string | null>(null);
     const [categoryName, setCategoryName] = useState(category.name);
     const [selectedColor, setSelectedColor] = useState(category.color || "primary");
+    const [showInSku, setShowInSku] = useState(category.showInSku ?? true);
+    const [showInName, setShowInName] = useState(category.showInName ?? true);
     const selectedParentId = category.parentId || "";
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
@@ -48,6 +97,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         formData.set("icon", getIconNameFromName(nameInput));
         formData.set("color", selectedColor);
         formData.set("parentId", selectedParentId);
+        formData.set("showInSku", String(showInSku));
+        formData.set("showInName", String(showInName));
 
         const result = await updateInventoryCategory(category.id, formData);
 
@@ -115,7 +166,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
                             <p className="text-[11px] font-bold text-slate-400 mt-0.5">
-                                Объект: <span className="text-slate-900 font-bold">{category.name}</span>
+                                Категория: <span className="text-slate-900 font-bold">{category.name}</span>
                             </p>
                         </div>
                     </div>
@@ -196,6 +247,22 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                     );
                                 })}
                             </div>
+                        </div>
+                        <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[85px]">
+                            <Switch
+                                checked={showInSku}
+                                onChange={setShowInSku}
+                                label={<>Добавлять<br />в артикул</>}
+                                description="Будет в SKU"
+                            />
+                        </div>
+                        <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[85px]">
+                            <Switch
+                                checked={showInName}
+                                onChange={setShowInName}
+                                label={<>Добавлять<br />в название</>}
+                                description="Будет в имени"
+                            />
                         </div>
                     </div>
 

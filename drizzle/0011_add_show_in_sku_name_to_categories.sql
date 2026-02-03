@@ -1,0 +1,2 @@
+ALTER TABLE "inventory_categories" ADD COLUMN "show_in_sku" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+ALTER TABLE "inventory_categories" ADD COLUMN "show_in_name" boolean DEFAULT true NOT NULL;

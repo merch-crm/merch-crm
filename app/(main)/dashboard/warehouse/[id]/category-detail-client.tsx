@@ -415,7 +415,12 @@ export function CategoryDetailClient({
                         />
                     )}
                     <Button
-                        onClick={() => router.push(`/dashboard/warehouse/items/new?categoryId=${category.id}`)}
+                        onClick={() => {
+                            const url = category.parentId
+                                ? `/dashboard/warehouse/items/new?categoryId=${category.parentId}&subcategoryId=${category.id}`
+                                : `/dashboard/warehouse/items/new?categoryId=${category.id}`;
+                            router.push(url);
+                        }}
                         className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold border-none"
                     >
                         <Plus className="w-5 h-5" />
@@ -1055,7 +1060,7 @@ function SortableSubCategoryCard({
             style={style}
             onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
             className={cn(
-                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm hover:translate-y-[-2px] hover:shadow-md",
+                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm",
                 isDragging && "opacity-0 scale-95" // Hide the original one while dragging
             )}
         >

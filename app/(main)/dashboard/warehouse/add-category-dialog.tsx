@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, createElement } from "react";
+import { useState, createElement, type ReactNode } from "react";
 import { X, FolderPlus, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "./submit-button";
@@ -8,6 +8,53 @@ import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getIconNameFromName, getColorStyles, getCategoryIcon, COLORS } from "./category-utils";
+
+function Switch({
+    checked,
+    onChange,
+    disabled,
+    label,
+    description
+}: {
+    checked: boolean,
+    onChange: (val: boolean) => void,
+    disabled?: boolean,
+    label?: ReactNode,
+    description?: string
+}) {
+    return (
+        <div className={cn(
+            "flex items-center justify-between group w-full",
+            disabled && "opacity-50"
+        )}>
+            <div className="flex flex-col gap-0.5">
+                {label && (
+                    <div className="flex flex-col">
+                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">{label}</span>
+                    </div>
+                )}
+                {description && <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">{description}</span>}
+            </div>
+            <button
+                type="button"
+                disabled={disabled}
+                onClick={() => onChange(!checked)}
+                className={cn(
+                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-inner",
+                    checked ? "bg-primary" : "bg-slate-200",
+                    disabled && "cursor-not-allowed"
+                )}
+            >
+                <span
+                    className={cn(
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                        checked ? "translate-x-5" : "translate-x-0"
+                    )}
+                />
+            </button>
+        </div>
+    );
+}
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -45,6 +92,8 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
     const [categoryPrefix, setCategoryPrefix] = useState("");
     const [prefixManuallyEdited, setPrefixManuallyEdited] = useState(false);
     const [selectedColor, setSelectedColor] = useState("primary");
+    const [showInSku, setShowInSku] = useState(true);
+    const [showInName, setShowInName] = useState(true);
     const [_selectedParentId] = useState<string>(parentId || "");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const router = useRouter();
@@ -71,6 +120,8 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
         formData.set("icon", getIconNameFromName(name));
         formData.set("color", selectedColor);
         formData.set("parentId", _selectedParentId);
+        formData.set("showInSku", String(showInSku));
+        formData.set("showInName", String(showInName));
         const result = await addInventoryCategory(formData);
 
         if (result.error) {
@@ -210,6 +261,25 @@ export function AddCategoryDialog({ parentId, buttonText = "Добавить к�
                                             );
                                         })}
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[85px]">
+                                    <Switch
+                                        checked={showInSku}
+                                        onChange={setShowInSku}
+                                        label={<>Добавлять<br />в артикул</>}
+                                        description="Будет в SKU"
+                                    />
+                                </div>
+                                <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[85px]">
+                                    <Switch
+                                        checked={showInName}
+                                        onChange={setShowInName}
+                                        label={<>Добавлять<br />в название</>}
+                                        description="Будет в имени"
+                                    />
                                 </div>
                             </div>
 

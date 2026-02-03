@@ -2,7 +2,7 @@
 
 import { useEffect, createElement } from "react";
 import Link from "next/link";
-import { Package, Hash, Ruler, Info, Wrench, ClipboardList, Printer, Shirt, Scissors, Settings2 } from "lucide-react";
+import { Package, Hash, Ruler, Wrench, ClipboardList, Printer, Shirt, Scissors, Settings2 } from "lucide-react";
 import { UnitSelect } from "@/components/ui/unit-select";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
@@ -77,23 +77,22 @@ export function BasicInfoStep({
     // Автогенерация SKU и названия для одежды
     useEffect(() => {
         if (isClothing) {
-            // Ищем артикул выбранной подкатегории или текущей категории
-            let prefix = category.prefix;
-
-            if (formData.subcategoryId) {
-                const subCat = subCategories.find(c => c.id === formData.subcategoryId);
-                if (subCat?.prefix) prefix = subCat.prefix;
-            }
+            const activeCat = formData.subcategoryId ? subCategories.find(c => c.id === formData.subcategoryId) : category;
+            const prefix = activeCat?.prefix;
 
             // SKU Generation
             const shouldShowInSku = (type: string, code?: string) => {
                 if (!code) return false;
+                // Check attribute type's showInSku setting first
+                const attrType = attributeTypes.find(t => t.slug === type);
+                if (attrType && attrType.showInSku === false) return false;
+                // Then check individual attribute's meta setting
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 return (attr?.meta as { showInSku?: boolean })?.showInSku ?? true;
             };
 
             const skuParts: string[] = [];
-            if (prefix) skuParts.push(prefix);
+            if (prefix && activeCat?.showInSku !== false) skuParts.push(prefix);
 
             if (shouldShowInSku('brand', formData.brandCode)) skuParts.push(formData.brandCode!);
             if (shouldShowInSku('quality', formData.qualityCode)) skuParts.push(formData.qualityCode!);
@@ -116,7 +115,7 @@ export function BasicInfoStep({
                 updateFormData({ sku: generatedSku });
             }
 
-            const activeCat = formData.subcategoryId ? subCategories.find(c => c.id === formData.subcategoryId) : category;
+
             const targetGender = activeCat?.gender || "masculine";
 
             // Try to find singular name from category data or icon label fallback
@@ -140,12 +139,18 @@ export function BasicInfoStep({
                 return name;
             };
 
-            const baseName = activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) : "");
+            const baseName = activeCat?.showInName !== false
+                ? (activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) : ""))
+                : "";
 
             // Item Name Generation
             const getAttrName = (type: string, code?: string) => {
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 if (!attr) return code;
+
+                // Check attribute type's showInName setting first
+                const attrType = attributeTypes.find(t => t.slug === type);
+                if (attrType && attrType.showInName === false) return null;
 
                 // Robust meta parsing
                 let meta: unknown = attr.meta;
@@ -157,7 +162,7 @@ export function BasicInfoStep({
 
                 const typedMeta = meta as { showInName?: boolean; fem?: string; neut?: string };
 
-                // Check visibility
+                // Check visibility from attribute meta
                 if (typedMeta?.showInName === false) return null;
 
                 if (targetGender === "feminine" && typedMeta?.fem) return typedMeta.fem;
@@ -221,8 +226,8 @@ export function BasicInfoStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 p-8 overflow-y-auto min-h-0">
-                <div className="max-w-6xl mx-auto space-y-7">
+            <div className="flex-1 px-10 pt-10 pb-10 overflow-y-auto min-h-0">
+                <div className="max-w-6xl mx-auto space-y-6">
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -231,7 +236,7 @@ export function BasicInfoStep({
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 ">Основная информация</h2>
-                                <p className="text-[11px] text-slate-500 font-bold  opacity-60">Заполните ключевые характеристики вашей позиции</p>
+                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Заполните ключевые характеристики вашей позиции</p>
                             </div>
                         </div>
 
@@ -280,6 +285,7 @@ export function BasicInfoStep({
                                         <AttributeSelector
                                             type="brand"
                                             value={formData.brandCode || ""}
+                                            required={true}
                                             onChange={(name, code) => {
                                                 const currentAttrs = formData.attributes || {};
                                                 updateFormData({
@@ -292,6 +298,7 @@ export function BasicInfoStep({
                                         <AttributeSelector
                                             type="quality"
                                             value={formData.qualityCode || ""}
+                                            required={true}
                                             onChange={(name, code) => {
                                                 const currentAttrs = formData.attributes || {};
                                                 updateFormData({
@@ -308,6 +315,7 @@ export function BasicInfoStep({
                                         <AttributeSelector
                                             type="material"
                                             value={formData.materialCode || ""}
+                                            required={true}
                                             onChange={(name, code) => {
                                                 const currentAttrs = formData.attributes || {};
                                                 updateFormData({
@@ -321,6 +329,7 @@ export function BasicInfoStep({
                                         <AttributeSelector
                                             type="size"
                                             value={formData.sizeCode || ""}
+                                            required={true}
                                             onChange={(name, code) => {
                                                 const currentAttrs = formData.attributes || {};
                                                 updateFormData({
@@ -351,10 +360,10 @@ export function BasicInfoStep({
                                 </div>
 
                                 <div className="lg:col-span-4">
-                                    <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">Превью позиции</label>
-                                            <div className="px-2 py-0.5 bg-emerald-500 rounded-full text-[9px] font-bold text-white">Auto</div>
+                                    <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-2">
+                                        <div className="mb-2">
+                                            <h4 className="text-xl font-bold text-slate-900">Превью позиции</h4>
+                                            <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Визуальный контроль данных</p>
                                         </div>
 
                                         <div className="space-y-4">
@@ -365,7 +374,7 @@ export function BasicInfoStep({
                                             <div className="h-px bg-slate-100" />
 
                                             <div className="space-y-1">
-                                                <div className="text-[9px] font-bold text-slate-400 ">Артикул (SKU)</div>
+                                                <div className="text-[10px] font-bold text-slate-400 ml-1">Артикул (SKU)</div>
                                                 <div className="text-lg font-mono font-bold  break-all text-slate-900">
                                                     {formData.sku || '---'}
                                                 </div>
@@ -385,6 +394,7 @@ export function BasicInfoStep({
                                     <AttributeSelector
                                         type="color"
                                         value={formData.attributeCode || ""}
+                                        required={true}
                                         onChange={(name, code) => {
                                             const currentAttrs = formData.attributes || {};
                                             updateFormData({
@@ -397,14 +407,14 @@ export function BasicInfoStep({
                                     />
                                 </div>
                                 <div className="lg:col-span-4">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between px-1">
-                                            <label className="text-xs font-semibold text-slate-900">Описание</label>
+                                    <div className="space-y-2 h-full flex flex-col">
+                                        <div className="mb-2">
+                                            <h4 className="text-xl font-bold text-slate-900">Описание</h4>
                                         </div>
                                         <textarea
                                             value={formData.description || ""}
                                             onChange={(e) => updateFormData({ description: e.target.value })}
-                                            className="w-full h-[94px] p-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner overflow-y-auto custom-scrollbar"
+                                            className="w-full flex-1 p-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-sm hover:shadow-md overflow-y-auto custom-scrollbar"
                                             placeholder="Особенности кроя, советы по уходу..."
                                         />
                                     </div>
@@ -445,9 +455,9 @@ export function BasicInfoStep({
                                 <div className="lg:col-span-8">
                                     <div className="space-y-10">
                                         <div className="space-y-6">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">
-                                                <Package className="w-3.5 h-3.5" />
-                                                Название позиции
+                                            <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                                <Package className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
+                                                Название позиции <span className="text-rose-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -460,9 +470,9 @@ export function BasicInfoStep({
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-4">
-                                                <label className="text-sm font-bold text-slate-500 ml-1">
-                                                    <Hash className="w-3.5 h-3.5" />
-                                                    Артикул (SKU)
+                                                <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                                    <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
+                                                    Артикул (SKU) <span className="text-rose-500">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
@@ -473,9 +483,9 @@ export function BasicInfoStep({
                                                 />
                                             </div>
                                             <div className="space-y-4">
-                                                <label className="text-sm font-bold text-slate-500 ml-1">
-                                                    <Ruler className="w-3.5 h-3.5" />
-                                                    Единица измерения
+                                                <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                                    <Ruler className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
+                                                    Единица измерения <span className="text-rose-500">*</span>
                                                 </label>
                                                 <UnitSelect
                                                     name="unit"
@@ -495,14 +505,14 @@ export function BasicInfoStep({
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
                                 <div className="lg:col-span-8" />
                                 <div className="lg:col-span-4">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between px-1">
-                                            <label className="text-xs font-semibold text-slate-900">Описание</label>
+                                    <div className="space-y-2">
+                                        <div className="mb-2">
+                                            <h4 className="text-xl font-bold text-slate-900">Описание</h4>
                                         </div>
                                         <textarea
                                             value={formData.description || ""}
                                             onChange={(e) => updateFormData({ description: e.target.value })}
-                                            className="w-full h-[94px] p-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-inner overflow-y-auto custom-scrollbar"
+                                            className="w-full h-[94px] p-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-sm hover:shadow-md overflow-y-auto custom-scrollbar"
                                             placeholder="Особенности кроя, советы по уходу..."
                                         />
                                     </div>
@@ -536,8 +546,11 @@ export function BasicInfoStep({
 
                                     {/* Additional Info (Department/Packing) */}
                                     {(isPackaging || isConsumables) && (
-                                        <div className="mt-8 p-6 bg-slate-50 rounded-[var(--radius)] border border-slate-200 space-y-6">
-                                            <h4 className="text-xs font-bold text-slate-900 ">Дополнительные параметры</h4>
+                                        <div className="mt-8 p-6 bg-slate-50 rounded-[var(--radius)] border border-slate-200 space-y-2">
+                                            <div className="mb-2">
+                                                <h4 className="text-xl font-bold text-slate-900">Дополнительно</h4>
+                                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Параметры и размеры</p>
+                                            </div>
 
                                             {isPackaging && (
                                                 <div className="grid grid-cols-3 gap-4">

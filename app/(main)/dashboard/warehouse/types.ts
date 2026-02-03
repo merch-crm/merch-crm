@@ -13,6 +13,8 @@ export interface AttributeType {
     categoryId?: string | null;
     isSystem: boolean;
     sortOrder?: number;
+    showInSku?: boolean;
+    showInName?: boolean;
 }
 
 export interface ItemFormData {
@@ -67,6 +69,8 @@ export interface Category {
     sortOrder?: number | null;
     isActive?: boolean | null;
     isSystem?: boolean;
+    showInSku?: boolean;
+    showInName?: boolean;
     itemCount?: number;
     parent?: {
         id: string;

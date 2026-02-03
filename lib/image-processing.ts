@@ -57,7 +57,11 @@ export async function compressImage(
                                     quality -= 0.1;
                                     compress();
                                 } else {
-                                    const processedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + (type === "image/jpeg" ? ".jpg" : ".png"), { type });
+                                    let extension = ".jpg";
+                                    if (type === "image/webp") extension = ".webp";
+                                    else if (type === "image/png") extension = ".png";
+
+                                    const processedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + extension, { type });
                                     resolve({
                                         file: processedFile,
                                         preview: URL.createObjectURL(blob)

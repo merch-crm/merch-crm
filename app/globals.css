@@ -625,3 +625,24 @@ textarea:focus::placeholder {
   opacity: 0;
   transform: translateX(4px);
 }
+
+/* Premium Status Blink */
+@keyframes crm-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1.2);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+    filter: brightness(1);
+  }
+}
+
+@utility animate-crm-blink {
+  animation: crm-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
