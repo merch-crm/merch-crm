@@ -1,12 +1,14 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Upload, Palette, Database, Building2, Image, Loader2, X, Monitor, Share2, Printer, Volume2, MessageCircle, CheckCircle2, AlertCircle, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, ListTodo, Cpu, ScanLine, Stars, MousePointer2, VolumeX, Mail, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import { Save, Upload, Palette, Database, Building2, Image as ImageIcon, Loader2, X, Monitor, Share2, Printer, Volume2, MessageCircle, CheckCircle2, AlertCircle, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, ListTodo, Cpu, ScanLine, Stars, MousePointer2, VolumeX, Mail, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { updateBrandingSettings, uploadBrandingFile } from "./actions";
 import { useRouter } from "next/navigation";
 import { IconManager, IconGroup } from "./icon-manager";
+import { SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -48,7 +50,7 @@ interface BrandingFormProps {
         dateFormat?: string;
         timezone?: string;
     };
-    initialIconGroups: IconGroup[];
+    initialIconGroups: SerializedIconGroup[];
 }
 
 export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFormProps) {
@@ -433,7 +435,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                         </div>
                                                     ) : (
                                                         <div className="h-20 w-32 rounded-[18px] border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300">
-                                                            <Image className="w-8 h-8" />
+                                                            <ImageIcon className="w-8 h-8" />
                                                         </div>
                                                     )}
                                                 </div>
@@ -532,7 +534,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                         </div>
                                                     ) : (
                                                         <div className="h-20 w-32 rounded-[18px] border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300">
-                                                            <Image className="w-8 h-8" />
+                                                            <ImageIcon className="w-8 h-8" />
                                                         </div>
                                                     )}
                                                 </div>
@@ -577,7 +579,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                             <img src={formData.logoUrl} alt="Logo" className="h-14 w-auto min-w-[56px] object-contain" />
                                                             <button type="button" onClick={() => setFormData({ ...formData, logoUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"><X className="w-3 h-3" /></button>
                                                         </div>
-                                                    ) : <div className="h-14 w-14 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><Image className="w-6 h-6" /></div>}
+                                                    ) : <div className="h-14 w-14 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><ImageIcon className="w-6 h-6" /></div>}
                                                 </div>
                                                 <div className="flex-1">
                                                     <input type="file" id="logo-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "logo")} />
@@ -600,7 +602,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                             <img src={formData.faviconUrl} alt="Favicon" className="w-12 h-12 object-contain" />
                                                             <button type="button" onClick={() => setFormData({ ...formData, faviconUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"><X className="w-3 h-3" /></button>
                                                         </div>
-                                                    ) : <div className="h-12 w-12 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><Image className="w-5 h-5" /></div>}
+                                                    ) : <div className="h-12 w-12 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><ImageIcon className="w-5 h-5" /></div>}
                                                 </div>
                                                 <div className="flex-1">
                                                     <input type="file" id="fav-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "favicon")} />

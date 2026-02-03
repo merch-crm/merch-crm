@@ -261,7 +261,7 @@ export async function exportDatabaseBackup() {
     }
 }
 
-export async function getIconGroups() {
+export async function getIconGroups(): Promise<SerializedIconGroup[]> {
     try {
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "icon_groups")).limit(1);
         const settings = result[0];
@@ -271,7 +271,7 @@ export async function getIconGroups() {
             return serializeIconGroups(ICON_GROUPS);
         }
 
-        const val = settings.value as unknown[];
+        const val = settings.value as unknown as SerializedIconGroup[];
         // Return raw JSON (serialized), let client hydrate it
         return val;
     } catch (error) {

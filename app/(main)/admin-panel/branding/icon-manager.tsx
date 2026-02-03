@@ -31,14 +31,14 @@ export interface IconGroup {
     icons: IconItem[];
 }
 
-export function IconManager({ initialData }: { initialData?: IconGroup[] }) {
+export function IconManager({ initialData }: { initialData?: SerializedIconGroup[] }) {
     const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     // Categories state
     const [iconGroups, setIconGroups] = useState<IconGroup[]>(() => {
-        const rawGroups = (initialData ? hydrateIconGroups(initialData as unknown as SerializedIconGroup[]) : INITIAL_ICON_GROUPS) as Array<{ name: string; id?: string; label?: string } & Record<string, unknown>>;
+        const rawGroups = (initialData ? hydrateIconGroups(initialData) : INITIAL_ICON_GROUPS) as Array<{ name: string; id?: string; label?: string } & Record<string, unknown>>;
         return rawGroups.map(g => ({
             ...g,
             id: g.id || `cat-${Math.random().toString(36).substr(2, 9)}`,
