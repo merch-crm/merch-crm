@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Upload, Palette, Database, Building2, Image, Loader2, Check, X, Monitor, Layout, Share2, Printer, Volume2, Globe, MessageCircle, CheckCircle2, AlertCircle, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, ListTodo, Cpu, ScanLine, Stars, MousePointer2, VolumeX, Smartphone, Zap, Mail, AtSign, FileText, Coins, Calendar, Clock, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import { Save, Upload, Palette, Database, Building2, Image, Loader2, X, Monitor, Share2, Printer, Volume2, MessageCircle, CheckCircle2, AlertCircle, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, ListTodo, Cpu, ScanLine, Stars, MousePointer2, VolumeX, Mail, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { updateBrandingSettings, uploadBrandingFile } from "./actions";
 import { useRouter } from "next/navigation";
 import { IconManager, IconGroup } from "./icon-manager";
@@ -11,7 +11,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { SOUND_CATEGORIES, playSound, SOUND_FILES, setGlobalSoundConfig, SoundType } from "@/lib/sounds";
+import { SOUND_CATEGORIES, playSound, setGlobalSoundConfig, SoundType } from "@/lib/sounds";
 import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
 
 interface BrandingFormProps {
@@ -59,7 +59,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
     const [uploadingBg, setUploadingBg] = useState(false);
     const [uploadingPrintLogo, setUploadingPrintLogo] = useState(false);
     const [uploadingEmailLogo, setUploadingEmailLogo] = useState(false);
-    const [uploadingSound, setUploadingSound] = useState(false);
+
     const [uploadingCrmBg, setUploadingCrmBg] = useState(false);
     const [formData, setFormData] = useState<BrandingFormProps['initialSettings']>(initialSettings);
     const [activeMainTab, setActiveMainTab] = useState("main");
@@ -136,7 +136,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
         else if (type === "print_logo") setUploadingPrintLogo(true);
         else if (type === "crm_background") setUploadingCrmBg(true);
         else if (type === "email_logo") setUploadingEmailLogo(true);
-        else if (type === "sound") setUploadingSound(true);
+
 
         const uploadData = new FormData();
         uploadData.append("file", file);
@@ -189,7 +189,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
             else if (type === "print_logo") setUploadingPrintLogo(false);
             else if (type === "crm_background") setUploadingCrmBg(false);
             else if (type === "email_logo") setUploadingEmailLogo(false);
-            else if (type === "sound") setUploadingSound(false);
+
             // Reset input
             e.target.value = "";
         }

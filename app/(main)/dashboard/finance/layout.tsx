@@ -7,8 +7,7 @@ import {
     Tags,
     Activity,
     CreditCard,
-    PieChart,
-    LucideIcon
+    PieChart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";

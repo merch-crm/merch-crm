@@ -9,7 +9,6 @@ import {
     ToggleRight,
     Calendar,
     Edit3,
-    ArrowRight,
     Search,
     X,
     Layers,
@@ -38,7 +37,6 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    DialogHeader,
     DialogDescription
 } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";

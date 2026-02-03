@@ -114,7 +114,17 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         if (res.error || !res.data) {
             toast(res.error || "Промокод не найден", "error");
         } else {
-            setDetails({ ...details, appliedPromo: res.data as any, promocodeId: res.data.id || "" });
+            setDetails({
+                ...details,
+                appliedPromo: res.data ? {
+                    ...res.data,
+                    id: res.data.id || "",
+                    code: res.data.code || "",
+                    discountType: res.data.discountType || "percentage",
+                    value: String(res.data.value || "0")
+                } : null,
+                promocodeId: res.data.id || ""
+            });
             const message = res.data.message || `Промокод ${promoInput} применен!`;
             toast(message, "success");
         }
