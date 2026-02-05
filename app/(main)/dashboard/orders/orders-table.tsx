@@ -15,7 +15,6 @@ import { PackageOpen } from "lucide-react";
 import { exportToCSV } from "@/lib/export-utils";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 export interface Order {

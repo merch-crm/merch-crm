@@ -2,7 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 
 import React, { useState, useEffect } from "react";
-import { DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../types";
 import { Printer, X, AlignLeft, AlignCenter, RotateCw, Download, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";

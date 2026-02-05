@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Archive, AlertCircle, RefreshCw } from "lucide-react";
+import { Archive, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";

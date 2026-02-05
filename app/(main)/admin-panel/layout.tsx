@@ -24,11 +24,13 @@ export default async function AdminLayout({
         departmentName: currentUser.department?.name || "Руководство"
     } : null;
 
+    if (!currentUser || !user) return null;
+
     return (
         <AdminLayoutClient
             currentUser={currentUser}
             user={user}
-            notifications={notifications}
+            notifications={notifications.notifications}
             branding={branding}
         >
             {children}

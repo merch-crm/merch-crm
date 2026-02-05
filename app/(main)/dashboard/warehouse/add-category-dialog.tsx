@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createElement, type ReactNode } from "react";
-import { X, FolderPlus, Check, AlertCircle } from "lucide-react";
+import { FolderPlus, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
@@ -62,7 +62,6 @@ interface AddCategoryDialogProps {
     parentId?: string;
     buttonText?: string;
     className?: string;
-    iconOnly?: boolean;
     isOpen?: boolean; // Controlled
     onOpenChange?: (open: boolean) => void; // Controlled
 }
@@ -71,7 +70,6 @@ export function AddCategoryDialog({
     parentId,
     buttonText = "Добавить категорию",
     className,
-    iconOnly,
     isOpen: controlledIsOpen,
     onOpenChange
 }: AddCategoryDialogProps) {

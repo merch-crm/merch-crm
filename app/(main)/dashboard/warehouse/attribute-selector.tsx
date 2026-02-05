@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { X, Plus, Palette, Check, RefreshCcw, Settings2, ArrowRight } from "lucide-react";
+import { Plus, Palette, Settings2, ArrowRight } from "lucide-react";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
-import { motion } from "framer-motion";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface AttributeSelectorProps {
@@ -30,7 +27,6 @@ interface DbAttribute {
 }
 
 export function AttributeSelector({ type, value, onChange, onCodeChange, allowCustom = true, label, required }: AttributeSelectorProps) {
-    const router = useRouter();
     const [showCustom, setShowCustom] = useState(false);
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, Lock, RefreshCw, Check, Search } from "lucide-react";
+import { Plus, X, RefreshCw, Check, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { PremiumSelect } from "@/components/ui/premium-select";

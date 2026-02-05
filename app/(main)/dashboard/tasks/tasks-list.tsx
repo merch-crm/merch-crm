@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import {
     CheckCircle2,
     User,
-    Shield,
     Calendar,
     Trash2,
     ChevronRight

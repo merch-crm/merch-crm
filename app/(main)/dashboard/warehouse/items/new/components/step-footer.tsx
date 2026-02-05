@@ -10,6 +10,7 @@ interface StepFooterProps {
     isNextDisabled?: boolean;
     isSubmitting?: boolean;
     validationError?: string;
+    hint?: string;
     nextIcon?: ReactNode;
     className?: string;
 }
@@ -26,6 +27,7 @@ export function StepFooter({
     isNextDisabled = false,
     isSubmitting = false,
     validationError,
+    hint,
     nextIcon,
     className
 }: StepFooterProps) {
@@ -49,6 +51,12 @@ export function StepFooter({
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 sm:static sm:translate-x-0 sm:translate-y-0 sm:mb-0 flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100 animate-in fade-in slide-in-from-top-4 sm:slide-in-from-right-4 whitespace-nowrap z-[60]">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                             <span className="text-[10px] font-bold leading-none">{validationError}</span>
+                        </div>
+                    )}
+                    {!validationError && hint && (
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 sm:static sm:translate-x-0 sm:translate-y-0 sm:mb-0 flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 animate-in fade-in slide-in-from-top-4 sm:slide-in-from-right-4 whitespace-nowrap z-[60]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                            <span className="text-[10px] font-bold leading-none">{hint}</span>
                         </div>
                     )}
 

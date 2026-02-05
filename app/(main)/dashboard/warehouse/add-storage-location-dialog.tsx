@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, X, MapPin, Building, RefreshCw, AlertCircle, Check } from "lucide-react";
+import { useState } from "react";
+import { Plus, MapPin, Building, RefreshCw, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addStorageLocation } from "./actions";
 import { useFormStatus } from "react-dom";

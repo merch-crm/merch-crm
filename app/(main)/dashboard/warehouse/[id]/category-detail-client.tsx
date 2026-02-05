@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
 import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";

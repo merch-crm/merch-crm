@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Plus, Minus, X, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check } from "lucide-react";
+import { Plus, Minus, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
 import { playSound } from "@/lib/sounds";
 

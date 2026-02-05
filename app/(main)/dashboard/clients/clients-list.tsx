@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { getClients, getManagers, bulkDeleteClients, bulkUpdateClientManager, updateClientField, toggleClientArchived, bulkArchiveClients } from "./actions";
+import { getClients, getManagers, bulkDeleteClients, bulkUpdateClientManager, updateClientField, bulkArchiveClients } from "./actions";
 import { undoLastAction } from "../undo-actions";
 import { exportToCSV } from "@/lib/export-utils";
 import {

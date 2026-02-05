@@ -70,7 +70,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
 
             <ResponsiveModal
                 isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={() => handleOpenChange(false)}
                 title="Оформление возврата"
                 description="Введите сумму и причину возврата денежных средств."
                 className="sm:max-w-[425px]"
