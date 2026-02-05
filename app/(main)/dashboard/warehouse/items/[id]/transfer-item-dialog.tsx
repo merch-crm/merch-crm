@@ -79,7 +79,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
     };
 
     return (
-        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Перемещение товара">
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Перемещение товара" showVisualTitle={false}>
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
@@ -179,7 +179,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     <button
                         type="button"
                         onClick={onClose}
-                        className="hidden lg:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                        className="flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
                     >
                         Отмена
                     </button>

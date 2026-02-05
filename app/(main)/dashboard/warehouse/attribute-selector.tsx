@@ -219,8 +219,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 <ResponsiveModal
                     isOpen={showCustom}
                     onClose={() => setShowCustom(false)}
-                    hideClose={false}
                     className="w-full sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
+                    showVisualTitle={false}
                 >
                     <div className="flex flex-col overflow-hidden">
                         <div className="flex items-center justify-between p-6 pb-2 shrink-0">
@@ -282,7 +282,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         <div className="sticky bottom-0 z-10 p-5 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-end shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3">
                             <button
                                 onClick={() => setShowCustom(false)}
-                                className="hidden lg:flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
                             >
                                 Отмена
                             </button>
@@ -366,8 +366,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 <ResponsiveModal
                     isOpen={showCustom}
                     onClose={() => setShowCustom(false)}
-                    hideClose={false}
                     className="w-full sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
+                    showVisualTitle={false}
                 >
                     <div className="flex flex-col overflow-hidden">
                         <div className="flex items-center justify-between p-6 pb-2 shrink-0">
@@ -437,7 +437,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         <div className="sticky bottom-0 z-10 p-5 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-end shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3">
                             <button
                                 onClick={() => setShowCustom(false)}
-                                className="hidden lg:flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
                             >
                                 Отмена
                             </button>

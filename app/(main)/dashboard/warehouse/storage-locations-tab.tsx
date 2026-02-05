@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
     DndContext,
     closestCenter,
@@ -202,107 +202,33 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 </DragOverlay>
             </DndContext>
 
-            {/* Mobile/Tablet Delete BottomSheet */}
-            <div className="lg:hidden">
-                <BottomSheet
-                    isOpen={!!deleteId}
-                    onClose={() => setDeleteId(null)}
-                    title="Удалить локацию?"
-                >
-                    <div className="px-6 space-y-6 pt-2 pb-6">
-                        <div className="w-16 h-16 bg-rose-50 rounded-[var(--radius-inner)] flex items-center justify-center mx-auto mb-2 text-rose-500 border border-rose-100">
-                            <Trash2 className="w-8 h-8" />
+            <ConfirmDialog
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={handleConfirmDelete}
+                isLoading={isDeleting}
+                title="Удалить локацию?"
+                description={`Локация "${deleteName}" будет удалена. Данное действие необратимо.`}
+                confirmText="Удалить"
+                variant="destructive"
+            >
+                {deleteIsSystem && (
+                    <div className="p-4 bg-rose-50 rounded-[var(--radius-inner)] border border-rose-100 text-left">
+                        <div className="flex items-center gap-2 text-rose-600 mb-3">
+                            <Lock className="w-4 h-4" />
+                            <span className="text-sm font-semibold">Системная защита</span>
                         </div>
-
-                        <p className="text-slate-500 text-sm font-medium leading-relaxed text-center">
-                            Локация &quot;{deleteName}&quot; будет удалена. Данное действие необратимо.
-                        </p>
-
-                        {deleteIsSystem && (
-                            <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100">
-                                <div className="flex items-center gap-2 text-rose-600 mb-3">
-                                    <Lock className="w-4 h-4" />
-                                    <span className="text-sm font-semibold">Системная защита</span>
-                                </div>
-                                <input
-                                    type="password"
-                                    value={deletePassword}
-                                    onChange={(e) => setDeletePassword(e.target.value)}
-                                    placeholder="Пароль администратора"
-                                    className="w-full h-12 px-5 rounded-xl border-2 border-rose-100 focus:outline-none focus:border-rose-300 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
-                                    autoFocus
-                                />
-                            </div>
-                        )}
-
-                        <div className="px-5 pb-6">
-                            <button
-                                onClick={handleConfirmDelete}
-                                disabled={isDeleting}
-                                className="h-12 w-full btn-destructive rounded-[var(--radius-inner)] font-bold text-sm transition-all shadow-lg active:scale-[0.98] flex items-center justify-center disabled:opacity-50"
-                            >
-                                {isDeleting ? "Удаление..." : "Удалить локацию"}
-                            </button>
-                        </div>
+                        <input
+                            type="password"
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            placeholder="Пароль администратора"
+                            className="w-full h-11 px-5 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:outline-none focus:border-rose-300 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
+                            autoFocus
+                        />
                     </div>
-                </BottomSheet>
-            </div>
-
-            {/* Desktop Delete Dialog */}
-            {deleteId && (
-                <div className="hidden lg:flex fixed inset-0 z-[100] items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-                    <div
-                        className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
-                        onClick={() => setDeleteId(null)}
-                    />
-                    <div className="relative w-full max-w-md bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 p-8 text-center">
-                        <div className="w-16 h-16 bg-rose-50 rounded-[var(--radius-inner)] flex items-center justify-center mx-auto mb-6 text-rose-500">
-                            <Trash2 className="w-8 h-8" />
-                        </div>
-
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">
-                            Удалить локацию?
-                        </h2>
-
-                        <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
-                            Локация &quot;{deleteName}&quot; будет удалена. Данное действие необратимо.
-                        </p>
-
-                        {deleteIsSystem && (
-                            <div className="mb-6 p-4 bg-rose-50 rounded-[var(--radius-inner)] border border-rose-100">
-                                <div className="flex items-center gap-2 text-rose-600 mb-3">
-                                    <Lock className="w-4 h-4" />
-                                    <span className="text-sm font-semibold">Системная защита</span>
-                                </div>
-                                <input
-                                    type="password"
-                                    value={deletePassword}
-                                    onChange={(e) => setDeletePassword(e.target.value)}
-                                    placeholder="Пароль от своей учетной записи"
-                                    className="w-full h-11 px-5 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:outline-none focus:border-rose-300 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
-                                    autoFocus
-                                />
-                            </div>
-                        )}
-
-                        <div className="flex justify-center gap-3">
-                            <button
-                                onClick={() => setDeleteId(null)}
-                                className="h-11 px-6 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 transition-all flex items-center justify-center"
-                            >
-                                Отмена
-                            </button>
-                            <button
-                                onClick={handleConfirmDelete}
-                                disabled={isDeleting}
-                                className="h-11 px-8 bg-rose-600 hover:bg-rose-700 text-white rounded-[var(--radius-inner)] font-bold text-sm transition-all shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center disabled:opacity-50"
-                            >
-                                {isDeleting ? "Удаление..." : "Удалить"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                )}
+            </ConfirmDialog>
 
             <EditStorageLocationDialog
                 users={users}

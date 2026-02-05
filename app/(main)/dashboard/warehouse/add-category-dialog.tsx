@@ -148,7 +148,7 @@ export function AddCategoryDialog({
                 <span className="hidden sm:inline whitespace-nowrap">{buttonText}</span>
             </Button>
 
-            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title={parentId ? "Новая подкатегория" : "Новая категория"} showVisualTitle={false} hideClose={false}>
+            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title={parentId ? "Новая подкатегория" : "Новая категория"} showVisualTitle={false} hideClose={true}>
                 <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
@@ -290,7 +290,7 @@ export function AddCategoryDialog({
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="hidden lg:inline-block h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center sm:bg-transparent"
+                            className="flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center sm:bg-transparent"
                         >
                             Отмена
                         </button>

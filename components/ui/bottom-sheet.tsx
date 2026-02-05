@@ -12,9 +12,10 @@ interface BottomSheetProps {
     showVisualTitle?: boolean;
     className?: string;
     footer?: React.ReactNode;
+    hideClose?: boolean;
 }
 
-export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle = true, className, footer }: BottomSheetProps) {
+export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle = true, className, footer, hideClose }: BottomSheetProps) {
     const { registerSheet, unregisterSheet, getStackDepth } = useSheetStack();
     const [sheetId] = React.useState(() => Math.random().toString(36).substr(2, 9));
 
@@ -137,27 +138,31 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                             <div className="w-12 h-1.5 bg-slate-200 rounded-full" />
                         </div>
 
-                        {/* Header: Title centered, Close button on right */}
-                        <div className="flex items-center px-6 pt-2 pb-4 shrink-0">
-                            {/* Left Spacer to balance the close button for perfect centering */}
-                            <div className="w-10 h-10 shrink-0 invisible" />
+                        {/* Header: Title and Close button */}
+                        {(!hideClose || (title && showVisualTitle)) && (
+                            <div className="flex items-center px-6 pt-2 pb-4 shrink-0">
+                                {/* Left Spacer to balance the close button for perfect centering */}
+                                {!hideClose && <div className="w-10 h-10 shrink-0 invisible" />}
 
-                            <div className={cn("flex-1 text-center px-2", !showVisualTitle && "sr-only")}>
-                                {title && (
-                                    <h2 className="text-xl font-bold text-slate-900 leading-tight">
-                                        {title}
-                                    </h2>
+                                <div className={cn("flex-1 text-center px-2", (!title || !showVisualTitle) && "sr-only")}>
+                                    {title && (
+                                        <h2 className="text-xl font-bold text-slate-900 leading-tight">
+                                            {title}
+                                        </h2>
+                                    )}
+                                </div>
+
+                                {!hideClose && (
+                                    <button
+                                        onClick={onClose}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0"
+                                        aria-label="Закрыть"
+                                    >
+                                        <X className="w-5 h-5 stroke-[2.5]" />
+                                    </button>
                                 )}
                             </div>
-
-                            <button
-                                onClick={onClose}
-                                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0"
-                                aria-label="Закрыть"
-                            >
-                                <X className="w-5 h-5 stroke-[2.5]" />
-                            </button>
-                        </div>
+                        )}
 
                         <div className="flex-1 flex flex-col overflow-hidden">
                             {children}
@@ -173,7 +178,8 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                         <div className="h-[env(safe-area-inset-bottom,24px)] shrink-0 bg-inherit" />
                     </motion.div>
                 </>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }

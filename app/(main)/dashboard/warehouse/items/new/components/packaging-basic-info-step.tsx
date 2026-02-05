@@ -7,6 +7,7 @@ import { PremiumSelect } from "@/components/ui/premium-select";
 import { motion } from "framer-motion";
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
 import { CLOTHING_COLORS } from "../../../category-utils";
+import { StepFooter } from "./step-footer";
 
 interface PackagingBasicInfoStepProps {
     category: Category;
@@ -398,26 +399,15 @@ export function PackagingBasicInfoStep({
                 </div>
             </div>
 
-            <div className="p-6 border-t border-slate-200 bg-white flex justify-between items-center shrink-0">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 px-6 py-3 rounded-[var(--radius-inner)] text-slate-500 font-bold hover:bg-slate-50 transition-all text-sm"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Назад
-                </button>
-                <button
-                    onClick={() => {
-                        // Basic validation
-                        if (!formData.packagingType) updateFormData({ packagingType: "individual" }); // Default
-                        onNext();
-                    }}
-                    className="flex items-center gap-2 px-8 py-3 rounded-[var(--radius-inner)] bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-95 text-sm"
-                >
-                    Далее
-                    <ArrowRight className="w-4 h-4" />
-                </button>
-            </div>
+            <StepFooter
+                onBack={onBack}
+                onNext={() => {
+                    // Basic validation
+                    if (!formData.packagingType) updateFormData({ packagingType: "individual" }); // Default
+                    onNext();
+                }}
+                validationError={validationError}
+            />
         </div>
     );
 }

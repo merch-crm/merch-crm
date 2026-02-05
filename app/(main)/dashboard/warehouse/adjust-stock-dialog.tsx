@@ -269,7 +269,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     <button
                         type="button"
                         onClick={onClose}
-                        className="hidden lg:inline-block h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                        className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
                     >
                         Отмена
                     </button>

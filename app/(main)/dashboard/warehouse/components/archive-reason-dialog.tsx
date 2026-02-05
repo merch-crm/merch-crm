@@ -46,7 +46,7 @@ export function ArchiveReasonDialog({
             <button
                 type="button"
                 onClick={onClose}
-                className="hidden lg:inline-block h-11 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center px-6"
+                className="flex h-11 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center px-6"
             >
                 Отмена
             </button>
@@ -63,7 +63,7 @@ export function ArchiveReasonDialog({
     );
 
     return (
-        <ResponsiveModal isOpen={isOpen} onClose={onClose} footer={footerContent}>
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} footer={footerContent} showVisualTitle={false}>
             <div className="flex flex-col h-full overflow-hidden">
                 {/* Header Section */}
                 <div className="p-6 pb-2 flex items-center justify-between shrink-0">

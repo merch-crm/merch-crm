@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode, type ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { Plus, Settings, Check, Book, Pencil, Trash, Lock, AlertCircle } from "lucide-react";
+import { Plus, Settings, Check, Book, Pencil, Trash2, Lock, AlertCircle, Loader2 } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -535,10 +535,9 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                 onClose={() => setEditingType(null)}
                 title="Настройка раздела"
                 showVisualTitle={false}
-                hideClose={false}
                 className="w-full md:max-w-2xl max-h-[92vh] flex flex-col p-0 overflow-hidden rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
             >
-                <div className="flex flex-col h-full overflow-hidden">
+                <div className="flex flex-col overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center shrink-0 shadow-sm border border-indigo-100/50">
@@ -551,7 +550,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         </div>
                     </div>
 
-                    <div className="px-6 py-5 space-y-6 shrink-0 bg-slate-50/30">
+                    <div className="px-6 py-4 space-y-4 shrink-0 bg-slate-50/30">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название раздела</label>
@@ -603,7 +602,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-20 bg-white min-h-0">
+                    <div className="overflow-y-auto custom-scrollbar px-6 pb-8 bg-white">
                         <div className="flex items-center justify-between mb-4">
                             <label className="text-sm font-bold text-slate-700 ml-1">Значения ({editingTypeValues.length})</label>
                             <button
@@ -651,7 +650,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                             onClick={() => setAttributeToDelete(attr)}
                                             className="w-7 h-7 flex items-center justify-center text-slate-400 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-90"
                                         >
-                                            <Trash className="w-3.5 h-3.5" />
+                                            <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </div>
@@ -672,33 +671,49 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                     </div>
 
                     <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
-                        <div className="hidden sm:block w-auto">
+                        {/* Desktop-only delete button hidden on mobile/tablet */}
+                        <div className="hidden lg:block w-auto shrink-0">
                             {editingTypeLatest && (
                                 <button
                                     onClick={() => setTypeToDelete(editingTypeLatest)}
                                     disabled={editingTypeLatest.isSystem && user?.roleName !== "Администратор"}
-                                    className="h-11 sm:px-6 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale"
+                                    className="h-11 px-6 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale"
                                 >
-                                    <Trash className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" />
                                     <span className="whitespace-nowrap">Удалить раздел</span>
                                 </button>
                             )}
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-                            <button
-                                onClick={() => setEditingType(null)}
-                                className="hidden lg:flex h-11 sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
-                            >
-                                Отмена
-                            </button>
+                        <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end">
+                            {editingTypeLatest && (
+                                <button
+                                    onClick={() => setTypeToDelete(editingTypeLatest)}
+                                    className="lg:hidden flex-1 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all"
+                                >
+                                    Удалить
+                                </button>
+                            )}
+
+                            {!editingTypeLatest && (
+                                <button
+                                    onClick={() => setEditingType(null)}
+                                    className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)] border border-slate-200 lg:border-none"
+                                >
+                                    Отмена
+                                </button>
+                            )}
 
                             <button
                                 onClick={handleUpdateType}
                                 disabled={isEditTypeLoading}
-                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                                className="flex-1 lg:flex-none lg:px-10 h-11 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
                             >
-                                {isEditTypeLoading ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3] text-white" />}
+                                {isEditTypeLoading ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                    <Check className="w-4 h-4 stroke-[3] text-white" />
+                                )}
                                 Сохранить
                             </button>
                         </div>
@@ -710,10 +725,9 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
             <ResponsiveModal
                 isOpen={isValueDialogOpen}
                 onClose={() => setIsValueDialogOpen(false)}
-                hideClose={false}
                 className="w-full sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
             >
-                <div className="flex flex-col h-full overflow-hidden">
+                <div className="flex flex-col overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
@@ -730,7 +744,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         </div>
                     </div>
 
-                    <div className="px-6 py-6 pb-2 bg-slate-50/30 overflow-y-auto flex-1 custom-scrollbar">
+                    <div className="px-6 py-6 pb-4 bg-slate-50/30 overflow-y-auto custom-scrollbar">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
@@ -780,32 +794,48 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                     </div>
 
                     <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
-                        <div className="hidden sm:block w-auto">
+                        {/* Desktop-only delete button hidden on mobile/tablet */}
+                        <div className="hidden lg:block w-auto shrink-0">
                             {editingAttribute && (
                                 <button
                                     onClick={() => setAttributeToDelete(editingAttribute)}
-                                    className="h-11 sm:px-8 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95"
+                                    className="h-11 px-8 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95"
                                 >
-                                    <Trash className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" />
                                     <span>Удалить</span>
                                 </button>
                             )}
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-                            <button
-                                onClick={() => setIsValueDialogOpen(false)}
-                                className="hidden lg:flex h-11 sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
-                            >
-                                Отмена
-                            </button>
+                        <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end">
+                            {editingAttribute && (
+                                <button
+                                    onClick={() => setAttributeToDelete(editingAttribute)}
+                                    className="lg:hidden flex-1 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all"
+                                >
+                                    Удалить
+                                </button>
+                            )}
+
+                            {!editingAttribute && (
+                                <button
+                                    onClick={() => setIsValueDialogOpen(false)}
+                                    className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)] border border-slate-200 lg:border-none"
+                                >
+                                    Отмена
+                                </button>
+                            )}
 
                             <button
                                 onClick={handleValueSave}
                                 disabled={isSaving || !newItemName.trim() || !newItemCode.trim()}
-                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                                className="flex-1 lg:flex-none lg:px-10 h-11 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
                             >
-                                {isSaving ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3] text-white" />}
+                                {isSaving ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                    <Check className="w-4 h-4 stroke-[3] text-white" />
+                                )}
                                 Сохранить
                             </button>
                         </div>

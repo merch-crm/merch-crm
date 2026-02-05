@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Pencil, Ruler, AlertCircle, Package, Warehouse, Banknote, Sparkles, X, LayoutGrid, Tag, Shirt, Scale } from "lucide-react";
+import { CheckCircle2, Pencil, Ruler, AlertCircle, Package, Warehouse, Banknote, Sparkles, X, LayoutGrid, Tag, Shirt, Scale, ExternalLink, Box } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from "../../../types";
@@ -219,7 +219,25 @@ export function SummaryStep({
                                             { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
                                             { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
                                             { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
-                                            { label: "Ед. изм.", value: formData.unit, icon: Scale }
+                                            { label: "Ед. изм.", value: formData.unit, icon: Scale },
+                                            // Packaging specific
+                                            {
+                                                label: "Габариты",
+                                                value: (formData.width && formData.height && formData.depth)
+                                                    ? `${formData.depth}x${formData.width}x${formData.height}`
+                                                    : null,
+                                                icon: Box
+                                            },
+                                            {
+                                                label: "Вес (1 шт)",
+                                                value: formData.weight ? `${formData.weight} гр` : null,
+                                                icon: Scale
+                                            },
+                                            {
+                                                label: "Тип упаковки",
+                                                value: formData.packagingType === "transport" ? "Транспортная" : "Индивидуальная",
+                                                icon: Package
+                                            }
                                         ].filter(i => i.value).map((item, idx) => {
                                             const Icon = item.icon;
                                             return (
@@ -236,12 +254,62 @@ export function SummaryStep({
                                         })}
                                     </div>
 
+                                    {/* Packaging - Logistics & Features */}
+                                    {(formData.supplierName || (formData.features && formData.features.length > 0)) && (
+                                        <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            {formData.supplierName && (
+                                                <div className="space-y-4">
+                                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Логистика</h4>
+                                                    <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100/50 space-y-2">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-xs font-bold text-slate-500">Поставщик:</span>
+                                                            <span className="text-sm font-bold text-slate-900">{formData.supplierName}</span>
+                                                        </div>
+                                                        {formData.minBatch && (
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs font-bold text-slate-500">Мин. партия:</span>
+                                                                <span className="text-sm font-bold text-slate-900">{formData.minBatch} шт</span>
+                                                            </div>
+                                                        )}
+                                                        {formData.supplierLink && (
+                                                            <div className="pt-2">
+                                                                <a
+                                                                    href={formData.supplierLink}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+                                                                >
+                                                                    <ExternalLink className="w-3 h-3" />
+                                                                    Страница товара
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {formData.features && formData.features.length > 0 && (
+                                                <div className="space-y-4">
+                                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Особенности</h4>
+                                                    <div className="flex flex-wrap gap-2 text-[11px] font-bold">
+                                                        {formData.features.includes("glued_valve") && (
+                                                            <span className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">Клеевой клапан</span>
+                                                        )}
+                                                        {formData.features.includes("tear_tape") && (
+                                                            <span className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">Отрывная лента</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {/* Custom Extra Attributes if any */}
-                                    {formData.attributes && Object.keys(formData.attributes).some(k => !["Бренд", "Цвет", "Размер", "Качество", "Материал"].includes(k)) && (
+                                    {formData.attributes && Object.keys(formData.attributes).some(k => !["Бренд", "Цвет", "Размер", "Качество", "Материал", "width", "height", "depth", "packagingType", "supplierName", "supplierLink", "minBatch", "weight", "features"].includes(k)) && (
                                         <div className="mt-8 pt-8 border-t border-slate-100">
                                             <div className="flex flex-wrap gap-3">
                                                 {Object.entries(formData.attributes)
-                                                    .filter(([k]) => !["Бренд", "Цвет", "Размер", "Качество", "Материал"].includes(k))
+                                                    .filter(([k]) => !["Бренд", "Цвет", "Размер", "Качество", "Материал", "width", "height", "depth", "packagingType", "supplierName", "supplierLink", "minBatch", "weight", "features"].includes(k))
                                                     .map(([key, val]) => (
                                                         <div key={key} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
                                                             <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-slate-900 transition-colors" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode, useEffect } from "react";
-import { Check, Trash2, AlertCircle } from "lucide-react";
+import { Check, Trash2, AlertCircle, Loader2 } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
@@ -165,7 +165,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
     const subToDeleteData = subCategories.find(s => s.id === subToDelete);
 
     return (
-        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Редактирование категории" showVisualTitle={false} hideClose={false}>
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Редактирование категории" showVisualTitle={false}>
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
@@ -320,20 +320,24 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 </form>
 
                 <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-between gap-3 shrink-0">
-                    <button
-                        type="button"
-                        onClick={() => setShowDeleteModal(true)}
-                        className="h-11 flex-1 sm:flex-none sm:px-6 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 bg-rose-50 hover:bg-rose-100/50 transition-all active:scale-95"
-                    >
-                        <Trash2 className="w-4 h-4" />
-                        <span className="text-sm font-bold">Удалить</span>
-                    </button>
+                    <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end flex-1">
+                        <button
+                            type="button"
+                            onClick={() => setShowDeleteModal(true)}
+                            className="flex-1 lg:flex-none lg:px-6 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all"
+                        >
+                            <span className="text-sm font-bold">Удалить</span>
+                        </button>
 
-                    <div className="flex items-center justify-end gap-3 flex-1 sm:flex-none">
+                        <div className="flex lg:hidden items-center justify-end gap-3 flex-1">
+                            {/* Hidden 'Cancel' on mobile as per screen, but can be added if needed. 
+                                Based on screenshot, there is only Delete and Save. */}
+                        </div>
+
                         <button
                             type="button"
                             onClick={onClose}
-                            className="hidden lg:flex h-11 sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                            className="hidden lg:flex h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)]"
                         >
                             Отмена
                         </button>
@@ -342,7 +346,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             form="edit-category-form"
                             label="Сохранить"
                             pendingLabel="..."
-                            className="h-11 w-full sm:w-auto sm:min-w-[140px] sm:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95"
+                            className="h-11 flex-1 lg:flex-none lg:min-w-[140px] lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95"
                         />
                     </div>
                 </div>
@@ -378,15 +382,19 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 </ResponsiveModal>
 
                 {/* Category Deletion Confirmation */}
-                <ResponsiveModal isOpen={showDeleteModal} onClose={() => { setShowDeleteModal(false); setDeletePassword(""); }}>
+                <ResponsiveModal
+                    isOpen={showDeleteModal}
+                    onClose={() => { setShowDeleteModal(false); setDeletePassword(""); }}
+                    showVisualTitle={false}
+                >
                     <div className="p-10 text-center flex flex-col items-center">
                         <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 text-rose-500 shadow-sm border border-rose-100">
                             <Trash2 className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold text-slate-900 mb-2 leading-tight px-4">
+                        <h3 className="text-2xl font-black text-slate-900 mb-2 leading-tight px-4">
                             Удалить категорию «{category.name}»?
                         </h3>
-                        <p className="text-[13px] font-medium text-rose-400 mb-8 leading-relaxed px-2">Все товары станут «Без категории»</p>
+                        <p className="text-[13px] font-bold text-rose-400 mb-8 leading-relaxed px-2">Все товары станут «Без категории»</p>
 
                         {category.isSystem && (
                             <div className="mb-8 w-full p-5 bg-rose-50/50 rounded-2xl border border-rose-100 text-left shadow-inner">
@@ -402,19 +410,19 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             </div>
                         )}
 
-                        <div className="flex flex-col gap-2 w-full max-w-[280px]">
+                        <div className="flex flex-col gap-3 w-full items-center">
                             <button
                                 type="button"
                                 onClick={handleDeleteCategory}
                                 disabled={isPending || (category.isSystem && !deletePassword.trim())}
-                                className="h-12 w-full btn-destructive rounded-[var(--radius-inner)] font-bold text-sm active:scale-95 shadow-xl shadow-rose-500/20"
+                                className="h-12 w-full max-w-[320px] bg-[#ff463c] hover:bg-[#ff463c]/90 text-white rounded-[var(--radius-inner)] font-bold text-sm active:scale-95 shadow-lg shadow-rose-500/20 transition-all border-none"
                             >
                                 {isPending ? "Удаление..." : "Удалить категорию"}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => { setShowDeleteModal(false); setDeletePassword(""); }}
-                                className="hidden lg:flex h-11 w-full text-slate-400 font-bold text-sm hover:text-slate-600 transition-all items-center justify-center"
+                                className="h-11 w-full text-slate-400 font-bold text-sm hover:text-slate-600 transition-all flex items-center justify-center bg-transparent border-none"
                             >
                                 Отмена
                             </button>

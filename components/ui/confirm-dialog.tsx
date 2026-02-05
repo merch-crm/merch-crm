@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { AlertCircle, HelpCircle, X } from "lucide-react";
+import { Trash2, HelpCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -68,19 +68,22 @@ export function ConfirmDialog({
                         />
 
                         <div className={cn(
-                            "w-16 h-16 rounded-[var(--radius-inner)] flex items-center justify-center relative z-10 shadow-sm transition-colors text-slate-900 border border-slate-200",
-                            isDestructive ? "bg-red-50 text-[#ff463c] border-red-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
+                            "w-16 h-16 rounded-3xl flex items-center justify-center relative z-10 shadow-sm transition-colors text-slate-900 border",
+                            isDestructive ? "bg-rose-50 text-[#ff463c] border-rose-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
                         )}>
-                            {isDestructive ? <AlertCircle className="w-8 h-8" /> : <HelpCircle className="w-8 h-8" />}
+                            {isDestructive ? <Trash2 className="w-8 h-8" /> : <HelpCircle className="w-8 h-8" />}
                         </div>
                     </motion.div>
 
                     {/* Main Title - Swapped to be below icon */}
-                    <h3 className="text-xl font-bold text-slate-900 tracking-tight leading-tight px-4 text-center">
+                    <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-tight px-4 text-center">
                         {title}
                     </h3>
 
-                    <p className="mt-2 md:mt-3 text-sm font-medium text-slate-500 leading-relaxed px-6">
+                    <p className={cn(
+                        "mt-2 md:mt-3 text-[13px] font-bold leading-relaxed px-6",
+                        isDestructive ? "text-rose-400" : "text-slate-500"
+                    )}>
                         {description}
                     </p>
                 </div>
@@ -92,12 +95,20 @@ export function ConfirmDialog({
                 )}
 
                 {/* Footer Actions */}
-                <div className="p-8 pt-4 flex flex-col-reverse sm:flex-row gap-3">
+                <div className={cn(
+                    "p-6 md:p-8 pt-2 flex gap-3 shrink-0",
+                    isDestructive ? "flex-col md:flex-row items-center" : "flex-row"
+                )}>
                     <Button
                         variant="ghost"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="hidden lg:inline-flex flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent hover:border-slate-200 hover:scale-[1.02] active:scale-[0.98]"
+                        className={cn(
+                            "h-11 rounded-[var(--radius-inner)] font-bold text-sm transition-all w-full",
+                            isDestructive
+                                ? "text-slate-400 hover:text-slate-600 border-none hover:bg-transparent md:flex-1 md:order-1 md:border md:border-slate-200 md:hover:bg-slate-50 md:text-slate-400"
+                                : "flex-1 text-slate-400 hover:text-slate-900 border border-slate-200"
+                        )}
                     >
                         {cancelText}
                     </Button>
@@ -106,12 +117,12 @@ export function ConfirmDialog({
                         onClick={onConfirm}
                         disabled={isLoading || isConfirmDisabled}
                         className={cn(
-                            "flex-[1.5] w-full h-11 rounded-[var(--radius-inner)] font-bold text-sm text-white transition-all active:scale-[0.98] border-none shadow-lg",
-                            isDestructive ? "btn-destructive shadow-red-500/20" : "btn-dark shadow-black/10"
+                            "h-11 rounded-[var(--radius-inner)] font-bold text-sm text-white transition-all active:scale-[0.98] border-none shadow-lg w-full",
+                            isDestructive ? "bg-[#ff463c] hover:bg-[#ff463c]/90 shadow-red-500/20 md:flex-[1.5] order-first md:order-2" : "flex-[1.5] shadow-black/10"
                         )}
                     >
                         {isLoading ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 justify-center w-full">
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 <span>Загрузка</span>
                             </div>
@@ -119,13 +130,6 @@ export function ConfirmDialog({
                     </Button>
                 </div>
 
-                {/* Close Button X (Desktop Only) */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-5 right-5 w-9 h-9 rounded-[var(--radius-inner)] bg-slate-50 text-slate-300 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-all group hover:scale-110 active:scale-95 md:flex hidden"
-                >
-                    <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
-                </button>
             </div>
         </ResponsiveModal>
     );

@@ -294,7 +294,6 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                 onClose={onClose}
                 title="Редактирование локации"
                 showVisualTitle={false}
-                hideClose={false}
                 className="sm:max-w-[800px]"
             >
                 <div className="flex flex-col h-full overflow-hidden">
@@ -471,7 +470,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
     }
 
     return (
-        <ResponsiveModal isOpen={!!item} onClose={onClose}>
+        <ResponsiveModal isOpen={!!item} onClose={onClose} showVisualTitle={false}>
             <div className="p-8 flex flex-col gap-6 text-left">
                 <div className="flex items-center justify-between">
                     <div>
@@ -537,7 +536,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
                         <button
                             type="button"
                             onClick={onClose}
-                            className="hidden lg:flex h-11 w-full max-w-[120px] text-slate-400 font-bold text-sm hover:text-slate-600 transition-all items-center justify-center"
+                            className="flex h-11 w-full max-w-[120px] text-slate-400 font-bold text-sm hover:text-slate-600 transition-all items-center justify-center"
                         >
                             Отмена
                         </button>

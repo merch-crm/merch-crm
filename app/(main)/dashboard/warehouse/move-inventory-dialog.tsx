@@ -126,7 +126,7 @@ export function MoveInventoryDialog({
                 </Button>
             )}
 
-            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Перемещение товара" showVisualTitle={false} hideClose={false}>
+            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Перемещение товара" showVisualTitle={false}>
                 <div className="flex flex-col h-full overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
@@ -238,7 +238,7 @@ export function MoveInventoryDialog({
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="hidden lg:inline-block h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                            className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
                         >
                             Отмена
                         </button>
