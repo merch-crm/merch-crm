@@ -51,7 +51,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
                 {itemsByCategory.map((category) => {
                     const IconComponent = getCategoryIcon(category);
                     const isOrphaned = category.id === "orphaned";
@@ -68,7 +68,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                             <div className="flex items-start justify-between relative z-10">
                                 <div className="flex items-center gap-5">
                                     <div className={cn(
-                                        "w-14 h-14 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shadow-sm",
+                                        "w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 shadow-sm",
                                         colorStyle
                                     )}>
                                         <IconComponent className="w-7 h-7" />
@@ -92,7 +92,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                                 e.stopPropagation();
                                                 setEditingCategory(category);
                                             }}
-                                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
+                                            className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-full transition-all"
                                         >
                                             <Pencil className="w-4 h-4" />
                                         </button>
@@ -110,7 +110,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                                     e.stopPropagation();
                                                     router.push(`/dashboard/warehouse/${child.id}`);
                                                 }}
-                                                className="inline-flex items-center px-4 py-2 rounded-[var(--radius-inner)] border text-xs font-medium transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-400 hover:bg-white hover:text-slate-900"
+                                                className="inline-flex items-center px-4 py-2 rounded-xl border text-xs font-medium transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-400 hover:bg-white hover:text-slate-900"
                                             >
                                                 {child.name}
                                             </span>
@@ -122,7 +122,6 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                     </p>
                                 ) : (
                                     <div className="flex items-center gap-2 text-slate-200">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Основная категория</span>
                                     </div>
                                 )}
@@ -130,7 +129,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
 
                             <div className="flex items-center justify-between pt-4 border-t border-slate-200/50 mt-auto relative z-10">
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 transition-all duration-500 group-hover:text-primary">Подробнее</span>
-                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 flex items-center justify-center transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:border-primary">
+                                <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:border-primary">
                                     <ChevronRight className="w-4 h-4 transition-transform duration-500" />
                                 </div>
                             </div>
@@ -138,16 +137,13 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                     );
                 })}
             </div>
-            {editingCategory && (
-                <EditCategoryDialog
-                    key={editingCategory.id}
-                    category={editingCategory}
-                    categories={categories}
-                    isOpen={true}
-                    onClose={() => setEditingCategory(null)}
-                    user={user}
-                />
-            )}
+            <EditCategoryDialog
+                category={editingCategory || categories[0]}
+                categories={categories}
+                isOpen={!!editingCategory}
+                onClose={() => setEditingCategory(null)}
+                user={user}
+            />
         </>
     );
 }

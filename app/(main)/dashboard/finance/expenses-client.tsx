@@ -50,10 +50,11 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
             <div className="flex flex-col md:flex-row md:items-center justify-end gap-6">
                 <Button
                     onClick={() => setIsAdding(true)}
-                    className="h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-[18px] px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none"
+                    className="h-11 w-11 sm:h-11 sm:w-auto bg-rose-600 hover:bg-rose-700 text-white rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none shrink-0 p-0 sm:p-auto"
+                    title="Добавить расход"
                 >
                     <Plus className="w-5 h-5" />
-                    Добавить расход
+                    <span className="hidden sm:inline">Добавить расход</span>
                 </Button>
             </div>
 
@@ -178,13 +179,13 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
 
                 <div className="space-y-6 relative">
                     <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-slate-500 ml-1">Дата</label>
+                        <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
                         <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Категория</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
                             <select name="category" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm">
                                 <option value="purchase">Закупки</option>
                                 <option value="rent">Аренда</option>
@@ -194,19 +195,19 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                             </select>
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Сумма ₽</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Сумма ₽</label>
                             <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
                         </div>
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-slate-500 ml-1">Описание</label>
+                        <label className="text-sm font-bold text-slate-700 ml-1">Описание</label>
                         <textarea name="description" placeholder="На что потрачены деньги..." className="w-full h-32 p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-medium text-sm resize-none" />
                     </div>
 
-                    <div className="flex gap-4 pt-4">
-                        <Button type="button" variant="outline" onClick={onClose} className="h-11 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
-                        <Button type="submit" disabled={isLoading} className="h-11 flex-1 bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">{isLoading ? "Добавление..." : "Добавить"}</Button>
+                    <div className="sticky bottom-0 z-10 flex gap-4 pt-4 bg-white border-t border-slate-100 mt-auto">
+                        <Button type="button" variant="outline" onClick={onClose} className="hidden md:inline-flex h-11 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
+                        <Button type="submit" disabled={isLoading} className="h-11 flex-1 w-full bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">{isLoading ? "Добавление..." : "Добавить"}</Button>
                     </div>
                 </div>
             </form>

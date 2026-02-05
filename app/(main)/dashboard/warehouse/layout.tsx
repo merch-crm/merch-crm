@@ -11,6 +11,7 @@ import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
 import { AddAttributeTypeDialog } from "./add-attribute-type-dialog";
 import { QRScanner } from "@/components/ui/qr-scanner";
+import { buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession } from "./actions";
@@ -79,7 +80,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     }, [fetchSession]);
 
     // Simple helper to load data for dialogs only when needed
-    const loadDialogData = async (type: string) => {
+    const loadDialogData = useCallback(async (type: string) => {
         if (type === 'storage' && !locations.length) {
             const [i, l, u] = await Promise.all([getInventoryItems(), getStorageLocations(), getAllUsers()]);
             setItems(i.data || []); setLocations(l.data || []); setUsers(u.data || []);
@@ -88,44 +89,64 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             const h = await getInventoryHistory();
             setHistory(h.data || []);
         }
-    };
+    }, [locations.length, history.length]);
+
+    // Pre-load data when tab changes to avoid "disabled" state on buttons
+    useEffect(() => {
+        if (activeTab === 'storage' || activeTab === 'history') {
+            loadDialogData(activeTab);
+        }
+    }, [activeTab, loadDialogData]);
 
     const renderActions = () => {
         switch (activeTab) {
             case "categories":
                 return (
-                    <div className="flex items-center gap-3">
-                        <AddCategoryDialog />
+                    <>
+                        <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] shadow-lg shadow-primary/20" buttonText="Категория" iconOnly />
                         <Link
                             href="/dashboard/warehouse/items/new"
-                            className="h-11 btn-primary rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm whitespace-nowrap border-none shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                            className={cn(
+                                buttonVariants({ variant: "default" }),
+                                "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                            )}
                         >
-                            <Plus className="w-5 h-5" />
-                            Добавить позицию
+                            <Plus className="w-5 h-5 text-white" />
+                            <span className="hidden sm:inline">Добавить позицию</span>
                         </Link>
-                    </div>
+                    </>
                 );
             case "storage":
                 return (
-                    <div className="flex items-center gap-3" onMouseEnter={() => loadDialogData('storage')}>
-                        <MoveInventoryDialog items={items} locations={locations} />
-                        <AddStorageLocationDialog users={users} />
+                    <div
+                        className="flex items-center gap-2 w-auto"
+                        onMouseEnter={() => loadDialogData('storage')}
+                        onTouchStart={() => loadDialogData('storage')}
+                        onClick={() => loadDialogData('storage')}
+                    >
+                        <MoveInventoryDialog items={items} locations={locations} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6" />
+                        <AddStorageLocationDialog users={users} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6" />
                     </div>
                 );
             case "characteristics":
                 return (
-                    <div className="flex items-center gap-3">
-                        <AddAttributeTypeDialog categories={categories} />
+                    <div className="flex items-center gap-2 w-auto">
+                        <AddAttributeTypeDialog categories={categories} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6" />
                     </div>
                 );
             case "history":
                 return (
-                    <div className="flex items-center gap-3" onMouseEnter={() => loadDialogData('history')}>
+                    <div
+                        className="flex items-center gap-2 w-auto"
+                        onMouseEnter={() => loadDialogData('history')}
+                        onTouchStart={() => loadDialogData('history')}
+                        onClick={() => loadDialogData('history')}
+                    >
                         {session?.roleName === "Администратор" && (
                             <button
                                 onClick={() => setIsClearHistoryOpen(true)}
                                 disabled={history.length === 0}
-                                className="h-11 btn-destructive rounded-[var(--radius-inner)] px-6 gap-2 font-bold text-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="h-10 w-10 sm:h-11 sm:w-auto btn-destructive rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-rose-500/20"
                             >
                                 <Eraser className="w-5 h-5 text-white" />
                                 <span className="hidden sm:inline">Очистить историю</span>
@@ -139,26 +160,61 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     };
 
     return (
-        <div className="flex flex-col gap-8 animate-in fade-in duration-700">
+        <div className="flex flex-col gap-6 animate-in fade-in duration-700">
             {isRootPage && (
                 <>
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                        <div>
-                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                    {/* Header */}
+                    <div className="flex flex-row items-center justify-between gap-4">
+                        <div className="flex flex-col gap-1 min-w-0">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight truncate">
                                 {currentInfo.title}
                             </h1>
-                            <p className="text-slate-500 text-[13px] font-medium mt-1.5">
+                            <p className="text-slate-500 text-[13px] font-medium mt-1.5 max-w-sm md:max-w-md hidden sm:block">
                                 {currentInfo.description}
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2 shrink-0">
                             {renderActions()}
                         </div>
                     </div>
 
-                    <div className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-[22px] glass-panel transition-all">
-                        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar xl:no-scrollbar flex-1 h-full relative z-0">
+                    {/* Tabs Navigation */}
+                    <div className="glass-panel w-full p-1.5 rounded-[22px]">
+                        {/* Mobile Navigation (Icons Only) */}
+                        <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-[18px]">
+                            {TABS.map((tab) => {
+                                const isActive = activeTab === tab.id;
+                                const Icon = tab.icon;
+                                return (
+                                    <Link
+                                        key={tab.id}
+                                        href={tab.href}
+                                        className={cn(
+                                            "flex-1 h-11 relative flex items-center justify-center rounded-[14px] transition-all duration-300",
+                                            isActive ? "text-white" : "text-slate-400 hover:text-slate-600 active:scale-90"
+                                        )}
+                                    >
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="mobileActiveTab"
+                                                className={cn(
+                                                    "absolute inset-0 rounded-[14px] z-0 shadow-md",
+                                                    tab.activeColor || "bg-primary shadow-primary/20",
+                                                    tab.shadowColor
+                                                )}
+                                                transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
+                                            />
+                                        )}
+                                        <Icon className={cn("w-5 h-5 relative z-10", isActive && "scale-110")} />
+                                    </Link>
+                                );
+                            })}
+                        </div>
+
+                        {/* Desktop / Tablet Navigation (Full Labels) */}
+                        <div className="hidden sm:flex sm:items-center gap-1.5 sm:gap-2 w-full overflow-x-auto no-scrollbar">
                             {TABS.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 return (
@@ -166,7 +222,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                         key={tab.id}
                                         href={tab.href}
                                         className={cn(
-                                            "flex-1 h-full relative flex items-center justify-center gap-2.5 px-6 !rounded-[16px] text-[13px] font-bold group min-w-[140px] whitespace-nowrap transition-all duration-300",
+                                            "flex-1 h-10 sm:h-11 relative flex items-center justify-center gap-2 px-3 sm:px-5 shrink-0 rounded-[16px] text-[12px] sm:text-[13px] font-bold group whitespace-nowrap transition-all duration-300",
                                             isActive ? "text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
                                         )}
                                     >
@@ -174,15 +230,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                             <motion.div
                                                 layoutId="activeWarehouseTab"
                                                 className={cn(
-                                                    "absolute inset-0 !rounded-[16px] z-0 shadow-lg",
+                                                    "absolute inset-0 rounded-[16px] z-0 shadow-sm",
                                                     tab.activeColor || "bg-primary shadow-primary/20",
                                                     tab.shadowColor
                                                 )}
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
-                                        <tab.icon className={cn("w-4 h-4 relative z-10 transition-transform duration-300", isActive && "scale-110")} />
-                                        <span className="relative z-10">{tab.label}</span>
+                                        <tab.icon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 relative z-10 transition-transform duration-300", isActive && "scale-110")} />
+                                        <span className="relative z-10 hidden md:inline-block">{tab.label}</span>
                                     </Link>
                                 );
                             })}
@@ -191,7 +247,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                 </>
             )}
 
-            <div className="relative min-h-[400px]">
+            <div className="relative">
                 {children}
             </div>
 

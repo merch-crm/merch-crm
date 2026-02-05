@@ -126,7 +126,7 @@ export function ItemInventorySection({
             {isEditing && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-500">
                     <div className="bg-white p-8 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm space-y-4">
-                        <label className="text-sm font-bold text-slate-500 ml-1">Лимит предупреждения</label>
+                        <label className="text-sm font-bold text-slate-700 ml-1">Лимит предупреждения</label>
                         <input
                             type="number"
                             value={editData.lowStockThreshold}
@@ -135,7 +135,7 @@ export function ItemInventorySection({
                         />
                     </div>
                     <div className="bg-white p-8 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm space-y-4">
-                        <label className="text-sm font-bold text-slate-500 ml-1">Критический лимит</label>
+                        <label className="text-sm font-bold text-slate-700 ml-1">Критический лимит</label>
                         <input
                             type="number"
                             value={editData.criticalStockThreshold}

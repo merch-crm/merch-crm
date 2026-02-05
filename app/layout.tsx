@@ -28,6 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import { BrandingProvider } from "@/components/branding-provider";
+import { SheetStackProvider } from "@/components/ui/sheet-stack-context";
 
 export default function RootLayout({
   children,
@@ -38,7 +39,9 @@ export default function RootLayout({
     <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning>
       <body className="antialiased font-sans">
         <BrandingProvider>
-          {children}
+          <SheetStackProvider>
+            {children}
+          </SheetStackProvider>
         </BrandingProvider>
         <ToastContainer />
       </body>

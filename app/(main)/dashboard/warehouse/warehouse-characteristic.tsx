@@ -2,17 +2,19 @@
 
 import { useState, useEffect, type ReactNode, type ComponentType } from "react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { Plus, Settings, Check, Book, Pencil, Trash, Lock } from "lucide-react";
+import { Plus, Settings, Check, Book, Pencil, Trash, Lock, AlertCircle } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { Session } from "@/lib/auth";
 import { InventoryAttribute as Attribute, AttributeType } from "./types";
+import { getCategoryIcon } from "./category-utils";
+import { Layers } from "lucide-react";
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -22,10 +24,6 @@ const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     ' ': '_'
 };
 
-
-
-
-
 const transliterateToSku = (text: string) => {
     const transliterated = text.toLowerCase().split('').map(char => {
         if (char === ' ') return '';
@@ -33,8 +31,6 @@ const transliterateToSku = (text: string) => {
     }).join('').replace(/[^a-z0-9]/g, '');
     return transliterated.substring(0, 3);
 };
-
-
 
 function Switch({
     checked,
@@ -169,7 +165,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     const [attributeToDelete, setAttributeToDelete] = useState<Attribute | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-
     // Type Delete State
     const [typeToDelete, setTypeToDelete] = useState<AttributeType | null>(null);
     const [isDeletingType, setIsDeletingType] = useState(false);
@@ -187,7 +182,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     // We fetch fresh data from props based on editingType.id to ensure list is up to date after refreshes
     const editingTypeLatest = editingType ? attributeTypes.find(t => t.id === editingType.id) : null;
     const editingTypeValues = editingTypeLatest ? attributes.filter(a => a.type === editingTypeLatest.slug) : [];
-
 
     const { toast } = useToast();
 
@@ -286,7 +280,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         }
     }
 
-
     async function handleDeleteTypeConfirm() {
         if (!typeToDelete) return;
         setIsDeletingType(true);
@@ -354,15 +347,18 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     return (
         <div className="space-y-8 pb-20">
             {/* Category Tabs */}
-            <div className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-[22px] glass-panel">
+            <div className="flex w-full overflow-x-auto h-[58px] items-center gap-2 p-[6px] !rounded-[22px] glass-panel scrollbar-hide">
                 {rootCategories.map((cat) => {
                     const isActive = activeCategoryId === cat.id;
+                    const Icon = getCategoryIcon(cat);
+
                     return (
                         <button
                             key={cat.id}
                             onClick={() => handleCategoryChange(cat.id)}
+                            title={cat.name}
                             className={cn(
-                                "relative flex-1 h-full px-2 !rounded-[16px] text-sm font-bold group",
+                                "relative flex-1 h-full shrink-0 px-4 !rounded-[16px] text-sm font-bold group whitespace-nowrap flex items-center justify-center gap-2 transition-colors duration-200",
                                 isActive ? "text-white" : "text-slate-500 hover:text-slate-900"
                             )}
                         >
@@ -373,15 +369,31 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                     transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                 />
                             )}
-                            <span className="relative z-10">{cat.name}</span>
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Icon className="w-5 h-5 shrink-0" />
+                                <AnimatePresence mode="popLayout" initial={false}>
+                                    {(isActive || typeof window !== 'undefined' && window.innerWidth > 768) && (
+                                        <motion.span
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ duration: 0.2 }}
+                                            className={cn("hidden md:inline-block", isActive && "inline-block")}
+                                        >
+                                            {cat.name}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </span>
                         </button>
                     );
                 })}
                 {hasUncategorized && (
                     <button
                         onClick={() => handleCategoryChange("uncategorized")}
+                        title="Без категории"
                         className={cn(
-                            "relative h-full px-6 !rounded-[16px] text-sm font-bold group",
+                            "relative flex-1 h-full shrink-0 px-4 !rounded-[16px] text-sm font-bold group whitespace-nowrap flex items-center justify-center transition-colors duration-200",
                             activeCategoryId === "uncategorized" ? "text-white" : "text-slate-500 hover:text-slate-900"
                         )}
                     >
@@ -392,15 +404,29 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                             />
                         )}
-                        <span className="relative z-10">Без категории</span>
+                        <span className="relative z-10 flex items-center gap-2">
+                            <Layers className="w-5 h-5 shrink-0" />
+                            <AnimatePresence mode="popLayout" initial={false}>
+                                {(activeCategoryId === "uncategorized" || typeof window !== 'undefined' && window.innerWidth > 768) && (
+                                    <motion.span
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={cn("hidden md:inline-block", activeCategoryId === "uncategorized" && "inline-block")}
+                                    >
+                                        Без категории
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
+                        </span>
                     </button>
                 )}
             </div>
 
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="flex flex-col gap-8">
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-[var(--crm-grid-gap)]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[var(--crm-grid-gap)]">
                         {filteredTypes.map(type => {
                             let typeAttributes = attributes.filter(a => a.type === type.slug);
 
@@ -416,7 +442,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 });
                             }
 
-
                             return (
                                 <div
                                     key={type.id}
@@ -424,21 +449,21 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 >
                                     <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-200">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 text-slate-600 flex items-center justify-center shadow-inner">
+                                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-50 text-slate-600 flex items-center justify-center shadow-inner">
                                                 <span className="font-bold text-lg leading-none pt-0.5">{type.name[0]}</span>
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-slate-800 leading-tight">{type.name}</h3>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-[10px] font-mono text-slate-400 uppercase tracking-tight">{type.slug}</span>
-                                                    {type.isSystem && <span className="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md uppercase tracking-tight">Sys</span>}
+                                                    {type.isSystem && <span className="text-[9px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-md uppercase tracking-tight">Sys</span>}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex gap-1">
                                             <button
                                                 onClick={(e) => handleEditTypeClick(type, e)}
-                                                className="p-2 rounded-[var(--radius-inner)] text-slate-400 hover:bg-slate-100 hover:text-primary transition-colors"
+                                                className="p-2 rounded-[var(--radius-inner)] text-slate-400 hover:bg-slate-50 hover:text-primary transition-colors"
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </button>
@@ -489,7 +514,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
 
                         {filteredTypes.length === 0 && (
                             <div className="col-span-full py-16 text-center">
-                                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                                     <Book className="w-8 h-8" />
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-700">Нет характеристик</h3>
@@ -504,14 +529,16 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                 </div>
             </div>
 
-
             {/* Edit Type Dialog (Full Editor) */}
-            <Dialog open={!!editingType} onOpenChange={(open) => !open && setEditingType(null)}>
-                <DialogContent
-                    className="w-[95vw] md:max-w-2xl max-h-[95vh] flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                    <DialogTitle className="sr-only">Настройка раздела</DialogTitle>
+            <ResponsiveModal
+                isOpen={!!editingType}
+                onClose={() => setEditingType(null)}
+                title="Настройка раздела"
+                showVisualTitle={false}
+                hideClose={false}
+                className="w-full md:max-w-2xl max-h-[92vh] flex flex-col p-0 overflow-hidden rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
+            >
+                <div className="flex flex-col h-full overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center shrink-0 shadow-sm border border-indigo-100/50">
@@ -527,15 +554,15 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                     <div className="px-6 py-5 space-y-6 shrink-0 bg-slate-50/30">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Название раздела</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Название раздела</label>
                                 <input
                                     value={editTypeName}
                                     onChange={e => setEditTypeName(e.target.value)}
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-bold text-sm text-slate-900 shadow-sm"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-bold text-sm text-slate-900 shadow-sm"
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Категория</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
                                 <PremiumSelect
                                     value={editTypeCategoryId}
                                     onChange={setEditTypeCategoryId}
@@ -556,7 +583,6 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 onChange={setEditTypeIsSystem}
                                 disabled={user?.roleName !== "Администратор"}
                                 label="Системная характеристика"
-                                icon={Lock}
                                 description={editTypeIsSystem && user?.roleName !== "Администратор" ? "(только для Администратора)" : "Доступна везде"}
                             />
                             <div className="h-px bg-slate-200/80" />
@@ -564,33 +590,34 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 <Switch
                                     checked={editTypeShowInSku}
                                     onChange={setEditTypeShowInSku}
-                                    label={<>Добавлять<br />в артикул</>}
+                                    label={<span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span>}
                                     description="Будет в SKU"
                                 />
                                 <Switch
                                     checked={editTypeShowInName}
                                     onChange={setEditTypeShowInName}
-                                    label={<>Добавлять<br />в название</>}
+                                    label={<span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span>}
                                     description="Будет в имени"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto px-6 pt-2 pb-6 bg-white/50 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-20 bg-white min-h-0">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-bold text-slate-500 ml-1">Значения ({editingTypeValues.length})</h3>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Значения ({editingTypeValues.length})</label>
                             <button
                                 onClick={() => editingTypeLatest && openAddValue(editingTypeLatest.slug)}
-                                className="h-8 bg-primary/10 text-primary px-3 rounded-lg hover:bg-primary hover:text-white font-bold text-[10px] flex items-center gap-1.5 transition-all active:scale-95"
+                                className="h-7 w-7 sm:w-auto sm:px-3 p-0 bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-white font-bold text-[10px] flex items-center justify-center gap-1 transition-all active:scale-95 shrink-0 mr-1"
                             >
-                                <Plus className="w-3 h-3 stroke-[3]" /> Добавить
+                                <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                                <span className="whitespace-nowrap hidden sm:inline">Добавить</span>
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-2 gap-2.5">
                             {editingTypeValues.map(attr => (
-                                <div key={attr.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-[var(--radius-inner)] hover:border-slate-300 hover:shadow-md transition-all group relative">
+                                <div key={attr.id} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] hover:border-slate-300 hover:shadow-md transition-all group relative">
                                     <div className="flex items-center gap-3">
                                         {/* Visual Preview */}
                                         {editingTypeLatest?.slug === "color" && (
@@ -613,7 +640,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex flex-col md:flex-row items-center gap-1">
                                         <button
                                             onClick={() => openEditValue(attr)}
                                             className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/10 rounded-[var(--radius-inner)] transition-all active:scale-90"
@@ -644,48 +671,49 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         </div>
                     </div>
 
-                    <div className="p-6 border-t border-slate-200 bg-white flex justify-between items-center shrink-0 rounded-b-[var(--radius-outer)]">
-                        <div>
+                    <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
+                        <div className="hidden sm:block w-auto">
                             {editingTypeLatest && (
                                 <button
                                     onClick={() => setTypeToDelete(editingTypeLatest)}
                                     disabled={editingTypeLatest.isSystem && user?.roleName !== "Администратор"}
-                                    className="h-11 px-6 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale"
+                                    className="h-11 sm:px-6 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale"
                                 >
                                     <Trash className="w-4 h-4" />
-                                    Удалить раздел
+                                    <span className="whitespace-nowrap">Удалить раздел</span>
                                 </button>
                             )}
                         </div>
-                        <div className="flex gap-3">
+
+                        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
                             <button
                                 onClick={() => setEditingType(null)}
-                                className="h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all"
+                                className="hidden lg:flex h-11 sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
                             >
                                 Отмена
                             </button>
+
                             <button
                                 onClick={handleUpdateType}
                                 disabled={isEditTypeLoading}
-                                className="h-11 px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
                             >
-                                {isEditTypeLoading ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3]" />}
-                                Сохранить изменения
+                                {isEditTypeLoading ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3] text-white" />}
+                                Сохранить
                             </button>
                         </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            </ResponsiveModal >
 
             {/* Add/Edit Value Dialog */}
-            <Dialog open={isValueDialogOpen} onOpenChange={setIsValueDialogOpen}>
-                <DialogContent
-                    className="w-[95vw] sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                    <DialogTitle className="sr-only">
-                        {editingAttribute ? "Изменить значение" : "Новое значение"}
-                    </DialogTitle>
+            <ResponsiveModal
+                isOpen={isValueDialogOpen}
+                onClose={() => setIsValueDialogOpen(false)}
+                hideClose={false}
+                className="w-full sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
+            >
+                <div className="flex flex-col h-full overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
@@ -700,16 +728,12 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 </p>
                             </div>
                         </div>
-
-
-
-
                     </div>
 
-                    <div className="px-6 py-6 space-y-5 bg-slate-50/30">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="px-6 py-6 pb-2 bg-slate-50/30 overflow-y-auto flex-1 custom-scrollbar">
+                        <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Название</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                                 <input
                                     value={newItemName}
                                     onChange={e => {
@@ -720,11 +744,11 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                         }
                                     }}
                                     placeholder="Напр: Синий"
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Код (SKU)</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Код (SKU)</label>
                                 <input
                                     value={newItemCode}
                                     onChange={e => {
@@ -732,58 +756,62 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                         setIsCodeManuallyEdited(true);
                                     }}
                                     placeholder="BLU"
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
                                 />
                             </div>
                         </div>
 
                         {targetTypeSlug === "color" && (
-                            <ColorPicker
-                                label="Цвет (Hex)"
-                                color={newItemColorHex}
-                                onChange={setNewItemColorHex}
-                            />
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-bold text-slate-700 ml-1">Цвет (HEX)</label>
+                                <ColorPicker
+                                    color={newItemColorHex}
+                                    onChange={setNewItemColorHex}
+                                />
+                            </div>
                         )}
-
-
 
                         {error && (
                             <div className="flex items-center gap-2 p-3 rounded-[var(--radius-inner)] bg-rose-50 text-rose-600 border border-rose-100 animate-in shake duration-500">
-                                <Check className="w-3.5 h-3.5 shrink-0 rotate-45" />
+                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                                 <p className="text-[10px] font-bold leading-tight">{error}</p>
                             </div>
                         )}
                     </div>
 
-                    <div className="p-6 border-t border-slate-200 bg-white flex justify-between items-center shrink-0 rounded-b-[var(--radius-outer)] gap-3">
-                        <div>
-                            {editingAttribute ? (
+                    <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
+                        <div className="hidden sm:block w-auto">
+                            {editingAttribute && (
                                 <button
                                     onClick={() => setAttributeToDelete(editingAttribute)}
-                                    className="h-11 px-6 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95"
+                                    className="h-11 sm:px-8 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95"
                                 >
-                                    <Trash className="w-4 h-4" /> Удалить
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => setIsValueDialogOpen(false)}
-                                    className="h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all"
-                                >
-                                    Отмена
+                                    <Trash className="w-4 h-4" />
+                                    <span>Удалить</span>
                                 </button>
                             )}
                         </div>
-                        <button
-                            onClick={handleValueSave}
-                            disabled={isSaving || !newItemName.trim() || !newItemCode.trim()}
-                            className="flex-1 h-11 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
-                        >
-                            {isSaving ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3]" />}
-                            Сохранить
-                        </button>
+
+                        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
+                            <button
+                                onClick={() => setIsValueDialogOpen(false)}
+                                className="hidden lg:flex h-11 sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                            >
+                                Отмена
+                            </button>
+
+                            <button
+                                onClick={handleValueSave}
+                                disabled={isSaving || !newItemName.trim() || !newItemCode.trim()}
+                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                            >
+                                {isSaving ? <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4 stroke-[3] text-white" />}
+                                Сохранить
+                            </button>
+                        </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            </ResponsiveModal >
 
             <ConfirmDialog
                 isOpen={!!attributeToDelete}

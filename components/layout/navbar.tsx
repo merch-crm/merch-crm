@@ -55,10 +55,11 @@ interface BrandingSettings {
 
 import { Notification } from "@/components/notifications/notification-center";
 
-export function Navbar({ user, branding, notifications }: {
+export function Navbar({ user, branding, notifications, unreadCount }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     branding: BrandingSettings;
     notifications: Notification[];
+    unreadCount: number;
 }) {
     const pathname = usePathname();
 
@@ -90,7 +91,7 @@ export function Navbar({ user, branding, notifications }: {
                     </div>
 
                     {/* Center: Nav Links */}
-                    <nav className="hidden lg:flex items-center gap-1 mx-8 pointer-events-auto">
+                    <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 mx-auto pointer-events-auto transition-all duration-300">
                         {filteredNavigation.map((item) => {
                             const isActive = item.href === "/dashboard"
                                 ? pathname === "/dashboard"
@@ -106,8 +107,8 @@ export function Navbar({ user, branding, notifications }: {
                                             : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                                     )}
                                 >
-                                    <item.icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-slate-400")} />
-                                    {item.name}
+                                    <item.icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-slate-400")} />
+                                    <span className="relative z-10 hidden xl:inline-block">{item.name}</span>
                                 </Link>
                             );
                         })}
@@ -115,7 +116,7 @@ export function Navbar({ user, branding, notifications }: {
 
                     {/* Right Side: Notifications & Profile */}
                     <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
-                        <NotificationCenter notifications={notifications} branding={branding} />
+                        <NotificationCenter notifications={notifications} unreadCount={unreadCount} branding={branding} />
 
                         <div className="h-6 w-px bg-slate-200 mx-1 md:mx-2" />
 

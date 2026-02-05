@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, AlertCircle, ArrowRight, Check } from "lucide-react";
+import { useState } from "react";
+import { AlertCircle, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StorageLocation } from "../../storage-locations-tab";
 import { transferInventoryStock } from "../../actions";
@@ -9,6 +9,9 @@ import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 
 import { LocationSelect } from "../../location-select";
+
+
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 
 interface ItemStock {
@@ -25,10 +28,11 @@ interface TransferItemDialogProps {
     };
     locations: StorageLocation[];
     itemStocks: ItemStock[];
+    isOpen: boolean;
     onClose: () => void;
 }
 
-export function TransferItemDialog({ item, locations, itemStocks, onClose }: TransferItemDialogProps) {
+export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClose }: TransferItemDialogProps) {
     const { toast } = useToast();
     const [fromLocationId, setFromLocationId] = useState("");
     const [toLocationId, setToLocationId] = useState("");
@@ -42,14 +46,6 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
 
     // Only allow "From" locations where item exists
     const availableFromLocations = locations.filter(loc => (stockMap.get(loc.id) || 0) > 0);
-
-    useEffect(() => {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = originalStyle;
-        };
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -83,17 +79,12 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 z-0"
-                onClick={onClose}
-            />
-
-            <div className="relative w-full max-w-lg bg-white rounded-[var(--radius-outer)] shadow-2xl border-none animate-in zoom-in-95 fade-in duration-300 flex flex-col my-auto shrink-0 max-h-[92vh] overflow-visible">
-                <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-slate-200">
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Перемещение товара">
+            <div className="flex flex-col h-full overflow-hidden">
+                <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-orange-100 flex items-center justify-center shadow-sm">
-                            <ArrowRight className="w-5 h-5 text-orange-600" />
+                        <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shadow-sm">
+                            <ArrowRight className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h2>
@@ -102,18 +93,12 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[var(--radius-inner)] bg-slate-50 transition-all active:scale-95 shadow-sm"
-                    >
-                        <X className="h-4 w-4" />
-                    </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1 overflow-visible">
-                    <div className="bg-slate-50/50 p-4 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-5 relative shadow-sm">
+                <form onSubmit={handleSubmit} className="px-6 pb-20 pt-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1 overflow-visible">
+                    <div className="bg-slate-50 p-4 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-5 relative shadow-sm">
                         <div className="flex-1 space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Откуда (источник)</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Откуда (источник)</label>
                             <LocationSelect
                                 locations={availableFromLocations}
                                 value={fromLocationId}
@@ -125,7 +110,7 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                         </div>
 
                         <div className="flex-1 space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Куда (получатель)</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Куда (получатель)</label>
                             <LocationSelect
                                 locations={locations}
                                 value={toLocationId}
@@ -138,7 +123,7 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
 
                     <div className="grid grid-cols-2 gap-5">
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Сколько переместить</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Сколько переместить</label>
                             <div className="relative group">
                                 <input
                                     type="number"
@@ -147,7 +132,7 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                                     min="1"
                                     value={amount}
                                     onChange={(e) => setAmount(Number(e.target.value))}
-                                    className="w-full h-11 pl-4 pr-16 rounded-[var(--radius-inner)] border border-slate-200 bg-white text-xl font-bold focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all tabular-nums text-slate-900 shadow-sm"
+                                    className="w-full h-11 pl-4 pr-16 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-xl font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all tabular-nums text-slate-900 shadow-sm"
                                 />
                                 <div className="absolute right-1 top-1 bottom-1 flex gap-1">
                                     {fromLocationId && (stockMap.get(fromLocationId) || 0) > 0 && (
@@ -164,7 +149,7 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                                             Все
                                         </button>
                                     )}
-                                    <div className="flex items-center justify-center px-2 bg-slate-100 rounded-[var(--radius-inner)] text-[9px] font-bold text-slate-400 min-w-[32px] shadow-sm">
+                                    <div className="flex items-center justify-center px-2 bg-slate-50 rounded-[var(--radius-inner)] text-[10px] font-bold text-slate-300 min-w-[32px]">
                                         {item.unit === 'pcs' || item.unit === 'шт' ? 'шт.' : item.unit}
                                     </div>
                                 </div>
@@ -172,12 +157,12 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Основание / Причина</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Основание / Причина</label>
                             <textarea
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Напр: Смена места хранения..."
-                                className="w-full h-11 min-h-[44px] p-3 rounded-[var(--radius-inner)] border border-slate-200 bg-white text-[13px] font-bold text-slate-900 focus:bg-white focus:border-primary outline-none focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300 leading-tight shadow-sm"
+                                className="w-full h-11 min-h-[44px] p-3 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-[13px] font-bold text-slate-900 focus:border-primary outline-none focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300 leading-tight shadow-sm"
                             />
                         </div>
                     </div>
@@ -190,12 +175,19 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                     )}
                 </form>
 
-                <div className="p-6 pt-2 bg-white rounded-b-3xl">
+                <div className="sticky bottom-0 z-10 p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end gap-3 shrink-0">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="hidden lg:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                    >
+                        Отмена
+                    </button>
                     <Button
                         type="submit"
                         onClick={handleSubmit}
                         disabled={isSubmitting || amount <= 0}
-                        className="w-full h-11 rounded-[var(--radius-inner)] btn-dark font-bold text-[10px] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
+                        className="h-11 w-full md:w-auto md:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                     >
                         {isSubmitting ? (
                             <div className="flex items-center gap-2">
@@ -204,13 +196,13 @@ export function TransferItemDialog({ item, locations, itemStocks, onClose }: Tra
                             </div>
                         ) : (
                             <>
-                                <Check className="w-4 h-4 stroke-[3]" />
-                                Подтвердить перемещение
+                                <Check className="w-4 h-4 stroke-[3] text-white" />
+                                Переместить
                             </>
                         )}
                     </Button>
                 </div>
             </div>
-        </div>
+        </ResponsiveModal >
     );
 }

@@ -71,38 +71,35 @@ export function ItemHeader({
             )}
 
             {/* Main Header Content */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full">
-                <div className="space-y-4 flex-1 min-w-0">
-
-                    <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-row items-center justify-between gap-4 w-full">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2 sm:gap-4">
                         {isEditing ? (
-                            <div className="relative group w-full max-w-4xl">
+                            <div className="relative group w-full">
                                 <textarea
                                     ref={textareaRef}
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
-                                    className="text-2xl md:text-4xl font-bold text-slate-900 bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-2 placeholder:text-slate-200 resize-none overflow-hidden tracking-tight"
+                                    className="text-xl md:text-4xl font-bold text-slate-900 bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-slate-200 resize-none overflow-hidden tracking-tight"
                                     placeholder="Название..."
                                     rows={1}
                                 />
                             </div>
                         ) : (
-                            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                            <div className="flex items-center gap-2 sm:gap-4 max-w-full">
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => router.push('/dashboard/warehouse')}
-                                    className="hidden md:flex w-10 h-10 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all items-center justify-center mr-2 shrink-0 group"
+                                    className="flex w-10 h-10 sm:w-11 sm:h-11 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all items-center justify-center shrink-0 group"
                                 >
                                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                                 </Button>
                                 <h1
-                                    className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight line-clamp-2 pr-4 cursor-pointer tracking-tight"
+                                    className="text-xl md:text-4xl font-bold text-slate-900 leading-tight truncate pr-2 cursor-pointer tracking-tight"
                                     onDoubleClick={onEdit}
                                 >
                                     {(() => {
-                                        // Auto-convert to singular if category metadata allows
-                                        // This handles "Футболки ..." -> "Футболка ..."
                                         const cat = item.category as { singularName?: string; name?: string } | null;
                                         if (cat?.singularName && cat?.name && item.name.startsWith(cat.name)) {
                                             return item.name.replace(cat.name, cat.singularName);
@@ -122,47 +119,42 @@ export function ItemHeader({
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <div className="flex items-center justify-end gap-3 shrink-0 sm:w-auto">
                     {isEditing ? (
                         <>
                             <Button
                                 variant="ghost"
                                 onClick={onCancel}
-                                className="h-11 px-8 rounded-[var(--radius-inner)] font-bold text-[13px] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200"
+                                className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-8 rounded-full sm:rounded-[var(--radius-inner)] font-bold text-xs sm:text-[13px] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 flex items-center justify-center"
                             >
-                                <X className="w-4 h-4 mr-2" />
-                                Отмена
+                                <X className="w-4 h-4 lg:mr-2" />
+                                <span className="hidden lg:inline">Отмена</span>
                             </Button>
                             <Button
                                 onClick={onSave}
                                 disabled={isSaving || isAnyUploading}
-                                className="h-11 px-10 rounded-[var(--radius-inner)] btn-dark font-bold text-[13px] border-none"
+                                className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-10 rounded-full sm:rounded-[var(--radius-inner)] btn-dark font-bold text-xs sm:text-[13px] border-none shadow-lg shadow-black/5 flex items-center justify-center"
                             >
                                 {isSaving ? (
                                     <RefreshCcw className="w-4 h-4 animate-spin" />
                                 ) : (
-                                    <>
-                                        <Save className="w-4 h-4 mr-3" />
-                                        {isAnyUploading ? "Загрузка..." : "Сохранить"}
-                                    </>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Save className="w-4 h-4" />
+                                        <span className="hidden sm:inline">{isAnyUploading ? "Загрузка..." : "Сохранить"}</span>
+                                    </div>
                                 )}
                             </Button>
                         </>
                     ) : (
                         <>
-                            {/* Tools Group */}
-
-
                             {!item.isArchived && (
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        onClick={onEdit}
-                                        className="h-11 px-10 rounded-[var(--radius-inner)] btn-dark font-bold text-[13px] group border-none"
-                                    >
-                                        <Edit3 className="w-5 h-5 mr-3 transition-transform" />
-                                        Редактировать
-                                    </Button>
-                                </div>
+                                <Button
+                                    onClick={onEdit}
+                                    className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-10 rounded-full sm:rounded-[var(--radius-inner)] btn-dark font-bold text-xs sm:text-[13px] group border-none shadow-lg shadow-black/5 flex items-center justify-center"
+                                >
+                                    <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 transition-transform sm:mr-3" />
+                                    <span className="hidden sm:inline">Редактировать</span>
+                                </Button>
                             )}
                         </>
                     )}

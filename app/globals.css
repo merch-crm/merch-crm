@@ -143,6 +143,37 @@
   h6 {
     @apply font-bold tracking-normal;
   }
+
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.5rem !important;
+      line-height: 2rem !important;
+    }
+
+    h2 {
+      font-size: 1.25rem !important;
+      line-height: 1.75rem !important;
+    }
+
+    h3 {
+      font-size: 1.125rem !important;
+      line-height: 1.75rem !important;
+    }
+
+    /* Prevent iOS auto-zoom on input focus */
+    input,
+    select,
+    textarea,
+    button {
+      font-size: 16px !important;
+    }
+
+    /* Mobile-first padding adjustments */
+    .mobile-px {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+  }
 }
 
 /* Custom Utilities for v4 - Must be at top level, minimal nesting */
@@ -423,6 +454,22 @@
   font-weight: 500;
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     display: block !important;
@@ -477,6 +524,13 @@
   z-index: 0;
 }
 
+@media (max-width: 640px) {
+  .crm-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}
+
 .crm-card:hover {
   box-shadow: var(--crm-shadow-md);
 }
@@ -514,12 +568,20 @@
   padding: 6px;
   border-radius: 22px;
   display: flex;
-  flex-direction: row;
+  /* Let Tailwind utilities control direction */
   align-items: center;
   gap: 6px;
   transition: all 0.15s ease;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: var(--crm-shadow-sm), inset 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+}
+
+@media (max-width: 640px) {
+  .crm-filter-tray {
+    border-radius: 18px;
+    padding: 8px;
+    gap: 8px;
+  }
 }
 
 .crm-filter-tray-light {
@@ -533,6 +595,7 @@
   transition: all 0.15s ease;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: var(--crm-shadow-sm), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+  max-width: 100%;
 }
 
 .crm-filter-tray-search {
@@ -555,6 +618,12 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .crm-filter-tray-tab {
+    padding: 0 12px;
+  }
 }
 
 .crm-filter-tray-tab:not(.active) {
@@ -645,4 +714,24 @@ textarea:focus::placeholder {
 
 @utility animate-crm-blink {
   animation: crm-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-8deg);
+  }
+
+  75% {
+    transform: rotate(8deg);
+  }
+}
+
+@utility animate-shake {
+  animation: shake 0.2s ease-in-out infinite;
 }

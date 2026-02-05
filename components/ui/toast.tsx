@@ -55,9 +55,9 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
         <div
             className={cn(
                 "fixed left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 ease-out flex items-center gap-3 px-6 py-4 rounded-[2rem] border shadow-2xl",
-                "top-4 sm:top-auto sm:bottom-8",
+                "bottom-8 top-auto",
                 styles[type],
-                isVisible ? "translate-y-0 opacity-100 scale-100" : "-translate-y-12 sm:translate-y-12 opacity-0 scale-95"
+                isVisible ? "translate-y-0 opacity-100 scale-100" : "translate-y-12 opacity-0 scale-95"
             )}
         >
             <div className="flex-shrink-0">{icons[type]}</div>

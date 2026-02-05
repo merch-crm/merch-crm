@@ -226,7 +226,7 @@ export function BasicInfoStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 px-10 pt-10 pb-10 overflow-y-auto min-h-0">
+            <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 sm:pb-10 overflow-y-auto min-h-0">
                 <div className="max-w-6xl mx-auto space-y-6">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -235,25 +235,25 @@ export function BasicInfoStep({
                                 <ClipboardList className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-slate-900 ">Основная информация</h2>
-                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Заполните ключевые характеристики вашей позиции</p>
+                                <h2 className="text-xl font-bold text-slate-900 ">Основная информация</h2>
+                                <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Заполните ключевые характеристики вашей позиции</p>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
+                        <div className="hidden sm:flex items-center gap-2 xl:gap-3">
+                            <div className="flex items-center gap-2 xl:gap-4 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
                                 {(() => {
                                     const sub = subCategories.find(s => s.id === formData.subcategoryId);
                                     const displayCategory = sub || category;
 
                                     return (
                                         <>
-                                            <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
-                                                {createElement(getCategoryIcon(displayCategory), { className: "w-5 h-5" })}
+                                            <div className={cn("w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
+                                                {createElement(getCategoryIcon(displayCategory), { className: "w-4 h-4 xl:w-5 xl:h-5" })}
                                             </div>
                                             <div className="text-left">
-                                                <div className="text-[9px] font-bold text-slate-400 leading-none mb-1">{category.name}</div>
-                                                <div className="text-sm font-bold text-slate-900 leading-none">{sub ? sub.name : "Общая"}</div>
+                                                <div className="text-[8px] xl:text-[9px] font-bold text-slate-700 leading-none mb-0.5 xl:mb-1">{category.name}</div>
+                                                <div className="text-xs xl:text-sm font-bold text-slate-900 leading-none">{sub ? sub.name : "Общая"}</div>
                                             </div>
                                         </>
                                     );
@@ -262,14 +262,14 @@ export function BasicInfoStep({
 
                             <Link
                                 href="/dashboard/warehouse/characteristics"
-                                className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm hover:bg-slate-100/50 transition-all active:scale-95 group"
+                                className="flex items-center gap-2 xl:gap-4 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm hover:bg-slate-100/50 transition-all active:scale-95 group"
                             >
-                                <div className="w-10 h-10 rounded-[var(--radius)] bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:border-slate-900 transition-colors">
-                                    <Settings2 className="w-5 h-5 text-slate-400 group-hover:text-slate-900" />
+                                <div className="w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:border-slate-900 transition-colors">
+                                    <Settings2 className="w-4 h-4 xl:w-5 xl:h-5 text-slate-400 group-hover:text-slate-900" />
                                 </div>
-                                <div className="text-left pr-2">
-                                    <div className="text-[9px] font-bold text-slate-400 leading-none mb-1">Перейти в</div>
-                                    <div className="text-sm font-bold text-slate-900 leading-none whitespace-nowrap line-height-tight">Характеристики</div>
+                                <div className="text-left pr-1 xl:pr-2">
+                                    <div className="text-[8px] xl:text-[9px] font-bold text-slate-700 leading-none mb-0.5 xl:mb-1 hidden xl:block">Перейти в</div>
+                                    <div className="text-xs xl:text-sm font-bold text-slate-900 leading-none whitespace-nowrap line-height-tight">Характеристики</div>
                                 </div>
                             </Link>
                         </div>
@@ -362,8 +362,8 @@ export function BasicInfoStep({
                                 <div className="lg:col-span-4">
                                     <div className="p-6 bg-white rounded-[var(--radius)] border border-slate-200 shadow-xl shadow-slate-200/50 space-y-2">
                                         <div className="mb-2">
-                                            <h4 className="text-xl font-bold text-slate-900">Превью позиции</h4>
-                                            <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Визуальный контроль данных</p>
+                                            <h4 className="text-base font-bold text-slate-900">Превью позиции</h4>
+                                            <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Визуальный контроль данных</p>
                                         </div>
 
                                         <div className="space-y-4">
@@ -374,14 +374,14 @@ export function BasicInfoStep({
                                             <div className="h-px bg-slate-100" />
 
                                             <div className="space-y-1">
-                                                <div className="text-[10px] font-bold text-slate-400 ml-1">Артикул (SKU)</div>
+                                                <div className="text-sm font-bold text-slate-700 ml-1">Артикул (SKU)</div>
                                                 <div className="text-lg font-mono font-bold  break-all text-slate-900">
                                                     {formData.sku || '---'}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <p className="text-[10px] text-slate-400 font-bold  leading-relaxed opacity-60">
+                                        <p className="text-[10px] text-slate-700 font-bold  leading-relaxed opacity-60">
                                             Генерация данных в реальном времени
                                         </p>
                                     </div>
@@ -409,7 +409,7 @@ export function BasicInfoStep({
                                 <div className="lg:col-span-4">
                                     <div className="space-y-2 h-full flex flex-col">
                                         <div className="mb-2">
-                                            <h4 className="text-xl font-bold text-slate-900">Описание</h4>
+                                            <h4 className="text-base font-bold text-slate-900">Описание</h4>
                                         </div>
                                         <textarea
                                             value={formData.description || ""}
@@ -455,7 +455,7 @@ export function BasicInfoStep({
                                 <div className="lg:col-span-8">
                                     <div className="space-y-10">
                                         <div className="space-y-6">
-                                            <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                            <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                                                 <Package className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                                                 Название позиции <span className="text-rose-500">*</span>
                                             </label>
@@ -470,7 +470,7 @@ export function BasicInfoStep({
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-4">
-                                                <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                                <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                                                     <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                                                     Артикул (SKU) <span className="text-rose-500">*</span>
                                                 </label>
@@ -483,7 +483,7 @@ export function BasicInfoStep({
                                                 />
                                             </div>
                                             <div className="space-y-4">
-                                                <label className="text-sm font-bold text-slate-500 ml-1 leading-none">
+                                                <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                                                     <Ruler className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                                                     Единица измерения <span className="text-rose-500">*</span>
                                                 </label>
@@ -507,7 +507,7 @@ export function BasicInfoStep({
                                 <div className="lg:col-span-4">
                                     <div className="space-y-2">
                                         <div className="mb-2">
-                                            <h4 className="text-xl font-bold text-slate-900">Описание</h4>
+                                            <h4 className="text-base font-bold text-slate-900">Описание</h4>
                                         </div>
                                         <textarea
                                             value={formData.description || ""}
@@ -548,15 +548,15 @@ export function BasicInfoStep({
                                     {(isPackaging || isConsumables) && (
                                         <div className="mt-8 p-6 bg-slate-50 rounded-[var(--radius)] border border-slate-200 space-y-2">
                                             <div className="mb-2">
-                                                <h4 className="text-xl font-bold text-slate-900">Дополнительно</h4>
-                                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Параметры и размеры</p>
+                                                <h4 className="text-base font-bold text-slate-900">Дополнительно</h4>
+                                                <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Параметры и размеры</p>
                                             </div>
 
                                             {isPackaging && (
                                                 <div className="grid grid-cols-3 gap-4">
                                                     {['width', 'height', 'depth'].map(dim => (
                                                         <div key={dim} className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-slate-900 px-1">
+                                                            <label className="text-sm font-bold text-slate-700 px-1">
                                                                 {dim === 'width' ? 'Ширина' : dim === 'height' ? 'Высота' : 'Глубина'}
                                                             </label>
                                                             <div className="relative">
@@ -575,7 +575,7 @@ export function BasicInfoStep({
 
                                             {isConsumables && (
                                                 <div className="space-y-4">
-                                                    <label className="text-sm font-bold text-slate-500 ml-1">
+                                                    <label className="text-sm font-bold text-slate-700 ml-1">
                                                         <Wrench className="w-3.5 h-3.5" />
                                                         Область применения
                                                     </label>

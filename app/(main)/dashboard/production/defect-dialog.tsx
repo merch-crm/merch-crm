@@ -62,7 +62,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                     Брак
                 </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden border-none shadow-2xl bg-white rounded-[var(--radius-outer)]">
+            <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden border-none shadow-2xl bg-white sm:rounded-[var(--radius-outer)]">
                 <div className="p-6">
                     <div className="mb-6 flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
@@ -83,6 +83,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                                 type="number"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
+                                className="bg-slate-50 border-slate-200 font-bold"
                             />
                             <p className="text-[10px] text-slate-400">Максимально в этой позиции: {maxQuantity} шт</p>
                         </div>
@@ -93,21 +94,22 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Напр: Ошибка печати, дырка на футболке..."
+                                className="bg-slate-50 border-slate-200 font-bold"
                             />
                         </div>
                     </div>
                 </div>
-                <div className="p-6 pt-2 flex gap-3 bg-white rounded-b-[var(--radius-outer)]">
+                <div className="sticky bottom-0 z-10 p-6 pt-2 flex items-center gap-3 bg-white sm:rounded-b-[var(--radius-outer)] border-t border-slate-100 mt-auto">
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="btn-dialog-ghost flex-1"
+                        className="hidden md:block btn-dialog-ghost flex-1"
                     >
                         Отмена
                     </button>
                     <button
                         onClick={handleReport}
                         disabled={isPending}
-                        className="btn-dialog-destructive flex-[1.5]"
+                        className="btn-dialog-destructive flex-1 w-full"
                     >
                         {isPending ? "Обработка..." : "Списать брак"}
                     </button>

@@ -1746,9 +1746,14 @@ export async function trackActivity() {
     const session = await getSession();
     if (!session) return;
 
-    await db.update(users)
-        .set({ lastActiveAt: new Date() })
-        .where(eq(users.id, session.id));
+    try {
+        await db.update(users)
+            .set({ lastActiveAt: new Date() })
+            .where(eq(users.id, session.id));
+    } catch (error) {
+        console.error("Failed to track activity:", error);
+        // Do not throw, as this is a background task
+    }
 }
 
 export async function getMonitoringStats() {

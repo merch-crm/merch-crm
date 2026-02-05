@@ -225,7 +225,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     ];
 
     return (
-        <div className="h-[calc(100vh-130px)] flex flex-col overflow-hidden bg-slate-50/50">
+        <div className="flex-1 flex flex-col md:h-[calc(100vh-130px)] overflow-hidden bg-slate-50/50">
             <div className="px-8 pt-6 shrink-0">
                 <Breadcrumbs
                     items={[
@@ -235,9 +235,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                 />
             </div>
 
-            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4">
+            <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-4 px-4 sm:px-8 pb-8 pt-4 overflow-y-auto lg:overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden">
+                <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
                     <div className="p-6 shrink-0">
                         <button onClick={handleBack} className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm">
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -284,9 +284,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
-                    <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-0">
-                        <div className="flex-1 overflow-y-auto p-10">
+                <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
+                    <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
+                        <div className="flex-1 overflow-y-auto p-6 md:p-10">
                             {step === 0 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <h4 className="text-lg font-bold text-slate-900">Выберите клиента</h4>
@@ -427,23 +427,23 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                                 <p className="text-sm font-bold">{item.name}</p>
                                                                 <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-rose-500 font-bold">Удалить</button>
                                                             </div>
-                                                            <div className="grid grid-cols-2 gap-4 text-xs font-bold">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-sm font-bold text-slate-500 ml-1">Кол-во</label>
+                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Кол-во</label>
                                                                     <input
                                                                         type="number"
                                                                         value={item.orderQuantity || 0}
                                                                         onChange={(e) => updateItem(item.id, { orderQuantity: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-2 py-2"
+                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-3 py-2 text-sm"
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-sm font-bold text-slate-500 ml-1">Цена (₽)</label>
+                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Цена (₽)</label>
                                                                     <input
                                                                         type="number"
                                                                         value={item.price || 0}
                                                                         onChange={(e) => updateItem(item.id, { price: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-2 py-2"
+                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-3 py-2 text-sm"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -459,9 +459,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                             {step === 2 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <h4 className="text-lg font-bold text-slate-900">Детали заказа</h4>
-                                    <div className="grid grid-cols-2 gap-[var(--crm-grid-gap)]">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">Приоритет</label>
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Приоритет</label>
                                             <select
                                                 value={details.priority}
                                                 onChange={(e) => setDetails({ ...details, priority: e.target.value })}
@@ -473,7 +473,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             </select>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">Дедлайн</label>
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Дедлайн</label>
                                             <input
                                                 type="date"
                                                 value={details.deadline}
@@ -483,9 +483,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-[var(--crm-grid-gap)]">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">Срочный заказ</label>
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Срочный заказ</label>
                                             <div
                                                 onClick={() => setDetails({ ...details, isUrgent: !details.isUrgent })}
                                                 className={cn(
@@ -498,7 +498,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-500 ml-1">Способ оплаты</label>
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Способ оплаты</label>
                                             <select
                                                 value={details.paymentMethod}
                                                 onChange={(e) => setDetails({ ...details, paymentMethod: e.target.value })}
@@ -513,7 +513,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Предоплата (₽)</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Предоплата (₽)</label>
                                         <div className="relative">
                                             <CreditCard className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
                                             <input
@@ -606,7 +606,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
                                         <div className="p-4 bg-white border rounded-[18px]">
                                             <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Приоритет</p>
                                             <p className="font-bold  text-xs">{details.priority}</p>
@@ -621,7 +621,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                         </div>
 
                         {/* Footer */}
-                        <div className="px-10 py-6 border-t border-slate-200 flex justify-between items-center bg-slate-50/30">
+                        <div className="px-6 md:px-10 py-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center bg-slate-50/30 gap-4">
                             <div className="flex flex-col">
                                 {validationError && (
                                     <span className="text-rose-500 text-xs font-bold animate-in fade-in slide-in-from-left-2">{validationError}</span>

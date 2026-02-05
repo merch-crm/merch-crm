@@ -81,7 +81,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all font-bold"
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -89,7 +89,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/50">
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center h-full space-y-4">
                             <Loader2 className="w-10 h-10 text-primary animate-spin" />
@@ -109,7 +109,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                     <h3 className="text-xs font-bold  tracking-wider text-slate-400">Продажи и Заказы</h3>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4">
-                                    <div className="p-6 bg-white rounded-[18px] border border-slate-200 shadow-sm">
+                                    <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
                                         <div className="text-3xl font-bold text-slate-900 tracking-normal">
                                             {stats.orders.monthRevenue.toLocaleString()} ₽
@@ -120,11 +120,11 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-5 bg-white rounded-[18px] border border-slate-200 shadow-sm">
+                                        <div className="p-5 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего заказов</p>
                                             <div className="text-xl font-bold text-slate-900">{stats.orders.total}</div>
                                         </div>
-                                        <div className="p-5 bg-white rounded-[18px] border border-slate-200 shadow-sm">
+                                        <div className="p-5 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего выручка</p>
                                             <div className="text-xl font-bold text-slate-900 truncate" title={stats.orders.totalRevenue.toLocaleString()}>
                                                 {(stats.orders.totalRevenue / 1000).toFixed(0)}k ₽

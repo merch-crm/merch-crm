@@ -50,6 +50,12 @@ export interface ItemFormData {
     sellingPrice?: string;
     isArchived?: boolean;
     materialComposition?: Record<string, number>;
+    weight?: string;
+    packagingType?: "transport" | "individual";
+    supplierName?: string;
+    supplierLink?: string;
+    minBatch?: string;
+    features?: string[];
     [key: string]: unknown;
 }
 

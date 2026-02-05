@@ -48,17 +48,17 @@ export default function FinanceLayout({
     return (
         <div className="flex flex-col gap-8 animate-in fade-in duration-700">
             {/* 1. Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold text-slate-900 leading-tight tracking-tight">
+            <div className="flex flex-row items-center justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight truncate">
                         {currentTabInfo.title}
                     </h1>
-                    <p className="text-slate-400 text-[13px] font-medium max-w-2xl">
+                    <p className="text-slate-400 text-[11px] sm:text-[13px] font-medium max-w-2xl truncate">
                         {currentTabInfo.description}
                     </p>
                 </div>
 
-                <div className="flex flex-col items-end gap-3">
+                <div className="shrink-0">
                     <FinanceDateFilter />
                 </div>
             </div>

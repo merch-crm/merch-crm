@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { Plus, X, Building, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { createDepartment, getRoles } from "../actions";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Role {
     id: string;
@@ -73,16 +76,141 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
         }
     }
 
+    const isMobile = useIsMobile();
+
     if (!isOpen) {
         return (
             <Button
                 onClick={() => setIsOpen(true)}
-                size="lg"
-                className="rounded-[var(--radius-outer)] shadow-xl shadow-primary/20 font-bold"
+                size={isMobile ? "default" : "lg"}
+                className={cn(
+                    "rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
+                    isMobile ? "w-11 h-11 p-0" : ""
+                )}
+                title="Добавить отдел"
             >
-                <Plus className="mr-2 h-5 w-5" />
-                Добавить отдел
+                <Plus className={cn("h-5 w-5", !isMobile && "mr-2")} />
+                <span className="hidden sm:inline">Добавить отдел</span>
             </Button>
+        );
+    }
+
+    const FormContent = (
+        <form action={handleSubmit} className="space-y-6">
+            <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 ml-1">Название отдела</label>
+                <div className="relative">
+                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        placeholder="Например: Цех печати"
+                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 ml-1">Описание</label>
+                <textarea
+                    name="description"
+                    rows={isMobile ? 3 : 2}
+                    placeholder="Чем занимается этот отдел..."
+                    className="block w-full rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
+                />
+            </div>
+
+            <div className="space-y-3">
+                <label className="text-sm font-bold text-slate-700 ml-1">Цветовая метка</label>
+                <div className={`flex flex-wrap ${isMobile ? 'grid grid-cols-4' : ''} gap-2`}>
+                    {COLORS.map((color) => (
+                        <button
+                            key={color.value}
+                            type="button"
+                            onClick={() => setSelectedColor(color.value)}
+                            className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100 hover:scale-110'}`}
+                            style={{ backgroundColor: getColorHex(color.value) }}
+                            title={color.name}
+                        >
+                            <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} className="hidden" readOnly />
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Роли в этом отделе</label>
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        Выбрано: {selectedRoleIds.length}
+                    </span>
+                </div>
+                <div className={`${isMobile ? 'max-h-[300px]' : 'max-h-[160px]'} overflow-y-auto pr-2 custom-scrollbar border border-slate-200 rounded-[var(--radius-inner)] p-2 bg-slate-50/50`}>
+                    {fetchingRoles ? (
+                        <div className="py-4 text-center text-slate-400 text-[11px] font-bold  animate-pulse">Загрузка ролей...</div>
+                    ) : roles.length === 0 ? (
+                        <div className="py-4 text-center text-slate-400 text-xs">Нет созданных ролей</div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-1">
+                            {roles.map(role => {
+                                const isSelected = selectedRoleIds.includes(role.id);
+                                return (
+                                    <button
+                                        key={role.id}
+                                        type="button"
+                                        onClick={() => toggleRole(role.id)}
+                                        className={`flex items-center gap-3 p-3 rounded-[var(--radius-inner)] transition-all text-left group ${isSelected ? 'bg-white shadow-md border-primary/20 ring-4 ring-primary/5' : 'hover:bg-white/80 border-transparent hover:border-slate-200'}`}
+                                    >
+                                        <div className={`w-6 h-6 rounded-[18px] border flex items-center justify-center transition-all ${isSelected ? 'bg-primary border-primary text-white shadow-lg shadow-primary/10' : 'bg-white border-slate-200 text-transparent group-hover:border-slate-300'}`}>
+                                            <Check className="w-4 h-4 stroke-[3px]" />
+                                        </div>
+                                        <div>
+                                            <p className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-slate-600'}`}>{role.name}</p>
+                                            {role.department?.name && (
+                                                <div className="flex items-center gap-1 mt-0.5">
+                                                    <Building className="w-3 h-3 text-slate-300" />
+                                                    <p className="text-[10px] text-slate-400 font-bold  tracking-normal">В отделе: {role.department.name}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="mt-5 pt-4 border-t border-slate-200">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent bg-primary py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                >
+                    {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {loading ? "Создание..." : "Создать отдел"}
+                </button>
+            </div>
+        </form>
+    );
+
+    if (isMobile) {
+        return (
+            <BottomSheet
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Новый отдел"
+            >
+                <div className="pb-10">
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-bold rounded-[var(--radius-outer)] border border-red-100">
+                            {error}
+                        </div>
+                    )}
+                    {FormContent}
+                </div>
+            </BottomSheet>
         );
     }
 
@@ -116,103 +244,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                         </div>
                     )}
 
-                    <form action={handleSubmit} className="space-y-6">
-                        <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Название отдела</label>
-                            <div className="relative">
-                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    name="name"
-                                    required
-                                    placeholder="Например: Цех печати"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Описание</label>
-                            <textarea
-                                name="description"
-                                rows={2}
-                                placeholder="Чем занимается этот отдел..."
-                                className="block w-full rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300 resize-none"
-                            />
-                        </div>
-
-                        <div className="space-y-3">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Цветовая метка</label>
-                            <div className="flex flex-wrap gap-2">
-                                {COLORS.map((color) => (
-                                    <button
-                                        key={color.value}
-                                        type="button"
-                                        onClick={() => setSelectedColor(color.value)}
-                                        className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100 hover:scale-110'}`}
-                                        style={{ backgroundColor: getColorHex(color.value) }}
-                                        title={color.name}
-                                    >
-                                        <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} className="hidden" readOnly />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Роли в этом отделе</label>
-                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                                    Выбрано: {selectedRoleIds.length}
-                                </span>
-                            </div>
-                            <div className="max-h-[160px] overflow-y-auto pr-2 custom-scrollbar border border-slate-200 rounded-[var(--radius-inner)] p-2 bg-slate-50/50">
-                                {fetchingRoles ? (
-                                    <div className="py-4 text-center text-slate-400 text-[11px] font-bold  animate-pulse">Загрузка ролей...</div>
-                                ) : roles.length === 0 ? (
-                                    <div className="py-4 text-center text-slate-400 text-xs">Нет созданных ролей</div>
-                                ) : (
-                                    <div className="grid grid-cols-1 gap-1">
-                                        {roles.map(role => {
-                                            const isSelected = selectedRoleIds.includes(role.id);
-                                            return (
-                                                <button
-                                                    key={role.id}
-                                                    type="button"
-                                                    onClick={() => toggleRole(role.id)}
-                                                    className={`flex items-center gap-3 p-3 rounded-[var(--radius-inner)] transition-all text-left group ${isSelected ? 'bg-white shadow-md border-primary/20 ring-4 ring-primary/5' : 'hover:bg-white/80 border-transparent hover:border-slate-200'}`}
-                                                >
-                                                    <div className={`w-6 h-6 rounded-[18px] border flex items-center justify-center transition-all ${isSelected ? 'bg-primary border-primary text-white shadow-lg shadow-primary/10' : 'bg-white border-slate-200 text-transparent group-hover:border-slate-300'}`}>
-                                                        <Check className="w-4 h-4 stroke-[3px]" />
-                                                    </div>
-                                                    <div>
-                                                        <p className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-slate-600'}`}>{role.name}</p>
-                                                        {role.department?.name && (
-                                                            <div className="flex items-center gap-1 mt-0.5">
-                                                                <Building className="w-3 h-3 text-slate-300" />
-                                                                <p className="text-[10px] text-slate-400 font-bold  tracking-normal">В отделе: {role.department.name}</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="mt-5 pt-4 border-t border-slate-200">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent bg-primary py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
-                            >
-                                {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                                {loading ? "Создание..." : "Создать отдел"}
-                            </button>
-                        </div>
-                    </form>
+                    {FormContent}
                 </div>
             </div>
             <style jsx>{`

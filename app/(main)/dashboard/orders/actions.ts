@@ -896,3 +896,31 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
         return { error: "Failed to process refund" };
     }
 }
+
+export async function addPayment(orderId: string, amount: number, method: string, isAdvance: boolean, comment?: string) {
+    const session = await getSession();
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await db.insert(payments).values({
+            orderId,
+            amount: String(amount),
+            method: method as "cash" | "bank" | "online" | "account",
+            isAdvance,
+            comment: comment || (isAdvance ? "Аванс" : "Оплата")
+        });
+
+        await logAction(isAdvance ? "Внесен аванс" : "Внесена оплата", "order", orderId, {
+            amount,
+            method,
+            isAdvance
+        });
+
+        revalidatePath("/dashboard/orders");
+        revalidatePath(`/dashboard/orders/${orderId}`);
+        return { success: true };
+    } catch (error) {
+        console.error("Error adding payment:", error);
+        return { error: "Failed to add payment" };
+    }
+}

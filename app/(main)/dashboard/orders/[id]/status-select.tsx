@@ -164,17 +164,17 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center justify-end gap-4 bg-white pt-4 mt-auto">
                             <button
                                 onClick={() => setShowCancelDialog(false)}
-                                className="h-11 rounded-[18px] text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors  tracking-normal"
+                                className="hidden md:flex h-11 px-6 rounded-[18px] text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
                             >
                                 Назад
                             </button>
                             <button
                                 disabled={!cancelReason.trim() || loading}
                                 onClick={() => handleStatusChange("cancelled", cancelReason)}
-                                className="h-11 bg-rose-500 text-white rounded-[18px] text-[11px] font-bold  tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                                className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-[18px] text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                             >
                                 {loading ? "Отмена..." : "Отменить заказ"}
                             </button>

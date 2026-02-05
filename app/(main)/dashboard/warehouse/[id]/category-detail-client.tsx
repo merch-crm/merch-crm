@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
 import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,8 @@ import { getCategoryIcon, getColorStyles } from "../category-utils";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 import {
     DndContext,
@@ -119,9 +121,14 @@ export function CategoryDetailClient({
     const [subCategories, setSubCategories] = useState<Category[]>(initialSubCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     const canSeeCost = user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж';
@@ -248,10 +255,13 @@ export function CategoryDetailClient({
 
 
     const [searchQuery, setSearchQuery] = useState("");
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
     const [filterStatus, setFilterStatus] = useState<"all" | "in" | "low" | "out">("all");
     const [filterStorage, setFilterStorage] = useState<string>("all"); // New warehouse filter
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 24;
+    const [subCurrentPage, setSubCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const subsPerPage = 12;
 
     const itemCountsByStorage = useMemo(() => {
         const counts: Record<string, number> = {};
@@ -324,6 +334,9 @@ export function CategoryDetailClient({
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
+    const subStartIndex = (subCurrentPage - 1) * subsPerPage;
+    const currentSubCategories = subCategories.slice(subStartIndex, subStartIndex + subsPerPage);
+
     const handleDeleteItems = async (ids: string[]) => {
         setIsDeleting(true);
         try {
@@ -386,32 +399,38 @@ export function CategoryDetailClient({
         }
     };
 
+    const isAnyModalOpen =
+        isBulkMoveOpen ||
+        isBulkCategoryOpen ||
+        isAdjustOpen ||
+        showLabelDialog ||
+        idsToDelete.length > 0 ||
+        !!deletingCategory ||
+        !!editingCategory ||
+        showArchiveReason;
+
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Group */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
-                <div className="flex items-center gap-5">
+            <div className="flex flex-row items-center justify-between gap-4 mb-4">
+                <div className="flex items-center gap-2 sm:gap-5 min-w-0">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => router.back()}
-                        className="w-11 h-11 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center mr-2 shrink-0 group"
+                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group mr-1 sm:mr-2"
                     >
                         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                     </Button>
-
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-bold text-slate-900 leading-none">{category.name}</h1>
-                        </div>
-                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-none truncate">{category.name}</h1>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                     {category.id !== "orphaned" && !category.parentId && (
                         <AddCategoryDialog
                             parentId={category.id}
                             buttonText="Добавить подкатегорию"
+                            className="h-10 w-10 sm:h-11 sm:w-auto"
                         />
                     )}
                     <Button
@@ -421,86 +440,135 @@ export function CategoryDetailClient({
                                 : `/dashboard/warehouse/items/new?categoryId=${category.id}`;
                             router.push(url);
                         }}
-                        className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold border-none"
+                        className={cn(
+                            "h-10 w-10 sm:h-11 sm:w-auto btn-primary rounded-full sm:rounded-[18px] p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                        )}
                     >
                         <Plus className="w-5 h-5" />
-                        Добавить позицию
+                        <span className="hidden sm:inline">Добавить позицию</span>
                     </Button>
                 </div>
             </div>
 
-            {/* Sub-header with Search and Filters - Redesigned in Photo 2 Style */}
-            <div className="crm-filter-tray">
-                {/* Search Input */}
-                <div className="relative flex-1">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder="Поиск по названию, артикулу или характеристикам..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="crm-filter-tray-search w-full pl-12 pr-4 focus:outline-none"
-                    />
-                    {searchQuery && (
-                        <button
-                            onClick={() => setSearchQuery("")}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
+            {/* Sub-header with Search and Filters */}
+            <div className={cn(
+                "crm-filter-tray w-full overflow-hidden flex flex-col lg:flex-row items-stretch lg:items-center p-1.5 rounded-[22px] gap-1 lg:gap-3",
+                (isSearchExpanded && isMobile) ? "gap-0" : ""
+            )}>
+                {/* Search & Storage Group */}
+                <div className={cn(
+                    "flex items-center gap-2",
+                    "w-full lg:w-auto lg:flex-1",
+                    (isSearchExpanded && isMobile) ? "gap-0" : ""
+                )}>
+                    {/* Search Field */}
+                    <div className={cn(
+                        "relative transition-all duration-300 ease-in-out h-11",
+                        (isSearchExpanded && isMobile) ? "flex-1 w-full" : "flex-1"
+                    )}>
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (isMobile) setIsSearchExpanded(true);
+                            }}
+                            className={cn(
+                                "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 cursor-pointer transition-colors duration-300",
+                                isSearchExpanded && "text-primary"
+                            )}
                         >
-                            <X className="w-4 h-4" />
-                        </button>
-                    )}
+                            <Search className={cn("w-4 h-4 transition-colors duration-300", isSearchExpanded ? "text-primary" : "text-slate-400")} />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder={isSearchExpanded ? "Поиск по названию или артикулу..." : "Поиск..."}
+                            value={searchQuery}
+                            onFocus={() => setIsSearchExpanded(true)}
+                            onBlur={() => {
+                                if (!searchQuery) {
+                                    setTimeout(() => setIsSearchExpanded(false), 200);
+                                }
+                            }}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className={cn(
+                                "crm-filter-tray-search w-full h-full focus:outline-none min-w-0 transition-all duration-300 rouded-[16px]",
+                                (isSearchExpanded && isMobile)
+                                    ? "pl-11 pr-4 bg-white/50 rounded-[16px]"
+                                    : "pl-11 pr-10 bg-white rounded-[16px] shadow-sm"
+                            )}
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSearchQuery("");
+                                    setIsSearchExpanded(false);
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors duration-300"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Storage Select - Hides on search expand (Mobile) */}
+                    <div className={cn(
+                        "transition-all duration-300 ease-in-out bg-white rounded-[16px] shadow-sm",
+                        (isSearchExpanded && isMobile)
+                            ? "w-0 flex-none opacity-0 invisible overflow-hidden border-none"
+                            : "w-auto opacity-100 visible flex-1 sm:flex-none min-w-[140px]"
+                    )}>
+                        <PremiumSelect
+                            options={[
+                                { id: "all", title: "Все склады" },
+                                ...storageLocations.map(loc => ({
+                                    id: loc.id,
+                                    title: loc.name,
+                                    badge: itemCountsByStorage[loc.id] ? `${itemCountsByStorage[loc.id]} поз.` : undefined
+                                }))
+                            ]}
+                            value={filterStorage}
+                            onChange={setFilterStorage}
+                            variant="minimal"
+                            triggerClassName="border-none shadow-none bg-transparent h-11 w-full"
+                            align="end"
+                            className="w-full h-full"
+                        />
+                    </div>
                 </div>
 
-                {/* Filters Group */}
-                <div className="flex items-center gap-[6px]">
-                    {/* Storage Select Premium */}
-                    <PremiumSelect
-                        options={[
-                            { id: "all", title: "Все склады" },
-                            ...storageLocations.map(loc => ({
-                                id: loc.id,
-                                title: loc.name,
-                                badge: itemCountsByStorage[loc.id] ? `${itemCountsByStorage[loc.id]} поз.` : undefined
-                            }))
-                        ]}
-                        value={filterStorage}
-                        onChange={setFilterStorage}
-                        variant="minimal"
-                        className="min-w-[220px] h-11 !rounded-[16px]"
-                    />
+                <div className="hidden lg:block w-px h-6 bg-slate-300 mx-1 shrink-0" />
 
-                    <div className="w-px h-6 bg-slate-500/40 mx-1" />
-
-                    {/* Status Pills */}
-                    <div className="flex items-center gap-[6px]">
-                        {[
-                            { id: "all", label: "Все" },
-                            { id: "in", label: "В наличии", color: "emerald" },
-                            { id: "low", label: "Мало", color: "amber" },
-                            { id: "out", label: "Нет", color: "rose" }
-                        ].map((f) => {
-                            const isActive = filterStatus === f.id;
-                            return (
-                                <button
-                                    key={f.id}
-                                    onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
-                                    className={cn(
-                                        "crm-filter-tray-tab",
-                                        isActive && "active"
-                                    )}
-                                >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeItemStatusTab"
-                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
-                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                        />
-                                    )}
-                                    <span className="relative z-10">{f.label}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
+                {/* Status Pills Section */}
+                <div className={cn(
+                    "flex items-center gap-1.5 p-1 lg:p-0 rounded-[18px] w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
+                )}>
+                    {[
+                        { id: "all", label: "Все" },
+                        { id: "in", label: "В наличии", color: "emerald" },
+                        { id: "low", label: "Мало", color: "amber" },
+                        { id: "out", label: "Нет", color: "rose" }
+                    ].map((f) => {
+                        const isActive = filterStatus === f.id;
+                        return (
+                            <button
+                                key={f.id}
+                                onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
+                                className={cn(
+                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-colors duration-200 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] relative",
+                                    isActive && "active"
+                                )}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeItemStatusTab"
+                                        className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                    />
+                                )}
+                                <span className="relative z-10 whitespace-nowrap">{f.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -523,8 +591,8 @@ export function CategoryDetailClient({
                                 items={subCategories.map(s => s.id)}
                                 strategy={rectSortingStrategy}
                             >
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-1">
-                                    {subCategories.map((subcat) => (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                    {currentSubCategories.map((subcat) => (
                                         <SortableSubCategoryCard
                                             key={subcat.id}
                                             subcat={subcat}
@@ -535,6 +603,17 @@ export function CategoryDetailClient({
                                     ))}
                                 </div>
                             </SortableContext>
+                            {subCategories.length > subsPerPage && (
+                                <div className="pt-4">
+                                    <PremiumPagination
+                                        currentPage={subCurrentPage}
+                                        totalItems={subCategories.length}
+                                        pageSize={subsPerPage}
+                                        onPageChange={setSubCurrentPage}
+                                        itemNames={['подкатегория', 'подкатегории', 'подкатегорий']}
+                                    />
+                                </div>
+                            )}
                             <DragOverlay adjustScale={true} dropAnimation={{
                                 duration: 250,
                                 easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
@@ -574,216 +653,247 @@ export function CategoryDetailClient({
 
                 {filteredItems.length > 0 ? (
                     <div className="space-y-4">
-                        {/* Items Table View */}
-                        <div className="glass-panel overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-100">
-                                    <thead className="bg-slate-50/50">
-                                        <tr>
-                                            <th className="w-16 px-6 py-4">
-                                                <PremiumCheckbox
-                                                    checked={selectedIds.length === filteredItems.length && filteredItems.length > 0}
-                                                    onChange={toggleSelectAll}
-                                                    className="mx-auto"
-                                                />
-                                            </th>
-                                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Товар</th>
-                                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Склад</th>
-                                            {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Себест.</th>}
-                                            {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Цена</th>}
-                                            <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Резерв</th>
-                                            <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Остаток</th>
-                                            <th className="px-6 py-4 text-right text-xs font-bold text-slate-500">Действия</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-slate-50">
-                                        {currentItems.map((item) => {
-                                            const isSelected = selectedIds.includes(item.id);
-                                            const available = item.quantity - (item.reservedQuantity || 0);
-                                            const isCritical = available <= (item.criticalStockThreshold || 0);
-                                            const isLowStock = !isCritical && available <= (item.lowStockThreshold || 10);
-
-                                            return (
-                                                <tr
-                                                    key={item.id}
-                                                    onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                                    className={cn(
-                                                        "group hover:bg-slate-50 transition-all cursor-pointer",
-                                                        isSelected && "bg-slate-50"
-                                                    )}
-                                                >
-                                                    <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        <ResponsiveDataView
+                            data={currentItems}
+                            renderTable={() => (
+                                <div className="glass-panel overflow-hidden">
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full divide-y divide-slate-100">
+                                            <thead className="bg-slate-50/50">
+                                                <tr>
+                                                    <th className="w-16 px-6 py-4">
                                                         <PremiumCheckbox
-                                                            checked={isSelected}
-                                                            onChange={() => toggleSelectItem(item.id)}
+                                                            checked={selectedIds.length === filteredItems.length && filteredItems.length > 0}
+                                                            onChange={toggleSelectAll}
                                                             className="mx-auto"
                                                         />
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
-                                                                <ItemThumbnail item={item} />
-                                                            </div>
-                                                            <div>
-                                                                <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
+                                                    </th>
+                                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Товар</th>
+                                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Склад</th>
+                                                    {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Себест.</th>}
+                                                    {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Цена</th>}
+                                                    <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Резерв</th>
+                                                    <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Остаток</th>
+                                                    <th className="px-6 py-4 text-right text-xs font-bold text-slate-500">Действия</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-slate-50">
+                                                {currentItems.map((item) => {
+                                                    const isSelected = selectedIds.includes(item.id);
+                                                    const available = item.quantity - (item.reservedQuantity || 0);
+                                                    const isCritical = available <= (item.criticalStockThreshold || 0);
+                                                    const isLowStock = !isCritical && available <= (item.lowStockThreshold || 10);
+
+                                                    return (
+                                                        <tr
+                                                            key={item.id}
+                                                            onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                                            className={cn(
+                                                                "group hover:bg-slate-50 transition-all cursor-pointer",
+                                                                isSelected && "bg-slate-50"
+                                                            )}
+                                                        >
+                                                            <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                                                                <PremiumCheckbox
+                                                                    checked={isSelected}
+                                                                    onChange={() => toggleSelectItem(item.id)}
+                                                                    className="mx-auto"
+                                                                />
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
+                                                                        <ItemThumbnail item={item} />
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
+                                                                            {item.name}
+                                                                        </div>
+                                                                        <div className="text-xs font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
+                                                                            {item.sku || "N/A"}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
                                                                     {(() => {
-                                                                        const cat = item.category as { singularName?: string; name?: string } | null;
-                                                                        if (cat?.singularName && cat?.name && item.name.startsWith(cat.name)) {
-                                                                            return item.name.replace(cat.name, cat.singularName);
+                                                                        if (item.stocks && item.stocks.length > 0) {
+                                                                            const activeStocks = item.stocks.filter((s) => s.quantity > 0);
+                                                                            if (activeStocks.length > 0) {
+                                                                                return activeStocks.map((s) => {
+                                                                                    const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
+                                                                                    return (
+                                                                                        <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
+                                                                                            <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                                            <span>{locName}</span>
+                                                                                            <span className="text-slate-400">({s.quantity})</span>
+                                                                                        </div>
+                                                                                    );
+                                                                                });
+                                                                            }
                                                                         }
-                                                                        return item.name;
+                                                                        return (
+                                                                            <div className="flex items-center gap-2 whitespace-nowrap">
+                                                                                <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                                <span>—</span>
+                                                                            </div>
+                                                                        );
                                                                     })()}
                                                                 </div>
-                                                                <div className="text-xs font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
-                                                                    {item.sku || "N/A"}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
-                                                            {(() => {
-                                                                if (item.stocks && item.stocks.length > 0) {
-                                                                    const activeStocks = item.stocks.filter((s) => s.quantity > 0);
-                                                                    if (activeStocks.length > 0) {
-                                                                        return activeStocks.map((s) => {
-                                                                            const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
-                                                                            return (
-                                                                                <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
-                                                                                    <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
-                                                                                    <span>{locName}</span>
-                                                                                    <span className="text-slate-400">({s.quantity})</span>
-                                                                                </div>
-                                                                            );
-                                                                        });
-                                                                    }
-                                                                }
-                                                                // Fallback
-                                                                return (
-                                                                    <div className="flex items-center gap-2 whitespace-nowrap">
-                                                                        <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
-                                                                        <span>—</span>
-                                                                    </div>
-                                                                );
-                                                            })()}
-                                                        </div>
-                                                    </td>
-                                                    {canSeeCost && (
-                                                        <td className="px-6 py-4 text-center">
-                                                            <span className="text-xs font-medium text-slate-400">
-                                                                {item.costPrice ? `${Number(item.costPrice).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽` : "—"}
-                                                            </span>
-                                                        </td>
-                                                    )}
-                                                    {canSeeCost && (
-                                                        <td className="px-6 py-4 text-center">
-                                                            <span className="text-sm font-bold text-slate-900">
-                                                                {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽` : "—"}
-                                                            </span>
-                                                        </td>
-                                                    )}
-                                                    <td className="px-6 py-4 text-center">
-                                                        <span className={cn(
-                                                            "text-sm font-bold tabular-nums",
-                                                            (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
-                                                        )}>
-                                                            {item.reservedQuantity || 0}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center">
-                                                        <div className="flex flex-col items-center gap-1.5">
-                                                            <div className={cn(
-                                                                "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
-                                                                isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
-                                                                    isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :
-                                                                        "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                                            )}>
-                                                                <div className={cn(
-                                                                    "w-1.5 h-1.5 rounded-full shrink-0",
-                                                                    isCritical ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse" :
-                                                                        isLowStock ? "bg-amber-500" :
-                                                                            "bg-emerald-500"
-                                                                )} />
-                                                                <span className="tabular-nums whitespace-nowrap">{available} {(item.unit.toLowerCase() === 'pcs' || item.unit === 'шт.') ? 'шт' : item.unit}</span>
-                                                            </div>
-
-                                                            {(item.reservedQuantity || 0) > 0 && (
-                                                                <div className="flex items-center gap-2 text-[10px] font-medium text-slate-400 tabular-nums">
-                                                                    <span title="Всего на складе">Всего: {item.quantity}</span>
-                                                                </div>
+                                                            </td>
+                                                            {canSeeCost && (
+                                                                <td className="px-6 py-4 text-center">
+                                                                    <span className="text-xs font-medium text-slate-400">
+                                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                                    </span>
+                                                                </td>
                                                             )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                                                        <div className="flex items-center justify-end gap-1 transition-all">
-                                                            <button
-                                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handlePrintLabel(item);
-                                                                }}
-                                                                title="Печать этикетки"
-                                                            >
-                                                                <Tag className="w-4 h-4" />
-                                                            </button>
-                                                            <button
-                                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-[var(--radius-inner)] transition-all"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleOpenAdjust(item);
-                                                                }}
-                                                                title="Корректировка"
-                                                            >
-                                                                <PlusSquare className="w-5 h-5" />
-                                                            </button>
-                                                            <button
-                                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    router.push(`/dashboard/warehouse/items/${item.id}`);
-                                                                }}
-                                                                title="Редактировать"
-                                                            >
-                                                                <Edit className="w-5 h-5" />
-                                                            </button>
-                                                            <button
-                                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-[var(--radius-inner)] transition-all"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (item.quantity > 0) {
-                                                                        toast("Нельзя архивировать товар с остатком > 0", "error");
-                                                                        playSound("notification_error");
-                                                                        return;
-                                                                    }
-                                                                    setSelectedIds([item.id]);
-                                                                    setShowArchiveReason(true);
-                                                                }}
-                                                                title="В архив"
-                                                            >
-                                                                <Archive className="w-5 h-5" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                                            {canSeeCost && (
+                                                                <td className="px-6 py-4 text-center">
+                                                                    <span className="text-sm font-bold text-slate-900">
+                                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                                    </span>
+                                                                </td>
+                                                            )}
+                                                            <td className="px-6 py-4 text-center">
+                                                                <span className={cn(
+                                                                    "text-sm font-bold tabular-nums",
+                                                                    (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
+                                                                )}>
+                                                                    {item.reservedQuantity || 0}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-center">
+                                                                <div className="flex flex-col items-center gap-1.5">
+                                                                    <div className={cn(
+                                                                        "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
+                                                                        isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
+                                                                            isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :
+                                                                                "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                                                    )}>
+                                                                        <div className={cn(
+                                                                            "w-1.5 h-1.5 rounded-full shrink-0",
+                                                                            isCritical ? "bg-rose-500 animate-pulse" :
+                                                                                isLowStock ? "bg-amber-500" :
+                                                                                    "bg-emerald-500"
+                                                                        )} />
+                                                                        <span className="tabular-nums">{available} {item.unit}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                                                                <div className="flex items-center justify-end gap-1 transition-all">
+                                                                    <button
+                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
+                                                                        onClick={() => handlePrintLabel(item)}
+                                                                        title="Печать"
+                                                                    >
+                                                                        <Tag className="w-4 h-4" />
+                                                                    </button>
+                                                                    <button
+                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-[var(--radius-inner)] transition-all"
+                                                                        onClick={() => handleOpenAdjust(item)}
+                                                                        title="Запас"
+                                                                    >
+                                                                        <PlusSquare className="w-5 h-5" />
+                                                                    </button>
+                                                                    <button
+                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
+                                                                        onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                                                        title="Изм."
+                                                                    >
+                                                                        <Edit className="w-5 h-5" />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+                            renderCard={(item) => {
+                                const isSelected = selectedIds.includes(item.id);
+                                const available = item.quantity - (item.reservedQuantity || 0);
+                                const isCritical = available <= (item.criticalStockThreshold || 0);
+                                const isLowStock = !isCritical && available <= (item.lowStockThreshold || 10);
+                                const mainStock = item.stocks?.find(s => s.quantity > 0) || item.stocks?.[0];
+                                const locationName = mainStock ? storageLocations.find(l => l.id === mainStock.storageLocationId)?.name : null;
 
-                        {/* Pagination */}
-                        {filteredItems.length > 0 && (
-                            <div className="pt-2">
-                                <PremiumPagination
-                                    currentPage={currentPage}
-                                    totalItems={filteredItems.length}
-                                    pageSize={itemsPerPage}
-                                    onPageChange={setCurrentPage}
-                                    itemNames={['позиция', 'позиции', 'позиций']}
-                                />
-                            </div>
-                        )}
+                                return (
+                                    <div key={item.id}>
+                                        <div
+                                            className={cn(
+                                                "group relative flex flex-col gap-3 p-4 transition-all duration-300 cursor-pointer active:scale-[0.98] rounded-[24px] border border-slate-200/60 shadow-sm",
+                                                isSelected ? "bg-primary/[0.03] border-primary/20 ring-4 ring-primary/5" : "bg-white hover:shadow-md"
+                                            )}
+                                            onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                        >
+                                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                                                <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+                                                    <PremiumCheckbox
+                                                        checked={isSelected}
+                                                        onChange={() => toggleSelectItem(item.id)}
+                                                    />
+                                                </div>
+                                                <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
+                                                    <ItemThumbnail item={item} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="text-sm font-black text-slate-900 truncate leading-tight mb-0.5">
+                                                        {item.name}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                                                        <span className="bg-slate-50 px-1.5 py-0.5 rounded-[4px] font-mono">{item.sku || "N/A"}</span>
+                                                        <span className="text-slate-200">•</span>
+                                                        <span className={cn(
+                                                            "px-1.5 py-0.5 rounded-full uppercase tracking-tighter text-[9px] font-black",
+                                                            isCritical ? "bg-rose-50 text-rose-600 border border-rose-100" :
+                                                                isLowStock ? "bg-amber-50 text-amber-600 border border-amber-100" :
+                                                                    "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                        )}>
+                                                            {available} {item.unit}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {canSeeCost && (
+                                                <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                                                    <div className="flex items-center gap-1.5 min-w-0 max-w-[60%]">
+                                                        {locationName ? (
+                                                            <>
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                                                                <span className="text-xs font-bold text-slate-500 truncate">
+                                                                    {locationName}
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-xs font-medium text-slate-400">Цена</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-sm font-bold text-slate-900 whitespace-nowrap ml-2">
+                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            }}
+                        />
+                        <div className="pt-2">
+                            <PremiumPagination
+                                currentPage={currentPage}
+                                totalItems={filteredItems.length}
+                                pageSize={itemsPerPage}
+                                onPageChange={setCurrentPage}
+                                itemNames={['позиция', 'позиции', 'позиций']}
+                            />
+                        </div>
                     </div>
                 ) : (
                     <div className="py-32 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[3rem] border border-dashed border-slate-200">
@@ -799,8 +909,7 @@ export function CategoryDetailClient({
                                 : "В этой категории пока нет товаров. Нажмите «Добавить позицию», чтобы начать."}
                         </p>
                     </div>
-                )
-                }
+                )}
             </div>
 
             <ConfirmDialog
@@ -850,139 +959,140 @@ export function CategoryDetailClient({
             }
 
             {/* Mass Actions Bar */}
-            {mounted && createPortal(
-                <AnimatePresence>
-                    {selectedIds.length > 0 && (
-                        <>
-                            {/* Bottom Progressive Gradient Blur Overlay */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[100]"
-                                style={{
-                                    maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                    WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                                    background: 'linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
-                                }}
-                            />
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                                animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                                exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                                transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                                className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-2 gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
-                            >
-                                <div className="flex items-center gap-3 pl-1">
-                                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-white">
-                                        {selectedIds.length}
-                                    </div>
-                                    <span className="text-xs font-bold text-slate-500 whitespace-nowrap pr-2">Позиций выбрано</span>
-                                </div>
-
-                                <div className="w-[1.5px] h-6 bg-slate-500/40" />
-
-                                <div className="flex items-center gap-1">
-                                    <button
-                                        onClick={() => setIsBulkMoveOpen(true)}
-                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                    >
-                                        <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
-                                    </button>
-
-                                    <button
-                                        onClick={handleBulkPrint}
-                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                    >
-                                        <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            const itemsToExport = items.filter(i => selectedIds.includes(i.id));
-                                            exportToCSV(itemsToExport, "inventory_export", [
-                                                { header: "ID", key: "id" },
-                                                { header: "Название", key: "name" },
-                                                { header: "Артикул", key: (item) => item.sku || "" },
-                                                { header: "Количество", key: "quantity" },
-                                                { header: "Ед.изм", key: "unit" },
-                                                { header: "Категория", key: (item) => item.category?.name || "" },
-                                                {
-                                                    header: "Склад", key: (item) => {
-                                                        if (item.stocks && item.stocks.length > 0) {
-                                                            const stocksStr = item.stocks
-                                                                .filter((s) => s.quantity > 0)
-                                                                .map((s) => {
-                                                                    const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
-                                                                    return `${locName} (${s.quantity})`;
-                                                                })
-                                                                .join("; ");
-                                                            if (stocksStr) return stocksStr;
-                                                        }
-                                                        return "";
-                                                    }
-                                                },
-                                                { header: "Себестоимость", key: (item) => item.costPrice || 0 },
-                                                { header: "Цена продажи", key: (item) => item.sellingPrice || 0 }
-                                            ]);
-                                        }}
-                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
-                                    >
-                                        <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
-                                    </button>
-
-                                    <div className="w-px h-8 bg-slate-200 mx-1" />
-
-                                    <button
-                                        onClick={() => {
-                                            const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
-                                            const hasStock = itemsToArchive.some(i => i.quantity > 0);
-
-                                            if (hasStock) {
-                                                toast("Нельзя архивировать товары с остатком > 0", "error");
-                                                return;
-                                            }
-                                            setShowArchiveReason(true);
-                                        }}
-                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
-                                    >
-                                        <Archive className="w-4 h-4" />
-                                    </button>
-
-                                    <button
-                                        onClick={() => setSelectedIds([])}
-                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </motion.div>
-                        </>
-                    )}
-                </AnimatePresence>,
-                document.body
-            )
-            }
-
             {
-                isBulkMoveOpen && (
-                    <BulkMoveDialog
-                        selectedIds={selectedIds}
-                        storageLocations={storageLocations}
-                        onClose={() => setIsBulkMoveOpen(false)}
-                        onSuccess={() => {
-                            setIsBulkMoveOpen(false);
-                            setSelectedIds([]);
-                            router.refresh();
-                        }}
-                    />
+                mounted && createPortal(
+                    <AnimatePresence>
+                        {selectedIds.length > 0 && !isAnyModalOpen && (
+                            <>
+                                {/* Bottom Progressive Gradient Blur Overlay */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="fixed inset-x-0 bottom-0 h-80 pointer-events-none z-[100]"
+                                    style={{
+                                        maskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                        WebkitMaskImage: 'linear-gradient(to top, black 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                                        background: 'linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.8) 40%, transparent 100%)'
+                                    }}
+                                />
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                                    exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                                    transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                                    className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-1.5 md:p-2 gap-1.5 md:gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 w-[calc(100%-2rem)] md:w-auto overflow-x-auto no-scrollbar"
+                                >
+                                    <div className="flex items-center gap-2 md:gap-3 pl-1 shrink-0">
+                                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary flex items-center justify-center text-[11px] md:text-sm font-bold text-white shrink-0">
+                                            {selectedIds.length}
+                                        </div>
+                                        <span className="hidden lg:inline text-xs font-bold text-slate-500 whitespace-nowrap pr-1">Позиций</span>
+                                    </div>
+
+                                    <div className="w-px h-6 bg-slate-200 mx-1 shrink-0" />
+
+                                    <div className="flex items-center gap-0.5 md:gap-1 flex-1 justify-around md:justify-start">
+                                        <button
+                                            onClick={() => setIsBulkMoveOpen(true)}
+                                            className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full hover:bg-slate-100 transition-all group shrink-0"
+                                            title="Переместить"
+                                        >
+                                            <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                            <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
+                                        </button>
+
+                                        <button
+                                            onClick={handleBulkPrint}
+                                            className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full hover:bg-slate-100 transition-all group shrink-0"
+                                            title="Этикетки"
+                                        >
+                                            <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                            <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                const itemsToExport = items.filter(i => selectedIds.includes(i.id));
+                                                exportToCSV(itemsToExport, "inventory_export", [
+                                                    { header: "ID", key: "id" },
+                                                    { header: "Название", key: "name" },
+                                                    { header: "Артикул", key: (item) => item.sku || "" },
+                                                    { header: "Количество", key: "quantity" },
+                                                    { header: "Ед.изм", key: "unit" },
+                                                    { header: "Категория", key: (item) => item.category?.name || "" },
+                                                    {
+                                                        header: "Склад", key: (item) => {
+                                                            if (item.stocks && item.stocks.length > 0) {
+                                                                const stocksStr = item.stocks
+                                                                    .filter((s) => s.quantity > 0)
+                                                                    .map((s) => {
+                                                                        const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
+                                                                        return `${locName} (${s.quantity})`;
+                                                                    })
+                                                                    .join("; ");
+                                                                if (stocksStr) return stocksStr;
+                                                            }
+                                                            return "";
+                                                        }
+                                                    },
+                                                    { header: "Себестоимость", key: (item) => item.costPrice || 0 },
+                                                    { header: "Цена продажи", key: (item) => item.sellingPrice || 0 }
+                                                ]);
+                                            }}
+                                            className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full hover:bg-slate-100 transition-all group shrink-0"
+                                            title="Экспорт"
+                                        >
+                                            <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                                            <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
+                                        </button>
+
+                                        <div className="w-px h-8 bg-slate-200 mx-1" />
+
+                                        <button
+                                            onClick={() => {
+                                                const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
+                                                const hasStock = itemsToArchive.some(i => i.quantity > 0);
+
+                                                if (hasStock) {
+                                                    toast("Нельзя архивировать товары с остатком > 0", "error");
+                                                    return;
+                                                }
+                                                setShowArchiveReason(true);
+                                            }}
+                                            className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
+                                        >
+                                            <Archive className="w-4 h-4" />
+                                        </button>
+
+                                        <button
+                                            onClick={() => setSelectedIds([])}
+                                            className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>,
+                    document.body
                 )
             }
+
+            <BulkMoveDialog
+                isOpen={isBulkMoveOpen}
+                selectedIds={selectedIds}
+                storageLocations={storageLocations}
+                onClose={() => setIsBulkMoveOpen(false)}
+                onSuccess={() => {
+                    setIsBulkMoveOpen(false);
+                    setSelectedIds([]);
+                    router.refresh();
+                }}
+            />
 
             {
                 isBulkCategoryOpen && (
@@ -1000,17 +1110,15 @@ export function CategoryDetailClient({
             }
 
             {
-                isAdjustOpen && adjustingItem && (
+                (adjustingItem || items.length > 0) && (
                     <AdjustStockDialog
-                        item={adjustingItem}
+                        item={adjustingItem || items[0]}
                         locations={storageLocations}
                         itemStocks={adjustingItemStocks}
                         user={user}
+                        isOpen={isAdjustOpen}
                         onClose={() => {
                             setIsAdjustOpen(false);
-                            setAdjustingItem(null);
-                            setAdjustingItemStocks([]);
-                            router.refresh();
                         }}
                     />
                 )
@@ -1060,7 +1168,7 @@ function SortableSubCategoryCard({
             style={style}
             onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
             className={cn(
-                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm",
+                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm !rounded-2xl sm:!rounded-[var(--radius)]",
                 isDragging && "opacity-0 scale-95" // Hide the original one while dragging
             )}
         >
@@ -1106,7 +1214,7 @@ function SubCategoryCardContent({
                 </div>
 
                 <div className={cn(
-                    "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center transition-all",
+                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
                     colorStyle
                 )}>
                     {createElement(IconComponent, { className: "w-5 h-5" })}
@@ -1150,11 +1258,19 @@ function SubCategoryCardContent({
     );
 }
 
-function BulkMoveDialog({ selectedIds, storageLocations, onClose, onSuccess }: { selectedIds: string[], storageLocations: StorageLocation[], onClose: () => void, onSuccess: () => void }) {
+function BulkMoveDialog({ isOpen, selectedIds, storageLocations, onClose, onSuccess }: { isOpen: boolean, selectedIds: string[], storageLocations: StorageLocation[], onClose: () => void, onSuccess: () => void }) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [targetLocationId, setTargetLocationId] = useState("");
     const [comment, setComment] = useState("");
+
+    // Reset state when dialog opens
+    useEffect(() => {
+        if (isOpen) {
+            setTargetLocationId("");
+            setComment("");
+        }
+    }, [isOpen]);
 
     const handleMove = async () => {
         if (!targetLocationId) return;
@@ -1175,17 +1291,15 @@ function BulkMoveDialog({ selectedIds, storageLocations, onClose, onSuccess }: {
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-md animate-in fade-in" onClick={onClose} />
-            <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-8 animate-in zoom-in-95">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-900">Массовое перемещение</h2>
-                        <p className="text-xs text-slate-500 font-medium mt-1">Перемещение {selectedIds.length} {pluralize(selectedIds.length, 'позиции', 'позиций', 'позиций')}</p>
-                    </div>
-                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50">
-                        <X className="h-5 w-5" />
-                    </button>
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Массовое перемещение"
+            className="sm:max-w-md"
+        >
+            <div className="p-6 space-y-6">
+                <div>
+                    <p className="text-sm text-slate-500 font-medium">Перемещение {selectedIds.length} {pluralize(selectedIds.length, 'позиции', 'позиций', 'позиций')}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -1218,7 +1332,7 @@ function BulkMoveDialog({ selectedIds, storageLocations, onClose, onSuccess }: {
                     </Button>
                 </div>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }
 

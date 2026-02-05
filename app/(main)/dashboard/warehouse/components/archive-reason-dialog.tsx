@@ -5,6 +5,7 @@ import { X, Archive, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface ArchiveReasonDialogProps {
     isOpen: boolean;
@@ -40,33 +41,51 @@ export function ArchiveReasonDialog({
         onConfirm(reason);
     };
 
-    return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
+    const footerContent = (
+        <div className="p-5 pt-3 flex items-center justify-end gap-3 bg-white/95 backdrop-blur-md border-t border-slate-100">
+            <button
+                type="button"
                 onClick={onClose}
-            />
+                className="hidden lg:inline-block h-11 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center px-6"
+            >
+                Отмена
+            </button>
+            <Button
+                onClick={handleConfirm}
+                disabled={isLoading || !reason.trim()}
+                className="h-11 flex-1 sm:flex-none sm:px-10 rounded-[var(--radius-inner)] bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-40"
+            >
+                {isLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : "Архивировать"}
+            </Button>
+        </div>
+    );
 
-            <div className="relative w-full max-w-sm bg-white rounded-[var(--radius-outer)] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col">
+    return (
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} footer={footerContent}>
+            <div className="flex flex-col h-full overflow-hidden">
                 {/* Header Section */}
-                <div className="p-6 pb-2 flex items-center gap-4 text-left">
-                    <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 shadow-sm border border-amber-100">
-                        <Archive className="w-6 h-6" />
-                    </div>
+                <div className="p-6 pb-2 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-4 text-left">
+                        <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 shadow-sm border border-amber-100">
+                            <Archive className="w-6 h-6" />
+                        </div>
 
-                    <h3 className="text-2xl font-bold text-slate-900 leading-tight">
-                        {displayTitle}
-                    </h3>
+                        <h3 className="text-2xl font-bold text-slate-900 leading-tight">
+                            {displayTitle}
+                        </h3>
+                    </div>
                 </div>
 
-                <div className="px-6 space-y-4">
+                <div className="px-6 pb-20 space-y-4 flex-1 overflow-y-auto custom-scrollbar">
                     <div className="space-y-3">
-                        <p className="text-xs font-bold text-slate-500 leading-relaxed text-center px-4">
+                        <p className="text-xs font-bold text-slate-700 leading-relaxed px-4">
                             {displayDescription}
                         </p>
 
                         <div className="space-y-1.5 pt-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Причина архивации <span className="text-rose-500">*</span>
                             </label>
                             <textarea
@@ -78,10 +97,10 @@ export function ArchiveReasonDialog({
                                 }}
                                 placeholder="..."
                                 className={cn(
-                                    "w-full min-h-[80px] p-4 rounded-[var(--radius-inner)] border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-200",
+                                    "w-full min-h-[140px] p-4 rounded-[var(--radius-inner)] border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-300",
                                     error
                                         ? "bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
-                                        : "bg-slate-50/50 border-slate-200 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-inner"
+                                        : "bg-slate-50 border-slate-200 text-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm"
                                 )}
                             />
                             {error && (
@@ -93,34 +112,7 @@ export function ArchiveReasonDialog({
                         </div>
                     </div>
                 </div>
-
-                <div className="p-6 flex gap-3 pt-6">
-                    <Button
-                        variant="ghost"
-                        onClick={onClose}
-                        className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-xs text-slate-400 hover:bg-slate-50 transition-all border border-transparent"
-                    >
-                        Отмена
-                    </Button>
-                    <Button
-                        onClick={handleConfirm}
-                        disabled={isLoading || !reason.trim()}
-                        className="flex-[1.5] h-11 rounded-[var(--radius-inner)] bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20 text-white font-bold text-xs transition-all active:scale-95 disabled:opacity-40"
-                    >
-                        {isLoading ? (
-                            <RefreshCw className="w-4 h-4 animate-spin" />
-                        ) : "Архивировать"}
-                    </Button>
-                </div>
-
-                {/* Top Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all group"
-                >
-                    <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
-                </button>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }

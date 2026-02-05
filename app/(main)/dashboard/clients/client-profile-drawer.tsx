@@ -126,7 +126,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all font-bold"
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -195,7 +195,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/30">
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center h-full space-y-4">
                             <div className="w-10 h-10 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
@@ -208,7 +208,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <div className="space-y-8">
                                     {/* Stats Cards */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+                                        <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-sm">
                                             <div className="flex items-center gap-3 mb-4">
                                                 <div className="w-10 h-10 bg-primary/5 text-primary rounded-[18px] flex items-center justify-center">
                                                     <ShoppingBag className="w-5 h-5" />
@@ -219,7 +219,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                         </div>
 
                                         {showFinancials && (
-                                            <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+                                            <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-sm">
                                                 <div className="flex items-center gap-3 mb-4">
                                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-[18px] flex items-center justify-center">
                                                         <TrendingUp className="w-5 h-5" />
@@ -238,7 +238,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <h3 className="text-xs font-semibold text-slate-400">Основная информация</h3>
                                         </div>
                                         <div className="grid grid-cols-1 gap-3">
-                                            <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-200 shadow-sm">
+                                            <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
                                                 <Phone className="w-5 h-5 text-slate-300" />
                                                 <div>
                                                     <p className="text-xs font-medium text-slate-400 mb-0.5">Телефон</p>
@@ -250,7 +250,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             </div>
                                             {client.email && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
                                                     <Mail className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Email</p>
@@ -259,7 +259,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.city && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
                                                     <MapPin className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">География</p>
@@ -268,7 +268,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.company && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-white border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
                                                     <Building2 className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Компания</p>
@@ -288,13 +288,13 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {client.telegram && (
-                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50/50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100" onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}>
+                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}>
                                                         <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white"><MessageCircle className="w-3 h-3" /></div>
                                                         Telegram
                                                     </Badge>
                                                 )}
                                                 {client.instagram && (
-                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50/50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100" onClick={() => window.open(`https://instagram.com/${client.instagram?.replace('@', '')}`, '_blank')}>
+                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => window.open(`https://instagram.com/${client.instagram?.replace('@', '')}`, '_blank')}>
                                                         <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white"><ExternalLink className="w-3 h-3" /></div>
                                                         Instagram
                                                     </Badge>
@@ -306,7 +306,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <User className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Менеджер</h3>
                                             </div>
-                                            <div className="p-4 bg-white rounded-[18px] border border-slate-200 shadow-sm flex items-center gap-3">
+                                            <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                                                     <User className="w-4 h-4" />
                                                 </div>
@@ -342,7 +342,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <a
                                                     key={order.id}
                                                     href={`/dashboard/orders/${order.id}`}
-                                                    className="flex items-center justify-between p-5 rounded-[1.5rem] bg-white border border-slate-200 transition-all group shadow-sm hover:shadow-md"
+                                                    className="flex items-center justify-between p-5 rounded-[1.5rem] bg-slate-50 border border-slate-200 transition-all group shadow-sm hover:bg-white hover:shadow-md"
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-all">

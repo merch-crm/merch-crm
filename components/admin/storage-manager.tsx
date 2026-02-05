@@ -41,7 +41,7 @@ export function StorageManager() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
-                <div className="flex items-center gap-3 p-2 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit">
+                <div className="flex items-center gap-3 p-2 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
                     <button
                         onClick={() => setActiveTab("s3")}
                         className={cn(

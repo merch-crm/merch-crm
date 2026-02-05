@@ -19,7 +19,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
             {/* Main Stats: Revenue (if visible) or Total - Span 8 */}
-            <div className="col-span-12 lg:col-span-8 bg-slate-900 text-white rounded-[var(--radius-outer)] p-8 flex flex-col justify-between relative overflow-hidden group shadow-crm-xl border border-slate-800 min-h-[240px]">
+            <div className="col-span-12 md:col-span-8 lg:col-span-8 bg-slate-900 text-white rounded-[var(--radius-outer)] p-8 flex flex-col justify-between relative overflow-hidden group shadow-crm-xl border border-slate-800 min-h-[240px]">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl opacity-50 group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
 
                 <div className="flex items-start justify-between relative z-10">
@@ -56,7 +56,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
             </div>
 
             {/* Right Column Grid - Span 4 */}
-            <div className="col-span-12 lg:col-span-4 flex flex-col gap-5">
+            <div className="col-span-12 md:col-span-4 lg:col-span-4 flex flex-col gap-5">
                 {/* New Orders - Accent Card */}
                 <div className="flex-1 glass-panel p-6 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-4">

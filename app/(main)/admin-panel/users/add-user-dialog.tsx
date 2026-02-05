@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import { Plus, X, User, Mail, Lock, Shield, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { createUser, getRoles, getDepartments } from "../actions";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
     const router = useRouter();
@@ -62,16 +65,136 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
         }
     }
 
+    const isMobile = useIsMobile();
+
     if (!isOpen) {
         return (
             <Button
                 onClick={() => setIsOpen(true)}
-                size="lg"
-                className="rounded-[var(--radius-outer)] shadow-xl shadow-primary/20 font-bold"
+                size={isMobile ? "default" : "lg"}
+                className={cn(
+                    "rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
+                    isMobile ? "w-11 h-11 p-0" : ""
+                )}
+                title="Пригласить сотрудника"
             >
-                <Plus className="mr-2 h-5 w-5" />
-                Пригласить сотрудника
+                <Plus className={cn("h-5 w-5", !isMobile && "mr-2")} />
+                <span className="hidden sm:inline">Пригласить сотрудника</span>
             </Button>
+        );
+    }
+
+    const FormContent = (
+        <form action={handleSubmit} className="space-y-5">
+            <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 pl-1">ФИО сотрудника</label>
+                <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        placeholder="Иван Иванов"
+                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 pl-1">Email (Логин)</label>
+                <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        placeholder="ivan@crm.local"
+                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 pl-1">Пароль</label>
+                <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        placeholder="••••••••"
+                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                    />
+                </div>
+            </div>
+
+            <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+                <div className="space-y-1">
+                    <label className="text-sm font-bold text-slate-700 pl-1">Роль в системе</label>
+                    <div className="relative">
+                        <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <select
+                            name="roleId"
+                            required
+                            value={selectedRoleId}
+                            onChange={(e) => handleRoleChange(e.target.value)}
+                            className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
+                        >
+                            <option value="" disabled>Выберите роль</option>
+                            {roles.map(role => (
+                                <option key={role.id} value={role.id}>{role.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                <div className="space-y-1">
+                    <label className="text-sm font-bold text-slate-700 pl-1">Отдел</label>
+                    <div className="relative">
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <select
+                            name="departmentId"
+                            value={selectedDeptId}
+                            onChange={(e) => setSelectedDeptId(e.target.value)}
+                            className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
+                        >
+                            <option value="">Выберите отдел</option>
+                            {departments.map(dept => (
+                                <option key={dept.id} value={dept.id}>{dept.name}</option>
+                            ))}
+                        </select>
+                        <input type="hidden" name="department" value={departments.find(d => d.id === selectedDeptId)?.name || ""} />
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-6">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full inline-flex justify-center rounded-[var(--radius-inner)] border border-transparent bg-primary h-11 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:opacity-90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98] items-center"
+                >
+                    {loading ? "Создание..." : "Создать сотрудника"}
+                </button>
+            </div>
+        </form>
+    );
+
+    if (isMobile) {
+        return (
+            <BottomSheet
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Новый сотрудник"
+            >
+                <div className="pb-10">
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[var(--radius-outer)] border border-red-100">
+                            {error}
+                        </div>
+                    )}
+                    {FormContent}
+                </div>
+            </BottomSheet>
         );
     }
 
@@ -103,98 +226,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                         </div>
                     )}
 
-                    <form action={handleSubmit} className="space-y-5">
-                        <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">ФИО сотрудника</label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    name="name"
-                                    required
-                                    placeholder="Иван Иванов"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Email (Логин)</label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="email"
-                                    name="email"
-                                    required
-                                    placeholder="ivan@crm.local"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Пароль</label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="password"
-                                    name="password"
-                                    required
-                                    placeholder="••••••••"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <label className="text-sm font-bold text-slate-500 pl-1">Роль в системе</label>
-                                <div className="relative">
-                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <select
-                                        name="roleId"
-                                        required
-                                        value={selectedRoleId}
-                                        onChange={(e) => handleRoleChange(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
-                                    >
-                                        <option value="" disabled>Выберите роль</option>
-                                        {roles.map(role => (
-                                            <option key={role.id} value={role.id}>{role.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-bold text-slate-500 pl-1">Отдел</label>
-                                <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <select
-                                        name="departmentId"
-                                        value={selectedDeptId}
-                                        onChange={(e) => setSelectedDeptId(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
-                                    >
-                                        <option value="">Выберите отдел</option>
-                                        {departments.map(dept => (
-                                            <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                        ))}
-                                    </select>
-                                    <input type="hidden" name="department" value={departments.find(d => d.id === selectedDeptId)?.name || ""} />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full inline-flex justify-center rounded-[var(--radius-inner)] border border-transparent bg-primary h-11 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:opacity-90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98] items-center"
-                            >
-                                {loading ? "Создание..." : "Создать сотрудника"}
-                            </button>
-                        </div>
-                    </form>
+                    {FormContent}
                 </div>
             </div>
         </div>

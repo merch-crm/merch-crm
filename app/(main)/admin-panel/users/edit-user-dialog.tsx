@@ -100,7 +100,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
 
                     <form action={handleSubmit} className="space-y-5">
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">ФИО сотрудника</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">ФИО сотрудника</label>
                             <div className="relative">
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -115,7 +115,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Email (Логин)</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Email (Логин)</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -130,7 +130,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Новый пароль (оставьте пустым, если не хотите менять)</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Новый пароль (оставьте пустым, если не хотите менять)</label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -151,7 +151,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-bold text-slate-500 pl-1">Роль в системе</label>
+                                <label className="text-sm font-bold text-slate-700 pl-1">Роль в системе</label>
                                 <div className="relative">
                                     <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <select
@@ -169,7 +169,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                 </div>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-bold text-slate-500 pl-1">Отдел</label>
+                                <label className="text-sm font-bold text-slate-700 pl-1">Отдел</label>
                                 <div className="relative">
                                     <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <select

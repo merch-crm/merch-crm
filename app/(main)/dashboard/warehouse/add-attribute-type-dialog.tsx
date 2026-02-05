@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Lock, RefreshCw, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, X, Lock, RefreshCw, Check, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,6 +11,7 @@ import { playSound } from "@/lib/sounds";
 import { createInventoryAttributeType } from "./actions";
 import { cn } from "@/lib/utils";
 import { Category } from "./types";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 
 const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -26,6 +27,7 @@ const transliterateToSlug = (text: string) => {
 
 interface AddAttributeTypeDialogProps {
     categories: Category[];
+    className?: string;
 }
 
 function Switch({
@@ -80,13 +82,26 @@ function Switch({
 
 
 
-export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogProps) {
+export function AddAttributeTypeDialog({ categories, className }: AddAttributeTypeDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [label, setLabel] = useState("");
     const [slug, setSlug] = useState("");
     const [isSystem, setIsSystem] = useState(false);
+
     const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+
+    // Search animation states
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
     const searchParams = useSearchParams();
     const router = useRouter();
     const { toast } = useToast();
@@ -139,15 +154,17 @@ export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogPro
         <>
             <Button
                 onClick={handleOpen}
-                className="h-11 btn-dark rounded-[var(--radius-inner)] px-6 gap-2 font-bold inline-flex items-center justify-center text-sm border-none"
+                className={cn(
+                    "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-[18px] p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5",
+                    className
+                )}
             >
-                <Plus className="w-5 h-5" />
-                Новая характеристика
+                <Plus className="w-5 h-5 text-white shrink-0" />
+                <span className="hidden sm:inline">Новая характеристика</span>
             </Button>
 
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="max-w-2xl p-0 rounded-[var(--radius-outer)] border-none shadow-2xl overflow-visible bg-white">
-                    <DialogTitle className="sr-only">Новая характеристика</DialogTitle>
+            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Новая характеристика" showVisualTitle={false} hideClose={false}>
+                <div className="flex flex-col h-full overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shadow-sm shrink-0 border border-primary/10">
@@ -160,29 +177,108 @@ export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogPro
                                 </p>
                             </div>
                         </div>
-
                     </div>
 
-                    <div className="px-6 py-5 space-y-6">
+                    <div className="px-6 pb-20 pt-4 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
                         <div className="space-y-1.5 overflow-visible">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Раздел каталога товаров</label>
-                            <PremiumSelect
-                                value={activeCategoryId}
-                                onChange={setActiveCategoryId}
-                                options={[
-                                    ...rootCategories
-                                        .filter(c => c.name.toLowerCase() !== "без категории")
-                                        .map(c => ({ id: c.id, title: c.name })),
-                                    { id: "uncategorized", title: "Без категории" }
-                                ]}
-                                placeholder="Выберите категорию"
-                                showSearch
-                            />
+                            <label className="text-sm font-bold text-slate-700 ml-1">Раздел каталога товаров</label>
+
+                            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2">
+                                <LayoutGroup id="attr-category-search">
+                                    <motion.div
+                                        layout
+                                        className={cn(
+                                            "flex flex-row items-center min-w-0 w-full",
+                                            (isSearchExpanded && isMobile) ? "gap-0" : "gap-2"
+                                        )}
+                                        transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+                                    >
+                                        <AnimatePresence mode="popLayout" initial={false}>
+                                            {(!isSearchExpanded || !isMobile) && (
+                                                <motion.div
+                                                    layout
+                                                    initial={{ opacity: 0, scale: 0.95, x: -20 }}
+                                                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, x: -20 }}
+                                                    transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+                                                    className="w-full"
+                                                >
+                                                    <PremiumSelect
+                                                        value={activeCategoryId}
+                                                        onChange={setActiveCategoryId}
+                                                        options={
+                                                            [
+                                                                ...rootCategories
+                                                                    .filter(c => c.name.toLowerCase() !== "без категории")
+                                                                    .map(c => ({ id: c.id, title: c.name })),
+                                                                { id: "uncategorized", title: "Без категории" }
+                                                            ].filter(opt =>
+                                                                opt.title.toLowerCase().includes(searchQuery.toLowerCase())
+                                                            )
+                                                        }
+                                                        placeholder="Выберите категорию"
+                                                        // Hide built-in search as we have external one now
+                                                        showSearch={false}
+                                                        className="w-full"
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+
+                                        <motion.div
+                                            layout
+                                            className={cn(
+                                                "relative min-w-0 h-11 transition-all duration-500",
+                                                (isSearchExpanded && isMobile) ? "w-full" : "w-11 shrink-0"
+                                            )}
+                                            transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 cursor-pointer transition-colors duration-300",
+                                                    isSearchExpanded && "text-primary"
+                                                )}
+                                                onClick={() => !isSearchExpanded && setIsSearchExpanded(true)}
+                                            >
+                                                <Search className={cn("w-4 h-4 transition-colors duration-300", isSearchExpanded ? "text-primary" : "text-slate-400")} />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder={isSearchExpanded ? "Поиск категории..." : ""}
+                                                value={searchQuery}
+                                                onFocus={() => setIsSearchExpanded(true)}
+                                                onBlur={() => {
+                                                    if (!searchQuery) {
+                                                        setTimeout(() => setIsSearchExpanded(false), 200);
+                                                    }
+                                                }}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className={cn(
+                                                    "w-full h-full focus:outline-none min-w-0 transition-all duration-300 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/5 shadow-sm font-bold text-sm",
+                                                    (isSearchExpanded || !isMobile) ? "pl-11 pr-10 bg-white" : "pl-11 pr-0 bg-transparent border-none shadow-none cursor-pointer",
+                                                    (isSearchExpanded && isMobile) && "bg-white pl-11 pr-4"
+                                                )}
+                                            />
+                                            {searchQuery && (
+                                                <button
+                                                    onClick={() => {
+                                                        setSearchQuery("");
+                                                        setIsSearchExpanded(false);
+                                                    }}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors duration-300"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                        </motion.div>
+                                    </motion.div>
+                                </LayoutGroup>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Название заголовок</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                                 <input
                                     value={label}
                                     onChange={e => {
@@ -193,12 +289,12 @@ export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogPro
                                         }
                                     }}
                                     placeholder="Напр. Цвет"
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-xs text-slate-900 shadow-sm"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
                                 />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-500 ml-1">Системный SLUG</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Системный SLUG</label>
                                 <input
                                     value={slug}
                                     onChange={e => {
@@ -206,44 +302,44 @@ export function AddAttributeTypeDialog({ categories }: AddAttributeTypeDialogPro
                                         setIsSlugManuallyEdited(true);
                                     }}
                                     placeholder="color"
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50/30 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono placeholder:text-slate-300 text-[10px] font-bold text-primary shadow-sm"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono placeholder:text-slate-300 text-sm font-bold text-primary shadow-sm"
                                 />
                             </div>
                         </div>
 
-                        <div className="p-4 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
+                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
                             <Switch
                                 checked={isSystem}
                                 onChange={setIsSystem}
                                 label="Глобальная характеристика"
                                 description="Будет видна во всех категориях товаров"
-                                icon={Lock}
                             />
                         </div>
                     </div>
 
-                    <div className="p-6 pt-2 flex gap-3 bg-white rounded-b-[var(--radius-outer)]">
+                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center sm:justify-end gap-3 shrink-0">
                         <button
+                            type="button"
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 h-11 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all active:scale-95"
+                            className="hidden lg:inline-block h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleCreate}
                             disabled={isLoading || !label || !slug}
-                            className="flex-[1.8] h-11 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3"
+                            className="h-11 w-full sm:w-auto sm:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm"
                         >
                             {isLoading ? (
-                                <RefreshCw className="w-4 h-4 animate-spin" />
+                                <RefreshCw className="w-4 h-4 animate-spin text-white" />
                             ) : (
-                                <Check className="w-4 h-4 stroke-[3]" />
+                                <Check className="w-4 h-4 stroke-[3] text-white" />
                             )}
-                            Создать раздел
+                            Сохранить
                         </button>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            </ResponsiveModal>
         </>
     );
 }

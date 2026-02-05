@@ -24,6 +24,26 @@ export function pluralize(count: number, one: string, few: string, many: string)
 }
 
 /**
+ * Склонение русских слов для родительного падежа (для фразы "из 10 позиций")
+ * @param count - число
+ * @param oneGen - форма родительного падежа ед. числа (позиции, товара)
+ * @param manyGen - форма родительного падежа мн. числа (позиций, товаров)
+ */
+export function pluralizeGenitive(count: number, oneGen: string, manyGen: string): string {
+    const absCount = Math.abs(count);
+    const lastDigit = absCount % 10;
+    const lastTwoDigits = absCount % 100;
+
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        return manyGen;
+    }
+    if (lastDigit === 1) {
+        return oneGen;
+    }
+    return manyGen;
+}
+
+/**
  * Форматирование числа с правильным склонением слова
  */
 export function formatCount(count: number, one: string, few: string, many: string): string {

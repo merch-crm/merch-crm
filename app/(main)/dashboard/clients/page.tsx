@@ -70,20 +70,21 @@ export default async function ClientsPage() {
     return (
         <div className="space-y-4">
             <div className="flex flex-col gap-4">
-                <div className="sm:flex sm:items-end sm:justify-between px-1">
-                    <div>
-                        <h1 className="text-4xl font-bold text-slate-900 leading-none">Клиенты</h1>
-                        <p className="text-slate-500 text-[13px] font-medium mt-3">
+                <div className="flex flex-row items-center justify-between gap-4 px-1">
+                    <div className="min-w-0 flex-1">
+                        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Клиенты</h1>
+                        <p className="text-slate-500 text-[11px] sm:text-[13px] font-medium mt-1.5 sm:mt-3 line-clamp-1">
                             База контрагентов и история взаимодействий
                         </p>
                     </div>
-                    <div className="mt-4 sm:mt-0">
+                    <div className="shrink-0">
                         <Link
                             href="/dashboard/clients/new"
-                            className="h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-[18px] px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center"
+                            className="h-11 w-11 sm:h-12 sm:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center justify-center p-0 sm:p-auto"
+                            title="Добавить клиента"
                         >
                             <Plus className="w-5 h-5" />
-                            Добавить клиента
+                            <span className="hidden sm:inline">Добавить клиента</span>
                         </Link>
                     </div>
                 </div>

@@ -12,6 +12,15 @@ import { cn } from "@/lib/utils";
 import { impersonateUser } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface User {
     id: string;
@@ -120,127 +129,203 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                 )}
             </div>
 
-            <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr className="bg-gray-50">
-                                <th className="w-[50px] px-6 py-3 text-left">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
-                                        checked={isAllSelected}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Сотрудник</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Роль</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Отдел</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground  tracking-wider">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {initialUsers.map((user) => {
-                                const isSelected = selectedIds.includes(user.id);
-                                return (
-                                    <tr
-                                        key={user.id}
-                                        onClick={() => setEditingUser(user)}
-                                        className={cn(
-                                            "hover:bg-gray-50 transition-colors group cursor-pointer",
-                                            isSelected ? "bg-primary/5" : ""
-                                        )}
-                                    >
-                                        <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+            <ResponsiveDataView
+                data={initialUsers}
+                renderTable={() => (
+                    <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr className="bg-gray-50">
+                                        <th className="w-[50px] px-6 py-3 text-left">
                                             <input
                                                 type="checkbox"
                                                 className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
-                                                checked={isSelected}
-                                                onChange={() => handleSelectRow(user.id)}
+                                                checked={isAllSelected}
+                                                onChange={handleSelectAll}
                                             />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-4">
-                                                <div
-                                                    className={cn(
-                                                        "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
-                                                        isSelected ? "bg-white border-primary/20 text-primary scale-110" : "text-white border-transparent"
-                                                    )}
-                                                    style={{
-                                                        backgroundColor: isSelected
-                                                            ? undefined
-                                                            : (user.role?.color || user.department_color || "#94a3b8")
-                                                    }}
-                                                >
-                                                    <UserIcon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-white")} />
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
-                                                    <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-bold  tracking-wider" />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                                <Building className="w-4 h-4 text-slate-300" />
-                                                {user.department || "—"}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    onClick={() => setImpersonateUserConfirm(user)}
-                                                    disabled={isImpersonatingLoading === user.id}
-                                                    className={cn(
-                                                        "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all",
-                                                        isImpersonatingLoading === user.id && "animate-pulse"
-                                                    )}
-                                                    title="Войти как пользователь"
-                                                >
-                                                    <LogIn className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => setViewingStatsUser(user)}
-                                                    className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-[18px] transition-all"
-                                                    title="Статистика"
-                                                >
-                                                    <BarChart2 className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => setEditingUser(user)}
-                                                    className="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-[18px] transition-all"
-                                                >
-                                                    <Edit className="w-4 h-4" />
-                                                </button>
-                                                {!user.isSystem && (
-                                                    <button
-                                                        onClick={() => setDeletingUser(user)}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-[18px] transition-all"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Сотрудник</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Роль</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Отдел</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground  tracking-wider">Действия</th>
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                {initialUsers.length === 0 && (
-                    <div className="text-center py-24">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
-                            <Users className="w-8 h-8 text-slate-200" />
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {initialUsers.map((user) => {
+                                        const isSelected = selectedIds.includes(user.id);
+                                        return (
+                                            <tr
+                                                key={user.id}
+                                                onClick={() => setEditingUser(user)}
+                                                className={cn(
+                                                    "hover:bg-gray-50 transition-colors group cursor-pointer",
+                                                    isSelected ? "bg-primary/5" : ""
+                                                )}
+                                            >
+                                                <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
+                                                        checked={isSelected}
+                                                        onChange={() => handleSelectRow(user.id)}
+                                                    />
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center gap-4">
+                                                        <div
+                                                            className={cn(
+                                                                "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
+                                                                isSelected ? "bg-white border-primary/20 text-primary scale-110" : "text-white border-transparent"
+                                                            )}
+                                                            style={{
+                                                                backgroundColor: isSelected
+                                                                    ? undefined
+                                                                    : (user.role?.color || user.department_color || "#94a3b8")
+                                                            }}
+                                                        >
+                                                            <UserIcon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-white")} />
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
+                                                            <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-bold  tracking-wider" />
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                                        <Building className="w-4 h-4 text-slate-300" />
+                                                        {user.department || "—"}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                                    <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button
+                                                            onClick={() => setImpersonateUserConfirm(user)}
+                                                            disabled={isImpersonatingLoading === user.id}
+                                                            className={cn(
+                                                                "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all",
+                                                                isImpersonatingLoading === user.id && "animate-pulse"
+                                                            )}
+                                                            title="Войти как пользователь"
+                                                        >
+                                                            <LogIn className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setViewingStatsUser(user)}
+                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-[18px] transition-all"
+                                                            title="Статистика"
+                                                        >
+                                                            <BarChart2 className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditingUser(user)}
+                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-[18px] transition-all"
+                                                        >
+                                                            <Edit className="w-4 h-4" />
+                                                        </button>
+                                                        {!user.isSystem && (
+                                                            <button
+                                                                onClick={() => setDeletingUser(user)}
+                                                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-[18px] transition-all"
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
-                        <p className="text-base font-bold text-slate-900">Сотрудники не найдены</p>
-                        <p className="text-sm text-slate-400 mt-1">Попробуйте изменить запрос или добавьте нового сотрудника</p>
                     </div>
                 )}
-            </div>
+                renderCard={(user) => {
+                    const isSelected = selectedIds.includes(user.id);
+                    return (
+                        <div
+                            key={user.id}
+                            className={cn(
+                                "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 active:scale-[0.98] transition-all",
+                                isSelected ? "ring-2 ring-primary/20 bg-primary/5" : ""
+                            )}
+                            onClick={() => setEditingUser(user)}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className="h-10 w-10 rounded-xl flex items-center justify-center text-white shadow-sm border border-transparent"
+                                        style={{ backgroundColor: user.role?.color || user.department_color || "#94a3b8" }}
+                                    >
+                                        <UserIcon className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-900">{user.name}</div>
+                                        <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{user.role?.name || "Сотрудник"}</div>
+                                    </div>
+                                </div>
+                                <div onClick={(e) => e.stopPropagation()}>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                                <MoreVertical className="w-4 h-4 text-slate-400" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                                            <DropdownMenuItem onClick={() => setImpersonateUserConfirm(user)} className="gap-2 font-bold">
+                                                <LogIn className="w-4 h-4" />
+                                                Войти как
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setViewingStatsUser(user)} className="gap-2 font-bold">
+                                                <BarChart2 className="w-4 h-4" />
+                                                Статистика
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setEditingUser(user)} className="gap-2 font-bold">
+                                                <Edit className="w-4 h-4" />
+                                                Изменить
+                                            </DropdownMenuItem>
+                                            {!user.isSystem && (
+                                                <DropdownMenuItem onClick={() => setDeletingUser(user)} className="gap-2 font-bold text-rose-600">
+                                                    <Trash2 className="w-4 h-4" />
+                                                    Удалить
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                                <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                                    <Building className="w-3.5 h-3.5 opacity-50" />
+                                    {user.department || "Нет отдела"}
+                                </div>
+                                <div onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                        type="checkbox"
+                                        className="rounded border-slate-300 text-primary focus:ring-0 h-4 w-4"
+                                        checked={isSelected}
+                                        onChange={() => handleSelectRow(user.id)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }}
+            />
+            {initialUsers.length === 0 && (
+                <div className="text-center py-24">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
+                        <Users className="w-8 h-8 text-slate-200" />
+                    </div>
+                    <p className="text-base font-bold text-slate-900">Сотрудники не найдены</p>
+                    <p className="text-sm text-slate-400 mt-1">Попробуйте изменить запрос или добавьте нового сотрудника</p>
+                </div>
+            )}
 
             <DeleteUserDialog
                 isOpen={!!deletingUser}

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { X, Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
 import { updateDepartment, getRolesByDepartment, getRoles, updateRoleDepartment } from "../actions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Role {
     id: string;
@@ -38,6 +40,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState(department?.color || "indigo");
+    const isMobile = useIsMobile();
 
     // Roles Tab State
     const [departmentRoles, setDepartmentRoles] = useState<Role[]>([]);
@@ -127,6 +130,241 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
 
     const colorStyle = COLORS.find(c => c.value === selectedColor) || COLORS[0];
 
+
+    const FormContent = (
+        <div className="space-y-6">
+            <div className="space-y-5">
+                <div className="space-y-1">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Название подразделения</label>
+                    <div className="relative">
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            name="name"
+                            defaultValue={department.name}
+                            required
+                            className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all font-bold"
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Описание деятельности</label>
+                    <textarea
+                        name="description"
+                        defaultValue={department.description || ""}
+                        rows={3}
+                        placeholder="Опишите, чем занимается этот отдел..."
+                        className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all resize-none leading-relaxed"
+                    />
+                </div>
+
+                <div className="space-y-3">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Визуальный идентификатор (Цвет)</label>
+                    <div className="flex flex-wrap gap-3">
+                        {COLORS.map((color) => (
+                            <button
+                                key={color.value}
+                                type="button"
+                                onClick={() => setSelectedColor(color.value)}
+                                className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100 hover:scale-110'}`}
+                                style={{ backgroundColor: getColorHex(color.value) }}
+                                title={color.name}
+                            >
+                                <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} className="hidden" readOnly />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-200">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark h-11 px-4 text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
+                >
+                    {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {loading ? "СОХРАНЕНИЕ..." : <><Save className="w-5 h-5" /> СОХРАНИТЬ ИЗМЕНЕНИЯ</>}
+                </button>
+            </div>
+        </div>
+    );
+
+    const RolesContent = (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+            {/* Current Roles */}
+            <div className="flex flex-col bg-slate-50 rounded-[18px] border border-slate-200 p-5 min-h-[300px] md:h-[450px]">
+                <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2">
+                        <div className={`p-1.5 ${colorStyle.bg} ${colorStyle.text} rounded-[18px]`}>
+                            <Shield className="w-4 h-4" />
+                        </div>
+                        <h4 className="text-[11px] font-bold text-slate-700  tracking-wider">Текущие роли</h4>
+                    </div>
+                    <span className={`${colorStyle.bg} ${colorStyle.text} text-[10px] font-bold px-2.5 py-1 rounded-full border ${colorStyle.border}`}>
+                        {departmentRoles.length}
+                    </span>
+                </div>
+                <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
+                    {rolesLoading ? (
+                        <div className="h-full py-10 flex flex-col items-center justify-center text-slate-300 gap-3">
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                            <span className="text-[10px] font-bold  tracking-normal">Загрузка...</span>
+                        </div>
+                    ) : departmentRoles.length === 0 ? (
+                        <div className="h-full py-10 flex flex-col items-center justify-center text-center">
+                            <div className="w-12 h-12 bg-white rounded-[18px] flex items-center justify-center shadow-sm border border-slate-200 mb-3">
+                                <Shield className="w-6 h-6 text-slate-200" />
+                            </div>
+                            <p className="text-slate-400 text-[10px] font-bold  tracking-wider">Роли еще не назначены</p>
+                        </div>
+                    ) : (
+                        departmentRoles.map(role => (
+                            <div key={role.id} className="flex items-center justify-between p-4 bg-white border border-slate-200/60 rounded-[18px] group hover:border-primary/40 hover:shadow-md transition-all">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 flex-shrink-0 bg-slate-50 rounded-[18px] group-hover:bg-primary/5 transition-colors flex items-center justify-center">
+                                        <Key className="w-4 h-4 text-slate-400 group-hover:text-primary" />
+                                    </div>
+                                    <div>
+                                        <span className="text-sm font-bold text-slate-700 block leading-tight">{role.name}</span>
+                                        <span className="text-[9px] text-slate-400 font-bold  tracking-normal">Активная роль</span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleRemoveRole(role.id)}
+                                    disabled={!!actionLoading}
+                                    className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-[18px] transition-all"
+                                    title="Удалить из отдела"
+                                >
+                                    {actionLoading === role.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Trash2 className="w-4 h-4" />
+                                    )}
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Available Roles */}
+            <div className="flex flex-col border border-slate-200 rounded-[18px] p-5 min-h-[300px] md:h-[450px]">
+                <div className="flex items-center gap-2 mb-5">
+                    <div className="p-1.5 bg-slate-100 text-slate-500 rounded-[18px]">
+                        <Plus className="w-4 h-4" />
+                    </div>
+                    <h4 className="text-[11px] font-bold text-slate-700  tracking-wider">Доступные роли</h4>
+                </div>
+                <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
+                    {rolesLoading ? (
+                        <div className="h-full py-10 flex flex-col items-center justify-center text-slate-300 gap-3">
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                            <span className="text-[10px] font-bold  tracking-normal">Загрузка...</span>
+                        </div>
+                    ) : availableRoles.length === 0 ? (
+                        <div className="h-full py-10 flex flex-col items-center justify-center text-center">
+                            <div className="w-12 h-12 bg-slate-50 rounded-[18px] flex items-center justify-center border border-slate-200 mb-3">
+                                <Plus className="w-6 h-6 text-slate-200" />
+                            </div>
+                            <p className="text-slate-400 text-[10px] font-bold  tracking-wider">Все роли распределены</p>
+                        </div>
+                    ) : (
+                        availableRoles.map(role => (
+                            <div key={role.id} className="flex items-center justify-between p-4 bg-slate-50/50 border border-slate-200 rounded-[18px] group hover:border-primary/40 hover:bg-white transition-all">
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-sm font-bold text-slate-700">{role.name}</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Building className="w-3 h-3 text-slate-300" />
+                                        <span className="text-[9px] text-slate-400 font-bold  tracking-normal">
+                                            {role.department ? role.department.name : "Без отдела"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleAddRole(role.id)}
+                                    disabled={!!actionLoading}
+                                    className="p-2.5 bg-white text-slate-400 hover:text-primary border border-slate-200 rounded-[18px] transition-all hover:shadow-lg hover:shadow-primary/10 active:scale-90"
+                                    title="Добавить в отдел"
+                                >
+                                    {actionLoading === role.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Plus className="w-4 h-4" />
+                                    )}
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
+    const DialogContent = (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="px-6 pt-5 pb-1">
+                <TabsList className="bg-[#f1f5f9] border-none rounded-full p-1 w-full sm:w-auto inline-flex h-auto shadow-none">
+                    <TabsTrigger
+                        value="general"
+                        className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
+                    >
+                        Основное
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="roles"
+                        className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
+                    >
+                        Роли отдела
+                    </TabsTrigger>
+                </TabsList>
+            </div>
+
+            <div className="px-6 pb-6 pt-4 min-h-[400px]">
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100 flex items-center gap-3">
+                        <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                        {error}
+                    </div>
+                )}
+
+                <TabsContent value="general">
+                    <form action={handleGeneralSubmit}>
+                        {FormContent}
+                    </form>
+                </TabsContent>
+
+                <TabsContent value="roles">
+                    {RolesContent}
+                </TabsContent>
+            </div>
+        </Tabs>
+    );
+
+    if (isMobile) {
+        return (
+            <BottomSheet
+                isOpen={isOpen}
+                onClose={onClose}
+                title={department.name}
+            >
+                <div className="pb-8">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className={`h-12 w-12 rounded-xl ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center border ${colorStyle.border} shadow-sm shrink-0`}>
+                            <Building className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-slate-900 leading-tight">{department.name}</h3>
+                            <p className="text-[10px] font-medium text-slate-500 mt-0.5">Параметры и управление отделом</p>
+                        </div>
+                    </div>
+                    {DialogContent}
+                </div>
+            </BottomSheet>
+        );
+    }
+
     return (
         <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" data-dialog-open="true">
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -150,204 +388,9 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                         </div>
                     </div>
 
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <div className="px-6 pt-5 pb-1">
-                            <TabsList className="bg-[#f1f5f9] border-none rounded-full p-1 w-full sm:w-auto inline-flex h-auto shadow-none">
-                                <TabsTrigger
-                                    value="general"
-                                    className="px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
-                                >
-                                    Основное
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="roles"
-                                    className="px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
-                                >
-                                    Роли отдела
-                                </TabsTrigger>
-                            </TabsList>
-                        </div>
-
-                        <div className="px-6 pb-6 pt-4 min-h-[400px]">
-                            {error && (
-                                <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100 flex items-center gap-3">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                                    {error}
-                                </div>
-                            )}
-
-                            <TabsContent value="general">
-                                <form action={handleGeneralSubmit} className="space-y-6">
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Название подразделения</label>
-                                        <div className="relative">
-                                            <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                defaultValue={department.name}
-                                                required
-                                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all font-bold"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Описание деятельности</label>
-                                        <textarea
-                                            name="description"
-                                            defaultValue={department.description || ""}
-                                            rows={3}
-                                            placeholder="Опишите, чем занимается этот отдел..."
-                                            className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all resize-none leading-relaxed"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Визуальный идентификатор (Цвет)</label>
-                                        <div className="flex flex-wrap gap-3">
-                                            {COLORS.map((color) => (
-                                                <button
-                                                    key={color.value}
-                                                    type="button"
-                                                    onClick={() => setSelectedColor(color.value)}
-                                                    className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100 hover:scale-110'}`}
-                                                    style={{ backgroundColor: getColorHex(color.value) }}
-                                                    title={color.name}
-                                                >
-                                                    <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} className="hidden" readOnly />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-slate-200">
-                                        <button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="w-full inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark h-11 px-4 text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
-                                        >
-                                            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                                            {loading ? "СОХРАНЕНИЕ..." : <><Save className="w-5 h-5" /> СОХРАНИТЬ ИЗМЕНЕНИЯ</>}
-                                        </button>
-                                    </div>
-                                </form>
-                            </TabsContent>
-
-                            <TabsContent value="roles">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
-                                    {/* Current Roles */}
-                                    <div className="flex flex-col bg-slate-50/50 rounded-[18px] border border-slate-200 p-5 h-[450px]">
-                                        <div className="flex items-center justify-between mb-5">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`p-1.5 ${colorStyle.bg} ${colorStyle.text} rounded-[18px]`}>
-                                                    <Shield className="w-4 h-4" />
-                                                </div>
-                                                <h4 className="text-[11px] font-bold text-slate-700  tracking-wider">Текущие роли</h4>
-                                            </div>
-                                            <span className={`${colorStyle.bg} ${colorStyle.text} text-[10px] font-bold px-2.5 py-1 rounded-full border ${colorStyle.border}`}>
-                                                {departmentRoles.length}
-                                            </span>
-                                        </div>
-                                        <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
-                                            {rolesLoading ? (
-                                                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-3">
-                                                    <Loader2 className="w-8 h-8 animate-spin" />
-                                                    <span className="text-[10px] font-bold  tracking-normal">Загрузка...</span>
-                                                </div>
-                                            ) : departmentRoles.length === 0 ? (
-                                                <div className="h-full flex flex-col items-center justify-center text-center">
-                                                    <div className="w-12 h-12 bg-white rounded-[18px] flex items-center justify-center shadow-sm border border-slate-200 mb-3">
-                                                        <Shield className="w-6 h-6 text-slate-200" />
-                                                    </div>
-                                                    <p className="text-slate-400 text-[10px] font-bold  tracking-wider">Роли еще не назначены</p>
-                                                </div>
-                                            ) : (
-                                                departmentRoles.map(role => (
-                                                    <div key={role.id} className="flex items-center justify-between p-4 bg-white border border-slate-200/60 rounded-[18px] group hover:border-primary/40 hover:shadow-md transition-all">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="h-10 w-10 flex-shrink-0 bg-slate-50 rounded-[18px] group-hover:bg-primary/5 transition-colors flex items-center justify-center">
-                                                                <Key className="w-4 h-4 text-slate-400 group-hover:text-primary" />
-                                                            </div>
-                                                            <div>
-                                                                <span className="text-sm font-bold text-slate-700 block leading-tight">{role.name}</span>
-                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-normal">Активная роль</span>
-                                                            </div>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => handleRemoveRole(role.id)}
-                                                            disabled={!!actionLoading}
-                                                            className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-[18px] transition-all"
-                                                            title="Удалить из отдела"
-                                                        >
-                                                            {actionLoading === role.id ? (
-                                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                                            ) : (
-                                                                <Trash2 className="w-4 h-4" />
-                                                            )}
-                                                        </button>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Available Roles */}
-                                    <div className="flex flex-col border border-slate-200 rounded-[18px] p-5 h-[450px]">
-                                        <div className="flex items-center gap-2 mb-5">
-                                            <div className="p-1.5 bg-slate-100 text-slate-500 rounded-[18px]">
-                                                <Plus className="w-4 h-4" />
-                                            </div>
-                                            <h4 className="text-[11px] font-bold text-slate-700  tracking-wider">Доступные роли</h4>
-                                        </div>
-                                        <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
-                                            {rolesLoading ? (
-                                                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-3">
-                                                    <Loader2 className="w-8 h-8 animate-spin" />
-                                                    <span className="text-[10px] font-bold  tracking-normal">Загрузка...</span>
-                                                </div>
-                                            ) : availableRoles.length === 0 ? (
-                                                <div className="h-full flex flex-col items-center justify-center text-center">
-                                                    <div className="w-12 h-12 bg-slate-50 rounded-[18px] flex items-center justify-center border border-slate-200 mb-3">
-                                                        <Plus className="w-6 h-6 text-slate-200" />
-                                                    </div>
-                                                    <p className="text-slate-400 text-[10px] font-bold  tracking-wider">Все роли распределены</p>
-                                                </div>
-                                            ) : (
-                                                availableRoles.map(role => (
-                                                    <div key={role.id} className="flex items-center justify-between p-4 bg-slate-50/50 border border-slate-200 rounded-[18px] group hover:border-primary/40 hover:bg-white transition-all">
-                                                        <div className="flex flex-col gap-0.5">
-                                                            <span className="text-sm font-bold text-slate-700">{role.name}</span>
-                                                            <div className="flex items-center gap-1.5">
-                                                                <Building className="w-3 h-3 text-slate-300" />
-                                                                <span className="text-[9px] text-slate-400 font-bold  tracking-normal">
-                                                                    {role.department ? role.department.name : "Без отдела"}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => handleAddRole(role.id)}
-                                                            disabled={!!actionLoading}
-                                                            className="p-2.5 bg-white text-slate-400 hover:text-primary border border-slate-200 rounded-[18px] transition-all hover:shadow-lg hover:shadow-primary/10 active:scale-90"
-                                                            title="Добавить в отдел"
-                                                        >
-                                                            {actionLoading === role.id ? (
-                                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                                            ) : (
-                                                                <Plus className="w-4 h-4" />
-                                                            )}
-                                                        </button>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </div>
-                    </Tabs>
+                    {DialogContent}
                 </div>
-            </div >
+            </div>
             <style jsx>{`
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 4px;
@@ -363,7 +406,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     background: #cbd5e1;
                 }
             `}</style>
-        </div >
+        </div>
     );
 }
 

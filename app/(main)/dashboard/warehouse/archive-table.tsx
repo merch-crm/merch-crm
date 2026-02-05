@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -135,7 +136,8 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 )}
             </div>
 
-            <div className="overflow-hidden rounded-[var(--radius-outer)] border border-slate-200">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-hidden rounded-[var(--radius-outer)] border border-slate-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -179,7 +181,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 border border-slate-200 overflow-hidden relative grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 overflow-hidden relative grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
                                                 {item.image ? (
                                                     <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                                                 ) : (
@@ -195,7 +197,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-[var(--radius-inner)]">
+                                        <span className="text-xs font-mono font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-[var(--radius-inner)]">
                                             {item.sku || "—"}
                                         </span>
                                     </td>
@@ -247,6 +249,16 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 </div>
             </div>
 
+            {/* Mobile Compact List View */}
+            <MobileArchiveList
+                items={currentItems}
+                selectedIds={selectedIds}
+                onSelect={(id) => setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])}
+                onRestore={handleRestore}
+                onDelete={(id) => setIdsToDelete([id])}
+                router={router}
+            />
+
             {filteredItems.length > 0 && (
                 <div className="pt-2">
                     <PremiumPagination
@@ -280,6 +292,149 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                     />
                 </div>
             </ConfirmDialog>
+        </div>
+    );
+}
+
+// Mobile Compact List Component
+function MobileArchiveList({
+    items,
+    selectedIds,
+    onSelect,
+    onRestore,
+    onDelete,
+    router
+}: {
+    items: InventoryItem[];
+    selectedIds: string[];
+    onSelect: (id: string) => void;
+    onRestore: (ids: string[]) => void;
+    onDelete: (id: string) => void;
+    router: ReturnType<typeof import("next/navigation").useRouter>;
+}) {
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+
+    return (
+        <div className="md:hidden rounded-[var(--radius-outer)] border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
+            {items.map((item) => {
+                const isSelected = selectedIds.includes(item.id);
+                const isExpanded = expandedId === item.id;
+
+                return (
+                    <div key={item.id} className="bg-white">
+                        {/* Main Row */}
+                        <div
+                            className="p-3 flex items-center gap-3 cursor-pointer active:bg-slate-50 transition-colors"
+                            onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                        >
+                            {/* Checkbox */}
+                            <div onClick={(e) => e.stopPropagation()}>
+                                <input
+                                    type="checkbox"
+                                    className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer w-3 h-3"
+                                    checked={isSelected}
+                                    onChange={() => onSelect(item.id)}
+                                />
+                            </div>
+
+                            {/* Item Image */}
+                            <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 overflow-hidden relative grayscale opacity-60 shrink-0">
+                                {item.image ? (
+                                    <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                        <Package className="w-4 h-4" />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Main Info */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                    <span className="font-bold text-sm text-slate-900 truncate pr-2">
+                                        {item.name}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                    <span className="text-[10px] font-bold text-slate-400">
+                                        {item.archivedAt ? format(new Date(item.archivedAt), "d MMM, HH:mm", { locale: ru }) : "—"}
+                                    </span>
+                                    <div className="w-0.5 h-0.5 bg-slate-300 rounded-full" />
+                                    <span className="text-[10px] font-medium text-slate-500 truncate">
+                                        {item.category?.name || "Без категории"}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Expanded Details */}
+                        <AnimatePresence>
+                            {isExpanded && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="px-3 pb-3 pt-0 flex flex-col gap-3">
+                                        <div className="bg-slate-50 rounded-[var(--radius-inner)] p-3 border border-slate-100 flex flex-col gap-2">
+                                            {/* SKU */}
+                                            {item.sku && (
+                                                <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Артикул</span>
+                                                    <span className="text-xs font-mono text-slate-600">{item.sku}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Archive Reason */}
+                                            {item.archiveReason && (
+                                                <div className="flex flex-col gap-1 border-b border-slate-200/60 pb-2">
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Причина</span>
+                                                    <p className="text-xs text-slate-700 leading-normal">{item.archiveReason}</p>
+                                                </div>
+                                            )}
+
+                                            {/* Actions */}
+                                            <div className="pt-2 mt-1 border-t border-slate-200/60 flex gap-2">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/dashboard/warehouse/items/${item.id}`);
+                                                    }}
+                                                    className="flex-1 h-9 bg-white border border-slate-200 rounded-[var(--radius-inner)] text-xs font-bold text-slate-600 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
+                                                >
+                                                    <Eye className="w-3.5 h-3.5" />
+                                                    Карточка
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onRestore([item.id]);
+                                                    }}
+                                                    className="flex-1 h-9 bg-emerald-50 border border-emerald-100 rounded-[var(--radius-inner)] text-xs font-bold text-emerald-600 flex items-center justify-center gap-2 hover:bg-emerald-100 transition-colors"
+                                                >
+                                                    <RotateCcw className="w-3.5 h-3.5" />
+                                                    Восстановить
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onDelete(item.id);
+                                                    }}
+                                                    className="h-9 px-3 bg-rose-50 border border-rose-100 rounded-[var(--radius-inner)] text-xs font-bold text-rose-600 flex items-center justify-center hover:bg-rose-100 transition-colors"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                );
+            })}
         </div>
     );
 }

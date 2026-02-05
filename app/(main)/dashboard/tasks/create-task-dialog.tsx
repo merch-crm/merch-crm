@@ -81,10 +81,11 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-[18px] font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="w-11 h-11 sm:w-auto sm:px-6 sm:py-2.5 bg-primary text-white rounded-full sm:rounded-[18px] font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center shrink-0"
+                title="Создать задачу"
             >
                 <PlusCircle className="w-5 h-5" />
-                Создать задачу
+                <span className="hidden sm:inline ml-2">Создать задачу</span>
             </button>
         );
     }
@@ -114,7 +115,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 <form action={handleSubmit} className="p-8 pt-0 space-y-6">
                     {/* Title */}
                     <div className="space-y-1">
-                        <label className="text-sm font-bold text-slate-500 pl-1">Что нужно сделать?</label>
+                        <label className="text-sm font-bold text-slate-700 pl-1">Что нужно сделать?</label>
                         <div className="relative">
                             <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
@@ -129,7 +130,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                     {/* Description */}
                     <div className="space-y-1">
-                        <label className="text-sm font-bold text-slate-500 pl-1">Описание (необязательно)</label>
+                        <label className="text-sm font-bold text-slate-700 pl-1">Описание (необязательно)</label>
                         <div className="relative">
                             <AlignLeft className="absolute left-3 top-4 w-4 h-4 text-slate-400" />
                             <textarea
@@ -144,7 +145,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                     <div className="grid grid-cols-2 gap-4">
                         {/* Task Type */}
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Тип задачи</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Тип задачи</label>
                             <div className="relative">
                                 <Flag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
@@ -163,7 +164,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                         {/* Priority */}
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Приоритет</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Приоритет</label>
                             <div className="relative">
                                 <Flag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
@@ -182,7 +183,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                     <div className="grid grid-cols-2 gap-4">
                         {/* Related Order */}
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Связанный заказ</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Связанный заказ</label>
                             <div className="relative">
                                 <PlusCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
@@ -201,7 +202,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                         {/* Due Date */}
                         <div className="space-y-1">
-                            <label className="text-sm font-bold text-slate-500 pl-1">Срок выполнения</label>
+                            <label className="text-sm font-bold text-slate-700 pl-1">Срок выполнения</label>
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -215,7 +216,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
 
                     {/* Assignment */}
                     <div className="space-y-3">
-                        <label className="text-sm font-bold text-slate-500 pl-1">Кому назначить?</label>
+                        <label className="text-sm font-bold text-slate-700 pl-1">Кому назначить?</label>
 
                         {/* Toggle Buttons */}
                         <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[18px]">

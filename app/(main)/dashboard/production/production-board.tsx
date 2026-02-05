@@ -67,7 +67,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 overflow-x-auto pb-4 custom-scrollbar lg:overflow-visible">
             {stages.map((stage) => {
                 const stageItems = getItemsByStage(stage.id);
                 const Icon = stage.icon;
@@ -75,13 +75,13 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                 return (
                     <div key={stage.id} className="glass-panel p-5 min-h-[500px] flex flex-col">
                         {/* Column Header */}
-                        <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-200">
-                            <div className={cn("w-10 h-10 rounded-[12px] flex items-center justify-center", stage.color)}>
-                                <Icon className="w-5 h-5" />
+                        <div className="flex items-center gap-3 md:gap-4 mb-5 pb-4 border-b border-slate-200">
+                            <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[16px] flex items-center justify-center shrink-0", stage.color)}>
+                                <Icon className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
-                            <div className="flex-1">
-                                <h3 className="text-sm font-bold text-slate-900">{stage.label}</h3>
-                                <p className="text-xs text-slate-400 font-medium">{stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}</p>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-sm md:text-base font-bold text-slate-900 truncate">{stage.label}</h3>
+                                <p className="text-xs md:text-sm text-slate-400 font-medium">{stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}</p>
                             </div>
                         </div>
 
@@ -101,17 +101,17 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                         <div
                                             key={item.id}
                                             className={cn(
-                                                "bg-white rounded-[var(--radius)] p-4 border transition-all hover:shadow-md cursor-pointer group",
+                                                "bg-white rounded-[var(--radius)] p-4 md:p-5 border transition-all hover:shadow-lg cursor-pointer group touch-manipulation",
                                                 isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-200"
                                             )}
                                         >
                                             {/* Order Info */}
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="text-xs font-bold text-slate-400 mb-1">
+                                                    <div className="text-xs md:text-sm font-bold text-slate-400 mb-1">
                                                         {item.order.orderNumber}
                                                     </div>
-                                                    <div className="text-sm font-bold text-slate-900 truncate">
+                                                    <div className="text-sm md:text-lg font-bold text-slate-900 truncate leading-tight">
                                                         {item.order.client.name || "Без имени"}
                                                     </div>
                                                 </div>
@@ -143,32 +143,32 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                             )}
 
                                             {/* Item Description */}
-                                            <div className="text-xs text-slate-600 mb-3 line-clamp-2">
+                                            <div className="text-xs md:text-sm font-medium text-slate-600 mb-4 line-clamp-3 leading-relaxed">
                                                 {item.description}
                                             </div>
 
                                             {/* Quantity */}
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <Package className="w-3.5 h-3.5 text-slate-400" />
-                                                <span className="text-xs font-bold text-slate-500">{item.quantity} {pluralize(item.quantity, 'штука', 'штуки', 'штук')}</span>
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Package className="w-4 h-4 text-slate-400" />
+                                                <span className="text-xs md:text-sm font-bold text-slate-600">{item.quantity} {pluralize(item.quantity, 'штука', 'штуки', 'штук')}</span>
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="flex gap-2 pt-3 border-t border-slate-200">
+                                            <div className="flex gap-3 pt-4 border-t border-slate-200">
                                                 {currentStatus === 'pending' && (
                                                     <button
-                                                        onClick={() => handleStageUpdate(item.id, stage.id, 'in_progress')}
+                                                        onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 px-3 py-1.5 bg-primary/5 text-primary rounded-[8px] text-xs font-bold hover:bg-primary/10 transition-all disabled:opacity-50"
+                                                        className="flex-1 px-4 py-2.5 bg-primary text-white rounded-[10px] text-sm font-bold hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-primary/20"
                                                     >
                                                         {loading === item.id ? '...' : 'Начать'}
                                                     </button>
                                                 )}
                                                 {currentStatus === 'in_progress' && (
                                                     <button
-                                                        onClick={() => handleStageUpdate(item.id, stage.id, 'done')}
+                                                        onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-[8px] text-xs font-bold hover:bg-emerald-100 transition-all disabled:opacity-50"
+                                                        className="flex-1 px-4 py-2.5 bg-emerald-500 text-white rounded-[10px] text-sm font-bold hover:bg-emerald-600 active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-emerald-500/20"
                                                     >
                                                         {loading === item.id ? '...' : 'Завершить'}
                                                     </button>

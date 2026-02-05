@@ -58,12 +58,13 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
     if (!canArchive && !canDelete) return null;
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
             {canArchive && (
                 <button
                     onClick={handleArchive}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-[18px] bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-[18px] bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95"
+                    title={isArchived ? "Восстановить" : "В архив"}
                 >
                     {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -72,7 +73,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                     ) : (
                         <Archive className="w-4 h-4" />
                     )}
-                    {isArchived ? "Восстановить" : "В архив"}
+                    <span className="hidden sm:inline">{isArchived ? "Восстановить" : "В архив"}</span>
                 </button>
             )}
 
@@ -80,10 +81,11 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                 <button
                     onClick={() => setShowDeleteDialog(true)}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-[18px] btn-destructive group"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-[18px] btn-destructive group active:scale-95 transition-all"
+                    title="Удалить"
                 >
                     <Trash2 className="w-4 h-4" />
-                    Удалить
+                    <span className="hidden sm:inline">Удалить</span>
                 </button>
             )}
 

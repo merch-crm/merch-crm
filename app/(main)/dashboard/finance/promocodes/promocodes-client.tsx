@@ -193,18 +193,20 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     <Button
                         onClick={() => setIsBulkDialogOpen(true)}
                         variant="outline"
-                        className="h-12 px-6 rounded-[18px] font-bold border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2"
+                        className="h-12 w-12 sm:w-auto sm:px-6 rounded-full sm:rounded-[18px] font-bold border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center sm:gap-2"
+                        title="Массовая генерация"
                     >
                         <Layers className="w-5 h-5 opacity-60" />
-                        Массовая генерация
+                        <span className="hidden sm:inline">Массовая генерация</span>
                     </Button>
                     <Button
                         onClick={handleOpenCreate}
                         variant="default"
-                        className="h-12 px-8 rounded-[18px] font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center gap-2 active:scale-[0.98]"
+                        className="h-12 w-12 sm:w-auto sm:px-8 rounded-full sm:rounded-[18px] font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center justify-center sm:gap-2 active:scale-[0.98]"
+                        title="Создать"
                     >
                         <Plus className="w-5 h-5 pointer-events-none" />
-                        Создать
+                        <span className="hidden sm:inline">Создать</span>
                     </Button>
                     <Button
                         onClick={handleExport}

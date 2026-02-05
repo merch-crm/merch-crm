@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode, useCallback } from "rea
 export interface BreadcrumbItem {
     label: string;
     href?: string;
+    isEllipsis?: boolean;
 }
 
 interface BreadcrumbsContextType {

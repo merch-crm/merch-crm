@@ -169,6 +169,35 @@ export const COLORS = [
     { name: "fuchsia", class: "bg-fuchsia-500" },
 ];
 
+const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
+    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
+    'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+};
+
+export const generateCategoryPrefix = (name: string): string => {
+    if (!name) return "";
+    const words = name.trim().split(/\s+/);
+    let result = "";
+
+    if (words.length >= 2) {
+        // First letters of first two words
+        result = words.slice(0, 2).map(w => w[0]).join("");
+    } else {
+        // First three characters of the first word
+        const word = words[0];
+        result = word.slice(0, Math.min(word.length, 3));
+    }
+
+    return result.toLowerCase()
+        .split('')
+        .map(char => RUSSIAN_TO_LATIN_MAP[char] || char)
+        .join('')
+        .replace(/[^a-z0-9]/g, '')
+        .toUpperCase();
+};
+
 export const getIconNameFromName = (name: string): string => {
     const n = name.toLowerCase();
     if (n.includes("футболк") || n.includes("лонгслив") || n.includes("поло")) return "tshirt-custom";

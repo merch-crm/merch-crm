@@ -2,6 +2,9 @@
 
 Этот документ содержит правила и паттерны, которые необходимо соблюдать при разработке проекта.
 
+> **ВАЖНО**: Общение ИИ (Antigravity) с пользователем, комментарии к коду и описание изменений должны всегда осуществляться на **русском языке**.
+
+
 ## 1. Уведомления и взаимодействие с пользователем
 - **Никаких стандартных браузерных уведомлений**: Не используйте `alert()`, `confirm()` или `prompt()`.
 - **Кастомные уведомления**: Используйте хук `useToast` из `@/components/ui/toast`.
@@ -25,6 +28,8 @@
 
 ## 4. Язык и локализация
 - **Интерфейс**: Весь текст интерфейса должен быть на **русском языке**.
+- **Общение с ИИ**: Ответы Antigravity, пояснения к коду, отчеты о проделанной работе и любые другие текстовые взаимодействия должны быть исключительно на **русском языке**.
+
 - **Грамматика и склонения**: СТРОГО ОБЯЗАТЕЛЬНО использовать утилиту `pluralize` из `@/lib/pluralize` для всех динамических чисел.
   - **Числа**: (1 позиция, 2 позиции, 5 позиций).
   - **Род и согласование**: Используйте функции `inflect` или `sentence` для правильного согласования глаголов с существительными (например, "Удалена 1 позиция" vs "Удалено 5 позиций").
@@ -225,3 +230,53 @@ return (
     </div>
 </div>
 ```
+
+## 12. Мобильные шторки и модальные окна (BottomSheet / ResponsiveModal)
+
+### Общие правила:
+- **Компонент**: Для адаптивных модальных окон использовать `ResponsiveModal` из `@/components/ui/responsive-modal`.
+- **Закрытие**: Системная кнопка закрытия предоставляется компонентом автоматически. **НЕ добавляйте** вторую ручную кнопку X в хедер.
+
+### Закреплённый футер (Sticky Footer) — ОБЯЗАТЕЛЬНО
+Во всех шторках блок кнопок действий **ДОЛЖЕН** быть закреплён внизу и **НЕ ДОЛЖЕН** скроллиться вместе с контентом.
+
+#### Структура диалога:
+```tsx
+<ResponsiveModal isOpen={isOpen} onClose={onClose}>
+    <div className="flex flex-col h-full overflow-hidden">
+        {/* Header - НЕ скроллится */}
+        <div className="p-6 pb-2 shrink-0">
+            <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-900">Заголовок</h2>
+                    <p className="text-[11px] font-bold text-slate-500">Подзаголовок</p>
+                </div>
+            </div>
+        </div>
+        
+        {/* Content - СКРОЛЛИТСЯ */}
+        <div className="flex-1 overflow-y-auto px-6 pb-6">
+            <form className="space-y-5">...</form>
+        </div>
+        
+        {/* Footer - НЕ скроллится, закреплён внизу */}
+        <div className="sticky bottom-0 z-10 p-5 pt-3 flex flex-row items-center justify-between gap-3 shrink-0 bg-white border-t border-slate-100">
+            <button className="h-11 flex-1 w-0 lg:flex-none lg:w-auto lg:px-8 px-4 text-slate-400 hover:text-slate-600 font-bold text-sm">
+                Отмена
+            </button>
+            <Button className="h-11 flex-1 w-0 lg:flex-none lg:w-auto lg:px-10 px-4 btn-dark rounded-[var(--radius-inner)] font-bold text-sm">
+                Сохранить
+            </Button>
+        </div>
+    </div>
+</ResponsiveModal>
+```
+
+### Ключевые моменты:
+1. **Родительский контейнер**: `flex flex-col h-full overflow-hidden` — критически важно для правильной работы.
+2. **Скроллящаяся область**: `flex-1 overflow-y-auto` — только эта часть скроллится.
+3. **Футер**: `sticky bottom-0 shrink-0` — всегда внизу, не участвует в скролле.
+4. **Кнопки**: `flex-1 w-0` обеспечивает равную ширину (50/50), `px-4` задаёт минимальные отступы.

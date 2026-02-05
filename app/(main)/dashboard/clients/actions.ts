@@ -44,6 +44,7 @@ export async function getClients(showArchived = false) {
             address: clients.address,
             comments: clients.comments,
             socialLink: clients.socialLink,
+            acquisitionSource: clients.acquisitionSource,
             managerId: clients.managerId,
             isArchived: clients.isArchived,
             createdAt: clients.createdAt,
@@ -129,6 +130,7 @@ export async function addClient(formData: FormData) {
     const address = formData.get("address") as string;
     const comments = formData.get("comments") as string;
     const socialLink = formData.get("socialLink") as string;
+    const acquisitionSource = formData.get("acquisitionSource") as string;
     const managerId = formData.get("managerId") as string;
     const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
     const ignoreDuplicates = formData.get("ignoreDuplicates") === "true";
@@ -166,6 +168,7 @@ export async function addClient(formData: FormData) {
             address,
             comments,
             socialLink,
+            acquisitionSource,
             managerId: managerId || null,
         }).returning();
 
@@ -202,6 +205,7 @@ export async function updateClient(clientId: string, formData: FormData) {
     const address = formData.get("address") as string;
     const comments = formData.get("comments") as string;
     const socialLink = formData.get("socialLink") as string;
+    const acquisitionSource = formData.get("acquisitionSource") as string;
     const managerId = formData.get("managerId") as string;
     const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
 
@@ -235,6 +239,7 @@ export async function updateClient(clientId: string, formData: FormData) {
                 address,
                 comments,
                 socialLink,
+                acquisitionSource,
                 managerId: managerId || null,
             })
             .where(eq(clients.id, clientId));

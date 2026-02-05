@@ -19,6 +19,7 @@ import { PullToRefresh } from "@/components/pull-to-refresh";
 import { GlobalUndo } from "@/components/global-undo";
 import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 import { FloatingSearch } from "@/components/layout/floating-search";
+import { MobileSearchSheet } from "@/components/layout/mobile-search-sheet";
 import { SoundConfig } from "@/lib/sounds";
 
 interface BrandingSettings {
@@ -90,7 +91,7 @@ export default async function DashboardLayout({
 
     // Fetch notifications
     await checkAndRunNotifications(); // Run daily checks if needed
-    const notifications = await getNotifications();
+    const { notifications, unreadCount } = await getNotifications();
 
     // Fetch branding settings
     const branding = (await getBrandingSettings() as BrandingSettings) || {
@@ -174,22 +175,23 @@ export default async function DashboardLayout({
                     <CommandMenu />
                     <ActivityTracker />
                     <NotificationManager
-                        initialUnreadCount={notifications.filter(n => !n.isRead).length}
+                        initialUnreadCount={unreadCount}
                         customSoundUrl={branding.notificationSound as string}
                     />
 
                     {/* Desktop Header - Floating Glass */}
-                    <DesktopHeader user={user} branding={branding} notifications={notifications} />
+                    <DesktopHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
                     {/* Mobile Header - Top Fixed */}
-                    <MobileHeader user={user} branding={branding} notifications={notifications} />
+                    <MobileHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
                     {/* Mobile Bottom Nav - Bottom Fixed */}
                     <MobileBottomNav user={user} />
 
                     <FloatingSearch />
+                    <MobileSearchSheet />
 
-                    <main className="flex-1 px-4 md:px-12 pt-4 md:pt-6 pb-20 max-w-[1480px] mx-auto w-full">
+                    <main className="flex-1 px-4 sm:px-6 md:px-8 lg:px-12 pt-4 md:pt-6 pb-4 max-w-[1480px] mx-auto w-full">
                         <Breadcrumbs />
                         {children}
                     </main>

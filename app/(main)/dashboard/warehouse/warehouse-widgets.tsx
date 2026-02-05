@@ -37,7 +37,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
             {/* Top Row: Combined Stats & Expanded Deficit */}
             <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
                 {/* Combined Stats Block */}
-                <div className="col-span-12 lg:col-span-4 crm-card shadow-sm flex flex-col justify-between">
+                <div className="col-span-12 md:col-span-5 lg:col-span-4 crm-card shadow-sm flex flex-col justify-between">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -46,41 +46,41 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center">
+                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200 gap-2">
+                            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
                                     <Package className="w-4 h-4 text-primary" />
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">всего позиций на складе</span>
+                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wide">всего позиций на складе</span>
                             </div>
-                            <div className="text-xl font-black text-slate-900 tabular-nums">{totalStock}</div>
+                            <div className="text-lg sm:text-xl font-black text-slate-900 tabular-nums shrink-0">{totalStock}</div>
                         </div>
 
-                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-orange-50 flex items-center justify-center">
+                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200 gap-2">
+                            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-orange-50 flex items-center justify-center shrink-0">
                                     <Clock className="w-4 h-4 text-orange-500" />
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Зарезервировано</span>
+                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wide">Зарезервировано</span>
                             </div>
-                            <div className="text-xl font-black text-slate-900 tabular-nums">{totalReserved}</div>
+                            <div className="text-lg sm:text-xl font-black text-slate-900 tabular-nums shrink-0">{totalReserved}</div>
                         </div>
 
-                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center">
+                        <div className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200 gap-2">
+                            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 flex items-center justify-center shrink-0">
                                     <Clock className="w-4 h-4 text-slate-500" />
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Архив</span>
+                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wide">Архив</span>
                             </div>
-                            <div className="text-xl font-black text-slate-900 tabular-nums">{archivedCount}</div>
+                            <div className="text-lg sm:text-xl font-black text-slate-900 tabular-nums shrink-0">{archivedCount}</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Expanded Deficit (Replenishment) */}
                 <div className={cn(
-                    "col-span-12 lg:col-span-8 crm-card flex flex-col shadow-sm",
+                    "col-span-12 md:col-span-7 lg:col-span-8 crm-card flex flex-col shadow-sm",
                     criticalItems.length > 0 ? "!border-rose-200 ring-1 ring-rose-500/10" : ""
                 )}>
                     <div className="flex items-center justify-between mb-6">
@@ -111,7 +111,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
 
                     <div className="flex-1 overflow-hidden">
                         {criticalItems.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[180px] pr-2 custom-scrollbar">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto max-h-[180px] custom-scrollbar">
                                 {criticalItems.map((item) => (
                                     <Link
                                         key={item.id}
@@ -147,7 +147,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
             </div>
 
             {/* Activity Trend - Ultra Compact Status Bar */}
-            <div className="crm-card flex flex-col md:flex-row items-center gap-4 md:gap-10 transition-all shadow-sm">
+            <div className="crm-card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 md:gap-10 py-3 px-5 transition-all shadow-sm">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200 shrink-0">
                         <Activity className="w-4.5 h-4.5" />
@@ -158,14 +158,14 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-8 gap-y-2 w-full md:w-auto">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-8 gap-y-4 w-full md:w-auto">
                     <div className="flex items-center gap-2.5 group/item">
                         <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/30">
                             <ArrowUpRight className="w-3.5 h-3.5" />
                         </div>
-                        <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.ins}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.ins, 'поставка', 'поставки', 'поставок')}</div>
+                        <div className="flex items-baseline gap-1.5 min-w-0">
+                            <div className="text-base font-bold text-slate-900 tabular-nums shrink-0">{activity.ins}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">{pluralize(activity.ins, 'поставка', 'поставки', 'поставок')}</div>
                         </div>
                     </div>
 
@@ -173,9 +173,9 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                         <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100/30">
                             <ArrowDownRight className="w-3.5 h-3.5" />
                         </div>
-                        <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.usage}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">отгрузок</div>
+                        <div className="flex items-baseline gap-1.5 min-w-0">
+                            <div className="text-base font-bold text-slate-900 tabular-nums shrink-0">{activity.usage}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">отгрузок</div>
                         </div>
                     </div>
 
@@ -183,9 +183,9 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                         <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100/30">
                             <Trash2 className="w-3.5 h-3.5" />
                         </div>
-                        <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.waste}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.waste, 'списание', 'списания', 'списаний')}</div>
+                        <div className="flex items-baseline gap-1.5 min-w-0">
+                            <div className="text-base font-bold text-slate-900 tabular-nums shrink-0">{activity.waste}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">{pluralize(activity.waste, 'списание', 'списания', 'списаний')}</div>
                         </div>
                     </div>
 
@@ -193,9 +193,9 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                         <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-slate-50 text-slate-500 flex items-center justify-center border border-slate-200/50">
                             <ArrowLeftRight className="w-3 h-3" />
                         </div>
-                        <div className="flex items-baseline gap-1.5">
-                            <div className="text-base font-bold text-slate-900 tabular-nums">{activity.transfers}</div>
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{pluralize(activity.transfers, 'перемещение', 'перемещения', 'перемещений')}</div>
+                        <div className="flex items-baseline gap-1.5 min-w-0">
+                            <div className="text-base font-bold text-slate-900 tabular-nums shrink-0">{activity.transfers}</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">{pluralize(activity.transfers, 'перемещение', 'перемещения', 'перемещений')}</div>
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@ export function WarehouseWidgetsSkeleton() {
             {/* Top Row Skeleton */}
             <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
                 {/* Stats Skeleton */}
-                <div className="col-span-12 lg:col-span-4 crm-card shadow-sm">
+                <div className="col-span-12 sm:col-span-4 crm-card shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-sm font-bold text-slate-900">Общая статистика</h4>
                         <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -221,7 +221,7 @@ export function WarehouseWidgetsSkeleton() {
                         {[
                             { icon: Package, color: "text-primary", bg: "bg-primary/10", label: "всего позиций на складе" },
                             { icon: Clock, color: "text-orange-500", bg: "bg-orange-50", label: "Зарезервировано" },
-                            { icon: Clock, color: "text-slate-500", bg: "bg-slate-100", label: "Архив" }
+                            { icon: Clock, color: "text-slate-500", bg: "bg-slate-50", label: "Архив" }
                         ].map((item, i) => (
                             <div key={i} className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] bg-slate-50/50 border border-slate-200">
                                 <div className="flex items-center gap-3">
@@ -237,15 +237,15 @@ export function WarehouseWidgetsSkeleton() {
                 </div>
 
                 {/* Replenishment Skeleton */}
-                <div className="col-span-12 lg:col-span-8 crm-card flex flex-col shadow-sm">
+                <div className="col-span-12 sm:col-span-8 crm-card flex flex-col shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-emerald-50 border border-emerald-100 flex items-center justify-center">
                                 <TrendingUp className="w-5 h-5 text-emerald-500 opacity-50" />
                             </div>
                             <div>
-                                <div className="h-5 w-32 bg-slate-100 rounded animate-pulse mb-2" />
-                                <div className="h-3 w-48 bg-slate-100 rounded animate-pulse" />
+                                <div className="h-5 w-32 bg-slate-50 rounded animate-pulse mb-2" />
+                                <div className="h-3 w-48 bg-slate-50 rounded animate-pulse" />
                             </div>
                         </div>
                     </div>
@@ -259,22 +259,22 @@ export function WarehouseWidgetsSkeleton() {
             </div>
 
             {/* Activity Skeleton */}
-            <div className="crm-card flex items-center gap-10 shadow-sm">
+            <div className="crm-card flex flex-col sm:flex-row items-center gap-4 sm:gap-6 md:gap-10 py-3 px-5 shadow-sm">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-slate-900 text-white flex items-center justify-center shadow-md shadow-slate-200">
                         <Activity className="w-4.5 h-4.5" />
                     </div>
                     <div>
-                        <div className="h-4 w-32 bg-slate-100 rounded animate-pulse mb-1" />
+                        <div className="h-4 w-32 bg-slate-50 rounded animate-pulse mb-1" />
                     </div>
                 </div>
-                <div className="flex gap-8">
+                <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 gap-y-2 w-full sm:w-auto">
                     {[1, 2, 3, 4].map((i) => (
                         <div key={i} className="flex items-center gap-3">
-                            <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-slate-100 animate-pulse" />
+                            <div className="w-7 h-7 rounded-[var(--radius-inner)] bg-slate-50 animate-pulse shrink-0" />
                             <div className="space-y-1">
                                 <Loader2 className="w-4 h-4 text-slate-300 animate-spin" />
-                                <div className="h-2 w-16 bg-slate-100 rounded animate-pulse" />
+                                <div className="h-2 w-16 bg-slate-50 rounded animate-pulse" />
                             </div>
                         </div>
                     ))}

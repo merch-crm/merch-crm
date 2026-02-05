@@ -26,8 +26,8 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                             <Factory className="w-7 h-7" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white leading-tight">Производство</h3>
-                            <p className="text-sm font-medium text-white/70 mt-1">
+                            <h3 className="text-xl md:text-2xl font-bold text-white leading-tight">Производство</h3>
+                            <p className="text-sm md:text-base font-medium text-white/70 mt-1">
                                 Активные заказы в цеху
                             </p>
                         </div>
@@ -36,10 +36,10 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
 
                 <div className="relative z-10 mt-8">
                     <div className="flex items-baseline gap-4">
-                        <span className="text-7xl font-bold tracking-normal">
+                        <span className="text-7xl md:text-8xl font-bold tracking-normal">
                             {stats.active}
                         </span>
-                        <span className="text-xl font-bold text-white/60">{pluralize(stats.active, 'заказ', 'заказа', 'заказов')}</span>
+                        <span className="text-xl md:text-2xl font-bold text-white/60">{pluralize(stats.active, 'заказ', 'заказа', 'заказов')}</span>
                     </div>
 
                     <div className="flex items-center gap-2 mt-4">
@@ -61,8 +61,8 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                             <AlertCircle className="w-6 h-6" />
                         </div>
                         <div>
-                            <div className="text-3xl font-bold text-rose-600 tracking-normal leading-none mb-1">{stats.urgent}</div>
-                            <div className="text-sm font-bold text-rose-400  tracking-wide">Срочные / Просроченные</div>
+                            <div className="text-3xl md:text-4xl font-bold text-rose-600 tracking-normal leading-none mb-1">{stats.urgent}</div>
+                            <div className="text-sm md:text-base font-bold text-rose-400  tracking-wide">Срочные / Просроченные</div>
                         </div>
                     </div>
                 </div>
@@ -76,8 +76,8 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-primary bg-primary/5 px-2 py-1 rounded-full">KPI</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.efficiency}%</div>
-                        <p className="text-xs font-bold text-slate-400">Эффективность смены</p>
+                        <div className="text-4xl md:text-5xl font-bold text-slate-900 tracking-normal mb-1">{stats.efficiency}%</div>
+                        <p className="text-xs md:text-sm font-bold text-slate-400">Эффективность смены</p>
                     </div>
                 </div>
 
@@ -90,8 +90,8 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                         <span className="text-[10px] font-bold  tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Сегодня</span>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-slate-900 tracking-normal mb-1">{stats.completedToday}</div>
-                        <p className="text-xs font-bold text-slate-400">Готово к сдаче</p>
+                        <div className="text-4xl md:text-5xl font-bold text-slate-900 tracking-normal mb-1">{stats.completedToday}</div>
+                        <p className="text-xs md:text-sm font-bold text-slate-400">Готово к сдаче</p>
                     </div>
                 </div>
             </div>

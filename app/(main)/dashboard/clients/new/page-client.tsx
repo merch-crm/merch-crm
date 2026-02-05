@@ -159,9 +159,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     ];
 
     return (
-        <div className="flex-1 flex min-h-0 gap-6 px-8 pb-8 pt-4">
+        <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-6 px-4 sm:px-8 pb-8 pt-4">
             {/* Sidebar */}
-            <aside className="w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 h-full shadow-lg overflow-hidden">
+            <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
                 <div className="p-6 shrink-0">
                     <button
                         onClick={handleBack}
@@ -234,14 +234,14 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-hidden h-full flex flex-col gap-4">
-                <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-0">
-                    <div className="flex-1 overflow-y-auto p-10 space-y-8">
+            <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-4">
+                <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
+                    <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
                         {step === 0 && (
                             <div className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="space-y-4">
-                                    <label className="text-sm font-bold text-slate-500 ml-1">Тип клиента</label>
-                                    <div className="flex p-1 bg-slate-100 rounded-[var(--radius)]">
+                                    <label className="text-sm font-bold text-slate-700 ml-1">Тип клиента</label>
+                                    <div className="flex p-1 bg-slate-50 rounded-[var(--radius)]">
                                         <button
                                             type="button"
                                             onClick={() => setClientType("b2c")}
@@ -265,9 +265,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Фамилия *</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Фамилия *</label>
                                         <input
                                             type="text"
                                             value={formData.lastName}
@@ -276,7 +276,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Имя *</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Имя *</label>
                                         <input
                                             type="text"
                                             value={formData.firstName}
@@ -286,9 +286,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Отчество</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Отчество</label>
                                         <input
                                             type="text"
                                             value={formData.patronymic}
@@ -297,7 +297,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">
+                                        <label className="text-sm font-bold text-slate-700 ml-1">
                                             Компания {clientType === "b2b" && "*"}
                                         </label>
                                         <input
@@ -313,9 +313,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
 
                         {step === 1 && (
                             <div className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Телефон *</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Телефон *</label>
                                         <input
                                             type="text"
                                             value={formData.phone}
@@ -324,7 +324,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Email</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
                                         <input
                                             type="email"
                                             value={formData.email}
@@ -334,9 +334,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Telegram</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Telegram</label>
                                         <input
                                             type="text"
                                             value={formData.telegram}
@@ -346,7 +346,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Instagram</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Instagram</label>
                                         <input
                                             type="text"
                                             value={formData.instagram}
@@ -355,7 +355,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Соцсеть</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Соцсеть</label>
                                         <input
                                             type="text"
                                             value={formData.socialLink}
@@ -370,9 +370,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
 
                         {step === 2 && (
                             <div className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Менеджер</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Менеджер</label>
                                         <select
                                             value={formData.managerId}
                                             onChange={(e) => updateFormData({ managerId: e.target.value })}
@@ -385,7 +385,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Город</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Город</label>
                                         <input
                                             type="text"
                                             value={formData.city}
@@ -395,9 +395,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Источник (откуда пришел)</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Источник (откуда пришел)</label>
                                         <select
                                             value={formData.acquisitionSource}
                                             onChange={(e) => updateFormData({ acquisitionSource: e.target.value })}
@@ -412,7 +412,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-500 ml-1">Адрес</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Адрес</label>
                                         <input
                                             type="text"
                                             value={formData.address}
@@ -423,7 +423,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-500 ml-1">Комментарии</label>
+                                    <label className="text-sm font-bold text-slate-700 ml-1">Комментарии</label>
                                     <textarea
                                         value={formData.comments}
                                         onChange={(e) => updateFormData({ comments: e.target.value })}
@@ -463,7 +463,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                     </div>
 
                     {/* Footer */}
-                    <div className="px-10 py-6 border-t border-slate-200 flex justify-between items-center bg-slate-50/30">
+                    <div className="px-6 md:px-10 py-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center bg-slate-50 gap-4">
                         <div className="flex flex-col">
                             {validationError && (
                                 <span className="text-rose-500 text-xs font-bold animate-in fade-in slide-in-from-left-2">{validationError}</span>

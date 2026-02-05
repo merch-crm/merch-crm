@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 import { formatDate } from "@/lib/formatters";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface Notification {
     id: string;
@@ -20,6 +21,7 @@ export interface Notification {
 
 interface NotificationCenterProps {
     notifications: Notification[];
+    unreadCount?: number;
     branding?: { dateFormat?: string; timezone?: string;[key: string]: unknown };
 }
 
@@ -31,14 +33,14 @@ const typeConfig = {
     transfer: { icon: ArrowRightLeft, color: "text-indigo-500", bg: "bg-indigo-50" },
 };
 
-export function NotificationCenter({ notifications, branding }: NotificationCenterProps) {
+export function NotificationCenter({ notifications, unreadCount: manualUnreadCount, branding }: NotificationCenterProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const [now, setNow] = useState<Date | null>(null);
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const unreadCount = manualUnreadCount !== undefined ? manualUnreadCount : notifications.filter(n => !n.isRead).length;
 
     useEffect(() => {
         setTimeout(() => setNow(new Date()), 0);
@@ -86,111 +88,166 @@ export function NotificationCenter({ notifications, branding }: NotificationCent
                 )}
             </button>
 
-            {/* Dropdown Panel */}
-            {isOpen && (
-                <div className="absolute top-[calc(100%+16px)] -right-16 sm:right-0 w-[calc(100vw-32px)] sm:w-[420px] bg-white rounded-[28px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] ring-1 ring-slate-100 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 origin-top-right">
-                    {/* Header */}
-                    <div className="p-8 pb-6 flex items-center justify-between bg-white z-10 relative">
-                        <div>
-                            <h3 className="text-xl font-bold text-slate-900 tracking-normal">Уведомления</h3>
-                            <p className="text-slate-400 text-[10px] font-bold tracking-normal mt-1 uppercase">
-                                {unreadCount > 0
-                                    ? `${unreadCount} непрочитанных сообщений`
-                                    : "Все уведомления прочитаны"}
-                            </p>
-                        </div>
-                        {unreadCount > 0 && (
-                            <button
-                                onClick={handleMarkAllAsRead}
-                                disabled={loading === "all"}
-                                className="h-9 px-4 rounded-[var(--radius-inner)] bg-primary/5 text-primary text-[10px] font-bold hover:bg-primary/10 transition-colors disabled:opacity-50 uppercase tracking-normal"
-                            >
-                                {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
-                            </button>
-                        )}
-                    </div>
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        {/* Mobile Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] md:hidden"
+                        />
 
-                    {/* Notifications List */}
-                    <div className="max-h-[450px] overflow-y-auto custom-scrollbar px-2 pb-2">
-                        {notifications.length === 0 ? (
-                            <div className="py-16 text-center flex flex-col items-center justify-center">
-                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                    <Bell className="w-8 h-8 text-slate-300" />
+                        {/* Dropdown/Curtain Panel */}
+                        <motion.div
+                            initial={typeof window !== 'undefined' && window.innerWidth < 768
+                                ? { y: "-100%", opacity: 0 }
+                                : { opacity: 0, scaleY: 0.8, y: -10, originY: 0 }
+                            }
+                            animate={typeof window !== 'undefined' && window.innerWidth < 768
+                                ? { y: 0, opacity: 1 }
+                                : { opacity: 1, scaleY: 1, y: 0 }
+                            }
+                            exit={typeof window !== 'undefined' && window.innerWidth < 768
+                                ? { y: "-100%", opacity: 0 }
+                                : { opacity: 0, scaleY: 0.8, y: -10 }
+                            }
+                            transition={{
+                                duration: 0.5,
+                                ease: [0.16, 1, 0.3, 1],
+                                opacity: { duration: 0.2 }
+                            }}
+                            drag={typeof window !== 'undefined' && window.innerWidth < 768 ? "y" : false}
+                            dragConstraints={{ top: 0, bottom: 0 }}
+                            dragElastic={{ top: 1, bottom: 0.1 }}
+                            onDragEnd={(_, info) => {
+                                if (info.offset.y < -50 || info.velocity.y < -300) {
+                                    setIsOpen(false);
+                                }
+                            }}
+                            className={cn(
+                                "fixed top-0 left-0 w-full h-[65vh] rounded-b-[2.5rem] bg-white shadow-2xl z-[100] overflow-hidden flex flex-col md:absolute md:top-[calc(100%+16px)] md:left-auto md:right-[-4rem] md:w-[420px] md:h-auto md:max-h-[600px] md:rounded-[28px] md:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] md:ring-1 md:ring-slate-100 md:origin-top-right",
+                                "sm:right-0"
+                            )}
+                        >
+                            {/* Mobile Pull Indicator */}
+                            <div className="flex md:hidden justify-center pt-4 pb-2">
+                                <div className="w-12 h-1 bg-slate-100 rounded-full" />
+                            </div>
+
+                            {/* Header */}
+                            <div className="p-6 md:p-8 md:pb-6 flex items-center justify-between bg-white z-10 relative shrink-0">
+                                <div>
+                                    <h3 className="text-xl font-black md:font-bold text-slate-900 tracking-tight md:tracking-normal">Уведомления</h3>
+                                    <p className="text-slate-400 text-[10px] font-bold tracking-normal mt-1 uppercase">
+                                        {unreadCount > 0
+                                            ? `${unreadCount} непрочитанных сообщений`
+                                            : "Все уведомления прочитаны"}
+                                    </p>
                                 </div>
-                                <h4 className="text-slate-900 font-bold mb-1">Нет новых уведомлений</h4>
-                                <p className="text-sm text-slate-400 max-w-[200px] leading-relaxed">В данный момент у вас нет непрочитанных сообщений</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-1">
-                                {notifications.map((notification) => {
-                                    const config = typeConfig[notification.type];
-                                    const Icon = config.icon;
-
-                                    return (
-                                        <div
-                                            key={notification.id}
-                                            className={cn(
-                                                "p-4 rounded-[20px] transition-all group border border-transparent",
-                                                !notification.isRead ? "bg-primary/[0.03] hover:bg-primary/[0.06]" : "hover:bg-slate-50 hover:border-slate-100"
-                                            )}
+                                <div className="flex items-center gap-2">
+                                    {unreadCount > 0 && (
+                                        <button
+                                            onClick={handleMarkAllAsRead}
+                                            disabled={loading === "all"}
+                                            className="h-9 px-4 rounded-[var(--radius-inner)] bg-primary/5 text-primary text-[10px] font-bold hover:bg-primary/10 transition-colors disabled:opacity-50 uppercase tracking-normal"
                                         >
-                                            <div className="flex gap-4">
-                                                {/* Icon */}
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm mt-1",
-                                                    config.bg
-                                                )}>
-                                                    <Icon className={cn("w-5 h-5", config.color)} />
-                                                </div>
-
-                                                {/* Content */}
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-start justify-between gap-4 mb-1">
-                                                        <h4 className={cn(
-                                                            "text-[14px] leading-snug transition-colors",
-                                                            !notification.isRead ? "font-extrabold text-slate-900" : "font-bold text-slate-700"
-                                                        )}>
-                                                            {notification.title}
-                                                        </h4>
-                                                        <span
-                                                            className="text-[11px] font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
-                                                            title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
-                                                        >
-                                                            {/* Show relative time if less than 24h, else showing formatted date */}
-                                                            {now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
-                                                                ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: ru })
-                                                                : formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')
-                                                            }
-                                                        </span>
-                                                    </div>
-
-                                                    <p className="text-[13px] text-slate-500 leading-relaxed mb-3 pr-2 break-words">
-                                                        {notification.message}
-                                                    </p>
-
-                                                    {!notification.isRead && (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleMarkAsRead(notification.id);
-                                                            }}
-                                                            disabled={loading === notification.id}
-                                                            className="flex items-center gap-1.5 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors bg-white px-2 py-1 rounded-lg border border-primary/10 hover:border-primary/20 shadow-sm"
-                                                        >
-                                                            <CheckCircle2 className="w-3.5 h-3.5" />
-                                                            Отметить прочитанным
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                            {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => setIsOpen(false)}
+                                        className="md:hidden p-2 rounded-full bg-slate-100/50 text-slate-400"
+                                    >
+                                        <ArrowRightLeft className="h-5 w-5 rotate-90" />
+                                    </button>
+                                </div>
                             </div>
-                        )}
-                    </div>
-                </div>
-            )}
+
+                            {/* Notifications List */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4 md:px-2 md:pb-2 md:max-h-[450px]">
+                                {notifications.length === 0 ? (
+                                    <div className="py-20 md:py-16 text-center flex flex-col items-center justify-center">
+                                        <div className="w-20 h-20 bg-slate-100/50 rounded-full flex items-center justify-center mb-4">
+                                            <Bell className="w-8 h-8 text-slate-300" />
+                                        </div>
+                                        <h4 className="text-slate-900 font-black md:font-bold mb-2">Нет новых уведомлений</h4>
+                                        <p className="text-sm text-slate-400 max-w-[240px] leading-relaxed">В данный момент у вас нет непрочитанных сообщений</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-1.5 md:space-y-1">
+                                        {notifications.map((notification) => {
+                                            const config = typeConfig[notification.type];
+                                            const Icon = config.icon;
+
+                                            return (
+                                                <div
+                                                    key={notification.id}
+                                                    className={cn(
+                                                        "p-5 md:p-4 rounded-[24px] md:rounded-[20px] transition-all group border border-transparent",
+                                                        !notification.isRead ? "bg-primary/[0.03] hover:bg-primary/[0.06]" : "hover:bg-slate-50 hover:border-slate-100"
+                                                    )}
+                                                >
+                                                    <div className="flex gap-4">
+                                                        {/* Icon */}
+                                                        <div className={cn(
+                                                            "w-12 h-12 md:w-10 md:h-10 rounded-2xl md:rounded-xl flex items-center justify-center shrink-0 shadow-sm mt-0.5",
+                                                            config.bg
+                                                        )}>
+                                                            <Icon className={cn("w-6 h-6 md:w-5 md:h-5", config.color)} />
+                                                        </div>
+
+                                                        {/* Content */}
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-start justify-between gap-4 mb-1.5 md:mb-1">
+                                                                <h4 className={cn(
+                                                                    "text-[15px] md:text-[14px] leading-snug transition-colors",
+                                                                    !notification.isRead ? "font-black md:font-extrabold text-slate-900" : "font-bold text-slate-700"
+                                                                )}>
+                                                                    {notification.title}
+                                                                </h4>
+                                                                <span
+                                                                    className="text-[11px] font-bold md:font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
+                                                                    title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
+                                                                >
+                                                                    {now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
+                                                                        ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: ru })
+                                                                        : formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')
+                                                                    }
+                                                                </span>
+                                                            </div>
+
+                                                            <p className="text-[14px] md:text-[13px] text-slate-600 md:text-slate-500 leading-relaxed mb-3 pr-2 break-words">
+                                                                {notification.message}
+                                                            </p>
+
+                                                            {!notification.isRead && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleMarkAsRead(notification.id);
+                                                                    }}
+                                                                    disabled={loading === notification.id}
+                                                                    className="flex items-center gap-1.5 text-[11px] font-black md:font-bold text-primary hover:text-primary/80 transition-colors bg-white px-3 py-1.5 md:px-2 md:py-1 rounded-xl md:rounded-lg border border-primary/10 hover:border-primary/20 shadow-sm"
+                                                                >
+                                                                    <CheckCircle2 className="w-3.5 h-3.5" />
+                                                                    Отметить прочитанным
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

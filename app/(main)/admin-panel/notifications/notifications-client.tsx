@@ -78,7 +78,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                     </div>
                     <div>
                         <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Уведомления</h1>
-                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Управление каналами связи и триггерами системы</p>
+                        <p className="text-slate-700 text-[11px] font-medium mt-0.5">Управление каналами связи и триггерами системы</p>
                     </div>
                 </div>
                 <Button
@@ -113,7 +113,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-800">Общие уведомления</p>
-                                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Показывать в колокольчике CRM</p>
+                                    <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Показывать в колокольчике CRM</p>
                                 </div>
                             </div>
                             <button
@@ -137,7 +137,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-800">Push-уведомления</p>
-                                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Всплывающие окна рабочего стола</p>
+                                    <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Всплывающие окна рабочего стола</p>
                                 </div>
                             </div>
                             <button
@@ -244,7 +244,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 {item.icon}
                             </div>
                             <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-primary transition-colors">
+                            <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest group-hover:text-primary transition-colors">
                                 {(settings.events[item.key] || settings.telegram[`notifyOn${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`]) ? "Активно" : "Выключено"}
                             </p>
                         </div>

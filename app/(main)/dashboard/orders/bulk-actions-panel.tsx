@@ -106,23 +106,23 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                         exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                        className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-2.5 px-8 gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200"
+                        className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center bg-white p-2 sm:p-2.5 px-4 sm:px-8 gap-2 sm:gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 max-w-[95vw] sm:max-w-none"
                     >
 
                         {/* Selection Badge Section */}
-                        <div className="flex items-center gap-3 px-2">
-                            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 text-white">
+                        <div className="flex items-center gap-2 sm:gap-3 px-1 sm:px-2">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg shadow-primary/20 text-white shrink-0">
                                 {selectedIds.length}
                             </div>
-                            <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Заказов выбрано</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-slate-500 whitespace-nowrap hidden md:inline">Заказов выбрано</span>
                         </div>
 
-                        <div className="w-px h-8 bg-slate-200 mx-2" />
+                        <div className="w-px h-6 sm:h-8 bg-slate-200 mx-1 sm:mx-2" />
 
                         {/* Primary Actions Group */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5 sm:gap-1">
                             {/* Status Select */}
-                            <div className="min-w-[140px]">
+                            <div className="w-[100px] sm:w-[140px]">
                                 <PremiumSelect
                                     value=""
                                     onChange={(val) => handleStatusUpdate(val as "new" | "design" | "production" | "done" | "shipped" | "cancelled")}
@@ -137,11 +137,12 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                                     placeholder="Статус"
                                     variant="minimal"
                                     className="!bg-transparent !border-none !text-slate-900"
+                                    compact
                                 />
                             </div>
 
-                            {/* Priority Select */}
-                            <div className="min-w-[140px]">
+                            {/* Priority Select - Hidden on mobile, show on Desktop */}
+                            <div className="w-[100px] sm:w-[140px] hidden sm:block">
                                 <PremiumSelect
                                     value=""
                                     onChange={(val) => handlePriorityUpdate(val)}
@@ -152,47 +153,48 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                                     placeholder="Приоритет"
                                     variant="minimal"
                                     className="!bg-transparent !border-none !text-slate-900"
+                                    compact
                                 />
                             </div>
 
                             {/* Quick Tools */}
-                            <div className="h-8 w-px bg-slate-200 mx-2" />
+                            <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
                             <button
                                 title="Печать бланков"
-                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all"
+                                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all hidden xs:flex"
                                 onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
                             >
-                                <Printer className="w-4 h-4" />
+                                <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
 
                             <button
                                 title="Экспорт в Excel"
-                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-emerald-600 transition-all"
+                                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-emerald-600 transition-all"
                                 onClick={onExport}
                             >
-                                <FileDown className="w-4 h-4" />
+                                <FileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
 
                             {isAdmin && (
                                 <button
                                     title="Удалить выбранные"
-                                    className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 btn-destructive-ghost"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-slate-400 btn-destructive-ghost"
                                     onClick={() => setShowDeleteConfirm(true)}
                                     disabled={isProcessing}
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 </button>
                             )}
 
-                            <div className="h-8 w-px bg-slate-200 mx-2" />
+                            <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
                             <button
                                 onClick={onClear}
-                                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all"
+                                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all"
                                 disabled={isProcessing}
                             >
-                                <X className="w-4 h-4" />
+                                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                         </div>
 

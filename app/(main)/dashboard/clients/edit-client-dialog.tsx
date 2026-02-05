@@ -21,6 +21,7 @@ interface EditClientDialogProps {
         address?: string | null;
         comments?: string | null;
         socialLink?: string | null;
+        acquisitionSource?: string | null;
         managerId?: string | null;
     };
     isOpen: boolean;
@@ -78,11 +79,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-200">
                     <div>
                         <h3 className="text-2xl font-bold text-slate-900 tracking-normal">Редактировать клиента</h3>
-                        <p className="text-sm text-slate-500 font-medium">Измените необходимые поля</p>
+                        <p className="text-sm text-slate-700 font-medium">Измените необходимые поля</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-slate-100 transition-all"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all shadow-sm"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -93,7 +94,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     {/* Name Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <User className="w-3.5 h-3.5" /> Фамилия <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -105,7 +106,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <User className="w-3.5 h-3.5" /> Имя <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -120,7 +121,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Отчество
                             </label>
                             <input
@@ -131,7 +132,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Building2 className="w-3.5 h-3.5" /> Компания
                             </label>
                             <input
@@ -146,7 +147,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     {/* Contact Group */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Phone className="w-3.5 h-3.5" /> Телефон <span className="text-rose-500">*</span>
                             </label>
                             <input
@@ -158,7 +159,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Mail className="w-3.5 h-3.5" /> Email
                             </label>
                             <input
@@ -172,7 +173,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Telegram
                             </label>
                             <input
@@ -184,7 +185,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Instagram
                             </label>
                             <input
@@ -197,10 +198,9 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    {/* New Fields */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <LinkIcon className="w-3.5 h-3.5" /> Ссылка на соцсеть
                             </label>
                             <input
@@ -212,7 +212,26 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
+                                Источник
+                            </label>
+                            <select
+                                name="acquisitionSource"
+                                defaultValue={client.acquisitionSource || ""}
+                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
+                            >
+                                <option value="">Не указан</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="website">Сайт</option>
+                                <option value="recommendation">Рекомендация</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Менеджер
                             </label>
                             <select
@@ -230,7 +249,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 <MapPin className="w-3.5 h-3.5" /> Город
                             </label>
                             <input
@@ -241,7 +260,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-500 ml-1">
+                            <label className="text-sm font-bold text-slate-700 ml-1">
                                 Адрес
                             </label>
                             <input
@@ -254,7 +273,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-500 ml-1">
+                        <label className="text-sm font-bold text-slate-700 ml-1">
                             <MessageSquare className="w-3.5 h-3.5" /> Комментарии
                         </label>
                         <textarea
@@ -265,18 +284,18 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         />
                     </div>
 
-                    <div className="pt-2 flex gap-4">
+                    <div className="sticky bottom-0 z-20 p-8 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-4 border border-slate-200 text-slate-600 font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-[0.98]"
+                            className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-[18px] bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
                         >
                             Отмена
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-[2] inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark h-11 px-4 text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
+                            className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
                         >
                             {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                             {loading ? "Сохранение..." : "Сохранить изменения"}

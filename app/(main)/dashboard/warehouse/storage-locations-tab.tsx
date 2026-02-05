@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 import {
     DndContext,
     closestCenter,
@@ -177,7 +178,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000">
                         {localLocations.map((loc) => (
                             <SortableLocationCard
                                 key={loc.id}
@@ -201,8 +202,55 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 </DragOverlay>
             </DndContext>
 
+            {/* Mobile/Tablet Delete BottomSheet */}
+            <div className="lg:hidden">
+                <BottomSheet
+                    isOpen={!!deleteId}
+                    onClose={() => setDeleteId(null)}
+                    title="Удалить локацию?"
+                >
+                    <div className="px-6 space-y-6 pt-2 pb-6">
+                        <div className="w-16 h-16 bg-rose-50 rounded-[var(--radius-inner)] flex items-center justify-center mx-auto mb-2 text-rose-500 border border-rose-100">
+                            <Trash2 className="w-8 h-8" />
+                        </div>
+
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed text-center">
+                            Локация &quot;{deleteName}&quot; будет удалена. Данное действие необратимо.
+                        </p>
+
+                        {deleteIsSystem && (
+                            <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100">
+                                <div className="flex items-center gap-2 text-rose-600 mb-3">
+                                    <Lock className="w-4 h-4" />
+                                    <span className="text-sm font-semibold">Системная защита</span>
+                                </div>
+                                <input
+                                    type="password"
+                                    value={deletePassword}
+                                    onChange={(e) => setDeletePassword(e.target.value)}
+                                    placeholder="Пароль администратора"
+                                    className="w-full h-12 px-5 rounded-xl border-2 border-rose-100 focus:outline-none focus:border-rose-300 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
+                                    autoFocus
+                                />
+                            </div>
+                        )}
+
+                        <div className="px-5 pb-6">
+                            <button
+                                onClick={handleConfirmDelete}
+                                disabled={isDeleting}
+                                className="h-12 w-full btn-destructive rounded-[var(--radius-inner)] font-bold text-sm transition-all shadow-lg active:scale-[0.98] flex items-center justify-center disabled:opacity-50"
+                            >
+                                {isDeleting ? "Удаление..." : "Удалить локацию"}
+                            </button>
+                        </div>
+                    </div>
+                </BottomSheet>
+            </div>
+
+            {/* Desktop Delete Dialog */}
             {deleteId && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
+                <div className="hidden lg:flex fixed inset-0 z-[100] items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
                     <div
                         className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setDeleteId(null)}
@@ -237,17 +285,17 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                             </div>
                         )}
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="flex justify-center gap-3">
                             <button
                                 onClick={() => setDeleteId(null)}
-                                className="h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 transition-all flex items-center justify-center"
+                                className="h-11 px-6 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 transition-all flex items-center justify-center"
                             >
                                 Отмена
                             </button>
                             <button
                                 onClick={handleConfirmDelete}
                                 disabled={isDeleting}
-                                className="h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-[var(--radius-inner)] font-bold text-sm transition-all shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center disabled:opacity-50"
+                                className="h-11 px-8 bg-rose-600 hover:bg-rose-700 text-white rounded-[var(--radius-inner)] font-bold text-sm transition-all shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center disabled:opacity-50"
                             >
                                 {isDeleting ? "Удаление..." : "Удалить"}
                             </button>
@@ -256,14 +304,13 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 </div>
             )}
 
-            {editingLocation && (
-                <EditStorageLocationDialog
-                    users={users}
-                    locations={locations}
-                    location={editingLocation}
-                    onClose={() => setEditingLocation(null)}
-                />
-            )}
+            <EditStorageLocationDialog
+                users={users}
+                locations={locations}
+                location={editingLocation || locations[0]}
+                isOpen={!!editingLocation}
+                onClose={() => setEditingLocation(null)}
+            />
         </>
     );
 }
@@ -307,7 +354,7 @@ const LocationCardContent = memo(({
 
     return (
         <div className={cn(
-            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm",
+            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[300px] sm:min-h-[380px] crm-card shadow-sm p-4 sm:p-6",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
@@ -317,13 +364,13 @@ const LocationCardContent = memo(({
                         : ""
         )}>
             <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <div
                         {...dragHandleProps}
-                        className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-8px]"
+                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <GripVertical className="w-5 h-5" />
+                        <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <span className="text-xs font-bold text-slate-300">
                         {loc.type === "warehouse" ? "Склад" :
@@ -332,41 +379,41 @@ const LocationCardContent = memo(({
                     </span>
                 </div>
                 <div className={cn(
-                    "w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
+                    "w-10 h-10 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
                     isDefault ? "bg-primary/10 text-primary" : "bg-slate-50 text-slate-400"
                 )}>
-                    <MapPin className="w-6 h-6" />
+                    <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center py-4">
-                <div className="text-6xl font-bold text-slate-900 tabular-nums">
+            <div className="flex-1 flex flex-col justify-center py-2 sm:py-4">
+                <div className="text-5xl sm:text-6xl font-bold text-slate-900 tabular-nums">
                     {totalItemsInLoc}
                 </div>
                 <div className="text-xs font-bold text-slate-400 flex items-center gap-2">
                     единиц товара
-                    <div className="h-px flex-1 bg-slate-100" />
+                    <div className="h-px flex-1 bg-slate-50" />
                 </div>
             </div>
 
-            <div className="space-y-6 mt-auto">
-                <div className="space-y-2">
+            <div className="space-y-4 sm:space-y-6 mt-auto">
+                <div className="space-y-1 sm:space-y-2">
                     <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-bold text-slate-900 leading-tight text-balance">
-                            {loc.name} {(!loc.isActive && loc.isActive !== undefined) && <span className="text-slate-400 text-sm font-medium">(Архив)</span>}
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight text-balance">
+                            {loc.name} {(!loc.isActive && loc.isActive !== undefined) && <span className="text-slate-400 text-xs sm:text-sm font-medium">(Архив)</span>}
                         </h3>
 
-                        {loc.isDefault && <Star className="w-4 h-4 text-primary fill-primary shrink-0" />}
-                        {loc.isSystem && <Lock className="w-3 h-3 text-slate-300 shrink-0" />}
+                        {loc.isDefault && <Star className="w-3 h-3 sm:w-4 sm:h-4 text-primary fill-primary shrink-0" />}
+                        {loc.isSystem && <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-300 shrink-0" />}
                     </div>
-                    <p className="text-[10px] font-bold text-slate-400 truncate">
+                    <p className="text-[11px] sm:text-[10px] font-bold text-slate-400 truncate">
                         {loc.address || "Адрес не указан"}
                     </p>
                 </div>
 
                 {categoriesList.length > 0 && (
                     <div className="space-y-3 pt-4 border-t border-slate-200">
-                        <div className="flex h-1.5 rounded-full overflow-hidden bg-slate-100/50 w-full mb-1">
+                        <div className="flex h-1.5 rounded-full overflow-hidden bg-slate-50/50 w-full mb-1">
                             {categoriesList.map((cat, idx) => {
                                 const percent = (cat.count / total) * 100;
                                 const colors = ["bg-primary", "bg-slate-700", "bg-slate-400", "bg-slate-200"];
@@ -390,10 +437,10 @@ const LocationCardContent = memo(({
                     </div>
                 )}
 
-                <div className="flex items-center justify-between pt-4 transition-all">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
-                            <User className="w-3 h-3 text-slate-400" />
+                <div className="flex items-center justify-between pt-3 sm:pt-4 transition-all">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                            <User className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
                         <span className="text-[10px] font-bold text-slate-500 truncate">
                             {loc.responsibleUser?.name || "Нет ответственного"}
@@ -401,19 +448,19 @@ const LocationCardContent = memo(({
                     </div>
 
                     {!isOverlay && (
-                        <div className="flex gap-2 shrink-0">
+                        <div className="flex gap-1.5 sm:gap-2 shrink-0">
                             <button
                                 onClick={onEdit}
-                                className="p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
+                                className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
                             >
-                                <Pencil className="w-4 h-4" />
+                                <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                             {!loc.isSystem && (
                                 <button
                                     onClick={onDeleteClick}
-                                    className="p-2.5 rounded-[var(--radius-inner)] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all border border-rose-100"
+                                    className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all border border-rose-100"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 </button>
                             )}
                         </div>

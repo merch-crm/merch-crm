@@ -4,7 +4,7 @@ import React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { pluralize } from "@/lib/pluralize";
+
 
 interface PremiumPaginationProps {
     currentPage: number;
@@ -44,11 +44,7 @@ export function PremiumPagination({
         }
     };
 
-    const displayItemName = itemNames
-        ? pluralize(totalItems, itemNames[0], itemNames[1], itemNames[2])
-        : itemName;
 
-    if (totalPages <= 1) return null;
 
     const getPages = () => {
         const pages: (number | string)[] = [];
@@ -74,56 +70,64 @@ export function PremiumPagination({
         return pages;
     };
 
+    // For the "X out of Y" part, we need genitive case: "из 1 позиции", "из 5 позиций"
+    // In our [one, few, many] array, 'few' is usually Genitive Singular and 'many' is Genitive Plural
+    const genitiveItemName = itemNames
+        ? (totalItems % 10 === 1 && totalItems % 100 !== 11 ? itemNames[1] : itemNames[2])
+        : itemName;
+
     return (
-        <div className={cn("flex flex-col sm:flex-row items-center justify-between px-2 py-4 gap-4", className)}>
-            <div className="text-[13px] font-bold text-slate-400 whitespace-nowrap pl-2">
-                Показано {Math.min((currentPage - 1) * pageSize + 1, totalItems)} - {Math.min(currentPage * pageSize, totalItems)} из {totalItems} {displayItemName}
+        <div className={cn("flex flex-col items-center justify-center p-2 gap-2", className)}>
+            <div className="text-[11px] font-bold text-slate-400/80 whitespace-nowrap uppercase tracking-wider">
+                Показано {Math.min((currentPage - 1) * pageSize + 1, totalItems)} - {Math.min(currentPage * pageSize, totalItems)} из {totalItems} {genitiveItemName}
             </div>
 
-            <div className="flex items-center justify-center gap-1">
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
-                >
-                    <ChevronLeft className="w-5 h-5" />
-                </button>
+            {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-1">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </button>
 
-                <div className={cn(
-                    variant === "light" ? "crm-filter-tray-light" : "crm-filter-tray",
-                    "!rounded-full"
-                )}>
-                    {getPages().map((page, idx) => (
-                        <React.Fragment key={idx}>
-                            {typeof page === "number" ? (
-                                <button
-                                    onClick={() => handlePageChange(page)}
-                                    className={cn(
-                                        "w-11 h-11 rounded-full text-[13px] font-black transition-all active:scale-90 flex items-center justify-center",
-                                        currentPage === page
-                                            ? "bg-slate-950 text-white shadow-lg shadow-slate-900/10"
-                                            : "text-slate-500/80 hover:text-slate-950 hover:bg-white/50"
-                                    )}
-                                >
-                                    {page}
-                                </button>
-                            ) : (
-                                <div className="w-11 h-11 flex items-center justify-center text-slate-400">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                </div>
-                            )}
-                        </React.Fragment>
-                    ))}
+                    <div className={cn(
+                        variant === "light" ? "crm-filter-tray-light" : "crm-filter-tray",
+                        "!rounded-full p-0.5 !bg-white"
+                    )}>
+                        {getPages().map((page, idx) => (
+                            <React.Fragment key={idx}>
+                                {typeof page === "number" ? (
+                                    <button
+                                        onClick={() => handlePageChange(page)}
+                                        className={cn(
+                                            "w-8 h-8 rounded-full text-[11px] font-black transition-all active:scale-90 flex items-center justify-center",
+                                            currentPage === page
+                                                ? "bg-slate-950 text-white shadow-lg shadow-slate-900/10"
+                                                : "text-slate-500/80 hover:text-slate-950 hover:bg-white/50"
+                                        )}
+                                    >
+                                        {page}
+                                    </button>
+                                ) : (
+                                    <div className="w-8 h-8 flex items-center justify-center text-slate-400">
+                                        <MoreHorizontal className="w-3 h-3" />
+                                    </div>
+                                )}
+                            </React.Fragment>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
                 </div>
-
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
-                >
-                    <ChevronRight className="w-5 h-5" />
-                </button>
-            </div>
+            )}
         </div>
     );
 }

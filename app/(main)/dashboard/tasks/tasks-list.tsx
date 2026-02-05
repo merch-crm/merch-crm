@@ -6,7 +6,8 @@ import {
     User,
     Shield,
     Calendar,
-    Trash2
+    Trash2,
+    ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toggleTaskStatus, deleteTask } from "./actions";
@@ -22,11 +23,10 @@ import { Task } from "./types";
 interface TasksListProps {
     tasks: Task[];
     currentUserId: string;
-    currentUserRoleId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksListProps) {
+export function TasksList({ tasks, currentUserId }: TasksListProps) {
     const [, startTransition] = useTransition();
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
@@ -94,8 +94,8 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[var(--crm-grid-gap)] mt-6">
-                {tasks.map((task) => {
+            <div className="flex flex-col bg-white rounded-[24px] border border-slate-200 overflow-hidden mt-6">
+                {tasks.map((task, index) => {
                     const config = getPriorityConfig(task.priority);
                     const isDone = task.status === "done";
 
@@ -104,80 +104,69 @@ export function TasksList({ tasks, currentUserId, currentUserRoleId }: TasksList
                             key={task.id}
                             onClick={() => setSelectedTask(task)}
                             className={cn(
-                                "group relative bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-pointer",
-                                isDone && "opacity-75 grayscale-[0.5]"
+                                "group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
+                                index !== tasks.length - 1 && "border-b border-slate-100",
+                                isDone && "bg-slate-50/50"
                             )}
                         >
-                            {/* Status Icon */}
-                            <button
-                                onClick={(e) => handleToggle(e, task.id, task.status)}
-                                className={cn(
-                                    "h-14 w-14 rounded-[18px] flex items-center justify-center transition-all active:scale-90 absolute -top-4 -right-4 shadow-lg z-10",
-                                    isDone
-                                        ? "bg-emerald-500 text-white shadow-emerald-200"
-                                        : "bg-white text-slate-200 hover:text-primary border border-slate-200 hover:border-primary/20 hover:shadow-primary/10"
-                                )}
-                            >
-                                <CheckCircle2 className={cn("w-7 h-7", isDone && "animate-in zoom-in-50")} />
-                            </button>
+                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                                <button
+                                    onClick={(e) => handleToggle(e, task.id, isDone ? "in_progress" : "done")}
+                                    className={cn(
+                                        "h-10 w-10 shrink-0 rounded-xl flex items-center justify-center transition-all active:scale-90 border-2",
+                                        isDone
+                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200"
+                                            : "bg-white border-slate-200 text-slate-200 hover:text-primary hover:border-primary/20"
+                                    )}
+                                >
+                                    <CheckCircle2 className={cn("w-5 h-5", isDone && "animate-in zoom-in-50")} />
+                                </button>
 
-                            <div className="flex flex-col h-full">
-                                <div className="flex justify-between items-start mb-4 pr-10">
-                                    <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold  tracking-normal", config.color)}>
-                                        {config.label}
-                                    </span>
-                                </div>
-
-                                <h3 className={cn(
-                                    "text-lg font-bold text-slate-900 leading-snug mb-2",
-                                    isDone && "line-through text-slate-400"
-                                )}>
-                                    {task.title}
-                                </h3>
-
-                                {task.description && (
-                                    <p className="text-slate-500 text-sm font-medium mb-6 line-clamp-2">
-                                        {task.description}
-                                    </p>
-                                )}
-
-                                <div className="mt-auto pt-4 border-t border-slate-200 space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center">
-                                            {task.assignedToRole ? <Shield className="w-4 h-4 text-primary" /> : <User className="w-4 h-4 text-primary" />}
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold text-slate-400  tracking-normal leading-none mb-0.5">Исполнитель</span>
-                                            <span className="text-xs font-bold text-slate-700">
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                        <h3 className={cn(
+                                            "text-sm font-black text-slate-900 truncate",
+                                            isDone && "line-through text-slate-400 font-bold"
+                                        )}>
+                                            {task.title}
+                                        </h3>
+                                        <span className={cn("px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter", config.color)}>
+                                            {config.label}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400">
+                                        <div className="flex items-center gap-1">
+                                            <User className="w-3 h-3" />
+                                            <span className="truncate max-w-[100px]">
                                                 {task.assignedToUser?.name || task.assignedToRole?.name || "Все"}
                                             </span>
                                         </div>
+                                        {task.dueDate && (
+                                            <div className={cn(
+                                                "flex items-center gap-1",
+                                                new Date(task.dueDate) < new Date() && !isDone ? "text-rose-500" : ""
+                                            )}>
+                                                <Calendar className="w-3 h-3" />
+                                                <span>{format(new Date(task.dueDate), "d MMM", { locale: ru })}</span>
+                                            </div>
+                                        )}
+                                        {task.order && (
+                                            <div className="flex items-center gap-1 text-primary">
+                                                <span className="font-black">№{task.order.orderNumber}</span>
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {task.dueDate && (
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center">
-                                                <Calendar className="w-4 h-4 text-slate-400" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-slate-400  tracking-normal leading-none mb-0.5">Срок</span>
-                                                <span className="text-xs font-bold text-slate-700">
-                                                    {format(new Date(task.dueDate), "d MMMM", { locale: ru })}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
+                            </div>
 
-                                {/* Hover Actions */}
-                                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                                    <button
-                                        onClick={(e) => handleDelete(e, task.id)}
-                                        className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </div>
+                            <div className="flex items-center gap-2 shrink-0 ml-4">
+                                <button
+                                    onClick={(e) => handleDelete(e, task.id)}
+                                    className="p-2 text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 md:block hidden"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                             </div>
                         </div>
                     );

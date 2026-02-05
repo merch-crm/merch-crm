@@ -428,6 +428,8 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                                     key={i}
                                                     onMouseEnter={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (line.data.length - 1) - i) })}
                                                     onMouseLeave={() => setHoveredData(null)}
+                                                    onClick={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (line.data.length - 1) - i) })}
+                                                    onTouchStart={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (line.data.length - 1) - i) })}
                                                     className="cursor-pointer group/dot"
                                                 >
                                                     {/* Invisible larger hit area */}

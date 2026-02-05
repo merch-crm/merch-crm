@@ -66,7 +66,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                             <Shield className="w-7 h-7" />
                         </div>
                         <h3 className="text-2xl font-bold text-slate-900">Редактировать роль</h3>
-                        <p className="text-slate-500 mt-1">Измените параметры роли</p>
+                        <p className="text-slate-700 mt-1">Измените параметры роли</p>
                     </div>
 
                     {error && (
@@ -77,7 +77,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
 
                     <form action={handleSubmit} className="space-y-6">
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Название роли</label>
+                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Название роли</label>
                             <div className="relative">
                                 <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -92,7 +92,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Привязка к отделу</label>
+                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Привязка к отделу</label>
                             <div className="relative">
                                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <select
@@ -110,7 +110,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-400  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
+                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
                             <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-inner">
                                 {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
                                     <label key={c} className="relative cursor-pointer group">

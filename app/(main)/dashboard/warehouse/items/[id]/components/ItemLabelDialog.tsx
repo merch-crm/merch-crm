@@ -3,10 +3,8 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-} from "@/components/ui/dialog";
+    ResponsiveModal
+} from "@/components/ui/responsive-modal";
 
 import { Printer, X } from "lucide-react";
 import { InventoryItem } from "../../../types";
@@ -119,19 +117,18 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-lg p-0 rounded-[var(--radius-outer)] border-none shadow-2xl overflow-visible bg-white">
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Печать этикетки">
+            <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
                             <Printer className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                            <DialogTitle className="text-2xl font-bold text-slate-900 leading-tight">Печать этикетки</DialogTitle>
+                            <h2 className="text-2xl font-bold text-slate-900 leading-tight">Печать этикетки</h2>
                             <p className="text-[11px] font-medium text-slate-500 mt-0.5">Подготовка SKU-маркировки для принтера</p>
                         </div>
                     </div>
-
 
                     <button
                         onClick={onClose}
@@ -141,10 +138,10 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                     </button>
                 </div>
 
-                <div className="px-6 py-6 space-y-8 bg-slate-50/30">
+                <div className="px-6 py-6 space-y-8 bg-white overflow-y-auto flex-1 custom-scrollbar">
                     {/* Preview Label */}
                     <div className="flex flex-col items-center">
-                        <label className="text-sm font-bold text-slate-500 mb-3">Предпросмотр (58x40мм)</label>
+                        <label className="text-sm font-bold text-slate-700 mb-3">Предпросмотр (58x40мм)</label>
                         <div
                             ref={printRef}
                             className="w-[280px] h-[180px] bg-white shadow-2xl shadow-slate-200/50 rounded-[var(--radius-inner)] p-5 flex flex-col border border-slate-200 relative group transition-transform hover:scale-[1.02]"
@@ -192,22 +189,23 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                     </div>
                 </div>
 
-                <div className="p-6 flex gap-3 bg-white rounded-b-[var(--radius-outer)] border-t border-slate-200">
+                <div className="sticky bottom-0 z-10 p-5 pt-2 flex items-center justify-end gap-3 shrink-0 bg-white border-t border-slate-100 mt-auto">
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="flex-1 h-11 rounded-[var(--radius-inner)] text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all active:scale-95 border border-transparent"
+                        className="hidden md:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center"
                     >
-                        Отмена
+                        Закрыть
                     </button>
                     <button
                         onClick={handlePrint}
-                        className="flex-[2] h-11 bg-primary text-white rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                        className="h-11 w-full md:w-auto md:px-10 bg-primary text-white rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                         <Printer className="w-4 h-4 stroke-[3]" />
                         Печать этикетки
                     </button>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </div>
+        </ResponsiveModal>
     );
 }

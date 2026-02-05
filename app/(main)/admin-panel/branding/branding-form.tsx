@@ -213,8 +213,8 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                     <Button
                         type="submit"
                         disabled={loading}
-                        variant="default"
-                        className="h-12 rounded-[18px] px-8 gap-2 font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all active:scale-[0.98]"
+                        variant="btn-dark"
+                        className="h-12 rounded-[18px] px-8 gap-2 font-bold shadow-lg shadow-black/10 hover:shadow-black/20 transition-all active:scale-[0.98]"
                     >
                         {loading ? <Database className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                         {loading ? "Сохранение..." : "Сохранить изменения"}
@@ -223,7 +223,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                 {/* Tabs for different sections */}
                 <Tabs defaultValue="main" value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-5">
-                    <TabsList className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-2xl glass-panel bg-white/50 border border-slate-200/60 transition-all">
+                    <TabsList className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-2xl glass-panel bg-white/50 border border-slate-200/60 transition-all overflow-x-auto no-scrollbar">
                         {[
                             { id: "main", label: "Основные характеристики", icon: Building2 },
                             { id: "ui", label: "Внешний вид", icon: Monitor },
@@ -263,7 +263,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                             Название компании
                                         </label>
                                         <Input
@@ -275,7 +275,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     </div>
 
                                     <div>
-                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                             Слоган (Slogan)
                                         </label>
                                         <Input
@@ -289,7 +289,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                             Текст приветствия
                                         </label>
                                         <Input
@@ -309,7 +309,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                         Валюта системы
                                     </label>
                                     <div className="flex flex-wrap gap-2">
@@ -339,7 +339,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                         Формат даты
                                     </label>
                                     <div className="flex flex-wrap gap-2">
@@ -363,7 +363,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                         Часовой пояс
                                     </label>
                                     <PremiumSelect
@@ -411,7 +411,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                         </div>
 
                                         <div className="pt-4 border-t border-slate-100 space-y-5">
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Фоновое изображение CRM
                                             </label>
 
@@ -464,7 +464,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <div className="flex justify-between items-center">
-                                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                                                             Размытие
                                                         </label>
                                                         <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBlur || 0}px</span>
@@ -486,7 +486,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                 </div>
                                                 <div className="space-y-2">
                                                     <div className="flex justify-between items-center">
-                                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                                                             Яркость
                                                         </label>
                                                         <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBrightness || 100}%</span>
@@ -511,7 +511,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                                         {/* Login Page Background */}
                                         <div className="pt-4 border-t border-slate-100 space-y-3">
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Фон страницы входа
                                             </label>
                                             <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
@@ -568,7 +568,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     <div className="space-y-6">
                                         {/* Logo */}
                                         <div>
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Логотип системы
                                             </label>
                                             <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
@@ -591,7 +591,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                                         {/* Favicon */}
                                         <div>
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Иконка вкладки (Favicon)
                                             </label>
                                             <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
@@ -635,7 +635,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Логотип для писем (PNG/JPG)
                                             </label>
                                             <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-4">
@@ -666,7 +666,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                         </div>
 
                                         <div>
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Подпись (Signature)
                                             </label>
                                             <Input
@@ -678,7 +678,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                         </div>
 
                                         <div>
-                                            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                 Футер письма (Footer)
                                             </label>
                                             <textarea
@@ -697,7 +697,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                         Telegram (Username)
                                                     </label>
                                                     <Input
@@ -708,7 +708,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                         WhatsApp (Номер)
                                                     </label>
                                                     <Input
@@ -721,7 +721,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                             </div>
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                                         Веб-сайт (URL)
                                                     </label>
                                                     <Input
@@ -768,7 +768,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-4">
-                                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2 block">
+                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider ml-1 mb-2 block">
                                             Логотип для документов (High-Res PNG)
                                         </label>
                                         <div className="p-5 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-6">

@@ -11,17 +11,19 @@ export default function AdminDepartmentsPage() {
 
     return (
         <div className="space-y-6 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
-                        <Building2 className="w-6 h-6 text-primary" />
+            <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/5 rounded-[12px] sm:rounded-[18px] flex items-center justify-center border border-primary/10 shrink-0">
+                        <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     </div>
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Отделы</h1>
-                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Управление структурой компании и подразделениями</p>
+                    <div className="min-w-0">
+                        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-normal truncate">Отделы</h1>
+                        <p className="hidden sm:block text-slate-500 text-[11px] font-medium mt-0.5 truncate">Управление структурой компании и подразделениями</p>
                     </div>
                 </div>
-                <AddDepartmentDialog onSuccess={() => setRefreshKey(prev => prev + 1)} />
+                <div className="shrink-0">
+                    <AddDepartmentDialog onSuccess={() => setRefreshKey(prev => prev + 1)} />
+                </div>
             </div>
 
             <DepartmentsTable key={refreshKey} />

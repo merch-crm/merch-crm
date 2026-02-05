@@ -132,7 +132,7 @@ export default function FloatingPanelsCRM() {
                         <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 cursor-pointer">
                             <Pause size={18} fill="currentColor" />
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-[#3b5bdb] flex items-center justify-center text-white hover:bg-[#3b5bdb]/90 shadow-lg shadow-blue-500/30 cursor-pointer">
+                        <div className="w-10 h-10 rounded-full bg-[#0f172a] flex items-center justify-center text-white hover:bg-[#0f172a]/90 shadow-lg shadow-black/30 cursor-pointer">
                             <Save size={18} />
                         </div>
                         <div className="w-[1px] h-8 bg-slate-100 mx-1" />

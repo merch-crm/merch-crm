@@ -16,7 +16,7 @@ interface CategorySelectorProps {
 
 export function CategorySelector({ categories, onSelect, variant = "default", hideTitle = false, selectedCategoryId }: CategorySelectorProps) {
     return (
-        <div className={cn("px-10 pb-6", hideTitle ? "pt-2" : "pt-10")}>
+        <div className={cn("px-4 sm:px-10 pb-6", hideTitle ? "pt-2" : "pt-6 sm:pt-10")}>
             <div className="max-w-6xl mx-auto w-full space-y-6">
                 {!hideTitle && (
                     <div className="flex items-center gap-4">
@@ -33,8 +33,8 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                 <div className={cn(
                     "grid gap-4",
                     variant === "default"
-                        ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                        : "grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full"
+                        ? "grid-cols-2 md:grid-cols-4 lg:grid-cols-4"
+                        : "grid-cols-2 md:grid-cols-4 lg:grid-cols-5 w-full"
                 )}>
                     {categories.map((category) => {
                         const IconComponent = getCategoryIcon(category);
@@ -46,14 +46,14 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     key={category.id}
                                     onClick={() => onSelect(category)}
                                     className={cn(
-                                        "group flex flex-row items-center gap-3 p-4 rounded-[var(--radius-outer)] border border-slate-200 transition-all text-left shadow-sm",
+                                        "group flex flex-row items-center gap-3 p-4 rounded-2xl border border-slate-200 transition-all text-left shadow-sm",
                                         selectedCategoryId === category.id
                                             ? "border-slate-900 bg-slate-50 shadow-md"
                                             : "bg-white hover:border-slate-300 hover:shadow-md"
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-transform duration-300",
+                                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300",
                                         colorStyle
                                     )}>
                                         {createElement(IconComponent, { className: "w-5 h-5" })}
@@ -73,28 +73,24 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 key={category.id}
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center gap-4 p-6 rounded-[var(--radius-outer)] border border-slate-200 transition-all text-center shadow-sm",
+                                    "group flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-slate-200 transition-all text-center shadow-sm aspect-square xl:aspect-auto",
                                     selectedCategoryId === category.id
                                         ? "border-slate-900 bg-slate-50 shadow-md"
                                         : "bg-white hover:border-slate-300 hover:shadow-md"
                                 )}
                             >
                                 <div className={cn(
-                                    "w-14 h-14 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-transform duration-500 shadow-sm",
+                                    "w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 shadow-sm",
                                     colorStyle
                                 )}>
                                     {createElement(IconComponent, { className: "w-7 h-7" })}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-lg font-bold text-slate-900 mb-1">
+                                    <h3 className="text-lg font-bold text-slate-900 mb-1 whitespace-nowrap xl:whitespace-normal">
                                         {category.name}
                                     </h3>
-                                    {category.description && (
-                                        <p className="text-[10px] text-slate-500 font-medium line-clamp-1">
-                                            {category.description}
-                                        </p>
-                                    )}
+
                                 </div>
 
                             </button>

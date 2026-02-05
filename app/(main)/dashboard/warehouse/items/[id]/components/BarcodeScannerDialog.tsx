@@ -76,22 +76,22 @@ export function BarcodeScannerDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className="sm:max-w-md bg-slate-950 border-none text-white p-0 overflow-hidden rounded-[var(--radius-outer)] shadow-2xl">
-                <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-white/5">
+            <DialogContent className="sm:max-w-md bg-white border-none text-slate-900 p-0 overflow-hidden rounded-[var(--radius-outer)] shadow-2xl [&>button]:hidden">
+                <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-slate-100">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary/20 flex items-center justify-center shadow-sm">
                             <Camera className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <DialogTitle className="text-xl font-bold text-white leading-tight">Штрихкод</DialogTitle>
+                            <DialogTitle className="text-xl font-bold text-slate-900 leading-tight">Штрихкод</DialogTitle>
                             <p className="text-[10px] font-bold text-slate-500 mt-0.5">Наведите на код товара</p>
                         </div>
                     </div>
                     <button
                         onClick={handleClose}
-                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white rounded-[var(--radius-inner)] bg-white/5 transition-all active:scale-95 shadow-sm"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[var(--radius-inner)] bg-slate-50 transition-all active:scale-95 shadow-sm"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-5 w-5" />
                     </button>
                 </div>
 
@@ -117,7 +117,7 @@ export function BarcodeScannerDialog({
                     <Button
                         onClick={handleClose}
                         variant="ghost"
-                        className="w-full h-11 text-slate-400 hover:text-white hover:bg-white/5 rounded-[var(--radius-inner)] font-bold text-sm transition-all"
+                        className="w-full h-12 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-[var(--radius-inner)] font-bold text-sm transition-all"
                     >
                         Завершить сканирование
                     </Button>

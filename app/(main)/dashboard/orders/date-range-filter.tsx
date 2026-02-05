@@ -65,14 +65,15 @@ export function DateRangeFilter() {
     const isCustom = currentRange === "custom";
 
     return (
-        <div className="flex flex-wrap items-center gap-4 mb-2">
-            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-[18px] w-fit border border-slate-200/50 shadow-sm">
+        <div className="flex flex-col gap-3">
+            {/* Quick Range Buttons Grid */}
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 p-1 bg-slate-100/50 rounded-[22px] sm:rounded-[18px] border border-slate-200/50 shadow-sm">
                 {ranges.slice(0, 4).map((range) => (
                     <button
                         key={range.value}
                         onClick={() => handleRangeChange(range.value)}
                         className={cn(
-                            "px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
+                            "px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] sm:rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto",
                             currentRange === range.value && !isCustom
                                 ? "bg-white text-primary shadow-sm"
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
@@ -81,22 +82,22 @@ export function DateRangeFilter() {
                         {range.label}
                     </button>
                 ))}
-            </div>
 
-            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-[18px] w-fit border border-slate-200/50 shadow-sm">
+                {/* Custom Date Picker Button inside the same grid/flex container */}
                 <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
                         <button
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-[18px] transition-all",
+                                "flex items-center justify-center gap-2 px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto col-span-2 sm:col-span-1",
                                 isCustom
                                     ? "bg-white text-primary shadow-sm"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
-                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-primary" : "text-slate-400")} />
-                            <span>Выбрать период</span>
-                            <ChevronDown className="w-4 h-4 opacity-50" />
+                            <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ? "text-primary" : "text-slate-400")} />
+                            <span className="hidden sm:inline">Выбрать период</span>
+                            <span className="sm:hidden">Период</span>
+                            <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-50" />
                         </button>
                     </PopoverTrigger>
                     <AnimatePresence>
@@ -158,8 +159,8 @@ export function DateRangeFilter() {
                 </Popover>
 
                 {isCustom && fromParam && toParam && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-[18px] shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
-                        <span className="text-primary font-bold text-sm  tracking-wider">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-[14px] shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <span className="text-primary font-bold text-sm">
                             {format(new Date(fromParam), "dd.MM.yy")} — {format(new Date(toParam), "dd.MM.yy")}
                         </span>
                         <button

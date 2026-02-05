@@ -19,7 +19,7 @@ export function SubmitButton({ label, pendingLabel = "Сохранение...", 
             type="submit"
             disabled={pending}
             className={cn(
-                "h-11 px-12 rounded-[var(--radius-inner)] font-bold text-sm inline-flex items-center justify-center transition-all active:scale-[0.98] disabled:opacity-50",
+                "h-11 px-4 rounded-[var(--radius-inner)] font-bold text-sm inline-flex items-center justify-center transition-all active:scale-[0.98] disabled:opacity-50",
                 className
             )}
         >

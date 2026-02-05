@@ -53,6 +53,7 @@ interface PremiumSelectProps {
     gridColumns?: 2 | 3;
     autoLayout?: boolean; // Включить автоматический выбор layout
     center?: boolean; // Центрировать содержимое
+    triggerClassName?: string;
 }
 
 export function PremiumSelect({
@@ -69,8 +70,10 @@ export function PremiumSelect({
     variant = "default",
     gridColumns,
     autoLayout = true,
-    center = false
-}: PremiumSelectProps) {
+    center = false,
+    triggerClassName,
+    align = "start"
+}: PremiumSelectProps & { align?: "start" | "center" | "end" }) {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -116,19 +119,20 @@ export function PremiumSelect({
                             "w-full transition-all group disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
-                                "bg-white border border-slate-200 rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
+                                "bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
                                 compact ? "h-10 px-3.5" : "h-11 px-4",
                                 open && "ring-4 ring-primary/5 border-primary/20 shadow-md"
                             ] : [
-                                "bg-white rounded-[var(--radius-inner)] h-11 px-5 border border-slate-200/60 hover:border-slate-300",
+                                "bg-slate-50 rounded-[var(--radius-inner)] h-11 px-5 border border-slate-200/60 hover:border-slate-300",
                                 open && "ring-4 ring-primary/5 border-primary/20"
-                            ]
+                            ],
+                            triggerClassName
                         )}
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
                             <span className={cn(
                                 "font-bold transition-colors truncate",
-                                compact ? "text-[12px]" : "text-[13px]",
+                                compact ? "text-[12px]" : "text-sm",
                                 selectedOption ? "text-slate-900" : "text-slate-400"
                             )}>
                                 {selectedOption ? selectedOption.title : placeholder}
@@ -150,7 +154,7 @@ export function PremiumSelect({
                     {open && (
                         <PopoverContent
                             className="p-0 bg-transparent border-none shadow-none w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
-                            align="start"
+                            align={align}
                             sideOffset={8}
                             forceMount
                             asChild
@@ -208,7 +212,7 @@ export function PremiumSelect({
                                                                 "transition-all text-left group/item rounded-[14px]",
                                                                 effectiveGridColumns ? [
                                                                     "flex flex-col items-center justify-center p-3 gap-1",
-                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20" : "bg-slate-50/50 hover:bg-slate-100"
+                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20" : "bg-slate-50/50 hover:bg-slate-50"
                                                                 ] : [
                                                                     "flex items-center gap-2 p-2.5",
                                                                     isSelected ? "bg-indigo-50/30" : "hover:bg-slate-50"

@@ -504,7 +504,7 @@ export function SystemStats() {
             Мониторинг, диагностика и резервное копирование
           </p>
         </div>
-        <div className="flex bg-slate-100/80 p-1 rounded-[18px] mx-auto sm:mx-0">
+        <div className="flex bg-slate-100/80 p-1 rounded-[18px] mx-auto sm:mx-0 overflow-x-auto no-scrollbar max-w-full">
           <button
             onClick={() => setActiveTab("monitoring")}
             className={cn(
@@ -1256,8 +1256,8 @@ export function SystemStats() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0 max-h-[400px] overflow-y-auto">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                  <div className="overflow-x-auto no-scrollbar">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
                       <thead>
                         <tr className="bg-slate-50/50">
                           <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Email / Аккаунт</th>
@@ -1347,8 +1347,8 @@ export function SystemStats() {
               </div>
             </CardHeader>
             <CardContent className="p-0 max-h-[400px] overflow-y-auto">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+              <div className="overflow-x-auto no-scrollbar">
+                <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
                     <tr className="bg-rose-50/30">
                       <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Сообщение об ошибке</th>

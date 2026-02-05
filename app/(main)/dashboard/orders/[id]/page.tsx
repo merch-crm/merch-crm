@@ -15,6 +15,7 @@ import { RefundDialog } from "./refund-dialog";
 import { Wallet, Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
 import OrderActions from "./order-actions";
+import { AddPaymentDialog } from "./add-payment-dialog";
 
 interface OrderItem {
     id: string;
@@ -56,36 +57,34 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
-                <div className="flex items-center space-x-6">
-                    <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2.5 rounded-[18px] hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200">
-                        <ArrowLeft className="w-6 h-6" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white p-4 sm:p-6 rounded-[18px] border border-slate-200 shadow-sm gap-4">
+                <div className="flex items-center gap-3 sm:gap-6 min-w-0 flex-1">
+                    <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-[18px] hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0">
+                        <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                     </Link>
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-slate-900">Заказ #{order.id.slice(0, 8)}</h1>
-                            <span className="px-2 py-1 rounded bg-slate-100 text-slate-500 text-[10px] font-bold  tracking-wider">Internal ID</span>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">Заказ #{order.id.slice(0, 8)}</h1>
+                            <span className="hidden sm:inline px-2 py-1 rounded bg-slate-100 text-slate-500 text-[10px] font-bold tracking-wider shrink-0">Internal ID</span>
                         </div>
-                        <p className="text-slate-500 text-sm mt-1">
-                            Создан {format(new Date(order.createdAt), "d MMMM yyyy, HH:mm", { locale: ru })}
+                        <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 truncate">
+                            {format(new Date(order.createdAt), "d MMMM yyyy, HH:mm", { locale: ru })}
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3 sm:gap-6 shrink-0 ml-auto sm:ml-0">
                     <OrderActions
                         orderId={order.id}
                         isArchived={order.isArchived}
                         canDelete={canDelete}
                         canArchive={canArchive}
                     />
-                    <div className="w-px h-12 bg-slate-100 mx-2" />
-                    <div className="flex gap-4">
-                        <div className="w-48">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Приоритет</label>
+                    <div className="hidden md:block w-px h-12 bg-slate-100 mx-2" />
+                    <div className="hidden sm:flex items-center gap-4">
+                        <div className="w-32 lg:w-48">
                             <PrioritySelect orderId={order.id} currentPriority={order.priority || 'normal'} />
                         </div>
-                        <div className="w-56">
-                            <label className="text-sm font-bold text-slate-500 ml-1">Статус заказа</label>
+                        <div className="w-40 lg:w-56">
                             <StatusSelect orderId={order.id} currentStatus={order.status} />
                         </div>
                     </div>
@@ -219,7 +218,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             </div>
 
                             <div className="pt-4 border-t border-slate-200">
-                                <div className="text-sm font-bold text-slate-500 ml-1">Адрес доставки</div>
+                                <div className="text-sm font-bold text-slate-700 ml-1">Адрес доставки</div>
                                 <div className="flex items-start text-sm text-slate-600">
                                     <MapPin className="w-4 h-4 mr-3 text-slate-300 shrink-0" />
                                     {order.client.address || "Адрес не указан"}
@@ -272,10 +271,17 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                     </span>
                                 </div>
 
+                                <div className="pt-2">
+                                    <AddPaymentDialog
+                                        orderId={order.id}
+                                        remainingAmount={Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)}
+                                    />
+                                </div>
+
                                 {/* Payment History */}
                                 {order.payments && order.payments.length > 0 && (
                                     <div className="mt-8 space-y-3">
-                                        <div className="text-sm font-bold text-slate-500 ml-1 mb-2 flex items-center">
+                                        <div className="text-sm font-bold text-slate-700 ml-1 mb-2 flex items-center">
                                             <Receipt className="w-3 h-3 mr-2" />
                                             История платежей
                                         </div>

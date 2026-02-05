@@ -817,6 +817,20 @@ export async function addInventoryItem(formData: FormData) {
         attributes.width = formData.get("width");
         attributes.height = formData.get("height");
         attributes.depth = formData.get("depth");
+        attributes.weight = formData.get("weight");
+        attributes.packagingType = formData.get("packagingType");
+        attributes.supplierName = formData.get("supplierName");
+        attributes.supplierLink = formData.get("supplierLink");
+        attributes.minBatch = formData.get("minBatch");
+
+        const featuresStr = formData.get("features") as string;
+        if (featuresStr) {
+            try {
+                attributes.features = JSON.parse(featuresStr);
+            } catch (e) {
+                console.error("Failed to parse features JSON", e);
+            }
+        }
     } else if (itemType === "consumables") {
         attributes.department = formData.get("department");
     }
@@ -864,7 +878,7 @@ export async function addInventoryItem(formData: FormData) {
 
             // Task 2.1: Enforce units for specific types
             let finalUnit = unit;
-            if (itemType === "clothing" || itemType === "packaging") {
+            if (itemType === "clothing") {
                 finalUnit = "шт.";
             }
 
@@ -912,7 +926,7 @@ export async function addInventoryItem(formData: FormData) {
                 itemId: insertedItem.id,
                 changeAmount: quantity,
                 type: "in",
-                reason: "Initial stock",
+                reason: "Начальный остаток",
                 storageLocationId: storageLocationId || null,
                 costPrice: costPrice,
                 createdBy: session?.id,
@@ -1149,7 +1163,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     // We can fetch the item to check its type.
     const [existingItem] = await db.select({ itemType: inventoryItems.itemType }).from(inventoryItems).where(eq(inventoryItems.id, id));
     if (existingItem) {
-        if (existingItem.itemType === "clothing" || existingItem.itemType === "packaging") {
+        if (existingItem.itemType === "clothing") {
             unit = "шт.";
         }
     }
@@ -1205,6 +1219,20 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         attributes.width = formData.get("width");
         attributes.height = formData.get("height");
         attributes.depth = formData.get("depth");
+        attributes.weight = formData.get("weight");
+        attributes.packagingType = formData.get("packagingType");
+        attributes.supplierName = formData.get("supplierName");
+        attributes.supplierLink = formData.get("supplierLink");
+        attributes.minBatch = formData.get("minBatch");
+
+        const featuresStr = formData.get("features") as string;
+        if (featuresStr) {
+            try {
+                attributes.features = JSON.parse(featuresStr);
+            } catch (e) {
+                console.error("Failed to parse features JSON", e);
+            }
+        }
     } else if (itemType === "consumables") {
         attributes.department = formData.get("department");
     }

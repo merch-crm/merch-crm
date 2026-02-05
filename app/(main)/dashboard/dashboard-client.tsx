@@ -138,7 +138,7 @@ export function DashboardClient({ initialStats, period, userName, branding }: Da
             <div className="grid grid-cols-12 gap-4">
 
                 {/* Hero / Welcome Card - Spans 8 cols */}
-                <div className="col-span-12 lg:col-span-8 relative group overflow-hidden bg-white rounded-[18px] border border-slate-200 p-8 md:p-10 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="col-span-12 md:col-span-8 lg:col-span-8 relative group overflow-hidden bg-white rounded-[18px] border border-slate-200 p-8 md:p-10 shadow-sm hover:shadow-md transition-all duration-300">
                     {/* Background Decorative Elements */}
                     <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent rounded-full -mr-20 -mt-20 blur-3xl animate-pulse" />
 
@@ -152,7 +152,7 @@ export function DashboardClient({ initialStats, period, userName, branding }: Da
                                 AI-Integrated CRM v2.0
                             </div>
 
-                            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
+                            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
                                 {branding?.dashboardWelcome?.includes('%name%')
                                     ? branding.dashboardWelcome.replace('%name%', userName.split(' ')[0])
                                     : (branding?.dashboardWelcome || "Привет") + `, `} <span className="text-primary">{userName.split(' ')[0]}</span>
@@ -175,7 +175,7 @@ export function DashboardClient({ initialStats, period, userName, branding }: Da
                 </div>
 
                 {/* Main Metric - Revenue - Spans 4 cols */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 bg-[#212121] rounded-[18px] p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
+                <div className="col-span-12 md:col-span-4 lg:col-span-4 bg-[#212121] rounded-[18px] p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
                     <div className="absolute top-0 right-0 p-8">
                         <div className="w-12 h-12 rounded-[18px] bg-white/5 flex items-center justify-center border border-white/10">
                             <TrendingUp className="h-6 w-6 text-primary" />

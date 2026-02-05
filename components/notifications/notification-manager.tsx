@@ -17,7 +17,7 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
 
     const prevCount = useRef(initialUnreadCount);
     const prevOrderCount = useRef<number | null>(null);
-    const originalFavicon = useRef<string | null>(null);
+    const originalFavicons = useRef<Map<HTMLLinkElement, string>>(new Map());
 
     // Reset new orders indicator when visiting the orders page
     useEffect(() => {
@@ -26,25 +26,48 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
         }
     }, [pathname]);
 
-
     const updateFavicon = (count: number, showOrderDot: boolean) => {
         if (typeof window === "undefined") return;
 
-        const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-        if (!favicon) return;
+        const faviconElements = Array.from(document.querySelectorAll('link[rel*="icon"]')) as HTMLLinkElement[];
 
-        if (!originalFavicon.current) {
-            originalFavicon.current = favicon.href;
-        }
-
-        if (count <= 0 && !showOrderDot) {
-            favicon.href = originalFavicon.current;
+        if (faviconElements.length === 0) {
+            // If no favicon found yet, retry once after a delay (Next.js might be inserting them)
             return;
         }
 
+        // Store original hrefs on first encounter for each element
+        faviconElements.forEach(el => {
+            if (!originalFavicons.current.has(el)) {
+                // Important: store the initial href before we modify it
+                originalFavicons.current.set(el, el.href);
+            }
+        });
+
+        if (count <= 0 && !showOrderDot) {
+            faviconElements.forEach(el => {
+                const original = originalFavicons.current.get(el);
+                if (original && el.href !== original) {
+                    el.href = original;
+                }
+            });
+            return;
+        }
+
+        // Use the first icon as the base template
+        const mainFavicon = faviconElements[0];
+        const originalHref = originalFavicons.current.get(mainFavicon);
+        if (!originalHref) return;
+
         const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = originalFavicon.current;
+
+        // Only use crossOrigin if it's an absolute URL from another origin to prevent loading issues
+        const isExternal = originalHref.startsWith('http') && !originalHref.includes(window.location.host);
+        if (isExternal) {
+            img.crossOrigin = "anonymous";
+        }
+
+        img.src = originalHref;
 
         img.onload = () => {
             const canvas = document.createElement("canvas");
@@ -53,11 +76,15 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
             const ctx = canvas.getContext("2d");
             if (!ctx) return;
 
+            // Clear canvas
+            ctx.clearRect(0, 0, 32, 32);
+
             // Draw original icon
             ctx.drawImage(img, 0, 0, 32, 32);
 
             // 1. Order Dot (Top-Left) - Purple
             if (showOrderDot) {
+                ctx.save();
                 ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
                 ctx.shadowBlur = 4;
                 ctx.beginPath();
@@ -68,25 +95,27 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
+                ctx.restore();
             }
 
-            // Badge Configuration
+            // 2. Badge (Top-Right) - Red with count
             if (count > 0) {
                 const text = count > 9 ? "9+" : count.toString();
                 const badgeRadius = text.length > 1 ? 10 : 8;
                 const badgeX = 32 - badgeRadius;
                 const badgeY = badgeRadius;
 
+                ctx.save();
                 // Shadow for badge
-                ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+                ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
                 ctx.shadowBlur = 4;
                 ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 2;
+                ctx.shadowOffsetY = 1;
 
                 // Draw badge circle
                 ctx.beginPath();
                 ctx.arc(badgeX, badgeY, badgeRadius, 0, 2 * Math.PI);
-                ctx.fillStyle = "#ff0000"; // Bright Red
+                ctx.fillStyle = "#ef4444"; // Bright Red (rose-500 equivalent)
                 ctx.fill();
 
                 // Clear shadow for text and stroke
@@ -100,15 +129,27 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
 
                 // Text
                 ctx.fillStyle = "#ffffff";
-                ctx.font = `bold ${text.length > 1 ? '11px' : '12px'} Arial, sans-serif`;
+                ctx.font = `bold ${text.length > 1 ? '11px' : '13px'} Arial, sans-serif`;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
 
                 // Adjust text position slightly for optical centering
                 ctx.fillText(text, badgeX, badgeY + 1);
+                ctx.restore();
             }
 
-            favicon.href = canvas.toDataURL("image/png");
+            const dataUrl = canvas.toDataURL("image/png");
+
+            // Update all favicon elements
+            faviconElements.forEach(el => {
+                if (el.href !== dataUrl) {
+                    el.href = dataUrl;
+                }
+            });
+        };
+
+        img.onerror = () => {
+            console.warn("Failed to update favicon badge: could not load", originalHref);
         };
     };
 

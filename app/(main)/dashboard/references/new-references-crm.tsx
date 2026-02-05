@@ -1319,11 +1319,11 @@ const DateRangePickers = () => {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="flex gap-4 mt-auto">
-                    <button className="flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
+                <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
+                    <button className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
-                    <button className="flex-1 py-3 rounded-2xl bg-[#EAF2FF] text-[#0062FF] font-semibold text-sm hover:bg-[#D4E5FF] transition-colors">
+                    <button className="flex-1 py-3 rounded-2xl bg-[#EAF2FF] text-[#0062FF] font-semibold text-sm hover:bg-[#D4E5FF] transition-colors w-full">
                         Применить
                     </button>
                 </div>
@@ -1392,11 +1392,11 @@ const DateRangePickers = () => {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="flex gap-4 mt-auto">
-                    <button className="flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
+                <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
+                    <button className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
-                    <button className="flex-1 py-3 rounded-2xl bg-[#F0E5FF] text-[#7B2CBF] font-semibold text-sm hover:bg-[#E0CCFF] transition-colors">
+                    <button className="flex-1 py-3 rounded-2xl bg-[#F0E5FF] text-[#7B2CBF] font-semibold text-sm hover:bg-[#E0CCFF] transition-colors w-full">
                         Применить
                     </button>
                 </div>

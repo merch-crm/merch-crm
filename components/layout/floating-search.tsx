@@ -3,8 +3,10 @@
 import { Search, Command } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export function FloatingSearch() {
+    const pathname = usePathname();
     const [isHovered, setIsHovered] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -47,7 +49,7 @@ export function FloatingSearch() {
         window.dispatchEvent(new CustomEvent("open-command-menu"));
     };
 
-    if (isModalOpen) return null;
+    if (isModalOpen || pathname === "/dashboard/warehouse/items/new") return null;
 
     return (
         <motion.button
@@ -58,7 +60,7 @@ export function FloatingSearch() {
             onClick={handleOpen}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="fixed bottom-8 right-8 z-[40] h-14 bg-white/95 backdrop-blur-xl border border-primary/20 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/20 hover:border-primary/40 transition-all duration-300 group flex items-center overflow-hidden"
+            className="hidden md:flex fixed bottom-8 right-8 z-[40] h-14 bg-white/95 backdrop-blur-xl border border-primary/20 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/20 hover:border-primary/40 transition-all duration-300 group items-center overflow-hidden"
         >
             <div className="w-14 h-14 flex items-center justify-center shrink-0">
                 <Search className="w-6 h-6 text-primary" />

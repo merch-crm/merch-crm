@@ -45,7 +45,7 @@ export function LocationSelect({
     return (
         <div className={className}>
             {label && (
-                <label className="text-sm font-bold text-slate-500 ml-1 block mb-2">
+                <label className="text-sm font-bold text-slate-700 ml-1 block mb-2">
                     {label}
                 </label>
             )}

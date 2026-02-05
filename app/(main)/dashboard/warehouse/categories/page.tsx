@@ -18,7 +18,7 @@ export default async function WarehouseCategoriesPage() {
             </Suspense>
 
             <Suspense fallback={
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
                     {[1, 2, 3, 4].map(i => (
                         <div key={i} className="crm-card flex flex-col gap-4 shadow-sm">
                             <div className="flex items-start justify-between relative z-10">

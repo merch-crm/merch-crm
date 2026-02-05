@@ -98,6 +98,20 @@ export function ItemDetailClient({
     const router = useRouter();
     const { toast } = useToast();
     const [mounted, setMounted] = useState(false);
+    const [graphWidth, setGraphWidth] = useState(1000);
+    const graphRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!graphRef.current) return;
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                // Use the full content width for the SVG coordinate system
+                setGraphWidth(Math.max(100, entry.contentRect.width));
+            }
+        });
+        observer.observe(graphRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         setMounted(true);
@@ -138,7 +152,7 @@ export function ItemDetailClient({
     const [showUnsavedChangesConfirm, setShowUnsavedChangesConfirm] = useState(false);
     const [pendingExitAction, setPendingExitAction] = useState<(() => void) | null>(null);
     const [costTimeframe, setCostTimeframe] = useState<'5pts' | '1m' | '6m' | 'all'>('5pts');
-    const [hoverPoint, setHoverPoint] = useState<{ index: number, x: number } | null>(null);
+
 
     // Thumbnail settings logic
     const [aspectRatio, setAspectRatio] = useState<number | null>(null);
@@ -1259,25 +1273,25 @@ export function ItemDetailClient({
                                     <p className="text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                 </div>
                                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div>
-                                            <h2 className="text-[11px] font-bold text-slate-400 mb-1">Резерв и остаток</h2>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-5xl md:text-6xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
-                                                <span className="text-base font-black text-slate-400">{displayUnit}</span>
+                                            <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Резерв и остаток</h2>
+                                            <div className="flex items-baseline gap-1.5">
+                                                <span className="text-4xl md:text-5xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
+                                                <span className="text-sm font-black text-slate-400">{displayUnit}</span>
                                             </div>
                                         </div>
 
                                         <div className="flex flex-wrap gap-2">
                                             <div className={cn(
-                                                "inline-flex items-center px-4 py-2 rounded-[var(--radius-inner)] text-[11px] font-bold border",
+                                                "inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-bold border shrink-0",
                                                 item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
                                                     (item.quantity <= (item.criticalStockThreshold ?? 0) ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")
                                             )}>
-                                                {item.quantity === 0 ? "Нет на складе" :
+                                                {item.quantity === 0 ? "Нет" :
                                                     (item.quantity <= (item.criticalStockThreshold ?? 0) ? "Критично" : "В наличии")}
                                             </div>
-                                            <div className="px-4 py-2 rounded-[var(--radius-inner)] text-[11px] font-bold border bg-amber-100/50 text-amber-600 border-amber-200/50">
+                                            <div className="px-3 py-1.5 rounded-xl text-[10px] font-bold border bg-amber-50/50 text-amber-600 border-amber-100 shrink-0">
                                                 Резерв: {reservedQuantity} {displayUnit}
                                             </div>
                                         </div>
@@ -1323,7 +1337,7 @@ export function ItemDetailClient({
                             {/* LEFT COLUMN: Specs & Finance */}
                             <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
                                 {/* BLOCK: Specification */}
-                                <div className="glass-panel rounded-[var(--radius-inner)] p-8 flex flex-col">
+                                <div className="glass-panel rounded-3xl p-6 flex flex-col bg-white/50">
                                     <div className="flex items-center justify-between gap-4 mb-8">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
@@ -1359,55 +1373,56 @@ export function ItemDetailClient({
                                     />
                                 </div>
 
-                                {/* BLOCK: Financial Metrics */}
-                                {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж') && (
-                                    <div className="glass-panel rounded-[var(--radius-inner)] p-8 transition-all">
-                                        <div className="flex flex-col md:flex-row gap-10">
+                                {/* BLOCK: Financial & Price Analytics */}
+                                {user?.roleName !== 'Менеджер' && (
+                                    <div className="glass-panel rounded-3xl p-6 transition-all bg-white relative overflow-hidden flex flex-col gap-8 shadow-sm hover:shadow-md duration-500">
+                                        {/* Row 1: Financial Metrics */}
+                                        <div className="flex flex-col md:flex-row gap-8">
                                             {/* Left Side: Prices */}
-                                            <div className="flex-1 space-y-8">
-                                                <div className="flex items-center gap-5">
-                                                    <div className="w-14 h-14 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm shadow-slate-900/20">
-                                                        <Banknote className="w-7 h-7" />
+                                            <div className="flex-1 space-y-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200 group/icon shrink-0">
+                                                        <Banknote className="w-6 h-6 group-hover/icon:scale-110 transition-transform" />
                                                     </div>
-                                                    <div className="space-y-1.5 text-left">
-                                                        <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Себестоимость</span>
+                                                    <div className="space-y-0.5 text-left">
+                                                        <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Себестоимость</span>
                                                         {isEditing ? (
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-1.5 mt-1">
                                                                 <input
                                                                     type="number"
                                                                     value={editData.costPrice ?? ""}
                                                                     onChange={(e) => setEditData(prev => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                                                    className="text-2xl font-bold text-slate-900 bg-slate-50 border-none p-1 w-32 focus:ring-0"
+                                                                    className="text-xl font-black text-slate-900 bg-slate-50 border-none p-1 w-24 focus:ring-0 rounded-lg"
                                                                 />
-                                                                <span className="text-xl font-bold text-slate-400">₽</span>
+                                                                <span className="text-lg font-black text-slate-400">₽</span>
                                                             </div>
                                                         ) : (
-                                                            <p className="text-3xl font-bold text-slate-900 cursor-pointer" onDoubleClick={handleStartEdit}>
-                                                                {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(lastInCostPrice)}
+                                                            <p className="text-2xl font-black text-slate-900 cursor-pointer tracking-tight" onDoubleClick={handleStartEdit}>
+                                                                {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0 }).format(lastInCostPrice)}
                                                             </p>
                                                         )}
                                                     </div>
                                                 </div>
 
-                                                <div className="flex items-center gap-5">
-                                                    <div className="w-14 h-14 rounded-[var(--radius-inner)] bg-emerald-500/10 flex items-center justify-center text-emerald-600 transition-all shadow-sm">
-                                                        <Tag className="w-7 h-7" />
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm group/icon shrink-0">
+                                                        <Tag className="w-6 h-6 group-hover/icon:scale-110 transition-transform" />
                                                     </div>
-                                                    <div className="space-y-1.5 text-left">
-                                                        <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Цена продажи</span>
+                                                    <div className="space-y-0.5 text-left">
+                                                        <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Цена продажи</span>
                                                         {isEditing ? (
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-1.5 mt-1">
                                                                 <input
                                                                     type="number"
                                                                     value={editData.sellingPrice ?? ""}
                                                                     onChange={(e) => setEditData(prev => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                                                    className="text-2xl font-bold text-slate-900 bg-slate-50 border-none p-1 w-32 focus:ring-0"
+                                                                    className="text-xl font-black text-slate-900 bg-slate-50 border-none p-1 w-24 focus:ring-0 rounded-lg"
                                                                 />
-                                                                <span className="text-xl font-bold text-slate-400">₽</span>
+                                                                <span className="text-lg font-black text-slate-400">₽</span>
                                                             </div>
                                                         ) : (
-                                                            <p className="text-3xl font-bold text-emerald-600 cursor-pointer" onDoubleClick={handleStartEdit}>
-                                                                {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(Number(item.sellingPrice) || 0)}
+                                                            <p className="text-2xl font-black text-emerald-600 cursor-pointer tracking-tight" onDoubleClick={handleStartEdit}>
+                                                                {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0 }).format(Number(item.sellingPrice) || 0)}
                                                             </p>
                                                         )}
                                                     </div>
@@ -1418,27 +1433,30 @@ export function ItemDetailClient({
                                             <div className="hidden md:block w-px bg-slate-100" />
 
                                             {/* Right Side: Total Value */}
-                                            <div className="flex-[1.5] space-y-6">
-                                                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest text-left">Общая стоимость</span>
-                                                <div className="grid grid-cols-2 gap-4 h-full">
-                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-100 flex flex-col items-center justify-center min-h-[120px] h-full">
-                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Закупки</span>
+                                            <div className="flex-[1.2] flex flex-col gap-4">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest text-left">Общая стоимость</span>
+                                                    <div className="h-px flex-1 mx-4 bg-slate-100/50" />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3 flex-1">
+                                                    <div className="group/stat p-4 rounded-2xl bg-white border border-slate-100/50 flex flex-col items-center justify-center min-h-[90px] transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50">
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">Закупки</span>
                                                         {(() => {
                                                             const val = item.quantity * lastInCostPrice;
                                                             return (
-                                                                <p className="text-xl font-bold text-slate-900 whitespace-nowrap">
-                                                                    {val.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽
+                                                                <p className="text-lg font-black text-slate-900 whitespace-nowrap tracking-tight">
+                                                                    {val.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span className="text-xs font-bold text-slate-200 ml-0.4">₽</span>
                                                                 </p>
                                                             );
                                                         })()}
                                                     </div>
-                                                    <div className="p-6 rounded-[var(--radius-inner)] bg-emerald-50/50 border border-emerald-100 flex flex-col items-center justify-center min-h-[120px] h-full">
-                                                        <span className="text-[10px] font-bold text-emerald-600/60 uppercase tracking-widest mb-2">Продажи</span>
+                                                    <div className="group/stat p-4 rounded-2xl bg-emerald-50/20 border border-emerald-100/30 flex flex-col items-center justify-center min-h-[90px] transition-all hover:bg-white hover:shadow-xl hover:shadow-emerald-100/30">
+                                                        <span className="text-[9px] font-bold text-emerald-600/50 uppercase tracking-wider mb-2">Продажи</span>
                                                         {(() => {
                                                             const val = item.quantity * (Number(item.sellingPrice) || 0);
                                                             return (
-                                                                <p className="text-xl font-bold text-emerald-600 whitespace-nowrap">
-                                                                    {val.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽
+                                                                <p className="text-lg font-black text-emerald-600 whitespace-nowrap tracking-tight">
+                                                                    {val.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span className="text-xs font-bold text-emerald-200 ml-0.4">₽</span>
                                                                 </p>
                                                             );
                                                         })()}
@@ -1446,258 +1464,175 @@ export function ItemDetailClient({
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
 
-                                {/* BLOCK: Cost History Graph - ULTRA PREMIUM VERSION */}
-                                {(user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж') && (
-                                    <div className="glass-panel rounded-[var(--radius-outer)] p-10 flex flex-col group flex-1 bg-white relative overflow-hidden">
+                                        <div className="h-px bg-slate-100/50" />
 
-                                        <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-4 relative z-10">
-                                            <div className="space-y-6">
+                                        {/* Row 2: Cost History Graph */}
+                                        <div className="flex flex-col gap-6">
+                                            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 shrink-0 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-900/20">
+                                                    <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100 group-hover:scale-110 transition-transform duration-500 shrink-0">
                                                         <TrendingUp className="w-6 h-6" />
                                                     </div>
-                                                    <div>
-                                                        <h3 className="text-xl font-black text-slate-900">История себестоимости</h3>
-                                                        <p className="text-[11px] font-bold text-slate-400 mt-1">Аналитика закупочных цен</p>
+                                                    <div className="space-y-0.5">
+                                                        <h3 className="text-lg font-black text-slate-900 tracking-tight leading-none">История цены</h3>
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">Аналитика рынка</p>
                                                     </div>
                                                 </div>
 
-                                                {/* Hero Price Display */}
-                                                <div className="flex flex-col">
-                                                    <div className="flex items-baseline gap-3">
-                                                        <motion.span
-                                                            key={item.costPrice}
-                                                            initial={{ opacity: 0, y: 10 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            className="text-5xl font-black text-slate-900"
-                                                        >
-                                                            {(Number(item.costPrice) || lastInCostPrice || 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                                        </motion.span>
-                                                        <span className="text-2xl font-black text-slate-300">₽</span>
-
-                                                        {costHistoryStats.points.length > 1 && (
-                                                            <div className={cn(
-                                                                "ml-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black",
-                                                                costHistoryStats.yearlyChange > 0
-                                                                    ? "bg-rose-50 text-rose-600 border border-rose-100"
-                                                                    : costHistoryStats.yearlyChange < 0
-                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                        : "bg-slate-50 text-slate-500 border border-slate-200"
-                                                            )}>
-                                                                {costHistoryStats.yearlyChange !== 0 && (
-                                                                    costHistoryStats.yearlyChange > 0
-                                                                        ? <ChevronRight className="w-4 h-4 rotate-[-90deg] stroke-[3]" />
-                                                                        : <ChevronRight className="w-4 h-4 rotate-[90deg] stroke-[3]" />
-                                                                )}
-                                                                {Math.abs(costHistoryStats.yearlyChange).toFixed(1)}%
-                                                            </div>
-                                                        )}
+                                                {/* Integrated Stats Row */}
+                                                <div className="flex items-center gap-6 px-6 py-2 bg-slate-50/50 rounded-2xl border border-slate-100/50">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Максимум</span>
+                                                        <span className="text-sm font-black text-slate-900 leading-none">
+                                                            {Math.round(costHistoryStats.actualMax).toLocaleString()} <span className="text-[10px] text-slate-300">₽</span>
+                                                        </span>
                                                     </div>
-                                                    <p className="text-[11px] font-extrabold text-slate-400 mt-2">Текущая цена изделия во всех филиалах</p>
+                                                    <div className="w-px h-6 bg-slate-200" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Минимум</span>
+                                                        <span className="text-sm font-black text-slate-900 leading-none">
+                                                            {Math.round(costHistoryStats.actualMin).toLocaleString()} <span className="text-[10px] text-slate-300">₽</span>
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="flex flex-col items-end gap-6">
-                                                {/* Timeframe Switcher - Premium Style */}
-                                                <div className="flex bg-slate-100/80 p-1.5 rounded-[var(--radius-inner)] border border-slate-200 backdrop-blur-sm">
+                                                <div className="flex bg-slate-100/50 p-1 rounded-xl border border-slate-200/50 transition-all">
                                                     {(['5pts', '1m', '6m', 'all'] as const).map((tf) => (
                                                         <button
                                                             key={tf}
                                                             onClick={() => setCostTimeframe(tf)}
                                                             className={cn(
-                                                                "relative px-5 py-2 text-[10px] font-black transition-all duration-500 rounded-[var(--radius-inner)] overflow-hidden",
+                                                                "relative px-4 py-1.5 text-[10px] font-black transition-all duration-500 rounded-lg overflow-hidden",
                                                                 costTimeframe === tf ? "text-white" : "text-slate-400 hover:text-slate-900"
                                                             )}
                                                         >
                                                             {costTimeframe === tf && (
                                                                 <motion.div
-                                                                    layoutId="premium-tf-bg"
-                                                                    className="absolute inset-0 bg-primary shadow-2xl shadow-primary/30"
+                                                                    layoutId="premium-tf-compact-bg"
+                                                                    className="absolute inset-0 bg-indigo-600 shadow-md shadow-indigo-100"
                                                                     transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                                                 />
                                                             )}
                                                             <span className="relative z-10">
-                                                                {tf === '5pts' ? 'Поставки' : tf === '1m' ? 'Месяц' : tf === '6m' ? 'Полгода' : 'Все'}
+                                                                {tf === '5pts' ? 'Поставки' : tf === '1m' ? 'Мес' : tf === '6m' ? '6 мес' : 'Все'}
                                                             </span>
                                                         </button>
                                                     ))}
                                                 </div>
-
-                                                {/* Min/Max Benchmarks */}
-                                                <div className="flex gap-10">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-slate-300 leading-none mb-1">Максимум</span>
-                                                        <span className="text-xl font-black text-slate-900">{Math.round(costHistoryStats.actualMax).toLocaleString()} <span className="text-sm text-slate-300">₽</span></span>
-                                                    </div>
-                                                    <div className="w-px h-10 bg-slate-100" />
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-slate-300 leading-none mb-1">Минимум</span>
-                                                        <span className="text-xl font-black text-slate-900">{Math.round(costHistoryStats.actualMin).toLocaleString()} <span className="text-sm text-slate-300">₽</span></span>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Chart Area */}
-                                        <div
-                                            className="relative h-[120px] w-full mt-4 group/chart cursor-crosshair"
-                                            onMouseLeave={() => setHoverPoint(null)}
-                                            onMouseMove={(e) => {
-                                                const rect = e.currentTarget.getBoundingClientRect();
-                                                const x = e.clientX - rect.left;
-                                                const pts = costHistoryStats.points;
-                                                if (pts.length < 2) return;
+                                            <div className="relative h-[120px] w-full group/chart overflow-visible" ref={graphRef}>
+                                                <AnimatePresence mode="wait">
+                                                    <motion.div
+                                                        key={costTimeframe}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                                                        className="absolute inset-0"
+                                                    >
+                                                        <svg width="100%" height="100%" viewBox={`0 0 ${graphWidth} 120`} className="overflow-visible">
+                                                            <defs>
+                                                                <linearGradient id="premiumChartCompactGradient" x1="0" y1="0" x2="0" y2="1">
+                                                                    <stop offset="0%" stopColor="#4f46e5" stopOpacity="0.1" />
+                                                                    <stop offset="100%" stopColor="#4f46e5" stopOpacity="0" />
+                                                                </linearGradient>
+                                                            </defs>
 
-                                                const paddingX = 40;
-                                                const graphWidth = rect.width - paddingX * 2;
-                                                const relativeX = (x - paddingX) / graphWidth;
-                                                const index = Math.round(relativeX * (pts.length - 1));
+                                                            {/* Grid Lines */}
+                                                            {[0, 25, 50, 75, 100].map(p => (
+                                                                <line
+                                                                    key={p}
+                                                                    x1="0"
+                                                                    y1={`${p}%`}
+                                                                    x2={graphWidth}
+                                                                    y2={`${p}%`}
+                                                                    stroke="#f1f5f9"
+                                                                    strokeWidth="1"
+                                                                    strokeOpacity="0.5"
+                                                                />
+                                                            ))}
 
-                                                if (index >= 0 && index < pts.length) {
-                                                    setHoverPoint({ index, x });
-                                                }
-                                            }}
-                                        >
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={costTimeframe}
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    exit={{ opacity: 0 }}
-                                                    transition={{ duration: 0.4 }}
-                                                    className="absolute inset-0"
-                                                >
-                                                    <svg width="100%" height="100%" viewBox="0 0 1000 120" preserveAspectRatio="none" className="overflow-visible">
-                                                        <defs>
-                                                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="0%" stopColor="#5d00ff" stopOpacity="0.1" />
-                                                                <stop offset="100%" stopColor="#5d00ff" stopOpacity="0" />
-                                                            </linearGradient>
-                                                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                                                                <feGaussianBlur stdDeviation="5" result="blur" />
-                                                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                                            </filter>
-                                                        </defs>
+                                                            {(() => {
+                                                                const pts = costHistoryStats.points;
+                                                                if (pts.length < 2) return null;
 
-                                                        {/* Grid Lines - Subtle */}
-                                                        {[0, 30, 60, 90, 120].map(y => (
-                                                            <line key={y} x1="0" y1={y} x2="1000" y2={y} stroke="#f1f5f9" strokeWidth="0.5" strokeDasharray="4 4" />
-                                                        ))}
+                                                                const paddingX = 40;
+                                                                const paddingY = 20;
+                                                                const currentGraphWidth = graphWidth - paddingX * 2;
+                                                                const graphHeight = 120 - paddingY * 2;
+                                                                const range = Math.max(1, costHistoryStats.max - costHistoryStats.min);
 
-                                                        {/* The Line Graph Logic */}
-                                                        {(() => {
-                                                            const pts = costHistoryStats.points;
-                                                            if (pts.length < 2) return null;
+                                                                const getY = (val: number) => 120 - paddingY - ((val - costHistoryStats.min) / range) * graphHeight;
+                                                                const getX = (i: number) => paddingX + (i / (pts.length - 1)) * currentGraphWidth;
 
-                                                            const paddingX = 40;
-                                                            const paddingY = 20;
-                                                            const graphWidth = 1000 - paddingX * 2;
-                                                            const graphHeight = 120 - paddingY * 2;
+                                                                // Generate Path
+                                                                let d = `M ${getX(0)} ${getY(pts[0].avg)}`;
+                                                                for (let i = 0; i < pts.length - 1; i++) {
+                                                                    const x1 = getX(i);
+                                                                    const y1 = getY(pts[i].avg);
+                                                                    const x2 = getX(i + 1);
+                                                                    const y2 = getY(pts[i + 1].avg);
+                                                                    const cp1x = x1 + (x2 - x1) * 0.4;
+                                                                    const cp2x = x1 + (x2 - x1) * 0.6;
+                                                                    d += ` C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}`;
+                                                                }
 
-                                                            const range = Math.max(1, costHistoryStats.max - costHistoryStats.min);
+                                                                const areaD = `${d} L ${getX(pts.length - 1)} 120 L ${getX(0)} 120 Z`;
 
-                                                            const getY = (val: number) => 120 - paddingY - ((val - costHistoryStats.min) / range) * graphHeight;
-                                                            const getX = (i: number) => paddingX + (i / (pts.length - 1)) * graphWidth;
-
-                                                            // Smooth Path Calculation
-                                                            let linePath = `M ${getX(0)} ${getY(pts[0].avg)}`;
-                                                            for (let i = 0; i < pts.length - 1; i++) {
-                                                                const x1 = getX(i);
-                                                                const y1 = getY(pts[i].avg);
-                                                                const x2 = getX(i + 1);
-                                                                const y2 = getY(pts[i + 1].avg);
-                                                                const cx = (x1 + x2) / 2;
-                                                                linePath += ` C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
-                                                            }
-
-                                                            const areaPath = `${linePath} L ${getX(pts.length - 1)} 120 L ${getX(0)} 120 Z`;
-
-                                                            return (
-                                                                <>
-                                                                    <motion.path
-                                                                        d={areaPath}
-                                                                        fill="rgba(93, 0, 255, 0.03)"
-                                                                        initial={{ opacity: 0 }}
-                                                                        animate={{ opacity: 1 }}
-                                                                    />
-                                                                    <motion.path
-                                                                        d={linePath}
-                                                                        fill="none"
-                                                                        stroke="#5d00ff"
-                                                                        strokeWidth="2.5"
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        filter="url(#glow)"
-                                                                        initial={{ pathLength: 0 }}
-                                                                        animate={{ pathLength: 1 }}
-                                                                        transition={{ duration: 1.2, ease: "easeInOut" }}
-                                                                    />
-
-                                                                    {/* Scanner Line */}
-                                                                    {hoverPoint && (
-                                                                        <motion.line
-                                                                            x1={getX(hoverPoint.index)}
-                                                                            y1="0"
-                                                                            x2={getX(hoverPoint.index)}
-                                                                            y2="120"
-                                                                            stroke="#5d00ff"
-                                                                            strokeWidth="1"
-                                                                            strokeDasharray="4 4"
+                                                                return (
+                                                                    <>
+                                                                        <motion.path
+                                                                            d={areaD}
+                                                                            fill="url(#premiumChartCompactGradient)"
                                                                             initial={{ opacity: 0 }}
                                                                             animate={{ opacity: 1 }}
+                                                                            transition={{ duration: 1 }}
                                                                         />
-                                                                    )}
-
-                                                                    {/* Data Points */}
-                                                                    {pts.map((p, i) => (
-                                                                        <motion.circle
-                                                                            key={p.id || i}
-                                                                            cx={getX(i)}
-                                                                            cy={getY(p.avg)}
-                                                                            r={hoverPoint?.index === i ? "6" : "4"}
-                                                                            fill="white"
-                                                                            stroke={hoverPoint?.index === i ? "#5d00ff" : "#5d00ff80"}
-                                                                            strokeWidth="2"
-                                                                            initial={{ scale: 0 }}
-                                                                            animate={{ scale: 1 }}
-                                                                            transition={{ delay: 0.2 + i * 0.05 }}
+                                                                        <motion.path
+                                                                            d={d}
+                                                                            fill="none"
+                                                                            stroke="#4f46e5"
+                                                                            strokeWidth="3"
+                                                                            strokeLinecap="round"
+                                                                            initial={{ pathLength: 0 }}
+                                                                            animate={{ pathLength: 1 }}
+                                                                            transition={{ duration: 1.5, ease: "easeInOut" }}
                                                                         />
-                                                                    ))}
-                                                                </>
-                                                            );
-                                                        })()}
-                                                    </svg>
 
-                                                    {/* Floating Tooltip */}
-                                                    {hoverPoint && (
-                                                        <div
-                                                            className="absolute z-50 pointer-events-none bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-[var(--radius-inner)] shadow-2xl border border-white/10 flex flex-col items-center gap-1 transition-all duration-200"
-                                                            style={{
-                                                                left: `${(hoverPoint.index / (costHistoryStats.points.length - 1)) * 100}%`,
-                                                                top: `20%`,
-                                                                transform: `translateX(-50%)`
-                                                            }}
-                                                        >
-                                                            <span className="text-[8px] font-black text-white/50 leading-none">{costHistoryStats.points[hoverPoint.index].label}</span>
-                                                            <span className="text-sm font-black"> {Math.round(costHistoryStats.points[hoverPoint.index].avg).toLocaleString()} ₽</span>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Labels Row */}
-                                                    <div className="absolute -bottom-8 inset-x-0 flex justify-between px-2">
-                                                        {costHistoryStats.points.map((p, i) => (
-                                                            <span key={i} className="text-[10px] font-bold text-slate-300">
-                                                                {p.label}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </motion.div>
-                                            </AnimatePresence>
-
-                                            {/* Hover Interactive Layer would go here if we want a custom ticker tooltip */}
+                                                                        {/* Dots and Labels */}
+                                                                        {pts.map((p, i) => (
+                                                                            <g key={i}>
+                                                                                <motion.circle
+                                                                                    cx={getX(i)}
+                                                                                    cy={getY(p.avg)}
+                                                                                    r="4"
+                                                                                    fill="white"
+                                                                                    stroke="#4f46e5"
+                                                                                    strokeWidth="2.5"
+                                                                                    initial={{ scale: 0 }}
+                                                                                    animate={{ scale: 1 }}
+                                                                                    transition={{ delay: i * 0.1 }}
+                                                                                    whileHover={{ r: 6, strokeWidth: 3 }}
+                                                                                />
+                                                                                <text
+                                                                                    x={getX(i)}
+                                                                                    y="115"
+                                                                                    textAnchor="middle"
+                                                                                    className="text-[9px] font-bold fill-slate-300 pointer-events-none"
+                                                                                >
+                                                                                    {p.label}
+                                                                                </text>
+                                                                            </g>
+                                                                        ))}
+                                                                    </>
+                                                                );
+                                                            })()}
+                                                        </svg>
+                                                    </motion.div>
+                                                </AnimatePresence>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -1737,69 +1672,56 @@ export function ItemDetailClient({
                                 </div>
 
                                 {/* SUB-BLOCK: Stock Alerts */}
-                                <div className="glass-panel rounded-[var(--radius-inner)] p-8 relative group/alerts overflow-hidden">
+                                <div className="glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50">
 
-                                    <div className="flex items-center gap-4 mb-8 relative z-10">
-                                        <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
-                                            <Bell className="w-5 h-5 animate-pulse" />
+                                    <div className="flex items-center gap-3 mb-6 relative z-10">
+                                        <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm shrink-0">
+                                            <Bell className="w-4 h-4 animate-pulse" />
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900">Оповещения</h3>
+                                        <h3 className="text-lg font-black text-slate-900 leading-none">Оповещения</h3>
                                     </div>
 
-                                    <div className="space-y-3 relative z-10">
+                                    <div className="space-y-2.5 relative z-10">
                                         {/* Min Stock Widget */}
-                                        <div className="relative p-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 transition-all hover:shadow-crm-md group/card">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <span className="text-[11px] font-bold text-slate-400 transition-colors group-hover/card:text-amber-600">Минимальный остаток</span>
+                                        <div className="relative p-3.5 rounded-2xl bg-slate-50 border border-slate-200 transition-all hover:shadow-lg group/card">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <span className="text-[10px] font-bold text-slate-400 transition-colors group-hover/card:text-amber-600 uppercase tracking-wider">Мин. остаток</span>
                                                 <div className="flex gap-1">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                                 </div>
                                             </div>
 
                                             {isEditing ? (
-                                                <div className="space-y-4">
+                                                <div className="space-y-3">
                                                     <div className="flex items-center justify-between">
-                                                        <div className="flex items-baseline gap-1.5">
+                                                        <div className="flex items-baseline gap-1">
                                                             <input
                                                                 type="number"
                                                                 value={editData.lowStockThreshold || 0}
                                                                 onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
-                                                                className="text-3xl font-black text-slate-900 leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
+                                                                className="text-2xl font-black text-slate-900 leading-none bg-transparent border-none p-0 w-16 outline-none focus:ring-0"
                                                             />
-                                                            <span className="text-[13px] font-black text-slate-400">шт.</span>
+                                                            <span className="text-[11px] font-black text-slate-400">шт.</span>
                                                         </div>
-                                                        <div className="px-3 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
-                                                            <span className="text-[11px] font-bold text-amber-600 leading-none">Заканчивается</span>
+                                                        <div className="px-2 py-0.5 bg-amber-50 rounded-full border border-amber-100">
+                                                            <span className="text-[9px] font-bold text-amber-600 uppercase">Low</span>
                                                         </div>
                                                     </div>
-                                                    <div className="relative h-2.5 bg-slate-100 rounded-full group/slider">
-                                                        <input
-                                                            type="range"
-                                                            min="0"
-                                                            max="100"
-                                                            value={Math.min(100, editData.lowStockThreshold || 0)}
-                                                            onChange={(e) => setEditData(prev => ({ ...prev, lowStockThreshold: parseInt(e.target.value) }))}
-                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
-                                                        />
+                                                    <div className="relative h-2 bg-slate-200/50 rounded-full overflow-hidden">
                                                         <div
-                                                            className="absolute top-0 left-0 h-full bg-amber-500 rounded-full z-10"
-                                                            style={{ width: `${(Math.min(100, editData.lowStockThreshold || 0) / 100) * 100}%` }}
+                                                            className="absolute top-0 left-0 h-full bg-amber-500 transition-all duration-500"
+                                                            style={{ width: `${Math.min(100, (editData.lowStockThreshold || 0))}%` }}
                                                         />
-                                                        <div
-                                                            className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-[3px] border-amber-500 rounded-full shadow-xl z-20 pointer-events-none"
-                                                            style={{ left: `calc(${(Math.min(100, editData.lowStockThreshold || 0) / 100) * 100}% - 10px)` }}
-                                                        />
-
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <div className="flex items-end justify-between">
-                                                    <div className="flex items-baseline gap-1.5">
-                                                        <span className="text-3xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.lowStockThreshold}</span>
-                                                        <span className="text-[11px] font-bold text-slate-400">шт.</span>
+                                                    <div className="flex items-baseline gap-1">
+                                                        <span className="text-2xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.lowStockThreshold}</span>
+                                                        <span className="text-[10px] font-bold text-slate-400">шт.</span>
                                                     </div>
-                                                    <div className="px-3 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
-                                                        <span className="text-[11px] font-bold text-amber-600 leading-none">Заканчивается</span>
+                                                    <div className="px-2.5 py-1 bg-amber-50 rounded-full border border-amber-100 flex items-center justify-center">
+                                                        <span className="text-[10px] font-bold text-amber-600 leading-none">Скоро кончится</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -2201,37 +2123,31 @@ export function ItemDetailClient({
                 </AnimatePresence >
 
                 {/* Dialogs */}
-                {
-                    adjustType && (
-                        <AdjustStockDialog
-                            item={item}
-                            locations={storageLocations}
-                            itemStocks={stocks}
-                            initialType={adjustType}
-                            user={user}
-                            onClose={() => {
-                                setAdjustType(null);
-                                fetchData();
-                                router.refresh();
-                            }}
-                        />
-                    )
-                }
+                <AdjustStockDialog
+                    item={item}
+                    locations={storageLocations}
+                    itemStocks={stocks}
+                    initialType={adjustType || "in"}
+                    user={user}
+                    isOpen={!!adjustType}
+                    onClose={() => {
+                        setAdjustType(null);
+                        fetchData();
+                        router.refresh();
+                    }}
+                />
 
-                {
-                    showTransfer && (
-                        <TransferItemDialog
-                            item={item}
-                            locations={storageLocations}
-                            itemStocks={stocks}
-                            onClose={() => {
-                                setShowTransfer(false);
-                                fetchData();
-                                router.refresh();
-                            }}
-                        />
-                    )
-                }
+                <TransferItemDialog
+                    item={item}
+                    locations={storageLocations}
+                    itemStocks={stocks}
+                    isOpen={showTransfer}
+                    onClose={() => {
+                        setShowTransfer(false);
+                        fetchData();
+                        router.refresh();
+                    }}
+                />
 
                 <ArchiveReasonDialog
                     isOpen={showArchiveReason}

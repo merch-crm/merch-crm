@@ -48,25 +48,25 @@ export function StockStep({
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <div className="flex-1 px-10 pt-10 pb-6 overflow-hidden min-h-0 flex flex-col">
+            <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 overflow-hidden min-h-0 flex flex-col">
                 <div className="max-w-[1400px] mx-auto space-y-4 flex-1 flex flex-col min-h-0 w-full">
                     <div className="flex items-center gap-4 shrink-0">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                             <Warehouse className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Складской учет</h2>
-                            <p className="text-[10px] font-bold text-slate-500 opacity-60">Укажите место хранения и начальные остатки позиции</p>
+                            <h2 className="text-xl font-bold text-slate-900">Складской учет</h2>
+                            <p className="text-[10px] font-bold text-slate-700 opacity-60">Укажите место хранения и начальные остатки позиции</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 gap-6 flex-1 overflow-y-auto custom-scrollbar px-8 pt-2 pb-6 -mx-8">
+                    <div className="grid grid-cols-12 gap-4 sm:gap-6 flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pt-2 pb-6 -mx-4 sm:-mx-8">
                         {/* FIRST ROW */}
                         {/* BENTO BLOCK 1: MAIN QUANTITY */}
-                        <div className="lg:col-span-12 xl:col-span-5 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col items-start text-left">
+                        <div className="col-span-12 md:col-span-5 xl:col-span-5 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col items-start text-left">
                             <div className="mb-6">
-                                <h3 className="text-xl font-bold text-slate-900">Количество</h3>
-                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Укажите начальный остаток</p>
+                                <h3 className="text-base font-bold text-slate-900">Количество</h3>
+                                <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Укажите начальный остаток</p>
                             </div>
 
                             <div className="w-full">
@@ -86,7 +86,7 @@ export function StockStep({
                                         </div>
                                         <div className="flex items-center gap-2 opacity-40 group-hover/widget:opacity-100 transition-opacity">
                                             <div className="w-1 h-1 rounded-full bg-primary" />
-                                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Текущий остаток</span>
+                                            <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Текущий остаток</span>
                                         </div>
                                     </div>
 
@@ -111,13 +111,13 @@ export function StockStep({
                         </div>
 
                         {/* BENTO BLOCK 2: FINANCIALS */}
-                        <div className="lg:col-span-12 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col">
+                        <div className="col-span-12 md:col-span-7 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col">
                             <div className="mb-6">
-                                <h3 className="text-xl font-bold text-slate-900">Финансы</h3>
-                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Себестоимость и цена продажи</p>
+                                <h3 className="text-base font-bold text-slate-900">Финансы</h3>
+                                <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Себестоимость и цена продажи</p>
                             </div>
-                            <div className="grid grid-cols-2 gap-4 relative">
-                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
 
                                 <div className="space-y-3 min-w-0">
                                     <div className="flex flex-col gap-2.5">
@@ -125,7 +125,7 @@ export function StockStep({
                                             <div className="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500">
                                                 <Tag className="w-3.5 h-3.5" />
                                             </div>
-                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Себестоимость</span>
+                                            <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Себестоимость</span>
                                         </div>
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
                                             <input
@@ -145,7 +145,7 @@ export function StockStep({
                                             <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500">
                                                 <Banknote className="w-3.5 h-3.5" />
                                             </div>
-                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Цена продажи</span>
+                                            <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Цена продажи</span>
                                         </div>
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
                                             <input
@@ -162,15 +162,15 @@ export function StockStep({
                         </div>
 
                         {/* SECOND ROW */}
-                        <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-6">
+                        <div className="col-span-12 md:col-span-5 xl:col-span-5 flex flex-col gap-6">
                             {/* BENTO BLOCK 3: THRESHOLDS */}
                             <div className="bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col gap-5 shrink-0">
                                 <div className="mb-6">
-                                    <h3 className="text-xl font-bold text-slate-900">Уведомления</h3>
-                                    <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Настройка лимитов</p>
+                                    <h3 className="text-base font-bold text-slate-900">Уведомления</h3>
+                                    <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Настройка лимитов</p>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4 relative">
-                                    <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                                    <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
 
                                     <div className="space-y-3 min-w-0">
                                         <div className="flex flex-col">
@@ -181,7 +181,7 @@ export function StockStep({
                                                     onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
                                                     className="flex-1 bg-transparent border-none focus:ring-0 outline-none p-0 text-slate-900 min-w-0"
                                                 />
-                                                <span className="text-[12px] text-slate-400 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
+                                                <span className="text-[12px] text-slate-700 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
                                             </div>
                                             <span className="text-[9px] font-black text-amber-500 uppercase tracking-tight mt-2 px-0.5">Предупреждение</span>
                                         </div>
@@ -195,7 +195,7 @@ export function StockStep({
                                                     onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
                                                     className="flex-1 bg-transparent border-none focus:ring-0 outline-none p-0 text-slate-900 min-w-0"
                                                 />
-                                                <span className="text-[12px] text-slate-400 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
+                                                <span className="text-[12px] text-slate-700 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
                                             </div>
                                             <span className="text-[9px] font-black text-rose-500 uppercase tracking-tight mt-2 px-0.5">Критический лимит</span>
                                         </div>
@@ -206,8 +206,8 @@ export function StockStep({
                             {/* BENTO BLOCK 4: RESPONSIBLE PERSON */}
                             <div className="bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col gap-4 flex-1">
                                 <div className="mb-6">
-                                    <h3 className="text-xl font-bold text-slate-900">Ответственный</h3>
-                                    <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Кто создал позицию</p>
+                                    <h3 className="text-base font-bold text-slate-900">Ответственный</h3>
+                                    <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Кто создал позицию</p>
                                 </div>
 
                                 <PremiumSelect
@@ -221,10 +221,10 @@ export function StockStep({
                         </div>
 
                         {/* STORAGE LOCATIONS CARD */}
-                        <div className="lg:col-span-12 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm flex flex-col min-h-0">
+                        <div className="col-span-12 md:col-span-7 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm flex flex-col min-h-0">
                             <div className="p-6 pb-2">
-                                <h3 className="text-xl font-bold text-slate-900">Размещение товара</h3>
-                                <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">Выберите склад для хранения</p>
+                                <h3 className="text-base font-bold text-slate-900">Размещение товара</h3>
+                                <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Выберите склад для хранения</p>
                             </div>
 
                             <div className="flex-1 flex flex-col px-6 pb-6 pt-0">
@@ -257,7 +257,7 @@ export function StockStep({
                                                         </div>
                                                         <div className="truncate">
                                                             <div className="font-bold text-sm leading-tight truncate px-0.5">{loc.name}</div>
-                                                            <div className={cn("text-[9px] font-black mt-0.5 uppercase tracking-wider opacity-60 px-0.5", formData.storageLocationId === loc.id ? "text-white/80" : "text-slate-400")}>
+                                                            <div className={cn("text-[9px] font-black mt-0.5 uppercase tracking-wider opacity-60 px-0.5", formData.storageLocationId === loc.id ? "text-white/80" : "text-slate-700")}>
                                                                 Склад активен
                                                             </div>
                                                         </div>

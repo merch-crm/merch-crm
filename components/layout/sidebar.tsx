@@ -56,7 +56,7 @@ export function Sidebar({ className, user }: SidebarProps) {
     });
 
     return (
-        <div className={cn("flex flex-col h-full bg-white py-4", className)}>
+        <div className={cn("flex flex-col bg-white py-4", className)}>
             <div className="px-6 mb-6 flex items-center gap-3">
                 <div className="bg-primary rounded-[14px] p-1.5 shadow-md shadow-primary/20">
                     <Printer className="h-4 w-4 text-white" />

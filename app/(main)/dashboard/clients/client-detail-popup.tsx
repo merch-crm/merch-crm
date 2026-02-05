@@ -120,7 +120,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                     ) : client ? (
                         <div className="flex flex-col h-full max-h-[90vh]">
                             {/* Header */}
-                            <div className="p-8 pr-16 border-b border-slate-200 bg-slate-50/50">
+                            <div className="p-8 pr-16 border-b border-slate-200 bg-white">
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3">
@@ -156,12 +156,12 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                     <div className="text-right">
                                         <div className="text-slate-400 text-[10px]  font-bold tracking-wider mb-3">Статистика</div>
                                         <div className="flex flex-wrap justify-end gap-5">
-                                            <div className="bg-white px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[100px] text-left transition-all hover:shadow-md">
+                                            <div className="bg-slate-50 px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[100px] text-left transition-all hover:shadow-md">
                                                 <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Заказов</div>
                                                 <div className="text-2xl font-bold text-slate-900 leading-none">{client.stats.count}</div>
                                             </div>
                                             {showFinancials && (
-                                                <div className="bg-white px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[140px] text-left transition-all hover:shadow-md">
+                                                <div className="bg-slate-50 px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[140px] text-left transition-all hover:shadow-md">
                                                     <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Сумма</div>
                                                     <div className="text-2xl font-bold text-emerald-600 leading-none">
                                                         {client.stats.total} <span className="text-lg font-bold ml-0.5">₽</span>
@@ -326,7 +326,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                         </h3>
                                         <div className="space-y-3">
                                             {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order: ClientOrder) => (
-                                                <div key={order.id} className="bg-white border border-slate-200 rounded-[18px] p-4 hover:shadow-md transition-shadow">
+                                                <div key={order.id} className="bg-slate-50 border border-slate-200 rounded-[18px] p-4 hover:bg-white transition-all shadow-sm">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <span className="text-xs font-mono text-slate-400">#{order.id.slice(0, 8)}</span>
                                                         <StatusBadgeInteractive orderId={order.id} status={order.status} />

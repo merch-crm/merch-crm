@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ActiveUser {
     name?: string;
@@ -44,6 +45,7 @@ interface AdminOverviewProps {
 }
 
 export function AdminOverviewClient({ stats, monitoring, security, backups }: AdminOverviewProps) {
+    const isMobile = useIsMobile();
     const activeUsers = monitoring?.activeUsers || [];
     const entityStats = monitoring?.entityStats || [];
     const systemErrors = security?.systemErrors || [];
@@ -138,36 +140,21 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
                     {/* Chart Area - System Activity */}
                     <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden h-[400px]">
-                        <div className="flex items-center justify-between mb-4 relative z-10">
-                            <div>
-                                <h3 className="font-bold text-slate-900 text-lg">Нагрузка на сервер</h3>
-                                <p className="text-xs font-bold text-slate-400 mt-1">Среднесуточный показатель CPU/RAM</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-                                    <span className="text-xs font-bold text-slate-500">CPU</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                                    <span className="text-xs font-bold text-slate-500">RAM</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="absolute inset-x-8 bottom-8 top-32 flex items-end justify-between gap-4">
-                            {[30, 45, 25, 60, 40, 80, 50, 70, 40, 90, 60, 30].map((h, i) => (
+                        <div className="absolute inset-x-4 md:inset-x-8 bottom-8 top-32 flex items-end justify-between gap-1.5 md:gap-4">
+                            {(isMobile ? [30, 60, 40, 80, 50, 90] : [30, 45, 25, 60, 40, 80, 50, 70, 40, 90, 60, 30]).map((h, i) => (
                                 <div key={i} className="flex-1 flex flex-col items-center gap-3 group h-full">
                                     <div className="w-full relative h-full flex items-end">
-                                        <div className="absolute inset-0 bg-slate-50/50 rounded-t-xl" />
+                                        <div className="absolute inset-0 bg-slate-50/50 rounded-t-lg md:rounded-t-xl" />
                                         <motion.div
                                             initial={{ height: 0 }}
                                             animate={{ height: `${h}%` }}
                                             transition={{ delay: i * 0.05, duration: 0.8 }}
-                                            className="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary/40 transition-all relative border-t-2 border-primary/40"
+                                            className="w-full bg-primary/20 rounded-t-lg md:rounded-t-xl group-hover:bg-primary/40 transition-all relative border-t-2 border-primary/40"
                                         />
                                     </div>
-                                    <span className="text-[9px] font-bold text-slate-400">{i + 8}:00</span>
+                                    <span className="text-[7px] md:text-[9px] font-bold text-slate-400 whitespace-nowrap">
+                                        {isMobile ? (i * 2 + 8) : (i + 8)}:00
+                                    </span>
                                 </div>
                             ))}
                         </div>
