@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Trash2, HelpCircle, X } from "lucide-react";
+import { Trash2, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";

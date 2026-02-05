@@ -103,7 +103,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             case "categories":
                 return (
                     <>
-                        <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] shadow-lg shadow-primary/20" buttonText="Категория" iconOnly />
+                        <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] shadow-lg shadow-primary/20" buttonText="Категория" />
                         <Link
                             href="/dashboard/warehouse/items/new"
                             className={cn(
