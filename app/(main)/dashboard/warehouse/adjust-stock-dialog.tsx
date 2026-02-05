@@ -265,11 +265,11 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     )}
                 </form>
 
-                <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center sm:justify-end gap-3 shrink-0">
+                <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                        className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
                     >
                         Отмена
                     </button>
@@ -278,7 +278,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
                         onClick={handleSubmit}
                         className={cn(
-                            "h-11 w-full sm:w-auto sm:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
+                            "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                         )}
                     >
                         {isSubmitting ? (

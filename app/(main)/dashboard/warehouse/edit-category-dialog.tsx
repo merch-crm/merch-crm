@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type ReactNode, useEffect } from "react";
-import { Check, Trash2, AlertCircle, Loader2 } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
@@ -319,36 +319,30 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     )}
                 </form>
 
-                <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-between gap-3 shrink-0">
-                    <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end flex-1">
-                        <button
-                            type="button"
-                            onClick={() => setShowDeleteModal(true)}
-                            className="flex-1 lg:flex-none lg:px-6 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all"
-                        >
-                            <span className="text-sm font-bold">Удалить</span>
-                        </button>
+                <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 grid grid-cols-2 lg:flex items-center lg:justify-between gap-3 shrink-0">
+                    <button
+                        type="button"
+                        onClick={() => setShowDeleteModal(true)}
+                        className="lg:flex-none lg:px-6 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all shadow-sm hover:bg-rose-50 hover:border-rose-200 w-full lg:w-auto"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-sm font-bold">Удалить</span>
+                    </button>
 
-                        <div className="flex lg:hidden items-center justify-end gap-3 flex-1">
-                            {/* Hidden 'Cancel' on mobile as per screen, but can be added if needed. 
-                                Based on screenshot, there is only Delete and Save. */}
-                        </div>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="hidden lg:flex lg:ml-auto h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)]"
+                    >
+                        Отмена
+                    </button>
 
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="hidden lg:flex h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)]"
-                        >
-                            Отмена
-                        </button>
-
-                        <SubmitButton
-                            form="edit-category-form"
-                            label="Сохранить"
-                            pendingLabel="..."
-                            className="h-11 flex-1 lg:flex-none lg:min-w-[140px] lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95"
-                        />
-                    </div>
+                    <SubmitButton
+                        form="edit-category-form"
+                        label="Сохранить"
+                        pendingLabel="..."
+                        className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95"
+                    />
                 </div>
 
                 {/* Subcategory Deletion Confirmation */}

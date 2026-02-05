@@ -140,7 +140,7 @@ export function MoveInventoryDialog({
                         </div>
                     </div>
 
-                    <div className="overflow-y-auto px-6 flex-1 pb-20 custom-scrollbar">
+                    <div className="overflow-y-auto px-6 flex-1 pb-6 custom-scrollbar">
                         <form id="move-inventory-form" action={handleSubmit} noValidate className="space-y-5 pt-4">
                             <div className="space-y-1.5 overflow-visible">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Объект перемещения</label>
@@ -183,6 +183,7 @@ export function MoveInventoryDialog({
                                         }}
                                         placeholder="Склад..."
                                         showSearch
+                                        align="end"
                                     />
                                     {fieldErrors.toLocationId && <p className="text-[9px] font-bold text-rose-500 ml-1">{fieldErrors.toLocationId}</p>}
                                 </div>
@@ -234,11 +235,11 @@ export function MoveInventoryDialog({
                         </form>
                     </div>
 
-                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center sm:justify-end gap-3 shrink-0">
+                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
                         >
                             Отмена
                         </button>
@@ -257,7 +258,7 @@ function SubmitButton() {
             type="submit"
             form="move-inventory-form"
             disabled={pending}
-            className="h-11 w-full sm:w-auto sm:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 bg-slate-900 hover:bg-slate-800 text-white rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
         >
             {pending ? (
                 <div className="flex items-center gap-2">

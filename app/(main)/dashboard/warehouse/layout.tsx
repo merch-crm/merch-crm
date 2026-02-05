@@ -14,7 +14,7 @@ import { QRScanner } from "@/components/ui/qr-scanner";
 import { buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession } from "./actions";
+import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession, getInventoryCategories } from "./actions";
 import { playSound } from "@/lib/sounds";
 import { InventoryItem, StorageLocation, Category } from "./types";
 import { Session } from "@/lib/auth";
@@ -49,7 +49,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
 
     const [items, setItems] = useState<InventoryItem[]>([]);
     const [locations, setLocations] = useState<StorageLocation[]>([]);
-    const [categories] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
     const [session, setSession] = useState<Session | null>(null);
     const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -89,11 +89,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             const h = await getInventoryHistory();
             setHistory(h.data || []);
         }
-    }, [locations.length, history.length]);
+        if (type === 'characteristics' && !categories.length) {
+            const c = await getInventoryCategories();
+            setCategories(c.data || []);
+        }
+    }, [locations.length, history.length, categories.length]);
 
     // Pre-load data when tab changes to avoid "disabled" state on buttons
     useEffect(() => {
-        if (activeTab === 'storage' || activeTab === 'history') {
+        if (activeTab === 'storage' || activeTab === 'history' || activeTab === 'characteristics') {
             loadDialogData(activeTab);
         }
     }, [activeTab, loadDialogData]);

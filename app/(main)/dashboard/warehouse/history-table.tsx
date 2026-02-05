@@ -654,18 +654,6 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     const isIn = t.type === "in";
                     const amount = Math.abs(t.changeAmount);
                     const isSelected = selectedIds.includes(t.id);
-                    const isExpanded = selectedIds.includes(t.id + "_expanded"); // Using a hacky way to track expansion via local state or just component state?
-                    // Better to use a local state for expansion if possible, but I can't easily add a new state variable without re-reading and full parse.
-                    // Actually, let's just make the whole row clickable to expand, and the checkbox separate.
-                    // Wait, I can't add state easily. I'll use the check-box for selection, and row click for expansion.
-                    // But I need state for expansion.
-                    // I'll wrap the item in a separate component OR just inject state.
-                    // Since I can't easily inject state into the function body without replacing the whole function, I will check if I can add a state variable at the top.
-                    // I'll stick to replacing the whole return block or function if needed, but the tool usage suggests chunks.
-                    // I will Assume I can't easily add state.
-                    // WAIT. I can't use existing state for expansion easily if I don't modify the top.
-                    // I will change the strategy to just show "Details" on a separate line always visible? No, user wanted compact.
-                    // I MUST add state. I will replace the component start to add `expandedItems` state.
 
                     return (
                         <MobileHistoryItem

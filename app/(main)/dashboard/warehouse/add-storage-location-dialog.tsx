@@ -134,6 +134,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                     value={type}
                                     onChange={(val) => setType(val as "warehouse" | "production" | "office")}
                                     variant="default"
+                                    align="end"
                                 />
                             </div>
                         </div>
@@ -201,11 +202,11 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
 
                     </form>
 
-                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 flex items-center sm:justify-end gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto">
+                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 flex items-center justify-end lg:justify-between gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto">
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] sm:bg-transparent"
+                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
                         >
                             Отмена
                         </button>
@@ -225,7 +226,7 @@ function SubmitButton() {
             type="submit"
             form="add-location-form"
             disabled={pending}
-            className="h-11 w-full sm:w-auto sm:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3"
+            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3"
         >
             {pending ? (
                 <>

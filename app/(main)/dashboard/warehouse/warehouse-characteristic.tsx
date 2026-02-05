@@ -695,14 +695,12 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 </button>
                             )}
 
-                            {!editingTypeLatest && (
-                                <button
-                                    onClick={() => setEditingType(null)}
-                                    className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)] border border-slate-200 lg:border-none"
-                                >
-                                    Отмена
-                                </button>
-                            )}
+                            <button
+                                onClick={() => setEditingType(null)}
+                                className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
+                            >
+                                Отмена
+                            </button>
 
                             <button
                                 onClick={handleUpdateType}
@@ -817,14 +815,12 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 </button>
                             )}
 
-                            {!editingAttribute && (
-                                <button
-                                    onClick={() => setIsValueDialogOpen(false)}
-                                    className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)] border border-slate-200 lg:border-none"
-                                >
-                                    Отмена
-                                </button>
-                            )}
+                            <button
+                                onClick={() => setIsValueDialogOpen(false)}
+                                className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
+                            >
+                                Отмена
+                            </button>
 
                             <button
                                 onClick={handleValueSave}

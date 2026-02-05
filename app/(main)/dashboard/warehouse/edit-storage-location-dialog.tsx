@@ -3,7 +3,7 @@
 import { StorageLocation } from "./storage-locations-tab";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Plus, X, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updateStorageLocation, moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
@@ -343,7 +343,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                     {/* Main Content Area */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {/* Mobile layout */}
-                        <div className="md:hidden px-5 pb-24 space-y-6">
+                        <div className="md:hidden px-5 pb-6 space-y-6">
                             <div>
                                 {FormContent}
                             </div>
@@ -400,7 +400,14 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
                     {/* Mobile Footer - Fixed bottom */}
                     <div className="md:hidden sticky bottom-0 z-20 p-5 pt-3 flex items-center gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100">
-                        <Button variant="btn-dark" onClick={onClose} className="h-11 w-full rounded-[var(--radius-inner)] text-sm font-bold shadow-sm">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex h-11 flex-1 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
+                        >
+                            Отмена
+                        </button>
+                        <Button variant="btn-dark" onClick={onClose} className="h-11 flex-1 rounded-[var(--radius-inner)] text-sm font-bold shadow-sm">
                             Сохранить
                         </Button>
                     </div>

@@ -173,7 +173,7 @@ export function PremiumSelect({
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
                                 <div className={cn(
-                                    "bg-white rounded-[22px] p-1.5 overflow-hidden flex flex-col max-h-[320px]",
+                                    "bg-white rounded-[22px] p-1.5 overflow-hidden flex flex-col max-h-[240px]",
                                     "w-full h-full"
                                 )}>
                                     {effectiveShowSearch && (

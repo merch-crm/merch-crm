@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ArrowLeft, ArrowRight, AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
+import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { motion } from "framer-motion";
