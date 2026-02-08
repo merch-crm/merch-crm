@@ -40,6 +40,7 @@ import {
     DialogDescription
 } from "@/components/ui/dialog";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { useBranding } from "@/components/branding-provider";
 
 export interface Promocode {
     id: string;
@@ -58,6 +59,7 @@ export interface Promocode {
 }
 
 export function PromocodesClient({ initialData }: { initialData: Promocode[] }) {
+    const { currencySymbol } = useBranding();
     const router = useRouter();
     const [data, setData] = useState(initialData);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -145,7 +147,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
     });
 
     const handleExport = () => {
-        const headers = ["Название", "Код", "Тип", "Значение", "Активен", "Использовано", "Лимит", "Сэкономлено (₽)", "Истекает", "Комментарий"];
+        const headers = ["Название", "Код", "Тип", "Значение", "Активен", "Использовано", "Лимит", `Сэкономлено (${currencySymbol})`, "Истекает", "Комментарий"];
         const rows = filteredData.map(p => [
             p.name || "",
             p.code,
@@ -193,7 +195,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     <Button
                         onClick={() => setIsBulkDialogOpen(true)}
                         variant="outline"
-                        className="h-12 w-12 sm:w-auto sm:px-6 rounded-full sm:rounded-[18px] font-bold border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center sm:gap-2"
+                        className="h-12 w-12 sm:w-auto sm:px-6 rounded-full sm:rounded-2xl font-bold border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center sm:gap-2"
                         title="Массовая генерация"
                     >
                         <Layers className="w-5 h-5 opacity-60" />
@@ -202,7 +204,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     <Button
                         onClick={handleOpenCreate}
                         variant="default"
-                        className="h-12 w-12 sm:w-auto sm:px-8 rounded-full sm:rounded-[18px] font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center justify-center sm:gap-2 active:scale-[0.98]"
+                        className="h-12 w-12 sm:w-auto sm:px-8 rounded-full sm:rounded-2xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center justify-center sm:gap-2 active:scale-[0.98]"
                         title="Создать"
                     >
                         <Plus className="w-5 h-5 pointer-events-none" />
@@ -211,7 +213,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     <Button
                         onClick={handleExport}
                         variant="outline"
-                        className="h-12 w-12 p-0 rounded-[18px] border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center"
+                        className="h-12 w-12 p-0 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center"
                         title="Экспорт в CSV"
                     >
                         <Download className="w-5 h-5 opacity-60" />
@@ -244,7 +246,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         options={[
                             { id: "all", title: "Все типы скидок" },
                             { id: "percentage", title: "Процент %" },
-                            { id: "fixed", title: "Фикс. сумма ₽" },
+                            { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
                             { id: "free_shipping", title: "Беспл. доставка" },
                             { id: "gift", title: "Подарок" }
                         ]}
@@ -322,8 +324,8 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                         <div className="text-[9px] font-bold text-slate-300 tracking-normal mb-1">Выгода</div>
                                         <div className="text-lg font-bold text-primary">
                                             {promo.discountType === 'percentage' ? `${promo.value}%` :
-                                                promo.discountType === 'fixed' ? `${promo.value} ₽` :
-                                                    promo.discountType === 'free_shipping' ? "0 ₽" : "GIFT"}
+                                                promo.discountType === 'fixed' ? `${promo.value} ${currencySymbol}` :
+                                                    promo.discountType === 'free_shipping' ? `0 ${currencySymbol}` : "GIFT"}
                                         </div>
                                     </div>
                                     <div>
@@ -340,7 +342,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                             <Banknote className="w-4 h-4 text-emerald-500" />
                                         </div>
                                         <div className="text-lg font-bold text-slate-900">
-                                            {Number(promo.totalSaved).toLocaleString('ru-RU')} ₽
+                                            {Number(promo.totalSaved).toLocaleString('ru-RU')} {currencySymbol}
                                         </div>
                                     </div>
                                 </div>
@@ -470,7 +472,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                     <PremiumSelect
                                         options={[
                                             { id: "percentage", title: "Процент %" },
-                                            { id: "fixed", title: "Фикс. сумма ₽" },
+                                            { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
                                             { id: "free_shipping", title: "Беспл. доставка" },
                                             { id: "gift", title: "Подарок" }
                                         ]}
@@ -620,7 +622,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                     <PremiumSelect
                                         options={[
                                             { id: "percentage", title: "Процент %" },
-                                            { id: "fixed", title: "Фикс. сумма ₽" },
+                                            { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
                                             { id: "free_shipping", title: "Беспл. доставка" },
                                             { id: "gift", title: "Подарок" }
                                         ]}

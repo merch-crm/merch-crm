@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useBranding } from "@/components/branding-provider";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
 import { playSound } from "@/lib/sounds";
@@ -58,6 +59,7 @@ export function TransactionsClient({
         date: string;
     }[]
 }) {
+    const { currencySymbol } = useBranding();
     const [view, setView] = useState<'all' | 'payments' | 'expenses'>('all');
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddingExpense, setIsAddingExpense] = useState(false);
@@ -163,7 +165,7 @@ export function TransactionsClient({
                 <div className="shrink-0 ml-1">
                     <Button
                         onClick={() => setIsAddingExpense(true)}
-                        className="h-11 w-11 sm:h-auto sm:w-auto sm:px-6 !bg-primary text-white gap-2 border-none rounded-full sm:rounded-[18px] flex items-center justify-center p-0 sm:p-auto"
+                        className="h-11 w-11 sm:h-auto sm:w-auto sm:px-6 !bg-primary text-white gap-2 border-none rounded-full sm:rounded-2xl flex items-center justify-center p-0 sm:p-auto"
                     >
                         <Plus className="w-4 h-4" />
                         <span className="hidden sm:inline">Добавить</span>
@@ -197,7 +199,7 @@ export function TransactionsClient({
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
-                                                        "w-10 h-10 rounded-[18px] flex items-center justify-center shadow-inner",
+                                                        "w-10 h-10 rounded-2xl flex items-center justify-center shadow-inner",
                                                         t.type === 'payment' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
                                                     )}>
                                                         {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
@@ -216,7 +218,7 @@ export function TransactionsClient({
                                                     "text-lg font-bold tracking-normal",
                                                     t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                                 )}>
-                                                    {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} ₽
+                                                    {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} {currencySymbol}
                                                 </div>
                                             </td>
                                         </tr>
@@ -246,7 +248,7 @@ export function TransactionsClient({
                                             "text-sm font-black tracking-tight",
                                             t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                         )}>
-                                            {t.type === 'payment' ? '+' : '-'}{Math.round(Number(t.amount)).toLocaleString()} ₽
+                                            {t.type === 'payment' ? '+' : '-'}{Math.round(Number(t.amount)).toLocaleString()} {currencySymbol}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -290,6 +292,7 @@ export function TransactionsClient({
 }
 
 function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
+    const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
@@ -337,7 +340,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма ₽</label>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма {currencySymbol}</label>
                         <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 

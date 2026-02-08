@@ -19,8 +19,8 @@ interface ItemActiveOrdersSectionProps {
 export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps) {
     if (orders.length === 0) {
         return (
-            <div className="py-8 text-center bg-slate-50/50 rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200/50">
-                <div className="w-12 h-12 bg-white rounded-[var(--radius-inner)] shadow-sm flex items-center justify-center mx-auto mb-3 border border-slate-200">
+            <div className="py-8 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200/50">
+                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3 border border-slate-200">
                     <ShoppingBag className="w-6 h-6 text-slate-200" />
                 </div>
                 <p className="text-[10px] font-bold text-slate-400">Нет заказов</p>
@@ -29,7 +29,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {orders.map((item, idx) => {
                 if (!item.order) return null;
 
@@ -41,7 +41,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                     <Link
                         key={item.id}
                         href={`/dashboard/orders/${item.order.id}`}
-                        className="group relative overflow-hidden p-5 rounded-[var(--radius-inner)] bg-[#F8FAFC]/50 hover:bg-white border border-slate-200 hover:shadow-crm-md transition-all duration-300 flex flex-col justify-between h-full"
+                        className="group relative overflow-hidden p-5 rounded-2xl bg-[#F8FAFC]/50 hover:bg-white border border-slate-200 hover:shadow-crm-md transition-all duration-300 flex flex-col justify-between h-full"
                         style={{ animationDelay: `${idx * 50}ms` }}
                     >
                         {/* Status Batch */}
@@ -60,7 +60,7 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                         {/* Middle Content */}
                         <div className="space-y-3 mb-4">
                             <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors shrink-0">
+                                <div className="w-8 h-8 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors shrink-0">
                                     <User className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0">

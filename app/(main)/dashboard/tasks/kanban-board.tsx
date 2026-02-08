@@ -106,7 +106,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                     <h3 className="text-sm font-bold text-white  tracking-normal flex items-center gap-2">
                                         {column.label}
                                     </h3>
-                                    <span className="bg-white/20 text-white px-2 py-0.5 rounded-[18px] text-[10px] font-bold">
+                                    <span className="bg-white/20 text-white px-2 py-0.5 rounded-2xl text-[10px] font-bold">
                                         {columnTasks.length}
                                     </span>
                                 </div>
@@ -120,7 +120,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                 draggedTaskId && "bg-slate-100/30"
                             )}>
                                 {columnTasks.length === 0 && !draggedTaskId && (
-                                    <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200/50 rounded-[18px]">
+                                    <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200/50 rounded-2xl">
                                         <Plus className="w-6 h-6 text-slate-200 mb-2" />
                                         <span className="text-[10px] font-bold text-slate-300  tracking-normal">Пусто</span>
                                     </div>
@@ -138,7 +138,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
                                             onDragEnd={onDragEnd}
                                             onClick={() => setSelectedTask(task)}
                                             className={cn(
-                                                "group relative bg-white rounded-[18px] p-4 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-grab active:cursor-grabbing border-l-4",
+                                                "group relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-grab active:cursor-grabbing border-l-4",
                                                 priority.line
                                             )}
                                         >
@@ -185,7 +185,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
 
                                                 {task.dueDate && (
                                                     <div className={cn(
-                                                        "flex items-center gap-1.5 px-2 py-1 rounded-[18px]",
+                                                        "flex items-center gap-1.5 px-2 py-1 rounded-2xl",
                                                         new Date(task.dueDate) < new Date() && !isDone ? "bg-rose-50 text-rose-500" : "bg-slate-50 text-slate-400"
                                                     )}>
                                                         <Clock className="w-3 h-3" />

@@ -30,6 +30,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "store.storeimages.cdn-apple.com",
+      },
+      {
+        protocol: "https",
+        hostname: "randomuser.me",
+      },
     ],
   },
 };

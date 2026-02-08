@@ -63,7 +63,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                 <button
                     onClick={handleArchive}
                     disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-[18px] bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95"
                     title={isArchived ? "Восстановить" : "В архив"}
                 >
                     {loading ? (
@@ -81,7 +81,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                 <button
                     onClick={() => setShowDeleteDialog(true)}
                     disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-[18px] btn-destructive group active:scale-95 transition-all"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl btn-destructive group active:scale-95 transition-all"
                     title="Удалить"
                 >
                     <Trash2 className="w-4 h-4" />

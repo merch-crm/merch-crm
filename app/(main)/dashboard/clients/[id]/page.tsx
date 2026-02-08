@@ -5,10 +5,13 @@ import { ru } from "date-fns/locale";
 import Link from "next/link";
 import { ArrowLeft, User, Phone, Mail, MapPin, Instagram, Send, Package, ShoppingBag, CreditCard, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export default async function ClientPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
     const { data: client, error } = await getClientDetails(resolvedParams.id);
+    const branding = await getBrandingSettings();
+    const currencySymbol = branding?.currencySymbol || "₽";
 
     if (error || !client) {
         notFound();
@@ -17,9 +20,9 @@ export default async function ClientPage({ params }: { params: { id: string } })
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+            <div className="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center space-x-6">
-                    <Link href="/dashboard/clients" className="text-slate-400 hover:text-primary p-2.5 rounded-[18px] hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200">
+                    <Link href="/dashboard/clients" className="text-slate-400 hover:text-primary p-2.5 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200">
                         <ArrowLeft className="w-6 h-6" />
                     </Link>
                     <div>
@@ -35,16 +38,16 @@ export default async function ClientPage({ params }: { params: { id: string } })
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                <div className="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3 text-slate-500 mb-2">
                         <CreditCard className="w-5 h-5" />
                         <span className="text-xs font-bold  tracking-wider">Баланс / Долг</span>
                     </div>
                     <div className={`text-2xl font-bold ${(client.stats?.balance || 0) < 0 ? 'text-red-500' : 'text-emerald-600'}`}>
-                        {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'KZT', maximumFractionDigits: 0 }).format(client.stats?.balance || 0)}
+                        {Math.round(client.stats?.balance || 0).toLocaleString('ru-RU')} {currencySymbol}
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3 text-slate-500 mb-2">
                         <Send className="w-5 h-5" />
                         <span className="text-xs font-bold  tracking-wider">Источник привлечения</span>
@@ -58,21 +61,21 @@ export default async function ClientPage({ params }: { params: { id: string } })
                 <div className="lg:col-span-2 space-y-4">
                     {/* Stats Cards */}
                     <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                             <div className="flex items-center gap-3 text-slate-500 mb-2">
                                 <ShoppingBag className="w-5 h-5" />
                                 <span className="text-xs font-bold  tracking-wider">Всего заказов</span>
                             </div>
                             <div className="text-2xl font-bold text-slate-900">{client.stats?.count || 0}</div>
                         </div>
-                        <div className="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                             <div className="flex items-center gap-3 text-slate-500 mb-2">
                                 <CreditCard className="w-5 h-5" />
                                 <span className="text-xs font-bold  tracking-wider">Общая сумма</span>
                             </div>
-                            <div className="text-2xl font-bold text-primary">{Math.round(Number(client.stats?.total || 0)).toLocaleString()} ₽</div>
+                            <div className="text-2xl font-bold text-primary">{Math.round(Number(client.stats?.total || 0)).toLocaleString()} {currencySymbol}</div>
                         </div>
-                        <div className="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                             <div className="flex items-center gap-3 text-slate-500 mb-2">
                                 <Calendar className="w-5 h-5" />
                                 <span className="text-xs font-bold  tracking-wider">Последний заказ</span>
@@ -85,7 +88,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-[18px] border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <Package className="w-5 h-5 mr-3 text-primary" />
@@ -120,7 +123,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                                 </span>
                                             </td>
                                             <td className="px-6 py-5 text-right font-bold text-slate-900">
-                                                {order.totalAmount} ₽
+                                                {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                             </td>
                                         </tr>
                                     ))}
@@ -136,7 +139,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
 
                 {/* Sidebar: Contact Info */}
                 <div className="space-y-4">
-                    <div className="bg-white rounded-[18px] border border-slate-200 p-8 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <User className="w-5 h-5 mr-3 text-primary" />
@@ -167,12 +170,12 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                 )}
                                 <div className="flex gap-4 pt-1">
                                     {client.telegram && (
-                                        <a href={`https://t.me/${client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-3 py-2 rounded-[18px] hover:bg-blue-100 transition-colors">
+                                        <a href={`https://t.me/${client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-3 py-2 rounded-2xl hover:bg-blue-100 transition-colors">
                                             <Send className="w-3 h-3 mr-2" /> Telegram
                                         </a>
                                     )}
                                     {client.instagram && (
-                                        <a href={`https://instagram.com/${client.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs font-bold text-pink-500 bg-pink-50 px-3 py-2 rounded-[18px] hover:bg-pink-100 transition-colors">
+                                        <a href={`https://instagram.com/${client.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs font-bold text-pink-500 bg-pink-50 px-3 py-2 rounded-2xl hover:bg-pink-100 transition-colors">
                                             <Instagram className="w-3 h-3 mr-2" /> Instagram
                                         </a>
                                     )}
@@ -190,7 +193,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                             {client.comments && (
                                 <div className="pt-4 border-t border-slate-200">
                                     <div className="text-[10px] font-bold text-slate-400  tracking-normal mb-2">Комментарий</div>
-                                    <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded-[18px]">
+                                    <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded-2xl">
                                         &quot;{client.comments}&quot;
                                     </div>
                                 </div>

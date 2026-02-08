@@ -74,7 +74,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-200">
                     <div>
@@ -83,7 +83,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all shadow-sm"
+                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-white transition-all shadow-sm"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -102,7 +102,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="lastName"
                                 defaultValue={client.lastName}
                                 required
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
@@ -114,7 +114,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="firstName"
                                 defaultValue={client.firstName}
                                 required
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -128,7 +128,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="patronymic"
                                 defaultValue={client.patronymic || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
@@ -139,7 +139,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="company"
                                 defaultValue={client.company || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -155,7 +155,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 name="phone"
                                 defaultValue={client.phone || ""}
                                 required
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
@@ -166,7 +166,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="email"
                                 name="email"
                                 defaultValue={client.email || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -180,7 +180,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="telegram"
                                 defaultValue={client.telegram || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="@username"
                             />
                         </div>
@@ -192,7 +192,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="instagram"
                                 defaultValue={client.instagram || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="insta_link"
                             />
                         </div>
@@ -207,7 +207,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="socialLink"
                                 defaultValue={client.socialLink || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                                 placeholder="vk.com/..."
                             />
                         </div>
@@ -218,7 +218,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <select
                                 name="acquisitionSource"
                                 defaultValue={client.acquisitionSource || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">Не указан</option>
                                 <option value="instagram">Instagram</option>
@@ -237,7 +237,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <select
                                 name="managerId"
                                 defaultValue={client.managerId || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">Не назначен</option>
                                 {managers.map(m => (
@@ -256,7 +256,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="city"
                                 defaultValue={client.city || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                         <div className="space-y-2">
@@ -267,7 +267,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 type="text"
                                 name="address"
                                 defaultValue={client.address || ""}
-                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -280,7 +280,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             name="comments"
                             defaultValue={client.comments || ""}
                             rows={3}
-                            className="w-full p-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
+                            className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
                         />
                     </div>
 
@@ -288,7 +288,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         <button
                             type="button"
                             onClick={onClose}
-                            className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-[18px] bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
+                            className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-2xl bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
                         >
                             Отмена
                         </button>

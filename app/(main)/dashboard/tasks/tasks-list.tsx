@@ -81,7 +81,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
 
     if (tasks.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200 mt-6">
+            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200 mt-6">
                 <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                     <CheckCircle2 className="w-8 h-8 text-slate-200" />
                 </div>
@@ -93,7 +93,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
 
     return (
         <>
-            <div className="flex flex-col bg-white rounded-[24px] border border-slate-200 overflow-hidden mt-6">
+            <div className="flex flex-col bg-white rounded-3xl border border-slate-200 overflow-hidden mt-6">
                 {tasks.map((task, index) => {
                     const config = getPriorityConfig(task.priority);
                     const isDone = task.status === "done";
@@ -112,7 +112,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                                 <button
                                     onClick={(e) => handleToggle(e, task.id, isDone ? "in_progress" : "done")}
                                     className={cn(
-                                        "h-10 w-10 shrink-0 rounded-xl flex items-center justify-center transition-all active:scale-90 border-2",
+                                        "h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all active:scale-90 border-2",
                                         isDone
                                             ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200"
                                             : "bg-white border-slate-200 text-slate-200 hover:text-primary hover:border-primary/20"

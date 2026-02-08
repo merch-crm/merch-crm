@@ -87,7 +87,7 @@ export function PasswordForm() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-11 rounded-[24px] bg-slate-900 hover:bg-black text-white font-black text-[16px] shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
+                    className="w-full h-11 rounded-3xl bg-slate-900 hover:bg-black text-white font-black text-[16px] shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                     {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                     {loading ? "Обновление..." : "Обновить пароль"}

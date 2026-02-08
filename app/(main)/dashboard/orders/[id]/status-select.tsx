@@ -98,7 +98,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                 disabled={loading}
                 className={`
                     w-full flex items-center justify-between px-4 py-3.5 
-                    ${activeStatus.lightBg} border border-slate-200 rounded-[18px] shadow-sm
+                    ${activeStatus.lightBg} border border-slate-200 rounded-2xl shadow-sm
                     hover:border-primary/40 hover:shadow-md transition-all duration-200
                     active:scale-[0.98] group relative overflow-hidden
                     ${loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}
@@ -118,7 +118,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-slate-200 rounded-[18px] shadow-crm-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-slate-200 rounded-2xl shadow-crm-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
                     <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-20" />
 
                     {statuses.map((s) => (
@@ -145,8 +145,8 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             {/* Cancel Dialog */}
             {showCancelDialog && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300" role="dialog" aria-modal="true" data-dialog-open="true">
-                    <div className="bg-white w-full max-w-md rounded-[24px] shadow-crm-xl p-8 border border-white animate-in zoom-in-95 duration-300">
-                        <div className="w-16 h-16 bg-rose-50 rounded-[18px] flex items-center justify-center mb-6">
+                    <div className="bg-white w-full max-w-md rounded-3xl shadow-crm-xl p-8 border border-white animate-in zoom-in-95 duration-300">
+                        <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6">
                             <XCircle className="w-8 h-8 text-rose-500" />
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 mb-2">Отмена заказа</h3>
@@ -160,21 +160,21 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                                 value={cancelReason}
                                 onChange={(e) => setCancelReason(e.target.value)}
                                 placeholder="Напишите причину..."
-                                className="w-full bg-slate-50 border border-slate-200 rounded-[18px] p-4 pl-12 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none resize-none h-32"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 pl-12 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none resize-none h-32"
                             />
                         </div>
 
                         <div className="flex items-center justify-end gap-4 bg-white pt-4 mt-auto">
                             <button
                                 onClick={() => setShowCancelDialog(false)}
-                                className="hidden md:flex h-11 px-6 rounded-[18px] text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
+                                className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
                             >
                                 Назад
                             </button>
                             <button
                                 disabled={!cancelReason.trim() || loading}
                                 onClick={() => handleStatusChange("cancelled", cancelReason)}
-                                className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-[18px] text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                                className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                             >
                                 {loading ? "Отмена..." : "Отменить заказ"}
                             </button>

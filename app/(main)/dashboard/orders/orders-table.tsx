@@ -16,6 +16,7 @@ import { exportToCSV } from "@/lib/export-utils";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { ChevronRight } from "lucide-react";
+import { useBranding } from "@/components/branding-provider";
 
 export interface Order {
     id: string;
@@ -24,7 +25,10 @@ export interface Order {
     status: string;
     priority: string;
     client: { name: string };
-    creator?: { name: string } | null;
+    creator?: {
+        name: string;
+        role?: { name: string } | null;
+    } | null;
     isUrgent?: boolean;
 }
 
@@ -38,6 +42,7 @@ interface OrdersTableProps {
 }
 
 export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchived }: OrdersTableProps) {
+    const { currencySymbol } = useBranding();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
 
@@ -78,14 +83,15 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
             { header: "Статус", key: "status" },
             { header: "Приоритет", key: "priority" },
             { header: "Срочно", key: (o) => o.isUrgent ? "Да" : "Нет" },
-            { header: "Создал", key: (o) => o.creator?.name || "Система" }
+            { header: "Создал", key: (o) => o.creator?.name || "Система" },
+            { header: "Роль", key: (o) => (o.creator as any)?.role?.name || (o.creator ? "Оператор" : "Система") }
         ]);
         toast("Экспорт завершен", "success");
         playSound("notification_success");
     };
 
     if (error) {
-        return <div className="text-red-400 p-4 bg-red-50 rounded-[18px] border border-red-100">Ошибка загрузки заказов: {error}</div>;
+        return <div className="text-red-400 p-4 bg-red-50 rounded-2xl border border-red-100">Ошибка загрузки заказов: {error}</div>;
     }
 
     return (
@@ -141,7 +147,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                         {showFinancials && (
                                             <td className="px-6 py-5 whitespace-nowrap">
                                                 <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[var(--radius-sm)]">
-                                                    {order.totalAmount} ₽
+                                                    {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                                 </span>
                                             </td>
                                         )}
@@ -153,7 +159,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                         handleUpdateField(order.id, "isUrgent", !order.isUrgent);
                                                     }}
                                                     className={cn(
-                                                        "p-1.5 rounded-[18px] transition-all",
+                                                        "p-1.5 rounded-2xl transition-all",
                                                         order.isUrgent
                                                             ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
                                                             : "bg-slate-50 text-slate-400 hover:text-slate-600"
@@ -179,7 +185,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                                 window.location.reload(); // Quick reach to re-fetch
                                                             }
                                                         }}
-                                                        className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-[18px] transition-all"
+                                                        className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-2xl transition-all"
                                                         title={showArchived ? "Восстановить" : "Архивировать"}
                                                     >
                                                         {showArchived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
@@ -248,7 +254,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                             <div className="flex flex-col items-end gap-2 shrink-0">
                                 {showFinancials && (
                                     <div className="text-sm font-black text-primary bg-primary/5 px-2 py-1 rounded-lg">
-                                        {Number(order.totalAmount).toLocaleString('ru-RU')} ₽
+                                        {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">

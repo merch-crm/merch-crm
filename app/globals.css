@@ -43,9 +43,9 @@
   --ring: #5d00ff;
 
   /* Radii - Unified Rounding System */
-  --radius: 18px;
-  --radius-outer: 18px;
-  --radius-inner: 12px;
+  --radius: 24px;
+  --radius-outer: 24px;
+  --radius-inner: 18px;
   --radius-padding: 24px;
 
   /* Shadows - "Premium Soft" */
@@ -92,9 +92,10 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-2xl: var(--radius-outer);
+  --radius-3xl: var(--radius-outer);
+  --radius-2xl: var(--radius-inner);
   --radius-xl: 12px;
-  --radius-lg: var(--radius-inner);
+  --radius-lg: 8px;
   --radius-md: 6px;
   --radius-sm: 4px;
 
@@ -732,6 +733,29 @@ textarea:focus::placeholder {
   }
 }
 
-@utility animate-shake {
-  animation: shake 0.2s ease-in-out infinite;
+@keyframes shimmer-flow {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+
+  100% {
+    transform: translateX(150%) skewX(-25deg);
+  }
+}
+
+@utility animate-shimmer-flow {
+  animation: shimmer-flow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@utility shimmer-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 70%,
+      transparent 100%);
+  z-index: 5;
+  pointer-events: none;
 }

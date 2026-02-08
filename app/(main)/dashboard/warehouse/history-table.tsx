@@ -406,6 +406,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 { header: "Причина", key: (t) => t.reason || "" },
                                                 { header: "Склад", key: (t) => t.storageLocation?.name || "" },
                                                 { header: "Создал", key: (t) => t.creator?.name || "Система" },
+                                                { header: "Роль", key: (t) => t.creator?.role?.name || (t.creator ? "Оператор" : "Система") },
                                                 { header: "Дата", key: (t) => new Date(t.createdAt) }
                                             ]);
                                             toast("Экспорт завершен", "success");
@@ -651,8 +652,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             {/* Mobile Compact List View */}
             <div className="md:hidden rounded-[var(--radius-outer)] border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
                 {currentItems.map((t) => {
-                    const isIn = t.type === "in";
-                    const amount = Math.abs(t.changeAmount);
+
                     const isSelected = selectedIds.includes(t.id);
 
                     return (

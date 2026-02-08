@@ -1161,7 +1161,10 @@ export async function updateInventoryItem(id: string, formData: FormData) {
 
     // Let's rely on the fact that for creation it is enforced. For update, if we don't have itemType...
     // We can fetch the item to check its type.
-    const [existingItem] = await db.select({ itemType: inventoryItems.itemType }).from(inventoryItems).where(eq(inventoryItems.id, id));
+    const [existingItem] = await db.select({
+        itemType: inventoryItems.itemType,
+        costPrice: inventoryItems.costPrice
+    }).from(inventoryItems).where(eq(inventoryItems.id, id));
     if (existingItem) {
         if (existingItem.itemType === "clothing") {
             unit = "шт.";
@@ -1324,7 +1327,32 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             updatedAt: new Date()
         }).where(eq(inventoryItems.id, id));
 
-        console.log("UPDATE SUCCESSFUL. Lines affected:", result.rowCount);
+        // Create transaction log if price or quantity changed
+        // Create transaction log if price or quantity changed
+        const existingCostPrice = existingItem?.costPrice ? String(existingItem.costPrice) : null;
+
+        // Helper to normalize price for comparison (handle 0.00 vs 0 vs null)
+        const normalizePrice = (val: string | number | null | undefined) => {
+            if (val === null || val === undefined || val === "") return 0;
+            const num = parseFloat(String(val));
+            return isNaN(num) ? 0 : num;
+        };
+
+        const oldPrice = normalizePrice(existingCostPrice);
+        const newPrice = normalizePrice(costPrice);
+
+        // Compare with epsilon for float precision
+        if (Math.abs(oldPrice - newPrice) > 0.01) {
+            await db.insert(inventoryTransactions).values({
+                itemId: id,
+                changeAmount: 0, // No quantity change in this specific manual edit
+                type: "in",      // Treat as a virtual supply/adjustment for history
+                reason: "Корректировка цены (редактирование)",
+                storageLocationId: storageLocationId || null,
+                costPrice: costPrice,
+                createdBy: session?.id,
+            });
+        }
 
         // Trigger stock check
         await checkItemStockAlerts(id);
@@ -2092,7 +2120,11 @@ export async function getItemHistory(itemId: string) {
         const history = await db.query.inventoryTransactions.findMany({
             where: eq(inventoryTransactions.itemId, itemId),
             with: {
-                creator: true,
+                creator: {
+                    with: {
+                        role: true
+                    }
+                },
                 storageLocation: true
             },
             orderBy: [desc(inventoryTransactions.createdAt)],

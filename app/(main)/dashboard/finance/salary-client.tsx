@@ -7,12 +7,14 @@ import {
 } from "lucide-react";
 import { pluralize } from "@/lib/pluralize";
 import { SalaryStats } from "./actions";
+import { useBranding } from "@/components/branding-provider";
 
 interface SalaryClientProps {
     salaryData: SalaryStats;
 }
 
 export function SalaryClient({ salaryData }: SalaryClientProps) {
+    const { currencySymbol } = useBranding();
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--crm-grid-gap)]">
@@ -28,7 +30,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                     <div className="mt-auto">
                         <p className="text-slate-400 text-[11px] font-bold tracking-widest uppercase leading-none mb-3">Общий Фонд Оплаты Труда (ФОТ)</p>
                         <div className="text-4xl font-black text-slate-900 tracking-tight leading-none">
-                            {salaryData.totalBudget.toLocaleString('ru-RU')} <span className="text-base font-bold text-slate-400 ml-1">₽ /мес.</span>
+                            {salaryData.totalBudget.toLocaleString('ru-RU')} <span className="text-base font-bold text-slate-400 ml-1">{currencySymbol} /мес.</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +64,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                 ).map(([deptName, emps]) => {
                     const deptTotal = emps.reduce((sum, e) => sum + e.total, 0);
                     return (
-                        <div key={deptName} className="crm-card border-none bg-white shadow-md overflow-hidden !rounded-[24px]">
+                        <div key={deptName} className="crm-card border-none bg-white shadow-md overflow-hidden !rounded-3xl">
                             <div className="px-8 py-7 bg-slate-50/70 border-b border-slate-200/60 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-[20px] bg-white flex items-center justify-center text-primary shadow-sm border border-slate-100 group-hover:scale-105 transition-all">
@@ -75,7 +77,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                 </div>
                                 <div className="text-right">
                                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">ФОТ Отдела</div>
-                                    <div className="text-2xl font-black text-slate-900">{deptTotal.toLocaleString()} <span className="text-sm font-bold text-slate-400">₽</span></div>
+                                    <div className="text-2xl font-black text-slate-900">{deptTotal.toLocaleString()} <span className="text-sm font-bold text-slate-400">{currencySymbol}</span></div>
                                 </div>
                             </div>
                             <div className="overflow-x-auto">
@@ -102,17 +104,17 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                                     </span>
                                                 </td>
                                                 <td className="px-8 py-6 text-center">
-                                                    <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} ₽</span>
+                                                    <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} {currencySymbol}</span>
                                                 </td>
                                                 <td className="px-8 py-6 text-center">
                                                     <div className="inline-flex flex-col items-center">
-                                                        <div className="font-black text-emerald-600 text-[15px]">+{emp.bonus.toLocaleString()} ₽</div>
+                                                        <div className="font-black text-emerald-600 text-[15px]">+{emp.bonus.toLocaleString()} {currencySymbol}</div>
                                                         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">за {emp.ordersCount} заказов</div>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-6 text-right">
                                                     <div className="font-black text-slate-900 border-l border-slate-200/50 pl-6 inline-block text-[20px] leading-none">
-                                                        {emp.total.toLocaleString()} <span className="text-slate-400 text-xs font-bold">₽</span>
+                                                        {emp.total.toLocaleString()} <span className="text-slate-400 text-xs font-bold">{currencySymbol}</span>
                                                     </div>
                                                 </td>
                                             </tr>

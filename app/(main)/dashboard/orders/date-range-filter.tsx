@@ -67,7 +67,7 @@ export function DateRangeFilter() {
     return (
         <div className="flex flex-col gap-3">
             {/* Quick Range Buttons Grid */}
-            <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 p-1 bg-slate-100/50 rounded-[22px] sm:rounded-[18px] border border-slate-200/50 shadow-sm">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 p-1 bg-slate-100/50 rounded-[22px] sm:rounded-2xl border border-slate-200/50 shadow-sm">
                 {ranges.slice(0, 4).map((range) => (
                     <button
                         key={range.value}
@@ -146,7 +146,7 @@ export function DateRangeFilter() {
                                                 size="sm"
                                                 onClick={handleApplyCustomRange}
                                                 disabled={!dateRange?.from}
-                                                className="bg-primary hover:bg-primary/90 text-white rounded-[18px] font-bold shadow-lg shadow-primary/20 px-6"
+                                                className="bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 px-6"
                                             >
                                                 Выбрать
                                             </Button>

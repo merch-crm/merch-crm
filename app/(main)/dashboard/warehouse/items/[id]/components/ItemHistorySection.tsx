@@ -6,6 +6,13 @@ import {
     Search,
     X,
     ArrowRight,
+    ArrowUpCircle,
+    ArrowDownCircle,
+    ArrowRightLeft,
+    RefreshCw,
+    Book,
+    Clock,
+    Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemHistoryTransaction } from "../../../types";
@@ -47,7 +54,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     const renderTableView = () => (
         <>
             {/* Desktop Table View */}
-            <div className="hidden md:block rounded-[var(--radius-inner)] border border-slate-200 overflow-hidden">
+            <div className="hidden md:block rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -66,12 +73,29 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                 return (
                                     <tr key={tx.id || idx} className="hover:bg-slate-50/50 transition-colors group">
                                         <td className="px-4 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-3">
                                                 <div className={cn(
-                                                    "w-2 h-2 rounded-full",
-                                                    tx.type === 'in' ? "bg-emerald-500" : tx.type === 'out' ? "bg-rose-500" : "bg-primary"
-                                                )} />
-                                                <span className="text-[13px] font-bold text-slate-900">
+                                                    "w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm transition-transform",
+                                                    tx.type === "transfer"
+                                                        ? "bg-primary/5 text-primary border border-primary/20"
+                                                        : tx.type === "attribute_change"
+                                                            ? "bg-amber-50 text-amber-600 border border-amber-100"
+                                                            : tx.type === "archive"
+                                                                ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                                                : tx.type === "restore"
+                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                    : tx.type === 'in'
+                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                        : "bg-rose-50 text-rose-600 border border-rose-100"
+                                                )}>
+                                                    {tx.type === 'in' && <ArrowDownCircle className="w-5 h-5" />}
+                                                    {tx.type === 'out' && <ArrowUpCircle className="w-5 h-5" />}
+                                                    {tx.type === 'transfer' && <ArrowRightLeft className="w-5 h-5" />}
+                                                    {tx.type === 'attribute_change' && <Book className="w-4 h-4" />}
+                                                    {tx.type === 'archive' && <Clock className="w-4 h-4" />}
+                                                    {tx.type === 'restore' && <Package className="w-4 h-4" />}
+                                                </div>
+                                                <span className="hidden lg:inline text-[13px] font-bold text-slate-900">
                                                     {tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещение" : "Обновление"}
                                                 </span>
                                             </div>
@@ -116,12 +140,16 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                             </span>
                                         </td>
                                         <td className="px-4 py-4 whitespace-nowrap text-right">
-                                            <span className="text-[10px] font-bold text-slate-300">
-                                                {(() => {
-                                                    const d = new Date(tx.createdAt);
-                                                    return isNaN(d.getTime()) ? "—" : format(d, "dd.MM.yy HH:mm");
-                                                })()}
-                                            </span>
+                                            {(() => {
+                                                const d = new Date(tx.createdAt);
+                                                if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-slate-300">—</span>;
+                                                return (
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="text-[12px] font-bold text-slate-700">{format(d, "dd.MM.yy")}</span>
+                                                        <span className="text-[10px] font-bold text-slate-400">{format(d, "HH:mm")}</span>
+                                                    </div>
+                                                );
+                                            })()}
                                         </td>
                                     </tr>
                                 );
@@ -139,8 +167,8 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     );
 
     const renderEmpty = () => (
-        <div className="py-20 text-center bg-slate-50/50 rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200/50">
-            <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] shadow-sm flex items-center justify-center mx-auto mb-4 border border-slate-200">
+        <div className="py-20 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200/50">
+            <div className="w-20 h-20 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 border border-slate-200">
                 <History className="w-10 h-10 text-slate-200" />
             </div>
             <p className="text-xs font-bold text-slate-400">{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
@@ -225,6 +253,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                         pageSize={pageSize}
                         onPageChange={setCurrentPage}
                         itemNames={['операция', 'операции', 'операций']}
+                        variant="light"
                     />
                 </div>
             )}
@@ -239,7 +268,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
     if (history.length === 0) return null;
 
     return (
-        <div className="md:hidden rounded-[var(--radius-inner)] border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
+        <div className="md:hidden rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
             {history.map((tx, idx) => {
                 const isPositive = tx.changeAmount > 0;
                 const isExpanded = expandedId === (tx.id || String(idx));

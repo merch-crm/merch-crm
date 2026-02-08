@@ -9,6 +9,7 @@ import { createExpense, CreateExpenseData } from "./actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { playSound } from "@/lib/sounds";
+import { useBranding } from "@/components/branding-provider";
 
 export interface Expense {
     id: string;
@@ -20,6 +21,7 @@ export interface Expense {
 }
 
 export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
+    const { currencySymbol } = useBranding();
     const [expenses, setExpenses] = useState(initialData || []);
     const [searchQuery, setSearchQuery] = useState("");
     const [isAdding, setIsAdding] = useState(false);
@@ -50,7 +52,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
             <div className="flex flex-col md:flex-row md:items-center justify-end gap-6">
                 <Button
                     onClick={() => setIsAdding(true)}
-                    className="h-11 w-11 sm:h-11 sm:w-auto bg-rose-600 hover:bg-rose-700 text-white rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none shrink-0 p-0 sm:p-auto"
+                    className="h-11 w-11 sm:h-11 sm:w-auto bg-rose-600 hover:bg-rose-700 text-white rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none shrink-0 p-0 sm:p-auto"
                     title="Добавить расход"
                 >
                     <Plus className="w-5 h-5" />
@@ -58,7 +60,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </Button>
             </div>
 
-            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4 items-center bg-white p-6 rounded-[24px] border border-slate-200/60 shadow-sm">
+            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4 items-center bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm">
                 <div className="relative flex-1 w-full group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
@@ -71,12 +73,12 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </div>
             </div>
 
-            <div className="bg-white rounded-[24px] border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-slate-50/50">
                             <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Дата</th>
-                            <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal text-center">Категория</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 tracking-wider">Категория</th>
                             <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Описание</th>
                             <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal text-right">Сумма</th>
                         </tr>
@@ -86,7 +88,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                             <tr key={expense.id} className="group hover:bg-slate-50/30 transition-colors">
                                 <td className="px-8 py-6">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:bg-rose-50 transition-colors">
+                                        <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:bg-rose-50 transition-colors">
                                             <Calendar className="w-5 h-5" />
                                         </div>
                                         <div className="font-bold text-slate-900 text-sm">
@@ -94,12 +96,12 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-8 py-6 text-center">
+                                <td className="px-6 py-4">
                                     <span className={cn(
-                                        "px-3 py-1.5 rounded-[10px] text-[10px] font-bold  tracking-wider border",
+                                        "px-2 py-1 rounded-md text-[10px] font-bold tracking-wider",
                                         categoryColors[expense.category] || categoryColors.other
                                     )}>
-                                        {categoryLabels[expense.category] || expense.category}
+                                        {categoryLabels[expense.category]}
                                     </span>
                                 </td>
                                 <td className="px-8 py-6">
@@ -109,7 +111,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                 </td>
                                 <td className="px-8 py-6 text-right">
                                     <div className="text-lg font-bold text-rose-600 leading-none">
-                                        -{Number(expense.amount).toLocaleString()} <span className="text-[10px] font-bold text-slate-400 ml-1">₽</span>
+                                        -{Number(expense.amount).toLocaleString()} <span className="text-[10px] font-bold text-slate-400 ml-1">{currencySymbol}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -142,6 +144,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
 }
 
 function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: (e: Expense) => void }) {
+    const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
@@ -195,7 +198,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                             </select>
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Сумма ₽</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Сумма {currencySymbol}</label>
                             <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
                         </div>
                     </div>

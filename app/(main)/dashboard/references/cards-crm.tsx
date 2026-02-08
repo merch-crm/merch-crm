@@ -219,7 +219,7 @@ export default function CardsCRM() {
                         </div>
 
                         <div className="bg-[#5d00ff] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
-                            <div className="w-8 h-8 bg-white rounded-[18px] flex items-center justify-center text-[#5d00ff] mb-2">
+                            <div className="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#5d00ff] mb-2">
                                 <Crown className="w-4 h-4" />
                             </div>
                             <div className="flex items-center justify-between">
@@ -229,7 +229,7 @@ export default function CardsCRM() {
                         </div>
 
                         <div className="bg-[#5d00ff] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
-                            <div className="absolute top-2 right-2 w-10 h-10 bg-white rounded-[18px] rotate-12 flex items-center justify-center">
+                            <div className="absolute top-2 right-2 w-10 h-10 bg-white rounded-2xl rotate-12 flex items-center justify-center">
                                 <span className="text-[#5d00ff] text-[10px] font-bold">20%</span>
                             </div>
                             <Smartphone className="w-6 h-6 text-white mt-1" />

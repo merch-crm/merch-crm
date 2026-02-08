@@ -110,7 +110,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.1 }}
-                                        className="group/item relative flex items-start gap-6 p-6 rounded-[24px] bg-slate-50/50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
+                                        className="group/item relative flex items-start gap-6 p-6 rounded-3xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
                                     >
                                         <div className="mt-1 transition-transform duration-500 group-hover/item:scale-110">
                                             {getStatusIcon(task.status, task.dueDate)}
@@ -179,7 +179,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                         <h2 className="text-2xl font-black mb-8 tracking-normaler">Сводная информация</h2>
 
                         <div className="space-y-6">
-                            <div className="p-5 rounded-[24px] bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                            <div className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">Рабочий график</h4>
                                 <div className="flex justify-between items-center">
                                     <span className="text-[14px] font-bold">Пн - Пт</span>
@@ -187,7 +187,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                 </div>
                             </div>
 
-                            <div className="p-5 rounded-[24px] bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                            <div className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">Перерыв</h4>
                                 <div className="flex justify-between items-center">
                                     <span className="text-[14px] font-bold">Обед</span>
@@ -219,7 +219,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                         Дедлайны
                     </h3>
 
-                    <div className="p-6 rounded-[24px] bg-slate-50 border border-slate-200 group-hover/events:bg-white transition-all duration-500">
+                    <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 group-hover/events:bg-white transition-all duration-500">
                         <p className="text-slate-500 text-[14px] font-black leading-relaxed">
                             Не забывайте закрывать задачи <span className="text-rose-500">вовремя</span> для поддержания высокого рейтинга КПД.
                         </p>

@@ -10,6 +10,7 @@ import { getCategoryIcon, getColorStyles, CLOTHING_COLORS } from "../../../categ
 import { createElement } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useBranding } from "@/components/branding-provider";
 
 
 
@@ -41,6 +42,7 @@ export function SummaryStep({
     validationError,
     isSubmitting
 }: SummaryStepProps) {
+    const { currencySymbol } = useBranding();
     // 1. Hooks (Conditional-free, at the top)
     const isMobile = useIsMobile();
     const [isEditingName, setIsEditingName] = useState(false);
@@ -178,8 +180,8 @@ export function SummaryStep({
                                 {/* Main Preview Thumbnail */}
                                 {formData.imagePreview && (
                                     <div className="hidden sm:block shrink-0 relative">
-                                        <div className="absolute inset-0 bg-slate-900/5 rounded-[24px] rotate-3" />
-                                        <div className="relative w-44 h-44 rounded-[24px] overflow-hidden border-2 border-white shadow-2xl shadow-slate-200">
+                                        <div className="absolute inset-0 bg-slate-900/5 rounded-3xl rotate-3" />
+                                        <div className="relative w-44 h-44 rounded-3xl overflow-hidden border-2 border-white shadow-2xl shadow-slate-200">
                                             <Image
                                                 src={formData.imagePreview}
                                                 alt="Preview"
@@ -423,7 +425,7 @@ export function SummaryStep({
                                             </div>
                                             <span className="text-xs font-bold text-slate-700">Себестоимость</span>
                                         </div>
-                                        <div className="text-lg font-black text-slate-900">{parseFloat(formData.costPrice || "0").toLocaleString()} ₽</div>
+                                        <div className="text-lg font-black text-slate-900">{parseFloat(formData.costPrice || "0").toLocaleString()} {currencySymbol}</div>
                                     </div>
 
                                     <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-900/10 active:scale-[0.98] transition-transform">
@@ -433,7 +435,7 @@ export function SummaryStep({
                                             </div>
                                             <span className="text-xs font-bold text-white/60">Цена продажи</span>
                                         </div>
-                                        <div className="text-xl font-black">{parseFloat(formData.sellingPrice || "0").toLocaleString()} ₽</div>
+                                        <div className="text-xl font-black">{parseFloat(formData.sellingPrice || "0").toLocaleString()} {currencySymbol}</div>
                                     </div>
 
                                     {/* Profit Indicator */}
@@ -448,7 +450,7 @@ export function SummaryStep({
                                             </div>
                                             <div className="flex items-baseline justify-between">
                                                 <div className="text-2xl font-black text-emerald-900">
-                                                    {Math.max(0, parseFloat(formData.sellingPrice || "0") - parseFloat(formData.costPrice || "0")).toLocaleString()} ₽
+                                                    {Math.max(0, parseFloat(formData.sellingPrice || "0") - parseFloat(formData.costPrice || "0")).toLocaleString()} {currencySymbol}
                                                 </div>
                                                 <div className="text-sm font-black text-emerald-600 px-2 py-0.5 bg-white rounded-lg border border-emerald-100 shadow-sm">
                                                     +{Math.round(((parseFloat(formData.sellingPrice || "0") - parseFloat(formData.costPrice || "0")) / (parseFloat(formData.costPrice || "1") || 1)) * 100)}%
@@ -510,7 +512,7 @@ export function SummaryStep({
                                 autoFocus
                                 value={tempName}
                                 onChange={(e) => setTempName(e.target.value)}
-                                className="w-full min-h-[140px] p-5 rounded-[24px] bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 shadow-inner focus:bg-white focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none"
+                                className="w-full min-h-[140px] p-5 rounded-3xl bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 shadow-inner focus:bg-white focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none"
                                 placeholder="Введите название..."
                             />
                         </div>

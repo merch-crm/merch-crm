@@ -16,7 +16,7 @@ export default function FileUploadShowcaseCRM() {
                 <div className="w-[400px] bg-white rounded-[2.5rem] p-4 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] space-y-4">
 
                     {/* 1. Drop Zone */}
-                    <div className="bg-[#f3f4f6] rounded-[2rem] h-48 flex flex-col items-center justify-center border-2 border-transparent border-dashed hover:border-slate-300 hover:bg-[#eceef0] transition-all cursor-pointer group">
+                    <div className="bg-[#f3f4f6] rounded-3xl h-48 flex flex-col items-center justify-center border-2 border-transparent border-dashed hover:border-slate-300 hover:bg-[#eceef0] transition-all cursor-pointer group">
                         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
                             <CloudUpload size={28} className="text-slate-600" strokeWidth={1.5} />
                         </div>

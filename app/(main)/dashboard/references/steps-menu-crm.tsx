@@ -31,7 +31,7 @@ export default function StepsMenuCRM() {
 
                 {/* Sidebar Menu (based on Photo 1) */}
                 <div className="lg:col-span-4">
-                    <div className="bg-white rounded-[24px] border border-slate-200 shadow-crm-xl overflow-hidden flex flex-col min-h-[500px]">
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-crm-xl overflow-hidden flex flex-col min-h-[500px]">
                         {/* Header part */}
                         <div className="p-8 pb-6">
                             <button className="flex items-center gap-2 text-[10px] font-bold  tracking-normal text-slate-400 hover:text-slate-900 transition-colors mb-6 group">

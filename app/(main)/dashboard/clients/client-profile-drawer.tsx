@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/components/branding-provider";
 
 interface Order {
     id: string;
@@ -81,6 +82,7 @@ const safeFormat = (dateStr: string | null | undefined, formatStr: string, optio
 };
 
 export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFinancials = true, userRoleName }: ClientProfileDrawerProps) {
+    const { currencySymbol } = useBranding();
     const [client, setClient] = useState<ClientProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<TabType>("general");
@@ -126,7 +128,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -137,7 +139,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                         <div className="flex flex-wrap gap-2 mb-6">
                             {!["Печатник", "Дизайнер"].includes(userRoleName || "") && (
                                 <Button
-                                    className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[18px] font-semibold text-xs"
+                                    className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold text-xs"
                                     onClick={() => window.open(`tel:${client.phone}`)}
                                 >
                                     <Phone className="w-3.5 h-3.5 mr-2" /> Позвонить
@@ -145,7 +147,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
                             {client.telegram && (
                                 <Button
-                                    className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-[18px] font-bold text-xs"
+                                    className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-bold text-xs"
                                     onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
@@ -153,7 +155,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
                             <Button
                                 variant="outline"
-                                className="h-10 px-4 border-slate-200 text-slate-600 rounded-[18px] font-bold text-xs hover:bg-slate-50"
+                                className="h-10 px-4 border-slate-200 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-50"
                                 onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}
                             >
                                 <Plus className="w-3.5 h-3.5 mr-2" /> Создать заказ
@@ -162,7 +164,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <Button
                                     onClick={onEdit}
                                     variant="outline"
-                                    className="h-10 px-4 border-primary/20 text-primary rounded-[18px] font-bold text-xs hover:bg-primary/5"
+                                    className="h-10 px-4 border-primary/20 text-primary rounded-2xl font-bold text-xs hover:bg-primary/5"
                                 >
                                     <Edit2 className="w-3.5 h-3.5 mr-2" /> Редактировать
                                 </Button>
@@ -208,9 +210,9 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <div className="space-y-8">
                                     {/* Stats Cards */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+                                        <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200 shadow-sm">
                                             <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-10 h-10 bg-primary/5 text-primary rounded-[18px] flex items-center justify-center">
+                                                <div className="w-10 h-10 bg-primary/5 text-primary rounded-2xl flex items-center justify-center">
                                                     <ShoppingBag className="w-5 h-5" />
                                                 </div>
                                                 <span className="text-xs font-medium text-slate-400">Заказы</span>
@@ -219,14 +221,14 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                         </div>
 
                                         {showFinancials && (
-                                            <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+                                            <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200 shadow-sm">
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-[18px] flex items-center justify-center">
+                                                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
                                                         <TrendingUp className="w-5 h-5" />
                                                     </div>
                                                     <span className="text-xs font-medium text-slate-400">LTV</span>
                                                 </div>
-                                                <p className="text-3xl font-bold text-slate-900">{Math.round(client.totalSpent)} ₽</p>
+                                                <p className="text-3xl font-bold text-slate-900">{Math.round(client.totalSpent)} {currencySymbol}</p>
                                             </div>
                                         )}
                                     </div>
@@ -238,7 +240,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <h3 className="text-xs font-semibold text-slate-400">Основная информация</h3>
                                         </div>
                                         <div className="grid grid-cols-1 gap-3">
-                                            <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
+                                            <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
                                                 <Phone className="w-5 h-5 text-slate-300" />
                                                 <div>
                                                     <p className="text-xs font-medium text-slate-400 mb-0.5">Телефон</p>
@@ -250,7 +252,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             </div>
                                             {client.email && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
                                                     <Mail className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Email</p>
@@ -259,7 +261,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.city && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
                                                     <MapPin className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">География</p>
@@ -268,7 +270,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             )}
                                             {client.company && (
-                                                <div className="flex items-center gap-4 p-5 rounded-[18px] bg-slate-50 border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
                                                     <Building2 className="w-5 h-5 text-slate-300" />
                                                     <div>
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Компания</p>
@@ -306,7 +308,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <User className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Менеджер</h3>
                                             </div>
-                                            <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm flex items-center gap-3">
+                                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                                                     <User className="w-4 h-4" />
                                                 </div>
@@ -322,7 +324,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <MessageCircle className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Примечания</h3>
                                             </div>
-                                            <div className="p-6 bg-amber-50 rounded-[2rem] border border-amber-100 text-slate-700 leading-relaxed font-medium text-sm">
+                                            <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 text-slate-700 leading-relaxed font-medium text-sm">
                                                 {client.comments}
                                             </div>
                                         </div>
@@ -342,10 +344,10 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 <a
                                                     key={order.id}
                                                     href={`/dashboard/orders/${order.id}`}
-                                                    className="flex items-center justify-between p-5 rounded-[1.5rem] bg-slate-50 border border-slate-200 transition-all group shadow-sm hover:bg-white hover:shadow-md"
+                                                    className="flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-slate-200 transition-all group shadow-sm hover:bg-white hover:shadow-md"
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-[18px] bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-all">
+                                                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-all">
                                                             <ShoppingBag className="w-5 h-5" />
                                                         </div>
                                                         <div>
@@ -357,7 +359,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                     </div>
                                                     <div className="flex items-center gap-4">
                                                         {showFinancials && (
-                                                            <span className="text-sm font-bold text-slate-900">{Math.round(order.totalPrice)} ₽</span>
+                                                            <span className="text-sm font-bold text-slate-900">{Math.round(order.totalPrice)} {currencySymbol}</span>
                                                         )}
                                                         <Badge className="bg-primary/5 text-primary border-none font-bold text-xs">{order.status}</Badge>
                                                         <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
@@ -366,7 +368,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-12 text-center bg-white rounded-[2rem] border border-dashed border-slate-200">
+                                        <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
                                             <ShoppingBag className="w-10 h-10 text-slate-200 mx-auto mb-4" />
                                             <p className="text-sm font-bold text-slate-400">Нет завершенных заказов</p>
                                         </div>
@@ -399,7 +401,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                             <p className="text-[10px] font-bold text-slate-500">{log.user?.name || "Система"}</p>
                                                         </div>
                                                         {log.details ? (
-                                                            <div className="mt-2 p-3 rounded-[18px] bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
+                                                            <div className="mt-2 p-3 rounded-2xl bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
                                                                 <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as Record<string, unknown>, null, 2)}</pre>
                                                             </div>
                                                         ) : null}
@@ -408,7 +410,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-12 text-center bg-white rounded-[2rem] border border-dashed border-slate-200">
+                                        <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
                                             <Activity className="w-10 h-10 text-slate-200 mx-auto mb-4" />
                                             <p className="text-sm font-bold text-slate-400">История изменений пуста</p>
                                         </div>
@@ -428,7 +430,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-200">
+                        <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
                             <Info className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                             <p className="text-slate-400 font-bold">Данные клиента не найдены</p>
                         </div>

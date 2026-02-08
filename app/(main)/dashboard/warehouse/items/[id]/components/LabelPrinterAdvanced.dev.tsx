@@ -18,11 +18,14 @@ interface LabelPrinterDialogProps {
     allAttributes: InventoryAttribute[];
 }
 
+import { useBranding } from "@/components/branding-provider";
+
 type PaperSize = '58x40' | '58x60' | '75x120' | 'a4' | 'custom';
 type LayoutStyle = 'standard' | 'side-by-side' | 'inline' | 'minimal';
 
 
 export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allAttributes }: LabelPrinterDialogProps) {
+    const { currencySymbol } = useBranding();
     // Settings State
     const [paperSize, setPaperSize] = useState<PaperSize>('58x40');
 
@@ -336,7 +339,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-5xl h-[90vh] p-0 gap-0 overflow-hidden bg-white rounded-[var(--radius-outer)] flex flex-col [&>button]:hidden">
+            <DialogContent className="max-w-5xl h-[90vh] p-0 gap-0 overflow-hidden bg-white rounded-3xl flex flex-col [&>button]:hidden">
                 <DialogTitle className="sr-only">Печать этикеток</DialogTitle>
                 <DialogDescription className="sr-only">Настройка параметров печати этикеток для товара</DialogDescription>
                 <div className="flex flex-1 min-h-0 h-full">
@@ -345,7 +348,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         {/* 1. Header */}
                         <div className="flex-none px-6 py-5 border-b border-slate-200 bg-white relative z-10">
                             <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center text-primary">
+                                <div className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                     <Printer className="w-5 h-5" />
                                 </div>
                                 Печать
@@ -363,7 +366,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                             key={size}
                                             onClick={() => setPaperSize(size as PaperSize)}
                                             className={cn(
-                                                "w-full h-11 rounded-[var(--radius-inner)] text-xs font-black border-2 transition-all duration-200 flex items-center justify-center leading-none",
+                                                "w-full h-11 rounded-2xl text-xs font-black border-2 transition-all duration-200 flex items-center justify-center leading-none",
                                                 paperSize === size
                                                     ? "bg-slate-900 text-white border-slate-900 shadow-md"
                                                     : "bg-white text-slate-500 border-slate-200 hover:border-slate-200 hover:bg-slate-50",
@@ -383,7 +386,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                                 type="number"
                                                 value={customWidth}
                                                 onChange={(e) => setCustomWidth(Number(e.target.value))}
-                                                className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                                className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
                                             />
                                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">MM</span>
                                         </div>
@@ -392,7 +395,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                                 type="number"
                                                 value={customHeight}
                                                 onChange={(e) => setCustomHeight(Number(e.target.value))}
-                                                className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                                className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
                                             />
                                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">MM</span>
                                         </div>
@@ -414,7 +417,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                             key={style.id}
                                             onClick={() => setLayoutStyle(style.id as LayoutStyle)}
                                             className={cn(
-                                                "py-2.5 px-3 rounded-[var(--radius-inner)] border-2 font-black text-[10px] transition-all",
+                                                "py-2.5 px-3 rounded-2xl border-2 font-black text-[10px] transition-all",
                                                 layoutStyle === style.id ? "bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10" : "bg-white border-slate-200 text-slate-400 hover:border-slate-200"
                                             )}
                                         >
@@ -464,7 +467,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                     onChange={(e) => setCustomText(e.target.value)}
                                     placeholder="Например: Сделано в России"
                                     disabled={layoutStyle === 'minimal'}
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
                                 />
                             </div>
 
@@ -475,16 +478,16 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
                                         onClick={() => setIsLandscape(!isLandscape)}
-                                        className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-[var(--radius-inner)] border-2 border-slate-900 bg-slate-900 text-white font-black text-[10px] shadow-sm transition-all active:scale-[0.98]"
+                                        className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border-2 border-slate-900 bg-slate-900 text-white font-black text-[10px] shadow-sm transition-all active:scale-[0.98]"
                                     >
                                         <RotateCw className={cn("w-3.5 h-3.5 transition-transform duration-500", isLandscape && "rotate-90")} />
                                         {currentW > currentH ? 'Горизонтальный' : 'Вертикальный'}
                                     </button>
-                                    <div className="flex bg-slate-50 p-1 rounded-[var(--radius-inner)] border-2 border-transparent">
+                                    <div className="flex bg-slate-50 p-1 rounded-2xl border-2 border-transparent">
                                         <button
                                             onClick={() => setAlignment('left')}
                                             className={cn(
-                                                "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all",
+                                                "flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all",
                                                 alignment === 'left' ? "bg-white shadow-sm text-slate-900" : "text-slate-400 hover:text-slate-600"
                                             )}
                                         >
@@ -493,7 +496,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                         <button
                                             onClick={() => setAlignment('center')}
                                             className={cn(
-                                                "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all",
+                                                "flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all",
                                                 alignment === 'center' ? "bg-white shadow-sm text-slate-900" : "text-slate-400 hover:text-slate-600"
                                             )}
                                         >
@@ -509,8 +512,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                             {/* Quantity Row */}
                             <div className="flex items-center justify-between">
                                 <label className="text-[11px] font-bold text-slate-500 ml-1">Тираж</label>
-                                <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-[var(--radius-inner)]">
-                                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
+                                <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-2xl">
+                                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-2xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                                         <Minus className="w-3.5 h-3.5" />
                                     </button>
                                     <input
@@ -519,7 +522,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                         onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                                         className="w-10 bg-transparent text-center font-black text-base text-slate-900 outline-none"
                                     />
-                                    <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
+                                    <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-2xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                                         <Plus className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
@@ -528,14 +531,14 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                             {/* Actions Row */}
                             <div className="flex gap-3">
                                 <button
-                                    className="h-12 w-16 rounded-[var(--radius-inner)] bg-white border-2 border-slate-200 text-slate-900 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 group shadow-sm"
+                                    className="h-12 w-16 rounded-2xl bg-white border-2 border-slate-200 text-slate-900 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 group shadow-sm"
                                     title="Скачать PDF"
                                 >
                                     <Download className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
                                 </button>
                                 <button
                                     onClick={handlePrint}
-                                    className="flex-1 h-12 bg-slate-900 hover:bg-black text-white rounded-[var(--radius-inner)] font-black text-[10px] flex items-center justify-center gap-2.5 shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] group"
+                                    className="flex-1 h-12 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-[10px] flex items-center justify-center gap-2.5 shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] group"
                                 >
                                     <Printer className="w-4 h-4 transition-transform" />
                                     Печать
@@ -554,7 +557,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                         {/* Top Bar Overlay */}
                         <div className="absolute top-8 left-8 right-8 flex justify-end items-start z-50 pointer-events-none">
-                            <button onClick={onClose} className="h-12 w-12 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all shadow-xl active:scale-95 group pointer-events-auto cursor-pointer">
+                            <button onClick={onClose} className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all shadow-xl active:scale-95 group pointer-events-auto cursor-pointer">
                                 <X className="w-6 h-6 group-hover:rotate-90 transition-transform" />
                             </button>
                         </div>
@@ -671,7 +674,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                 )}>
                                     {showPrice && item.sellingPrice !== null && layoutStyle !== 'minimal' && (
                                         <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black leading-none">
-                                            {new Intl.NumberFormat('ru-RU').format(Number(item.sellingPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">₽</span>
+                                            {new Intl.NumberFormat('ru-RU').format(Number(item.sellingPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">{currencySymbol}</span>
                                         </div>
                                     )}
                                     {(showBarcode || layoutStyle === 'minimal') && (
@@ -716,7 +719,7 @@ function ToggleItem({ label, checked, onChange, compact }: { label: string; chec
     return (
         <label className={cn(
             "flex items-center justify-between transition-colors cursor-pointer group",
-            compact ? "p-2 rounded-[var(--radius-inner)] hover:bg-slate-50/80" : "p-3 rounded-[var(--radius-inner)] hover:bg-slate-50"
+            compact ? "p-2 rounded-2xl hover:bg-slate-50/80" : "p-3 rounded-2xl hover:bg-slate-50"
         )}>
             <span className={cn(
                 "font-bold text-slate-700 group-hover:text-slate-900 transition-colors",

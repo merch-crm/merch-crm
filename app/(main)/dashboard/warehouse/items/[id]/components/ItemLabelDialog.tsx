@@ -121,7 +121,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Printer className="w-6 h-6 text-primary" />
                         </div>
                         <div>
@@ -132,7 +132,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[var(--radius-inner)] bg-slate-50 transition-all active:scale-95 shadow-sm"
+                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all active:scale-95 shadow-sm"
                     >
                         <X className="h-4 w-4" />
                     </button>
@@ -144,14 +144,14 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                         <label className="text-sm font-bold text-slate-700 mb-3">Предпросмотр (58x40мм)</label>
                         <div
                             ref={printRef}
-                            className="w-[280px] h-[180px] bg-white shadow-2xl shadow-slate-200/50 rounded-[var(--radius-inner)] p-5 flex flex-col border border-slate-200 relative group transition-transform hover:scale-[1.02]"
+                            className="w-[280px] h-[180px] bg-white shadow-2xl shadow-slate-200/50 rounded-2xl p-5 flex flex-col border border-slate-200 relative group transition-transform hover:scale-[1.02]"
                         >
                             <div className="text-[13px] font-bold text-slate-900 leading-tight mb-3 line-clamp-2 pr-2">
                                 {item.name}
                             </div>
 
                             <div className="flex gap-4 items-center">
-                                <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner p-1">
+                                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner p-1">
                                     <Image
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
                                         alt="QR Code"
@@ -178,8 +178,8 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
                             <Printer className="w-5 h-5 text-slate-400" />
                         </div>
                         <div className="flex-1">
@@ -199,7 +199,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                     </button>
                     <button
                         onClick={handlePrint}
-                        className="h-11 w-full md:w-auto md:px-10 bg-primary text-white rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3"
+                        className="h-11 w-full md:w-auto md:px-10 bg-primary text-white rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                         <Printer className="w-4 h-4 stroke-[3]" />
                         Печать этикетки

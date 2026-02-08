@@ -219,7 +219,7 @@ export default function SidebarNavigationCRM() {
                 */}
 
                 {/* STATE 1: EXPANDED */}
-                <div className="w-[280px] h-[700px] bg-white rounded-[2rem] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-5 flex flex-col relative overflow-visible">
+                <div className="w-[280px] h-[700px] bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-5 flex flex-col relative overflow-visible">
                     {/* Toggle Button */}
                     <button className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
                         <ChevronLeft size={14} />
@@ -274,7 +274,7 @@ export default function SidebarNavigationCRM() {
 
 
                 {/* STATE 2: COLLAPSED */}
-                <div className="w-[84px] h-[700px] bg-white rounded-[2rem] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-4 flex flex-col relative items-center">
+                <div className="w-[84px] h-[700px] bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-4 flex flex-col relative items-center">
                     {/* Toggle Button */}
                     <button className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
                         <ChevronRight size={14} />

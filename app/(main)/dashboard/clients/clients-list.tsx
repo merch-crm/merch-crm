@@ -31,6 +31,7 @@ import { PremiumPagination } from "@/components/ui/premium-pagination";
 import { pluralize } from "@/lib/pluralize";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { ChevronRight } from "lucide-react";
+import { useBranding } from "@/components/branding-provider";
 
 interface Client {
     id: string;
@@ -52,6 +53,7 @@ interface Client {
 }
 
 export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: string | null, showFinancials?: boolean }) {
+    const { currencySymbol } = useBranding();
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -297,7 +299,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         className="crm-filter-tray-search w-full pl-12 sm:pl-4 pr-10 focus:outline-none"
                     />
                     {showHistory && searchHistory.length > 0 && (
-                        <div className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-[18px] shadow-xl z-[60] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                        <div className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-[60] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
                             <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-slate-400  tracking-normal">Недавние поиски</span>
                                 <button
@@ -318,7 +320,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             setSearchQuery(h);
                                             setShowHistory(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 hover:bg-slate-50 rounded-[18px] text-xs font-bold text-slate-600 transition-colors flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2.5 hover:bg-slate-50 rounded-2xl text-xs font-bold text-slate-600 transition-colors flex items-center gap-2"
                                     >
                                         <RotateCcw className="w-3 h-3 text-slate-300" />
                                         {h}
@@ -597,21 +599,21 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                 </td>
                                                 {showFinancials && (
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
-                                                        {Math.round(Number(client.totalSpent) || 0)} ₽
+                                                        {Math.round(Number(client.totalSpent) || 0)} {currencySymbol}
                                                     </td>
                                                 )}
                                                 <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <button
                                                             onClick={() => router.push(`/dashboard/clients/${client.id}`)}
-                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-[18px] transition-all"
+                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-2xl transition-all"
                                                             title="Просмотреть"
                                                         >
                                                             <Eye className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => setEditingClient(client)}
-                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-[18px] transition-all"
+                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all"
                                                             title="Редактировать"
                                                         >
                                                             <Pencil className="w-4 h-4" />
@@ -668,7 +670,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                 {showFinancials && (
                                                     <>
                                                         <span className="text-slate-200">•</span>
-                                                        <span className="text-emerald-600">{Math.round(Number(client.totalSpent) || 0)} ₽</span>
+                                                        <span className="text-emerald-600">{Math.round(Number(client.totalSpent) || 0)} {currencySymbol}</span>
                                                     </>
                                                 )}
                                             </div>
@@ -808,7 +810,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     </button>
 
                                     {showManagerSelect && (
-                                        <div className="absolute bottom-full left-0 mb-4 w-64 bg-white border border-slate-200 rounded-[18px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                                        <div className="absolute bottom-full left-0 mb-4 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                                             <div className="p-3 border-b border-slate-200 bg-slate-50/50">
                                                 <div className="text-[10px] font-semibold text-slate-400">Выберите менеджера</div>
                                             </div>

@@ -233,7 +233,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-3 hover:bg-slate-100 rounded-[18px] transition-all group"
+                            className="p-3 hover:bg-slate-100 rounded-2xl transition-all group"
                         >
                             <X className="w-6 h-6 text-slate-300 group-hover:text-slate-600" />
                         </button>
@@ -279,7 +279,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 <div className="space-y-8">
                                     <div className="text-[11px] font-bold text-slate-400  tracking-normal mb-1">Исполнитель</div>
                                     <div className="flex items-center gap-3">
-                                        <div className="h-9 w-9 rounded-[18px] bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+                                        <div className="h-9 w-9 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
                                             {task.assignedToUser?.avatar ? (
                                                 <NextImage src={task.assignedToUser.avatar} alt={task.assignedToUser.name} width={36} height={36} className="w-full h-full object-cover" unoptimized />
                                             ) : (
@@ -297,7 +297,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     </div>
 
                                     <div className="flex items-start gap-4">
-                                        <div className="h-12 w-12 rounded-[18px] bg-slate-50 flex items-center justify-center shrink-0">
+                                        <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0">
                                             <Clock className="w-6 h-6 text-amber-500" />
                                         </div>
                                         <div className="flex flex-col pt-1">
@@ -312,7 +312,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     </div>
                                 </div>
 
-                                <div className="bg-slate-50/50 rounded-[18px] p-6 border border-slate-200">
+                                <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-200">
                                     <span className="text-[10px] font-bold text-slate-400  tracking-normal block mb-4">Создано</span>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center">
@@ -327,7 +327,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             </div>
 
                             {task.description && (
-                                <div className="mb-10 p-8 bg-slate-50/30 rounded-[18px] border border-slate-200/50">
+                                <div className="mb-10 p-8 bg-slate-50/30 rounded-2xl border border-slate-200/50">
                                     <h4 className="text-xs font-bold text-slate-400  tracking-normal mb-4 flex items-center gap-2">
                                         <AlignLeft className="w-3.5 h-3.5" />
                                         Подробное описание
@@ -353,7 +353,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={isPending}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-[18px] text-[10px] font-bold hover:bg-primary/10 transition-all disabled:opacity-50"
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-2xl text-[10px] font-bold hover:bg-primary/10 transition-all disabled:opacity-50"
                                     >
                                         <UploadCloud className="w-3 h-3" />
                                         ЗАГРУЗИТЬ
@@ -367,9 +367,9 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                             href={file.fileUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-[18px] hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
+                                            className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-2xl hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
                                         >
-                                            <div className="h-10 w-10 rounded-[18px] bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+                                            <div className="h-10 w-10 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
                                                 {getFileIcon(file.contentType || "")}
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -380,7 +380,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                         </a>
                                     ))}
                                     {(!task.attachments || task.attachments.length === 0) && (
-                                        <div className="col-span-full py-8 border-2 border-dashed border-slate-200 rounded-[18px] flex flex-col items-center justify-center text-slate-300">
+                                        <div className="col-span-full py-8 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300">
                                             <Paperclip className="w-8 h-8 mb-2 opacity-20" />
                                             <span className="text-[10px] font-bold  tracking-normal">Нет прикрепленных файлов</span>
                                         </div>
@@ -398,12 +398,12 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     value={newChecklistItem}
                                     onChange={(e) => setNewChecklistItem(e.target.value)}
                                     placeholder="Добавить новый пункт..."
-                                    className="flex-1 px-5 py-3 rounded-[18px] bg-slate-50 border border-slate-200 text-sm font-medium outline-none focus:border-primary transition-all"
+                                    className="flex-1 px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium outline-none focus:border-primary transition-all"
                                     onKeyDown={(e) => e.key === 'Enter' && handleAddChecklistItem()}
                                 />
                                 <button
                                     onClick={handleAddChecklistItem}
-                                    className="px-6 py-3 bg-slate-900 text-white rounded-[18px] text-sm font-bold hover:bg-slate-800 transition-all"
+                                    className="px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-bold hover:bg-slate-800 transition-all"
                                 >
                                     ДОБАВИТЬ
                                 </button>
@@ -413,12 +413,12 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 {task.checklists?.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="group flex items-center gap-4 p-4 hover:bg-slate-50 rounded-[18px] transition-all"
+                                        className="group flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all"
                                     >
                                         <button
                                             onClick={() => handleToggleChecklist(item.id, !item.isCompleted)}
                                             className={cn(
-                                                "h-6 w-6 rounded-[18px] border-2 flex items-center justify-center transition-all",
+                                                "h-6 w-6 rounded-2xl border-2 flex items-center justify-center transition-all",
                                                 item.isCompleted
                                                     ? "bg-emerald-500 border-emerald-500"
                                                     : "border-slate-200 hover:border-primary"
@@ -452,13 +452,13 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="Написать комментарий..."
                                     rows={3}
-                                    className="w-full px-5 py-4 rounded-[18px] bg-slate-50 border border-slate-200 text-sm font-medium outline-none focus:border-primary transition-all resize-none"
+                                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium outline-none focus:border-primary transition-all resize-none"
                                 />
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleAddComment}
                                         disabled={!newComment.trim() || isPending}
-                                        className="px-8 py-3 bg-primary text-white rounded-[18px] text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                                        className="px-8 py-3 bg-primary text-white rounded-2xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                                     >
                                         ОТПРАВИТЬ
                                     </button>
@@ -468,7 +468,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             <div className="space-y-6">
                                 {task.comments?.map((comment) => (
                                     <div key={comment.id} className="flex gap-4">
-                                        <div className="h-10 w-10 rounded-[18px] bg-slate-100 shrink-0 overflow-hidden">
+                                        <div className="h-10 w-10 rounded-2xl bg-slate-100 shrink-0 overflow-hidden">
                                             {comment.user.avatar ? (
                                                 <NextImage src={comment.user.avatar} alt={comment.user.name} width={40} height={40} className="w-full h-full object-cover" unoptimized />
                                             ) : (
@@ -482,7 +482,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                                 <span className="text-xs font-bold text-slate-900">{comment.user.name}</span>
                                                 <span className="text-[10px] font-bold text-slate-400">{format(new Date(comment.createdAt), "HH:mm, dd.MM.yyyy")}</span>
                                             </div>
-                                            <div className="p-4 bg-slate-50 rounded-[18px] rounded-tl-none">
+                                            <div className="p-4 bg-slate-50 rounded-2xl rounded-tl-none">
                                                 <p className="text-sm font-medium text-slate-600 leading-relaxed">
                                                     {comment.content}
                                                 </p>
@@ -523,7 +523,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                             onClick={handleToggle}
                             disabled={isPending}
                             className={cn(
-                                "flex-1 py-4 rounded-[18px] font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
+                                "flex-1 py-4 rounded-2xl font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
                                 isDone
                                     ? "bg-slate-100 text-slate-600 hover:bg-slate-200 shadow-slate-200/50"
                                     : "bg-primary text-white hover:opacity-90 shadow-primary/30"
@@ -535,7 +535,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
                             disabled={isPending}
-                            className="p-4 bg-rose-50 text-rose-500 rounded-[18px] hover:bg-rose-100 transition-all active:scale-[0.98] shadow-lg shadow-rose-200/50"
+                            className="p-4 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all active:scale-[0.98] shadow-lg shadow-rose-200/50"
                         >
                             <Trash2 className="w-6 h-6" />
                         </button>

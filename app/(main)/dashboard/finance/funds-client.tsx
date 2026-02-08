@@ -11,6 +11,7 @@ import {
     LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/components/branding-provider";
 
 import { FundStats } from "./actions";
 
@@ -19,6 +20,7 @@ interface FundsClientProps {
 }
 
 export function FundsClient({ fundsData }: FundsClientProps) {
+    const { currencySymbol } = useBranding();
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--crm-grid-gap)]">
@@ -50,7 +52,7 @@ export function FundsClient({ fundsData }: FundsClientProps) {
                             <div>
                                 <h4 className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mb-3">{fund.name}</h4>
                                 <div className="text-4xl font-black text-slate-900 leading-none">
-                                    {fund.amount.toLocaleString()} <span className="text-base text-slate-400 font-bold ml-1">₽</span>
+                                    {fund.amount.toLocaleString()} <span className="text-base text-slate-400 font-bold ml-1">{currencySymbol}</span>
                                 </div>
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 h-2 bg-slate-50">

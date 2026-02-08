@@ -298,7 +298,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                     </div>
 
                     {/* Unified Single Block Container */}
-                    <div className="flex-1 bg-white rounded-[24px] flex flex-col min-h-0 overflow-hidden">
+                    <div className="flex-1 bg-white rounded-3xl flex flex-col min-h-0 overflow-hidden">
                         <div className="flex-1 flex flex-col md:flex-row min-h-0">
                             {/* LEFT: MAIN PHOTO */}
                             <div className="w-full md:w-[45%] h-full flex flex-col min-h-0 bg-slate-50/20 px-4 md:pl-8 pt-6 pb-2 space-y-4">
@@ -309,7 +309,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                 <div className="flex flex-col justify-start items-center w-full">
                                     <div
                                         className={cn(
-                                            "relative w-full aspect-square rounded-[24px] overflow-hidden border-2 border-dashed transition-all group shrink-0",
+                                            "relative w-full aspect-square rounded-3xl overflow-hidden border-2 border-dashed transition-all group shrink-0",
                                             formData.imagePreview ? "border-slate-200 bg-white" : "border-slate-200 bg-slate-50/50 hover:bg-white shadow-sm"
                                         )}>
                                         <div ref={containerRef} className="absolute inset-0">

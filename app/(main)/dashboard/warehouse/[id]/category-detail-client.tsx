@@ -23,6 +23,7 @@ import { playSound } from "@/lib/sounds";
 
 import { AddCategoryDialog } from "../add-category-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useBranding } from "@/components/branding-provider";
 import { ArchiveReasonDialog } from "../components/archive-reason-dialog";
 import { LabelPrinterDialog } from "../components/LabelPrinterDialog";
 import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
@@ -117,6 +118,7 @@ export function CategoryDetailClient({
     user
 }: CategoryDetailClientProps) {
     const router = useRouter();
+    const { currencySymbol } = useBranding();
     const { toast } = useToast();
     const [subCategories, setSubCategories] = useState<Category[]>(initialSubCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
@@ -441,7 +443,7 @@ export function CategoryDetailClient({
                             router.push(url);
                         }}
                         className={cn(
-                            "h-10 w-10 sm:h-11 sm:w-auto btn-primary rounded-full sm:rounded-[18px] p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                            "h-10 w-10 sm:h-11 sm:w-auto btn-primary rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
                         )}
                     >
                         <Plus className="w-5 h-5" />
@@ -540,12 +542,12 @@ export function CategoryDetailClient({
 
                 {/* Status Pills Section */}
                 <div className={cn(
-                    "flex items-center gap-1.5 p-1 lg:p-0 rounded-[18px] w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
+                    "flex items-center gap-1.5 p-1 lg:p-0 rounded-2xl w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
                 )}>
                     {[
                         { id: "all", label: "Все" },
                         { id: "in", label: "В наличии", color: "emerald" },
-                        { id: "low", label: "Мало", color: "amber" },
+                        { id: "low", label: "Скоро закончится", color: "amber" },
                         { id: "out", label: "Нет", color: "rose" }
                     ].map((f) => {
                         const isActive = filterStatus === f.id;
@@ -745,14 +747,14 @@ export function CategoryDetailClient({
                                                             {canSeeCost && (
                                                                 <td className="px-6 py-4 text-center">
                                                                     <span className="text-xs font-medium text-slate-400">
-                                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                                     </span>
                                                                 </td>
                                                             )}
                                                             {canSeeCost && (
                                                                 <td className="px-6 py-4 text-center">
                                                                     <span className="text-sm font-bold text-slate-900">
-                                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                                     </span>
                                                                 </td>
                                                             )}
@@ -827,7 +829,7 @@ export function CategoryDetailClient({
                                     <div key={item.id}>
                                         <div
                                             className={cn(
-                                                "group relative flex flex-col gap-3 p-4 transition-all duration-300 cursor-pointer active:scale-[0.98] rounded-[24px] border border-slate-200/60 shadow-sm",
+                                                "group relative flex flex-col gap-3 p-4 transition-all duration-300 cursor-pointer active:scale-[0.98] rounded-3xl border border-slate-200/60 shadow-sm",
                                                 isSelected ? "bg-primary/[0.03] border-primary/20 ring-4 ring-primary/5" : "bg-white hover:shadow-md"
                                             )}
                                             onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
@@ -876,7 +878,7 @@ export function CategoryDetailClient({
                                                         )}
                                                     </div>
                                                     <div className="text-sm font-bold text-slate-900 whitespace-nowrap ml-2">
-                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString('ru-RU')} ₽` : "—"}
+                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                     </div>
                                                 </div>
                                             )}
@@ -897,7 +899,7 @@ export function CategoryDetailClient({
                     </div>
                 ) : (
                     <div className="py-32 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[3rem] border border-dashed border-slate-200">
-                        <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mb-6 text-slate-300 shadow-sm">
+                        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-slate-300 shadow-sm">
                             {searchQuery ? <SearchX className="w-10 h-10" /> : <Package className="w-10 h-10" />}
                         </div>
                         <h2 className="text-xl font-bold text-slate-900 mb-2">
@@ -1362,7 +1364,7 @@ function BulkCategoryDialog({ selectedIds, categories, onClose, onSuccess }: { s
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
             <div className="absolute inset-0 bg-black/75 backdrop-blur-md animate-in fade-in" onClick={onClose} />
-            <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-8 animate-in zoom-in-95">
+            <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-in zoom-in-95">
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-slate-900">Смена категории</h2>

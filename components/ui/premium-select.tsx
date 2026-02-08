@@ -153,7 +153,7 @@ export function PremiumSelect({
                 <AnimatePresence>
                     {open && (
                         <PopoverContent
-                            className="p-0 bg-transparent border-none shadow-none w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
+                            className="p-0 bg-transparent border-none shadow-crm-xl w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
                             align={align}
                             sideOffset={8}
                             forceMount
@@ -169,24 +169,21 @@ export function PremiumSelect({
                                     opacity: { duration: 0.2 }
                                 }}
                                 className={cn(
-                                    "rounded-[22px] bg-white !shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border border-slate-200/60",
+                                    "rounded-[22px] bg-white border border-slate-200/60 overflow-hidden shadow-crm-xl ring-1 ring-black/[0.03]",
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
-                                <div className={cn(
-                                    "bg-white rounded-[22px] p-1.5 overflow-hidden flex flex-col max-h-[240px]",
-                                    "w-full h-full"
-                                )}>
+                                <div className="p-2.5 flex flex-col max-h-[340px] w-full h-full gap-2">
                                     {effectiveShowSearch && (
-                                        <div className="p-1.5 border-b border-slate-200 mb-1">
+                                        <div className="px-0.5 pb-2.5 border-b border-slate-50 mb-1">
                                             <div className="relative">
-                                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                                                 <input
                                                     autoFocus
                                                     type="text"
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
-                                                    className="w-full h-9 pl-8 pr-3 rounded-[var(--radius-inner)] bg-slate-50 border-none outline-none text-xs font-bold placeholder:text-slate-300"
+                                                    className="w-full h-10 pl-9 pr-3 rounded-[12px] bg-slate-50 border-none outline-none text-xs font-bold placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-primary/5 transition-all"
                                                 />
                                             </div>
                                         </div>
@@ -195,11 +192,11 @@ export function PremiumSelect({
                                     <div className="overflow-y-auto scrollbar-hide flex-1">
                                         {filteredOptions.length > 0 ? (
                                             <div className={cn(
-                                                "p-0.5",
+                                                "p-0",
                                                 effectiveGridColumns ? [
-                                                    "grid gap-1.5",
+                                                    "grid gap-2",
                                                     effectiveGridColumns === 2 ? "grid-cols-2" : "grid-cols-3"
-                                                ] : "flex flex-col gap-0.5"
+                                                ] : "flex flex-col gap-1"
                                             )}>
                                                 {filteredOptions.map((option) => {
                                                     const isSelected = option.id === value;
@@ -209,13 +206,13 @@ export function PremiumSelect({
                                                             type="button"
                                                             onClick={() => handleSelect(option.id)}
                                                             className={cn(
-                                                                "transition-all text-left group/item rounded-[14px]",
+                                                                "transition-all text-left group/item rounded-[var(--radius-inner)] border",
                                                                 effectiveGridColumns ? [
                                                                     "flex flex-col items-center justify-center p-3 gap-1",
-                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20" : "bg-slate-50/50 hover:bg-slate-50"
+                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 border-slate-200/60"
                                                                 ] : [
                                                                     "flex items-center gap-2 p-2.5",
-                                                                    isSelected ? "bg-indigo-50/30" : "hover:bg-slate-50"
+                                                                    isSelected ? "bg-indigo-50/30 border-indigo-200/50" : "border-transparent hover:bg-slate-50 hover:border-slate-200/60"
                                                                 ]
                                                             )}
                                                         >

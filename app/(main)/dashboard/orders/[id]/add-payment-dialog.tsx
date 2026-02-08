@@ -5,6 +5,7 @@ import { PlusCircle, Loader2, HandCoins } from "lucide-react";
 import { addPayment } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { useBranding } from "@/components/branding-provider";
 
 interface AddPaymentDialogProps {
     orderId: string;
@@ -12,6 +13,7 @@ interface AddPaymentDialogProps {
 }
 
 export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogProps) {
+    const { currencySymbol } = useBranding();
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [amount, setAmount] = useState<string>(remainingAmount > 0 ? String(remainingAmount) : "");
@@ -50,7 +52,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-[18px] bg-emerald-50 text-emerald-600 font-bold text-sm hover:bg-emerald-100 transition-all active:scale-[0.98] border border-emerald-100"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-50 text-emerald-600 font-bold text-sm hover:bg-emerald-100 transition-all active:scale-[0.98] border border-emerald-100"
             >
                 <PlusCircle className="w-4 h-4" />
                 Внести оплату / Аванс
@@ -62,7 +64,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="relative w-full max-w-md bg-white rounded-[24px] shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col">
+                    <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col">
                         <div className="p-6 pb-4 border-b border-slate-100 flex justify-between items-center">
                             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                                 <HandCoins className="w-5 h-5 text-emerald-500" />
@@ -78,7 +80,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-700 ml-1">Сумма (Остаток: {remainingAmount} ₽)</label>
+                                <label className="text-xs font-bold text-slate-700 ml-1">Сумма (Остаток: {remainingAmount} {currencySymbol})</label>
                                 <input
                                     type="number"
                                     value={amount}

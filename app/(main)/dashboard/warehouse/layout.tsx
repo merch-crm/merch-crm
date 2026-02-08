@@ -107,12 +107,12 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             case "categories":
                 return (
                     <>
-                        <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] shadow-lg shadow-primary/20" buttonText="Категория" />
+                        <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl shadow-lg shadow-primary/20" buttonText="Категория" />
                         <Link
                             href="/dashboard/warehouse/items/new"
                             className={cn(
                                 buttonVariants({ variant: "default" }),
-                                "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-[18px] border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                                "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
                             )}
                         >
                             <Plus className="w-5 h-5 text-white" />
@@ -150,7 +150,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                             <button
                                 onClick={() => setIsClearHistoryOpen(true)}
                                 disabled={history.length === 0}
-                                className="h-10 w-10 sm:h-11 sm:w-auto btn-destructive rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-rose-500/20"
+                                className="h-10 w-10 sm:h-11 sm:w-auto btn-destructive rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-rose-500/20"
                             >
                                 <Eraser className="w-5 h-5 text-white" />
                                 <span className="hidden sm:inline">Очистить историю</span>
@@ -187,7 +187,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                     {/* Tabs Navigation */}
                     <div className="glass-panel w-full p-1.5 rounded-[22px]">
                         {/* Mobile Navigation (Icons Only) */}
-                        <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-[18px]">
+                        <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-2xl">
                             {TABS.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 const Icon = tab.icon;

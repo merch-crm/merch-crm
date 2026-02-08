@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getOrderById } from "../actions";
+import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
@@ -16,6 +17,7 @@ import { Wallet, Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
 import OrderActions from "./order-actions";
 import { AddPaymentDialog } from "./add-payment-dialog";
+import { BrandingSettings } from "@/components/branding-provider";
 
 interface OrderItem {
     id: string;
@@ -41,6 +43,10 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
         notFound();
     }
 
+    const brandingResult = await getBrandingAction();
+    const branding = brandingResult.data as BrandingSettings;
+    const currencySymbol = branding?.currencySymbol || "₽";
+
     const session = await getSession();
     const user = session ? await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -57,9 +63,9 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white p-4 sm:p-6 rounded-[18px] border border-slate-200 shadow-sm gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm gap-4">
                 <div className="flex items-center gap-3 sm:gap-6 min-w-0 flex-1">
-                    <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-[18px] hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0">
+                    <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0">
                         <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                     </Link>
                     <div className="min-w-0">
@@ -93,7 +99,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
             {/* Cancellation Reason Alert */}
             {order.status === 'cancelled' && order.cancelReason && (
-                <div className="bg-rose-50 border-2 border-rose-200 rounded-[18px] p-6 shadow-sm">
+                <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 shadow-sm">
                     <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
                             <XCircle className="w-5 h-5 text-rose-600" />
@@ -109,7 +115,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-[var(--crm-grid-gap)]">
                 {/* Main Content: Items */}
                 <div className="lg:col-span-2 space-y-4">
-                    <div className="bg-white rounded-[18px] border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <Package className="w-5 h-5 mr-3 text-primary" />
@@ -137,8 +143,8 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                         <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.quantity} шт</td>
                                         {showFinancials && (
                                             <>
-                                                <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} ₽</td>
-                                                <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} ₽</td>
+                                                <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} {currencySymbol}</td>
+                                                <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} {currencySymbol}</td>
                                             </>
                                         )}
                                     </tr>
@@ -149,12 +155,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                     {Number(order.discountAmount || 0) > 0 && (
                                         <tr>
                                             <td colSpan={3} className="px-8 py-3 text-right text-xs font-bold text-slate-400  tracking-wider">Скидка:</td>
-                                            <td className="px-8 py-3 text-right text-sm text-rose-500 font-bold">-{order.discountAmount} ₽</td>
+                                            <td className="px-8 py-3 text-right text-sm text-rose-500 font-bold">-{order.discountAmount} {currencySymbol}</td>
                                         </tr>
                                     )}
                                     <tr>
                                         <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500  tracking-wider">Итого к оплате:</td>
-                                        <td className="px-8 py-6 text-right text-2xl text-primary font-bold">{order.totalAmount} ₽</td>
+                                        <td className="px-8 py-6 text-right text-2xl text-primary font-bold">{order.totalAmount} {currencySymbol}</td>
                                     </tr>
                                 </tfoot>
                             )}
@@ -168,7 +174,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                 {/* Sidebar: Client & Info */}
                 <div className="space-y-4">
                     {/* Client Card */}
-                    <div className="bg-white rounded-[18px] border border-slate-200 p-8 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <User className="w-5 h-5 mr-3 text-primary" />
@@ -205,12 +211,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 )}
                                 <div className="flex gap-4 pt-1">
                                     {order.client.telegram && (
-                                        <div className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-[18px]">
+                                        <div className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-2xl">
                                             <Send className="w-3 h-3 mr-1.5" /> Telegram
                                         </div>
                                     )}
                                     {order.client.instagram && (
-                                        <div className="flex items-center text-xs font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-[18px]">
+                                        <div className="flex items-center text-xs font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-2xl">
                                             <Instagram className="w-3 h-3 mr-1.5" /> Instagram
                                         </div>
                                     )}
@@ -229,7 +235,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
                     {/* Financial Block (Visible to Admin/Sales) */}
                     {showFinancials && (
-                        <div className="bg-white rounded-[18px] border border-slate-200 p-8 shadow-sm">
+                        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                             <h3 className="font-bold text-slate-900 flex items-center mb-6">
                                 <Wallet className="w-5 h-5 mr-3 text-primary" />
                                 Финансы
@@ -238,7 +244,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500">Сумма товаров:</span>
-                                    <span className="font-bold text-slate-400">{(Number(order.totalAmount) + Number(order.discountAmount || 0)).toFixed(2)} ₽</span>
+                                    <span className="font-bold text-slate-400">{(Number(order.totalAmount) + Number(order.discountAmount || 0)).toFixed(2)} {currencySymbol}</span>
                                 </div>
                                 {order.promocode && (
                                     <div className="flex justify-between items-center text-sm">
@@ -251,23 +257,23 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 {Number(order.discountAmount || 0) > 0 && (
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500 font-bold">Скидка:</span>
-                                        <span className="font-bold text-rose-500">-{order.discountAmount} ₽</span>
+                                        <span className="font-bold text-rose-500">-{order.discountAmount} {currencySymbol}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500">Итого:</span>
-                                    <span className="font-bold text-slate-900">{order.totalAmount} ₽</span>
+                                    <span className="font-bold text-slate-900">{order.totalAmount} {currencySymbol}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500">Оплачено:</span>
                                     <span className="font-bold text-emerald-600">
-                                        {order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0).toFixed(2) || 0} ₽
+                                        {order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0).toFixed(2) || 0} {currencySymbol}
                                     </span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
                                     <span className="text-sm font-bold text-slate-900  tracking-wider">Остаток:</span>
                                     <span className="text-xl font-bold text-rose-600">
-                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} ₽
+                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} {currencySymbol}
                                     </span>
                                 </div>
 
@@ -286,13 +292,13 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                             История платежей
                                         </div>
                                         {order.payments.map((p: OrderPayment) => (
-                                            <div key={p.id} className="flex justify-between items-center p-3 rounded-[18px] bg-slate-50 border border-slate-200">
+                                            <div key={p.id} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-200">
                                                 <div className="min-w-0">
                                                     <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
                                                     <div className="text-[10px] text-slate-400">{format(new Date(p.createdAt), "dd.MM.yy HH:mm")} • {p.method}</div>
                                                 </div>
                                                 <div className={cn("text-xs font-bold shrink-0 ml-2", Number(p.amount) < 0 ? "text-rose-600" : "text-slate-900")}>
-                                                    {p.amount} ₽
+                                                    {p.amount} {currencySymbol}
                                                 </div>
                                             </div>
                                         ))}
@@ -310,7 +316,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                     )}
 
                     {/* Meta Info */}
-                    <div className="bg-slate-900 rounded-[18px] p-8 shadow-xl text-white">
+                    <div className="bg-slate-900 rounded-2xl p-8 shadow-xl text-white">
                         <h3 className="font-bold mb-6 flex items-center">
                             <Clock className="w-5 h-5 mr-3 text-primary" />
                             Детали заказа
@@ -318,7 +324,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                         <div className="space-y-5 text-sm">
                             <div className="flex justify-between items-center">
                                 <span className="text-slate-400 font-medium">Приоритет</span>
-                                <span className={`px-2 py-1 rounded-[18px] text-xs font-bold  tracking-wider ${order.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-300'
+                                <span className={`px-2 py-1 rounded-2xl text-xs font-bold  tracking-wider ${order.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-300'
                                     }`}>
                                     {order.priority === 'high' ? 'Высокий' : order.priority === 'low' ? 'Низкий' : 'Обычный'}
                                 </span>

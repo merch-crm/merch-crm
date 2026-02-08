@@ -138,7 +138,7 @@ export function AddCategoryDialog({
                     setIsOpen(true);
                 }}
                 className={cn(
-                    "h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-[18px] p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-primary/20 transition-all active:scale-95",
+                    "h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-primary/20 transition-all active:scale-95",
                     className
                 )}
             >

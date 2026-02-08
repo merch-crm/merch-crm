@@ -533,6 +533,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
             <ResponsiveModal
                 isOpen={!!editingType}
                 onClose={() => setEditingType(null)}
+                hideClose
                 title="Настройка раздела"
                 showVisualTitle={false}
                 className="w-full md:max-w-2xl max-h-[92vh] flex flex-col p-0 overflow-hidden rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
@@ -697,7 +698,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
 
                             <button
                                 onClick={() => setEditingType(null)}
-                                className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
+                                className="hidden lg:flex h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)]"
                             >
                                 Отмена
                             </button>
@@ -723,6 +724,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
             <ResponsiveModal
                 isOpen={isValueDialogOpen}
                 onClose={() => setIsValueDialogOpen(false)}
+                hideClose
                 className="w-full sm:max-w-md flex flex-col p-0 overflow-visible rounded-[var(--radius-outer)] bg-white border-none shadow-2xl"
             >
                 <div className="flex flex-col overflow-hidden">
@@ -793,7 +795,13 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
 
                     <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
                         {/* Desktop-only delete button hidden on mobile/tablet */}
-                        <div className="hidden lg:block w-auto shrink-0">
+                        <div className="hidden lg:flex items-center gap-3 w-auto shrink-0">
+                            <button
+                                onClick={() => setIsValueDialogOpen(false)}
+                                className="h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
+                            >
+                                Отмена
+                            </button>
                             {editingAttribute && (
                                 <button
                                     onClick={() => setAttributeToDelete(editingAttribute)}
@@ -804,24 +812,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                                 </button>
                             )}
                         </div>
-
                         <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end">
-                            {editingAttribute && (
-                                <button
-                                    onClick={() => setAttributeToDelete(editingAttribute)}
-                                    className="lg:hidden flex-1 h-11 bg-white border border-rose-100 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 text-rose-500 font-bold text-sm active:scale-95 transition-all"
-                                >
-                                    Удалить
-                                </button>
-                            )}
-
-                            <button
-                                onClick={() => setIsValueDialogOpen(false)}
-                                className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
-                            >
-                                Отмена
-                            </button>
-
                             <button
                                 onClick={handleValueSave}
                                 disabled={isSaving || !newItemName.trim() || !newItemCode.trim()}
@@ -837,6 +828,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         </div>
                     </div>
                 </div>
+
             </ResponsiveModal >
 
             <ConfirmDialog

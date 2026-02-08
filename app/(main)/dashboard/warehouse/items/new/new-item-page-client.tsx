@@ -470,7 +470,7 @@ export function NewItemPageClient({
             <div className="flex flex-col xl:flex-row min-h-[calc(100vh-160px)] gap-4 xl:gap-6">
                 {/* Sidebar (Vertical Studio Navigation) - Responsive */}
                 <aside className={cn(
-                    "bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 z-40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden text-medium",
+                    "bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 z-40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden text-medium",
                     "w-full xl:w-[320px] h-auto xl:h-full sticky xl:static top-0"
                 )}>
                     {/* Tablet/Mobile Horizontal Step View */}
@@ -651,7 +651,7 @@ export function NewItemPageClient({
 
                                 <button
                                     onClick={handleReset}
-                                    className="flex items-center gap-1.5 px-3 py-2 rounded-[18px] hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold  text-slate-400 hover:text-slate-900 group"
+                                    className="flex items-center gap-1.5 px-3 py-2 rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold  text-slate-400 hover:text-slate-900 group"
                                 >
                                     <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
                                     Начать заново
@@ -663,7 +663,7 @@ export function NewItemPageClient({
 
                 <main className="flex-1 relative h-full flex flex-col gap-4 pb-4 xl:pb-8 px-1">
                     <div className="relative flex-1 flex flex-col min-h-0">
-                        <div className="bg-white rounded-[24px] shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
+                        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
                                 <div className="flex flex-col h-full min-h-0">
                                     <div className="flex-1 overflow-y-auto min-h-0">

@@ -44,9 +44,9 @@ export function ItemInventorySection({
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 
             {/* Stock Performance Summary */}
-            <div className="flex flex-col xl:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
                 <div className={cn(
-                    "flex-1 p-8 rounded-[var(--radius-inner)] border relative overflow-hidden group transition-all duration-700",
+                    "flex-1 p-6 sm:p-8 rounded-2xl border relative overflow-hidden group transition-all duration-700",
                     isCriticalStock ? "bg-rose-50 border-rose-100" :
                         isLowStock ? "bg-amber-50 border-amber-100" :
                             "bg-primary border-transparent shadow-lg"
@@ -56,11 +56,11 @@ export function ItemInventorySection({
 
                     <div className="relative space-y-6">
                         <div className="flex items-center justify-between">
-                            <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-white flex items-center justify-center text-primary shadow-sm border border-primary/20">
+                            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-primary shadow-sm border border-primary/20">
                                 <Package className="w-6 h-6" />
                             </div>
-                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-[var(--radius-inner)] font-bold text-[10px] px-4">Критический остаток</Badge>}
-                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-[var(--radius-inner)] font-bold text-[10px] px-4">Низкий запас</Badge>}
+                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-2xl font-bold text-[10px] px-4">Критический остаток</Badge>}
+                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-2xl font-bold text-[10px] px-4">Низкий запас</Badge>}
                         </div>
 
                         <div>
@@ -76,7 +76,7 @@ export function ItemInventorySection({
                         <div className={cn("pt-6 border-t", isLowStock || isCriticalStock ? "border-black/5" : "border-white/10")}>
                             <Button
                                 onClick={() => onAdjustStock()}
-                                className={cn("rounded-[var(--radius-inner)] px-8 h-11 text-[13px] font-bold transition-all shadow-md active:scale-95 border-none",
+                                className={cn("rounded-2xl px-8 h-11 text-[13px] font-bold transition-all shadow-md active:scale-95 border-none",
                                     isLowStock || isCriticalStock ? "bg-slate-900 text-white hover:bg-black" : "bg-white text-primary hover:bg-slate-50")}
                             >
                                 <PlusCircle className="w-4 h-4 mr-3" />
@@ -86,7 +86,7 @@ export function ItemInventorySection({
                     </div>
                 </div>
 
-                <div className="w-full xl:w-[400px] bg-slate-900 p-8 rounded-[var(--radius-inner)] text-white flex flex-col justify-between group overflow-hidden relative border border-white/5 shadow-xl">
+                <div className="w-full md:w-[300px] lg:w-[400px] bg-slate-900 p-6 sm:p-8 rounded-2xl text-white flex flex-col justify-between group overflow-hidden relative border border-white/5 shadow-xl">
                     {/* Decorative flow */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
@@ -113,7 +113,7 @@ export function ItemInventorySection({
                     <div className="relative mt-8">
                         <Button
                             variant="outline"
-                            className="w-full h-11 rounded-[var(--radius-inner)] border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-[13px]"
+                            className="w-full h-11 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-[13px]"
                             onClick={() => onUpdateField("lowStockThreshold", 10)} // Example, usually triggers editing
                         >
                             Настроить пороги
@@ -125,22 +125,22 @@ export function ItemInventorySection({
             {/* Thresholds Editing Mode (if needed) */}
             {isEditing && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-500">
-                    <div className="bg-white p-8 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm space-y-4">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Лимит предупреждения</label>
                         <input
                             type="number"
                             value={editData.lowStockThreshold}
                             onChange={(e) => onUpdateField("lowStockThreshold", parseInt(e.target.value))}
-                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-[var(--radius-inner)] focus:ring-4 focus:ring-primary/10 transition-all"
+                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-4 focus:ring-primary/10 transition-all"
                         />
                     </div>
-                    <div className="bg-white p-8 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm space-y-4">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Критический лимит</label>
                         <input
                             type="number"
                             value={editData.criticalStockThreshold}
                             onChange={(e) => onUpdateField("criticalStockThreshold", parseInt(e.target.value))}
-                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-[var(--radius-inner)] focus:ring-4 focus:ring-rose-500/10 transition-all"
+                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-4 focus:ring-rose-500/10 transition-all"
                         />
                     </div>
                 </div>
@@ -153,16 +153,16 @@ export function ItemInventorySection({
                         <Map className="w-4 h-4 text-primary" />
                         <h4 className="text-[11px] font-bold text-slate-400">Геолокация запасов</h4>
                     </div>
-                    <Badge className="bg-slate-900 text-white rounded-[var(--radius-inner)] font-bold text-[10px] px-3">
+                    <Badge className="bg-slate-900 text-white rounded-2xl font-bold text-[10px] px-3">
                         {stocks.length} локаций
                     </Badge>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {stocks.map((stock) => (
                         <div
                             key={stock.id}
-                            className="bg-white rounded-[var(--radius-inner)] p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all group flex items-center justify-between"
+                            className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all group flex items-center justify-between"
                         >
                             <div className="flex items-center gap-6">
                                 <div className="w-14 h-11 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
@@ -185,13 +185,13 @@ export function ItemInventorySection({
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => onAdjustStock(stock.storageLocationId)}
-                                        className="p-3 bg-slate-50 rounded-[var(--radius-inner)] hover:bg-slate-900 hover:text-white transition-all text-slate-400"
+                                        className="p-3 bg-slate-50 rounded-2xl hover:bg-slate-900 hover:text-white transition-all text-slate-400"
                                     >
                                         <PlusCircle className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() => onTransferStock(stock.storageLocationId)}
-                                        className="p-3 bg-slate-50 rounded-[var(--radius-inner)] hover:bg-primary hover:text-white transition-all text-slate-400"
+                                        className="p-3 bg-slate-50 rounded-2xl hover:bg-primary hover:text-white transition-all text-slate-400"
                                     >
                                         <ArrowRightLeft className="w-4 h-4" />
                                     </button>
@@ -201,7 +201,7 @@ export function ItemInventorySection({
                     ))}
 
                     {stocks.length === 0 && (
-                        <div className="col-span-full py-20 text-center bg-slate-50/50 rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200">
+                        <div className="col-span-full py-20 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
                             <PlusCircle className="w-16 h-16 text-slate-300 mx-auto mb-6 transition-transform hover:rotate-90 cursor-pointer" onClick={() => onAdjustStock()} />
                             <h4 className="text-xl font-bold text-slate-400  mb-2">Регистр пуст</h4>
                             <p className="text-[12px] font-medium text-slate-300">Нажмите для инициализации стока</p>

@@ -28,6 +28,7 @@ import { ScheduleView } from "./schedule-view";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { RoleBadge } from "@/components/ui/role-badge";
+import { useBranding } from "@/components/branding-provider";
 
 interface UserProfile {
     id: string;
@@ -90,6 +91,7 @@ interface ScheduleTask {
 }
 
 export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
+    const { currencySymbol } = useBranding();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -306,7 +308,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                             },
                                             {
                                                 title: "Личная выручка",
-                                                value: `${(statsData?.totalRevenue || 0).toLocaleString()} ₽`,
+                                                value: `${(statsData?.totalRevenue || 0).toLocaleString()} ${currencySymbol}`,
                                                 subtitle: "Принесено компании",
                                                 progress: 45,
                                                 color: "bg-slate-900",

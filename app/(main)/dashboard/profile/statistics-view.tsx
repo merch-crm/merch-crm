@@ -12,6 +12,7 @@ import {
     Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/components/branding-provider";
 
 interface StatisticsViewProps {
     data: {
@@ -25,6 +26,7 @@ interface StatisticsViewProps {
 }
 
 export function StatisticsView({ data }: StatisticsViewProps) {
+    const { currencySymbol } = useBranding();
     if (!data) return null;
 
     const stats = [
@@ -57,9 +59,9 @@ export function StatisticsView({ data }: StatisticsViewProps) {
         },
         {
             title: "Выручка (создано)",
-            value: `${data.totalRevenue.toLocaleString()} ₽`,
+            value: `${data.totalRevenue.toLocaleString()} ${currencySymbol}`,
             description: "От ваших заказов",
-            icon: DollarSign,
+            icon: () => <span className="text-xl font-black">{currencySymbol}</span>,
             color: "text-amber-500",
             bg: "bg-amber-50",
             trend: "+8%"
@@ -105,7 +107,16 @@ export function StatisticsView({ data }: StatisticsViewProps) {
 
                         <div className="flex justify-between items-start mb-8 relative z-10">
                             <div className={cn("p-4 rounded-2xl shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:bg-white group-hover:text-slate-900", stat.bg)}>
-                                <stat.icon className={cn("w-6 h-6", stat.color, "group-hover:text-slate-900")} />
+                                {(() => {
+                                    const StatIcon = stat.icon;
+                                    return typeof StatIcon === 'function' && StatIcon.prototype?.render ? (
+                                        // @ts-ignore
+                                        <StatIcon className={cn("w-6 h-6", stat.color, "group-hover:text-slate-900")} />
+                                    ) : (
+                                        // @ts-ignore
+                                        <StatIcon />
+                                    );
+                                })()}
                             </div>
                             <div className="px-3 py-1 rounded-lg bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200 group-hover:bg-white/10 group-hover:text-primary group-hover:border-transparent transition-all">
                                 {stat.trend}
@@ -170,7 +181,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                                 );
                             })
                         ) : (
-                            <div className="text-center py-20 bg-slate-50 rounded-[24px] border-2 border-dashed border-slate-200">
+                            <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
                                 <CheckCircle2 className="w-16 h-16 text-slate-200 mx-auto mb-4" />
                                 <p className="text-slate-400 font-black uppercase tracking-widest text-sm">Активных задач нет</p>
                             </div>
@@ -238,7 +249,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                             </div>
                         </div>
 
-                        <div className="mt-12 w-full p-6 rounded-[24px] bg-slate-50 group-hover/eff:bg-white border border-transparent group-hover/eff:border-slate-200 transition-all duration-500 flex items-center gap-5">
+                        <div className="mt-12 w-full p-6 rounded-3xl bg-slate-50 group-hover/eff:bg-white border border-transparent group-hover/eff:border-slate-200 transition-all duration-500 flex items-center gap-5">
                             <div className="h-14 w-14 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-500">
                                 <Sparkles className="w-7 h-7" />
                             </div>

@@ -69,7 +69,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
             </Badge>
 
             {isOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-200 rounded-[18px] shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-200 rounded-2xl shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
                     {priorities.map((p) => (
                         <button
                             key={p.id}

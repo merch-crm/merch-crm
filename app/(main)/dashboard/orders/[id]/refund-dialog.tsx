@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Undo2 } from "lucide-react";
+import { useBranding } from "@/components/branding-provider";
 
 interface RefundDialogProps {
     orderId: string;
@@ -16,6 +17,7 @@ interface RefundDialogProps {
 }
 
 export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
+    const { currencySymbol } = useBranding();
     const [isOpen, setIsOpen] = useState(false);
     const [amount, setAmount] = useState(String(maxAmount));
     const [reason, setReason] = useState("");
@@ -78,7 +80,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                 <div className="flex flex-col h-full">
                     <div className="p-6 pb-20 space-y-5 flex-1 overflow-y-auto">
                         <div className="space-y-2">
-                            <Label htmlFor="amount" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма возврата (₽)</Label>
+                            <Label htmlFor="amount" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма возврата ({currencySymbol})</Label>
                             <Input
                                 id="amount"
                                 type="number"
@@ -87,7 +89,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                                 placeholder="0.00"
                                 className="h-12 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-lg font-bold text-slate-900 focus:bg-white transition-all shadow-sm"
                             />
-                            <p className="text-[10px] font-bold text-slate-400 ml-1">Максимально доступно: <span className="text-slate-900">{maxAmount} ₽</span></p>
+                            <p className="text-[10px] font-bold text-slate-400 ml-1">Максимально доступно: <span className="text-slate-900">{maxAmount} {currencySymbol}</span></p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="reason" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Причина возврата</Label>

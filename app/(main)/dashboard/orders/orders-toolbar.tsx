@@ -111,7 +111,7 @@ export function OrdersToolbar() {
 
             {/* Mobile-only Row: Archive Tabs + Create Button */}
             <div className="flex md:hidden items-center gap-3">
-                <div className="flex items-center p-1 gap-1 bg-slate-100/50 rounded-[18px] border border-slate-200/50">
+                <div className="flex items-center p-1 gap-1 bg-slate-100/50 rounded-2xl border border-slate-200/50">
                     {[
                         { id: "base", label: "База", active: !showArchived, icon: ArchiveRestore },
                         { id: "archived", label: "Архив", active: showArchived, icon: Archive }
@@ -132,7 +132,7 @@ export function OrdersToolbar() {
 
                 <Link
                     href="/dashboard/orders/new"
-                    className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-full sm:rounded-[18px] shadow-lg shadow-primary/20 shrink-0"
+                    className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 shrink-0"
                     title="Создать заказ"
                 >
                     <Plus className="w-5 h-5" />

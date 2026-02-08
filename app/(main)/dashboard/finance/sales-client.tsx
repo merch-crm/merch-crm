@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { useBranding } from "@/components/branding-provider";
 import { FinancialStats } from "./actions";
 
 interface SalesClientProps {
@@ -21,11 +22,12 @@ interface SalesClientProps {
 }
 
 export function SalesClient({ salesData }: SalesClientProps) {
+    const { currencySymbol } = useBranding();
     const statsCards = [
         {
             label: "Общая выручка",
             value: Number(salesData.summary.totalRevenue || 0).toLocaleString('ru-RU'),
-            suffix: "₽",
+            suffix: currencySymbol,
             icon: DollarSign,
             color: "text-emerald-600",
             bgIcon: "bg-emerald-100",
@@ -36,7 +38,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
         {
             label: "Чистая прибыль",
             value: Number(salesData.summary.netProfit || 0).toLocaleString('ru-RU'),
-            suffix: "₽",
+            suffix: currencySymbol,
             icon: TrendingUp,
             color: "text-primary",
             bgIcon: "bg-primary/10",
@@ -47,7 +49,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
         {
             label: "Средний чек",
             value: Math.round(Number(salesData.summary.avgOrderValue || 0)).toLocaleString('ru-RU'),
-            suffix: "₽",
+            suffix: currencySymbol,
             icon: CreditCard,
             color: "text-amber-600",
             bgIcon: "bg-amber-100",
@@ -69,7 +71,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
         {
             label: "Средняя с/с изделия",
             value: Math.round(Number(salesData.summary.averageCost || 0)).toLocaleString('ru-RU'),
-            suffix: "₽",
+            suffix: currencySymbol,
             icon: Tags,
             color: "text-violet-600",
             bgIcon: "bg-violet-100",
@@ -80,7 +82,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
         {
             label: "Списания",
             value: Math.round(Number(salesData.summary.writeOffs || 0)).toLocaleString('ru-RU'),
-            suffix: "₽",
+            suffix: currencySymbol,
             icon: Trash2,
             color: "text-rose-600",
             bgIcon: "bg-rose-100",
@@ -154,7 +156,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
                             <div className="mb-6">
                                 <p className="text-slate-400 text-[10px] font-bold uppercase mb-2">{config.label}</p>
                                 <div className="text-2xl font-black text-slate-900 leading-none mb-2">
-                                    {cat.revenue.toLocaleString()} <span className="text-sm text-slate-400 font-bold">₽</span>
+                                    {cat.revenue.toLocaleString()} <span className="text-sm text-slate-400 font-bold">{currencySymbol}</span>
                                 </div>
                                 <div className="text-xs text-slate-400 font-bold italic opacity-75">{cat.count} {pluralize(cat.count, 'заказ', 'заказа', 'заказов')}</div>
                             </div>

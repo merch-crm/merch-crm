@@ -49,7 +49,7 @@ export default function BikeHealthCard() {
                             className="relative w-[130%] h-[120%] -ml-8"
                         >
                             <Image
-                                src="/ktm-bike.png"
+                                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop"
                                 alt="KTM Bike"
                                 fill
                                 className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"

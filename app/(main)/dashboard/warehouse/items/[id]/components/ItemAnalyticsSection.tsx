@@ -572,7 +572,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
             {/* Main Multi-Line Chart Section - 9 columns on desktop */}
-            <div className="lg:col-span-9 bg-white rounded-[var(--radius-outer)] p-5 border border-slate-200 flex flex-col h-fit">
+            <div className="lg:col-span-9 bg-white rounded-3xl p-5 border border-slate-200 flex flex-col h-fit">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-2">
                     <div className="space-y-1">
                         <h4 className="text-[11px] font-black text-slate-400 leading-none">Аналитика движений</h4>
@@ -611,11 +611,11 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
             </div>
 
             {/* Vertical Stock Timeline Section - 3 columns on desktop */}
-            <div className="lg:col-span-3 bg-primary/5 rounded-[var(--radius-outer)] p-5 border border-primary/10 relative overflow-hidden group flex flex-col">
+            <div className="lg:col-span-3 bg-primary/5 rounded-3xl p-5 border border-primary/10 relative overflow-hidden group flex flex-col">
                 <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
 
                 <div className="flex items-center gap-3 mb-6 shrink-0">
-                    <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center text-slate-500/80 transition-all shadow-sm">
+                    <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500/80 transition-all shadow-sm">
                         <Activity className="w-5 h-5" />
                     </div>
                     <h5 className="text-[11px] font-black text-primary leading-tight">Таймлайн<br />остатков</h5>

@@ -75,13 +75,13 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
                     {/* Left: Logo */}
                     <div className="flex items-center shrink-0">
                         <Link href="/dashboard" className="flex items-center gap-3 group">
-                            <div className="bg-primary rounded-[18px] p-2 shadow-lg shadow-indigo-200 transition-all duration-500">
+                            <div className="bg-primary rounded-[18px] w-11 h-11 p-1.5 flex items-center justify-center shadow-sm transition-all duration-500">
                                 {branding.logoUrl ? (
-                                    <div className="relative h-5 w-5">
+                                    <div className="relative h-8 w-8">
                                         <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" />
                                     </div>
                                 ) : (
-                                    <Printer className="h-5 w-5 text-white" />
+                                    <Printer className="h-8 w-8 text-white" />
                                 )}
                             </div>
                             <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">

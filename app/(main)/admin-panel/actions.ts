@@ -1611,7 +1611,8 @@ export async function getBrandingAction() {
             primary_color: "#5d00ff",
             faviconUrl: null,
             radius_outer: 24,
-            radius_inner: 14
+            radius_inner: 14,
+            currencySymbol: "₽"
         };
 
         if (!setting) return { data: defaultBranding };

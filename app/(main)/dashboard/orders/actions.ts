@@ -10,6 +10,7 @@ import { logError } from "@/lib/error-logger";
 
 
 import { notifyWarehouseManagers } from "@/lib/notifications";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string) {
     try {
@@ -45,7 +46,11 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
             with: {
                 client: true,
                 items: true,
-                creator: true,
+                creator: {
+                    with: {
+                        role: true
+                    }
+                },
                 attachments: true,
             },
             orderBy: desc(orders.createdAt),
@@ -330,11 +335,13 @@ export async function createOrder(formData: FormData) {
                 });
             }
         });
+        const branding = await getBrandingSettings();
+        const currencySymbol = branding?.currencySymbol || "₽";
 
         // Notify staff (triggers sound alert)
         await notifyWarehouseManagers({
             title: "Новый заказ",
-            message: `Создан заказ #${formData.get("orderNumber") || "..."} на сумму ${formData.get("totalAmount") || "..."} ₽`,
+            message: `Создан заказ #${formData.get("orderNumber") || "..."} на сумму ${formData.get("totalAmount") || "..."} ${currencySymbol}`,
             type: "success"
         });
 
@@ -626,7 +633,11 @@ export async function getOrderById(id: string) {
             with: {
                 client: true,
                 items: true,
-                creator: true,
+                creator: {
+                    with: {
+                        role: true
+                    }
+                },
                 attachments: true,
                 payments: true,
                 promocode: true,

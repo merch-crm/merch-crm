@@ -22,6 +22,7 @@ import { createOrder, searchClients } from "../actions";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { useBranding } from "@/components/branding-provider";
 
 interface Client {
     id: string;
@@ -50,6 +51,7 @@ interface CreateOrderPageClientProps {
 }
 
 export function CreateOrderPageClient({ initialInventory, userRoleName }: CreateOrderPageClientProps) {
+    const { currencySymbol } = useBranding();
     const router = useRouter();
     const { toast } = useToast();
     const [step, setStep] = useState(0);
@@ -237,7 +239,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
             <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-4 px-4 sm:px-8 pb-8 pt-4 overflow-y-auto lg:overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
+                <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
                     <div className="p-6 shrink-0">
                         <button onClick={handleBack} className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm">
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -285,7 +287,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
-                    <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
+                    <div className="bg-white rounded-3xl shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
                         <div className="flex-1 overflow-y-auto p-6 md:p-10">
                             {step === 0 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -306,10 +308,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                     addToHistory(searchQuery);
                                                 }
                                             }}
-                                            className="w-full h-12 pl-12 pr-4 rounded-[18px] border-slate-200 bg-slate-50 text-sm font-medium focus:bg-white focus:border-slate-900 transition-all outline-none"
+                                            className="w-full h-12 pl-12 pr-4 rounded-2xl border-slate-200 bg-slate-50 text-sm font-medium focus:bg-white focus:border-slate-900 transition-all outline-none"
                                         />
                                         {showHistory && searchHistory.length > 0 && !selectedClient && (
-                                            <div className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-200 rounded-[18px] shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
                                                 <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                                                     <span className="text-[10px] font-bold text-slate-400  tracking-normal">Недавние поиски</span>
                                                 </div>
@@ -321,7 +323,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                                 setSearchQuery(h);
                                                                 setShowHistory(false);
                                                             }}
-                                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-[18px] text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
+                                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-2xl text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
                                                         >
                                                             <RotateCcw className="w-4 h-4 text-slate-300" />
                                                             {h}
@@ -338,7 +340,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </div>
 
                                     {searchResults.length > 0 && !selectedClient && (
-                                        <div className="border border-slate-200 rounded-[18px] shadow-xl bg-white overflow-hidden">
+                                        <div className="border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
                                             {searchResults.map((client) => (
                                                 <button
                                                     key={client.id}
@@ -362,15 +364,15 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     )}
 
                                     {selectedClient && (
-                                        <div className="p-6 rounded-[18px] bg-primary text-white flex items-center justify-between shadow-lg shadow-primary/20">
+                                        <div className="p-6 rounded-2xl bg-primary text-white flex items-center justify-between shadow-lg shadow-primary/20">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-[18px] bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name[0]}</div>
+                                                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name[0]}</div>
                                                 <div>
                                                     <p className="font-bold">{selectedClient.name}</p>
                                                     <p className="text-xs text-white/60  tracking-normal">{selectedClient.company || "Личный заказ"}</p>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-[18px] transition-all">Изменить</button>
+                                            <button onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-2xl transition-all">Изменить</button>
                                         </div>
                                     )}
                                 </div>
@@ -388,7 +390,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         <div className="space-y-4">
                                             <div className="relative">
                                                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                                                <input placeholder="Поиск товара..." className="w-full pl-9 pr-4 py-2 bg-slate-50 border-slate-200 rounded-[18px] text-sm outline-none" />
+                                                <input placeholder="Поиск товара..." className="w-full pl-9 pr-4 py-2 bg-slate-50 border-slate-200 rounded-2xl text-sm outline-none" />
                                             </div>
                                             <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2">
                                                 {inventory.map(item => (
@@ -396,10 +398,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         key={item.id}
                                                         disabled={selectedItems.some(i => i.id === item.id)}
                                                         onClick={() => addItem(item)}
-                                                        className="flex items-center justify-between p-3 rounded-[18px] border border-slate-200 hover:bg-slate-50 transition-all text-left disabled:opacity-50"
+                                                        className="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all text-left disabled:opacity-50"
                                                     >
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 bg-slate-100 rounded-[18px] flex items-center justify-center text-slate-400 font-bold"><Package className="w-5 h-5" /></div>
+                                                            <div className="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-bold"><Package className="w-5 h-5" /></div>
                                                             <div>
                                                                 <p className="text-sm font-bold text-slate-900">{item.name}</p>
                                                                 <p className="text-[10px] text-slate-500  font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
@@ -412,7 +414,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         </div>
 
                                         {/* Selected */}
-                                        <div className="bg-slate-50/50 rounded-[18px] p-6 border border-slate-200 space-y-4">
+                                        <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-200 space-y-4">
                                             <p className="text-xs font-bold text-slate-400  tracking-normal">Выбранные позиции</p>
                                             {selectedItems.length === 0 ? (
                                                 <div className="h-40 flex flex-col items-center justify-center text-slate-300 gap-2">
@@ -422,7 +424,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             ) : (
                                                 <div className="space-y-3">
                                                     {selectedItems.map(item => (
-                                                        <div key={item.id} className="bg-white p-4 rounded-[18px] shadow-sm border border-slate-200 space-y-4">
+                                                        <div key={item.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                                                             <div className="flex justify-between items-start">
                                                                 <p className="text-sm font-bold">{item.name}</p>
                                                                 <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-rose-500 font-bold">Удалить</button>
@@ -434,16 +436,16 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                                         type="number"
                                                                         value={item.orderQuantity || 0}
                                                                         onChange={(e) => updateItem(item.id, { orderQuantity: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-3 py-2 text-sm"
+                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-3 py-2 text-sm"
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Цена (₽)</label>
+                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Цена ({currencySymbol})</label>
                                                                     <input
                                                                         type="number"
                                                                         value={item.price || 0}
                                                                         onChange={(e) => updateItem(item.id, { price: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-[18px] px-3 py-2 text-sm"
+                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-3 py-2 text-sm"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -465,7 +467,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             <select
                                                 value={details.priority}
                                                 onChange={(e) => setDetails({ ...details, priority: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
+                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
                                             >
                                                 <option value="low">Низкий</option>
                                                 <option value="medium">Средний</option>
@@ -478,7 +480,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                 type="date"
                                                 value={details.deadline}
                                                 onChange={(e) => setDetails({ ...details, deadline: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none"
+                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none"
                                             />
                                         </div>
                                     </div>
@@ -489,7 +491,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             <div
                                                 onClick={() => setDetails({ ...details, isUrgent: !details.isUrgent })}
                                                 className={cn(
-                                                    "w-full h-12 px-4 rounded-[18px] border flex items-center justify-between cursor-pointer transition-all",
+                                                    "w-full h-12 px-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all",
                                                     details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-slate-50 border-slate-200 text-slate-400"
                                                 )}
                                             >
@@ -502,7 +504,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             <select
                                                 value={details.paymentMethod}
                                                 onChange={(e) => setDetails({ ...details, paymentMethod: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
+                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
                                             >
                                                 <option value="cash">Наличные</option>
                                                 <option value="bank">Безнал (Карта)</option>
@@ -513,14 +515,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-sm font-bold text-slate-700 ml-1">Предоплата (₽)</label>
+                                        <label className="text-sm font-bold text-slate-700 ml-1">Предоплата ({currencySymbol})</label>
                                         <div className="relative">
                                             <CreditCard className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
                                             <input
                                                 type="number"
                                                 value={details.advanceAmount}
                                                 onChange={(e) => setDetails({ ...details, advanceAmount: e.target.value })}
-                                                className="w-full h-12 pl-12 pr-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-lg focus:bg-white focus:border-slate-900 outline-none"
+                                                className="w-full h-12 pl-12 pr-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-lg focus:bg-white focus:border-slate-900 outline-none"
                                             />
                                         </div>
                                     </div>
@@ -535,24 +537,24 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                     placeholder="Введите промокод..."
                                                     value={promoInput}
                                                     onChange={(e) => setPromoInput(e.target.value)}
-                                                    className="w-full h-12 pl-12 pr-4 rounded-[18px] border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white focus:border-slate-900 outline-none "
+                                                    className="w-full h-12 pl-12 pr-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white focus:border-slate-900 outline-none "
                                                 />
                                             </div>
                                             <button
                                                 onClick={handleApplyPromo}
                                                 disabled={isApplyingPromo || !promoInput}
-                                                className="h-12 px-6 rounded-[18px] bg-slate-100 font-bold text-slate-900 hover:bg-slate-200 transition-all disabled:opacity-50"
+                                                className="h-12 px-6 rounded-2xl bg-slate-100 font-bold text-slate-900 hover:bg-slate-200 transition-all disabled:opacity-50"
                                             >
                                                 {isApplyingPromo ? "..." : "Применить"}
                                             </button>
                                         </div>
                                         {details.appliedPromo && (
-                                            <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-[18px] animate-in fade-in slide-in-from-top-2">
+                                            <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-2xl animate-in fade-in slide-in-from-top-2">
                                                 <p className="text-xs font-bold text-emerald-700 flex items-center justify-between">
                                                     <span>Промокод: {details.appliedPromo.code}</span>
                                                     <span className="uppercase">
                                                         {details.appliedPromo.discountType === 'percentage' ? `-${details.appliedPromo.value}%` :
-                                                            details.appliedPromo.discountType === 'fixed' ? `-${details.appliedPromo.value} ₽` :
+                                                            details.appliedPromo.discountType === 'fixed' ? `-${details.appliedPromo.value} ${currencySymbol}` :
                                                                 details.appliedPromo.discountType === 'free_shipping' ? "БЕСПЛ. ДОСТАВКА" : "ПОДАРОК"}
                                                     </span>
                                                 </p>
@@ -569,7 +571,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <h4 className="text-xl font-bold text-slate-900">Подтверждение заказа</h4>
 
-                                    <div className="bg-slate-50 rounded-[18px] p-6 space-y-4">
+                                    <div className="bg-slate-50 rounded-2xl p-6 space-y-4">
                                         <div className="flex justify-between border-b pb-4">
                                             <span className="text-slate-500 font-bold text-xs  tracking-wider">Клиент</span>
                                             <span className="font-bold">{selectedClient?.name}</span>
@@ -579,7 +581,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             {selectedItems.map(item => (
                                                 <div key={item.id} className="flex justify-between text-sm py-1">
                                                     <span>{item.name} x {item.orderQuantity || 0}</span>
-                                                    <span className="font-bold">{(item.price || 0) * (item.orderQuantity || 0)} ₽</span>
+                                                    <span className="font-bold">{(item.price || 0) * (item.orderQuantity || 0)} {currencySymbol}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -589,29 +591,29 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                 {details.appliedPromo ? (
                                                     <>
                                                         <span className="text-sm text-slate-400 line-through mr-2 font-bold">
-                                                            {selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} ₽
+                                                            {selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} {currencySymbol}
                                                         </span>
                                                         <span>
                                                             {(() => {
                                                                 const total = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
                                                                 const disc = details.appliedPromo?.calculatedDiscount || 0;
                                                                 return Math.max(0, Math.round(total - disc));
-                                                            })()} ₽
+                                                            })()} {currencySymbol}
                                                         </span>
                                                     </>
                                                 ) : (
-                                                    <span>{selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} ₽</span>
+                                                    <span>{selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} {currencySymbol}</span>
                                                 )}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
-                                        <div className="p-4 bg-white border rounded-[18px]">
+                                        <div className="p-4 bg-white border rounded-2xl">
                                             <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Приоритет</p>
                                             <p className="font-bold  text-xs">{details.priority}</p>
                                         </div>
-                                        <div className="p-4 bg-white border rounded-[18px]">
+                                        <div className="p-4 bg-white border rounded-2xl">
                                             <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Оплата</p>
                                             <p className="font-bold  text-xs">{details.paymentMethod}</p>
                                         </div>
@@ -642,7 +644,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                         </div>
                     </div>
                 </main>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { useBranding } from "@/components/branding-provider";
+
 interface PLReport {
     totalRevenue: number;
     totalCOGS: number;
@@ -13,6 +15,7 @@ interface PLClientProps {
 }
 
 export function PLClient({ plReport }: PLClientProps) {
+    const { currencySymbol } = useBranding();
     if (!plReport) return null;
 
     return (
@@ -21,22 +24,22 @@ export function PLClient({ plReport }: PLClientProps) {
                 <div className="crm-card p-10 bg-slate-900 text-white border-none shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl" />
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Выручка</p>
-                    <div className="text-4xl font-black tracking-tight">{plReport.totalRevenue.toLocaleString()} <span className="text-lg opacity-50">₽</span></div>
+                    <div className="text-4xl font-black tracking-tight">{plReport.totalRevenue.toLocaleString()} <span className="text-lg opacity-50">{currencySymbol}</span></div>
                 </div>
                 <div className="crm-card p-10 bg-white border border-slate-100 shadow-lg group hover:border-rose-100 transition-colors">
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Себестоимость (COGS)</p>
-                    <div className="text-4xl font-black text-rose-500 tracking-tight">-{plReport.totalCOGS.toLocaleString()} <span className="text-lg opacity-50">₽</span></div>
+                    <div className="text-4xl font-black text-rose-500 tracking-tight">-{plReport.totalCOGS.toLocaleString()} <span className="text-lg opacity-50">{currencySymbol}</span></div>
                     <div className="text-[10px] font-bold text-rose-400/70 uppercase mt-4 tracking-tighter">Расходы на производство</div>
                 </div>
                 <div className="crm-card p-10 bg-white border border-slate-100 shadow-lg group hover:border-rose-200 transition-colors">
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Опер. расходы</p>
-                    <div className="text-4xl font-black text-rose-600 tracking-tight">-{plReport.totalOverhead.toLocaleString()} <span className="text-lg opacity-50">₽</span></div>
+                    <div className="text-4xl font-black text-rose-600 tracking-tight">-{plReport.totalOverhead.toLocaleString()} <span className="text-lg opacity-50">{currencySymbol}</span></div>
                     <div className="text-[10px] font-bold text-rose-500/70 uppercase mt-4 tracking-tighter">Аренда, налоги и др.</div>
                 </div>
                 <div className="crm-card p-10 bg-emerald-600 text-white border-none shadow-2xl relative overflow-hidden group">
                     <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mb-16 blur-2xl" />
                     <p className="text-emerald-100/70 text-[10px] font-black uppercase tracking-widest mb-4">Чистая прибыль</p>
-                    <div className="text-4xl font-black tracking-tight">{plReport.netProfit.toLocaleString()} <span className="text-lg opacity-60">₽</span></div>
+                    <div className="text-4xl font-black tracking-tight">{plReport.netProfit.toLocaleString()} <span className="text-lg opacity-60">{currencySymbol}</span></div>
                     <div className="mt-6 flex items-center gap-2">
                         <div className="text-[10px] font-black bg-white/20 px-4 py-1.5 rounded-full uppercase tracking-widest">Маржа: {plReport.margin.toFixed(1)}%</div>
                     </div>
@@ -53,7 +56,7 @@ export function PLClient({ plReport }: PLClientProps) {
                                 <div className="w-4 h-4 rounded-full bg-rose-500 shadow-lg shadow-rose-200" />
                                 <span className="text-[14px] font-black text-slate-700 uppercase tracking-wider">Себестоимость закупки (COGS)</span>
                             </div>
-                            <span className="text-xl font-black text-slate-900">{plReport.totalCOGS.toLocaleString()} <span className="text-sm font-bold text-slate-400">₽</span></span>
+                            <span className="text-xl font-black text-slate-900">{plReport.totalCOGS.toLocaleString()} <span className="text-sm font-bold text-slate-400">{currencySymbol}</span></span>
                         </div>
                         <div className="h-4 w-full bg-slate-50 rounded-full overflow-hidden p-1 border border-slate-100">
                             <div
@@ -69,7 +72,7 @@ export function PLClient({ plReport }: PLClientProps) {
                                 <div className="w-4 h-4 rounded-full bg-rose-400 shadow-lg shadow-rose-100" />
                                 <span className="text-[14px] font-black text-slate-700 uppercase tracking-wider">Косвенные / Опер. расходы (OPEX)</span>
                             </div>
-                            <span className="text-xl font-black text-slate-900">{plReport.totalOverhead.toLocaleString()} <span className="text-sm font-bold text-slate-400">₽</span></span>
+                            <span className="text-xl font-black text-slate-900">{plReport.totalOverhead.toLocaleString()} <span className="text-sm font-bold text-slate-400">{currencySymbol}</span></span>
                         </div>
                         <div className="h-4 w-full bg-slate-50 rounded-full overflow-hidden p-1 border border-slate-100">
                             <div

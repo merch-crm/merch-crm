@@ -55,7 +55,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/5 rounded-[18px]">
+                    <div className="p-3 bg-primary/5 rounded-2xl">
                         <CalendarIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
@@ -71,19 +71,19 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setCurrentMonth(subMonths(monthToRender, 1))}
-                        className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
+                        className="p-3 hover:bg-slate-50 rounded-2xl transition-all"
                     >
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
                     </button>
                     <button
                         onClick={() => setCurrentMonth(new Date())}
-                        className="px-4 py-2 bg-slate-900 text-white rounded-[18px] text-xs font-bold hover:bg-slate-800 transition-all"
+                        className="px-4 py-2 bg-slate-900 text-white rounded-2xl text-xs font-bold hover:bg-slate-800 transition-all"
                     >
                         СЕГОДНЯ
                     </button>
                     <button
                         onClick={() => setCurrentMonth(addMonths(monthToRender, 1))}
-                        className="p-3 hover:bg-slate-50 rounded-[18px] transition-all"
+                        className="p-3 hover:bg-slate-50 rounded-2xl transition-all"
                     >
                         <ChevronRight className="w-5 h-5 text-slate-400" />
                     </button>
@@ -112,7 +112,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                         <div
                             key={day.toString()}
                             className={cn(
-                                "min-h-[120px] p-3 rounded-[18px] border-2 transition-all",
+                                "min-h-[120px] p-3 rounded-2xl border-2 transition-all",
                                 isCurrentMonth ? "bg-white" : "bg-slate-50/50",
                                 isCurrentDay ? "border-primary shadow-lg shadow-primary/10" : "border-slate-200 hover:border-slate-200"
                             )}
@@ -137,7 +137,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                         key={task.id}
                                         onClick={() => onTaskClick(task)}
                                         className={cn(
-                                            "w-full text-left p-2 rounded-[18px] border-l-4 transition-all hover:shadow-md group",
+                                            "w-full text-left p-2 rounded-2xl border-l-4 transition-all hover:shadow-md group",
                                             getStatusColor(task.status),
                                             task.status === "done" ? "bg-slate-50" : "bg-white hover:bg-primary/5"
                                         )}

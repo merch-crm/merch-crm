@@ -104,7 +104,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     return (
         <div className="space-y-4 animate-in fade-in duration-500 h-full flex flex-col">
             {/* Premium Header */}
-            <div className="relative overflow-hidden bg-white rounded-[24px] p-8 border border-slate-200 shadow-xl shadow-slate-200/50 shrink-0 mb-6">
+            <div className="relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-xl shadow-slate-200/50 shrink-0 mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
 
@@ -140,7 +140,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
                 {/* Filter Toolbar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-6">
-                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-[22px]">
+                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-3xl">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
@@ -149,14 +149,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-[16px]",
+                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl",
                                             isActive && "active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskTab"
-                                                className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                                className="absolute inset-0 bg-primary rounded-2xl z-0"
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
@@ -173,7 +173,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                         </div>
                     </div>
 
-                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-[22px]">
+                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-3xl">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {viewTabs.map((tab) => {
                                 const isActive = view === tab.id;
@@ -182,14 +182,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => setView(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-[16px]",
+                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl",
                                             isActive && "active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskView"
-                                                className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                                className="absolute inset-0 bg-primary rounded-2xl z-0"
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}

@@ -94,7 +94,7 @@ export function PremiumPagination({
 
                     <div className={cn(
                         variant === "light" ? "crm-filter-tray-light" : "crm-filter-tray",
-                        "!rounded-full p-0.5 !bg-white"
+                        "!rounded-full p-0.5"
                     )}>
                         {getPages().map((page, idx) => (
                             <React.Fragment key={idx}>

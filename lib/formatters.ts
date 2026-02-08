@@ -2,15 +2,24 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
 export function formatCurrency(amount: number, symbol: string = "₽"): string {
-    return new Intl.NumberFormat('ru-RU', {
-        style: 'currency',
-        currency: symbol === "₽" ? "RUB" :
-            symbol === "$" ? "USD" :
-                symbol === "€" ? "EUR" :
-                    symbol === "₸" ? "KZT" : "RUB",
-        // Fallback or custom handling if needed, but Intl requires ISO codes usually.
-        // If symbol is just a character, we might just append it manually if Intl fails or we prefer custom format.
-    }).format(amount).replace("RUB", "₽").replace("undefined", symbol);
+    const currencyMap: Record<string, string> = {
+        "₽": "RUB",
+        "$": "USD",
+        "€": "EUR",
+        "₸": "KZT",
+        "₴": "UAH"
+    };
+
+    const currencyCode = currencyMap[symbol] || "RUB";
+
+    try {
+        return new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: currencyCode,
+        }).format(amount).replace(currencyCode, symbol).replace("RUB", "₽");
+    } catch (e) {
+        return `${amount.toLocaleString('ru-RU')} ${symbol}`;
+    }
 }
 
 // Simple manual formatter if we want strict control over symbol placement

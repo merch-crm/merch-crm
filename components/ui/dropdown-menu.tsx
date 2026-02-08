@@ -47,7 +47,7 @@ const DropdownMenuSubContent = React.forwardRef<
     <DropdownMenuPrimitive.SubContent
         ref={ref}
         className={cn(
-            "z-[1000] min-w-[8rem] overflow-hidden rounded-[var(--radius-outer)] border border-slate-200/60 bg-white p-1 text-slate-900 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-300",
+            "z-[1000] min-w-[8rem] overflow-hidden rounded-[var(--radius-outer)] border border-slate-400 bg-white p-1 text-slate-900 shadow-crm-xl ring-1 ring-black/[0.05] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-300",
             className
         )}
         {...props}
@@ -65,7 +65,7 @@ const DropdownMenuContent = React.forwardRef<
             ref={ref}
             sideOffset={sideOffset}
             className={cn(
-                "z-[1000] min-w-[12rem] overflow-hidden rounded-[var(--radius-outer)] border border-slate-200/60 bg-white p-1.5 text-slate-900 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]",
+                "z-[1000] min-w-[12rem] overflow-hidden rounded-[var(--radius-outer)] border border-slate-400 bg-white p-1.5 text-slate-900 shadow-crm-xl ring-1 ring-black/[0.05] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]",
                 className
             )}
             {...props}
@@ -83,7 +83,7 @@ const DropdownMenuItem = React.forwardRef<
     <DropdownMenuPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex cursor-default select-none items-center rounded-[var(--radius-inner)] px-3 py-2.5 text-sm font-bold outline-none transition-colors focus:bg-slate-50 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 group",
+            "relative flex cursor-default select-none items-center rounded-[12px] border border-transparent px-3 py-2.5 text-sm font-bold outline-none transition-all focus:bg-slate-50 focus:text-slate-900 hover:border-slate-200/60 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 group",
             inset && "pl-9",
             className
         )}
@@ -99,7 +99,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
     <DropdownMenuPrimitive.CheckboxItem
         ref={ref}
         className={cn(
-            "relative flex cursor-default select-none items-center rounded-[var(--radius-inner)] py-2.5 pl-9 pr-3 text-sm font-bold outline-none transition-colors focus:bg-slate-50 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+            "relative flex cursor-default select-none items-center rounded-[12px] border border-transparent py-2.5 pl-9 pr-3 text-sm font-bold outline-none transition-all focus:bg-slate-50 focus:text-slate-900 hover:border-slate-200/60 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
             className
         )}
         checked={checked}
@@ -123,7 +123,7 @@ const DropdownMenuRadioItem = React.forwardRef<
     <DropdownMenuPrimitive.RadioItem
         ref={ref}
         className={cn(
-            "relative flex cursor-default select-none items-center rounded-[var(--radius-inner)] py-2.5 pl-9 pr-3 text-sm font-bold outline-none transition-colors focus:bg-slate-50 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+            "relative flex cursor-default select-none items-center rounded-[12px] border border-transparent py-2.5 pl-9 pr-3 text-sm font-bold outline-none transition-all focus:bg-slate-50 focus:text-slate-900 hover:border-slate-200/60 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
             className
         )}
         {...props}

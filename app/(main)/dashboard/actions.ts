@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, clients, notifications } from "@/lib/schema";
 import { count, sum, inArray, and, gte, lte, eq, desc } from "drizzle-orm";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import {
     startOfDay,
     endOfDay,
@@ -99,10 +100,13 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         // 8. Average Check
         const averageCheck = totalOrders > 0 ? (rawRevenue / totalOrders) : 0;
 
+        const branding = await getBrandingSettings();
+        const currencySymbol = branding?.currencySymbol || "₽";
+
         const formatCondensed = (val: number) => {
-            if (val >= 1000000) return (val / 1000000).toFixed(1) + "M ₽";
-            if (val >= 1000) return (val / 1000).toFixed(1) + "K ₽";
-            return val.toLocaleString('ru-RU') + " ₽";
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + "M " + currencySymbol;
+            if (val >= 1000) return (val / 1000).toFixed(1) + "K " + currencySymbol;
+            return val.toLocaleString('ru-RU') + " " + currencySymbol;
         };
 
         return {
@@ -121,13 +125,17 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             method: "getDashboardStats"
         });
         console.error("Error fetching dashboard stats:", error);
+
+        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
+        const currencySymbol = branding?.currencySymbol || "₽";
+
         return {
             totalClients: 0,
             newClients: 0,
             totalOrders: 0,
             inProduction: 0,
-            revenue: "0 ₽",
-            averageCheck: "0 ₽",
+            revenue: `0 ${currencySymbol}`,
+            averageCheck: `0 ${currencySymbol}`,
             rawRevenue: 0
         };
     }

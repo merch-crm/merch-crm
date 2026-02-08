@@ -9,6 +9,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useBranding } from "@/components/branding-provider";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;
@@ -33,7 +34,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [customHeight, setCustomHeight] = useState(100);
 
     const [showArticle, setShowArticle] = useState(true);
-    const [showPrice, setShowPrice] = useState(true);
+    const [showCostPrice, setShowCostPrice] = useState(false);
+    const [showSellingPrice, setShowSellingPrice] = useState(true);
     const [showBarcode, setShowBarcode] = useState(true); // Will render QR/Barcode
     const [showComposition, setShowComposition] = useState(true);
 
@@ -47,12 +49,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [showLogo, setShowLogo] = useState(false);
     type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
-    const [branding, setBranding] = useState<BrandingSettings | null>(null);
-
-    useEffect(() => {
-        getBrandingSettings().then(setBranding);
-    }, []);
-
+    const branding = useBranding();
+    const { currencySymbol } = branding;
     const [alignment, setAlignment] = useState<'center' | 'left'>('center');
     const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('side-by-side');
     const [quantity, setQuantity] = useState(1);
@@ -283,7 +281,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
         (hasComposition ? 8 : 0) +
         (item.name.length / 8) +
         (customText ? 5 : 0) +
-        (showBarcode ? 2 : 0) +
+        (showCostPrice ? 2 : 0) +
+        (showSellingPrice ? 2 : 0) +
         (showLogo ? 4 : 0) +
         (showArticle ? 2 : 0) +
         (showCategory ? 2 : 0);
@@ -448,7 +447,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                             <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Характеристики</label>
                             <div className="-mx-2 grid grid-cols-2 gap-x-1 gap-y-0.5">
                                 <ToggleItem label="Артикул товара" checked={showArticle} onChange={setShowArticle} compact />
-                                <ToggleItem label="Цена изделия" checked={showPrice} onChange={setShowPrice} compact />
+                                <ToggleItem label="Цена с/с" checked={showCostPrice} onChange={setShowCostPrice} compact />
+                                <ToggleItem label="Продажная цена" checked={showSellingPrice} onChange={setShowSellingPrice} compact />
                                 <ToggleItem label="Штрихкод / QR-код" checked={showBarcode} onChange={setShowBarcode} compact />
                                 <ToggleItem label="Состав материала" checked={showComposition} onChange={setShowComposition} compact />
                                 {item.brandCode && <ToggleItem label="Бренд" checked={showBrand} onChange={setShowBrand} compact />}
@@ -654,11 +654,19 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                 (layoutStyle === 'side-by-side' || layoutStyle === 'inline' || heightNum <= 60 || paperSize === '75x120') ? "flex-row justify-between items-end w-full px-1" : "flex-col items-center",
                                 layoutStyle === 'minimal' && "flex-1 justify-center items-center border-none pt-2"
                             )}>
-                                {showPrice && item.costPrice !== null && layoutStyle !== 'minimal' && (
-                                    <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black leading-none">
-                                        {new Intl.NumberFormat('ru-RU').format(Number(item.costPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">₽</span>
-                                    </div>
-                                )}
+                                <div className="flex flex-col gap-0.5 items-start">
+                                    {showCostPrice && item.costPrice !== null && (
+                                        <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 14 : 10) * scale * finalPriceScale}px` }} className="font-bold text-slate-500 leading-none whitespace-nowrap">
+                                            с/с: {new Intl.NumberFormat('ru-RU').format(Number(item.costPrice))} {currencySymbol}
+                                        </div>
+                                    )}
+                                    {showSellingPrice && item.sellingPrice !== null && (
+                                        <div style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black leading-none whitespace-nowrap">
+                                            {showCostPrice && <span className="text-[0.6em] font-bold text-slate-400 mr-1 uppercase">Прод:</span>}
+                                            {new Intl.NumberFormat('ru-RU').format(Number(item.sellingPrice))} <span style={{ fontSize: `${(paperSize === 'a4' || paperSize === '75x120' ? 12 : (currentH > currentW ? 11 : 9)) * scale * finalPriceScale}px` }} className="font-bold text-slate-400">{currencySymbol}</span>
+                                        </div>
+                                    )}
+                                </div>
                                 {(showBarcode || layoutStyle === 'minimal') && (
                                     <QRCodeSVG
                                         value={item.sku || item.id}

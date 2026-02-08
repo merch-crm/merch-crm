@@ -16,7 +16,7 @@ export default function ChargingNotificationPanelsCRM() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-[2rem] p-6 shadow-xl font-sans"
+                className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-3xl p-6 shadow-xl font-sans"
             >
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
@@ -57,7 +57,7 @@ export default function ChargingNotificationPanelsCRM() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-[2rem] p-6 shadow-xl font-sans"
+                className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-3xl p-6 shadow-xl font-sans"
             >
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">

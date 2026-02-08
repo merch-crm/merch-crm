@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions";
+import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { BrandingSettings } from "@/components/branding-provider";
 
 
 import { db } from "@/lib/db";
@@ -28,6 +30,10 @@ export default async function ClientsPage() {
         totalRevenue: 0
     };
 
+    const brandingResult = await getBrandingAction();
+    const branding = brandingResult.data as BrandingSettings;
+    const currencySymbol = branding?.currencySymbol || "₽";
+
     const statCards = [
         {
             name: "Всего клиентов",
@@ -49,7 +55,7 @@ export default async function ClientsPage() {
         },
         {
             name: "Средний чек",
-            value: `${stats.avgCheck} ₽`,
+            value: `${stats.avgCheck.toLocaleString()} ${currencySymbol}`,
             icon: CreditCard,
             iconColor: "text-slate-400",
             trend: "-2%",
@@ -58,7 +64,7 @@ export default async function ClientsPage() {
         },
         {
             name: "Общая выручка",
-            value: `${stats.totalRevenue} ₽`,
+            value: `${stats.totalRevenue.toLocaleString()} ${currencySymbol}`,
             icon: BarChart3,
             iconColor: "text-blue-500",
             trend: "+18%",
@@ -80,7 +86,7 @@ export default async function ClientsPage() {
                     <div className="shrink-0">
                         <Link
                             href="/dashboard/clients/new"
-                            className="h-11 w-11 sm:h-12 sm:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-full sm:rounded-[18px] sm:px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center justify-center p-0 sm:p-auto"
+                            className="h-11 w-11 sm:h-12 sm:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center justify-center p-0 sm:p-auto"
                             title="Добавить клиента"
                         >
                             <Plus className="w-5 h-5" />

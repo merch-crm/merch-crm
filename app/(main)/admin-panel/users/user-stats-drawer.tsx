@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, TrendingUp, CheckCircle, PieChart, Loader2, Calendar } from "lucide-react";
 import { getUserStats } from "./stats/actions";
+import { useBranding } from "@/components/branding-provider";
 
 
 interface UserStatsDrawerProps {
@@ -32,6 +33,7 @@ interface StatsData {
 }
 
 export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProps) {
+    const { currencySymbol } = useBranding();
     const [stats, setStats] = useState<StatsData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -112,7 +114,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                     <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
                                         <div className="text-3xl font-bold text-slate-900 tracking-normal">
-                                            {stats.orders.monthRevenue.toLocaleString()} ₽
+                                            {stats.orders.monthRevenue.toLocaleString()} {currencySymbol}
                                         </div>
                                         <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-[18px]">
                                             <Calendar className="w-3 h-3" />
@@ -127,7 +129,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                         <div className="p-5 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего выручка</p>
                                             <div className="text-xl font-bold text-slate-900 truncate" title={stats.orders.totalRevenue.toLocaleString()}>
-                                                {(stats.orders.totalRevenue / 1000).toFixed(0)}k ₽
+                                                {(stats.orders.totalRevenue / 1000).toFixed(0)}k {currencySymbol}
                                             </div>
                                         </div>
                                     </div>

@@ -14,6 +14,7 @@ import { Category, StorageLocation, ItemFormData } from "../../../types";
 import { AddStorageLocationDialog } from "../../../add-storage-location-dialog";
 import { StepFooter } from "./step-footer";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { useBranding } from "@/components/branding-provider";
 
 interface StockStepProps {
     category: Category;
@@ -37,6 +38,7 @@ export function StockStep({
     validationError,
     isSubmitting
 }: StockStepProps) {
+    const { currencySymbol } = useBranding();
 
     const adjustValue = (field: keyof ItemFormData, delta: number) => {
         const value = formData[field];
@@ -134,7 +136,7 @@ export function StockStep({
                                                 onChange={(e) => updateFormData({ costPrice: e.target.value })}
                                                 className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus:ring-0 outline-none p-0 pr-8 min-w-0"
                                             />
-                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">₽</span>
+                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +156,7 @@ export function StockStep({
                                                 onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
                                                 className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus:ring-0 outline-none p-0 pr-8 min-w-0"
                                             />
-                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">₽</span>
+                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                         </div>
                                     </div>
                                 </div>

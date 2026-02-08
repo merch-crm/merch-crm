@@ -22,7 +22,7 @@ export default function FinanceLoading() {
                 {[...Array(2)].map((_, i) => (
                     <div key={i} className="crm-card p-8 bg-white h-72 border-none shadow-md animate-pulse">
                         <div className="flex items-center gap-4 mb-8">
-                            <div className="w-12 h-12 rounded-[18px] bg-slate-100" />
+                            <div className="w-12 h-12 rounded-2xl bg-slate-100" />
                             <div className="space-y-2">
                                 <div className="h-5 w-40 bg-slate-100 rounded" />
                                 <div className="h-3 w-24 bg-slate-50 rounded" />
@@ -34,7 +34,7 @@ export default function FinanceLoading() {
             </div>
 
             {/* Table Mockup */}
-            <div className="crm-card bg-white border-none shadow-md overflow-hidden !rounded-[24px] animate-pulse">
+            <div className="crm-card bg-white border-none shadow-md overflow-hidden !rounded-3xl animate-pulse">
                 <div className="px-8 py-7 bg-slate-50/70 border-b border-slate-200/60 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-[20px] bg-white" />

@@ -161,7 +161,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     return (
         <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-6 px-4 sm:px-8 pb-8 pt-4">
             {/* Sidebar */}
-            <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-[24px] flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
+            <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
                 <div className="p-6 shrink-0">
                     <button
                         onClick={handleBack}
@@ -225,7 +225,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                 <div className="h-[80px] shrink-0 border-t border-slate-200 bg-white z-30 px-7 flex items-center">
                     <button
                         onClick={handleReset}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-[18px] hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold text-slate-400 hover:text-slate-900 group"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold text-slate-400 hover:text-slate-900 group"
                     >
                         <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
                         Начать заново
@@ -235,7 +235,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
 
             {/* Main Content */}
             <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-4">
-                <div className="bg-white rounded-[24px] shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
+                <div className="bg-white rounded-3xl shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
                     <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
                         {step === 0 && (
                             <div className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -272,7 +272,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.lastName}
                                             onChange={(e) => updateFormData({ lastName: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -281,7 +281,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.firstName}
                                             onChange={(e) => updateFormData({ firstName: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -293,7 +293,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.patronymic}
                                             onChange={(e) => updateFormData({ patronymic: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -304,7 +304,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.company}
                                             onChange={(e) => updateFormData({ company: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -320,7 +320,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.phone}
                                             onChange={(e) => updateFormData({ phone: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -329,7 +329,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="email"
                                             value={formData.email}
                                             onChange={(e) => updateFormData({ email: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -342,7 +342,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             value={formData.telegram}
                                             onChange={(e) => updateFormData({ telegram: e.target.value })}
                                             placeholder="@username"
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -351,7 +351,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.instagram}
                                             onChange={(e) => updateFormData({ instagram: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -361,7 +361,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             value={formData.socialLink}
                                             onChange={(e) => updateFormData({ socialLink: e.target.value })}
                                             placeholder="vk.com/..."
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -376,7 +376,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         <select
                                             value={formData.managerId}
                                             onChange={(e) => updateFormData({ managerId: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
                                         >
                                             <option value="">Не назначен</option>
                                             {managers.map(m => (
@@ -390,7 +390,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.city}
                                             onChange={(e) => updateFormData({ city: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -401,7 +401,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         <select
                                             value={formData.acquisitionSource}
                                             onChange={(e) => updateFormData({ acquisitionSource: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
                                         >
                                             <option value="">Не указано</option>
                                             <option value="instagram">Instagram</option>
@@ -417,7 +417,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             type="text"
                                             value={formData.address}
                                             onChange={(e) => updateFormData({ address: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
                                         />
                                     </div>
                                 </div>
@@ -428,18 +428,18 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         value={formData.comments}
                                         onChange={(e) => updateFormData({ comments: e.target.value })}
                                         rows={4}
-                                        className="w-full p-4 rounded-[18px] border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none resize-none"
+                                        className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none resize-none"
                                     />
                                 </div>
 
                                 {duplicates.length > 0 && (
-                                    <div className="p-4 rounded-[18px] bg-amber-50 border border-amber-100 space-y-3">
+                                    <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
                                         <div className="text-amber-800 font-bold text-xs  tracking-wider">
                                             Найдены похожие клиенты ({duplicates.length})
                                         </div>
                                         <div className="space-y-2">
                                             {duplicates.map(dup => (
-                                                <div key={dup.id} className="flex items-center justify-between bg-white/50 p-2 rounded-[18px] border border-amber-200/50">
+                                                <div key={dup.id} className="flex items-center justify-between bg-white/50 p-2 rounded-2xl border border-amber-200/50">
                                                     <div className="text-xs font-bold text-slate-700">
                                                         {dup.lastName} {dup.firstName} ({dup.phone})
                                                     </div>

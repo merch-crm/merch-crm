@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { ilike, or, desc } from "drizzle-orm";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export interface SearchResult {
     id: string;
@@ -27,6 +28,8 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
     const isDesign = dep === "Дизайн";
 
     try {
+        const branding = await getBrandingSettings();
+        const currencySymbol = branding?.currencySymbol || "₽";
         const searchTerm = `%${query}%`;
 
         // Define permissions
@@ -200,7 +203,7 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
                 id: p.id,
                 type: "promocode" as const,
                 title: p.code,
-                subtitle: `${p.discountType === 'percentage' ? p.value + '%' : p.value + '₽'} скидка`,
+                subtitle: `${p.discountType === 'percentage' ? p.value + '%' : p.value + currencySymbol} скидка`,
                 href: `/dashboard/finance/promocodes?id=${p.id}`,
                 status: p.isActive ? "Активен" : "Неактивен"
             })),
@@ -222,7 +225,7 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
                 id: e.id,
                 type: "expense" as const,
                 title: e.description || "Расход без описания",
-                subtitle: `${e.amount}₽ - ${e.category}`,
+                subtitle: `${e.amount}${currencySymbol} - ${e.category}`,
                 href: `/dashboard/finance?id=${e.id}`
             })),
             ...foundCategories.map(c => ({

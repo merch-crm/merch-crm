@@ -3,6 +3,7 @@ import { promocodes } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 
 import { type InferSelectModel } from "drizzle-orm";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export interface ValidationResult {
     isValid: boolean;
@@ -50,12 +51,15 @@ export async function validatePromocode(
         }
 
         // Проверка минимальной суммы заказа
+        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
+        const currencySymbol = branding?.currencySymbol || "₽";
+
         const minAmount = Number(promo.minOrderAmount || 0);
         if (totalAmount < minAmount) {
             return {
                 isValid: false,
                 discount: 0,
-                error: `Минимальная сумма заказа для этого промокода: ${minAmount} ₽`
+                error: `Минимальная сумма заказа для этого промокода: ${minAmount} ${currencySymbol}`
             };
         }
 
@@ -105,7 +109,7 @@ export async function validatePromocode(
                 const maxDiscount = Number(promo.maxDiscountAmount || 0);
                 if (maxDiscount > 0 && discount > maxDiscount) {
                     discount = maxDiscount;
-                    message = `Скидка ограничена максимумом в ${maxDiscount} ₽`;
+                    message = `Скидка ограничена максимумом в ${maxDiscount} ${currencySymbol}`;
                 }
                 break;
             case "fixed":

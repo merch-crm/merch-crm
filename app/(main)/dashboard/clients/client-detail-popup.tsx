@@ -8,6 +8,7 @@ import { ru } from "date-fns/locale";
 import StatusBadgeInteractive from "../orders/status-badge-interactive";
 import { EditClientDialog } from "./edit-client-dialog";
 import { PremiumPagination } from "@/components/ui/premium-pagination";
+import { useBranding } from "@/components/branding-provider";
 
 interface ClientOrder {
     id: string;
@@ -38,6 +39,7 @@ interface ClientDetailsData {
 }
 
 export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }: { clientId: string, isOpen: boolean, onClose: () => void, showFinancials?: boolean }) {
+    const { currencySymbol } = useBranding();
     const [client, setClient] = useState<ClientDetailsData | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -108,7 +110,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 <div className="fixed inset-0 bg-black/30 transition-opacity" onClick={onClose} />
 
-                <div className="relative transform overflow-hidden rounded-[18px] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-200">
+                <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-200">
                     <div className="absolute top-0 right-0 pt-4 pr-4 z-10">
                         <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-colors">
                             <X className="h-6 w-6" />
@@ -131,14 +133,14 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 <div className="flex items-center gap-1">
                                                     <button
                                                         onClick={() => setShowEditDialog(true)}
-                                                        className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[18px] transition-all"
+                                                        className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
                                                         title="Редактировать клиента"
                                                     >
                                                         <Pencil className="w-5 h-5" />
                                                     </button>
                                                     <button
                                                         onClick={() => setConfirmDelete(true)}
-                                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-[18px] transition-all"
+                                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
                                                         title="Удалить клиента"
                                                     >
                                                         <Trash2 className="w-5 h-5" />
@@ -156,15 +158,15 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                     <div className="text-right">
                                         <div className="text-slate-400 text-[10px]  font-bold tracking-wider mb-3">Статистика</div>
                                         <div className="flex flex-wrap justify-end gap-5">
-                                            <div className="bg-slate-50 px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[100px] text-left transition-all hover:shadow-md">
+                                            <div className="bg-slate-50 px-6 py-4 rounded-2xl shadow-sm border border-slate-200 min-w-[100px] text-left transition-all hover:shadow-md">
                                                 <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Заказов</div>
                                                 <div className="text-2xl font-bold text-slate-900 leading-none">{client.stats.count}</div>
                                             </div>
                                             {showFinancials && (
-                                                <div className="bg-slate-50 px-6 py-4 rounded-[18px] shadow-sm border border-slate-200 min-w-[140px] text-left transition-all hover:shadow-md">
+                                                <div className="bg-slate-50 px-6 py-4 rounded-2xl shadow-sm border border-slate-200 min-w-[140px] text-left transition-all hover:shadow-md">
                                                     <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Сумма</div>
                                                     <div className="text-2xl font-bold text-emerald-600 leading-none">
-                                                        {client.stats.total} <span className="text-lg font-bold ml-0.5">₽</span>
+                                                        {client.stats.total} <span className="text-lg font-bold ml-0.5">{currencySymbol}</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -173,7 +175,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                 </div>
 
                                 {confirmDelete && (
-                                    <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-[18px] flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+                                    <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-between animate-in fade-in slide-in-from-top-2">
                                         <div className="flex items-center text-red-700 text-sm font-medium">
                                             <AlertTriangle className="w-5 h-5 mr-3 text-red-500" />
                                             Вы уверены, что хотите удалить клиента? Все данные будут стерты.
@@ -181,14 +183,14 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                         <div className="flex gap-3">
                                             <button
                                                 onClick={() => setConfirmDelete(false)}
-                                                className="px-4 py-2 text-slate-600 hover:bg-white rounded-[18px] text-sm font-bold transition-colors"
+                                                className="px-4 py-2 text-slate-600 hover:bg-white rounded-2xl text-sm font-bold transition-colors"
                                                 disabled={isDeleting}
                                             >
                                                 Отмена
                                             </button>
                                             <button
                                                 onClick={handleDelete}
-                                                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-[18px] text-sm font-bold transition-colors disabled:opacity-50"
+                                                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-2xl text-sm font-bold transition-colors disabled:opacity-50"
                                                 disabled={isDeleting}
                                             >
                                                 {isDeleting ? "Удаление..." : "удалить"}
@@ -198,7 +200,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                 )}
 
                                 {deleteError && (
-                                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-[18px] text-orange-800 text-sm flex items-start">
+                                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-2xl text-orange-800 text-sm flex items-start">
                                         <AlertTriangle className="w-5 h-5 mr-3 text-orange-500 shrink-0" />
                                         {deleteError}
                                     </div>
@@ -267,7 +269,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 {!isEditingComments ? (
                                                     <button
                                                         onClick={() => setIsEditingComments(true)}
-                                                        className="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[18px] transition-all"
+                                                        className="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
                                                         title="Редактировать"
                                                     >
                                                         <Pencil className="w-4 h-4" />
@@ -277,7 +279,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                         <button
                                                             disabled={isSavingComments}
                                                             onClick={() => setIsEditingComments(false)}
-                                                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all"
+                                                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all"
                                                             title="Отменить"
                                                         >
                                                             <X className="w-4 h-4" />
@@ -285,7 +287,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                         <button
                                                             disabled={isSavingComments}
                                                             onClick={handleSaveComments}
-                                                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-[18px] transition-all"
+                                                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-2xl transition-all"
                                                             title="Сохранить"
                                                         >
                                                             {isSavingComments ? (
@@ -302,14 +304,14 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 <textarea
                                                     value={tempComments}
                                                     onChange={(e) => setTempComments(e.target.value)}
-                                                    className="w-full bg-slate-50 rounded-[18px] p-4 border border-primary/20 text-sm text-slate-900 focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[100px] resize-none transition-all"
+                                                    className="w-full bg-slate-50 rounded-2xl p-4 border border-primary/20 text-sm text-slate-900 focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[100px] resize-none transition-all"
                                                     placeholder="Введите комментарий..."
                                                     autoFocus
                                                 />
                                             ) : (
                                                 <div
                                                     onClick={() => setIsEditingComments(true)}
-                                                    className="bg-slate-50 rounded-[18px] p-4 border border-slate-200 text-sm text-slate-600 whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
+                                                    className="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-sm text-slate-600 whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
                                                 >
                                                     {client.comments || "Нет комментариев"}
                                                     <div className="mt-2 text-[10px] text-slate-300 font-bold  opacity-0 group-hover:opacity-100 transition-opacity">Нажмите, чтобы редактировать</div>
@@ -326,7 +328,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                         </h3>
                                         <div className="space-y-3">
                                             {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order: ClientOrder) => (
-                                                <div key={order.id} className="bg-slate-50 border border-slate-200 rounded-[18px] p-4 hover:bg-white transition-all shadow-sm">
+                                                <div key={order.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 hover:bg-white transition-all shadow-sm">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <span className="text-xs font-mono text-slate-400">#{order.id.slice(0, 8)}</span>
                                                         <StatusBadgeInteractive orderId={order.id} status={order.status} />
@@ -334,7 +336,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                     <div className="flex justify-between items-center">
                                                         <div>
                                                             <div className="text-sm font-bold text-slate-900">
-                                                                {order.items.length} поз. {showFinancials && `на ${order.totalAmount} ₽`}
+                                                                {order.items.length} поз. {showFinancials && `на ${order.totalAmount} ${currencySymbol}`}
                                                             </div>
                                                             <div className="text-xs text-slate-400">
                                                                 {format(new Date(order.createdAt), "dd MMM yyyy", { locale: ru })}
@@ -345,7 +347,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                 </div>
                                             ))}
                                             {client.orders.length === 0 && (
-                                                <div className="text-center py-8 bg-slate-50 rounded-[18px] border border-dashed border-slate-200 text-slate-400 text-sm">
+                                                <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400 text-sm">
                                                     У этого клиента еще нет заказов
                                                 </div>
                                             )}

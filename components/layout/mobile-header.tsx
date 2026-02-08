@@ -77,9 +77,9 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
         )}>
             <div className="flex items-center gap-3">
                 <Link href="/dashboard" className="transition-transform active:scale-95">
-                    <div className="bg-primary rounded-[10px] p-1.5 shadow-lg shadow-primary/20">
+                    <div className="bg-primary rounded-[10px] w-9 h-9 p-1 flex items-center justify-center shadow-sm">
                         {branding.logoUrl ? (
-                            <div className="relative h-4 w-4">
+                            <div className="relative h-7 w-7">
                                 <Image
                                     src={branding.logoUrl}
                                     alt="Logo"
@@ -88,7 +88,7 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
                                 />
                             </div>
                         ) : (
-                            <Printer className="h-4 w-4 text-white" />
+                            <Printer className="h-7 w-7 text-white" />
                         )}
                     </div>
                 </Link>

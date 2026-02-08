@@ -48,6 +48,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import InvoiceDashboard from "./invoice-dashboard";
 import {
     format,
     addMonths,
@@ -385,7 +386,7 @@ const QuickSettings = () => {
                     ))}
                 </div>
             </motion.div>
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between px-10 py-5 bg-black rounded-[24px] text-white">
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between px-10 py-5 bg-black rounded-3xl text-white">
                 <div className="flex gap-6 items-center">
                     <span className="text-[18px] font-black">2024</span>
                     <div className="flex flex-col text-[10px] font-bold uppercase tracking-wider opacity-60">
@@ -651,7 +652,7 @@ const PWAPrompt = () => {
                 <div className="bg-[#BFFF07] rounded-[32px] p-6 pr-12 shadow-[0_20px_50px_rgba(191,255,7,0.15)] relative">
                     <div className="flex items-center gap-5">
                         {/* Icon Block */}
-                        <div className="w-24 h-24 bg-black rounded-[24px] flex items-center justify-center relative flex-shrink-0">
+                        <div className="w-24 h-24 bg-black rounded-3xl flex items-center justify-center relative flex-shrink-0">
                             <Share className="w-8 h-8 text-white" />
                             {/* Animated Finger Cursor */}
                             <motion.div
@@ -739,7 +740,7 @@ const JobActionsGrid = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-[450px] bg-white rounded-[24px] p-5 md:p-6 shadow-[0_16px_32px_rgba(0,0,0,0.08)] relative z-10"
+                className="w-full max-w-[450px] bg-white rounded-3xl p-5 md:p-6 shadow-[0_16px_32px_rgba(0,0,0,0.08)] relative z-10"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
@@ -1041,7 +1042,7 @@ const SmartHomeDashboard = () => {
                             { icon: Tv, label: "Smart TV", units: "2 unit", power: "12kWh", active: false },
                             { icon: Droplets, label: "Humidifier", units: "1 unit", power: "2kWh", active: false },
                         ].map((item, i) => (
-                            <div key={i} className={cn("flex items-center justify-between p-4 rounded-[24px] cursor-pointer transition-all hover:scale-[1.02]", item.active ? "bg-slate-50" : "hover:bg-slate-50")}>
+                            <div key={i} className={cn("flex items-center justify-between p-4 rounded-3xl cursor-pointer transition-all hover:scale-[1.02]", item.active ? "bg-slate-50" : "hover:bg-slate-50")}>
                                 <div className="flex items-center gap-4">
                                     <div className={cn("w-12 h-12 rounded-[20px] flex items-center justify-center", item.active ? "bg-white shadow-sm text-slate-800" : "bg-white border border-slate-200 text-slate-400")}>
                                         <item.icon className="w-6 h-6" />
@@ -1179,7 +1180,7 @@ const SmartHomeDashboard = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
-                    className="bg-white rounded-[24px] p-3 pl-5 flex items-center justify-between shadow-lg shadow-slate-200/50"
+                    className="bg-white rounded-3xl p-3 pl-5 flex items-center justify-between shadow-lg shadow-slate-200/50"
                 >
                     <div className="flex items-center gap-4">
                         <button className="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-600 transition-colors">
@@ -1190,7 +1191,7 @@ const SmartHomeDashboard = () => {
                             <p className="text-slate-400 text-[10px] font-medium">24 devices in use</p>
                         </div>
                     </div>
-                    <button className="bg-black text-white px-5 py-2.5 rounded-[18px] text-xs font-bold hover:bg-slate-800 transition-colors">
+                    <button className="bg-black text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-800 transition-colors">
                         See All
                     </button>
                 </motion.div>
@@ -1468,7 +1469,7 @@ const PricingPlans = () => {
                     className="w-[340px] bg-white rounded-[32px] p-4 shadow-xl shadow-slate-200/50 flex flex-col"
                 >
                     {/* Top Section (Card in Card) */}
-                    <div className={cn("rounded-[24px] p-6 pb-8 relative", plan.bgClass)}>
+                    <div className={cn("rounded-3xl p-6 pb-8 relative", plan.bgClass)}>
                         {/* Badge */}
                         <div className={cn("inline-flex items-center justify-center px-4 py-1.5 rounded-full text-xs font-bold mb-6", plan.badgeClass)}>
                             {plan.name}
@@ -1505,6 +1506,8 @@ const PricingPlans = () => {
         </div>
     );
 };
+
+
 
 
 export default function NewReferencesCRM() {
@@ -1548,6 +1551,10 @@ export default function NewReferencesCRM() {
             case "cards":
                 return (
                     <div className="space-y-24">
+                        <section className="space-y-8">
+                            <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Invoice Dashboard</h3>
+                            <InvoiceDashboard />
+                        </section>
                         <section className="space-y-8">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Карточка Taskello</h3>
                             <TaskelloCard />

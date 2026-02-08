@@ -1,7 +1,7 @@
 "use client";
 
 import { PlusCircle, Settings, CheckCircle2, TrendingUp, Sparkles, Layers } from "lucide-react";
-import { Rouble } from "@/components/ui/icons";
+import { useBranding } from "@/components/branding-provider";
 import { pluralize } from "@/lib/pluralize";
 
 interface OrderStatsProps {
@@ -16,6 +16,7 @@ interface OrderStatsProps {
 }
 
 export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
+    const { currencySymbol } = useBranding();
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
             {/* Main Stats: Revenue (if visible) or Total - Span 8 */}
@@ -25,7 +26,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                 <div className="flex items-start justify-between relative z-10">
                     <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-[var(--radius)] bg-white/10 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 shadow-inner">
-                            {showFinancials ? <Rouble className="w-7 h-7" /> : <Layers className="w-7 h-7" />}
+                            {showFinancials ? <span className="text-2xl font-black">{currencySymbol}</span> : <Layers className="w-7 h-7" />}
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white leading-tight">
@@ -43,7 +44,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                         <span className="text-7xl font-bold tracking-normal">
                             {showFinancials ? stats.revenue.toLocaleString("ru-RU") : stats.total}
                         </span>
-                        {showFinancials && <span className="text-3xl font-medium text-white/50">₽</span>}
+                        {showFinancials && <span className="text-3xl font-medium text-white/50">{currencySymbol}</span>}
                     </div>
 
                     <div className="flex items-center gap-2 mt-4">

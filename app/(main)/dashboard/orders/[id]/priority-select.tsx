@@ -59,7 +59,7 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                 disabled={loading}
                 className={`
                     w-full flex items-center justify-between px-4 py-3.5 
-                    ${activePriority.lightBg} border border-slate-200 rounded-[18px] shadow-sm
+                    ${activePriority.lightBg} border border-slate-200 rounded-2xl shadow-sm
                     hover:border-primary/40 hover:shadow-md transition-all duration-200
                     active:scale-[0.98] group relative overflow-hidden
                     ${loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}
