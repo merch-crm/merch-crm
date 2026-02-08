@@ -100,7 +100,7 @@ export function ItemHeader({
                                     onDoubleClick={onEdit}
                                 >
                                     {(() => {
-                                        const cat = item.category as any;
+                                        const cat = item.category as { name?: string; singularName?: string | null; pluralName?: string | null; parent?: { name?: string; singularName?: string | null } | null } | null;
 
                                         const forceSingular = (name: string, metadataSingular?: string | null) => {
                                             if (metadataSingular && metadataSingular.toLowerCase() !== name.toLowerCase()) return metadataSingular;

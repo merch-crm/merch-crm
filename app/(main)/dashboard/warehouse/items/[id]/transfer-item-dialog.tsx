@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus, Minus, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check, ArrowRightLeft, ArrowRight, MapPin } from "lucide-react";
-import { StorageLocation } from "../../storage-locations-tab";
+import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle, RefreshCw, Check } from "lucide-react";
 import { transferInventoryStock } from "../../actions";
+import { StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";

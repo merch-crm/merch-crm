@@ -3,7 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { db } from "./lib/db";
 import { inventoryTransactions, inventoryItems } from "./lib/schema";
-import { desc, isNotNull } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 async function main() {
     console.log("DATABASE_URL:", process.env.DATABASE_URL ? "SET" : "NOT SET");
@@ -19,7 +19,7 @@ async function main() {
     console.log("Recent Transactions:");
     transactions.forEach(t => {
         if (t.costPrice) {
-            console.log(`- Date: ${t.createdAt.toLocaleString()}, Item: ${t.item?.name}, Qty: ${t.changeAmount}, Price: ${t.costPrice}, Reason: ${t.reason}`);
+            console.log(`- Date: ${t.createdAt.toLocaleString()}, Item: ${t.item?.name}, Qty: ${t.changeAmount}, Price: ${t.costPrice}, Reason: ${t.reason} `);
         }
     });
 
@@ -33,7 +33,7 @@ async function main() {
 
     console.log("\nRecently Updated Items:");
     items.forEach(i => {
-        console.log(`- ID: ${i.id}, Name: ${i.name}, CostPrice: ${i.costPrice}`);
+        console.log(`- ID: ${i.id}, Name: ${i.name}, CostPrice: ${i.costPrice} `);
     });
 }
 

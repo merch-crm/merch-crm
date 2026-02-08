@@ -9,15 +9,12 @@ import {
     Ruler,
     Droplets,
     Search,
-    GripVertical,
-    UserCircle2,
     Pencil,
     Plus,
     X,
 } from "lucide-react";
 import { CLOTHING_QUALITIES } from "../../../category-utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
-import { useToast } from "@/components/ui/toast";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 import { Session } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -47,8 +44,6 @@ export function ItemGeneralInfo({
     onRemoveAttribute,
     onEdit
 }: ItemGeneralInfoProps) {
-    const { toast } = useToast();
-
     // Helper to get descriptive name for a code
     const getAttrLabel = (typeSlug: string, value: string | number | null | undefined): string => {
         if (!value) return "—";

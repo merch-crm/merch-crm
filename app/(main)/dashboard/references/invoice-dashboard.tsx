@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import {
     Plus,
@@ -17,10 +17,8 @@ import {
     Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 
 const InvoiceDashboard = () => {
-    const [activeTab, setActiveTab] = useState("lines");
 
     const invoiceItems = [
         { id: 1, name: "iPhone 14 Pro", price: 850, qty: 20, store: "Store 2", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-1inch-deeppurple?wid=200&hei=200&fmt=jpeg" },

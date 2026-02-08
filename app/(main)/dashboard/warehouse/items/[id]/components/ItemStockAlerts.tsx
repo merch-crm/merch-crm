@@ -55,7 +55,7 @@ export function ItemStockAlerts({
                                     <input
                                         type="number"
                                         value={editData.lowStockThreshold || 0}
-                                        onChange={(e) => setEditData((prev: any) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
                                         className="text-2xl font-black text-slate-900 leading-none bg-transparent border-none p-0 w-16 outline-none focus:ring-0"
                                     />
                                     <span className="text-[11px] font-black text-slate-400">шт.</span>
@@ -77,7 +77,7 @@ export function ItemStockAlerts({
                                     max="500"
                                     step="1"
                                     value={editData.lowStockThreshold || 0}
-                                    onChange={(e) => setEditData((prev: any) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
                                 {/* Custom Thumb handle */}
@@ -116,7 +116,7 @@ export function ItemStockAlerts({
                                     <input
                                         type="number"
                                         value={editData.criticalStockThreshold || 0}
-                                        onChange={(e) => setEditData((prev: any) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
                                         className="text-3xl font-black text-slate-900 leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
                                     />
                                     <span className="text-[13px] font-black text-slate-400">шт.</span>
@@ -138,7 +138,7 @@ export function ItemStockAlerts({
                                     max="500"
                                     step="1"
                                     value={editData.criticalStockThreshold || 0}
-                                    onChange={(e) => setEditData((prev: any) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
                                 <div

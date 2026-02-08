@@ -6,7 +6,6 @@ import {
     CheckCircle2,
     BarChart,
     Activity as ActivityIcon,
-    DollarSign,
     Package,
     Zap,
     Sparkles
@@ -109,13 +108,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                             <div className={cn("p-4 rounded-2xl shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:bg-white group-hover:text-slate-900", stat.bg)}>
                                 {(() => {
                                     const StatIcon = stat.icon;
-                                    return typeof StatIcon === 'function' && StatIcon.prototype?.render ? (
-                                        // @ts-ignore
-                                        <StatIcon className={cn("w-6 h-6", stat.color, "group-hover:text-slate-900")} />
-                                    ) : (
-                                        // @ts-ignore
-                                        <StatIcon />
-                                    );
+                                    return <StatIcon className={cn("w-6 h-6", stat.color, "group-hover:text-slate-900")} />;
                                 })()}
                             </div>
                             <div className="px-3 py-1 rounded-lg bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200 group-hover:bg-white/10 group-hover:text-primary group-hover:border-transparent transition-all">

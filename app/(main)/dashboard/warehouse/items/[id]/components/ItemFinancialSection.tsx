@@ -231,7 +231,7 @@ export function ItemFinancialSection({
                                 <input
                                     type="number"
                                     value={editData.costPrice ?? ""}
-                                    onChange={(e) => setEditData((prev: any) => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
+                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
                                     className="text-lg font-black text-slate-900 bg-white border-none p-1 w-full focus:ring-0 rounded-lg"
                                 />
                             </div>
@@ -263,7 +263,7 @@ export function ItemFinancialSection({
                                 <input
                                     type="number"
                                     value={editData.sellingPrice ?? ""}
-                                    onChange={(e) => setEditData((prev: any) => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
+                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
                                     className="text-lg font-black text-slate-900 bg-white border-none p-1 w-full focus:ring-0 rounded-lg"
                                 />
                             </div>

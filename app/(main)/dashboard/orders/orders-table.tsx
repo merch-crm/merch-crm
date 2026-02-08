@@ -84,7 +84,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
             { header: "Приоритет", key: "priority" },
             { header: "Срочно", key: (o) => o.isUrgent ? "Да" : "Нет" },
             { header: "Создал", key: (o) => o.creator?.name || "Система" },
-            { header: "Роль", key: (o) => (o.creator as any)?.role?.name || (o.creator ? "Оператор" : "Система") }
+            { header: "Роль", key: (o) => (o.creator as { role?: { name: string } | null })?.role?.name || (o.creator ? "Оператор" : "Система") }
         ]);
         toast("Экспорт завершен", "success");
         playSound("notification_success");

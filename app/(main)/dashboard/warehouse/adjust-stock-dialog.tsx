@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Plus, Minus, AlertCircle, Package, RefreshCw, ChevronUp, ChevronDown, Check, ArrowRightLeft, ArrowRight } from "lucide-react";
+import { Plus, Minus, AlertCircle, Package, RefreshCw, Check } from "lucide-react";
 import { adjustInventoryStock } from "./actions";
 import { playSound } from "@/lib/sounds";
 
@@ -58,10 +58,6 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
     const currentStockOnLocation = Array.isArray(itemStocks)
         ? itemStocks.find(s => s.storageLocationId === selectedLocationId)?.quantity ?? 0
         : 0;
-
-    const selectedLocationName = Array.isArray(locations)
-        ? locations.find(l => l.id === selectedLocationId)?.name || "Склад не выбран"
-        : "Загрузка складов...";
 
 
 

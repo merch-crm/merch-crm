@@ -1298,7 +1298,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const isArchived = formData.get("isArchived") === "true";
 
         console.log("EXECUTING DB UPDATE...");
-        const result = await db.update(inventoryItems).set({
+        await db.update(inventoryItems).set({
             name,
             sku: finalSku || null,
             itemType: itemType || "clothing",

@@ -6,7 +6,6 @@ import { InventoryItem, AttributeType, InventoryAttribute } from "../types";
 import { Printer, X, AlignLeft, AlignCenter, RotateCw, Download, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useBranding } from "@/components/branding-provider";
@@ -47,7 +46,6 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [showQuality, setShowQuality] = useState(false);
     const [showCategory, setShowCategory] = useState(false);
     const [showLogo, setShowLogo] = useState(false);
-    type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
     const branding = useBranding();
     const { currencySymbol } = branding;

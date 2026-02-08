@@ -13,22 +13,19 @@ import {
     Book,
     X,
     LayoutGrid,
-    TrendingUp,
     ShoppingBag,
-    RefreshCcw,
-    Save,
-    SlidersHorizontal,
     ArrowRightLeft,
-    Bell,
     Package,
     FileDown,
-    Tag,
     ChevronLeft,
     ChevronRight,
     RotateCcw,
     Archive,
     Banknote,
     Loader2,
+    Save,
+    RefreshCcw,
+    SlidersHorizontal, // Add this back
 
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,7 +44,6 @@ import {
     ActiveOrderItem
 } from "../../types";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 
 import {
     getItemHistory,
@@ -64,7 +60,6 @@ import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { compressImage } from "@/lib/image-processing";
 import { Button } from "@/components/ui/button";
-import { useBranding } from "@/components/branding-provider";
 
 
 import { ItemGeneralInfo } from "./components/ItemGeneralInfo";
@@ -125,32 +120,25 @@ export function ItemDetailClient({
 
     const router = useRouter();
     const { toast } = useToast();
-    const { currencySymbol } = useBranding();
     const [mounted, setMounted] = useState(false);
-    const [desktopGraphWidth, setDesktopGraphWidth] = useState(1000);
-    const [tabletGraphWidth, setTabletGraphWidth] = useState(1000);
-    const desktopGraphRef = useRef<HTMLDivElement>(null);
     const tabletGraphRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                if (entry.target === desktopGraphRef.current) {
-                    setDesktopGraphWidth(Math.max(100, entry.contentRect.width));
-                } else if (entry.target === tabletGraphRef.current) {
-                    setTabletGraphWidth(Math.max(100, entry.contentRect.width));
+                if (entry.target === tabletGraphRef.current) {
+                    // This state variable is no longer used, but keeping the observer logic for tabletGraphRef
+                    // in case it's used elsewhere or will be re-introduced.
+                    // setTabletGraphWidth(Math.max(100, entry.contentRect.width));
                 }
             }
         });
 
-        const desktopEl = desktopGraphRef.current;
         const tabletEl = tabletGraphRef.current;
 
-        if (desktopEl) observer.observe(desktopEl);
         if (tabletEl) observer.observe(tabletEl);
 
         return () => {
-            if (desktopEl) observer.unobserve(desktopEl);
             if (tabletEl) observer.unobserve(tabletEl);
             observer.disconnect();
         };
@@ -194,8 +182,6 @@ export function ItemDetailClient({
     const [pendingDraft, setPendingDraft] = useState<Partial<InventoryItem> | null>(null);
     const [showUnsavedChangesConfirm, setShowUnsavedChangesConfirm] = useState(false);
     const [pendingExitAction, setPendingExitAction] = useState<(() => void) | null>(null);
-    const [costTimeframe, setCostTimeframe] = useState<'1m' | '3m' | '6m' | '1y' | 'all'>('1m');
-    const [hoveredCostPoint, setHoveredCostPoint] = useState<number | null>(null);
 
     // Mobile tab navigation
     // Mobile tab navigation
@@ -230,16 +216,6 @@ export function ItemDetailClient({
     const resetThumbSettings = () => {
         setEditData(prev => ({ ...prev, thumbnailSettings: { zoom: 1, x: 0, y: 0 } }));
     };
-
-    // Cost History Scrolling
-    const costHistoryRef = useRef<HTMLDivElement>(null);
-
-    // Auto-scroll cost history to end on load
-    useEffect(() => {
-        if (costHistoryRef.current) {
-            costHistoryRef.current.scrollLeft = costHistoryRef.current.scrollWidth;
-        }
-    }, [history, item.costPrice]);
 
     // Calculate base scale to achieve 'cover' fit
     const baseScale = useMemo(() => {
@@ -395,153 +371,6 @@ export function ItemDetailClient({
         return (!item.unit || item.unit.toLowerCase() === 'pcs' || item.unit === 'шт') ? "шт." : item.unit;
     }, [item.unit]);
 
-    // Calculate last purchase price (most recent supply)
-    const lastInCostPrice = useMemo(() => {
-        const supplyTxs = history.filter(tx => tx.type === 'in' && Number(tx.costPrice) > 0);
-        if (supplyTxs.length > 0) {
-            // history usually sorted DESC (newest first)
-            return Number(supplyTxs[0].costPrice);
-        }
-        return Number(item.costPrice) || 0;
-    }, [history, item.costPrice]);
-
-    // Calculate Weighted Average Cost (WAC) - средневзвешенная себестоимость
-    // WAC = Σ(quantity * price) / Σ(quantity)
-    const weightedAverageCost = useMemo(() => {
-        const supplyTxs = history.filter(tx => tx.type === 'in' && Number(tx.costPrice) > 0 && tx.changeAmount > 0);
-
-        if (supplyTxs.length === 0) {
-            return Number(item.costPrice) || 0;
-        }
-
-        let totalCost = 0;
-        let totalQuantity = 0;
-
-        for (const tx of supplyTxs) {
-            const qty = tx.changeAmount;
-            const price = Number(tx.costPrice);
-            totalCost += qty * price;
-            totalQuantity += qty;
-        }
-
-        if (totalQuantity === 0) {
-            return Number(item.costPrice) || 0;
-        }
-
-        return totalCost / totalQuantity;
-    }, [history, item.costPrice]);
-
-
-
-    const costHistoryStats = useMemo(() => {
-        // 1. Get all supply transactions with costPrice
-        const supplyTxs = history
-            .filter(tx => tx.type === 'in' && tx.costPrice)
-            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()); // Chronological
-
-        const lastPriceFromHistory = supplyTxs.length > 0 ? Number(supplyTxs[supplyTxs.length - 1].costPrice) : 0;
-        const currentPrice = (Number(item.costPrice) > 0) ? Number(item.costPrice) : (lastPriceFromHistory || 0);
-
-        // 2. Group by date to avoid repetitive X-axis labels and provide daily averages
-        const groupedByDate: Record<string, { date: Date, prices: number[] }> = {};
-        supplyTxs.forEach(tx => {
-            const dateKey = format(new Date(tx.createdAt), 'yyyy-MM-dd');
-            if (!groupedByDate[dateKey]) {
-                groupedByDate[dateKey] = { date: new Date(tx.createdAt), prices: [] };
-            }
-            groupedByDate[dateKey].prices.push(Number(tx.costPrice));
-        });
-
-        const supplyPoints = Object.values(groupedByDate).map(group => ({
-            date: group.date,
-            costs: group.prices,
-            label: format(group.date, 'd MMM', { locale: ru }),
-            avg: group.prices.reduce((a, b) => a + b, 0) / group.prices.length,
-            hasData: true,
-            lastDate: group.date
-        }));
-
-        // 3. Filter based on timeframe
-        let filteredPoints = [...supplyPoints];
-        const now = new Date();
-
-        if (costTimeframe === '1m') {
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(now.getMonth() - 1);
-            filteredPoints = supplyPoints.filter(p => p.date >= oneMonthAgo);
-        } else if (costTimeframe === '3m') {
-            const threeMonthsAgo = new Date();
-            threeMonthsAgo.setMonth(now.getMonth() - 3);
-            filteredPoints = supplyPoints.filter(p => p.date >= threeMonthsAgo);
-        } else if (costTimeframe === '6m') {
-            const sixMonthsAgo = new Date();
-            sixMonthsAgo.setMonth(now.getMonth() - 6);
-            filteredPoints = supplyPoints.filter(p => p.date >= sixMonthsAgo);
-        } else if (costTimeframe === '1y') {
-            const oneYearAgo = new Date();
-            oneYearAgo.setFullYear(now.getFullYear() - 1);
-            filteredPoints = supplyPoints.filter(p => p.date >= oneYearAgo);
-        }
-
-        // 4. Add "Current" point
-        filteredPoints.push({
-            date: new Date(),
-            costs: [currentPrice],
-            label: "Тек.",
-            avg: currentPrice,
-            hasData: currentPrice > 0,
-            lastDate: new Date()
-        });
-
-        const points = filteredPoints.filter(p => p.avg > 0);
-
-        // Calculate stats
-        const allIndividualCosts = points.map(p => p.avg).filter(v => v > 0);
-
-        let minVal = allIndividualCosts.length > 0 ? Math.min(...allIndividualCosts) : (currentPrice > 0 ? currentPrice : 100);
-        let maxVal = allIndividualCosts.length > 0 ? Math.max(...allIndividualCosts) : (currentPrice > 0 ? currentPrice : 110);
-
-        // Add 10% vertical padding to the scale for aesthetics
-        const diff = maxVal - minVal;
-        if (diff === 0) {
-            minVal = minVal > 0 ? minVal * 0.8 : 0;
-            maxVal = maxVal > 0 ? maxVal * 1.2 : 100;
-        } else {
-            minVal = Math.max(0, minVal - diff * 0.15);
-            maxVal = maxVal + diff * 0.15;
-        }
-
-        const firstPoint = supplyPoints[0];
-        let yearlyChange = 0;
-        if (firstPoint && firstPoint.avg > 0) {
-            yearlyChange = ((currentPrice - firstPoint.avg) / firstPoint.avg) * 100;
-        }
-
-        // Calculate Weighted Average Cost for analytics (same as main WAC)
-        const supplyTxsForWac = history.filter(tx => tx.type === 'in' && Number(tx.costPrice) > 0 && tx.changeAmount > 0);
-        let wacForStats = currentPrice;
-        if (supplyTxsForWac.length > 0) {
-            let totalCost = 0;
-            let totalQty = 0;
-            for (const tx of supplyTxsForWac) {
-                totalCost += tx.changeAmount * Number(tx.costPrice);
-                totalQty += tx.changeAmount;
-            }
-            if (totalQty > 0) {
-                wacForStats = totalCost / totalQty;
-            }
-        }
-
-        return {
-            points,
-            max: maxVal,
-            min: minVal,
-            actualMax: allIndividualCosts.length > 0 ? Math.max(...allIndividualCosts) : currentPrice,
-            actualMin: allIndividualCosts.length > 0 ? Math.min(...allIndividualCosts) : currentPrice,
-            avg: wacForStats, // Use WAC instead of simple average
-            yearlyChange: yearlyChange
-        };
-    }, [history, item.costPrice, costTimeframe]);
 
     // Set custom trail for breadcrumbs
     const { setCustomTrail } = useBreadcrumbs();
@@ -642,18 +471,19 @@ export function ItemDetailClient({
         ];
 
         // Add category path if exists
-        if (item.category) {
-            const cat = item.category as any;
+        const cat = item.category as { name?: string; id?: string; singularName?: string | null; parent?: { id?: string; name?: string; singularName?: string | null } | null } | null;
+
+        if (cat) {
             if (cat.parent) {
                 const parentCat = cat.parent;
                 trail.push({
-                    label: forceSingular(parentCat.name, parentCat.singularName),
+                    label: forceSingular(parentCat.name || "", parentCat.singularName),
                     href: `/dashboard/warehouse/${parentCat.id}`
                 });
             }
 
             trail.push({
-                label: forceSingular(cat.name, cat.singularName),
+                label: forceSingular(cat.name || "", cat.singularName),
                 href: `/dashboard/warehouse/${cat.id}`
             });
         } else {
@@ -665,7 +495,7 @@ export function ItemDetailClient({
 
         trail.push({
             label: (() => {
-                const cat = item.category as any;
+                const cat = item.category as { name?: string; singularName?: string | null; pluralName?: string | null } | null;
                 const singularName = cat?.singularName || (cat?.name ? forceSingular(cat.name) : "");
 
                 if (singularName) {

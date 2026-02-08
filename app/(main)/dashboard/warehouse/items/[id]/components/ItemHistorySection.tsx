@@ -9,7 +9,6 @@ import {
     ArrowUpCircle,
     ArrowDownCircle,
     ArrowRightLeft,
-    RefreshCw,
     Book,
     Clock,
     Package,

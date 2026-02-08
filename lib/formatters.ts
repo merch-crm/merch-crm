@@ -17,7 +17,7 @@ export function formatCurrency(amount: number, symbol: string = "₽"): string {
             style: 'currency',
             currency: currencyCode,
         }).format(amount).replace(currencyCode, symbol).replace("RUB", "₽");
-    } catch (e) {
+    } catch {
         return `${amount.toLocaleString('ru-RU')} ${symbol}`;
     }
 }
