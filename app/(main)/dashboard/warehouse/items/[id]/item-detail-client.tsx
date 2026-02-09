@@ -1318,7 +1318,7 @@ export function ItemDetailClient({
                             <div className="flex flex-col gap-2 justify-between md:contents h-full">
                                 <div className="md:hidden xl:flex flex flex-col flex-1 glass-panel rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
                                     <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-slate-200/60">
-                                        <h3 className="text-[6px] sm:text-[10px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">Артикул / SKU</h3>
+                                        <h3 className="text-[6px] sm:text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">Артикул / SKU</h3>
                                         <p className="text-[14px] sm:text-[16px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                     </div>
                                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 sm:gap-4">
@@ -1506,11 +1506,11 @@ export function ItemDetailClient({
                                         <div className="flex flex-col glass-panel rounded-3xl p-6 justify-between overflow-hidden bg-white/50" >
                                             <div className="flex items-start justify-between mb-4 gap-4">
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="text-[6px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
+                                                    <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
                                                     <p className="text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                                 </div>
                                                 <div className="text-right shrink-0">
-                                                    <h2 className="text-[5px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Остаток</h2>
+                                                    <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Остаток</h2>
                                                     <div className="flex items-baseline gap-1 justify-end">
                                                         <span className="text-5xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
                                                         <span className="text-[12px] font-black text-slate-400">{displayUnit}</span>
