@@ -1077,28 +1077,40 @@ export function ItemDetailClient({
                         onUnarchive={handleRestore}
                     />
 
-                    {/* MOBILE TAB NAVIGATION - Only visible on mobile */}
-                    <div className="md:hidden sticky top-[60px] z-40 -mx-4 px-4 py-2 bg-white/80 backdrop-blur-xl border-b border-slate-100">
-                        <div className="flex gap-1 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
-                            {mobileTabs.map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setMobileActiveTab(tab.id)}
-                                    className={cn(
-                                        "flex items-center gap-1.5 px-3 py-2 rounded-2xl text-[11px] font-bold whitespace-nowrap transition-all shrink-0",
-                                        mobileActiveTab === tab.id
-                                            ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20"
-                                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                                    )}
-                                >
-                                    {tab.icon}
-                                    <span>{tab.label}</span>
-                                </button>
-                            ))}
+
+
+                    {/* SPLIT LAYOUT */}
+                    {/* MOBILE: Tabs Navigation */}
+                    <div className="md:hidden sticky top-[73px] z-40 bg-slate-50/95 backdrop-blur-md pt-2 pb-2 mb-4 -mx-4 px-4 border-b border-slate-200/60 overflow-x-auto no-scrollbar">
+                        <div className="inline-flex bg-white rounded-[22px] p-1.5 shadow-sm border border-slate-100 min-w-full">
+                            {mobileTabs.map(tab => {
+                                const isActive = mobileActiveTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setMobileActiveTab(tab.id)}
+                                        className={cn(
+                                            "relative flex items-center justify-center gap-2 py-2.5 px-5 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 outline-none focus:outline-none",
+                                            isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
+                                            "bg-transparent"
+                                        )}
+                                        style={{ WebkitTapHighlightColor: "transparent" }}
+                                    >
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="activeMobileTab"
+                                                className="absolute inset-0 bg-primary rounded-[16px] shadow-md shadow-primary/20 -z-10"
+                                                transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                            />
+                                        )}
+                                        {tab.icon}
+                                        <span className="relative z-10">{tab.label}</span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* SPLIT LAYOUT */}
                     <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-2 xl:flex xl:flex-row xl:items-start md:gap-4 xl:gap-4 animate-in fade-in duration-500 delay-100">
 
                         {/* LEFT: Main Image & Mobile Info/Actions */}
@@ -1365,23 +1377,26 @@ export function ItemDetailClient({
                                     </button>
                                 </div>
                             </div>
-
-                        </div>
+                        </div >
 
                         {/* RIGHT: Bento Grid */}
-                        <div className={cn(
-                            "md:contents xl:flex-1 xl:w-full xl:grid xl:grid-cols-12 xl:gap-4",
-                            item.isArchived && "grayscale opacity-70"
-                        )}>
+                        <div className={
+                            cn(
+                                "md:contents xl:flex-1 xl:w-full xl:grid xl:grid-cols-12 xl:gap-4",
+                                item.isArchived && "grayscale opacity-70"
+                            )
+                        } >
                             {/* LEFT COLUMN: Specs & Finance */}
-                            <div className="md:contents xl:contents">
+                            <div className="md:contents xl:contents" >
                                 {/* TABLET/MOBILE: Actions & SKU Group */}
-                                <div className="grid grid-cols-1 md:col-start-2 md:flex md:flex-col gap-4 xl:contents">
+                                <div className="grid grid-cols-1 md:col-start-2 md:flex md:flex-col gap-4 xl:contents" >
                                     {/* Actions Grid (Mobile/Tablet) */}
-                                    <div className={cn(
-                                        "grid grid-cols-3 gap-3 xl:hidden",
-                                        mobileActiveTab !== 'main' && "hidden md:grid"
-                                    )}>
+                                    <div className={
+                                        cn(
+                                            "grid grid-cols-3 gap-3 xl:hidden",
+                                            mobileActiveTab !== 'main' && "hidden md:grid"
+                                        )
+                                    }>
                                         <button
                                             onClick={() => setShowLabelDialog(true)}
                                             className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
@@ -1409,12 +1424,12 @@ export function ItemDetailClient({
                                         >
                                             <Archive className="w-8 h-8 transition-transform" />
                                         </button>
-                                    </div>
+                                    </div >
 
                                     {/* TABLET ONLY SKU + Alerts block */}
-                                    <div className="hidden md:flex xl:hidden flex-col gap-4">
+                                    <div className="hidden md:flex xl:hidden flex-col gap-4" >
                                         {/* SKU & Stock block */}
-                                        <div className="flex flex-col glass-panel rounded-3xl p-6 justify-between overflow-hidden bg-white/50">
+                                        <div className="flex flex-col glass-panel rounded-3xl p-6 justify-between overflow-hidden bg-white/50" >
                                             <div className="flex items-start justify-between mb-4 gap-4">
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
@@ -1442,7 +1457,7 @@ export function ItemDetailClient({
                                                     Резерв: {reservedQuantity} {displayUnit}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div >
 
                                         {/* Stock Alerts component */}
                                         <ItemStockAlerts
@@ -1451,62 +1466,67 @@ export function ItemDetailClient({
                                             editData={editData}
                                             setEditData={setEditData}
                                             handleStartEdit={handleStartEdit}
-                                            className={cn(
-                                                "glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50"
-                                            )}
+                                            className={
+                                                cn(
+                                                    "glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50"
+                                                )
+                                            }
                                         />
-                                    </div>
-                                </div>
+                                    </div >
+                                </div >
 
                                 {/* TABLET TABS NAVIGATION */}
-                                <div className="hidden md:flex xl:hidden col-span-2 bg-white rounded-[22px] p-1.5 shadow-sm border border-slate-100 items-center justify-between gap-2 overflow-x-auto relative z-0">
-                                    {[
-                                        { id: 'characteristic', label: 'Характеристики', icon: LayoutGrid },
-                                        { id: 'placement', label: 'Размещение', icon: MapPin },
-                                        { id: 'cost', label: 'Стоимость', icon: Banknote },
-                                        { id: 'history', label: 'История', icon: ClipboardList }
-                                    ].map((tab) => {
-                                        const isActive = tabletTab === tab.id;
-                                        return (
-                                            <button
-                                                key={tab.id}
-                                                onClick={() => setTabletTab(tab.id)}
-                                                className={cn(
-                                                    "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
-                                                    isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
-                                                    "bg-transparent" // Reset bg to handle it with motion.div
-                                                )}
-                                                style={{ WebkitTapHighlightColor: "transparent" }}
-                                            >
-                                                {isActive && (
-                                                    <motion.div
-                                                        layoutId="activeTabletTab"
-                                                        className="absolute inset-0 bg-primary rounded-[16px] shadow-md shadow-primary/20 -z-10"
-                                                        transition={{
-                                                            type: "spring",
-                                                            bounce: 0,
-                                                            duration: 0.4
-                                                        }}
-                                                    />
-                                                )}
-                                                <tab.icon className={cn(
-                                                    "relative z-10 w-4 h-4 transition-transform duration-300",
-                                                    isActive ? "text-white scale-110" : "text-slate-400"
-                                                )} />
-                                                <span className="relative z-10">{tab.label}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                                <div className="hidden md:flex xl:hidden col-span-2 bg-white rounded-[22px] p-1.5 shadow-sm border border-slate-100 items-center justify-between gap-2 overflow-x-auto relative z-0" >
+                                    {
+                                        [
+                                            { id: 'characteristic', label: 'Характеристики', icon: LayoutGrid },
+                                            { id: 'placement', label: 'Размещение', icon: MapPin },
+                                            { id: 'cost', label: 'Стоимость', icon: Banknote },
+                                            { id: 'history', label: 'История', icon: ClipboardList }
+                                        ].map((tab) => {
+                                            const isActive = tabletTab === tab.id;
+                                            return (
+                                                <button
+                                                    key={tab.id}
+                                                    onClick={() => setTabletTab(tab.id)}
+                                                    className={cn(
+                                                        "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
+                                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
+                                                        "bg-transparent" // Reset bg to handle it with motion.div
+                                                    )}
+                                                    style={{ WebkitTapHighlightColor: "transparent" }}
+                                                >
+                                                    {isActive && (
+                                                        <motion.div
+                                                            layoutId="activeTabletTab"
+                                                            className="absolute inset-0 bg-primary rounded-[16px] shadow-md shadow-primary/20 -z-10"
+                                                            transition={{
+                                                                type: "spring",
+                                                                bounce: 0,
+                                                                duration: 0.4
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <tab.icon className={cn(
+                                                        "relative z-10 w-4 h-4 transition-transform duration-300",
+                                                        isActive ? "text-white scale-110" : "text-slate-400"
+                                                    )} />
+                                                    <span className="relative z-10">{tab.label}</span>
+                                                </button>
+                                            );
+                                        })
+                                    }
+                                </div >
 
                                 {/* BLOCK: Specification */}
-                                <div className={cn(
-                                    "glass-panel rounded-3xl p-4 sm:p-6 bg-white/50 h-full",
-                                    "md:col-span-2 xl:col-span-8 xl:row-span-2",
-                                    mobileActiveTab === 'specs' ? "flex flex-col" : "hidden",
-                                    tabletTab === 'characteristic' ? "md:flex md:flex-col" : "md:hidden",
-                                    "xl:flex xl:flex-col"
-                                )}>
+                                <div className={
+                                    cn(
+                                        "glass-panel rounded-3xl p-4 sm:p-6 bg-white/50 h-full",
+                                        "md:col-span-2 xl:col-span-8 xl:row-span-2",
+                                        mobileActiveTab === 'specs' ? "flex flex-col" : "hidden",
+                                        tabletTab === 'characteristic' ? "md:flex md:flex-col" : "md:hidden",
+                                        "xl:flex xl:flex-col"
+                                    )}>
                                     <div className="flex items-center justify-between gap-4 mb-8">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
@@ -1541,15 +1561,15 @@ export function ItemDetailClient({
                                         totalStock={stocks.reduce((acc, s) => acc + s.quantity, 0)}
                                         onEdit={handleStartEdit}
                                     />
-                                </div>
+                                </div >
 
 
-                            </div>
+                            </div >
 
                             {/* RIGHT: Bento Grid Column */}
-                            <div className="md:contents xl:contents">
+                            <div className="md:contents xl:contents" >
                                 {/* Actions Grid (Vertical above Alerts - Desktop Only) */}
-                                <div className="hidden xl:grid xl:grid-cols-3 xl:gap-3 xl:col-span-4">
+                                <div className="hidden xl:grid xl:grid-cols-3 xl:gap-3 xl:col-span-4" >
                                     <button
                                         onClick={() => setShowLabelDialog(true)}
                                         className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
@@ -1577,7 +1597,7 @@ export function ItemDetailClient({
                                     >
                                         <Archive className="w-8 h-8 transition-transform" />
                                     </button>
-                                </div>
+                                </div >
 
                                 {/* SUB-BLOCK: Stock Alerts */}
                                 <ItemStockAlerts
@@ -1586,9 +1606,11 @@ export function ItemDetailClient({
                                     editData={editData}
                                     setEditData={setEditData}
                                     handleStartEdit={handleStartEdit}
-                                    className={cn(
-                                        "hidden xl:block xl:col-span-4 glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50 h-full"
-                                    )}
+                                    className={
+                                        cn(
+                                            "hidden xl:block xl:col-span-4 glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50 h-full"
+                                        )
+                                    }
                                 />
 
                                 {/* BLOCK: Financial & Price Analytics */}
@@ -1600,19 +1622,22 @@ export function ItemDetailClient({
                                     setEditData={setEditData}
                                     handleStartEdit={handleStartEdit}
                                     user={user}
-                                    className={cn(
-                                        "hidden xl:flex xl:col-span-8 xl:h-full"
-                                    )}
+                                    className={
+                                        cn(
+                                            "hidden xl:flex xl:col-span-8 xl:h-full"
+                                        )
+                                    }
                                 />
 
                                 {/* SUB-BLOCK: Warehouses List */}
-                                <div className={cn(
-                                    "glass-panel rounded-3xl p-6 flex-col flex-1 h-full",
-                                    "md:col-span-2 xl:col-span-4",
-                                    mobileActiveTab !== 'locations' && "hidden",
-                                    tabletTab === 'placement' ? "md:flex" : "md:hidden",
-                                    "xl:flex"
-                                )}>
+                                <div className={
+                                    cn(
+                                        "glass-panel rounded-3xl p-6 flex-col flex-1 h-full",
+                                        "md:col-span-2 xl:col-span-4",
+                                        mobileActiveTab !== 'locations' && "hidden",
+                                        tabletTab === 'placement' ? "md:flex" : "md:hidden",
+                                        "xl:flex"
+                                    )}>
                                     <div className="flex items-center justify-between mb-8 text-left">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
@@ -1699,8 +1724,8 @@ export function ItemDetailClient({
                                             );
                                         })()}
                                     </div>
-                                </div>
-                            </div>
+                                </div >
+                            </div >
 
                             {/* TABLET: Financial & Price Analytics (Full Width) */}
                             <ItemFinancialSection
@@ -1711,18 +1736,20 @@ export function ItemDetailClient({
                                 setEditData={setEditData}
                                 handleStartEdit={handleStartEdit}
                                 user={user}
-                                className={cn(
-                                    "hidden md:col-span-2 xl:hidden",
-                                    tabletTab === 'cost' ? "md:flex" : "md:hidden"
-                                )}
+                                className={
+                                    cn(
+                                        "hidden md:col-span-2 xl:hidden",
+                                        tabletTab === 'cost' ? "md:flex" : "md:hidden"
+                                    )}
                             />
 
-                            <div className={cn(
-                                "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col",
-                                mobileActiveTab !== 'media' ? "hidden" : "flex",
-                                tabletTab === 'characteristic' ? "md:flex" : "md:hidden",
-                                "xl:flex"
-                            )}>
+                            <div className={
+                                cn(
+                                    "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col",
+                                    mobileActiveTab !== 'media' ? "hidden" : "flex",
+                                    tabletTab === 'characteristic' ? "md:flex" : "md:hidden",
+                                    "xl:flex"
+                                )}>
                                 <ItemMediaSection
                                     item={item}
                                     isEditing={isEditing}
@@ -1743,11 +1770,11 @@ export function ItemDetailClient({
                                     }}
                                     uploadStates={uploadStates}
                                 />
-                            </div>
+                            </div >
 
                             <div className={cn(
                                 "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col space-y-4",
-                                mobileActiveTab !== 'history' ? "hidden" : "flex",
+                                mobileActiveTab !== 'orders' ? "hidden" : "flex",
                                 tabletTab === 'placement' ? "md:flex" : "md:hidden",
                                 "xl:flex"
                             )}>
@@ -1797,9 +1824,9 @@ export function ItemDetailClient({
                                 </div>
                                 <ItemHistorySection history={history} />
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </div >
+                    </div >
+                </div >
 
                 {/* Editing Bar */}
                 <AnimatePresence>
@@ -1961,7 +1988,7 @@ export function ItemDetailClient({
                             document.body
                         )
                     }
-                </AnimatePresence>
+                </AnimatePresence >
 
                 {/* Dialogs */}
                 <AdjustStockDialog
@@ -2174,7 +2201,7 @@ export function ItemDetailClient({
                         </div>
                     )
                 }
-            </div>
+            </div >
         </>
     );
 }
