@@ -1135,112 +1135,84 @@ export async function deleteInventoryItems(ids: string[], password?: string) {
 }
 
 export async function updateInventoryItem(id: string, formData: FormData) {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для изменения товаров" };
-    }
-
-    let itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables";
-    if (!["clothing", "packaging", "consumables"].includes(itemType)) {
-        itemType = "clothing";
-    }
-    const sanitize = (str: string) => (str || "").replace(/<[^>]*>/g, '').trim();
-    const name = sanitize(formData.get("name") as string);
-    const sku = formData.get("sku") as string;
-    let unit = formData.get("unit") as string;
-    const quantity = parseInt(formData.get("quantity") as string);
-    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
-    const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
-    const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
-
-    // Task 2.1: Enforce units for Clothing/Packaging if manageable, but we lack itemType in formData maybe.
-    // If we assume the client sends the correct unit, we rely on UI.
-    // But to be safe, we should check the current item's type from DB if we want strict enforcement.
-    // For now, since UI enforces it, we accept what comes, but maybe we should trust the UI logic I just added.
-    // However, the prompt asked for "API-level validation".
-
-    // Let's rely on the fact that for creation it is enforced. For update, if we don't have itemType...
-    // We can fetch the item to check its type.
-    const [existingItem] = await db.select({
-        itemType: inventoryItems.itemType,
-        costPrice: inventoryItems.costPrice
-    }).from(inventoryItems).where(eq(inventoryItems.id, id));
-    if (existingItem) {
-        if (existingItem.itemType === "clothing") {
-            unit = "шт.";
+    try {
+        const session = await getSession();
+        if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
+            return { error: "Недостаточно прав для изменения товаров" };
         }
-    }
 
-    const categoryIdRaw = formData.get("categoryId") as string;
-    const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
-
-    const storageLocationIdRaw = formData.get("storageLocationId") as string;
-    // storageLocationId is parsed but not currently used in this local scope as it was refactored.
-    // Keeping the variable for future or deleting if unnecessary.
-    const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
-    console.log("storageLocationId for update:", storageLocationId);
-
-    const qualityCodeRaw = formData.get("qualityCode") as string;
-    const qualityCode = qualityCodeRaw || null;
-
-    const materialCodeRaw = formData.get("materialCode") as string;
-    const materialCode = materialCodeRaw || null;
-
-    const attributeCodeRaw = formData.get("attributeCode") as string;
-    const attributeCode = attributeCodeRaw || null;
-
-    const sizeCodeRaw = formData.get("sizeCode") as string;
-    const sizeCode = sizeCodeRaw || null;
-
-    const brandCodeRaw = formData.get("brandCode") as string;
-    const brandCode = brandCodeRaw || null;
-
-    const description = sanitize(formData.get("description") as string);
-
-    const attributesStr = formData.get("attributes") as string;
-    let attributes: Record<string, unknown> = {};
-    if (attributesStr) {
-        try {
-            attributes = JSON.parse(attributesStr);
-        } catch (e) {
-            console.error("Failed to parse attributes JSON", e);
+        let itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables";
+        if (!["clothing", "packaging", "consumables"].includes(itemType)) {
+            itemType = "clothing";
         }
-    }
+        const sanitize = (str: string) => (str || "").replace(/<[^>]*>/g, '').trim();
+        const name = sanitize(formData.get("name") as string);
+        const sku = formData.get("sku") as string;
+        let unit = formData.get("unit") as string;
+        const quantity = parseInt(formData.get("quantity") as string);
+        const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
+        const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
+        const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
 
-    const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
-    let thumbnailSettings = null;
-    if (thumbnailSettingsStr) {
-        try {
-            thumbnailSettings = JSON.parse(thumbnailSettingsStr);
-        } catch (e) {
-            console.error("Failed to parse thumbnailSettings JSON", e);
-        }
-    }
+        const [existingItem] = await db.select({
+            itemType: inventoryItems.itemType,
+            costPrice: inventoryItems.costPrice,
+            categoryId: inventoryItems.categoryId,
+            image: inventoryItems.image,
+            imageBack: inventoryItems.imageBack,
+            imageSide: inventoryItems.imageSide,
+            imageDetails: inventoryItems.imageDetails
+        }).from(inventoryItems).where(eq(inventoryItems.id, id));
 
-    // Merge type-specific attributes
-    if (itemType === "packaging") {
-        attributes.width = formData.get("width");
-        attributes.height = formData.get("height");
-        attributes.depth = formData.get("depth");
-        attributes.weight = formData.get("weight");
-        attributes.packagingType = formData.get("packagingType");
-        attributes.supplierName = formData.get("supplierName");
-        attributes.supplierLink = formData.get("supplierLink");
-        attributes.minBatch = formData.get("minBatch");
-
-        const featuresStr = formData.get("features") as string;
-        if (featuresStr) {
-            try {
-                attributes.features = JSON.parse(featuresStr);
-            } catch (e) {
-                console.error("Failed to parse features JSON", e);
+        if (existingItem) {
+            if (existingItem.itemType === "clothing") {
+                unit = "шт.";
             }
         }
-    } else if (itemType === "consumables") {
-        attributes.department = formData.get("department");
-    }
 
-    try {
+        const categoryIdRaw = formData.get("categoryId") as string;
+        const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
+
+        const storageLocationIdRaw = formData.get("storageLocationId") as string;
+        const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
+
+        const qualityCodeRaw = formData.get("qualityCode") as string;
+        const qualityCode = qualityCodeRaw || null;
+
+        const materialCodeRaw = formData.get("materialCode") as string;
+        const materialCode = materialCodeRaw || null;
+
+        const attributeCodeRaw = formData.get("attributeCode") as string;
+        const attributeCode = attributeCodeRaw || null;
+
+        const sizeCodeRaw = formData.get("sizeCode") as string;
+        const sizeCode = sizeCodeRaw || null;
+
+        const brandCodeRaw = formData.get("brandCode") as string;
+        const brandCode = brandCodeRaw || null;
+
+        const description = sanitize(formData.get("description") as string);
+
+        const attributesStr = formData.get("attributes") as string;
+        let attributes: Record<string, unknown> = {};
+        if (attributesStr) {
+            try {
+                attributes = JSON.parse(attributesStr);
+            } catch (e) {
+                console.error("Failed to parse attributes JSON", e);
+            }
+        }
+
+        const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
+        let thumbnailSettings = null;
+        if (thumbnailSettingsStr) {
+            try {
+                thumbnailSettings = JSON.parse(thumbnailSettingsStr);
+            } catch (e) {
+                console.error("Failed to parse thumbnailSettings JSON", e);
+            }
+        }
+
         console.log("UPDATING ITEM ID:", id);
 
         const imageFile = formData.get("image") as File;
@@ -1262,11 +1234,11 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const imageSideFile = formData.get("imageSide") as File;
         const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
-        let imageBackUrl = formData.get("currentImageBack") as string || null;
+        let imageBackUrl = formData.get("currentImageBack") as string || (existingItem?.imageBack ?? null);
         const newImageBackUrl = await saveFile(imageBackFile, itemFolderPath);
         if (newImageBackUrl) imageBackUrl = newImageBackUrl;
 
-        let imageSideUrl = formData.get("currentImageSide") as string || null;
+        let imageSideUrl = formData.get("currentImageSide") as string || (existingItem?.imageSide ?? null);
         const newImageSideUrl = await saveFile(imageSideFile, itemFolderPath);
         if (newImageSideUrl) imageSideUrl = newImageSideUrl;
 
@@ -1275,7 +1247,9 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         if (currentImageDetailsStr) {
             try {
                 imageDetailsUrls = JSON.parse(currentImageDetailsStr);
-            } catch { }
+            } catch {
+                imageDetailsUrls = (existingItem?.imageDetails as string[]) || [];
+            }
         }
 
         for (const file of imageDetailsFiles) {
@@ -1283,12 +1257,15 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             if (url) imageDetailsUrls.push(url);
         }
 
-        let imageUrl = formData.get("currentImage") as string || null;
+        let imageUrl = formData.get("currentImage") as string || (existingItem?.image ?? null);
         const newImageUrl = await saveFile(imageFile, itemFolderPath);
         if (newImageUrl) imageUrl = newImageUrl;
 
-        const costPrice = formData.get("costPrice") ? String(formData.get("costPrice")) : null;
-        const sellingPrice = formData.get("sellingPrice") ? String(formData.get("sellingPrice")) : null;
+        const costPriceRaw = formData.get("costPrice");
+        const sellingPriceRaw = formData.get("sellingPrice");
+        const costPrice = costPriceRaw && costPriceRaw !== "" ? String(costPriceRaw) : null;
+        const sellingPrice = sellingPriceRaw && sellingPriceRaw !== "" ? String(sellingPriceRaw) : null;
+
         const materialCompositionStr = formData.get("materialComposition") as string;
         let materialComposition = {};
         try {
@@ -1328,10 +1305,8 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         }).where(eq(inventoryItems.id, id));
 
         // Create transaction log if price or quantity changed
-        // Create transaction log if price or quantity changed
         const existingCostPrice = existingItem?.costPrice ? String(existingItem.costPrice) : null;
 
-        // Helper to normalize price for comparison (handle 0.00 vs 0 vs null)
         const normalizePrice = (val: string | number | null | undefined) => {
             if (val === null || val === undefined || val === "") return 0;
             const num = parseFloat(String(val));
@@ -1341,12 +1316,11 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const oldPrice = normalizePrice(existingCostPrice);
         const newPrice = normalizePrice(costPrice);
 
-        // Compare with epsilon for float precision
         if (Math.abs(oldPrice - newPrice) > 0.01) {
             await db.insert(inventoryTransactions).values({
                 itemId: id,
-                changeAmount: 0, // No quantity change in this specific manual edit
-                type: "in",      // Treat as a virtual supply/adjustment for history
+                changeAmount: 0,
+                type: "in",
                 reason: "Корректировка цены (редактирование)",
                 storageLocationId: storageLocationId || null,
                 costPrice: costPrice,
@@ -1354,11 +1328,10 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             });
         }
 
-        // Trigger stock check
         await checkItemStockAlerts(id);
 
         revalidatePath("/dashboard/warehouse");
-        revalidatePath(`/dashboard/warehouse/${categoryId}`);
+        if (categoryId) revalidatePath(`/dashboard/warehouse/${categoryId}`);
         return { success: true };
     } catch (error) {
         console.error("UPDATE ITEM ERROR:", error);
@@ -1366,7 +1339,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             error,
             path: `/dashboard/warehouse/item/${id}`,
             method: "updateInventoryItem",
-            details: { id, name, sku, quantity }
+            details: { id }
         });
         return { error: `Ошибка при обновлении: ${error instanceof Error ? error.message : "Неизвестная ошибка"}` };
     }

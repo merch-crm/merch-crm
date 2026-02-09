@@ -834,7 +834,7 @@ export function ItemDetailClient({
                 if (navigator.vibrate) navigator.vibrate(50); // Haptic feedback
                 await fetchData();
             } else {
-                toast("Ошибка при обновлении товара", "error");
+                toast(res.error || "Ошибка при обновлении товара", "error");
                 playSound("notification_error");
             }
             setNewImageFile(null);
@@ -845,7 +845,8 @@ export function ItemDetailClient({
             router.refresh();
         } catch (error) {
             console.error("Save error:", error);
-            toast("Ошибка при сохранении", "error");
+            const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка";
+            toast(`Ошибка при сохранении: ${errorMessage}`, "error");
             playSound("notification_error");
         } finally {
             setIsSaving(false);
