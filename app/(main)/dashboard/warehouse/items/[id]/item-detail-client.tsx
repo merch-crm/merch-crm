@@ -183,23 +183,9 @@ export function ItemDetailClient({
     const [showUnsavedChangesConfirm, setShowUnsavedChangesConfirm] = useState(false);
     const [pendingExitAction, setPendingExitAction] = useState<(() => void) | null>(null);
 
-    // Mobile tab navigation
-    // Mobile tab navigation
-    type MobileTab = 'main' | 'specs' | 'locations' | 'media' | 'orders' | 'history';
-    const [mobileActiveTab, setMobileActiveTab] = useState<MobileTab>('main');
-    const mobileTabs: { id: MobileTab; label: string; icon: React.ReactNode }[] = [
-        { id: 'main', label: 'Главное', icon: <Package className="w-4 h-4" /> },
-        { id: 'specs', label: 'Характеристики', icon: <LayoutGrid className="w-4 h-4" /> },
-        { id: 'locations', label: 'Склады', icon: <MapPin className="w-4 h-4" /> },
-        { id: 'media', label: 'Медиа', icon: <ImageIcon className="w-4 h-4" /> },
-        { id: 'orders', label: 'Заказы', icon: <ShoppingBag className="w-4 h-4" /> },
-        { id: 'history', label: 'История', icon: <ClipboardList className="w-4 h-4" /> },
-    ];
-
-
-    // Thumbnail settings logic
-    const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+    // Unified tab navigation for desktop/tablet/mobile
     const [tabletTab, setTabletTab] = useState("characteristic");
+    const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
     const thumbSettings = useMemo(() => (editData.thumbnailSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 }, [editData.thumbnailSettings]);
 
@@ -1080,36 +1066,6 @@ export function ItemDetailClient({
 
 
                     {/* SPLIT LAYOUT */}
-                    {/* MOBILE: Tabs Navigation */}
-                    <div className="md:hidden sticky top-[73px] z-40 bg-slate-50/95 backdrop-blur-md pt-2 pb-2 mb-4 -mx-4 px-4 border-b border-slate-200/60 overflow-x-auto no-scrollbar">
-                        <div className="inline-flex bg-white rounded-[22px] p-1.5 shadow-sm border border-slate-100 min-w-full">
-                            {mobileTabs.map(tab => {
-                                const isActive = mobileActiveTab === tab.id;
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setMobileActiveTab(tab.id)}
-                                        className={cn(
-                                            "relative flex items-center justify-center gap-2 py-2.5 px-5 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 outline-none focus:outline-none",
-                                            isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
-                                            "bg-transparent"
-                                        )}
-                                        style={{ WebkitTapHighlightColor: "transparent" }}
-                                    >
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeMobileTab"
-                                                className="absolute inset-0 bg-primary rounded-[16px] shadow-md shadow-primary/20 -z-10"
-                                                transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                            />
-                                        )}
-                                        {tab.icon}
-                                        <span className="relative z-10">{tab.label}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
 
                     <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-2 xl:flex xl:flex-row xl:items-start md:gap-4 xl:gap-4 animate-in fade-in duration-500 delay-100">
 
@@ -1117,7 +1073,7 @@ export function ItemDetailClient({
                         <div className={cn(
                             "grid grid-cols-2 gap-3 md:flex md:flex-col md:gap-4 w-full xl:sticky xl:top-[112px] xl:z-[10] xl:w-[320px] xl:shrink-0",
                             item.isArchived && "grayscale opacity-70",
-                            mobileActiveTab !== 'main' && "hidden md:flex"
+                            tabletTab !== 'characteristic' ? "hidden md:flex" : "flex"
                         )}>
                             <div className="group relative w-full aspect-square glass-panel rounded-3xl overflow-hidden">
                                 <div
@@ -1383,7 +1339,7 @@ export function ItemDetailClient({
                                     onClick={() => setShowLabelDialog(true)}
                                     className={cn(
                                         "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400 order-last md:hidden",
-                                        mobileActiveTab !== 'main' && "hidden"
+                                        tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Печать этикетки"
                                 >
@@ -1393,7 +1349,7 @@ export function ItemDetailClient({
                                     onClick={handleDownload}
                                     className={cn(
                                         "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400 order-last md:hidden",
-                                        mobileActiveTab !== 'main' && "hidden"
+                                        tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Экспорт PDF"
                                 >
@@ -1409,7 +1365,7 @@ export function ItemDetailClient({
                                     }}
                                     className={cn(
                                         "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-slate-400 order-last md:hidden",
-                                        mobileActiveTab !== 'main' && "hidden"
+                                        tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Архивировать"
                                 >
@@ -1439,7 +1395,7 @@ export function ItemDetailClient({
                                         >
                                             {isActive && (
                                                 <motion.div
-                                                    layoutId="mobileActiveTabBackgroundOverlay"
+                                                    layoutId="activeTabBackgroundOverlay"
                                                     className="absolute inset-0 bg-primary rounded-full shadow-md shadow-primary/20 -z-10"
                                                     transition={{
                                                         type: "spring",
@@ -1597,8 +1553,7 @@ export function ItemDetailClient({
                                     cn(
                                         "glass-panel rounded-3xl p-4 sm:p-6 bg-white/50 h-full",
                                         "md:col-span-2 xl:col-span-8 xl:row-span-2",
-                                        mobileActiveTab === 'specs' ? "flex flex-col" : "hidden",
-                                        tabletTab === 'characteristic' ? "md:flex md:flex-col" : "md:hidden",
+                                        tabletTab === 'characteristic' ? "flex flex-col" : "hidden",
                                         "xl:flex xl:flex-col"
                                     )}>
                                     <div className="flex items-center justify-between gap-4 mb-8">
@@ -1708,8 +1663,7 @@ export function ItemDetailClient({
                                     cn(
                                         "glass-panel rounded-3xl p-6 flex-col flex-1 h-full",
                                         "md:col-span-2 xl:col-span-4",
-                                        mobileActiveTab !== 'locations' && "hidden",
-                                        tabletTab === 'placement' ? "md:flex" : "md:hidden",
+                                        tabletTab === 'placement' ? "flex" : "hidden",
                                         "xl:flex"
                                     )}>
                                     <div className="flex items-center justify-between mb-8 text-left">
@@ -1820,8 +1774,7 @@ export function ItemDetailClient({
                             <div className={
                                 cn(
                                     "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col",
-                                    mobileActiveTab !== 'media' ? "hidden" : "flex",
-                                    tabletTab === 'characteristic' ? "md:flex" : "md:hidden",
+                                    tabletTab === 'characteristic' ? "flex" : "hidden",
                                     "xl:flex"
                                 )}>
                                 <ItemMediaSection
@@ -1848,8 +1801,7 @@ export function ItemDetailClient({
 
                             <div className={cn(
                                 "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col space-y-4",
-                                mobileActiveTab !== 'orders' ? "hidden" : "flex",
-                                tabletTab === 'placement' ? "md:flex" : "md:hidden",
+                                tabletTab === 'placement' ? "flex" : "hidden",
                                 "xl:flex"
                             )}>
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -1876,8 +1828,7 @@ export function ItemDetailClient({
                             <div className={cn(
                                 "glass-panel rounded-3xl p-4 sm:p-8 space-y-4",
                                 "md:col-span-2 xl:col-span-12",
-                                mobileActiveTab !== 'history' && "hidden",
-                                tabletTab === 'history' ? "md:block" : "md:hidden",
+                                tabletTab === 'history' ? "block" : "hidden",
                                 "xl:block"
                             )}>
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
