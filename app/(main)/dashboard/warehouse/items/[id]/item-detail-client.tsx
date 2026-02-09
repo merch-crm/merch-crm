@@ -1348,36 +1348,77 @@ export function ItemDetailClient({
                                     </div>
                                 </div>
 
-                                {/* BLOCK: Quick Actions (Adjustment/Transfer) - App Tile Style */}
-                                <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                    <button
-                                        onClick={() => setAdjustType("set")}
-                                        className="group relative flex flex-col justify-between p-2 sm:p-4 aspect-square bg-primary rounded-3xl shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/40 transition-all active:scale-95 text-left overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
-                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/20 flex items-center justify-center text-white relative z-10">
-                                            <SlidersHorizontal className="w-4 h-4 sm:w-5 sm:h-5" />
-                                        </div>
-                                        <span className="text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
-                                            Корректировка<br />остатка
-                                        </span>
-                                    </button>
 
-                                    <button
-                                        onClick={() => setShowTransfer(true)}
-                                        className="group relative flex flex-col justify-between p-2 sm:p-4 aspect-square bg-[#0F172A] rounded-3xl shadow-sm shadow-slate-900/10 hover:shadow-md hover:shadow-slate-900/20 transition-all active:scale-95 text-left overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
-                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/10 flex items-center justify-center text-white relative z-10">
-                                            <ArrowRightLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                                        </div>
-                                        <span className="text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
-                                            Перемещение<br />товара
-                                        </span>
-                                    </button>
-                                </div>
+                            </div>
+                            {/* BLOCK: Consolidated Mobile Actions */}
+                            <div className="col-span-2 grid grid-cols-5 md:grid-cols-2 gap-2 md:gap-3 mt-2 md:mt-0">
+                                <button
+                                    onClick={() => setAdjustType("set")}
+                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-primary rounded-3xl shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/40 transition-all active:scale-95 text-left overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
+                                    <div className="w-14 h-14 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/20 flex items-center justify-center text-white relative z-10 mb-0 sm:mb-0">
+                                        <SlidersHorizontal className="w-7 h-7 sm:w-5 sm:h-5" />
+                                    </div>
+                                    <span className="hidden sm:block text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
+                                        Корректировка<br />остатка
+                                    </span>
+                                </button>
+
+                                <button
+                                    onClick={() => setShowTransfer(true)}
+                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-[#0F172A] rounded-3xl shadow-sm shadow-slate-900/10 hover:shadow-md hover:shadow-slate-900/20 transition-all active:scale-95 text-left overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
+                                    <div className="w-14 h-14 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/10 flex items-center justify-center text-white relative z-10 mb-0 sm:mb-0">
+                                        <ArrowRightLeft className="w-7 h-7 sm:w-5 sm:h-5" />
+                                    </div>
+                                    <span className="hidden sm:block text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
+                                        Перемещение<br />товара
+                                    </span>
+                                </button>
+
+                                {/* Additional Actions - Mobile Only */}
+                                <button
+                                    onClick={() => setShowLabelDialog(true)}
+                                    className={cn(
+                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        mobileActiveTab !== 'main' && "hidden"
+                                    )}
+                                    title="Печать этикетки"
+                                >
+                                    <Printer className="w-7 h-7" />
+                                </button>
+                                <button
+                                    onClick={handleDownload}
+                                    className={cn(
+                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        mobileActiveTab !== 'main' && "hidden"
+                                    )}
+                                    title="Экспорт PDF"
+                                >
+                                    <FileDown className="w-7 h-7" />
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (item.quantity > 0) {
+                                            toast("Нельзя архивировать товар с остатком > 0", "error");
+                                            return;
+                                        }
+                                        setShowArchiveReason(true);
+                                    }}
+                                    className={cn(
+                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        mobileActiveTab !== 'main' && "hidden"
+                                    )}
+                                    title="Архивировать"
+                                >
+                                    <Archive className="w-7 h-7" />
+                                </button>
                             </div>
                         </div >
+
+
 
                         {/* RIGHT: Bento Grid */}
                         <div className={
@@ -1390,13 +1431,8 @@ export function ItemDetailClient({
                             <div className="md:contents xl:contents" >
                                 {/* TABLET/MOBILE: Actions & SKU Group */}
                                 <div className="grid grid-cols-1 md:col-start-2 md:flex md:flex-col gap-4 xl:contents" >
-                                    {/* Actions Grid (Mobile/Tablet) */}
-                                    <div className={
-                                        cn(
-                                            "grid grid-cols-3 gap-3 xl:hidden",
-                                            mobileActiveTab !== 'main' && "hidden md:grid"
-                                        )
-                                    }>
+                                    {/* Actions Grid (Tablet Only - Restored) */}
+                                    <div className="hidden md:grid xl:hidden grid-cols-3 gap-3">
                                         <button
                                             onClick={() => setShowLabelDialog(true)}
                                             className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
@@ -1419,7 +1455,7 @@ export function ItemDetailClient({
                                                 }
                                                 setShowArchiveReason(true);
                                             }}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-500/20 transition-all text-slate-400"
+                                            className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-slate-400"
                                             title="В архив"
                                         >
                                             <Archive className="w-8 h-8 transition-transform" />
@@ -1991,11 +2027,12 @@ export function ItemDetailClient({
                 </AnimatePresence >
 
                 {/* Dialogs */}
-                <AdjustStockDialog
+                < AdjustStockDialog
                     item={item}
                     locations={storageLocations}
                     itemStocks={stocks}
-                    initialType={adjustType || "in"}
+                    initialType={adjustType || "in"
+                    }
                     user={user}
                     isOpen={!!adjustType}
                     onClose={() => {
@@ -2005,7 +2042,7 @@ export function ItemDetailClient({
                     }}
                 />
 
-                <TransferItemDialog
+                < TransferItemDialog
                     item={item}
                     locations={storageLocations}
                     itemStocks={stocks}
@@ -2017,7 +2054,7 @@ export function ItemDetailClient({
                     }}
                 />
 
-                <ArchiveReasonDialog
+                < ArchiveReasonDialog
                     isOpen={showArchiveReason}
                     onClose={() => setShowArchiveReason(false)}
                     onConfirm={handleArchive}
