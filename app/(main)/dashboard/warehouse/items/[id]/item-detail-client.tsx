@@ -1318,29 +1318,29 @@ export function ItemDetailClient({
                             <div className="flex flex-col gap-2 justify-between md:contents h-full">
                                 <div className="md:hidden xl:flex flex flex-col flex-1 glass-panel rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
                                     <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-slate-200/60">
-                                        <h3 className="text-[8px] sm:text-[11px] font-bold text-slate-400 mb-0.5">Артикул / SKU</h3>
-                                        <p className="text-[10px] sm:text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
+                                        <h3 className="text-[7px] sm:text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">Артикул / SKU</h3>
+                                        <p className="text-[12px] sm:text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                     </div>
                                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 sm:gap-4">
                                         <div className="space-y-1 sm:space-y-3">
                                             <div>
-                                                <h2 className="text-[7px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Резерв и остаток</h2>
+                                                <h2 className="text-[6px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Резерв и остаток</h2>
                                                 <div className="flex items-baseline gap-1 sm:gap-1.5">
-                                                    <span className="text-xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
-                                                    <span className="text-[9px] sm:text-sm font-black text-slate-400">{displayUnit}</span>
+                                                    <span className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
+                                                    <span className="text-[10px] sm:text-sm font-black text-slate-400">{displayUnit}</span>
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-wrap gap-1 sm:gap-2">
                                                 <div className={cn(
-                                                    "inline-flex items-center px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-[8px] sm:text-[10px] font-bold border shrink-0",
+                                                    "inline-flex items-center px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-[9px] sm:text-[10px] font-bold border shrink-0",
                                                     item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
                                                         (item.quantity <= (item.criticalStockThreshold ?? 0) ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")
                                                 )}>
                                                     {item.quantity === 0 ? "Нет" :
                                                         (item.quantity <= (item.criticalStockThreshold ?? 0) ? "Критично" : "В наличии")}
                                                 </div>
-                                                <div className="px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-[8px] sm:text-[10px] font-bold border bg-amber-50/50 text-amber-600 border-amber-100 shrink-0">
+                                                <div className="px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-[9px] sm:text-[10px] font-bold border bg-amber-50/50 text-amber-600 border-amber-100 shrink-0">
                                                     Резерв: {reservedQuantity}
                                                 </div>
                                             </div>
