@@ -1119,7 +1119,7 @@ export function ItemDetailClient({
                             item.isArchived && "grayscale opacity-70",
                             mobileActiveTab !== 'main' && "hidden md:flex"
                         )}>
-                            <div className="group relative w-full aspect-square glass-panel rounded-3xl overflow-hidden self-start">
+                            <div className="group relative w-full aspect-square glass-panel rounded-3xl overflow-hidden">
                                 <div
                                     className={cn(
                                         "absolute inset-0 bg-slate-50 overflow-hidden",
@@ -1315,8 +1315,8 @@ export function ItemDetailClient({
                             )}
 
                             {/* Wrapper for Info & Actions in right column on mobile */}
-                            <div className="flex flex-col gap-2 justify-between md:contents">
-                                <div className="md:hidden xl:flex flex flex-col glass-panel rounded-3xl p-3 sm:p-6 justify-between overflow-hidden">
+                            <div className="flex flex-col gap-2 justify-between md:contents h-full">
+                                <div className="md:hidden xl:flex flex flex-col flex-1 glass-panel rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
                                     <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-slate-200/60">
                                         <h3 className="text-[8px] sm:text-[11px] font-bold text-slate-400 mb-0.5">Артикул / SKU</h3>
                                         <p className="text-[10px] sm:text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
