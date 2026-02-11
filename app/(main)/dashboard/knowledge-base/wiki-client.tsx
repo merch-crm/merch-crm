@@ -6,10 +6,11 @@ import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, de
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2, Check, X, Search } from "lucide-react";
+import { Edit2, Trash2, Check, X, Search, Menu } from "lucide-react";
 
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PromptDialog } from "@/components/ui/prompt-dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface WikiFolder {
     id: string;
@@ -39,6 +40,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editData, setEditData] = useState({ title: "", content: "" });
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Dialog states
     const [createFolderDialog, setCreateFolderDialog] = useState<{ open: boolean, parentId: string | null }>({ open: false, parentId: null });
@@ -80,6 +82,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
             setLoading(true);
         }
         setSelectedPageId(id);
+        setIsSidebarOpen(false); // Close sidebar on mobile after selection
     };
 
     const handleCreateFolder = (parentId: string | null) => {
@@ -123,44 +126,71 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
         router.refresh();
     };
 
+    const sidebarProps = {
+        folders: initialFolders,
+        pages: initialPages,
+        activePageId: selectedPageId || undefined,
+        onSelectPage: handleSelectPage,
+        onAddFolder: handleCreateFolder,
+        onAddPage: handleCreatePage,
+        canEdit: canEdit
+    };
+
     return (
         <div className="flex h-[calc(100vh-140px)] glass-panel overflow-hidden border-none shadow-crm-xl bg-white/40">
-            <WikiSidebar
-                folders={initialFolders}
-                pages={initialPages}
-                activePageId={selectedPageId || undefined}
-                onSelectPage={handleSelectPage}
-                onAddFolder={handleCreateFolder}
-                onAddPage={handleCreatePage}
-                canEdit={canEdit}
-            />
+            {/* Desktop Sidebar */}
+            <div className="hidden md:flex shrink-0">
+                <WikiSidebar {...sidebarProps} />
+            </div>
+
+            {/* Mobile Sidebar (ResponsiveModal) */}
+            <ResponsiveModal
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                showVisualTitle={false}
+                className="p-0"
+            >
+                <div className="h-[80vh] flex">
+                    <WikiSidebar {...sidebarProps} />
+                </div>
+            </ResponsiveModal>
 
             <div className="flex-1 flex flex-col min-w-0 bg-white/20">
-                {selectedPageId ? (
-                    <>
-                        {/* Toolbar */}
-                        <div className="h-16 border-b border-slate-200/60 px-6 flex items-center justify-between bg-white/40">
-                            <div className="flex-1 min-w-0">
-                                {isEditing ? (
-                                    <input
-                                        value={editData.title}
-                                        onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                                        className="text-xl font-bold bg-transparent border-none focus:ring-0 text-slate-900 w-full"
-                                        placeholder="Заголовок статьи"
-                                    />
-                                ) : (
-                                    <h2 className="text-xl font-bold text-slate-900 truncate">{pageContent?.title}</h2>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-2 ml-4">
+                {/* Custom Toolbar with Hamburger for Mobile */}
+                <div className="h-16 border-b border-slate-200/60 px-4 md:px-6 flex items-center justify-between bg-white/40">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden shrink-0"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <Menu className="w-5 h-5 text-slate-600" />
+                        </Button>
+
+                        {isEditing ? (
+                            <input
+                                value={editData.title}
+                                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                                className="text-lg md:text-xl font-bold bg-transparent border-none focus:ring-0 text-slate-900 w-full"
+                                placeholder="Заголовок статьи"
+                            />
+                        ) : (
+                            <h2 className="text-lg md:text-xl font-bold text-slate-900 truncate">{pageContent?.title || "Выберите статью"}</h2>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-2 ml-2">
+                        {selectedPageId && (
+                            <>
                                 {isEditing ? (
                                     <>
                                         <Button variant="ghost" size="icon" onClick={() => setIsEditing(false)} disabled={loading}>
                                             <X className="w-4 h-4 text-slate-400" />
                                         </Button>
-                                        <Button variant="btn-dark" size="sm" onClick={handleSave} disabled={loading} className="text-white gap-2 font-bold px-5 h-9 rounded-[var(--radius-inner)] border-none">
+                                        <Button variant="btn-dark" size="sm" onClick={handleSave} disabled={loading} className="text-white gap-2 font-bold px-3 md:px-5 h-9 rounded-[var(--radius-inner)] border-none">
                                             <Check className="w-4 h-4" />
-                                            Сохранить
+                                            <span className="hidden sm:inline">Сохранить</span>
                                         </Button>
                                     </>
                                 ) : canEdit ? (
@@ -173,22 +203,26 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                                         </Button>
                                     </>
                                 ) : null}
-                            </div>
-                        </div>
+                            </>
+                        )}
+                    </div>
+                </div>
 
-                        {/* Content Area */}
-                        <div className="flex-1 overflow-y-auto p-8">
+                {/* Content Area */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                    {selectedPageId ? (
+                        <>
                             {isEditing ? (
                                 <textarea
                                     value={editData.content}
                                     onChange={(e) => setEditData({ ...editData, content: e.target.value })}
-                                    className="w-full h-full bg-transparent border-none focus:ring-0 resize-none font-medium text-slate-700 leading-relaxed text-lg"
+                                    className="w-full h-full bg-transparent border-none focus:ring-0 resize-none font-medium text-slate-700 leading-relaxed text-base md:text-lg"
                                     placeholder="Начните писать здесь..."
                                 />
                             ) : (
                                 <div className="prose prose-slate max-w-none">
                                     {pageContent?.content ? (
-                                        <div className="whitespace-pre-wrap text-slate-700 font-medium leading-relaxed text-lg">
+                                        <div className="whitespace-pre-wrap text-slate-700 font-medium leading-relaxed text-base md:text-lg">
                                             {pageContent.content}
                                         </div>
                                     ) : (
@@ -203,25 +237,32 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                                     )}
                                 </div>
                             )}
-                        </div>
-
-                        {/* Footer Info */}
-                        {!isEditing && pageContent && (
-                            <div className="px-8 py-4 border-t border-slate-200 flex items-center justify-between text-[11px] font-bold text-slate-400  tracking-normal bg-white/20">
-                                <span>Автор: {pageContent.author?.name || "Система"}</span>
-                                <span>Обновлено: {new Date(pageContent.updatedAt).toLocaleString('ru-RU')}</span>
+                        </>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6 md:p-12 opacity-40">
+                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] md:rounded-[32px] bg-slate-100 flex items-center justify-center mb-6 md:mb-8">
+                                <Search className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
                             </div>
-                        )}
-                    </>
-                ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center p-12 opacity-40">
-                        <div className="w-24 h-24 rounded-[32px] bg-slate-100 flex items-center justify-center mb-8">
-                            <Search className="w-10 h-10 text-slate-300" />
+                            <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-normal mb-2">Выберите статью</h2>
+                            <p className="max-w-xs font-bold text-xs md:text-sm leading-tight">
+                                Выберите статью из списка слева или создайте новую, чтобы начать.
+                            </p>
+                            <Button
+                                variant="outline"
+                                className="md:hidden mt-6 font-bold"
+                                onClick={() => setIsSidebarOpen(true)}
+                            >
+                                Открыть список статей
+                            </Button>
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal  mb-2">Выберите статью</h2>
-                        <p className="max-w-xs font-bold text-sm leading-tight">
-                            Выберите статью из списка слева или создайте новую, чтобы начать.
-                        </p>
+                    )}
+                </div>
+
+                {/* Footer Info */}
+                {!isEditing && pageContent && selectedPageId && (
+                    <div className="px-4 md:px-8 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[10px] md:text-[11px] font-bold text-slate-400 tracking-normal bg-white/20">
+                        <span>Автор: {pageContent.author?.name || "Система"}</span>
+                        <span>Обновлено: {new Date(pageContent.updatedAt).toLocaleString('ru-RU')}</span>
                     </div>
                 )}
             </div>

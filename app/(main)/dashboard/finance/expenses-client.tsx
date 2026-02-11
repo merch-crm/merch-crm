@@ -10,6 +10,8 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { playSound } from "@/lib/sounds";
 import { useBranding } from "@/components/branding-provider";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 export interface Expense {
     id: string;
@@ -74,59 +76,98 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
             </div>
 
             <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-slate-50/50">
-                            <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Дата</th>
-                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 tracking-wider">Категория</th>
-                            <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Описание</th>
-                            <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal text-right">Сумма</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {filteredExpenses.length > 0 ? filteredExpenses.map((expense) => (
-                            <tr key={expense.id} className="group hover:bg-slate-50/30 transition-colors">
-                                <td className="px-8 py-6">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:bg-rose-50 transition-colors">
-                                            <Calendar className="w-5 h-5" />
+                <ResponsiveDataView
+                    data={filteredExpenses}
+                    mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
+                    desktopClassName="hidden md:block"
+                    renderTable={() => (
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-slate-50/50">
+                                    <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Дата</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 tracking-wider">Категория</th>
+                                    <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal">Описание</th>
+                                    <th className="px-8 py-5 text-xs font-bold text-slate-400  tracking-normal text-right">Сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {filteredExpenses.map((expense) => (
+                                    <tr key={expense.id} className="group hover:bg-slate-50/30 transition-colors">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-rose-500 group-hover:bg-rose-50 transition-colors">
+                                                    <Calendar className="w-5 h-5" />
+                                                </div>
+                                                <div className="font-bold text-slate-900 text-sm">
+                                                    {format(new Date(expense.date), "d MMM yyyy", { locale: ru })}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={cn(
+                                                "px-2 py-1 rounded-md text-[10px] font-bold tracking-wider",
+                                                categoryColors[expense.category] || categoryColors.other
+                                            )}>
+                                                {categoryLabels[expense.category]}
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="text-sm font-medium text-slate-600">
+                                                {expense.description || "Без описания"}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-right">
+                                            <div className="text-lg font-bold text-rose-600 leading-none">
+                                                -{Number(expense.amount).toLocaleString()} <span className="text-[10px] font-bold text-slate-400 ml-1">{currencySymbol}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    renderCard={(expense) => (
+                        <div key={expense.id} className="p-4 flex flex-col gap-2 border-b border-slate-100 last:border-none active:bg-slate-50 transition-colors">
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                        "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border",
+                                        categoryColors[expense.category] || categoryColors.other
+                                    )}>
+                                        <Calendar className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-900">
+                                            {categoryLabels[expense.category] || "Прочее"}
                                         </div>
-                                        <div className="font-bold text-slate-900 text-sm">
+                                        <div className="text-[10px] text-slate-400 font-bold">
                                             {format(new Date(expense.date), "d MMM yyyy", { locale: ru })}
                                         </div>
                                     </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className={cn(
-                                        "px-2 py-1 rounded-md text-[10px] font-bold tracking-wider",
-                                        categoryColors[expense.category] || categoryColors.other
-                                    )}>
-                                        {categoryLabels[expense.category]}
-                                    </span>
-                                </td>
-                                <td className="px-8 py-6">
-                                    <div className="text-sm font-medium text-slate-600">
-                                        {expense.description || "Без описания"}
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-lg font-bold text-rose-600">
+                                        -{Number(expense.amount).toLocaleString()} {currencySymbol}
                                     </div>
-                                </td>
-                                <td className="px-8 py-6 text-right">
-                                    <div className="text-lg font-bold text-rose-600 leading-none">
-                                        -{Number(expense.amount).toLocaleString()} <span className="text-[10px] font-bold text-slate-400 ml-1">{currencySymbol}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan={4} className="px-8 py-20 text-center">
-                                    <div className="flex flex-col items-center">
-                                        <FileText className="w-12 h-12 text-slate-200 mb-4" />
-                                        <p className="text-slate-400 font-medium">Расходов не найдено</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                            {expense.description && (
+                                <div className="text-xs text-slate-500 font-medium bg-slate-50 p-2 rounded-lg mt-1">
+                                    {expense.description}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                />
+
+                {filteredExpenses.length === 0 && (
+                    <div className="py-20 text-center">
+                        <div className="flex flex-col items-center">
+                            <FileText className="w-12 h-12 text-slate-200 mb-4" />
+                            <p className="text-slate-400 font-medium">Расходов не найдено</p>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {isAdding && (
@@ -173,48 +214,45 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-            <form onSubmit={handleSubmit} className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in-95 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-bl-full -mr-16 -mt-16" />
+        <ResponsiveModal
+            isOpen={true}
+            onClose={onClose}
+            title="Новый расход"
+        >
+            <form onSubmit={handleSubmit} className="p-4 space-y-6">
+                <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
+                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
+                </div>
 
-                <h2 className="text-2xl font-bold text-slate-900 mb-8 relative">Новый расход</h2>
-
-                <div className="space-y-6 relative">
+                <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
-                        <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
+                        <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
+                        <select name="category" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm">
+                            <option value="purchase">Закупки</option>
+                            <option value="rent">Аренда</option>
+                            <option value="salary">Зарплата</option>
+                            <option value="tax">Налоги</option>
+                            <option value="other">Прочее</option>
+                        </select>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
-                            <select name="category" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm">
-                                <option value="purchase">Закупки</option>
-                                <option value="rent">Аренда</option>
-                                <option value="salary">Зарплата</option>
-                                <option value="tax">Налоги</option>
-                                <option value="other">Прочее</option>
-                            </select>
-                        </div>
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Сумма {currencySymbol}</label>
-                            <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
-                        </div>
-                    </div>
-
                     <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Описание</label>
-                        <textarea name="description" placeholder="На что потрачены деньги..." className="w-full h-32 p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-medium text-sm resize-none" />
-                    </div>
-
-                    <div className="sticky bottom-0 z-10 flex gap-4 pt-4 bg-white border-t border-slate-100 mt-auto">
-                        <Button type="button" variant="outline" onClick={onClose} className="hidden md:inline-flex h-11 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
-                        <Button type="submit" disabled={isLoading} className="h-11 flex-1 w-full bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">{isLoading ? "Добавление..." : "Добавить"}</Button>
+                        <label className="text-sm font-bold text-slate-700 ml-1">Сумма {currencySymbol}</label>
+                        <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
                     </div>
                 </div>
+
+                <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Описание</label>
+                    <textarea name="description" placeholder="На что потрачены деньги..." className="w-full h-32 p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-medium text-sm resize-none" />
+                </div>
+
+                <div className="flex gap-4 pt-4 mt-auto">
+                    <Button type="button" variant="outline" onClick={onClose} className="hidden md:inline-flex h-11 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
+                    <Button type="submit" disabled={isLoading} className="h-11 flex-1 w-full bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">{isLoading ? "Добавление..." : "Добавить"}</Button>
+                </div>
             </form>
-        </div>
+        </ResponsiveModal>
     );
 }
 

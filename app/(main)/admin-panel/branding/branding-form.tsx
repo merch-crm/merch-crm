@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SOUND_CATEGORIES, playSound, setGlobalSoundConfig, SoundType } from "@/lib/sounds";
 import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface BrandingFormProps {
     initialSettings: {
@@ -1103,99 +1104,68 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
             </form>
 
             {/* Custom Success/Error Modal */}
-            <AnimatePresence>
-                {
-                    modal.open && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-                        >
-                            {/* Backdrop */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-                                onClick={closeModal}
-                            />
+            <ResponsiveModal
+                isOpen={modal.open}
+                onClose={closeModal}
+                title={modal.title}
+                description={modal.message}
+                className="max-w-md"
+            >
+                <div className="flex flex-col">
+                    {/* Header Icon Section */}
+                    <div className={cn(
+                        "px-6 py-8 flex flex-col items-center text-center gap-4",
+                        modal.type === "success" ? "bg-emerald-50/50" : "bg-rose-50/50"
+                    )}>
+                        <div className={cn(
+                            "w-16 h-16 rounded-3xl flex items-center justify-center shadow-lg animate-in zoom-in-50 duration-300",
+                            modal.type === "success" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
+                        )}>
+                            {modal.type === "success" ? (
+                                <CheckCircle2 className="w-8 h-8" />
+                            ) : (
+                                <AlertCircle className="w-8 h-8" />
+                            )}
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">{modal.title}</h3>
+                            <p className="text-sm font-bold text-slate-500 mt-2 max-w-[280px] leading-relaxed">
+                                {modal.message}
+                            </p>
+                        </div>
+                    </div>
 
-                            {/* Modal */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                                className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden"
+                    {/* Footer Actions */}
+                    <div className="p-6 pt-2 flex flex-col gap-3">
+                        {modal.showRefresh && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    closeModal();
+                                    window.location.reload();
+                                }}
+                                className="h-12 rounded-2xl font-bold border-slate-200 text-slate-600 hover:bg-slate-50 transition-all"
                             >
-                                {/* Header */}
-                                <div className={cn(
-                                    "px-6 py-5 flex items-center gap-4",
-                                    modal.type === "success" ? "bg-emerald-50" : "bg-rose-50"
-                                )}>
-                                    <div className={cn(
-                                        "w-12 h-12 rounded-2xl flex items-center justify-center",
-                                        modal.type === "success" ? "bg-emerald-500" : "bg-rose-500"
-                                    )}>
-                                        {modal.type === "success" ? (
-                                            <CheckCircle2 className="w-6 h-6 text-white" />
-                                        ) : (
-                                            <AlertCircle className="w-6 h-6 text-white" />
-                                        )}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-slate-900">{modal.title}</h3>
-                                    </div>
-                                    <button
-                                        onClick={closeModal}
-                                        className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 text-slate-400" />
-                                    </button>
-                                </div>
-
-                                {/* Body */}
-                                <div className="px-6 py-5">
-                                    <p className="text-slate-600 text-sm leading-relaxed">{modal.message}</p>
-                                </div>
-
-                                {/* Footer */}
-                                <div className="px-6 pb-6 flex items-center gap-3">
-                                    {modal.showRefresh && (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() => {
-                                                closeModal();
-                                                window.location.reload();
-                                            }}
-                                            className="flex-1 h-11 rounded-xl font-bold border-slate-200"
-                                        >
-                                            <RefreshCw className="w-4 h-4 mr-2" />
-                                            Обновить страницу
-                                        </Button>
-                                    )}
-                                    <Button
-                                        type="button"
-                                        onClick={closeModal}
-                                        className={cn(
-                                            "h-11 rounded-xl font-bold",
-                                            modal.showRefresh ? "flex-1" : "w-full",
-                                            modal.type === "success"
-                                                ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                                                : "bg-rose-500 hover:bg-rose-600 text-white"
-                                        )}
-                                    >
-                                        Понятно
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    )
-                }
-            </AnimatePresence>
+                                <RefreshCw className="w-4 h-4 mr-2" />
+                                Обновить страницу
+                            </Button>
+                        )}
+                        <Button
+                            type="button"
+                            onClick={closeModal}
+                            className={cn(
+                                "h-12 rounded-2xl font-bold text-white shadow-xl transition-all active:scale-95 border-none",
+                                modal.type === "success"
+                                    ? "bg-emerald-500 shadow-emerald-200"
+                                    : "bg-rose-500 shadow-rose-200"
+                            )}
+                        >
+                            Понятно
+                        </Button>
+                    </div>
+                </div>
+            </ResponsiveModal>
         </div >
     );
 }

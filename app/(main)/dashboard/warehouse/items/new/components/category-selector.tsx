@@ -87,7 +87,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-lg font-bold text-slate-900 mb-1 whitespace-nowrap xl:whitespace-normal">
+                                    <h3 className="text-sm sm:text-lg font-bold text-slate-900 mb-1 break-words leading-tight">
                                         {category.name}
                                     </h3>
 

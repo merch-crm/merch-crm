@@ -1,9 +1,11 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { env } from "./env";
+import redis from "./redis";
 
-const SECRET_KEY = env.JWT_SECRET_KEY || "hardcoded_secret_key_for_debugging_12345";
-console.log("Using SECRET_KEY:", SECRET_KEY.substring(0, 5) + "...");
+const SECRET_KEY = env.JWT_SECRET_KEY;
+if (!SECRET_KEY) throw new Error("JWT_SECRET_KEY is required");
+
 const key = new TextEncoder().encode(SECRET_KEY);
 
 import { JWTPayload } from "jose";
@@ -42,6 +44,9 @@ export async function getSession(): Promise<Session | null> {
 
     if (!session) return null;
 
+    const isBlacklisted = await redis.get(`blacklist:${session}`);
+    if (isBlacklisted) return null;
+
     try {
         return await decrypt(session);
     } catch {
@@ -64,6 +69,16 @@ export async function updateSession() {
         `session=${session}; HttpOnly; SameSite=Lax; Expires=${parsed.expires.toUTCString()}`
     );
     return res;
+}
+
+export async function logout() {
+    const cookieStore = await cookies();
+    const session = cookieStore.get("session")?.value;
+    if (session) {
+        // Add to blacklist for 24 hours
+        await redis.set(`blacklist:${session}`, "1", "EX", 24 * 60 * 60);
+    }
+    cookieStore.delete("session");
 }
 
 

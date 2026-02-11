@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Shield, Loader2, Building, ChevronDown } from "lucide-react";
+import { Shield, Loader2, Building, ChevronDown } from "lucide-react";
 import { updateRole, getDepartments } from "../actions";
 import { cn } from "@/lib/utils";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface EditRoleDialogProps {
     role: {
@@ -47,112 +48,100 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
         }
     }
 
-    if (!isOpen) return null;
+    if (!role) return null;
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose} />
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Редактировать роль"
+            description="Измените параметры роли"
+            className="items-start"
+        >
+            <div>
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100">
+                        {error}
+                    </div>
+                )}
 
-                <div className="relative transform overflow-hidden rounded-[18px] bg-white p-8 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-slate-200">
-                    <div className="absolute top-0 right-0 pt-6 pr-6">
-                        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
-                            <X className="h-6 w-6" />
+                <form action={handleSubmit} className="space-y-6 pb-2">
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Название роли</label>
+                        <div className="relative">
+                            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <input
+                                type="text"
+                                name="name"
+                                required
+                                defaultValue={role?.name}
+                                placeholder="Например: Оператор цеха"
+                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Привязка к отделу</label>
+                        <div className="relative">
+                            <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <select
+                                name="departmentId"
+                                defaultValue={role?.departmentId || ""}
+                                className="block w-full pl-10 h-[46px] rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
+                            >
+                                <option value="">Общая роль (без отдела)</option>
+                                {departments.map(dept => (
+                                    <option key={dept.id} value={dept.id}>{dept.name}</option>
+                                ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
+                        <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-inner">
+                            {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
+                                <label key={c} className="relative cursor-pointer group">
+                                    <input type="radio" name="color" value={c} defaultChecked={role?.color === c} className="peer sr-only" />
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-[18px] transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
+                                        c === "indigo" ? "bg-primary peer-checked:ring-primary" :
+                                            c === "slate" ? "bg-slate-500 peer-checked:ring-slate-500" :
+                                                c === "red" ? "bg-red-500 peer-checked:ring-red-500" :
+                                                    c === "orange" ? "bg-orange-500 peer-checked:ring-orange-500" :
+                                                        c === "emerald" ? "bg-emerald-500 peer-checked:ring-emerald-500" :
+                                                            c === "blue" ? "bg-blue-500 peer-checked:ring-blue-500" :
+                                                                c === "purple" ? "bg-purple-500 peer-checked:ring-purple-500" :
+                                                                    c === "rose" ? "bg-rose-500 peer-checked:ring-rose-500" :
+                                                                        c === "cyan" ? "bg-cyan-500 peer-checked:ring-cyan-500" :
+                                                                            "bg-amber-500 peer-checked:ring-amber-500"
+                                    )} />
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-slate-200 flex gap-3 sticky bottom-0 bg-white">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 inline-flex justify-center items-center rounded-[18px] border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
+                        >
+                            Отмена
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark py-3 px-4 text-sm font-bold text-white shadow-lg transition-all active:scale-[0.98]"
+                        >
+                            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                            {loading ? "Сохранение..." : "Сохранить изменения"}
                         </button>
                     </div>
-
-                    <div className="mb-8 text-center border-b border-slate-200 pb-6">
-                        <div className="h-14 w-14 rounded-full bg-primary/5 text-primary flex items-center justify-center mx-auto mb-4 border border-primary/20 shadow-inner">
-                            <Shield className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-slate-900">Редактировать роль</h3>
-                        <p className="text-slate-700 mt-1">Измените параметры роли</p>
-                    </div>
-
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100">
-                            {error}
-                        </div>
-                    )}
-
-                    <form action={handleSubmit} className="space-y-6">
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Название роли</label>
-                            <div className="relative">
-                                <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    name="name"
-                                    required
-                                    defaultValue={role?.name}
-                                    placeholder="Например: Оператор цеха"
-                                    className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Привязка к отделу</label>
-                            <div className="relative">
-                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <select
-                                    name="departmentId"
-                                    defaultValue={role?.departmentId || ""}
-                                    className="block w-full pl-10 h-[46px] rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
-                                >
-                                    <option value="">Общая роль (без отдела)</option>
-                                    {departments.map(dept => (
-                                        <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                    ))}
-                                </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                            </div>
-                        </div>
-
-                        <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
-                            <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-inner">
-                                {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
-                                    <label key={c} className="relative cursor-pointer group">
-                                        <input type="radio" name="color" value={c} defaultChecked={role?.color === c} className="peer sr-only" />
-                                        <div className={cn(
-                                            "w-8 h-8 rounded-[18px] transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
-                                            c === "indigo" ? "bg-primary peer-checked:ring-primary" :
-                                                c === "slate" ? "bg-slate-500 peer-checked:ring-slate-500" :
-                                                    c === "red" ? "bg-red-500 peer-checked:ring-red-500" :
-                                                        c === "orange" ? "bg-orange-500 peer-checked:ring-orange-500" :
-                                                            c === "emerald" ? "bg-emerald-500 peer-checked:ring-emerald-500" :
-                                                                c === "blue" ? "bg-blue-500 peer-checked:ring-blue-500" :
-                                                                    c === "purple" ? "bg-purple-500 peer-checked:ring-purple-500" :
-                                                                        c === "rose" ? "bg-rose-500 peer-checked:ring-rose-500" :
-                                                                            c === "cyan" ? "bg-cyan-500 peer-checked:ring-cyan-500" :
-                                                                                "bg-amber-500 peer-checked:ring-amber-500"
-                                        )} />
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-slate-200 flex gap-3">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="flex-1 inline-flex justify-center items-center rounded-[18px] border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
-                            >
-                                Отмена
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark py-3 px-4 text-sm font-bold text-white shadow-lg transition-all active:scale-[0.98]"
-                            >
-                                {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                                {loading ? "Сохранение..." : "Сохранить изменения"}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                </form>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }

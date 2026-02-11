@@ -4,7 +4,7 @@ import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { useMediaQuery } from "@/hooks/use-media-query"; // I need to verify if this exists or create it
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface ResponsiveModalProps {
     isOpen: boolean;
@@ -27,12 +27,17 @@ export function ResponsiveModal({
     showVisualTitle = true,
     description,
     className,
-    desktopBreakpoint = 1024,
+    desktopBreakpoint = 768,
     hideClose,
     footer
 }: ResponsiveModalProps) {
     const isDesktop = useMediaQuery(`(min-width: ${desktopBreakpoint}px)`);
     const shouldHideClose = hideClose !== undefined ? hideClose : !showVisualTitle;
+
+    // Ждём определения устройства — не рендерим ничего до монтирования
+    if (isDesktop === null) {
+        return null;
+    }
 
     if (isDesktop) {
         return (
@@ -53,7 +58,15 @@ export function ResponsiveModal({
     }
 
     return (
-        <BottomSheet isOpen={isOpen} onClose={onClose} title={title} showVisualTitle={showVisualTitle} className={className} footer={footer} hideClose={shouldHideClose}>
+        <BottomSheet
+            isOpen={isOpen}
+            onClose={onClose}
+            title={title}
+            showVisualTitle={showVisualTitle}
+            className={className}
+            footer={footer}
+            hideClose={shouldHideClose}
+        >
             {children}
         </BottomSheet>
     );

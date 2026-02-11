@@ -8,6 +8,7 @@ import {
 import { pluralize } from "@/lib/pluralize";
 import { SalaryStats } from "./actions";
 import { useBranding } from "@/components/branding-provider";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 
 interface SalaryClientProps {
     salaryData: SalaryStats;
@@ -80,48 +81,85 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                     <div className="text-2xl font-black text-slate-900">{deptTotal.toLocaleString()} <span className="text-sm font-bold text-slate-400">{currencySymbol}</span></div>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="bg-white/50 border-b border-slate-100">
-                                            <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Сотрудник</th>
-                                            <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Роль</th>
-                                            <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Оклад</th>
-                                            <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">KPI & Бонусы</th>
-                                            <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Итого</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-50">
-                                        {emps.map((emp) => (
-                                            <tr key={emp.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                <td className="px-8 py-6">
-                                                    <div className="font-extrabold text-slate-900 mb-0.5 text-[15px]">{emp.name}</div>
-                                                    <div className="text-[10px] text-primary font-black tracking-widest uppercase opacity-70">USR-{emp.id.split('-')[0]}</div>
-                                                </td>
-                                                <td className="px-8 py-6 text-center">
-                                                    <span className="px-3.5 py-1.5 bg-slate-100/70 rounded-full text-[11px] font-bold text-slate-600 border border-slate-200/50 whitespace-nowrap">
-                                                        {emp.role}
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-6 text-center">
-                                                    <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} {currencySymbol}</span>
-                                                </td>
-                                                <td className="px-8 py-6 text-center">
-                                                    <div className="inline-flex flex-col items-center">
-                                                        <div className="font-black text-emerald-600 text-[15px]">+{emp.bonus.toLocaleString()} {currencySymbol}</div>
-                                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">за {emp.ordersCount} заказов</div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-8 py-6 text-right">
-                                                    <div className="font-black text-slate-900 border-l border-slate-200/50 pl-6 inline-block text-[20px] leading-none">
-                                                        {emp.total.toLocaleString()} <span className="text-slate-400 text-xs font-bold">{currencySymbol}</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <ResponsiveDataView
+                                data={emps}
+                                mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
+                                desktopClassName="hidden md:block"
+                                renderTable={() => (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-white/50 border-b border-slate-100">
+                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Сотрудник</th>
+                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Роль</th>
+                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Оклад</th>
+                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">KPI & Бонусы</th>
+                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Итого</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-50">
+                                                {emps.map((emp) => (
+                                                    <tr key={emp.id} className="group hover:bg-slate-50/50 transition-colors">
+                                                        <td className="px-8 py-6">
+                                                            <div className="font-extrabold text-slate-900 mb-0.5 text-[15px]">{emp.name}</div>
+                                                            <div className="text-[10px] text-primary font-black tracking-widest uppercase opacity-70">USR-{emp.id.split('-')[0]}</div>
+                                                        </td>
+                                                        <td className="px-8 py-6 text-center">
+                                                            <span className="px-3.5 py-1.5 bg-slate-100/70 rounded-full text-[11px] font-bold text-slate-600 border border-slate-200/50 whitespace-nowrap">
+                                                                {emp.role}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-8 py-6 text-center">
+                                                            <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} {currencySymbol}</span>
+                                                        </td>
+                                                        <td className="px-8 py-6 text-center">
+                                                            <div className="inline-flex flex-col items-center">
+                                                                <div className="font-black text-emerald-600 text-[15px]">+{emp.bonus.toLocaleString()} {currencySymbol}</div>
+                                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">за {emp.ordersCount} заказов</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-8 py-6 text-right">
+                                                            <div className="font-black text-slate-900 border-l border-slate-200/50 pl-6 inline-block text-[20px] leading-none">
+                                                                {emp.total.toLocaleString()} <span className="text-slate-400 text-xs font-bold">{currencySymbol}</span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                                renderCard={(emp) => (
+                                    <div key={emp.id} className="p-4 flex flex-col gap-3 active:bg-slate-50 transition-colors">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <div className="font-extrabold text-slate-900 text-[15px]">{emp.name}</div>
+                                                <div className="text-[10px] text-primary font-black tracking-widest uppercase opacity-70">USR-{emp.id.split('-')[0]}</div>
+                                            </div>
+                                            <span className="px-2 py-1 bg-slate-100 rounded-md text-[10px] font-bold text-slate-600 border border-slate-200">
+                                                {emp.role}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                            <div className="flex flex-col">
+                                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">Оклад</span>
+                                                <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} {currencySymbol}</span>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">KPI</span>
+                                                <span className="font-black text-emerald-600 text-sm">+{emp.bonus.toLocaleString()} {currencySymbol}</span>
+                                                <span className="text-[9px] font-bold text-slate-400 tracking-tighter mt-0.5 whitespace-nowrap">({emp.ordersCount} заказов)</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center pt-3 border-t border-slate-100 mt-1">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Итого</span>
+                                            <div className="font-black text-slate-900 text-xl">
+                                                {emp.total.toLocaleString()} <span className="text-xs text-slate-400 font-bold">{currencySymbol}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            />
                         </div>
                     );
                 })}

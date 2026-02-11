@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
-    X,
     Type,
     AlignLeft,
     User,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { createTask } from "./actions";
 import { playSound } from "@/lib/sounds";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface User {
     id: string;
@@ -47,16 +47,6 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
     const [, startTransition] = useTransition();
     const router = useRouter();
 
-    useEffect(() => {
-        if (isOpen) {
-            const originalStyle = window.getComputedStyle(document.body).overflow;
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.overflow = originalStyle;
-            };
-        }
-    }, [isOpen]);
-
     async function handleSubmit(formData: FormData) {
         setLoading(true);
         setError(null);
@@ -77,8 +67,8 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
         });
     }
 
-    if (!isOpen) {
-        return (
+    return (
+        <>
             <button
                 onClick={() => setIsOpen(true)}
                 className="w-11 h-11 sm:w-auto sm:px-6 sm:py-2.5 bg-primary text-white rounded-full sm:rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center shrink-0"
@@ -87,32 +77,14 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 <PlusCircle className="w-5 h-5" />
                 <span className="hidden sm:inline ml-2">Создать задачу</span>
             </button>
-        );
-    }
 
-    return (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-                onClick={() => setIsOpen(false)}
-            />
-
-            <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 border border-slate-200">
-                {/* Header */}
-                <div className="px-8 pt-8 pb-6 flex justify-between items-start">
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal">Новая задача</h2>
-                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Заполните детали поручения</p>
-                    </div>
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="p-2 hover:bg-slate-100 rounded-full transition-colors group"
-                    >
-                        <X className="w-6 h-6 text-slate-300 group-hover:text-slate-600" />
-                    </button>
-                </div>
-
-                <form action={handleSubmit} className="p-8 pt-0 space-y-6">
+            <ResponsiveModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Новая задача"
+                description="Заполните детали поручения"
+            >
+                <form action={handleSubmit} className="p-4 space-y-6">
                     {/* Title */}
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 pl-1">Что нужно сделать?</label>
@@ -289,7 +261,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </ResponsiveModal>
+        </>
     );
 }

@@ -1362,39 +1362,32 @@ function BulkCategoryDialog({ selectedIds, categories, onClose, onSuccess }: { s
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-md animate-in fade-in" onClick={onClose} />
-            <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-in zoom-in-95">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-900">Смена категории</h2>
-                        <p className="text-[10px] text-slate-500 font-bold mt-1">{selectedIds.length} поз. выбрано</p>
-                    </div>
-                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full bg-slate-50">
-                        <X className="h-5 w-5" />
-                    </button>
+        <ResponsiveModal
+            isOpen={true}
+            onClose={onClose}
+            title="Смена категории"
+            description={`${selectedIds.length} поз. выбрано`}
+            className="sm:max-w-md"
+        >
+            <div className="p-6 space-y-4">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-500 ml-1">Новая категория</label>
+                    <CategorySelect
+                        categories={categories}
+                        value={targetCategoryId}
+                        onChange={setTargetCategoryId}
+                        placeholder="Выберите новую категорию..."
+                    />
                 </div>
 
-                <div className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-500 ml-1">Новая категория</label>
-                        <CategorySelect
-                            categories={categories}
-                            value={targetCategoryId}
-                            onChange={setTargetCategoryId}
-                            placeholder="Выберите новую категорию..."
-                        />
-                    </div>
-
-                    <Button
-                        onClick={handleUpdate}
-                        disabled={!targetCategoryId || isLoading}
-                        className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all"
-                    >
-                        {isLoading ? "Обновление..." : "Сменить категорию"}
-                    </Button>
-                </div>
+                <Button
+                    onClick={handleUpdate}
+                    disabled={!targetCategoryId || isLoading}
+                    className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all"
+                >
+                    {isLoading ? "Обновление..." : "Сменить категорию"}
+                </Button>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }

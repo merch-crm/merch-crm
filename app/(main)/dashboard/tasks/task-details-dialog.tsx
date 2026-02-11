@@ -2,7 +2,6 @@
 
 import NextImage from "next/image";
 import {
-    X,
     AlignLeft,
     User,
     CheckCircle2,
@@ -14,7 +13,8 @@ import {
     FileText,
     Image as ImageIcon,
     Download,
-    UploadCloud
+    UploadCloud,
+    X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -30,10 +30,10 @@ import {
     deleteChecklistItem,
 } from "./actions";
 import { playSound } from "@/lib/sounds";
-import { useTransition, useRef, useState, useEffect } from "react";
+import { useTransition, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface TaskDetailsDialogProps {
     task: Task;
@@ -42,16 +42,6 @@ interface TaskDetailsDialogProps {
 
 export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     const [isPending, startTransition] = useTransition();
-
-    // Lock scroll on mount
-    useEffect(() => {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = originalStyle;
-        };
-    }, []);
-
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [activeTab, setActiveTab] = useState<'details' | 'checklist' | 'comments' | 'history'>('details');
     const [newComment, setNewComment] = useState("");
@@ -202,14 +192,17 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
     const isDone = task.status === "done";
 
     return (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-                onClick={onClose}
-            />
-
-            <div className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 border border-slate-200 max-h-[90vh] flex flex-col">
-                <div className="overflow-y-auto p-10 pt-12 flex-1 scrollbar-hide">
+        <ResponsiveModal
+            isOpen={true}
+            onClose={onClose}
+            title={task.title}
+            description={undefined}
+            className="sm:max-w-2xl p-0 overflow-hidden"
+            hideClose={true}
+            showVisualTitle={false}
+        >
+            <div className="flex flex-col h-full max-h-[85vh] sm:max-h-[80vh]">
+                <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
                     {/* Header */}
                     <div className="flex justify-between items-start gap-6 mb-8">
                         <div className="space-y-3 flex-1">
@@ -225,7 +218,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 )}
                             </div>
                             <h2 className={cn(
-                                "text-3xl font-bold text-slate-900 tracking-normal leading-tight",
+                                "text-2xl sm:text-3xl font-bold text-slate-900 tracking-normal leading-tight",
                                 isDone && "line-through text-slate-400"
                             )}>
                                 {task.title}
@@ -233,14 +226,14 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-3 hover:bg-slate-100 rounded-2xl transition-all group"
+                            className="p-3 hover:bg-slate-100 rounded-2xl transition-all group shrink-0"
                         >
                             <X className="w-6 h-6 text-slate-300 group-hover:text-slate-600" />
                         </button>
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide">
+                    <div className="flex border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide -mx-6 px-6 sm:mx-0 sm:px-0">
                         {[
                             { id: 'details', label: 'Детали' },
                             { id: 'checklist', label: 'Чек-лист' },
@@ -251,7 +244,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as "details" | "checklist" | "comments" | "history")}
                                 className={cn(
-                                    "px-6 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap",
+                                    "px-4 sm:px-6 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap shrink-0",
                                     activeTab === tab.id
                                         ? "border-primary text-primary"
                                         : "border-transparent text-slate-400 hover:text-slate-600"
@@ -434,7 +427,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                                         </span>
                                         <button
                                             onClick={() => handleDeleteChecklist(item.id)}
-                                            className="p-2 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
+                                            className="p-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
                                         >
                                             <X className="w-4 h-4" />
                                         </button>
@@ -517,7 +510,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                 </div>
 
                 {/* Actions Footer */}
-                <div className="p-8 pt-0 mt-auto bg-white/80 backdrop-blur-sm">
+                <div className="p-6 pt-0 mt-auto bg-white/80 backdrop-blur-sm safe-area-bottom">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={handleToggle}
@@ -553,6 +546,6 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
                 variant="destructive"
                 isLoading={isPending}
             />
-        </div >
+        </ResponsiveModal>
     );
 }

@@ -176,8 +176,8 @@ export function TransactionsClient({
             <div className="crm-card border-none bg-white overflow-hidden shadow-sm">
                 <ResponsiveDataView
                     data={filtered}
-                    mobileGridClassName="flex flex-col divide-y divide-slate-100 lg:hidden"
-                    desktopClassName="hidden lg:block "
+                    mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
+                    desktopClassName="hidden md:block "
                     renderTable={() => (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">

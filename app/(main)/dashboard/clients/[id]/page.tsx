@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, User, Phone, Mail, MapPin, Instagram, Send, Package, ShoppingBag, CreditCard, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { OrderHistoryTable } from "./order-history-table";
 
 export default async function ClientPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
@@ -88,53 +89,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
-                            <h3 className="font-bold text-slate-900 flex items-center">
-                                <Package className="w-5 h-5 mr-3 text-primary" />
-                                История заказов
-                            </h3>
-                        </div>
-                        {client.orders && client.orders.length > 0 ? (
-                            <table className="min-w-full divide-y divide-slate-100">
-                                <thead className="bg-white">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-slate-400  tracking-wider">Номер</th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-slate-400  tracking-wider">Дата</th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-slate-400  tracking-wider">Статус</th>
-                                        <th className="px-6 py-4 text-right text-xs font-bold text-slate-400  tracking-wider">Сумма</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 bg-white">
-                                    {client.orders.map((order: { id: string; orderNumber?: string; createdAt: Date; status: string; totalAmount?: string | null }) => (
-                                        <tr key={order.id} className="text-sm hover:bg-slate-50/50 transition-colors cursor-pointer block sm:table-row" onClick={() => { }}>
-                                            {/* Row click needs client component or Link wrapper, for now simpler */}
-                                            <td className="px-6 py-5 font-bold text-slate-900">
-                                                <Link href={`/dashboard/orders/${order.id}`} className="hover:text-primary underline decoration-primary/20 underline-offset-4">
-                                                    ORD-{order.orderNumber?.split('-')[2] || order.id.slice(0, 6)}
-                                                </Link>
-                                            </td>
-                                            <td className="px-6 py-5 text-slate-500">
-                                                {format(new Date(order.createdAt), "d MMM yyyy", { locale: ru })}
-                                            </td>
-                                            <td className="px-6 py-5">
-                                                <span className="px-2 py-1 rounded-md bg-slate-100 text-xs font-bold text-slate-600  tracking-wider">
-                                                    {order.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-5 text-right font-bold text-slate-900">
-                                                {Number(order.totalAmount).toLocaleString()} {currencySymbol}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <div className="p-12 text-center text-slate-500">
-                                История заказов пуста
-                            </div>
-                        )}
-                    </div>
+                    <OrderHistoryTable orders={client.orders || []} currencySymbol={currencySymbol} />
                 </div>
 
                 {/* Sidebar: Contact Info */}

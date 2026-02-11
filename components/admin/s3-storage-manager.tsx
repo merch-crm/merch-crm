@@ -2,6 +2,7 @@
 
 import NextImage from "next/image";
 import { useEffect, useState, useCallback } from "react";
+import { format } from "date-fns";
 import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/(main)/admin-panel/actions";
 import {
     HardDrive,
@@ -29,14 +30,8 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-    DialogDescription
-} from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { Button } from "@/components/ui/button";
 
 interface StorageFile {
@@ -467,196 +462,285 @@ export function S3StorageManager() {
                                         <p className="text-xs font-bold  tracking-normal">Здесь пока пусто</p>
                                     </div>
                                 ) : (
-                                    <table className="w-full text-left border-collapse">
-                                        <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
-                                            <tr>
-                                                {isMultiSelectMode && (
-                                                    <th className="px-4 py-4 w-12"></th>
-                                                )}
-                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Наименование</th>
-                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-right">Размер</th>
-                                                <th className="px-8 py-4 text-[10px] font-bold text-slate-400  tracking-normal text-center">Действия</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-50">
-                                            {/* Render Folders */}
-                                            {filteredFolders.map((folderPrefix) => {
-                                                const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
-                                                const isSelected = selectedKeys.has(folderPrefix);
-                                                return (
-                                                    <tr
-                                                        key={folderPrefix}
-                                                        className={cn(
-                                                            "transition-colors group",
-                                                            isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
-                                                        )}
-                                                    >
+                                    <ResponsiveDataView
+                                        data={[...filteredFolders, ...filteredFiles]}
+                                        renderTable={() => (
+                                            <table className="w-full text-left border-collapse">
+                                                <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
+                                                    <tr>
                                                         {isMultiSelectMode && (
-                                                            <td className="px-4 py-4">
+                                                            <th className="px-4 py-4 w-12 text-center">
                                                                 <button
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
-                                                                        toggleSelection(folderPrefix);
+                                                                        if (selectedKeys.size === (filteredFolders.length + filteredFiles.length)) {
+                                                                            setSelectedKeys(new Set());
+                                                                        } else {
+                                                                            const allKeys = new Set([...filteredFolders, ...filteredFiles.map(f => f.key)]);
+                                                                            setSelectedKeys(allKeys);
+                                                                        }
                                                                     }}
-                                                                    className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                                                                    className="p-1 hover:bg-slate-100 rounded transition-colors"
                                                                 >
-                                                                    {isSelected ? (
-                                                                        <CheckSquare size={20} className="text-#5d00ff" />
+                                                                    {selectedKeys.size === (filteredFolders.length + filteredFiles.length) && (filteredFolders.length + filteredFiles.length) > 0 ? (
+                                                                        <CheckSquare size={20} className="text-primary" />
                                                                     ) : (
                                                                         <Square size={20} className="text-slate-300" />
                                                                     )}
                                                                 </button>
-                                                            </td>
+                                                            </th>
                                                         )}
-                                                        <td
-                                                            className="px-8 py-4 cursor-pointer"
-                                                            onClick={() => !isMultiSelectMode && navigateTo(folderPrefix)}
-                                                        >
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm">
-                                                                    <Folder size={18} fill="currentColor" fillOpacity={0.2} />
-                                                                </div>
-                                                                <div>
-                                                                    <p className="text-sm font-bold text-slate-700">{name}</p>
-                                                                    <p className="text-[10px] text-slate-400 font-bold  tracking-normal">Папка</p>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-8 py-4 text-right">
-                                                            <span className="text-[10px] font-bold text-slate-400 ">---</span>
-                                                        </td>
-                                                        <td className="px-8 py-4">
-                                                            <div className="flex items-center justify-center gap-2">
-                                                                {!isMultiSelectMode && (
-                                                                    <>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                openRenameModal(folderPrefix);
-                                                                            }}
-                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                            title="Переименовать"
-                                                                        >
-                                                                            <Edit2 size={16} />
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setDeletingKey(folderPrefix);
-                                                                            }}
-                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
-                                                                            title="Удалить"
-                                                                        >
-                                                                            <Trash2 size={16} />
-                                                                        </button>
-                                                                    </>
-                                                                )}
-                                                                {!isMultiSelectMode && (
-                                                                    <ChevronRight size={16} className="text-slate-300 group-hover:text-#5d00ff transition-colors" />
-                                                                )}
-                                                            </div>
-                                                        </td>
+                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal">Наименование</th>
+                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal text-right">Размер</th>
+                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal text-center">Действия</th>
                                                     </tr>
-                                                );
-                                            })}
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-50">
+                                                    {/* Render Folders */}
+                                                    {filteredFolders.map((folderPrefix) => {
+                                                        const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
+                                                        const isSelected = selectedKeys.has(folderPrefix);
+                                                        return (
+                                                            <tr
+                                                                key={folderPrefix}
+                                                                className={cn(
+                                                                    "transition-colors group",
+                                                                    isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
+                                                                )}
+                                                            >
+                                                                {isMultiSelectMode && (
+                                                                    <td className="px-4 py-4 text-center">
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                toggleSelection(folderPrefix);
+                                                                            }}
+                                                                            className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                                                                        >
+                                                                            {isSelected ? (
+                                                                                <CheckSquare size={20} className="text-primary" />
+                                                                            ) : (
+                                                                                <Square size={20} className="text-slate-300" />
+                                                                            )}
+                                                                        </button>
+                                                                    </td>
+                                                                )}
+                                                                <td
+                                                                    className="px-8 py-4 cursor-pointer"
+                                                                    onClick={() => !isMultiSelectMode && navigateTo(folderPrefix)}
+                                                                >
+                                                                    <div className="flex items-center gap-4">
+                                                                        <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm">
+                                                                            <Folder size={18} fill="currentColor" fillOpacity={0.2} />
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className="text-sm font-bold text-slate-700">{name}</p>
+                                                                            <p className="text-[10px] text-slate-400 font-bold tracking-normal">Папка</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-8 py-4 text-right">
+                                                                    <span className="text-[10px] font-bold text-slate-400 ">---</span>
+                                                                </td>
+                                                                <td className="px-8 py-4">
+                                                                    <div className="flex items-center justify-center gap-2">
+                                                                        {!isMultiSelectMode && (
+                                                                            <>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        openRenameModal(folderPrefix);
+                                                                                    }}
+                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
+                                                                                    title="Переименовать"
+                                                                                >
+                                                                                    <Edit2 size={16} />
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setDeletingKey(folderPrefix);
+                                                                                    }}
+                                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
+                                                                                    title="Удалить"
+                                                                                >
+                                                                                    <Trash2 size={16} />
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                        {!isMultiSelectMode && (
+                                                                            <ChevronRight size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
 
-                                            {/* Render Files */}
-                                            {filteredFiles.map((file) => {
-                                                const name = file.key.replace(currentPrefix, "");
-                                                const isSelected = selectedKeys.has(file.key);
+                                                    {/* Render Files */}
+                                                    {filteredFiles.map((file) => {
+                                                        const name = file.key.replace(currentPrefix, "");
+                                                        const isSelected = selectedKeys.has(file.key);
+                                                        const ext = name.split('.').pop()?.toLowerCase();
+                                                        const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+
+                                                        return (
+                                                            <tr
+                                                                key={file.key}
+                                                                className={cn(
+                                                                    "transition-colors group",
+                                                                    isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
+                                                                )}
+                                                            >
+                                                                {isMultiSelectMode && (
+                                                                    <td className="px-4 py-4 text-center">
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                toggleSelection(file.key);
+                                                                            }}
+                                                                            className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                                                                        >
+                                                                            {isSelected ? (
+                                                                                <CheckSquare size={20} className="text-primary" />
+                                                                            ) : (
+                                                                                <Square size={20} className="text-slate-300" />
+                                                                            )}
+                                                                        </button>
+                                                                    </td>
+                                                                )}
+                                                                <td
+                                                                    className="px-8 py-4 cursor-pointer"
+                                                                    onClick={() => handleFileClick(file)}
+                                                                >
+                                                                    <div className="flex items-center gap-4">
+                                                                        <div className={cn(
+                                                                            "p-2.5 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm",
+                                                                            isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
+                                                                        )}>
+                                                                            {isImage ? <Eye size={18} /> : <File size={18} />}
+                                                                        </div>
+                                                                        <div className="max-w-[300px] sm:max-w-none">
+                                                                            <p className="text-sm font-bold text-slate-700 truncate">{name}</p>
+                                                                            <p className="text-[10px] text-slate-400 font-medium tracking-tight">
+                                                                                {file.lastModified ? new Date(file.lastModified).toLocaleString() : "---"}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-8 py-4 text-right">
+                                                                    <span className="text-xs font-mono font-bold text-slate-500">{formatSize(file.size)}</span>
+                                                                </td>
+                                                                <td className="px-8 py-4">
+                                                                    <div className="flex items-center justify-center gap-2">
+                                                                        {!isMultiSelectMode && (
+                                                                            <>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        handleFileClick(file);
+                                                                                    }}
+                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
+                                                                                    title="Просмотреть"
+                                                                                >
+                                                                                    <Eye size={16} />
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        openRenameModal(file.key);
+                                                                                    }}
+                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
+                                                                                    title="Переименовать"
+                                                                                >
+                                                                                    <Edit2 size={16} />
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setDeletingKey(file.key);
+                                                                                    }}
+                                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
+                                                                                    title="Удалить"
+                                                                                >
+                                                                                    <Trash2 size={16} />
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                        renderCard={(item) => {
+                                            const isFolder = typeof item === 'string';
+                                            const key = isFolder ? item : item.key;
+                                            const name = key.replace(currentPrefix, "").replace("/", "");
+                                            const isSelected = selectedKeys.has(key);
+
+                                            if (isFolder) {
+                                                return (
+                                                    <div key={key} className={cn("bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group", isSelected && "ring-2 ring-primary/20 bg-primary/5")}>
+                                                        <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => !isMultiSelectMode && navigateTo(key)}>
+                                                            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                                                                <Folder size={20} fill="currentColor" fillOpacity={0.2} />
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-bold text-slate-900 truncate">{name}</p>
+                                                                <p className="text-[10px] text-slate-400 font-bold uppercase">Папка</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-1 shrink-0">
+                                                            {isMultiSelectMode ? (
+                                                                <button onClick={() => toggleSelection(key)} className="p-2">
+                                                                    {isSelected ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} className="text-slate-300" />}
+                                                                </button>
+                                                            ) : (
+                                                                <>
+                                                                    <button onClick={() => openRenameModal(key)} className="p-2 text-slate-300 hover:text-primary"><Edit2 size={16} /></button>
+                                                                    <button onClick={() => setDeletingKey(key)} className="p-2 text-slate-300 hover:text-rose-500"><Trash2 size={16} /></button>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            } else {
+                                                const file = item as any;
                                                 const ext = name.split('.').pop()?.toLowerCase();
                                                 const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
-
                                                 return (
-                                                    <tr
-                                                        key={file.key}
-                                                        className={cn(
-                                                            "transition-colors group",
-                                                            isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
-                                                        )}
-                                                    >
-                                                        {isMultiSelectMode && (
-                                                            <td className="px-4 py-4">
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        toggleSelection(file.key);
-                                                                    }}
-                                                                    className="p-1 hover:bg-indigo-100 rounded transition-colors"
-                                                                >
-                                                                    {isSelected ? (
-                                                                        <CheckSquare size={20} className="text-#5d00ff" />
-                                                                    ) : (
-                                                                        <Square size={20} className="text-slate-300" />
-                                                                    )}
+                                                    <div key={key} className={cn("bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group", isSelected && "ring-2 ring-primary/20 bg-primary/5")}>
+                                                        <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => handleFileClick(file)}>
+                                                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400")}>
+                                                                {isImage ? <Eye size={20} /> : <File size={20} />}
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-bold text-slate-900 truncate">{name}</p>
+                                                                <p className="text-[10px] text-slate-400 font-medium">{formatSize(file.size)} • {file.lastModified ? format(new Date(file.lastModified), "dd.MM.yy HH:mm") : "---"}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-1 shrink-0">
+                                                            {isMultiSelectMode ? (
+                                                                <button onClick={() => toggleSelection(key)} className="p-2">
+                                                                    {isSelected ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} className="text-slate-300" />}
                                                                 </button>
-                                                            </td>
-                                                        )}
-                                                        <td
-                                                            className="px-8 py-4 cursor-pointer"
-                                                            onClick={() => handleFileClick(file)}
-                                                        >
-                                                            <div className="flex items-center gap-4">
-                                                                <div className={cn(
-                                                                    "p-2.5 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm",
-                                                                    isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
-                                                                )}>
-                                                                    <File size={18} />
-                                                                </div>
-                                                                <div className="max-w-[300px] sm:max-w-none">
-                                                                    <p className="text-sm font-bold text-slate-700 truncate">{name}</p>
-                                                                    <p className="text-[10px] text-slate-400 font-medium tracking-tight">
-                                                                        {file.lastModified ? new Date(file.lastModified).toLocaleString() : "---"}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-8 py-4 text-right">
-                                                            <span className="text-xs font-mono font-bold text-slate-500">{formatSize(file.size)}</span>
-                                                        </td>
-                                                        <td className="px-8 py-4">
-                                                            <div className="flex items-center justify-center gap-2">
-                                                                {!isMultiSelectMode && (
-                                                                    <>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                handleFileClick(file);
-                                                                            }}
-                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                            title="Просмотреть"
-                                                                        >
-                                                                            <Eye size={16} />
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                openRenameModal(file.key);
-                                                                            }}
-                                                                            className="p-2.5 text-slate-300 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                            title="Переименовать"
-                                                                        >
-                                                                            <Edit2 size={16} />
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setDeletingKey(file.key);
-                                                                            }}
-                                                                            className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
-                                                                            title="Удалить"
-                                                                        >
-                                                                            <Trash2 size={16} />
-                                                                        </button>
-                                                                    </>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            ) : (
+                                                                <>
+                                                                    <button onClick={() => handleFileClick(file)} className="p-2 text-slate-300 hover:text-primary"><Eye size={16} /></button>
+                                                                    <button onClick={() => openRenameModal(key)} className="p-2 text-slate-300 hover:text-primary"><Edit2 size={16} /></button>
+                                                                    <button onClick={() => setDeletingKey(key)} className="p-2 text-slate-300 hover:text-rose-500"><Trash2 size={16} /></button>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                            }
+                                        }}
+                                        mobileGridClassName="grid grid-cols-1 gap-3 p-4"
+                                    />
                                 )}
                             </div>
                         </CardContent>
@@ -735,20 +819,15 @@ export function S3StorageManager() {
             </div>
 
             {/* Create Folder Dialog */}
-            <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
-                                <FolderPlus size={24} />
-                            </div>
-                            Новая папка
-                        </DialogTitle>
-                        <DialogDescription className="text-sm font-medium text-slate-500">
-                            Введите имя папки. Она будет создана в текущем пути: <span className="font-bold text-#5d00ff">{currentPrefix || "/"}</span>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-6">
+            <ResponsiveModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                title="Новая папка"
+                description={`Введите имя папки. Она будет создана в: ${currentPrefix || "/"}`}
+            >
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400">Имя папки</label>
                         <input
                             type="text"
                             placeholder="Название папки..."
@@ -759,40 +838,35 @@ export function S3StorageManager() {
                             className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
                         />
                     </div>
-                    <DialogFooter className="sm:justify-between gap-4">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                         <Button
                             variant="ghost"
                             onClick={() => setIsCreateModalOpen(false)}
-                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleCreateFolder}
                             disabled={isCreating || !newFolderName.trim()}
-                            className="bg-#5d00ff hover:bg-indigo-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-indigo-200"
+                            className="bg-primary hover:bg-primary/90 text-white px-10 rounded-[18px] font-bold text-[10px] tracking-normal py-6 shadow-lg shadow-indigo-200"
                         >
-                            {isCreating ? "Создание..." : "Создать папку"}
+                            {isCreating ? <RefreshCw className="animate-spin mr-2 h-4 w-4" /> : "Создать"}
                         </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                    </div>
+                </div>
+            </ResponsiveModal>
 
             {/* Rename Dialog */}
-            <Dialog open={isRenameModalOpen} onOpenChange={setIsRenameModalOpen}>
-                <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8 bg-white overflow-hidden">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                            <div className="p-2 bg-amber-50 text-amber-600 rounded-[18px]">
-                                <Edit2 size={24} />
-                            </div>
-                            Переименовать
-                        </DialogTitle>
-                        <DialogDescription className="text-sm font-medium text-slate-500">
-                            Введите новое имя для {renamingKey?.endsWith("/") ? "папки" : "файла"}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-6">
+            <ResponsiveModal
+                isOpen={isRenameModalOpen}
+                onClose={() => setIsRenameModalOpen(false)}
+                title="Переименование"
+                description={`Введите новое имя для ${renamingKey?.endsWith("/") ? "папки" : "файла"}`}
+            >
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400">Новое имя</label>
                         <input
                             type="text"
                             placeholder="Новое имя..."
@@ -803,24 +877,24 @@ export function S3StorageManager() {
                             className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
                         />
                     </div>
-                    <DialogFooter className="sm:justify-between gap-4">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                         <Button
                             variant="ghost"
                             onClick={() => setIsRenameModalOpen(false)}
-                            className="px-8 rounded-[18px] font-bold  text-[10px] tracking-normal text-slate-400 py-6"
+                            className="px-8 rounded-[18px] font-bold text-[10px] tracking-normal text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
                         <Button
                             onClick={handleRename}
                             disabled={isRenaming || !newName.trim()}
-                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold  text-[10px] tracking-normal py-6 shadow-lg shadow-amber-200"
+                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold text-[10px] tracking-normal py-6 shadow-lg shadow-amber-200"
                         >
-                            {isRenaming ? "Переименование..." : "Переименовать"}
+                            {isRenaming ? <RefreshCw className="animate-spin mr-2 h-4 w-4" /> : "Переименовать"}
                         </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                    </div>
+                </div>
+            </ResponsiveModal>
 
             {/* Delete Confirmation */}
             <ConfirmDialog
@@ -847,52 +921,57 @@ export function S3StorageManager() {
             />
 
             {/* Preview Dialog */}
-            <Dialog open={!!previewFile} onOpenChange={() => setPreviewFile(null)}>
-                <DialogContent className="sm:max-w-4xl rounded-[40px] border-none shadow-2xl p-0 bg-white overflow-hidden [&>button]:hidden">
-                    <div className="relative">
-                        <div className="absolute top-6 right-6 z-50 flex gap-2">
-                            <button
-                                onClick={() => window.open(previewFile?.url, '_blank')}
-                                className="p-3 bg-white/80 backdrop-blur-md hover:bg-white text-slate-900 rounded-[18px] shadow-xl transition-all active:scale-95"
-                                title="Открыть в новой вкладке"
-                            >
-                                <ExternalLink size={20} />
-                            </button>
-                            <button
-                                onClick={() => setPreviewFile(null)}
-                                className="p-3 bg-rose-500 hover:bg-rose-600 text-white rounded-[18px] shadow-xl transition-all active:scale-95 shadow-rose-200"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className="p-8 border-b border-slate-200 bg-slate-50/50">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-#5d00ff text-white rounded-[18px] shadow-lg shadow-indigo-100">
-                                    <File size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-slate-900 truncate max-w-md">{previewFile?.name}</h3>
-                                    <p className="text-[10px] font-bold  tracking-normal text-slate-400">Предпросмотр файла</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="p-4 bg-slate-900 flex items-center justify-center min-h-[400px] max-h-[70vh]">
-                            {previewFile?.type === 'image' && (
+            <ResponsiveModal
+                isOpen={!!previewFile}
+                onClose={() => setPreviewFile(null)}
+                title="Просмотр файла"
+                description={previewFile?.name || "Информация о файле"}
+            >
+                {previewFile && (
+                    <div className="space-y-6">
+                        <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
+                            {previewFile.type === 'image' ? (
                                 <NextImage
                                     src={previewFile.url}
                                     alt={previewFile.name}
-                                    width={1000}
-                                    height={800}
-                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-[18px] w-auto h-auto"
+                                    fill
+                                    className="object-contain"
                                     unoptimized
                                 />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full">
+                                    <File size={48} className="text-slate-700 mb-4" />
+                                    <p className="text-sm font-bold text-slate-500">Предпросмотр недоступен</p>
+                                </div>
                             )}
+                            <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => window.open(previewFile.url, '_blank')}
+                                    className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl transition-colors"
+                                >
+                                    <ExternalLink size={18} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <Button
+                                onClick={() => window.open(previewFile.url, '_blank')}
+                                className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
+                            >
+                                <ExternalLink size={16} className="mr-2" />
+                                Открыть
+                            </Button>
+                            <Button
+                                onClick={() => setPreviewFile(null)}
+                                className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold h-12 shadow-md shadow-primary/10"
+                            >
+                                Закрыть
+                            </Button>
                         </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                )}
+            </ResponsiveModal>
 
             {/* Loading Overlay for Preview */}
             {isPreviewLoading && (

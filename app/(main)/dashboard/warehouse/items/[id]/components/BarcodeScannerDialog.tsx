@@ -2,11 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Camera, X } from "lucide-react";
 
@@ -75,15 +71,15 @@ export function BarcodeScannerDialog({
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className="sm:max-w-md bg-white border-none text-slate-900 p-0 overflow-hidden rounded-3xl shadow-2xl [&>button]:hidden">
+        <ResponsiveModal isOpen={isOpen} onClose={handleClose} title="Штрихкод" showVisualTitle={false} className="sm:max-w-md">
+            <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-slate-100">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center shadow-sm">
                             <Camera className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <DialogTitle className="text-xl font-bold text-slate-900 leading-tight">Штрихкод</DialogTitle>
+                            <h2 className="text-xl font-bold text-slate-900 leading-tight">Штрихкод</h2>
                             <p className="text-[10px] font-bold text-slate-500 mt-0.5">Наведите на код товара</p>
                         </div>
                     </div>
@@ -95,8 +91,8 @@ export function BarcodeScannerDialog({
                     </button>
                 </div>
 
-                <div className="p-6 space-y-6">
-                    <div className="relative bg-black rounded-2xl overflow-hidden aspect-square border border-white/10 shadow-2xl ring-1 ring-white/5">
+                <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+                    <div className="relative bg-black rounded-2xl overflow-hidden aspect-square border border-white/10 shadow-2xl ring-1 ring-white/5 mx-auto max-w-[320px] w-full">
                         <div id="reader" className="w-full h-full" />
                         <div className="absolute inset-0 pointer-events-none border-[40px] border-black/40">
                             <div className="w-full h-full border-2 border-primary/50 relative">
@@ -122,7 +118,7 @@ export function BarcodeScannerDialog({
                         Завершить сканирование
                     </Button>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </div>
+        </ResponsiveModal>
     );
 }

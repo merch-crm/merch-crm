@@ -14,6 +14,7 @@ import {
 import { updateOrderStatus } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 const statuses = [
     { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-500", bgColor: "bg-blue-500", lightBg: "bg-blue-50" },
@@ -142,46 +143,46 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                     ))}
                 </div>
             )}
-            {/* Cancel Dialog */}
-            {showCancelDialog && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300" role="dialog" aria-modal="true" data-dialog-open="true">
-                    <div className="bg-white w-full max-w-md rounded-3xl shadow-crm-xl p-8 border border-white animate-in zoom-in-95 duration-300">
-                        <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6">
-                            <XCircle className="w-8 h-8 text-rose-500" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">Отмена заказа</h3>
-                        <p className="text-sm font-medium text-slate-500 mb-6">Пожалуйста, укажите причину отмены. Это поле обязательно для заполнения.</p>
+            <ResponsiveModal
+                isOpen={showCancelDialog}
+                onClose={() => setShowCancelDialog(false)}
+                title="Отмена заказа"
+                description="Пожалуйста, укажите причину отмены. Это поле обязательно для заполнения."
+            >
+                <div className="p-6">
+                    <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 mx-auto sm:mx-0">
+                        <XCircle className="w-8 h-8 text-rose-500" />
+                    </div>
 
-                        <div className="relative mb-6">
-                            <div className="absolute top-4 left-4">
-                                <MessageSquare className="w-5 h-5 text-slate-400" />
-                            </div>
-                            <textarea
-                                value={cancelReason}
-                                onChange={(e) => setCancelReason(e.target.value)}
-                                placeholder="Напишите причину..."
-                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 pl-12 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none resize-none h-32"
-                            />
+                    <div className="relative mb-6">
+                        <div className="absolute top-4 left-4">
+                            <MessageSquare className="w-5 h-5 text-slate-400" />
                         </div>
+                        <textarea
+                            value={cancelReason}
+                            onChange={(e) => setCancelReason(e.target.value)}
+                            placeholder="Напишите причину..."
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 pl-12 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none resize-none h-32"
+                        />
+                    </div>
 
-                        <div className="flex items-center justify-end gap-4 bg-white pt-4 mt-auto">
-                            <button
-                                onClick={() => setShowCancelDialog(false)}
-                                className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
-                            >
-                                Назад
-                            </button>
-                            <button
-                                disabled={!cancelReason.trim() || loading}
-                                onClick={() => handleStatusChange("cancelled", cancelReason)}
-                                className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-                            >
-                                {loading ? "Отмена..." : "Отменить заказ"}
-                            </button>
-                        </div>
+                    <div className="flex items-center justify-end gap-4 bg-white sticky bottom-0 pt-4">
+                        <button
+                            onClick={() => setShowCancelDialog(false)}
+                            className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
+                        >
+                            Назад
+                        </button>
+                        <button
+                            disabled={!cancelReason.trim() || loading}
+                            onClick={() => handleStatusChange("cancelled", cancelReason)}
+                            className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                        >
+                            {loading ? "Отмена..." : "ОТМЕНИТЬ ЗАКАЗ"}
+                        </button>
                     </div>
                 </div>
-            )}
+            </ResponsiveModal>
         </div>
     );
 }

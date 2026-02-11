@@ -4,15 +4,12 @@ import { useState } from "react";
 import { reportProductionDefect } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
-import {
-    Dialog,
-    DialogContent,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DefectDialogProps {
     orderItemId: string;
@@ -53,68 +50,81 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <button
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-[8px] text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
-                >
-                    Брак
-                </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden border-none shadow-2xl bg-white sm:rounded-[var(--radius-outer)]">
-                <div className="p-6">
-                    <div className="mb-6 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
-                            <AlertTriangle className="w-6 h-6" />
+        <>
+            <button
+                onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
+                className="flex-1 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-[8px] text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
+            >
+                Брак
+            </button>
+
+            <ResponsiveModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Зафиксировать брак"
+                description={`Позиция: ${itemName}`}
+                className="max-w-md"
+            >
+                <div className="flex flex-col">
+                    <div className="p-6 space-y-6">
+                        <div className="flex items-center gap-4 mb-2">
+                            <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
+                                <AlertTriangle className="w-6 h-6" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">Списание брака</h3>
+                                <p className="text-xs font-medium text-slate-500 mt-0.5 truncate">
+                                    {itemName}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="text-2xl font-bold text-slate-900 leading-tight">Зафиксировать брак</h3>
-                            <p className="text-[11px] font-medium text-slate-500 mt-0.5">
-                                Позиция: <span className="text-slate-900 font-bold">{itemName}</span>
-                            </p>
+
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="quantity" className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Количество брака (шт)</Label>
+                                <Input
+                                    id="quantity"
+                                    type="number"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}
+                                    className="h-12 bg-slate-50 border-slate-200 font-bold rounded-2xl"
+                                />
+                                <p className="text-[10px] text-slate-400 font-bold">Максимально в этой позиции: {maxQuantity} шт</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="reason" className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Причина брака</Label>
+                                <Input
+                                    id="reason"
+                                    value={reason}
+                                    onChange={(e) => setReason(e.target.value)}
+                                    placeholder="Напр: Ошибка печати, дырка..."
+                                    className="h-12 bg-slate-50 border-slate-200 font-bold rounded-2xl"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div className="grid gap-4 py-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="quantity">Количество брака (шт)</Label>
-                            <Input
-                                id="quantity"
-                                type="number"
-                                value={quantity}
-                                onChange={(e) => setQuantity(e.target.value)}
-                                className="bg-slate-50 border-slate-200 font-bold"
-                            />
-                            <p className="text-[10px] text-slate-400">Максимально в этой позиции: {maxQuantity} шт</p>
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="reason">Причина брака</Label>
-                            <Input
-                                id="reason"
-                                value={reason}
-                                onChange={(e) => setReason(e.target.value)}
-                                placeholder="Напр: Ошибка печати, дырка на футболке..."
-                                className="bg-slate-50 border-slate-200 font-bold"
-                            />
-                        </div>
+
+                    <div className="p-6 pt-2 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsOpen(false)}
+                            className="w-full sm:flex-1 h-12 rounded-2xl font-bold text-slate-600 border-slate-200"
+                        >
+                            Отмена
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handleReport}
+                            disabled={isPending}
+                            className="w-full sm:flex-1 h-12 rounded-2xl font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-200"
+                        >
+                            {isPending ? "Списание..." : "Списать брак"}
+                        </Button>
                     </div>
                 </div>
-                <div className="sticky bottom-0 z-10 p-6 pt-2 flex items-center gap-3 bg-white sm:rounded-b-[var(--radius-outer)] border-t border-slate-100 mt-auto">
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="hidden md:block btn-dialog-ghost flex-1"
-                    >
-                        Отмена
-                    </button>
-                    <button
-                        onClick={handleReport}
-                        disabled={isPending}
-                        className="btn-dialog-destructive flex-1 w-full"
-                    >
-                        {isPending ? "Обработка..." : "Списать брак"}
-                    </button>
-                </div>
-            </DialogContent>
-        </Dialog>
+            </ResponsiveModal>
+        </>
     );
 }

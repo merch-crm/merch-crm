@@ -96,7 +96,9 @@ export default function InvoiceDashboardCRM() {
                                 <ArrowUpRight className="w-4 h-4 text-slate-300" />
                             </div>
                         </div>
-                        <div className="overflow-x-auto">
+
+                        {/* Desktop Table */}
+                        <div className="hidden md:block">
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="bg-slate-50/50">
@@ -130,6 +132,32 @@ export default function InvoiceDashboardCRM() {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="md:hidden divide-y divide-slate-100">
+                            {[
+                                { name: "Premium Hoodie", qty: 240, price: "$45.00", tax: "10%", total: "$10,800.00" },
+                                { name: "Sticker Pack", qty: 1200, price: "$0.50", tax: "0%", total: "$600.00" },
+                                { name: "Custom Cap", qty: 45, price: "$12.00", tax: "5%", total: "$540.00" },
+                            ].map((row, idx) => (
+                                <div key={idx} className="p-4 active:bg-slate-50 transition-colors">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
+                                                <Plus className="w-4 h-4" />
+                                            </div>
+                                            <span className="text-sm font-bold text-slate-900">{row.name}</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-primary">{row.total}</span>
+                                    </div>
+                                    <div className="flex items-center gap-4 ml-12 text-xs text-slate-400">
+                                        <span>Qty: <span className="font-bold text-slate-600">{row.qty}</span></span>
+                                        <span>Price: <span className="font-bold text-slate-600">{row.price}</span></span>
+                                        <span>Tax: <span className="font-bold text-slate-600">{row.tax}</span></span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -102,7 +102,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {/* Summary Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
                 {statsCards.map((card, i) => (
                     <div key={i} className="crm-card p-6 bg-white flex flex-col justify-between h-40 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm h-full">
                         <div className="flex justify-between items-start">
@@ -132,7 +132,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
             </div>
 
             {/* Category Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {salesData.categories.map((cat, i) => {
                     const config = categoryLabels[cat.name] || categoryLabels.other;
                     const totalRev = Number(salesData.summary.totalRevenue || 0);

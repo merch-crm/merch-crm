@@ -56,6 +56,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { Button } from "@/components/ui/button";
 
 function translateErrorMessage(message: string): string {
@@ -1255,59 +1257,88 @@ export function SystemStats() {
                     </button>
                   </div>
                 </CardHeader>
-                <CardContent className="p-0 max-h-[400px] overflow-y-auto">
-                  <div className="overflow-x-auto no-scrollbar">
-                    <table className="w-full text-left border-collapse min-w-[600px]">
-                      <thead>
-                        <tr className="bg-slate-50/50">
-                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Email / Аккаунт</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Причина</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-50">
-                        {securityData?.failedLogins.length === 0 ? (
-                          <tr>
-                            <td colSpan={4} className="py-12 text-center text-slate-400 font-bold text-[10px]  tracking-normal">
-                              Атак не обнаружено
-                            </td>
-                          </tr>
-                        ) : (
-                          securityData?.failedLogins.map((login) => (
-                            <tr key={login.id} className="hover:bg-slate-50/50 transition-colors group">
-                              <td className="px-6 py-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="p-2 bg-rose-50 text-rose-500 rounded-[18px] group-hover:scale-110 transition-transform">
-                                    <AlertTriangle size={14} />
-                                  </div>
-                                  <span className="text-sm font-bold text-slate-700">{login.email}</span>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <span className={cn(
-                                  "px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
-                                  login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
-                                )}>
-                                  {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4">
-                                <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100/50 px-2 py-1 rounded">
-                                  {login.ipAddress || "Unknown"}
-                                </code>
-                              </td>
-                              <td className="px-6 py-4">
-                                <span className="text-[10px] font-bold text-slate-400 ">
-                                  {getTimeAgo(login.createdAt)} назад
-                                </span>
-                              </td>
+                <CardContent className="p-0">
+                  <ResponsiveDataView
+                    data={securityData?.failedLogins || []}
+                    renderCard={(login, idx) => (
+                      <div key={login.id || idx} className="p-4 bg-white border border-slate-100 rounded-2xl space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-rose-50 text-rose-500 rounded-xl">
+                              <AlertTriangle size={14} />
+                            </div>
+                            <span className="text-sm font-bold text-slate-900">{login.email}</span>
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-400">{getTimeAgo(login.createdAt)} назад</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className={cn(
+                            "px-2 py-0.5 rounded-full text-[10px] font-bold",
+                            login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
+                          )}>
+                            {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
+                          </span>
+                          <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded">
+                            {login.ipAddress || "Unknown"}
+                          </code>
+                        </div>
+                      </div>
+                    )}
+                    renderTable={() => (
+                      <div className="overflow-x-auto no-scrollbar">
+                        <table className="w-full text-left border-collapse min-w-[600px]">
+                          <thead>
+                            <tr className="bg-slate-50/50">
+                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Email / Аккаунт</th>
+                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Причина</th>
+                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</th>
+                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                          </thead>
+                          <tbody className="divide-y divide-slate-50">
+                            {securityData?.failedLogins.length === 0 ? (
+                              <tr>
+                                <td colSpan={4} className="py-12 text-center text-slate-400 font-bold text-[10px]  tracking-normal">
+                                  Атак не обнаружено
+                                </td>
+                              </tr>
+                            ) : (
+                              securityData?.failedLogins.map((login) => (
+                                <tr key={login.id} className="hover:bg-slate-50/50 transition-colors group">
+                                  <td className="px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-2 bg-rose-50 text-rose-500 rounded-[18px] group-hover:scale-110 transition-transform">
+                                        <AlertTriangle size={14} />
+                                      </div>
+                                      <span className="text-sm font-bold text-slate-700">{login.email}</span>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <span className={cn(
+                                      "px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
+                                      login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
+                                    )}>
+                                      {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100/50 px-2 py-1 rounded">
+                                      {login.ipAddress || "Unknown"}
+                                    </code>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <span className="text-[10px] font-bold text-slate-400 ">
+                                      {getTimeAgo(login.createdAt)} назад
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  />
                 </CardContent>
               </Card>
             </div>
@@ -1346,79 +1377,114 @@ export function SystemStats() {
                 </button>
               </div>
             </CardHeader>
-            <CardContent className="p-0 max-h-[400px] overflow-y-auto">
-              <div className="overflow-x-auto no-scrollbar">
-                <table className="w-full text-left border-collapse min-w-[700px]">
-                  <thead>
-                    <tr className="bg-rose-50/30">
-                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Сообщение об ошибке</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Критичность</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">IP / Путь</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Дата</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-rose-50">
-                    {securityData?.systemErrors.length === 0 ? (
-                      <tr>
-                        <td colSpan={4} className="py-16 text-center text-emerald-600 font-bold text-[10px]  tracking-normal">
-                          <Zap className="w-8 h-8 mx-auto mb-3 opacity-20" />
-                          Ошибок не выявлено
-                        </td>
-                      </tr>
-                    ) : (
-                      securityData?.systemErrors.map((error) => (
-                        <tr
-                          key={error.id}
-                          className="hover:bg-rose-50/50 transition-colors group cursor-pointer"
-                          onClick={() => setSelectedError(error)}
-                        >
-                          <td className="px-6 py-4 max-w-md">
-                            <div className="flex items-start gap-3">
-                              <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500 animate-pulse" />
-                              <div className="space-y-1">
-                                <p className="text-sm font-bold text-slate-900 leading-tight">
-                                  {translateErrorMessage(error.message)}
-                                </p>
-                                {error.path && (
-                                  <p className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
-                                    <span className="bg-slate-100 px-1 rounded font-bold text-slate-500">{error.method || 'REQ'}</span>
-                                    <span className="truncate">{error.path}</span>
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className={cn(
-                              "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
-                              error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
-                            )}>
-                              {error.severity === "critical" ? "Критично" : "Предупреждение"}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex flex-col gap-1">
-                              <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded w-fit">
-                                {error.ipAddress || "Unknown IP"}
-                              </code>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex flex-col">
-                              <span className="text-[10px] font-bold text-slate-900 ">
-                                {getTimeAgo(error.createdAt)}
-                              </span>
-                              <span className="text-[9px] font-bold text-slate-400">
-                                {new Date(error.createdAt).toLocaleTimeString()}
-                              </span>
-                            </div>
-                          </td>
+            <CardContent className="p-0">
+              <ResponsiveDataView
+                data={securityData?.systemErrors || []}
+                renderCard={(error, idx) => (
+                  <div key={error.id || idx} className="p-4 bg-white border border-rose-100 rounded-2xl space-y-3" onClick={() => setSelectedError(error)}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex flex-1 min-w-0 flex-col">
+                        <p className="text-sm font-bold text-slate-900 leading-tight">
+                          {translateErrorMessage(error.message)}
+                        </p>
+                        {error.path && (
+                          <p className="text-[10px] font-mono text-slate-400 mt-1 truncate">
+                            {error.method || 'REQ'} {error.path}
+                          </p>
+                        )}
+                      </div>
+                      <span className={cn(
+                        "px-2 py-0.5 rounded-full text-[9px] font-bold shrink-0",
+                        error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
+                      )}>
+                        {error.severity === "critical" ? "Критично" : "Предупр."}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px]">
+                      <code className="font-mono font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded">
+                        {error.ipAddress || "Unknown IP"}
+                      </code>
+                      <span className="font-bold text-slate-400">
+                        {getTimeAgo(error.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                renderTable={() => (
+                  <div className="overflow-x-auto no-scrollbar">
+                    <table className="w-full text-left border-collapse min-w-[700px]">
+                      <thead>
+                        <tr className="bg-rose-50/30">
+                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Сообщение об ошибке</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Критичность</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">IP / Путь</th>
+                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Дата</th>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      </thead>
+                      <tbody className="divide-y divide-rose-50">
+                        {securityData?.systemErrors.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-16 text-center text-emerald-600 font-bold text-[10px]  tracking-normal">
+                              <Zap className="w-8 h-8 mx-auto mb-3 opacity-20" />
+                              Ошибок не выявлено
+                            </td>
+                          </tr>
+                        ) : (
+                          securityData?.systemErrors.map((error) => (
+                            <tr
+                              key={error.id}
+                              className="hover:bg-rose-50/50 transition-colors group cursor-pointer"
+                              onClick={() => setSelectedError(error)}
+                            >
+                              <td className="px-6 py-4 max-w-md">
+                                <div className="flex items-start gap-3">
+                                  <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500 animate-pulse" />
+                                  <div className="space-y-1">
+                                    <p className="text-sm font-bold text-slate-900 leading-tight">
+                                      {translateErrorMessage(error.message)}
+                                    </p>
+                                    {error.path && (
+                                      <p className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
+                                        <span className="bg-slate-100 px-1 rounded font-bold text-slate-500">{error.method || 'REQ'}</span>
+                                        <span className="truncate">{error.path}</span>
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={cn(
+                                  "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
+                                  error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
+                                )}>
+                                  {error.severity === "critical" ? "Критично" : "Предупреждение"}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="flex flex-col gap-1">
+                                  <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded w-fit">
+                                    {error.ipAddress || "Unknown IP"}
+                                  </code>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="flex flex-col">
+                                  <span className="text-[10px] font-bold text-slate-900 ">
+                                    {getTimeAgo(error.createdAt)}
+                                  </span>
+                                  <span className="text-[9px] font-bold text-slate-400">
+                                    {new Date(error.createdAt).toLocaleTimeString()}
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              />
             </CardContent>
           </Card>
         </div>
@@ -1993,84 +2059,111 @@ export function SystemStats() {
                     Загрузка списка копий...
                   </p>
                 </div>
-              ) : backups.length === 0 ? (
-                <div className="py-20 text-center">
-                  <div className="inline-flex p-4 rounded-full bg-slate-50 text-slate-400 mb-4">
-                    <History size={32} />
-                  </div>
-                  <p className="text-slate-500 font-medium">
-                    Резервные копии еще не создавались.
-                  </p>
-                </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-slate-50/50 border-b border-slate-200">
-                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
-                          Имя файла
-                        </th>
-                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
-                          Размер
-                        </th>
-                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
-                          Дата создания
-                        </th>
-                        <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
-                          Действия
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {backups.map((backup) => (
-                        <tr
-                          key={backup.name}
-                          className="border-b border-slate-200 hover:bg-slate-50/30 transition-colors group"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-[18px] bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
-                                <FileJson size={16} />
-                              </div>
-                              <span className="text-sm font-bold text-slate-700">
-                                {backup.name}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="text-xs font-bold text-slate-500">
-                              {formatSize(backup.size)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <span className="text-xs font-medium text-slate-500">
-                              {new Date(backup.createdAt).toLocaleString()}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2 text-slate-400">
-                              <a
-                                href={`/ uploads / backups / ${backup.name} `}
-                                download
-                                className="p-2 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all"
-                                title="Скачать"
-                              >
-                                <Download size={16} />
-                              </a>
-                              <button
-                                onClick={() => setBackupToDelete(backup.name)}
-                                className="p-2 hover:text-red-600 hover:bg-red-50 rounded-[18px] transition-all"
-                                title="Удалить"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <ResponsiveDataView
+                  data={backups || []}
+                  renderCard={(backup, idx) => (
+                    <div key={backup.name || idx} className="p-4 bg-white border border-slate-100 rounded-2xl space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-indigo-50 text-indigo-500">
+                          <FileJson size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900 truncate">{backup.name}</p>
+                          <p className="text-[10px] font-bold text-slate-400 mt-0.5">{formatSize(backup.size)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                        <span className="text-[10px] font-medium text-slate-500">{new Date(backup.createdAt).toLocaleString()}</span>
+                        <div className="flex items-center gap-1">
+                          <a
+                            href={`/uploads/backups/${backup.name}`}
+                            download
+                            className="p-2 text-slate-400 hover:text-primary transition-colors"
+                          >
+                            <Download size={16} />
+                          </a>
+                          <button
+                            onClick={() => setBackupToDelete(backup.name)}
+                            className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  renderTable={() => (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50/50 border-b border-slate-200">
+                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
+                              Имя файла
+                            </th>
+                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
+                              Размер
+                            </th>
+                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
+                              Дата создания
+                            </th>
+                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
+                              Действия
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {backups.map((backup) => (
+                            <tr
+                              key={backup.name}
+                              className="border-b border-slate-200 hover:bg-slate-50/30 transition-colors group"
+                            >
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 rounded-[18px] bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
+                                    <FileJson size={16} />
+                                  </div>
+                                  <span className="text-sm font-bold text-slate-700">
+                                    {backup.name}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="text-xs font-bold text-slate-500">
+                                  {formatSize(backup.size)}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-right">
+                                <span className="text-xs font-medium text-slate-500">
+                                  {new Date(backup.createdAt).toLocaleString()}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-right">
+                                <div className="flex items-center justify-end gap-2 text-slate-400">
+                                  <a
+                                    href={`/uploads/backups/${backup.name}`}
+                                    download
+                                    className="p-2 hover:text-#5d00ff hover:bg-indigo-50 rounded-[18px] transition-all"
+                                    title="Скачать"
+                                  >
+                                    <Download size={16} />
+                                  </a>
+                                  <button
+                                    onClick={() => setBackupToDelete(backup.name)}
+                                    className="p-2 hover:text-red-600 hover:bg-red-50 rounded-[18px] transition-all"
+                                    title="Удалить"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                />
               )}
             </CardContent>
           </Card>
@@ -2160,76 +2253,59 @@ export function SystemStats() {
         description="Это действие прервет все активные сессии и сделает CRM недоступной на 10-30 секунд. Вы точно уверены?"
       />
       {/* Error Details Dialog */}
-      <Dialog open={!!selectedError} onOpenChange={(open) => !open && setSelectedError(null)}>
-        <DialogContent className="max-w-2xl bg-white rounded-[18px] p-0 overflow-hidden border-rose-100 shadow-2xl">
-          <div className="bg-rose-50/50 p-6 border-b border-rose-100 flex items-start gap-4">
-            <div className="p-3 bg-white rounded-[18px] shadow-sm text-rose-500 shrink-0">
-              <AlertTriangle size={24} />
-            </div>
-            <div>
-              <DialogTitle className="text-xl font-bold text-slate-900">Детали ошибки</DialogTitle>
-              <DialogDescription className="text-slate-500 font-medium mt-1">
-                Техническая информация о сбое
-              </DialogDescription>
-            </div>
-          </div>
-
-          <div className="p-6 space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Сообщение (перевод)</label>
-              <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100 text-rose-800 font-bold text-sm">
-                {selectedError && translateErrorMessage(selectedError.message)}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Оригинальное сообщение</label>
-              <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-200 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
-                {selectedError?.message}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Путь / Метод</label>
-                <div className="font-bold text-slate-700 text-sm">
-                  {selectedError?.method || "-"} {selectedError?.path || "-"}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</label>
-                <div className="font-bold text-slate-700 text-sm">
-                  {selectedError?.ipAddress || "Не определен"}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Критичность</label>
-                <div className={cn(
-                  "inline-flex px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
-                  selectedError?.severity === "critical" ? "bg-rose-100 text-rose-600" : "bg-amber-100 text-amber-600"
-                )}>
-                  {selectedError?.severity === "critical" ? "Критическая" : "Предупреждение"}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400  tracking-normal">Время возникновения</label>
-                <div className="font-bold text-slate-700 text-sm">
-                  {selectedError?.createdAt ? new Date(selectedError.createdAt).toLocaleString("ru-RU") : "-"}
-                </div>
-              </div>
+      <ResponsiveModal
+        isOpen={!!selectedError}
+        onClose={() => setSelectedError(null)}
+        title="Детали ошибки"
+        description="Техническая информация о сбое"
+        className="max-w-2xl"
+      >
+        <div className="space-y-6">
+          <div className="space-y-2 px-6">
+            <label className="text-[10px] font-bold text-slate-400  tracking-normal">Сообщение (перевод)</label>
+            <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100 text-rose-800 font-bold text-sm">
+              {selectedError && translateErrorMessage(selectedError.message)}
             </div>
           </div>
 
-          <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
-            <Button
-              onClick={() => setSelectedError(null)}
-              className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-sm font-bold rounded-[18px]"
-            >
-              Закрыть
-            </Button>
+          <div className="space-y-2 px-6">
+            <label className="text-[10px] font-bold text-slate-400  tracking-normal">Оригинальное сообщение</label>
+            <div className="p-4 bg-slate-50 rounded-[18px] border border-slate-200 font-mono text-xs text-slate-600 break-words whitespace-pre-wrap">
+              {selectedError?.message}
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+
+          <div className="grid grid-cols-2 gap-4 px-6 pb-6">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Путь / Метод</label>
+              <div className="font-bold text-slate-700 text-sm">
+                {selectedError?.method || "-"} {selectedError?.path || "-"}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</label>
+              <div className="font-bold text-slate-700 text-sm">
+                {selectedError?.ipAddress || "Не определен"}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Критичность</label>
+              <div className={cn(
+                "inline-flex px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
+                selectedError?.severity === "critical" ? "bg-rose-100 text-rose-600" : "bg-amber-100 text-amber-600"
+              )}>
+                {selectedError?.severity === "critical" ? "Критическая" : "Предупреждение"}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400  tracking-normal">Время возникновения</label>
+              <div className="font-bold text-slate-700 text-sm">
+                {selectedError?.createdAt ? new Date(selectedError.createdAt).toLocaleString("ru-RU") : "-"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ResponsiveModal>
     </div >
   );
 }

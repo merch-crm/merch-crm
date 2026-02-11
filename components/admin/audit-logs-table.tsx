@@ -10,6 +10,7 @@ import { PremiumPagination } from "@/components/ui/premium-pagination";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 
 interface AuditLog {
     id: string;
@@ -265,116 +266,185 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 isLoading={clearing}
             />
 
-            <div className="bg-white rounded-[18px] border border-slate-200 shadow-sm overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-slate-50/50 border-b border-slate-200">
-                            <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Действие</th>
-                            <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Тип объекта</th>
-                            <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Пользователь</th>
-                            <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {loading && logs.length === 0 ? (
-                            <tr>
-                                <td colSpan={4} className="py-20 text-center">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                                        <span className="text-xs font-medium text-slate-400">Загрузка логов...</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        ) : logs.length === 0 ? (
-                            <tr>
-                                <td colSpan={4} className="py-20 text-center text-slate-400 text-sm">
-                                    Логи не найдены
-                                </td>
-                            </tr>
-                        ) : (
-                            logs.map((log) => {
-                                const entity = getEntityInfo(log.entityType);
-                                const Icon = entity.icon;
-                                return (
-                                    <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className={cn("h-10 w-10 rounded-[18px] flex items-center justify-center transition-colors shadow-sm border border-transparent", entity.bg, entity.color, "group-hover:scale-110")}>
-                                                    <Icon className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-slate-700 text-sm leading-tight">{log.action}</div>
-                                                    {log.details && (
-                                                        <div className="text-[10px] text-slate-400 mt-1 line-clamp-1 font-medium bg-slate-50/50 px-2 py-0.5 rounded-md border border-slate-200/50 w-fit">
-                                                            {log.details?.fileName ||
-                                                                log.details?.name ||
-                                                                log.details?.reason ||
-                                                                (log.details?.oldKey && log.details?.newKey ? `${log.details.oldKey} → ${log.details.newKey}` : null) ||
-                                                                (log.details?.oldPath && log.details?.newPath ? `${log.details.oldPath} → ${log.details.newPath}` : null) ||
-                                                                log.details?.key ||
-                                                                log.details?.path ||
-                                                                (log.details?.count ? `Объектов: ${log.details.count}` : null) ||
-                                                                JSON.stringify(log.details)}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
-                                                entity.bg,
-                                                entity.color
-                                            )}>
-                                                {log.entityType}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {log.user ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-7 w-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
-                                                        {log.user.avatar ? (
-                                                            <>
-                                                                <span className="absolute inset-0 flex items-center justify-center">{(log.user?.name || "С")[0]}</span>
-                                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                                <img
-                                                                    src={log.user.avatar}
-                                                                    alt={log.user.name}
-                                                                    className="w-full h-full object-cover relative z-10"
-                                                                    onError={(e) => {
-                                                                        (e.target as HTMLImageElement).style.opacity = '0';
-                                                                    }}
-                                                                />
-                                                            </>
-                                                        ) : (
-                                                            (log.user?.name || "С")[0]
-                                                        )}
-                                                    </div>
-                                                    <span className="text-sm text-slate-900 truncate max-w-[150px] font-medium">{log.user?.name}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-slate-400 text-sm font-medium">Система</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col">
-                                                <div className="flex items-center gap-1.5 text-sm font-bold text-slate-700">
-                                                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                                                    {format(new Date(log.createdAt), "dd.MM.yyyy", { locale: ru })}
-                                                </div>
-                                                <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                    {format(new Date(log.createdAt), "HH:mm:ss")}
-                                                </div>
+            <ResponsiveDataView
+                data={logs}
+                renderTable={() => (
+                    <div className="bg-white rounded-[18px] border border-slate-200 shadow-sm overflow-hidden">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-slate-50/50 border-b border-slate-200">
+                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Действие</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Тип объекта</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Пользователь</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {loading && logs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={4} className="py-20 text-center">
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                                                <span className="text-xs font-medium text-slate-400">Загрузка логов...</span>
                                             </div>
                                         </td>
                                     </tr>
-                                );
-                            })
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                                ) : logs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={4} className="py-20 text-center text-slate-400 text-sm">
+                                            Логи не найдены
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    logs.map((log) => {
+                                        const entity = getEntityInfo(log.entityType);
+                                        const Icon = entity.icon;
+                                        return (
+                                            <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={cn("h-10 w-10 rounded-[18px] flex items-center justify-center transition-colors shadow-sm border border-transparent", entity.bg, entity.color, "group-hover:scale-110")}>
+                                                            <Icon className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-bold text-slate-700 text-sm leading-tight">{log.action}</div>
+                                                            {log.details && (
+                                                                <div className="text-[10px] text-slate-400 mt-1 line-clamp-1 font-medium bg-slate-50/50 px-2 py-0.5 rounded-md border border-slate-200/50 w-fit">
+                                                                    {log.details?.fileName ||
+                                                                        log.details?.name ||
+                                                                        log.details?.reason ||
+                                                                        (log.details?.oldKey && log.details?.newKey ? `${log.details.oldKey} → ${log.details.newKey}` : null) ||
+                                                                        (log.details?.oldPath && log.details?.newPath ? `${log.details.oldPath} → ${log.details.newPath}` : null) ||
+                                                                        log.details?.key ||
+                                                                        log.details?.path ||
+                                                                        (log.details?.count ? `Объектов: ${log.details.count}` : null) ||
+                                                                        JSON.stringify(log.details)}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
+                                                        entity.bg,
+                                                        entity.color
+                                                    )}>
+                                                        {log.entityType}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {log.user ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-7 w-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
+                                                                {log.user.avatar ? (
+                                                                    <>
+                                                                        <span className="absolute inset-0 flex items-center justify-center">{(log.user?.name || "С")[0]}</span>
+                                                                        <img
+                                                                            src={log.user.avatar}
+                                                                            alt={log.user.name}
+                                                                            className="w-full h-full object-cover relative z-10"
+                                                                            onError={(e) => {
+                                                                                (e.target as HTMLImageElement).style.opacity = '0';
+                                                                            }}
+                                                                        />
+                                                                    </>
+                                                                ) : (
+                                                                    (log.user?.name || "С")[0]
+                                                                )}
+                                                            </div>
+                                                            <span className="text-sm text-slate-900 truncate max-w-[150px] font-medium">{log.user?.name}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-slate-400 text-sm font-medium">Система</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col">
+                                                        <div className="flex items-center gap-1.5 text-sm font-bold text-slate-700">
+                                                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                                                            {format(new Date(log.createdAt), "dd.MM.yyyy", { locale: ru })}
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                                                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                            {format(new Date(log.createdAt), "HH:mm:ss")}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+                renderCard={(log) => {
+                    const entity = getEntityInfo(log.entityType);
+                    const Icon = entity.icon;
+                    return (
+                        <div key={log.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shadow-sm border border-transparent", entity.bg, entity.color)}>
+                                        <Icon className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-slate-900 text-sm leading-tight">{log.action}</div>
+                                        <span className={cn(
+                                            "inline-block px-2 py-0.5 rounded-lg text-[9px] font-bold tracking-tight mt-1",
+                                            entity.bg,
+                                            entity.color
+                                        )}>
+                                            {log.entityType}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-[10px] font-bold text-slate-900">{format(new Date(log.createdAt), "dd.MM.yyyy", { locale: ru })}</div>
+                                    <div className="text-[9px] font-medium text-slate-400">{format(new Date(log.createdAt), "HH:mm:ss")}</div>
+                                </div>
+                            </div>
+
+                            {log.details && (
+                                <div className="text-[10px] text-slate-500 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100 break-words">
+                                    {log.details?.fileName ||
+                                        log.details?.name ||
+                                        log.details?.reason ||
+                                        (log.details?.oldKey && log.details?.newKey ? `${log.details.oldKey} → ${log.details.newKey}` : null) ||
+                                        (log.details?.oldPath && log.details?.newPath ? `${log.details.oldPath} → ${log.details.newPath}` : null) ||
+                                        log.details?.key ||
+                                        log.details?.path ||
+                                        (log.details?.count ? `Объектов: ${log.details.count}` : null) ||
+                                        JSON.stringify(log.details)}
+                                </div>
+                            )}
+
+                            <div className="flex items-center gap-2 pt-2 border-t border-slate-50">
+                                {log.user ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-6 w-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
+                                            {log.user.avatar ? (
+                                                <img
+                                                    src={log.user.avatar}
+                                                    alt={log.user.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                (log.user?.name || "С")[0]
+                                            )}
+                                        </div>
+                                        <span className="text-xs text-slate-600 font-medium">{log.user?.name}</span>
+                                    </div>
+                                ) : (
+                                    <span className="text-slate-400 text-[10px] font-medium italic">Система</span>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }}
+                mobileGridClassName="grid grid-cols-1 gap-4"
+            />
 
             <PremiumPagination
                 totalItems={totalLogs}

@@ -5,6 +5,8 @@ import { X, User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, Mes
 import { updateClient, getManagers } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
 
 interface EditClientDialogProps {
     client: {
@@ -41,17 +43,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         }
     }, [isOpen]);
 
-    useEffect(() => {
-        if (isOpen) {
-            const originalStyle = window.getComputedStyle(document.body).overflow;
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.overflow = originalStyle;
-            };
-        }
-    }, [isOpen]);
-
-    if (!isOpen || !client) return null;
+    if (!client) return null;
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -68,34 +60,20 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
     }
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-                onClick={onClose}
-            />
-
-            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
-                {/* Header */}
-                <div className="p-8 pb-4 flex items-center justify-between border-b border-slate-200">
-                    <div>
-                        <h3 className="text-2xl font-bold text-slate-900 tracking-normal">Редактировать клиента</h3>
-                        <p className="text-sm text-slate-700 font-medium">Измените необходимые поля</p>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-white transition-all shadow-sm"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                {/* Form Content */}
-                <form action={handleSubmit} className="p-8 pt-6 space-y-6 overflow-y-auto">
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Редактировать клиента"
+            description="Измените необходимые поля"
+            className="max-w-2xl max-h-[90vh]"
+        >
+            <form action={handleSubmit} className="flex flex-col h-full bg-white">
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 custom-scrollbar">
                     {/* Name Group */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <User className="w-3.5 h-3.5" /> Фамилия <span className="text-rose-500">*</span>
+                                <User className="w-3.5 h-3.5 inline mr-1" /> Фамилия <span className="text-rose-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -107,7 +85,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <User className="w-3.5 h-3.5" /> Имя <span className="text-rose-500">*</span>
+                                <User className="w-3.5 h-3.5 inline mr-1" /> Имя <span className="text-rose-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -119,7 +97,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Отчество
@@ -133,7 +111,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <Building2 className="w-3.5 h-3.5" /> Компания
+                                <Building2 className="w-3.5 h-3.5 inline mr-1" /> Компания
                             </label>
                             <input
                                 type="text"
@@ -145,10 +123,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     </div>
 
                     {/* Contact Group */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <Phone className="w-3.5 h-3.5" /> Телефон <span className="text-rose-500">*</span>
+                                <Phone className="w-3.5 h-3.5 inline mr-1" /> Телефон <span className="text-rose-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -160,7 +138,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <Mail className="w-3.5 h-3.5" /> Email
+                                <Mail className="w-3.5 h-3.5 inline mr-1" /> Email
                             </label>
                             <input
                                 type="email"
@@ -171,7 +149,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Telegram
@@ -198,10 +176,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <LinkIcon className="w-3.5 h-3.5" /> Ссылка на соцсеть
+                                <LinkIcon className="w-3.5 h-3.5 inline mr-1" /> Ссылка на соцсеть
                             </label>
                             <input
                                 type="text"
@@ -240,6 +218,9 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">Не назначен</option>
+                                <option value="high">Высокий</option>
+                                <option value="medium">Средний</option>
+                                <option value="low">Низкий</option>
                                 {managers.map(m => (
                                     <option key={m.id} value={m.id}>{m.name}</option>
                                 ))}
@@ -247,10 +228,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
-                                <MapPin className="w-3.5 h-3.5" /> Город
+                                <MapPin className="w-3.5 h-3.5 inline mr-1" /> Город
                             </label>
                             <input
                                 type="text"
@@ -274,7 +255,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700 ml-1">
-                            <MessageSquare className="w-3.5 h-3.5" /> Комментарии
+                            <MessageSquare className="w-3.5 h-3.5 inline mr-1" /> Комментарии
                         </label>
                         <textarea
                             name="comments"
@@ -283,26 +264,27 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
                         />
                     </div>
+                </div>
 
-                    <div className="sticky bottom-0 z-20 p-8 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-2xl bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
-                        >
-                            Отмена
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
-                        >
-                            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                            {loading ? "Сохранение..." : "Сохранить изменения"}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                {/* Footer Actions */}
+                <div className="p-6 md:p-8 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto flex-shrink-0">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-2xl bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
+                    >
+                        Отмена
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
+                    >
+                        {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                        {loading ? "Сохранение..." : "Сохранить изменения"}
+                    </button>
+                </div>
+            </form>
+        </ResponsiveModal>
     );
 }

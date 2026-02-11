@@ -159,9 +159,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     ];
 
     return (
-        <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-6 px-4 sm:px-8 pb-8 pt-4">
+        <div className="flex-1 flex flex-col md:flex-row min-h-0 gap-6 px-4 sm:px-8 pb-8 pt-4">
             {/* Sidebar */}
-            <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
+            <aside className="w-full md:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto md:h-full">
                 <div className="p-6 shrink-0">
                     <button
                         onClick={handleBack}
@@ -234,7 +234,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-4">
+            <main className="flex-1 overflow-visible md:overflow-hidden h-full flex flex-col gap-4">
                 <div className="bg-white rounded-3xl shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
                     <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
                         {step === 0 && (

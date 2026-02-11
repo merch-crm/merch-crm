@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/components/branding-provider";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface Order {
     id: string;
@@ -108,38 +109,25 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
         }
     }, [isOpen, clientId]);
 
-    if (!isOpen) return null;
-
     const fullName = client ? `${client.lastName} ${client.firstName} ${client.patronymic || ""}`.trim() : "";
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-end justify-end" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-                onClick={onClose}
-            />
-            <div className="relative w-full max-w-2xl h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col">
-                {/* Header */}
-                <div className="p-8 pb-0 border-b border-slate-200">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex-1">
-                            <h2 className="text-2xl font-bold text-slate-900 leading-none">{loading ? "Загрузка..." : fullName}</h2>
-                            <p className="text-sm font-medium text-slate-400 mt-1">Профиль клиента</p>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
-                        >
-                            <X className="h-5 w-5" />
-                        </button>
-                    </div>
-
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={loading ? "Загрузка..." : fullName}
+            description="Профиль клиента"
+            className="max-w-2xl max-h-[90vh]"
+        >
+            <div className="flex flex-col h-full bg-white">
+                {/* Header Actions & Tabs */}
+                <div className="px-6 pb-0 border-b border-slate-200 flex-shrink-0">
                     {/* Quick Action Bar */}
                     {!loading && client && client.id && (
-                        <div className="flex flex-wrap gap-2 mb-6">
+                        <div className="flex flex-wrap gap-2 mb-6 mt-2">
                             {!["Печатник", "Дизайнер"].includes(userRoleName || "") && (
                                 <Button
-                                    className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold text-xs"
+                                    className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs"
                                     onClick={() => window.open(`tel:${client.phone}`)}
                                 >
                                     <Phone className="w-3.5 h-3.5 mr-2" /> Позвонить
@@ -147,7 +135,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
                             {client.telegram && (
                                 <Button
-                                    className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-bold text-xs"
+                                    className="h-9 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-xs"
                                     onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
@@ -155,7 +143,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
                             <Button
                                 variant="outline"
-                                className="h-10 px-4 border-slate-200 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-50"
+                                className="h-9 px-4 border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-50"
                                 onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}
                             >
                                 <Plus className="w-3.5 h-3.5 mr-2" /> Создать заказ
@@ -164,7 +152,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <Button
                                     onClick={onEdit}
                                     variant="outline"
-                                    className="h-10 px-4 border-primary/20 text-primary rounded-2xl font-bold text-xs hover:bg-primary/5"
+                                    className="h-9 px-4 border-primary/20 text-primary rounded-xl font-bold text-xs hover:bg-primary/5"
                                 >
                                     <Edit2 className="w-3.5 h-3.5 mr-2" /> Редактировать
                                 </Button>
@@ -173,13 +161,13 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                     )}
 
                     {/* Tabs */}
-                    <div className="flex gap-8">
+                    <div className="flex gap-6">
                         {(["general", "orders", "activity"] as const).map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={cn(
-                                    "pb-4 text-xs font-medium transition-all relative",
+                                    "pb-3 text-xs font-medium transition-all relative",
                                     activeTab === tab
                                         ? "text-primary"
                                         : "text-slate-400 hover:text-slate-600"
@@ -189,62 +177,62 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 {tab === "orders" && "Заказы"}
                                 {tab === "activity" && "Активность"}
                                 {activeTab === tab && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full mt-auto" />
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full mt-auto" />
                                 )}
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-white">
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center h-full space-y-4">
-                            <div className="w-10 h-10 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
+                        <div className="flex flex-col items-center justify-center h-40 space-y-4">
+                            <div className="w-8 h-8 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
                             <p className="text-xs font-medium text-slate-400">Загрузка данных...</p>
                         </div>
                     ) : client ? (
-                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
 
                             {activeTab === "general" && (
-                                <div className="space-y-8">
+                                <div className="space-y-6">
                                     {/* Stats Cards */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200 shadow-sm">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-10 h-10 bg-primary/5 text-primary rounded-2xl flex items-center justify-center">
-                                                    <ShoppingBag className="w-5 h-5" />
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 shadow-sm">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="w-8 h-8 bg-primary/5 text-primary rounded-xl flex items-center justify-center">
+                                                    <ShoppingBag className="w-4 h-4" />
                                                 </div>
                                                 <span className="text-xs font-medium text-slate-400">Заказы</span>
                                             </div>
-                                            <p className="text-3xl font-bold text-slate-900">{client.totalOrders}</p>
+                                            <p className="text-2xl font-bold text-slate-900">{client.totalOrders}</p>
                                         </div>
 
                                         {showFinancials && (
-                                            <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200 shadow-sm">
-                                                <div className="flex items-center gap-3 mb-4">
-                                                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
-                                                        <TrendingUp className="w-5 h-5" />
+                                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <div className="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                                                        <TrendingUp className="w-4 h-4" />
                                                     </div>
                                                     <span className="text-xs font-medium text-slate-400">LTV</span>
                                                 </div>
-                                                <p className="text-3xl font-bold text-slate-900">{Math.round(client.totalSpent)} {currencySymbol}</p>
+                                                <p className="text-2xl font-bold text-slate-900 leading-tight">{Math.round(client.totalSpent)} <span className="text-sm font-normal text-slate-500">{currencySymbol}</span></p>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Basic Info */}
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div className="flex items-center gap-2 px-1">
                                             <Info className="w-4 h-4 text-slate-400" />
                                             <h3 className="text-xs font-semibold text-slate-400">Основная информация</h3>
                                         </div>
-                                        <div className="grid grid-cols-1 gap-3">
-                                            <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                                                <Phone className="w-5 h-5 text-slate-300" />
-                                                <div>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
+                                                <Phone className="w-5 h-5 text-slate-300 shrink-0" />
+                                                <div className="min-w-0">
                                                     <p className="text-xs font-medium text-slate-400 mb-0.5">Телефон</p>
-                                                    <p className="text-sm font-bold text-slate-900">
+                                                    <p className="text-sm font-bold text-slate-900 truncate">
                                                         {["Печатник", "Дизайнер"].includes(userRoleName || "")
                                                             ? "HIDDEN"
                                                             : client.phone}
@@ -252,29 +240,29 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 </div>
                                             </div>
                                             {client.email && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                                                    <Mail className="w-5 h-5 text-slate-300" />
-                                                    <div>
+                                                <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
+                                                    <Mail className="w-5 h-5 text-slate-300 shrink-0" />
+                                                    <div className="min-w-0">
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Email</p>
-                                                        <p className="text-sm font-bold text-slate-900">{client.email}</p>
+                                                        <p className="text-sm font-bold text-slate-900 truncate">{client.email}</p>
                                                     </div>
                                                 </div>
                                             )}
                                             {client.city && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                                                    <MapPin className="w-5 h-5 text-slate-300" />
-                                                    <div>
+                                                <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
+                                                    <MapPin className="w-5 h-5 text-slate-300 shrink-0" />
+                                                    <div className="min-w-0">
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">География</p>
-                                                        <p className="text-sm font-bold text-slate-900">{client.city}{client.address ? `, ${client.address}` : ''}</p>
+                                                        <p className="text-sm font-bold text-slate-900 truncate">{client.city}{client.address ? `, ${client.address}` : ''}</p>
                                                     </div>
                                                 </div>
                                             )}
                                             {client.company && (
-                                                <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                                                    <Building2 className="w-5 h-5 text-slate-300" />
-                                                    <div>
+                                                <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
+                                                    <Building2 className="w-5 h-5 text-slate-300 shrink-0" />
+                                                    <div className="min-w-0">
                                                         <p className="text-xs font-medium text-slate-400 mb-0.5">Компания</p>
-                                                        <p className="text-sm font-bold text-slate-900">{client.company}</p>
+                                                        <p className="text-sm font-bold text-slate-900 truncate">{client.company}</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -283,7 +271,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
 
                                     {/* Social & Meta */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-4">
+                                        <div className="space-y-3">
                                             <div className="flex items-center gap-2 px-1">
                                                 <LinkIcon className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Ссылки</h3>
@@ -303,12 +291,12 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="space-y-4">
+                                        <div className="space-y-3">
                                             <div className="flex items-center gap-2 px-1">
                                                 <User className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Менеджер</h3>
                                             </div>
-                                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                                            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                                                     <User className="w-4 h-4" />
                                                 </div>
@@ -319,12 +307,12 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
 
                                     {/* Comments */}
                                     {client.comments && (
-                                        <div className="space-y-4">
+                                        <div className="space-y-3">
                                             <div className="flex items-center gap-2 px-1">
                                                 <MessageCircle className="w-4 h-4 text-slate-400" />
                                                 <h3 className="text-xs font-semibold text-slate-400">Примечания</h3>
                                             </div>
-                                            <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 text-slate-700 leading-relaxed font-medium text-sm">
+                                            <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 text-slate-700 leading-relaxed font-medium text-sm">
                                                 {client.comments}
                                             </div>
                                         </div>
@@ -333,21 +321,21 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
 
                             {activeTab === "orders" && (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between px-1">
                                         <h3 className="text-xs font-semibold text-slate-400">Список последних заказов</h3>
                                         <Badge className="bg-slate-100 text-slate-600 border-none font-bold">{client.orders.length}</Badge>
                                     </div>
                                     {client.orders.length > 0 ? (
-                                        <div className="space-y-3">
+                                        <div className="space-y-2">
                                             {client.orders.map(order => (
                                                 <a
                                                     key={order.id}
                                                     href={`/dashboard/orders/${order.id}`}
-                                                    className="flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-slate-200 transition-all group shadow-sm hover:bg-white hover:shadow-md"
+                                                    className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200 transition-all group shadow-sm hover:bg-white hover:shadow-md"
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-all">
+                                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-all">
                                                             <ShoppingBag className="w-5 h-5" />
                                                         </div>
                                                         <div>
@@ -357,19 +345,19 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-3">
                                                         {showFinancials && (
                                                             <span className="text-sm font-bold text-slate-900">{Math.round(order.totalPrice)} {currencySymbol}</span>
                                                         )}
-                                                        <Badge className="bg-primary/5 text-primary border-none font-bold text-xs">{order.status}</Badge>
+                                                        <Badge className="bg-primary/5 text-primary border-none font-bold text-xs px-2 py-0.5">{order.status}</Badge>
                                                         <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                                                     </div>
                                                 </a>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-                                            <ShoppingBag className="w-10 h-10 text-slate-200 mx-auto mb-4" />
+                                        <div className="p-8 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+                                            <ShoppingBag className="w-10 h-10 text-slate-200 mx-auto mb-3" />
                                             <p className="text-sm font-bold text-slate-400">Нет завершенных заказов</p>
                                         </div>
                                     )}
@@ -377,17 +365,17 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
 
                             {activeTab === "activity" && (
-                                <div className="space-y-6">
+                                <div className="space-y-4">
                                     <div className="flex items-center gap-2 px-1">
                                         <Activity className="w-4 h-4 text-slate-400" />
                                         <h3 className="text-xs font-semibold text-slate-400">Лента событий</h3>
                                     </div>
                                     {client.activity && client.activity.length > 0 ? (
-                                        <div className="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+                                        <div className="relative pl-6 space-y-6 before:absolute before:left-[9px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
                                             {client.activity.map((log) => (
                                                 <div key={log.id} className="relative group">
-                                                    <div className="absolute -left-[29px] top-1 w-6 h-6 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center z-10">
-                                                        <div className="w-2 h-2 rounded-full bg-primary" />
+                                                    <div className="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center z-10">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                                     </div>
                                                     <div className="space-y-1">
                                                         <div className="flex items-center justify-between">
@@ -401,7 +389,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                             <p className="text-[10px] font-bold text-slate-500">{log.user?.name || "Система"}</p>
                                                         </div>
                                                         {log.details ? (
-                                                            <div className="mt-2 p-3 rounded-2xl bg-slate-50 text-[11px] text-slate-500 font-medium overflow-hidden">
+                                                            <div className="mt-2 p-3 rounded-xl bg-slate-50 text-[10px] text-slate-500 font-medium overflow-hidden">
                                                                 <pre className="whitespace-pre-wrap font-sans text-xs">{JSON.stringify(log.details as Record<string, unknown>, null, 2)}</pre>
                                                             </div>
                                                         ) : null}
@@ -410,8 +398,8 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-                                            <Activity className="w-10 h-10 text-slate-200 mx-auto mb-4" />
+                                        <div className="p-8 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+                                            <Activity className="w-10 h-10 text-slate-200 mx-auto mb-3" />
                                             <p className="text-sm font-bold text-slate-400">История изменений пуста</p>
                                         </div>
                                     )}
@@ -419,24 +407,24 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
 
                             {/* Meta Bottom */}
-                            <div className="pt-8 border-t border-slate-200">
+                            <div className="pt-6 border-t border-slate-200">
                                 <div className="flex items-center justify-between text-xs font-medium text-slate-400">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-3.5 h-3.5" />
                                         <span>Регистрация: {safeFormat(client.createdAt, "d MMMM yyyy", { locale: ru })}</span>
                                     </div>
-                                    <span className="text-primary">ID: {client.id ? client.id.slice(0, 8) : "---"}</span>
+                                    <span className="text-primary font-mono">ID: {client.id ? client.id.slice(0, 8) : "---"}</span>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
+                        <div className="text-center py-20 bg-white rounded-xl border border-slate-200">
                             <Info className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                             <p className="text-slate-400 font-bold">Данные клиента не найдены</p>
                         </div>
                     )}
                 </div>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }

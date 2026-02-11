@@ -14,6 +14,7 @@ import {
     inventoryAttributeTypes
 } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
+import { getOrSetCache, invalidateCache } from "@/lib/redis";
 import { desc, eq, sql, inArray, and, asc, isNotNull, isNull, lte, lt, gte, ne, type InferInsertModel } from "drizzle-orm";
 import { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getSession as getAuthSession } from "@/lib/auth";
@@ -255,29 +256,31 @@ async function saveFile(file: File | null, directoryPath: string): Promise<strin
 
 export async function getInventoryCategories() {
     try {
-        const categories = await db.select({
-            id: inventoryCategories.id,
-            name: inventoryCategories.name,
-            description: inventoryCategories.description,
-            icon: inventoryCategories.icon,
-            color: inventoryCategories.color,
-            parentId: inventoryCategories.parentId,
-            sortOrder: inventoryCategories.sortOrder,
-            itemCount: sql<number>`(
+        return await getOrSetCache("inventory:categories:all", async () => {
+            const categories = await db.select({
+                id: inventoryCategories.id,
+                name: inventoryCategories.name,
+                description: inventoryCategories.description,
+                icon: inventoryCategories.icon,
+                color: inventoryCategories.color,
+                parentId: inventoryCategories.parentId,
+                sortOrder: inventoryCategories.sortOrder,
+                itemCount: sql<number>`(
                 SELECT count(*)::int 
                 FROM ${inventoryItems} 
                 WHERE ${inventoryItems.categoryId} = ${inventoryCategories.id} 
                 AND ${inventoryItems.isArchived} = false
             )`
-        })
-            .from(inventoryCategories)
-            .orderBy(
-                sql`CASE WHEN ${inventoryCategories.sortOrder} = 0 THEN 1 ELSE 0 END ASC`,
-                sql`${inventoryCategories.sortOrder} ASC`,
-                desc(inventoryCategories.createdAt)
-            );
+            })
+                .from(inventoryCategories)
+                .orderBy(
+                    sql`CASE WHEN ${inventoryCategories.sortOrder} = 0 THEN 1 ELSE 0 END ASC`,
+                    sql`${inventoryCategories.sortOrder} ASC`,
+                    desc(inventoryCategories.createdAt)
+                );
 
-        return { data: categories };
+            return { data: categories };
+        }, 3600); // 1 hour cache
     } catch (error) {
         console.error(error);
         return { error: "Failed to fetch inventory categories" };
@@ -355,6 +358,9 @@ export async function addInventoryCategory(formData: FormData) {
             });
         });
 
+
+
+        await invalidateCache("inventory:categories:all");
         refreshWarehouse();
         return { success: true };
     } catch {
@@ -415,6 +421,9 @@ export async function deleteInventoryCategory(id: string, password?: string) {
 
         await logAction("Удаление категории", "inventory_category", id, { id, isSystem: category.isSystem });
 
+
+
+        await invalidateCache("inventory:categories:all");
         refreshWarehouse();
         return { success: true };
     } catch (e) {
@@ -531,6 +540,9 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         // Recursively update full paths for children
         await updateChildrenPaths(id);
 
+
+
+        await invalidateCache("inventory:categories:all");
         refreshWarehouse();
         return { success: true };
     } catch {
@@ -559,6 +571,9 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
             });
         });
 
+
+
+        await invalidateCache("inventory:categories:all");
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch (error) {

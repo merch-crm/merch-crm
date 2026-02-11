@@ -1,16 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-} from "@/components/ui/dialog";
 import { updateRolePermissions, updateRole, getDepartments, deleteRole } from "../actions";
-import { Loader2, Save, Shield, Building, Trash2 } from "lucide-react";
+import { Loader2, Save, Shield, Building, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DeleteRoleDialog } from "./delete-role-dialog";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface RolePermissionsDialogProps {
     role: {
@@ -289,57 +285,24 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
         </div>
     );
 
-    if (isMobile) {
-        return (
-            <>
-                <BottomSheet
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    title="Редактирование роли"
-                >
-                    <div className="pb-10">
-                        {FormContent}
-                        <div className="mt-8 pt-6 border-t border-slate-100">
-                            {ActionsContent}
-                        </div>
-                    </div>
-                </BottomSheet>
-                <DeleteRoleDialog
-                    role={role ? { id: role.id, name: role.name } : null}
-                    isOpen={showDeleteConfirm}
-                    onClose={() => setShowDeleteConfirm(false)}
-                    onConfirm={onConfirmDelete}
-                />
-            </>
-        );
-    }
-
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent
-                className="max-w-4xl max-h-[85vh] overflow-y-auto p-0 rounded-[var(--radius-outer)] border-none shadow-2xl bg-white"
-                onOpenAutoFocus={(e) => e.preventDefault()}
+        <>
+            <ResponsiveModal
+                isOpen={isOpen}
+                onClose={onClose}
+                title="Редактирование роли"
+                description="Настройте уровень доступа и параметры для роли"
+                className="max-w-4xl"
             >
-                <div className="p-6 pb-2 border-b border-slate-200 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/10 shadow-sm">
-                        <Shield className="w-6 h-6 text-primary" />
+                <div>
+                    <div className="mb-4">
+                        {FormContent}
                     </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-slate-900 leading-tight">Редактирование роли</h3>
-                        <p className="text-[11px] font-medium text-slate-500 mt-0.5">
-                            Настройте уровень доступа и параметры для роли
-                        </p>
+                    <div className="mt-6 pt-4 border-t border-slate-100 sticky bottom-0 bg-white">
+                        {ActionsContent}
                     </div>
                 </div>
-
-                <div className="px-6 py-5 space-y-6">
-                    {FormContent}
-                </div>
-
-                <div className="p-6 pt-2 bg-white sm:rounded-b-[var(--radius-outer)] border-t border-slate-200">
-                    {ActionsContent}
-                </div>
-            </DialogContent>
+            </ResponsiveModal>
 
             <DeleteRoleDialog
                 role={role ? { id: role.id, name: role.name } : null}
@@ -347,6 +310,6 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 onClose={() => setShowDeleteConfirm(false)}
                 onConfirm={onConfirmDelete}
             />
-        </Dialog>
+        </>
     );
 }

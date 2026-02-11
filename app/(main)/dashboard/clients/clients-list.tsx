@@ -467,8 +467,8 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 <div className="crm-card border-none bg-white overflow-hidden shadow-sm">
                     <ResponsiveDataView
                         data={currentPageItems}
-                        mobileGridClassName="flex flex-col divide-y divide-slate-100 lg:hidden"
-                        desktopClassName="hidden lg:block"
+                        mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
+                        desktopClassName="hidden md:block"
                         renderTable={() => (
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-slate-100">

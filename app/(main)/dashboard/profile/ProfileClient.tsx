@@ -16,7 +16,9 @@ import {
     LogOut,
     Clock,
     Shield,
-    GraduationCap
+    GraduationCap,
+    Menu,
+    X as XIcon
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -105,6 +107,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     const [statsData, setStatsData] = useState<StatisticsData | null>(null);
     const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Data fetching
     const fetchStats = React.useCallback(async () => {
@@ -141,6 +144,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
         const params = new URLSearchParams(searchParams.toString());
         params.set("p", newView);
         router.replace(`?${params.toString()}`, { scroll: false });
+        setIsMobileMenuOpen(false);
     };
 
     // Helper for safe strings
@@ -164,17 +168,25 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex flex-col md:flex-row bg-slate-50 font-sans">
+        <div className="fixed inset-0 z-50 flex flex-col md:flex-row bg-slate-50 font-sans overflow-hidden">
             {/* Sidebar - Dark Style */}
-            <aside className="w-full md:w-[260px] lg:w-[280px] bg-[#0F172A] text-white p-6 flex flex-col shrink-0 relative z-10 transition-all border-r border-slate-800 h-full overflow-y-auto">
-                <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push('/dashboard')}>
-                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
-                        <GraduationCap className="w-6 h-6 text-white" />
+            <aside className={cn(
+                "fixed inset-y-0 left-0 z-[60] w-[280px] bg-[#0F172A] text-white p-6 flex flex-col transition-all duration-300 md:relative md:translate-x-0",
+                isMobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"
+            )}>
+                <div className="flex items-center justify-between mb-10 pl-2">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/dashboard')}>
+                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+                            <GraduationCap className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <span className="font-bold text-lg tracking-normal leading-none block">MerchCRM</span>
+                            <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Profile</span>
+                        </div>
                     </div>
-                    <div>
-                        <span className="font-bold text-lg tracking-normal leading-none block">MerchCRM</span>
-                        <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Profile</span>
-                    </div>
+                    <button className="md:hidden p-2 text-slate-400 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
+                        <XIcon className="w-6 h-6" />
+                    </button>
                 </div>
 
                 <nav className="flex-1 space-y-2 mb-8">
@@ -240,18 +252,51 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                 </div>
             </aside>
 
+            {/* Overlay for mobile menu */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] md:hidden transition-opacity"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Main Content Area */}
-            <main className="flex-1 p-6 md:p-8 lg:p-12 relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+            <main className="flex-1 p-6 md:p-8 lg:p-12 relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-full">
                 {/* Top Bar */}
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-normal">
-                            {view === "profile" && "Обзор профиля"}
-                            {view === "settings" && "Настройки аккаунта"}
-                            {view === "statistics" && "Аналитика и KPI"}
-                            {view === "schedule" && "Рабочее расписание"}
-                            {view === "notifications" && "Центр уведомлений"}
-                        </h1>
+                    <div className="flex items-center justify-between w-full md:w-auto">
+                        <div className="md:hidden">
+                            <button
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm"
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="md:block">
+                            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-normal">
+                                {view === "profile" && "Обзор профиля"}
+                                {view === "settings" && "Настройки аккаунта"}
+                                {view === "statistics" && "Аналитика и KPI"}
+                                {view === "schedule" && "Рабочее расписание"}
+                                {view === "notifications" && "Центр уведомлений"}
+                            </h1>
+                        </div>
+                        <div className="md:hidden">
+                            {/* Simple Mobile Avatar/Profile link or something? */}
+                            <div className="w-10 h-10 rounded-full bg-slate-200 border border-slate-300 overflow-hidden" onClick={() => handleNavClick("settings")}>
+                                {user.avatar ? (
+                                    <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400 bg-slate-100">
+                                        {user.name.charAt(0)}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="hidden md:block">
                         <p className="text-sm font-medium text-slate-400 mt-2">
                             Добро пожаловать, <span className="text-slate-900 font-bold">{user.name}</span>! Продуктивного дня.
                         </p>

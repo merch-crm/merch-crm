@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Edit3, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface PromptDialogProps {
     isOpen: boolean;
@@ -49,15 +50,16 @@ export function PromptDialog({
     };
 
     return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
-                onClick={onClose}
-            />
-
-            <div className="relative w-full max-w-md bg-white rounded-[24px] shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col">
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={title}
+            showVisualTitle={false}
+            className="md:max-w-md"
+        >
+            <div className="flex flex-col">
                 {/* Header */}
-                <div className="p-8 pb-4 flex items-center justify-between">
+                <div className="p-6 md:p-8 pb-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-sm">
                             <Edit3 className="w-6 h-6" />
@@ -66,15 +68,9 @@ export function PromptDialog({
                             <h3 className="text-xl font-black text-slate-900 tracking-tighter">{title}</h3>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-xl bg-slate-50 transition-all active:scale-95"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
                 </div>
 
-                <div className="p-8 pt-4 space-y-6">
+                <div className="p-6 md:p-8 pt-4 space-y-6">
                     {(description) && (
                         <p className="text-sm font-bold text-slate-600 leading-relaxed">
                             {description}
@@ -115,7 +111,7 @@ export function PromptDialog({
                         )}
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col-reverse md:flex-row gap-3 pt-2">
                         <Button
                             variant="ghost"
                             onClick={onClose}
@@ -133,6 +129,6 @@ export function PromptDialog({
                     </div>
                 </div>
             </div>
-        </div>
+        </ResponsiveModal>
     );
 }

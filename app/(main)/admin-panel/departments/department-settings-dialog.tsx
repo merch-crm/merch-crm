@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
+import { Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
 import { updateDepartment, getRolesByDepartment, getRoles, updateRoleDepartment } from "../actions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface Role {
     id: string;
@@ -40,7 +39,6 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState(department?.color || "indigo");
-    const isMobile = useIsMobile();
 
     // Roles Tab State
     const [departmentRoles, setDepartmentRoles] = useState<Role[]>([]);
@@ -88,7 +86,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
             setError(res.error);
         } else {
             fetchRoles();
-            onSuccess(); // Update counts in table
+            onSuccess();
         }
         setActionLoading(null);
     };
@@ -100,7 +98,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
             setError(res.error);
         } else {
             fetchRoles();
-            onSuccess(); // Update counts in table
+            onSuccess();
         }
         setActionLoading(null);
     };
@@ -116,20 +114,17 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
             setError(res.error);
         } else {
             onSuccess();
-            // Don't close, just show success? Or maybe close. 
-            // User said "menu", let's keep it open or close on explicit "Save"
             onClose();
         }
     }
 
-    if (!isOpen || !department) return null;
+    if (!department) return null;
 
     const availableRoles = allRoles.filter(
         role => role.departmentId !== department.id
     );
 
     const colorStyle = COLORS.find(c => c.value === selectedColor) || COLORS[0];
-
 
     const FormContent = (
         <div className="space-y-6">
@@ -302,95 +297,52 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
         </div>
     );
 
-    const DialogContent = (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="px-6 pt-5 pb-1">
-                <TabsList className="bg-[#f1f5f9] border-none rounded-full p-1 w-full sm:w-auto inline-flex h-auto shadow-none">
-                    <TabsTrigger
-                        value="general"
-                        className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
-                    >
-                        Основное
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="roles"
-                        className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
-                    >
-                        Роли отдела
-                    </TabsTrigger>
-                </TabsList>
-            </div>
-
-            <div className="px-6 pb-6 pt-4 min-h-[400px]">
-                {error && (
-                    <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100 flex items-center gap-3">
-                        <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                        {error}
-                    </div>
-                )}
-
-                <TabsContent value="general">
-                    <form action={handleGeneralSubmit}>
-                        {FormContent}
-                    </form>
-                </TabsContent>
-
-                <TabsContent value="roles">
-                    {RolesContent}
-                </TabsContent>
-            </div>
-        </Tabs>
-    );
-
-    if (isMobile) {
-        return (
-            <BottomSheet
-                isOpen={isOpen}
-                onClose={onClose}
-                title={department.name}
-            >
-                <div className="pb-8">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className={`h-12 w-12 rounded-xl ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center border ${colorStyle.border} shadow-sm shrink-0`}>
-                            <Building className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-slate-900 leading-tight">{department.name}</h3>
-                            <p className="text-[10px] font-medium text-slate-500 mt-0.5">Параметры и управление отделом</p>
-                        </div>
-                    </div>
-                    {DialogContent}
-                </div>
-            </BottomSheet>
-        );
-    }
-
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose} />
-
-                <div className="relative transform overflow-hidden rounded-[18px] bg-white p-0 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-200">
-                    {/* Header */}
-                    <div className="px-6 pt-6 pb-4 border-b border-slate-200 relative">
-                        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-50 rounded-full">
-                            <X className="h-6 w-6" />
-                        </button>
-
-                        <div className="flex items-center gap-4">
-                            <div className={`h-12 w-12 rounded-xl ${colorStyle.bg} ${colorStyle.text} flex items-center justify-center border ${colorStyle.border} shadow-sm shrink-0`}>
-                                <Building className="w-6 h-6" />
-                            </div>
-                            <div>
-                                <h3 className="text-2xl font-bold text-slate-900 leading-tight tracking-normal">{department.name}</h3>
-                                <p className="text-[11px] font-medium text-slate-500 mt-0.5">Параметры и управление отделом</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {DialogContent}
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={department.name}
+            description="Параметры и управление отделом"
+            className="max-w-3xl"
+        >
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="px-0 pt-2 pb-1">
+                    <TabsList className="bg-[#f1f5f9] border-none rounded-full p-1 w-full sm:w-auto inline-flex h-auto shadow-none">
+                        <TabsTrigger
+                            value="general"
+                            className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
+                        >
+                            Основное
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="roles"
+                            className="flex-1 sm:flex-none px-6 py-2.5 text-[10px] font-bold  tracking-[0.2em] rounded-full transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]"
+                        >
+                            Роли отдела
+                        </TabsTrigger>
+                    </TabsList>
                 </div>
-            </div>
+
+                <div className="pt-4 min-h-[400px]">
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100 flex items-center gap-3">
+                            <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                            {error}
+                        </div>
+                    )}
+
+                    <TabsContent value="general">
+                        <form action={handleGeneralSubmit}>
+                            {FormContent}
+                        </form>
+                    </TabsContent>
+
+                    <TabsContent value="roles">
+                        {RolesContent}
+                    </TabsContent>
+                </div>
+            </Tabs>
+
             <style jsx>{`
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 4px;
@@ -406,7 +358,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     background: #cbd5e1;
                 }
             `}</style>
-        </div>
+        </ResponsiveModal>
     );
 }
 

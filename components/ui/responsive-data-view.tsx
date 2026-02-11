@@ -19,8 +19,8 @@ export function ResponsiveDataView<T>({
     data,
     renderTable,
     renderCard,
-    mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden",
-    desktopClassName = "hidden lg:block"
+    mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-4 md:hidden",
+    desktopClassName = "hidden md:block"
 }: ResponsiveDataViewProps<T>) {
     return (
         <div className="w-full">

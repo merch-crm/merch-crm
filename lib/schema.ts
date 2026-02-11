@@ -10,6 +10,7 @@ import {
     boolean,
     date,
     AnyPgColumn,
+    index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -116,6 +117,10 @@ export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     showInSku: boolean("show_in_sku").default(true).notNull(),
     showInName: boolean("show_in_name").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        deptIdx: index("inv_attr_types_department_idx").on(table.categoryId), // Wait, referencing categoryId? In schema it's categoryId at line 116.
+    }
 });
 
 // Roles
@@ -127,6 +132,10 @@ export const roles = pgTable("roles", {
     departmentId: uuid("department_id").references(() => departments.id),
     color: text("color"), // Roles can override department colors
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        deptIdx: index("roles_department_idx").on(table.departmentId),
+    }
 });
 
 // Departments
@@ -158,6 +167,11 @@ export const users = pgTable("users", {
     lastActiveAt: timestamp("last_active_at"),
     isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        roleIdx: index("users_role_idx").on(table.roleId),
+        departmentIdx: index("users_department_idx").on(table.departmentId),
+    }
 });
 
 // Clients
@@ -181,6 +195,12 @@ export const clients = pgTable("clients", {
     managerId: uuid("manager_id").references(() => users.id),
     isArchived: boolean("is_archived").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        managerIdx: index("clients_manager_idx").on(table.managerId),
+        archivedIdx: index("clients_archived_idx").on(table.isArchived),
+        searchIdx: index("clients_search_idx").on(table.lastName, table.firstName, table.phone),
+    }
 });
 
 // Inventory Categories
@@ -205,6 +225,10 @@ export const inventoryCategories = pgTable("inventory_categories", {
     showInSku: boolean("show_in_sku").default(true).notNull(),
     showInName: boolean("show_in_name").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        parentIdx: index("inv_cats_parent_idx").on(table.parentId),
+    }
 });
 
 // Inventory Items
@@ -241,6 +265,12 @@ export const inventoryItems = pgTable("inventory_items", {
     zeroStockSince: timestamp("zero_stock_since"),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        categoryIdx: index("inv_items_category_idx").on(table.categoryId),
+        skuIdx: index("inv_items_sku_idx").on(table.sku),
+        archivedIdx: index("inv_items_archived_idx").on(table.isArchived),
+    }
 });
 
 // Orders
@@ -265,6 +295,15 @@ export const orders = pgTable("orders", {
     isArchived: boolean("is_archived").default(false).notNull(),
     cancelReason: text("cancel_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        clientIdx: index("orders_client_idx").on(table.clientId),
+        statusIdx: index("orders_status_idx").on(table.status),
+        createdByIdx: index("orders_created_by_idx").on(table.createdBy),
+        promoIdx: index("orders_promo_idx").on(table.promocodeId),
+        archivedIdx: index("orders_archived_idx").on(table.isArchived),
+        dateIdx: index("orders_date_idx").on(table.createdAt),
+    }
 });
 
 // Order Items (Line Items)
@@ -282,6 +321,11 @@ export const orderItems = pgTable("order_items", {
     stagePrintStatus: productionStageStatusEnum("stage_print_status").default("pending").notNull(),
     stageApplicationStatus: productionStageStatusEnum("stage_application_status").default("pending").notNull(),
     stagePackagingStatus: productionStageStatusEnum("stage_packaging_status").default("pending").notNull(),
+}, (table) => {
+    return {
+        orderIdx: index("order_items_order_idx").on(table.orderId),
+        inventoryIdx: index("order_items_inventory_idx").on(table.inventoryId),
+    }
 });
 
 // Inventory Transactions
@@ -299,6 +343,15 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     costPrice: decimal("cost_price", { precision: 10, scale: 2 }),
     createdBy: uuid("created_by").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        itemIdx: index("inv_tx_item_idx").on(table.itemId),
+        storageIdx: index("inv_tx_storage_idx").on(table.storageLocationId),
+        fromStorageIdx: index("inv_tx_from_storage_idx").on(table.fromStorageLocationId),
+        createdByIdx: index("inv_tx_created_by_idx").on(table.createdBy),
+        typeIdx: index("inv_tx_type_idx").on(table.type),
+        dateIdx: index("inv_tx_date_idx").on(table.createdAt),
+    }
 });
 
 // Tasks
@@ -316,6 +369,15 @@ export const tasks = pgTable("tasks", {
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     dueDate: timestamp("due_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        assignedUserIdx: index("tasks_assigned_user_idx").on(table.assignedToUserId),
+        assignedRoleIdx: index("tasks_assigned_role_idx").on(table.assignedToRoleId),
+        assignedDeptIdx: index("tasks_assigned_dept_idx").on(table.assignedToDepartmentId),
+        orderIdx: index("tasks_order_idx").on(table.orderId),
+        createdByIdx: index("tasks_created_by_idx").on(table.createdBy),
+        statusIdx: index("tasks_status_idx").on(table.status),
+    }
 });
 
 // Task Checklists
@@ -337,6 +399,11 @@ export const taskHistory = pgTable("task_history", {
     oldValue: text("old_value"),
     newValue: text("new_value"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        taskIdx: index("task_history_task_idx").on(table.taskId),
+        userIdx: index("task_history_user_idx").on(table.userId),
+    }
 });
 
 // Task Comments
@@ -346,6 +413,10 @@ export const taskComments = pgTable("task_comments", {
     userId: uuid("user_id").references(() => users.id).notNull(),
     content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        taskIdx: index("task_comments_task_idx").on(table.taskId),
+    }
 });
 
 // Notifications
@@ -357,6 +428,12 @@ export const notifications = pgTable("notifications", {
     type: notificationTypeEnum("type").default("info").notNull(),
     isRead: boolean("is_read").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("notifications_user_idx").on(table.userId),
+        readIdx: index("notifications_read_idx").on(table.isRead),
+        createdIdx: index("notifications_created_idx").on(table.createdAt),
+    }
 });
 
 // Storage Locations
@@ -372,6 +449,11 @@ export const storageLocations = pgTable("storage_locations", {
     type: storageLocationTypeEnum("type").default("warehouse").notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        responsibleIdx: index("storage_loc_responsible_idx").on(table.responsibleUserId),
+        activeTypeIdx: index("storage_loc_active_type_idx").on(table.isActive, table.type),
+    }
 });
 
 // Audit Logs
@@ -383,6 +465,13 @@ export const auditLogs = pgTable("audit_logs", {
     entityId: uuid("entity_id").notNull(),
     details: jsonb("details"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("audit_logs_user_idx").on(table.userId),
+        entityIdx: index("audit_logs_entity_idx").on(table.entityType, table.entityId),
+        actionIdx: index("audit_logs_action_idx").on(table.action),
+        createdIdx: index("audit_logs_created_idx").on(table.createdAt),
+    }
 });
 
 // System Settings
@@ -404,6 +493,13 @@ export const securityEvents = pgTable("security_events", {
     entityId: uuid("entity_id"),
     details: jsonb("details"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("security_events_user_idx").on(table.userId),
+        typeIdx: index("security_events_type_idx").on(table.eventType),
+        entityIdx: index("security_events_entity_idx").on(table.entityType, table.entityId),
+        createdIdx: index("security_events_created_idx").on(table.createdAt),
+    }
 });
 
 
@@ -420,6 +516,11 @@ export const systemErrors = pgTable("system_errors", {
     severity: text("severity").default("error").notNull(), // error, warning, critical
     details: jsonb("details"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("system_errors_user_idx").on(table.userId),
+        createdIdx: index("system_errors_created_idx").on(table.createdAt),
+    }
 });
 
 
@@ -436,6 +537,10 @@ export const taskAttachments = pgTable("task_attachments", {
     contentType: text("content_type"),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        taskIdx: index("task_attachments_task_idx").on(table.taskId),
+    }
 });
 
 // Order Attachments
@@ -451,6 +556,10 @@ export const orderAttachments = pgTable("order_attachments", {
     contentType: text("content_type"),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        orderIdx: index("order_attachments_order_idx").on(table.orderId),
+    }
 });
 
 // Payments
@@ -462,6 +571,11 @@ export const payments = pgTable("payments", {
     isAdvance: boolean("is_advance").default(false).notNull(),
     comment: text("comment"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        orderIdx: index("payments_order_idx").on(table.orderId),
+        dateIdx: index("payments_created_idx").on(table.createdAt),
+    }
 });
 
 // Expenses
@@ -473,6 +587,12 @@ export const expenses = pgTable("expenses", {
     date: date("date").notNull(),
     createdBy: uuid("created_by").references(() => users.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        createdByIdx: index("expenses_created_by_idx").on(table.createdBy),
+        dateIdx: index("expenses_date_idx").on(table.date),
+        categoryIdx: index("expenses_category_idx").on(table.category),
+    }
 });
 
 // Promocodes
@@ -492,6 +612,11 @@ export const promocodes = pgTable("promocodes", {
     adminComment: text("admin_comment"),
     constraints: jsonb("constraints").default("{}"), // { includedProducts: [], excludedCategories: [] }
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        codeIdx: index("promocodes_code_idx").on(table.code),
+        activeIdx: index("promocodes_active_idx").on(table.isActive),
+    }
 });
 
 // Wiki Folders
@@ -501,6 +626,10 @@ export const wikiFolders = pgTable("wiki_folders", {
     parentId: uuid("parent_id").references((): AnyPgColumn => wikiFolders.id),
     sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        parentIdx: index("wiki_folders_parent_idx").on(table.parentId),
+    }
 });
 
 // Wiki Pages
@@ -512,6 +641,11 @@ export const wikiPages = pgTable("wiki_pages", {
     createdBy: uuid("created_by").references(() => users.id),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        folderIdx: index("wiki_pages_folder_idx").on(table.folderId),
+        createdByIdx: index("wiki_pages_created_by_idx").on(table.createdBy),
+    }
 });
 
 // Relations
@@ -526,6 +660,12 @@ export const inventoryStocks = pgTable("inventory_stocks", {
         .notNull(),
     quantity: integer("quantity").default(0).notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        itemIdx: index("inv_stocks_item_idx").on(table.itemId),
+        storageIdx: index("inv_stocks_storage_idx").on(table.storageLocationId),
+        itemStorageIdx: index("inv_stocks_item_storage_idx").on(table.itemId, table.storageLocationId),
+    }
 });
 
 // Inventory Transfers (Перемещения)
@@ -538,6 +678,14 @@ export const inventoryTransfers = pgTable("inventory_transfers", {
     comment: text("comment"),
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        itemIdx: index("inv_transfers_item_idx").on(table.itemId),
+        fromIdx: index("inv_transfers_from_idx").on(table.fromLocationId),
+        toIdx: index("inv_transfers_to_idx").on(table.toLocationId),
+        createdByIdx: index("inv_transfers_created_by_idx").on(table.createdBy),
+        dateIdx: index("inv_transfers_date_idx").on(table.createdAt),
+    }
 });
 
 // Relations
