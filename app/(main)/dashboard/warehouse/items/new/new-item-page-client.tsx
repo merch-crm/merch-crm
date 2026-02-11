@@ -470,7 +470,7 @@ export function NewItemPageClient({
             <div className="flex flex-col xl:flex-row min-h-[calc(100vh-160px)] gap-4 xl:gap-6">
                 {/* Sidebar (Vertical Studio Navigation) - Responsive */}
                 <aside className={cn(
-                    "bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 z-40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden text-medium",
+                    "crm-card !rounded-3xl flex flex-col shrink-0 z-40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden text-medium",
                     "w-full xl:w-[320px] h-auto xl:h-full sticky xl:static top-0"
                 )}>
                     {/* Tablet/Mobile Horizontal Step View */}
@@ -663,7 +663,7 @@ export function NewItemPageClient({
 
                 <main className="flex-1 relative h-full flex flex-col gap-4 pb-4 xl:pb-8 px-1">
                     <div className="relative flex-1 flex flex-col min-h-0">
-                        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
+                        <div className="crm-card !p-0 !rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
                                 <div className="flex flex-col h-full min-h-0">
                                     <div className="flex-1 overflow-y-auto min-h-0">

@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
 import {
     ResponsiveModal
 } from "@/components/ui/responsive-modal";
 
-import { Printer, X } from "lucide-react";
+import { Printer } from "lucide-react";
 import { InventoryItem } from "../../../types";
+import { Button } from "@/components/ui/button";
+import { escapeHtml } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
 
 interface ItemLabelDialogProps {
     item: InventoryItem;
@@ -16,21 +19,21 @@ interface ItemLabelDialogProps {
 }
 
 export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps) {
-    const printRef = useRef<HTMLDivElement>(null);
-
+    const { toast } = useToast();
     const handlePrint = () => {
-        const content = printRef.current;
-        if (!content) return;
 
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return;
+        if (!printWindow) {
+            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
+            return;
+        }
 
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${item.sku || item.id}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(item.sku || item.id)}`;
 
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Печать этикетки - ${item.name}</title>
+                    <title>Печать этикетки - ${escapeHtml(item.name)}</title>
                     <style>
                         @page { size: 58mm 40mm; margin: 0; }
                         body { 
@@ -94,12 +97,12 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                 </head>
                 <body>
                     <div class="label">
-                        <div class="header">${item.name}</div>
+                        <div class="header">${escapeHtml(item.name)}</div>
                         <div class="content">
                             <img src="${qrUrl}" class="qr" />
                             <div class="info">
-                                <div class="sku">SKU: ${item.sku || 'N/A'}</div>
-                                <div class="category">${item.category?.name || 'Без категории'}</div>
+                                <div class="sku">SKU: ${escapeHtml(item.sku || 'N/A')}</div>
+                                <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
                             </div>
                         </div>
                         <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div>
@@ -117,93 +120,77 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
     };
 
     return (
-        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Печать этикетки">
-            <div className="flex flex-col h-full overflow-hidden">
-                <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                            <Printer className="w-6 h-6 text-primary" />
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-900 leading-tight">Печать этикетки</h2>
-                            <p className="text-[11px] font-medium text-slate-500 mt-0.5">Подготовка SKU-маркировки для принтера</p>
-                        </div>
-                    </div>
-
-                    <button
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Печать этикетки"
+            description="Подготовка SKU-маркировки для принтера"
+            footer={
+                <div className="flex items-center justify-end gap-3 w-full">
+                    <Button
+                        variant="ghost"
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all active:scale-95 shadow-sm"
-                    >
-                        <X className="h-4 w-4" />
-                    </button>
-                </div>
-
-                <div className="px-6 py-6 space-y-8 bg-white overflow-y-auto flex-1 custom-scrollbar">
-                    {/* Preview Label */}
-                    <div className="flex flex-col items-center">
-                        <label className="text-sm font-bold text-slate-700 mb-3">Предпросмотр (58x40мм)</label>
-                        <div
-                            ref={printRef}
-                            className="w-[280px] h-[180px] bg-white shadow-2xl shadow-slate-200/50 rounded-2xl p-5 flex flex-col border border-slate-200 relative group transition-transform hover:scale-[1.02]"
-                        >
-                            <div className="text-[13px] font-bold text-slate-900 leading-tight mb-3 line-clamp-2 pr-2">
-                                {item.name}
-                            </div>
-
-                            <div className="flex gap-4 items-center">
-                                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner p-1">
-                                    <Image
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
-                                        alt="QR Code"
-                                        className="w-full h-full object-contain"
-                                        width={80}
-                                        height={80}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1.5">
-                                    <div className="space-y-0.5">
-                                        <div className="text-[8px] font-bold text-slate-400">Артикул</div>
-                                        <div className="text-[13px] font-black text-slate-900 tabular-nums leading-none">{item.sku || "—"}</div>
-                                    </div>
-                                    <div className="inline-block px-1.5 py-0.5 bg-primary/5 text-primary text-[8px] font-bold rounded-md border border-primary/20">
-                                        {item.category?.name || "Без категории"}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-auto pt-2 border-t border-slate-200 flex items-center justify-between text-[7px] font-bold text-slate-300">
-                                <span>Merch CRM System</span>
-                                <span>{new Date().toLocaleDateString('ru-RU')}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
-                            <Printer className="w-5 h-5 text-slate-400" />
-                        </div>
-                        <div className="flex-1">
-                            <p className="text-xs font-bold text-slate-900 mb-1">Настройка печати</p>
-                            <p className="text-[10px] text-slate-500 font-medium leading-relaxed">Этикетка оптимизирована для термопринтеров. Формат будет открыт в новом окне для отправки на печать.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="sticky bottom-0 z-10 p-5 pt-2 flex items-center justify-end gap-3 shrink-0 bg-white border-t border-slate-100 mt-auto">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="hidden md:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center"
+                        className="hidden md:flex h-11 px-8 rounded-2xl text-muted-foreground hover:text-foreground font-bold text-sm"
                     >
                         Закрыть
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handlePrint}
-                        className="h-11 w-full md:w-auto md:px-10 bg-primary text-white rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3"
+                        className="h-11 w-full md:w-auto md:px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                         <Printer className="w-4 h-4 stroke-[3]" />
                         Печать этикетки
-                    </button>
+                    </Button>
+                </div>
+            }
+        >
+            <div className="px-6 py-6 space-y-8 bg-card flex-1">
+                {/* Preview Label */}
+                <div className="flex flex-col items-center">
+                    <label className="text-sm font-bold text-foreground mb-3">Предпросмотр (58x40мм)</label>
+                    <div
+                        className="w-[280px] h-[180px] bg-card shadow-2xl shadow-border/50 rounded-2xl p-5 flex flex-col border border-border relative group transition-transform hover:scale-[1.02]"
+                    >
+                        <div className="text-[13px] font-bold text-foreground leading-tight mb-3 line-clamp-2 pr-2">
+                            {item.name}
+                        </div>
+
+                        <div className="flex gap-4 items-center">
+                            <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center border border-border overflow-hidden shadow-inner p-1">
+                                <Image
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
+                                    alt="QR Code"
+                                    className="w-full h-full object-contain invert dark:invert-0"
+                                    width={80}
+                                    height={80}
+                                />
+                            </div>
+                            <div className="flex-1 space-y-1.5">
+                                <div className="space-y-0.5">
+                                    <div className="text-[8px] font-bold text-muted-foreground">Артикул</div>
+                                    <div className="text-[13px] font-black text-foreground tabular-nums leading-none">{item.sku || "—"}</div>
+                                </div>
+                                <div className="inline-block px-1.5 py-0.5 bg-primary/5 text-primary text-[8px] font-bold rounded-md border border-primary/20">
+                                    {item.category?.name || "Без категории"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-auto pt-2 border-t border-border flex items-center justify-between text-[7px] font-bold text-muted-foreground">
+                            <span>Merch CRM System</span>
+                            <span>{new Date().toLocaleDateString('ru-RU')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center shrink-0 border border-border">
+                        <Printer className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-xs font-bold text-foreground mb-1">Настройка печати</p>
+                        <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">Этикетка оптимизирована для термопринтеров. Формат будет открыт в новом окне для отправки на печать.</p>
+                    </div>
                 </div>
             </div>
         </ResponsiveModal>

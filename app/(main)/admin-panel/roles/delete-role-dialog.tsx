@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Loader2, Lock } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface DeleteRoleDialogProps {

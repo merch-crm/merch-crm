@@ -65,7 +65,7 @@ export function StockStep({
                     <div className="grid grid-cols-12 gap-4 sm:gap-6 flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pt-2 pb-6 -mx-4 sm:-mx-8">
                         {/* FIRST ROW */}
                         {/* BENTO BLOCK 1: MAIN QUANTITY */}
-                        <div className="col-span-12 md:col-span-5 xl:col-span-5 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col items-start text-left">
+                        <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col items-start text-left">
                             <div className="mb-6">
                                 <h3 className="text-base font-bold text-slate-900">Количество</h3>
                                 <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Укажите начальный остаток</p>
@@ -113,7 +113,7 @@ export function StockStep({
                         </div>
 
                         {/* BENTO BLOCK 2: FINANCIALS */}
-                        <div className="col-span-12 md:col-span-7 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col">
+                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col">
                             <div className="mb-6">
                                 <h3 className="text-base font-bold text-slate-900">Финансы</h3>
                                 <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Себестоимость и цена продажи</p>
@@ -166,7 +166,7 @@ export function StockStep({
                         {/* SECOND ROW */}
                         <div className="col-span-12 md:col-span-5 xl:col-span-5 flex flex-col gap-6">
                             {/* BENTO BLOCK 3: THRESHOLDS */}
-                            <div className="bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col gap-5 shrink-0">
+                            <div className="crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-5 shrink-0">
                                 <div className="mb-6">
                                     <h3 className="text-base font-bold text-slate-900">Уведомления</h3>
                                     <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Настройка лимитов</p>
@@ -206,7 +206,7 @@ export function StockStep({
                             </div>
 
                             {/* BENTO BLOCK 4: RESPONSIBLE PERSON */}
-                            <div className="bg-white rounded-[28px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col gap-4 flex-1">
+                            <div className="crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-4 flex-1">
                                 <div className="mb-6">
                                     <h3 className="text-base font-bold text-slate-900">Ответственный</h3>
                                     <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Кто создал позицию</p>
@@ -223,7 +223,7 @@ export function StockStep({
                         </div>
 
                         {/* STORAGE LOCATIONS CARD */}
-                        <div className="col-span-12 md:col-span-7 xl:col-span-7 bg-white rounded-[28px] border border-slate-200 shadow-sm flex flex-col min-h-0">
+                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card !p-0 !rounded-[28px] shadow-sm flex flex-col min-h-0">
                             <div className="p-6 pb-2">
                                 <h3 className="text-base font-bold text-slate-900">Размещение товара</h3>
                                 <p className="text-[10px] font-bold text-slate-700 opacity-60 mt-1">Выберите склад для хранения</p>

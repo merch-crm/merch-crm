@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Settings } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { getStorageQuotaSettings, updateStorageQuotaSettings, StorageQuotaSettings } from "@/app/(main)/admin-panel/storage-actions";
 

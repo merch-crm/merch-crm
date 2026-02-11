@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBreadcrumbs } from "./breadcrumbs-context";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const routeLabels: Record<string, string> = {
     dashboard: "Главная",
@@ -43,14 +44,7 @@ const routeLabels: Record<string, string> = {
 export function Breadcrumbs() {
     const pathname = usePathname();
     const { labels, customTrail } = useBreadcrumbs();
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+    const isMobile = useMediaQuery("(max-width: 1023px)");
 
     const paths = pathname.split("/").filter(Boolean);
 

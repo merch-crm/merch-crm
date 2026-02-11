@@ -8,6 +8,7 @@ import { logout } from "@/app/(main)/dashboard/profile/actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import Image from "next/image";
 import { RoleBadge } from "@/components/ui/role-badge";
 
@@ -25,6 +26,7 @@ export function UserNav({ user, branding }: {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const isMobile = useMediaQuery("(max-width: 767px)");
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -73,15 +75,15 @@ export function UserNav({ user, branding }: {
 
                         {/* Menu Content */}
                         <motion.div
-                            initial={typeof window !== 'undefined' && window.innerWidth < 768
+                            initial={isMobile
                                 ? { y: "-100%", opacity: 0 }
                                 : { opacity: 0, scaleY: 0.8, y: -10, originY: 0 }
                             }
-                            animate={typeof window !== 'undefined' && window.innerWidth < 768
+                            animate={isMobile
                                 ? { y: 0, opacity: 1 }
                                 : { opacity: 1, scaleY: 1, y: 0 }
                             }
-                            exit={typeof window !== 'undefined' && window.innerWidth < 768
+                            exit={isMobile
                                 ? { y: "-100%", opacity: 0 }
                                 : { opacity: 0, scaleY: 0.8, y: -10 }
                             }
@@ -90,7 +92,7 @@ export function UserNav({ user, branding }: {
                                 ease: [0.16, 1, 0.3, 1],
                                 opacity: { duration: 0.2 }
                             }}
-                            drag={typeof window !== 'undefined' && window.innerWidth < 768 ? "y" : false}
+                            drag={isMobile ? "y" : false}
                             dragConstraints={{ top: 0, bottom: 0 }}
                             dragElastic={{ top: 1, bottom: 0.1 }}
                             onDragEnd={(_, info) => {

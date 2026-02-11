@@ -25,12 +25,12 @@ export default async function NewItemPage({
         import("../../actions").then(m => m.getAllUsers())
     ]);
 
-    const categories = categoriesRes.data || [];
-    const storageLocations = locationsRes.data || [];
-    const measurementUnits = unitsRes.data || [];
-    const dynamicAttributes = attributesRes.data || [];
-    const attributeTypes = typesRes.data || [];
-    const users = usersRes.data || [];
+    const categories = 'data' in categoriesRes && categoriesRes.data ? categoriesRes.data : [];
+    const storageLocations = 'data' in locationsRes && locationsRes.data ? locationsRes.data : [];
+    const measurementUnits = 'data' in unitsRes && unitsRes.data ? unitsRes.data : [];
+    const dynamicAttributes = 'data' in attributesRes && attributesRes.data ? attributesRes.data : [];
+    const attributeTypes = 'data' in typesRes && typesRes.data ? typesRes.data : [];
+    const users = 'data' in usersRes && usersRes.data ? usersRes.data : [];
 
     return (
         <NewItemPageClient

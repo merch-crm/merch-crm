@@ -5,6 +5,7 @@ import { updatePassword } from "./actions";
 import { Loader2, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function PasswordForm() {
@@ -40,13 +41,15 @@ export function PasswordForm() {
                             className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold transition-all duration-300"
                             placeholder="••••••••"
                         />
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors h-10 w-10 p-0"
                         >
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -84,14 +87,14 @@ export function PasswordForm() {
             )}
 
             <div className="pt-6">
-                <button
+                <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-11 rounded-3xl bg-slate-900 hover:bg-black text-white font-black text-[16px] shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
+                    className="w-full h-11 rounded-3xl bg-slate-900 hover:bg-black text-white font-black text-[16px] shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                 >
                     {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                     {loading ? "Обновление..." : "Обновить пароль"}
-                </button>
+                </Button>
             </div>
         </form>
     );

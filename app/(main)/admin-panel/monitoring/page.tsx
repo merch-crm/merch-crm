@@ -16,7 +16,7 @@ export default function MonitoringStatsPage() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-[24px] p-8 shadow-crm-lg border border-slate-200">
+            <div className="crm-card">
                 <SystemStats />
             </div>
         </div>

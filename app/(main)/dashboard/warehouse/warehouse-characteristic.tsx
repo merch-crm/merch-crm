@@ -347,7 +347,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
     return (
         <div className="space-y-8 pb-20">
             {/* Category Tabs */}
-            <div className="flex w-full overflow-x-auto h-[58px] items-center gap-2 p-[6px] !rounded-[22px] glass-panel scrollbar-hide">
+            <div className="crm-card flex w-full overflow-x-auto h-[58px] items-center gap-2 !p-[6px] !rounded-[22px] scrollbar-hide">
                 {rootCategories.map((cat) => {
                     const isActive = activeCategoryId === cat.id;
                     const Icon = getCategoryIcon(cat);
@@ -372,17 +372,15 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                             <span className="relative z-10 flex items-center gap-2">
                                 <Icon className="w-5 h-5 shrink-0" />
                                 <AnimatePresence mode="popLayout" initial={false}>
-                                    {(isActive || typeof window !== 'undefined' && window.innerWidth > 768) && (
-                                        <motion.span
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ duration: 0.2 }}
-                                            className={cn("hidden md:inline-block", isActive && "inline-block")}
-                                        >
-                                            {cat.name}
-                                        </motion.span>
-                                    )}
+                                    <motion.span
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={cn("hidden md:inline-block", isActive && "inline-block")}
+                                    >
+                                        {cat.name}
+                                    </motion.span>
                                 </AnimatePresence>
                             </span>
                         </button>
@@ -407,17 +405,15 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         <span className="relative z-10 flex items-center gap-2">
                             <Layers className="w-5 h-5 shrink-0" />
                             <AnimatePresence mode="popLayout" initial={false}>
-                                {(activeCategoryId === "uncategorized" || typeof window !== 'undefined' && window.innerWidth > 768) && (
-                                    <motion.span
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2 }}
-                                        className={cn("hidden md:inline-block", activeCategoryId === "uncategorized" && "inline-block")}
-                                    >
-                                        Без категории
-                                    </motion.span>
-                                )}
+                                <motion.span
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                    className={cn("hidden md:inline-block", activeCategoryId === "uncategorized" && "inline-block")}
+                                >
+                                    Без категории
+                                </motion.span>
                             </AnimatePresence>
                         </span>
                     </button>
@@ -793,30 +789,29 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                         )}
                     </div>
 
-                    <div className="sticky bottom-0 z-10 p-4 sm:p-6 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-between shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3 mt-auto">
-                        {/* Desktop-only delete button hidden on mobile/tablet */}
-                        <div className="hidden lg:flex items-center gap-3 w-auto shrink-0">
+                    <div className="sticky bottom-0 z-10 p-5 pt-3 flex flex-row items-center justify-between gap-3 shrink-0 bg-white border-t border-slate-100 sm:rounded-b-[var(--radius-outer)]">
+                        {editingAttribute ? (
+                            <button
+                                onClick={() => setAttributeToDelete(editingAttribute)}
+                                className="h-11 px-4 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95 shrink-0"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                <span>Удалить</span>
+                            </button>
+                        ) : (
+                            <div />
+                        )}
+                        <div className="flex items-center gap-3">
                             <button
                                 onClick={() => setIsValueDialogOpen(false)}
-                                className="h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
+                                className="h-11 px-4 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all flex items-center justify-center rounded-[var(--radius-inner)]"
                             >
                                 Отмена
                             </button>
-                            {editingAttribute && (
-                                <button
-                                    onClick={() => setAttributeToDelete(editingAttribute)}
-                                    className="h-11 px-8 font-bold text-sm flex items-center gap-2 btn-destructive-ghost rounded-[var(--radius-inner)] transition-all active:scale-95"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                    <span>Удалить</span>
-                                </button>
-                            )}
-                        </div>
-                        <div className="flex items-center gap-3 w-full lg:w-auto lg:justify-end">
                             <button
                                 onClick={handleValueSave}
                                 disabled={isSaving || !newItemName.trim() || !newItemCode.trim()}
-                                className="flex-1 lg:flex-none lg:px-10 h-11 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                                className="h-11 px-6 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
                             >
                                 {isSaving ? (
                                     <Loader2 className="w-3 h-3 animate-spin" />

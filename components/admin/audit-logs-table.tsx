@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { PremiumPagination } from "@/components/ui/premium-pagination";
+import NextImage from "next/image";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
@@ -340,13 +341,13 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                                                 {log.user.avatar ? (
                                                                     <>
                                                                         <span className="absolute inset-0 flex items-center justify-center">{(log.user?.name || "С")[0]}</span>
-                                                                        <img
+                                                                        <NextImage
                                                                             src={log.user.avatar}
                                                                             alt={log.user.name}
                                                                             className="w-full h-full object-cover relative z-10"
-                                                                            onError={(e) => {
-                                                                                (e.target as HTMLImageElement).style.opacity = '0';
-                                                                            }}
+                                                                            width={28}
+                                                                            height={28}
+                                                                            unoptimized
                                                                         />
                                                                     </>
                                                                 ) : (
@@ -425,10 +426,13 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                     <div className="flex items-center gap-2">
                                         <div className="h-6 w-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
                                             {log.user.avatar ? (
-                                                <img
+                                                <NextImage
                                                     src={log.user.avatar}
                                                     alt={log.user.name}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-cover relative z-10"
+                                                    width={28}
+                                                    height={28}
+                                                    unoptimized
                                                 />
                                             ) : (
                                                 (log.user?.name || "С")[0]

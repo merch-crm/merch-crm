@@ -224,7 +224,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                 {/* Tabs for different sections */}
                 <Tabs defaultValue="main" value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-5">
-                    <TabsList className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-2xl glass-panel bg-white/50 border border-slate-200/60 transition-all overflow-x-auto no-scrollbar">
+                    <TabsList className="flex w-full h-[58px] items-center gap-2 !p-[6px] !rounded-2xl crm-card bg-white/50 border border-slate-200/60 transition-all overflow-x-auto no-scrollbar">
                         {[
                             { id: "main", label: "Основные характеристики", icon: Building2 },
                             { id: "ui", label: "Внешний вид", icon: Monitor },
@@ -260,7 +260,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                     <TabsContent value="main" className="space-y-5">
                         {/* General & Branding Text Settings Combined */}
-                        <div className="glass-panel p-5">
+                        <div className="crm-card p-5">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div className="space-y-6">
                                     <div>
@@ -306,7 +306,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                         </div>
 
                         {/* Regional Settings Block */}
-                        <div className="glass-panel p-5 space-y-6">
+                        <div className="crm-card p-5 space-y-6">
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div className="space-y-4">
@@ -388,7 +388,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                                 {/* Color & Background Settings Block (Moved) */}
-                                <div className="glass-panel p-5 space-y-6">
+                                <div className="crm-card p-5 space-y-6">
 
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
@@ -564,7 +564,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     </div>
                                 </div>
                                 {/* Brand Assets Block (Moved) */}
-                                <div className="glass-panel p-5 space-y-6">
+                                <div className="crm-card p-5 space-y-6">
 
                                     <div className="space-y-6">
                                         {/* Logo */}
@@ -632,7 +632,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                     <TabsContent value="comms">
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                <div className="glass-panel p-5 space-y-6">
+                                <div className="crm-card p-5 space-y-6">
 
                                     <div className="space-y-6">
                                         <div>
@@ -692,7 +692,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     </div>
                                 </div>
 
-                                <div className="glass-panel p-5 space-y-6">
+                                <div className="crm-card p-5 space-y-6">
 
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -765,7 +765,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                 </div>
                             </div>
 
-                            <div className="glass-panel p-5 space-y-6">
+                            <div className="crm-card p-5 space-y-6">
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-4">
@@ -820,7 +820,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                     </TabsContent>
 
                     <TabsContent value="sounds">
-                        <div className="glass-panel p-0 overflow-hidden border border-slate-200/60 bg-white/50 backdrop-blur-xl min-h-[500px] flex flex-col md:flex-row">
+                        <div className="crm-card !p-0 overflow-hidden border border-slate-200/60 bg-white/50 backdrop-blur-xl min-h-[500px] flex flex-col md:flex-row">
                             {/* Sidebar Categories */}
                             <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-slate-200/60 bg-slate-50/50 p-2.5 space-y-1 shrink-0">
 

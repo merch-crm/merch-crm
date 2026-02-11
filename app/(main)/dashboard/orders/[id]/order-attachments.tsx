@@ -57,7 +57,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
     };
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+        <div className="crm-card !p-8">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-slate-900 flex items-center  tracking-normal text-xs">
                     <Paperclip className="w-4 h-4 mr-3 text-primary" />

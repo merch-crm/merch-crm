@@ -4,11 +4,10 @@ import React from "react";
 import {
     Package,
     PlusCircle,
-
-    Warehouse,
     ArrowRightLeft,
     TrendingDown,
-    Map
+    Map,
+    Box
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InventoryItem, ItemStock } from "../../../types";
@@ -47,9 +46,9 @@ export function ItemInventorySection({
             <div className="flex flex-col md:flex-row gap-4">
                 <div className={cn(
                     "flex-1 p-6 sm:p-8 rounded-2xl border relative overflow-hidden group transition-all duration-700",
-                    isCriticalStock ? "bg-rose-50 border-rose-100" :
-                        isLowStock ? "bg-amber-50 border-amber-100" :
-                            "bg-primary border-transparent shadow-lg"
+                    isCriticalStock ? "bg-destructive/5 border-destructive/20" :
+                        isLowStock ? "bg-amber-500/5 border-amber-200/50" :
+                            "bg-emerald-500/5 border-emerald-200/50"
                 )}>
                     {/* Decorative element */}
                     <div className="absolute -right-6 -top-6 w-32 h-32 bg-black/5 rounded-full blur-3xl group-hover:bg-black/10 transition-colors" />
@@ -86,7 +85,7 @@ export function ItemInventorySection({
                     </div>
                 </div>
 
-                <div className="w-full md:w-[300px] lg:w-[400px] bg-slate-900 p-6 sm:p-8 rounded-2xl text-white flex flex-col justify-between group overflow-hidden relative border border-white/5 shadow-xl">
+                <div className="w-full md:w-[300px] lg:w-[400px] crm-card !bg-slate-900 !border-slate-800 !p-6 sm:!p-8 !rounded-2xl text-white flex flex-col justify-between group overflow-hidden relative shadow-xl">
                     {/* Decorative flow */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
@@ -125,7 +124,7 @@ export function ItemInventorySection({
             {/* Thresholds Editing Mode (if needed) */}
             {isEditing && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-500">
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div className="crm-card !p-8 !rounded-2xl space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Лимит предупреждения</label>
                         <input
                             type="number"
@@ -134,7 +133,7 @@ export function ItemInventorySection({
                             className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-4 focus:ring-primary/10 transition-all"
                         />
                     </div>
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div className="crm-card !p-8 !rounded-2xl space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Критический лимит</label>
                         <input
                             type="number"
@@ -159,46 +158,75 @@ export function ItemInventorySection({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {stocks.map((stock) => (
-                        <div
-                            key={stock.id}
-                            className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all group flex items-center justify-between"
-                        >
-                            <div className="flex items-center gap-6">
-                                <div className="w-14 h-11 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
-                                    <Warehouse className="w-6 h-6" />
+                    {stocks.map((stock) => {
+                        const stockStatus =
+                            stock.quantity <= item.criticalStockThreshold
+                                ? 'critical'
+                                : stock.quantity <= item.lowStockThreshold
+                                    ? 'low'
+                                    : 'normal';
+                        return (
+                            <div
+                                key={stock.id}
+                                className="crm-card !p-8 !rounded-2xl hover:shadow-md transition-all group flex flex-col"
+                            >
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground">
+                                        <Box className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-foreground leading-none">
+                                            {stock.storageLocation?.name || "Global Store"}
+                                        </h3>
+                                        <p className="text-[13px] font-medium text-muted-foreground mt-1">Остатки и лимиты</p>
+                                    </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-lg font-bold text-slate-950 leading-none">
-                                        {stock.storageLocation?.name || "Global Store"}
-                                    </h4>
 
+                                <div className="space-y-6">
+                                    {/* Current Stock */}
+                                    <div className="p-4 rounded-2xl bg-muted/30 border border-border/50">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Текущий остаток</span>
+                                            <span className={cn(
+                                                "px-2 py-1 rounded-lg text-[10px] font-bold border",
+                                                stockStatus === 'critical' ? "bg-rose-500/10 text-rose-600 border-rose-200" :
+                                                    stockStatus === 'low' ? "bg-amber-500/10 text-amber-600 border-amber-200" :
+                                                        "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                                            )}>
+                                                {stockStatus === 'critical' ? "Критический" :
+                                                    stockStatus === 'low' ? "Мало" : "Норма"}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className={cn(
+                                                "text-4xl font-black tracking-tight",
+                                                stockStatus === 'critical' ? "text-rose-600" :
+                                                    stockStatus === 'low' ? "text-amber-600" : "text-foreground"
+                                            )}>
+                                                {stock.quantity}
+                                            </span>
+                                            <span className="text-sm font-bold text-muted-foreground">{item.unit || 'шт'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => onAdjustStock(stock.storageLocationId)}
+                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground"
+                                        >
+                                            <PlusCircle className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => onTransferStock(stock.storageLocationId)}
+                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground"
+                                        >
+                                            <ArrowRightLeft className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="flex flex-col items-end gap-3">
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-3xl font-bold text-slate-950 tabular-nums leading-none">{stock.quantity}</span>
-                                    <span className="text-[11px] font-bold text-slate-400">{item.unit || "шт"}</span>
-                                </div>
-
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => onAdjustStock(stock.storageLocationId)}
-                                        className="p-3 bg-slate-50 rounded-2xl hover:bg-slate-900 hover:text-white transition-all text-slate-400"
-                                    >
-                                        <PlusCircle className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => onTransferStock(stock.storageLocationId)}
-                                        className="p-3 bg-slate-50 rounded-2xl hover:bg-primary hover:text-white transition-all text-slate-400"
-                                    >
-                                        <ArrowRightLeft className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
 
                     {stocks.length === 0 && (
                         <div className="col-span-full py-20 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">

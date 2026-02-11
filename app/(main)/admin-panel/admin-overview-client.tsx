@@ -103,7 +103,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {platformItems.map((item, i) => (
-                            <div key={i} className="group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-default">
+                            <div key={i} className="crm-card group cursor-default">
                                 <div className="flex justify-between items-start mb-8">
                                     <div className={cn(
                                         "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all",
@@ -139,7 +139,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                     </div>
 
                     {/* Chart Area - System Activity */}
-                    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden h-[400px]">
+                    <div className="crm-card relative h-[400px]">
                         <div className="absolute inset-x-4 md:inset-x-8 bottom-8 top-32 flex items-end justify-between gap-1.5 md:gap-4">
                             {(isMobile ? [30, 60, 40, 80, 50, 90] : [30, 45, 25, 60, 40, 80, 50, 70, 40, 90, 60, 30]).map((h, i) => (
                                 <div key={i} className="flex-1 flex flex-col items-center gap-3 group h-full">
@@ -164,7 +164,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                 {/* Right Column - Status & Logs */}
                 <div className="lg:col-span-4 space-y-4">
                     {/* System Guard Card (Premium Perks style) */}
-                    <div className="bg-primary rounded-3xl p-8 text-white shadow-2xl shadow-primary/30 relative overflow-hidden min-h-[300px] flex flex-col justify-between group">
+                    <div className="crm-card !bg-primary !border-primary text-white !shadow-2xl !shadow-primary/30 relative min-h-[300px] flex flex-col justify-between group">
                         <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
                         <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
 
@@ -194,7 +194,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
                         <div className="space-y-4">
                             {activeUsers.length > 0 ? activeUsers.slice(0, 5).map((user: ActiveUser, i: number) => (
-                                <div key={i} className="flex items-center gap-5 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                                <div key={i} className="crm-card flex items-center gap-5 cursor-pointer group !p-4">
                                     <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0">
                                         {user.avatar ? (
                                             <Image src={user.avatar} alt={user.name || "User"} width={48} height={48} className="w-full h-full object-cover" />
@@ -238,7 +238,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                     { title: "Ошибки системы", value: systemErrors.length, icon: <AlertTriangle />, color: "text-rose-600 bg-rose-50" },
                     { title: "Бэкапов", value: backups?.length || 0, icon: <Clock />, color: "text-amber-600 bg-amber-50" },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-6 group hover:shadow-xl transition-all">
+                    <div key={i} className="crm-card flex items-center gap-6 group">
                         <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all", stat.color)}>
                             {stat.icon}
                         </div>

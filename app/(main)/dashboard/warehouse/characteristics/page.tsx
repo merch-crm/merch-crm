@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 export default async function CharacteristicsPage() {
     const [
-        { data: attributes = [] },
-        { data: attributeTypes = [] },
-        { data: categories = [] },
+        attrRes,
+        attrTypesRes,
+        catsRes,
         session
     ] = await Promise.all([
         getInventoryAttributes(),
@@ -16,6 +16,10 @@ export default async function CharacteristicsPage() {
         getInventoryCategories(),
         getSession()
     ]);
+
+    const attributes = 'data' in attrRes && attrRes.data ? attrRes.data : [];
+    const attributeTypes = 'data' in attrTypesRes && attrTypesRes.data ? attrTypesRes.data : [];
+    const categories = 'data' in catsRes && catsRes.data ? catsRes.data : [];
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">

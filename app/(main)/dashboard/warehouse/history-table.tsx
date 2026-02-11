@@ -142,7 +142,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     if (transactions.length === 0 && searchQuery === "" && activeFilter === "all") {
         return (
-            <div className="glass-panel p-20 flex flex-col items-center justify-center text-center">
+            <div className="crm-card flex flex-col items-center justify-center text-center">
                 <div className="w-20 h-20 bg-slate-50 rounded-[var(--radius-inner)] flex items-center justify-center text-slate-300 mb-6 border border-slate-200 shadow-sm">
                     <Clock className="w-10 h-10" />
                 </div>
@@ -445,7 +445,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             )
             }
             {/* Desktop Table View */}
-            <div className="hidden md:block glass-panel overflow-hidden">
+            <div className="hidden md:block crm-card !p-0">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -650,7 +650,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             </div>
 
             {/* Mobile Compact List View */}
-            <div className="md:hidden rounded-[var(--radius-outer)] border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
+            <div className="md:hidden crm-card !p-0 !rounded-[var(--radius-outer)] overflow-hidden shadow-sm divide-y divide-slate-100">
                 {currentItems.map((t) => {
 
                     const isSelected = selectedIds.includes(t.id);

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Warehouse } from "lucide-react";
+import { Store } from "lucide-react";
 import { ItemStock } from "../../../types";
 
 interface ItemWarehouseBreakdownSectionProps {
@@ -17,33 +17,31 @@ export function ItemWarehouseBreakdownSection({
         <div className="space-y-4">
             {stocks.map((stock) => (
                 <div
-                    key={stock.id}
-                    className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200/50 group hover:bg-white hover:shadow-md transition-all duration-300"
+                    key={stock.id} // Kept original key, assuming stock.id is still valid
+                    className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border hover:bg-muted/50 transition-colors group" // Replaced slate colors
                 >
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                            <Warehouse className="w-5 h-5" />
+                    <div className="flex items-center gap-4"> {/* Changed gap-3 to gap-4 */}
+                        <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border shadow-sm group-hover:border-primary/20 transition-colors"> {/* Replaced slate colors and rounded-2xl to rounded-xl */}
+                            <Store className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" /> {/* Replaced Warehouse icon and slate colors */}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-bold text-slate-900 leading-none mb-1">
+                            <h4 className="text-sm font-bold text-foreground"> {/* Replaced text-xs font-bold text-slate-900 */}
                                 {stock.storageLocation?.name || "Основной"}
-                            </span>
-                            <span className="text-[9px] font-bold text-slate-400">
-                                Локация
-                            </span>
+                            </h4>
+                            <p className="text-[11px] font-medium text-muted-foreground mt-0.5">Складское помещение</p> {/* Replaced text-[9px] font-bold text-slate-400 and text */}
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-xl font-bold text-slate-900 tabular-nums">{stock.quantity}</span>
-                            <span className="text-[10px] font-bold text-slate-400">{unit}</span>
+                    <div className="flex items-center gap-2"> {/* Added gap-2 */}
+                        <div className="px-3 py-1.5 rounded-lg bg-background border border-border shadow-sm"> {/* New div for quantity display */}
+                            <span className="text-base font-black text-foreground tabular-nums">{stock.quantity}</span> {/* Replaced text-xl font-bold text-slate-900 */}
+                            <span className="ml-1 text-[10px] font-bold text-muted-foreground">{unit}</span> {/* Replaced text-[10px] font-bold text-slate-400 */}
                         </div>
                     </div>
                 </div>
             ))}
-            {stocks.length === 0 && (
-                <div className="py-8 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                    <p className="text-[10px] font-bold text-slate-400">Нет запасов на складах</p>
+            {stocks.length === 0 && ( // Kept original condition, assuming stocks is still the array
+                <div className="p-8 text-center bg-muted/30 rounded-3xl border border-dashed border-border/50"> {/* Replaced slate colors and styling */}
+                    <p className="text-sm font-bold text-muted-foreground">Нет данных по размещению</p> {/* Replaced text-[10px] font-bold text-slate-400 and text */}
                 </div>
             )}
         </div>

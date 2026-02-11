@@ -205,43 +205,43 @@ export function ItemFinancialSection({
 
     return (
         <div className={cn(
-            "glass-panel rounded-3xl p-6 transition-all bg-white relative overflow-hidden flex flex-col gap-6 shadow-sm hover:shadow-md duration-500",
+            "crm-card rounded-3xl p-6 transition-all bg-card relative overflow-hidden flex flex-col gap-6 shadow-sm hover:shadow-md duration-500",
             className
         )}>
             {/* Main Header */}
             <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                     <Banknote className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-black text-slate-900">Стоимость</h3>
+                <h3 className="text-xl font-black text-foreground">Стоимость</h3>
             </div>
 
             {/* SECTION 1: Compact Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Cost Price */}
-                <div className="group p-4 rounded-2xl bg-[#f8fafc] border border-slate-200 transition-all duration-300 hover:bg-white hover:border-slate-300 flex items-center gap-4 text-left h-full">
+                <div className="group p-4 rounded-2xl bg-muted/20 border border-border transition-all duration-300 hover:bg-card hover:border-border/80 flex items-center gap-4 text-left h-full">
                     <div className="w-11 h-11 rounded-3xl bg-blue-100 flex items-center justify-center text-blue-600 shrink-0 relative overflow-hidden shadow-sm border border-blue-100/50">
                         <div className="absolute inset-0 bg-white/40" />
                         <span className="text-lg font-bold relative z-10">{currencySymbol}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-normal mb-1 transition-colors group-hover:text-slate-500">Себестоимость</span>
+                        <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-normal mb-1 transition-colors group-hover:text-muted-foreground/80">Себестоимость</span>
                         {isEditing ? (
                             <div className="flex items-center gap-1">
                                 <input
                                     type="number"
                                     value={editData.costPrice ?? ""}
                                     onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                    className="text-lg font-black text-slate-900 bg-white border-none p-1 w-full focus:ring-0 rounded-lg"
+                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus:ring-0 rounded-lg"
                                 />
                             </div>
                         ) : (
                             <div className="cursor-pointer" onDoubleClick={handleStartEdit}>
-                                <p className="text-lg font-black text-slate-900 tracking-tight group-hover:text-black transition-colors">
+                                <p className="text-lg font-black text-foreground tracking-tight group-hover:text-foreground/80 transition-colors">
                                     {Math.round(weightedAverageCost).toLocaleString('ru-RU')} {currencySymbol}
                                 </p>
                                 {Math.abs(weightedAverageCost - lastInCostPrice) > 1 && (
-                                    <span className="text-[10px] text-slate-400 block -mt-0.5">
+                                    <span className="text-[10px] text-muted-foreground block -mt-0.5">
                                         последняя: {lastInCostPrice.toLocaleString('ru-RU')} {currencySymbol}
                                     </span>
                                 )}
@@ -251,24 +251,24 @@ export function ItemFinancialSection({
                 </div>
 
                 {/* Selling Price */}
-                <div className="group p-4 rounded-2xl bg-[#f8fafc] border border-slate-200 transition-all duration-300 hover:bg-white hover:border-slate-300 flex items-center gap-4 text-left h-full">
+                <div className="group p-4 rounded-2xl bg-muted/20 border border-border transition-all duration-300 hover:bg-card hover:border-border/80 flex items-center gap-4 text-left h-full">
                     <div className="w-11 h-11 rounded-3xl bg-emerald-100 flex items-center justify-center text-emerald-500 shrink-0 relative overflow-hidden shadow-sm border border-emerald-100/50">
                         <div className="absolute inset-0 bg-white/40" />
                         <Tag className="w-5 h-5 relative z-10" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-normal mb-1 transition-colors group-hover:text-slate-500">Цена продажи</span>
+                        <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-normal mb-1 transition-colors group-hover:text-muted-foreground/80">Цена продажи</span>
                         {isEditing ? (
                             <div className="flex items-center gap-1">
                                 <input
                                     type="number"
                                     value={editData.sellingPrice ?? ""}
                                     onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                    className="text-lg font-black text-slate-900 bg-white border-none p-1 w-full focus:ring-0 rounded-lg"
+                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus:ring-0 rounded-lg"
                                 />
                             </div>
                         ) : (
-                            <p className="text-lg font-black text-slate-900 tracking-tight cursor-pointer group-hover:text-black transition-colors" onDoubleClick={handleStartEdit}>
+                            <p className="text-lg font-black text-foreground tracking-tight cursor-pointer group-hover:text-foreground/80 transition-colors" onDoubleClick={handleStartEdit}>
                                 {(Number(item.sellingPrice) || 0).toLocaleString('ru-RU')} {currencySymbol}
                             </p>
                         )}
@@ -276,14 +276,14 @@ export function ItemFinancialSection({
                 </div>
 
                 {/* Total Stock Value */}
-                <div className="group p-4 rounded-2xl bg-[#f8fafc] border border-slate-200 transition-all duration-300 hover:bg-white hover:border-slate-300 flex items-center gap-4 text-left h-full">
+                <div className="group p-4 rounded-2xl bg-muted/20 border border-border transition-all duration-300 hover:bg-card hover:border-border/80 flex items-center gap-4 text-left h-full">
                     <div className="w-11 h-11 rounded-3xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0 relative overflow-hidden shadow-sm border border-amber-100/50">
                         <div className="absolute inset-0 bg-white/40" />
                         <Warehouse className="w-5 h-5 relative z-10" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-normal mb-1 transition-colors group-hover:text-slate-500">Склад по с/с</span>
-                        <p className="text-lg font-black text-slate-900 tracking-tight group-hover:text-black transition-colors">
+                        <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-normal mb-1 transition-colors group-hover:text-muted-foreground/80">Склад по с/с</span>
+                        <p className="text-lg font-black text-foreground tracking-tight group-hover:text-foreground/80 transition-colors">
                             {Math.round(item.quantity * weightedAverageCost).toLocaleString('ru-RU')} {currencySymbol}
                         </p>
                     </div>
@@ -294,12 +294,12 @@ export function ItemFinancialSection({
             <div className="flex flex-col gap-4 mt-4 flex-1">
                 <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3 relative z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
+                        <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground shrink-0">
                             <TrendingUp className="w-5 h-5" />
                         </div>
                         <div className="space-y-0.5">
-                            <h3 className="text-lg font-black text-slate-900 tracking-tight leading-none">Аналитика цен</h3>
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-normal whitespace-nowrap">Динамика закупок</p>
+                            <h3 className="text-lg font-black text-foreground tracking-tight leading-none">Аналитика цен</h3>
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-normal whitespace-nowrap">Динамика закупок</p>
                         </div>
                     </div>
                 </div>
@@ -307,20 +307,20 @@ export function ItemFinancialSection({
                 {/* Prominent History Stats Row */}
                 <div className="grid grid-cols-3 gap-3 relative z-10 px-0.5">
                     {[
-                        { label: 'Максимум', value: costHistoryStats.actualMax, color: 'text-slate-900', icon: ArrowUp, iconColor: 'text-rose-500', bg: 'bg-rose-50' },
+                        { label: 'Максимум', value: costHistoryStats.actualMax, color: 'text-foreground', icon: ArrowUp, iconColor: 'text-rose-500', bg: 'bg-rose-50' },
                         { label: 'Средняя', value: costHistoryStats.avg, color: 'text-primary', icon: Activity, iconColor: 'text-primary', bg: 'bg-primary/5' },
-                        { label: 'Минимум', value: costHistoryStats.actualMin, color: 'text-slate-900', icon: ArrowDown, iconColor: 'text-emerald-500', bg: 'bg-emerald-50' }
+                        { label: 'Минимум', value: costHistoryStats.actualMin, color: 'text-foreground', icon: ArrowDown, iconColor: 'text-emerald-500', bg: 'bg-emerald-50' }
                     ].map((stat, i) => (
-                        <div key={i} className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#f8fafc] border border-slate-200 transition-all hover:bg-white hover:border-slate-300 group/stat">
+                        <div key={i} className="flex flex-col gap-1.5 p-4 rounded-2xl bg-muted/20 border border-border transition-all hover:bg-card hover:border-border/80 group/stat">
                             <div className="flex items-center justify-between mb-0.5">
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-normal transition-colors group-hover/stat:text-slate-500">{stat.label}</span>
+                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-normal transition-colors group-hover/stat:text-muted-foreground/80">{stat.label}</span>
                                 <stat.icon className={cn("w-3.5 h-3.5 transition-transform duration-500 group-hover/stat:scale-110", stat.iconColor)} />
                             </div>
                             <div className="flex items-baseline gap-1.5">
                                 <span className={cn("text-xl font-black tracking-tight", stat.color)}>
                                     {Math.round(stat.value).toLocaleString()}
                                 </span>
-                                <span className="text-[10px] font-black text-slate-300">{currencySymbol}</span>
+                                <span className="text-[10px] font-black text-muted-foreground/50">{currencySymbol}</span>
                             </div>
                         </div>
                     ))}
@@ -328,14 +328,14 @@ export function ItemFinancialSection({
 
                 <div className="flex flex-col gap-1 mt-auto">
                     {/* Timeframe Selector Row - Full Width */}
-                    <div className="flex bg-slate-100/50 p-1.5 rounded-[28px] border border-slate-200/50 transition-all w-full">
+                    <div className="flex bg-muted/50 p-1.5 rounded-[28px] border border-border/50 transition-all w-full">
                         {(['1m', '3m', '6m', '1y', 'all'] as const).map((tf) => (
                             <button
                                 key={tf}
                                 onClick={() => setCostTimeframe(tf)}
                                 className={cn(
                                     "relative flex-1 py-2 text-[10px] font-black transition-all duration-300 rounded-3xl",
-                                    costTimeframe === tf ? "text-white" : "text-slate-400 hover:text-slate-900"
+                                    costTimeframe === tf ? "text-background" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 {costTimeframe === tf && (
@@ -378,9 +378,10 @@ export function ItemFinancialSection({
                                             y1={`${p}%`}
                                             x2={graphWidth}
                                             y2={`${p}%`}
-                                            stroke="#f1f5f9"
+                                            stroke="currentColor"
                                             strokeWidth="1"
-                                            strokeOpacity="0.5"
+                                            strokeOpacity="0.1"
+                                            className="text-muted-foreground"
                                         />
                                     ))}
 
@@ -517,7 +518,7 @@ export function ItemFinancialSection({
                                                             x={getX(i)}
                                                             y="115"
                                                             textAnchor="middle"
-                                                            className="text-[9px] font-bold fill-slate-300 pointer-events-none"
+                                                            className="text-[9px] font-bold fill-muted-foreground pointer-events-none"
                                                         >
                                                             {p.label}
                                                         </text>

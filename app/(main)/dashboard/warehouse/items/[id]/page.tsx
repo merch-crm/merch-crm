@@ -22,16 +22,16 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         getInventoryAttributes()
     ]);
 
-    if (itemRes.error || !itemRes.data) {
+    if ('error' in itemRes || !itemRes.data) {
         notFound();
     }
 
     // Process dates for serialization
     const processedItem = JSON.parse(JSON.stringify(itemRes.data));
-    const processedLocations = JSON.parse(JSON.stringify(locationsRes.data || []));
-    const processedCategories = JSON.parse(JSON.stringify(categoriesRes.data || []));
-    const processedAttributeTypes = JSON.parse(JSON.stringify(typesRes.data || []));
-    const processedAttributes = JSON.parse(JSON.stringify(attrsRes.data || []));
+    const processedLocations = JSON.parse(JSON.stringify(('data' in locationsRes && locationsRes.data) || []));
+    const processedCategories = JSON.parse(JSON.stringify(('data' in categoriesRes && categoriesRes.data) || []));
+    const processedAttributeTypes = JSON.parse(JSON.stringify(('data' in typesRes && typesRes.data) || []));
+    const processedAttributes = JSON.parse(JSON.stringify(('data' in attrsRes && attrsRes.data) || []));
 
 
     return (

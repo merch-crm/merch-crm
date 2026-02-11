@@ -53,24 +53,24 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     const renderTableView = () => (
         <>
             {/* Desktop Table View */}
-            <div className="hidden md:block rounded-2xl border border-slate-200 overflow-hidden">
+            <div className="hidden md:block rounded-2xl border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200">
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400">Тип</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400">Изменение</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400">Склад</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400">Причина</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400">Автор</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-slate-400 text-right">Дата</th>
+                            <tr className="bg-muted/50 border-b border-border">
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Тип</th>
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Изменение</th>
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Склад</th>
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Причина</th>
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Автор</th>
+                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground text-right">Дата</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-border/50">
                             {paginatedHistory.map((tx, idx) => {
                                 const isPositive = tx.changeAmount > 0;
                                 return (
-                                    <tr key={tx.id || idx} className="hover:bg-slate-50/50 transition-colors group">
+                                    <tr key={tx.id || idx} className="hover:bg-muted/50 transition-colors group">
                                         <td className="px-4 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
@@ -94,7 +94,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                                     {tx.type === 'archive' && <Clock className="w-4 h-4" />}
                                                     {tx.type === 'restore' && <Package className="w-4 h-4" />}
                                                 </div>
-                                                <span className="hidden lg:inline text-[13px] font-bold text-slate-900">
+                                                <span className="hidden lg:inline text-[13px] font-bold text-foreground">
                                                     {tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещение" : "Обновление"}
                                                 </span>
                                             </div>
@@ -108,10 +108,10 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                             </span>
                                         </td>
                                         <td className="px-4 py-4 whitespace-nowrap">
-                                            <span className="text-[13px] font-bold text-slate-500">{tx.storageLocation?.name || "—"}</span>
+                                            <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name || "—"}</span>
                                         </td>
                                         <td className="px-4 py-4 min-w-[120px] max-w-[240px]">
-                                            <div className="text-[12px] font-bold text-slate-500 leading-snug">
+                                            <div className="text-[12px] font-bold text-muted-foreground leading-snug">
                                                 {(() => {
                                                     const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
 
@@ -122,10 +122,10 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
 
                                                         return (
                                                             <div className="flex flex-col gap-0.5">
-                                                                <div className="font-bold text-slate-700 flex items-center gap-1.5">
-                                                                    {from} <ArrowRight className="w-3 h-3 text-slate-400" /> {to}
+                                                                <div className="font-bold text-foreground flex items-center gap-1.5">
+                                                                    {from} <ArrowRight className="w-3 h-3 text-muted-foreground" /> {to}
                                                                 </div>
-                                                                {comment && <div className="text-slate-500 font-medium truncate">{comment}</div>}
+                                                                {comment && <div className="text-muted-foreground font-medium truncate">{comment}</div>}
                                                             </div>
                                                         );
                                                     }
@@ -134,18 +134,18 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                             </div>
                                         </td>
                                         <td className="px-4 py-4 whitespace-nowrap">
-                                            <span className="text-[13px] font-bold text-slate-600">
+                                            <span className="text-[13px] font-bold text-muted-foreground">
                                                 {tx.creator?.name || "Система"}
                                             </span>
                                         </td>
                                         <td className="px-4 py-4 whitespace-nowrap text-right">
                                             {(() => {
                                                 const d = new Date(tx.createdAt);
-                                                if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-slate-300">—</span>;
+                                                if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-muted-foreground/30">—</span>;
                                                 return (
                                                     <div className="flex flex-col items-end">
-                                                        <span className="text-[12px] font-bold text-slate-700">{format(d, "dd.MM.yy")}</span>
-                                                        <span className="text-[10px] font-bold text-slate-400">{format(d, "HH:mm")}</span>
+                                                        <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy")}</span>
+                                                        <span className="text-[10px] font-bold text-muted-foreground">{format(d, "HH:mm")}</span>
                                                     </div>
                                                 );
                                             })()}
@@ -166,11 +166,11 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     );
 
     const renderEmpty = () => (
-        <div className="py-20 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200/50">
-            <div className="w-20 h-20 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 border border-slate-200">
-                <History className="w-10 h-10 text-slate-200" />
+        <div className="py-20 text-center bg-muted/50 rounded-2xl border-2 border-dashed border-border/50">
+            <div className="w-20 h-20 bg-card rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 border border-border">
+                <History className="w-10 h-10 text-muted-foreground/30" />
             </div>
-            <p className="text-xs font-bold text-slate-400">{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
+            <p className="text-xs font-bold text-muted-foreground">{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
         </div>
     );
 
@@ -180,7 +180,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
             <div className="crm-filter-tray-light p-1.5 rounded-[22px]">
                 {/* Search Input Box */}
                 <div className="relative flex-1">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                         type="text"
                         placeholder="Поиск по истории..."
@@ -197,7 +197,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                 setSearchQuery("");
                                 setCurrentPage(1);
                             }}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600"
+                            className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground"
                         >
                             <X className="w-4 h-4" />
                         </button>
@@ -206,7 +206,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
 
                 {/* Filters - Right Aligned */}
                 <div className="flex items-center gap-[6px] shrink-0">
-                    <div className="w-px h-6 bg-slate-500/40 mx-1" />
+                    <div className="w-px h-6 bg-border mx-1" />
                     {[
                         { id: null, label: 'Все' },
                         { id: 'in', label: 'Приход' },
@@ -267,17 +267,17 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
     if (history.length === 0) return null;
 
     return (
-        <div className="md:hidden rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
+        <div className="md:hidden rounded-2xl border border-border overflow-hidden bg-card shadow-sm divide-y divide-border/50">
             {history.map((tx, idx) => {
                 const isPositive = tx.changeAmount > 0;
                 const isExpanded = expandedId === (tx.id || String(idx));
                 const typeLabel = tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещ." : "Обновл.";
 
                 return (
-                    <div key={tx.id || idx} className="bg-white">
+                    <div key={tx.id || idx} className="bg-card">
                         {/* Main Row */}
                         <div
-                            className="p-3 flex items-center gap-3 cursor-pointer active:bg-slate-50 transition-colors"
+                            className="p-3 flex items-center gap-3 cursor-pointer active:bg-muted/50 transition-colors"
                             onClick={() => setExpandedId(isExpanded ? null : (tx.id || String(idx)))}
                         >
                             {/* Type Indicator */}
@@ -294,7 +294,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                             {/* Main Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
-                                    <span className="font-bold text-sm text-slate-900">{typeLabel}</span>
+                                    <span className="font-bold text-sm text-foreground">{typeLabel}</span>
                                     <span className={cn(
                                         "font-bold text-sm tabular-nums",
                                         isPositive ? "text-emerald-600" : "text-rose-600"
@@ -303,7 +303,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="text-[10px] font-bold text-slate-400">
+                                    <span className="text-[10px] font-bold text-muted-foreground">
                                         {(() => {
                                             const d = new Date(tx.createdAt);
                                             return isNaN(d.getTime()) ? "—" : format(d, "d MMM, HH:mm");
@@ -311,8 +311,8 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                     </span>
                                     {tx.storageLocation?.name && (
                                         <>
-                                            <div className="w-0.5 h-0.5 bg-slate-300 rounded-full" />
-                                            <span className="text-[10px] font-medium text-slate-500 truncate">
+                                            <div className="w-0.5 h-0.5 bg-muted-foreground/50 rounded-full" />
+                                            <span className="text-[10px] font-medium text-muted-foreground truncate">
                                                 {tx.storageLocation.name}
                                             </span>
                                         </>
@@ -332,18 +332,18 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                     className="overflow-hidden"
                                 >
                                     <div className="px-3 pb-3 pt-0">
-                                        <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 flex flex-col gap-2">
+                                        <div className="bg-muted/30 rounded-lg p-3 border border-border flex flex-col gap-2">
                                             {/* Author */}
-                                            <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase">Автор</span>
-                                                <span className="text-xs font-bold text-slate-700">{tx.creator?.name || "Система"}</span>
+                                            <div className="flex items-center justify-between border-b border-border/60 pb-2">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Автор</span>
+                                                <span className="text-xs font-bold text-foreground">{tx.creator?.name || "Система"}</span>
                                             </div>
 
                                             {/* Reason */}
                                             {tx.reason && (
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Причина</span>
-                                                    <p className="text-xs text-slate-700 leading-normal">{tx.reason}</p>
+                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Причина</span>
+                                                    <p className="text-xs text-foreground leading-normal">{tx.reason}</p>
                                                 </div>
                                             )}
                                         </div>

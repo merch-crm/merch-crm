@@ -12,6 +12,8 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { useBranding } from "@/components/branding-provider";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
@@ -108,20 +110,22 @@ export function TransactionsClient({
                 {/* Search Box */}
                 <div className="relative flex-1 min-w-0">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
+                    <Input
                         type="text"
                         placeholder="Поиск..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none min-w-0"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none min-w-0 h-12 bg-transparent border-none"
                     />
                     {searchQuery && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setSearchQuery("")}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 h-8 w-8"
                         >
                             <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -136,11 +140,12 @@ export function TransactionsClient({
                         ].map((t) => {
                             const isActive = view === t.id;
                             return (
-                                <button
+                                <Button
                                     key={t.id}
+                                    variant="ghost"
                                     onClick={() => setView(t.id as "all" | "payments" | "expenses")}
                                     className={cn(
-                                        "crm-filter-tray-tab shrink-0",
+                                        "crm-filter-tray-tab shrink-0 relative",
                                         isActive && "active"
                                     )}
                                 >
@@ -156,7 +161,7 @@ export function TransactionsClient({
                                         />
                                     )}
                                     <span className="relative z-10">{t.label}</span>
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>
@@ -294,6 +299,7 @@ export function TransactionsClient({
 function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
     const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
+    const [category, setCategory] = useState("purchase");
     const { toast } = useToast();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -330,23 +336,28 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                 <div className="space-y-6">
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Категория</label>
-                        <select name="category" required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm">
-                            <option value="purchase">Закупки</option>
-                            <option value="salary">Зарплаты</option>
-                            <option value="rent">Аренда</option>
-                            <option value="tax">Налоги</option>
-                            <option value="other">Прочее</option>
-                        </select>
+                        <PremiumSelect
+                            name="category"
+                            options={[
+                                { id: "purchase", title: "Закупки" },
+                                { id: "salary", title: "Зарплаты" },
+                                { id: "rent", title: "Аренда" },
+                                { id: "tax", title: "Налоги" },
+                                { id: "other", title: "Прочее" }
+                            ]}
+                            value={category}
+                            onChange={setCategory}
+                        />
                     </div>
 
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма {currencySymbol}</label>
-                        <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
+                        <Input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Дата</label>
-                        <input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
+                        <Input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
@@ -355,13 +366,14 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                     </div>
 
                     <div className="sticky bottom-0 z-10 p-6 pt-3 flex items-center justify-end gap-3 shrink-0 bg-white border-t border-slate-100 mt-auto">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={onClose}
                             className="hidden md:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-full sm:rounded-[var(--radius-inner)]"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <Button variant="btn-dark" type="submit" disabled={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">{isLoading ? "Запись..." : "Сохранить"}</Button>
                     </div>
                 </div>

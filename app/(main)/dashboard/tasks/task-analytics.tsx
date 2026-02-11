@@ -71,7 +71,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
         <div className="space-y-6">
             {/* Основные метрики */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card !p-6 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-primary/5 rounded-2xl">
                             <Target className="w-6 h-6 text-primary" />
@@ -84,7 +84,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400  tracking-normal">Задач в системе</p>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card !p-6 !border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-emerald-50 rounded-2xl">
                             <CheckCircle2 className="w-6 h-6 text-emerald-600" />
@@ -97,7 +97,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400  tracking-normal">Выполнено</p>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 border border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card !p-6 !border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-amber-50 rounded-2xl">
                             <Clock className="w-6 h-6 text-amber-600" />
@@ -110,7 +110,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400  tracking-normal">На этой неделе</p>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 border border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card !p-6 !border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-rose-50 rounded-2xl">
                             <AlertTriangle className="w-6 h-6 text-rose-600" />
@@ -129,7 +129,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
             {/* Детальная статистика */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--crm-grid-gap)]">
                 {/* Статусы */}
-                <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg shadow-slate-200/50">
+                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <Activity className="w-6 h-6 text-slate-600" />
@@ -167,7 +167,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                 </div>
 
                 {/* Приоритеты */}
-                <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg shadow-slate-200/50">
+                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <BarChart3 className="w-6 h-6 text-slate-600" />
@@ -200,7 +200,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
 
             {/* Топ исполнителей */}
             {userTaskCounts.length > 0 && (
-                <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg shadow-slate-200/50">
+                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <Users className="w-6 h-6 text-slate-600" />

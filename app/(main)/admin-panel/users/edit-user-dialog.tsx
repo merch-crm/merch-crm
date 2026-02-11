@@ -28,7 +28,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
     const [selectedDeptId, setSelectedDeptId] = useState(user?.departmentId || "");
 
     useEffect(() => {
-        if (isOpen && user) {
+        if (isOpen) {
             getRoles().then(res => {
                 if (res.data) setRoles(res.data as { id: string, name: string, departmentId: string | null }[]);
             });
@@ -36,14 +36,17 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                 if (res.data) setDepartments(res.data as { id: string, name: string }[]);
             });
         }
-    }, [isOpen, user]);
+    }, [isOpen]);
 
+    // Initialize state when user changes, but only if not already set or different
+    // Initialize state when user changes
     useEffect(() => {
-        if (user) {
+        if (user && isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSelectedRoleId(user.roleId || "");
             setSelectedDeptId(user.departmentId || "");
         }
-    }, [user]);
+    }, [user, isOpen]);
 
     const handleRoleChange = (roleId: string) => {
         setSelectedRoleId(roleId);

@@ -106,7 +106,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                         exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                        className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center bg-white p-2 sm:p-2.5 px-4 sm:px-8 gap-2 sm:gap-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 max-w-[95vw] sm:max-w-none"
+                        className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center crm-card !p-2 sm:!p-2.5 !px-4 sm:!px-8 gap-2 sm:gap-4 !rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] max-w-[95vw] sm:max-w-none"
                     >
 
                         {/* Selection Badge Section */}

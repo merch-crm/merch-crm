@@ -101,7 +101,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                 desktopClassName="hidden md:block"
                 renderTable={() => (
-                    <div className="glass-panel overflow-hidden bg-white/60">
+                    <div className="crm-card !p-0">
                         <table className="min-w-full divide-y divide-slate-100 table-fixed">
                             <thead>
                                 <tr className="bg-slate-50/40">

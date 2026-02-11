@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
 import PrioritySelect from "./priority-select";
-import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Package, Clock, XCircle } from "lucide-react";
+import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock, XCircle } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
 import { db } from "@/lib/db";
@@ -20,12 +20,7 @@ import { AddPaymentDialog } from "./add-payment-dialog";
 import { BrandingSettings } from "@/components/branding-provider";
 import { OrderItemsTable } from "./order-items-table";
 
-interface OrderItem {
-    id: string;
-    description: string;
-    quantity: number;
-    price: string;
-}
+
 
 interface OrderPayment {
     id: string;
@@ -64,7 +59,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between crm-card !p-4 sm:!p-6 gap-4">
                 <div className="flex items-center gap-3 sm:gap-6 min-w-0 flex-1">
                     <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0">
                         <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -131,7 +126,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                 {/* Sidebar: Client & Info */}
                 <div className="space-y-4">
                     {/* Client Card */}
-                    <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div className="crm-card !p-8">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <User className="w-5 h-5 mr-3 text-primary" />
@@ -192,7 +187,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
                     {/* Financial Block (Visible to Admin/Sales) */}
                     {showFinancials && (
-                        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                        <div className="crm-card !p-8">
                             <h3 className="font-bold text-slate-900 flex items-center mb-6">
                                 <Wallet className="w-5 h-5 mr-3 text-primary" />
                                 Финансы
@@ -273,7 +268,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                     )}
 
                     {/* Meta Info */}
-                    <div className="bg-slate-900 rounded-2xl p-8 shadow-xl text-white">
+                    <div className="crm-card !bg-slate-900 !border-slate-800 text-white !p-8 shadow-xl">
                         <h3 className="font-bold mb-6 flex items-center">
                             <Clock className="w-5 h-5 mr-3 text-primary" />
                             Детали заказа

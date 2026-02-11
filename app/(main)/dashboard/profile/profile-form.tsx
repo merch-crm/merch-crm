@@ -6,6 +6,7 @@ import { Loader2, CheckCircle2, AlertCircle, Camera } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface UserProfile {
@@ -237,14 +238,14 @@ export function ProfileForm({ user }: { user: UserProfile }) {
             )}
 
             <div className="pt-6 flex justify-end">
-                <button
+                <Button
                     type="submit"
                     disabled={loading}
                     className="h-11 px-12 rounded-[var(--radius-inner)] btn-dark text-white font-bold text-[16px] shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-3 border-none"
                 >
                     {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                     {loading ? "Сохранение..." : "Сохранить изменения"}
-                </button>
+                </Button>
             </div>
         </form>
     );

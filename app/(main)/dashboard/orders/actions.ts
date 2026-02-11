@@ -12,6 +12,8 @@ import { logError } from "@/lib/error-logger";
 import { notifyWarehouseManagers } from "@/lib/notifications";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
+export type ActionResponse<T = unknown> = { success: true; data?: T } | { success: false; error: string; data?: never };
+
 export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string) {
     try {
         const offset = (page - 1) * limit;
@@ -147,13 +149,13 @@ export async function searchClients(query: string) {
         return { data: mappedResults };
     } catch (error) {
         console.error("Error searching clients:", error);
-        return { error: "Search failed" };
+        return { success: false, error: "Search failed" };
     }
 }
 
-export async function createOrder(formData: FormData) {
+export async function createOrder(formData: FormData): Promise<ActionResponse> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const clientId = formData.get("clientId") as string;
     const priority = formData.get("priority") as string;
@@ -174,11 +176,11 @@ export async function createOrder(formData: FormData) {
     try {
         items = JSON.parse(itemsJson);
     } catch {
-        return { error: "Invalid items data" };
+        return { success: false, error: "Invalid items data" };
     }
 
     if (!clientId || items.length === 0) {
-        return { error: "Клиент и товары обязательны" };
+        return { success: false, error: "Клиент и товары обязательны" };
     }
 
     try {
@@ -356,14 +358,14 @@ export async function createOrder(formData: FormData) {
             details: { clientId, priority }
         });
         console.error("Error creating order:", error);
-        return { error: "Failed to create order" };
+        return { success: false, error: "Failed to create order" };
     }
 }
 
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
@@ -463,7 +465,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             details: { orderId, newStatus }
         });
         console.error("Error updating order status:", error);
-        return { error: "Failed to update status" };
+        return { success: false, error: "Failed to update status" };
     }
 }
 
@@ -474,13 +476,13 @@ export async function updateOrderPriority(orderId: string, newPriority: string) 
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch {
-        return { error: "Failed to update priority" };
+        return { success: false, error: "Failed to update priority" };
     }
 }
 
 export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (typeof orders.$inferInsert)["status"]) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         for (const orderId of orderIds) {
@@ -494,13 +496,13 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to update status" };
+        return { success: false, error: "Failed to update status" };
     }
 }
 
 export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(orders).set({ priority: newPriority }).where(inArray(orders.id, orderIds));
@@ -516,13 +518,13 @@ export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: s
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to update priority" };
+        return { success: false, error: "Failed to update priority" };
     }
 }
 
 export async function archiveOrder(orderId: string, archive: boolean = true) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -534,7 +536,7 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
     const isSales = user?.department?.name === "Отдел продаж";
 
     if (!isAdmin && !isManagement && !isSales) {
-        return { error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
+        return { success: false, error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
     }
 
     try {
@@ -548,13 +550,13 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
         return { success: true };
     } catch (error) {
         console.error("Error archiving order:", error);
-        return { error: "Failed to archive order" };
+        return { success: false, error: "Failed to archive order" };
     }
 }
 
 export async function bulkArchiveOrders(orderIds: string[], archive: boolean = true) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -566,7 +568,7 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
     const isSales = user?.department?.name === "Отдел продаж";
 
     if (!isAdmin && !isManagement && !isSales) {
-        return { error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
+        return { success: false, error: "Доступ запрещен. Только администратор, руководство или отдел продаж могут архивировать заказы." };
     }
 
     try {
@@ -582,13 +584,13 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
         return { success: true };
     } catch (error) {
         console.error("Error bulk archiving orders:", error);
-        return { error: "Failed to archive orders" };
+        return { success: false, error: "Failed to archive orders" };
     }
 }
 
 export async function bulkDeleteOrders(orderIds: string[]) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // Check if admin OR management department
     const user = await db.query.users.findFirst({
@@ -600,7 +602,7 @@ export async function bulkDeleteOrders(orderIds: string[]) {
     const isManagement = user?.department?.name === "Руководство";
 
     if (!isAdmin && !isManagement) {
-        return { error: "Доступ запрещен. Только администратор или руководство могут удалять заказы." };
+        return { success: false, error: "Доступ запрещен. Только администратор или руководство могут удалять заказы." };
     }
 
     try {
@@ -622,7 +624,7 @@ export async function bulkDeleteOrders(orderIds: string[]) {
         return { success: true };
     } catch (error) {
         console.error("Error bulk deleting orders:", error);
-        return { error: "Failed to delete orders" };
+        return { success: false, error: "Failed to delete orders" };
     }
 }
 
@@ -669,7 +671,7 @@ export async function getOrderById(id: string) {
 
 export async function deleteOrder(orderId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -680,7 +682,7 @@ export async function deleteOrder(orderId: string) {
     const isManagement = user?.department?.name === "Руководство";
 
     if (!isAdmin && !isManagement) {
-        return { error: "Доступ запрещен. Только администратор или руководство могут удалять заказы." };
+        return { success: false, error: "Доступ запрещен. Только администратор или руководство могут удалять заказы." };
     }
 
     try {
@@ -711,7 +713,7 @@ export async function deleteOrder(orderId: string) {
             details: { orderId }
         });
         console.error("Error deleting order:", error);
-        return { error: "Failed to delete order" };
+        return { success: false, error: "Failed to delete order" };
     }
 }
 
@@ -734,10 +736,10 @@ async function releaseOrderReservation(orderId: string) {
 
 export async function uploadOrderFile(orderId: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const file = formData.get("file") as File;
-    if (!file) return { error: "No file provided" };
+    if (!file) return { success: false, error: "No file provided" };
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -765,7 +767,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
         return { success: true };
     } catch (error) {
         console.error("Error uploading order file:", error);
-        return { error: "Failed to upload file" };
+        return { success: false, error: "Failed to upload file" };
     }
 }
 

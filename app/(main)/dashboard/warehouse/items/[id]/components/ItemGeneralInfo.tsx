@@ -194,12 +194,12 @@ export function ItemGeneralInfo({
                         return (
                             <div
                                 key={param.slug}
-                                className="group flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100"
+                                className="group flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border"
                             >
                                 <div
                                     className={cn(
                                         "w-8 h-8 shrink-0 flex items-center justify-center relative rounded-lg",
-                                        !config.customHex ? "bg-slate-100 text-slate-400" : "text-white"
+                                        !config.customHex ? "bg-muted text-muted-foreground" : "text-white"
                                     )}
                                     style={config.customHex ? {
                                         backgroundColor: config.customHex,
@@ -208,14 +208,14 @@ export function ItemGeneralInfo({
                                 >
                                     <Icon className={cn(
                                         "w-4 h-4 z-10",
-                                        config.customHex && isLightColor(config.customHex) ? "text-slate-900/40" : ""
+                                        config.customHex && isLightColor(config.customHex) ? "text-foreground/40" : ""
                                     )} />
                                 </div>
                                 <div className="flex flex-col min-w-0 flex-1 leading-tight">
-                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-normal truncate">
+                                    <span className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-normal truncate">
                                         {param.label}
                                     </span>
-                                    <div className="text-sm font-bold text-slate-700 truncate">
+                                    <div className="text-sm font-bold text-foreground truncate">
                                         {isEditing ? (
                                             <PremiumSelect
                                                 value={(param.code as string) || ""}
@@ -288,17 +288,17 @@ export function ItemGeneralInfo({
                             size: { light: "bg-amber-100", solid: "bg-amber-500", rgb: "245, 158, 11" },
                             color: { light: "bg-rose-100", solid: "bg-rose-500", rgb: "244, 63, 94" },
                         };
-                        const variant = colorVariants[param.slug] || { light: "bg-slate-100", solid: "bg-slate-400", rgb: "148, 163, 184" };
+                        const variant = colorVariants[param.slug] || { light: "bg-muted", solid: "bg-muted-foreground", rgb: "148, 163, 184" };
                         const iconColor = config.customHex ? "" : variant.solid.replace('bg-', 'text-');
 
                         return (
                             <div
                                 key={param.slug}
                                 className={cn(
-                                    "group bg-[#f8fafc] rounded-2xl p-5 border border-slate-200 transition-all flex flex-col justify-between min-h-[110px] h-full relative overflow-hidden col-span-6",
+                                    "group bg-card/40 rounded-2xl p-5 border border-border transition-all flex flex-col justify-between min-h-[110px] h-full relative overflow-hidden col-span-6",
                                     mdSpan,
                                     xlSpan,
-                                    "hover:bg-white hover:border-slate-300"
+                                    "hover:bg-card hover:border-border/80"
                                 )}
                             >
 
@@ -308,7 +308,7 @@ export function ItemGeneralInfo({
                                         <div
                                             className={cn(
                                                 "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300",
-                                                !config.customHex ? variant.light : (isLightColor(config.customHex) ? "bg-slate-100/80 border border-slate-200/50" : "")
+                                                !config.customHex ? variant.light : (isLightColor(config.customHex) ? "bg-muted/80 border border-border/50" : "")
                                             )}
                                             style={config.customHex && !isLightColor(config.customHex) ? {
                                                 backgroundColor: config.customHex + '15', // very light bg for custom colors
@@ -318,12 +318,12 @@ export function ItemGeneralInfo({
                                             <Icon
                                                 className={cn(
                                                     "w-4 h-4 transition-transform",
-                                                    !config.customHex ? iconColor : (isLightColor(config.customHex) ? "text-slate-500" : "")
+                                                    !config.customHex ? iconColor : (isLightColor(config.customHex) ? "text-muted-foreground" : "")
                                                 )}
                                                 style={config.customHex && !isLightColor(config.customHex) ? { color: config.customHex } : undefined}
                                             />
                                         </div>
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-normal">
+                                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-normal">
                                             {param.label}
                                         </span>
                                     </div>
@@ -347,7 +347,7 @@ export function ItemGeneralInfo({
                                         {!isEditing && onEdit && (
                                             <button
                                                 onClick={onEdit}
-                                                className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 opacity-0 group-hover:opacity-100 hover:bg-slate-900 hover:text-white transition-all transform active:scale-95 shadow-sm"
+                                                className="w-7 h-7 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-foreground hover:text-background transition-all transform active:scale-95 shadow-sm"
                                             >
                                                 <Pencil className="w-3 h-3" />
                                             </button>
@@ -358,7 +358,7 @@ export function ItemGeneralInfo({
                                 {/* Watermark Background Icon */}
                                 <Icon className={cn(
                                     "absolute -right-4 -bottom-4 w-32 h-32 transition-transform duration-700 group-hover:scale-110 group-hover:rotate-6 pointer-events-none z-0",
-                                    !config.customHex ? [iconColor, "opacity-[0.03]"] : (isLightColor(config.customHex) ? "text-slate-900 opacity-[0.05]" : "opacity-[0.04]")
+                                    !config.customHex ? [iconColor, "opacity-[0.03]"] : (isLightColor(config.customHex) ? "text-foreground opacity-[0.05]" : "opacity-[0.04]")
                                 )} style={config.customHex && !isLightColor(config.customHex) ? { color: config.customHex } : undefined} />
 
                                 {/* Value: Bottom Aligned */}
@@ -395,13 +395,13 @@ export function ItemGeneralInfo({
                                     ) : (
                                         <div className="flex flex-col">
                                             <h2
-                                                className="text-xl xl:text-2xl font-black text-slate-900 leading-tight tracking-tight break-words cursor-pointer transition-colors group-hover:text-primary"
+                                                className="text-xl xl:text-2xl font-black text-foreground leading-tight tracking-tight break-words cursor-pointer transition-colors group-hover:text-primary"
                                                 onDoubleClick={onEdit}
                                             >
                                                 {attrLabel}
                                             </h2>
                                             {/* Technical SKU Fragment */}
-                                            <span className="text-[10px] font-bold text-slate-400/70 mt-0.5 font-mono uppercase tracking-wider">
+                                            <span className="text-[10px] font-bold text-muted-foreground/70 mt-0.5 font-mono uppercase tracking-wider">
                                                 Арт.: {param.code || '—'}
                                             </span>
                                         </div>
@@ -415,11 +415,11 @@ export function ItemGeneralInfo({
                     {isEditing && (
                         <div
                             className={cn(
-                                "group bg-slate-50 rounded-2xl p-5 border-2 border-dashed border-slate-200 transition-all flex flex-col items-center justify-center min-h-[110px] relative col-span-6 md:col-span-3 xl:col-span-2 hover:border-primary/50 hover:bg-primary/5"
+                                "group bg-muted/30 rounded-2xl p-5 border-2 border-dashed border-border transition-all flex flex-col items-center justify-center min-h-[110px] relative col-span-6 md:col-span-3 xl:col-span-2 hover:border-primary/50 hover:bg-primary/5"
                             )}
                         >
-                            <div className="flex flex-col items-center gap-2 text-slate-400 group-hover:text-primary transition-colors pointer-events-none">
-                                <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
+                            <div className="flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors pointer-events-none">
+                                <div className="w-10 h-10 rounded-xl bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors">
                                     <Plus className="w-5 h-5" />
                                 </div>
                                 <span className="text-[10px] font-bold uppercase tracking-wide">

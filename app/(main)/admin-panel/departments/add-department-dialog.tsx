@@ -41,15 +41,20 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
     const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
 
     useEffect(() => {
+        let mounted = true;
         if (isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFetchingRoles(true);
             getRoles().then(res => {
-                if (res.data) {
-                    setRoles(res.data as Role[]);
+                if (mounted) {
+                    if (res.data) {
+                        setRoles(res.data as Role[]);
+                    }
+                    setFetchingRoles(false);
                 }
-                setFetchingRoles(false);
             });
         }
+        return () => { mounted = false; };
     }, [isOpen]);
 
     const toggleRole = (roleId: string) => {

@@ -50,20 +50,20 @@ export function ItemHeader({
         )}>
             {/* Status Banner for Archive */}
             {item.isArchived && (
-                <div className="w-full bg-rose-50 border border-rose-100 p-4 rounded-3xl flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
+                <div className="w-full bg-destructive/10 border border-destructive/20 p-4 rounded-3xl flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-2xl bg-destructive text-destructive-foreground flex items-center justify-center">
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-rose-900 leading-none mb-1 uppercase tracking-wide">Архив товара</p>
-                            <p className="text-[11px] font-medium text-rose-500/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
+                            <p className="text-sm font-bold text-destructive leading-none mb-1 uppercase tracking-wide">Архив товара</p>
+                            <p className="text-[11px] font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
                     <Button
                         size="sm"
                         onClick={onUnarchive}
-                        className="h-11 px-8 rounded-2xl bg-rose-900 hover:bg-black text-white text-sm font-bold shadow-lg shadow-rose-900/10 transition-all active:scale-95"
+                        className="h-11 px-8 rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold shadow-lg shadow-destructive/10 transition-all active:scale-95"
                     >
                         Восстановить
                     </Button>
@@ -80,7 +80,7 @@ export function ItemHeader({
                                     ref={textareaRef}
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
-                                    className="text-2xl md:text-4xl font-bold text-slate-900 bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-slate-200 resize-none overflow-hidden tracking-tight"
+                                    className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden tracking-tight"
                                     placeholder="Название..."
                                     rows={1}
                                 />
@@ -91,12 +91,12 @@ export function ItemHeader({
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => router.push('/dashboard/warehouse')}
-                                    className="flex w-10 h-10 sm:w-11 sm:h-11 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all items-center justify-center shrink-0 group"
+                                    className="flex w-10 h-10 sm:w-11 sm:h-11 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all items-center justify-center shrink-0 group"
                                 >
                                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                                 </Button>
                                 <h1
-                                    className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer tracking-tight"
+                                    className="text-2xl md:text-4xl font-bold text-foreground leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer tracking-tight"
                                     onDoubleClick={onEdit}
                                 >
                                     {(() => {
@@ -144,7 +144,7 @@ export function ItemHeader({
                                 </h1>
 
                                 {item.isArchived && (
-                                    <div className="h-8 px-4 rounded-full bg-slate-900 text-white flex items-center gap-2">
+                                    <div className="h-8 px-4 rounded-full bg-foreground text-background flex items-center gap-2">
                                         <Trash2 className="w-3.5 h-3.5" />
                                         <span className="text-[10px] font-bold uppercase tracking-wider">Архив</span>
                                     </div>
@@ -160,7 +160,7 @@ export function ItemHeader({
                             <Button
                                 variant="ghost"
                                 onClick={onCancel}
-                                className="h-10 px-4 sm:h-11 md:px-8 rounded-2xl sm:rounded-2xl font-bold text-[13px] text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 flex items-center justify-center gap-2"
+                                className="h-10 px-4 sm:h-11 md:px-8 rounded-2xl sm:rounded-2xl font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
                             >
                                 <X className="w-4 h-4" />
                                 <span className="hidden md:inline">Отмена</span>

@@ -50,15 +50,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { Button } from "@/components/ui/button";
 
 function translateErrorMessage(message: string): string {
   if (!message) return "Неизвестная ошибка";

@@ -5,7 +5,6 @@ import { ru } from "date-fns/locale";
 import Link from "next/link";
 import { Package, ChevronRight } from "lucide-react";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { cn } from "@/lib/utils";
 
 interface Order {
     id: string;

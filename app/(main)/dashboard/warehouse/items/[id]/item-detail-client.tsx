@@ -1076,10 +1076,10 @@ export function ItemDetailClient({
                             item.isArchived && "grayscale opacity-70",
                             tabletTab !== 'characteristic' ? "hidden md:flex" : "flex"
                         )}>
-                            <div className="group relative w-full aspect-square glass-panel rounded-3xl overflow-hidden">
+                            <div className="group relative w-full aspect-square crm-card rounded-3xl overflow-hidden">
                                 <div
                                     className={cn(
-                                        "absolute inset-0 bg-slate-50 overflow-hidden",
+                                        "absolute inset-0 bg-muted/50 overflow-hidden",
                                         isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                                     )}
                                     onMouseDown={handleMainMouseDown}
@@ -1103,11 +1103,11 @@ export function ItemDetailClient({
                                         />
                                     ) : (
 
-                                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-200 bg-slate-50">
-                                            <div className="w-20 h-20 rounded-3xl bg-white shadow-inner flex items-center justify-center mb-4">
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 bg-muted/50">
+                                            <div className="w-20 h-20 rounded-3xl bg-card shadow-inner flex items-center justify-center mb-4">
                                                 <ImageIcon className="w-10 h-10 opacity-30" />
                                             </div>
-                                            <p className="text-[10px] font-bold text-slate-300">Нет фото</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground/50">Нет фото</p>
                                         </div>
                                     )}
                                 </div>
@@ -1116,17 +1116,17 @@ export function ItemDetailClient({
                             </div>
 
                             {isEditing && (
-                                <div className="glass-panel rounded-3xl p-4 animate-in fade-in slide-in-from-top-4 duration-500 col-span-2 md:col-span-1">
+                                <div className="crm-card rounded-3xl p-4 animate-in fade-in slide-in-from-top-4 duration-500 col-span-2 md:col-span-1">
                                     <div className="space-y-4">
                                         {/* ZOOM SLIDER */}
                                         <div className="flex items-center gap-4">
                                             <div className="flex-1 space-y-0.5">
-                                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                                <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground">
                                                     <span>Масштаб</span>
                                                     <span className="text-primary">{Math.round((thumbSettings.zoom ?? 1) * 100)}%</span>
                                                 </div>
                                                 <div className="relative h-6 flex items-center select-none touch-none">
-                                                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
+                                                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-muted rounded-full overflow-hidden">
                                                         <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
                                                         <div
                                                             className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
@@ -1138,7 +1138,7 @@ export function ItemDetailClient({
                                                     </div>
                                                     <div
                                                         className={cn(
-                                                            "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
+                                                            "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
                                                             thumbSettings.zoom !== 1 && "border-primary/20 ring-2 ring-primary/10"
                                                         )}
                                                         style={{
@@ -1159,7 +1159,7 @@ export function ItemDetailClient({
                                             </div>
                                             <button
                                                 onClick={resetThumbSettings}
-                                                className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
+                                                className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
                                                 title="Сбросить"
                                             >
                                                 <RotateCcw className="w-3 h-3" />
@@ -1170,12 +1170,12 @@ export function ItemDetailClient({
                                         <div className="flex items-start gap-4">
                                             <div className="flex-1 grid grid-cols-2 gap-3">
                                                 <div className="space-y-1">
-                                                    <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground">
                                                         <span className="whitespace-nowrap">По горизонтали</span>
                                                     </div>
                                                     <div className="relative h-6 flex items-center select-none touch-none">
-                                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
-                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
+                                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-muted rounded-full overflow-hidden">
+                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-muted-foreground/30 rounded-full z-0" />
                                                             <div
                                                                 className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
                                                                 style={{
@@ -1190,8 +1190,8 @@ export function ItemDetailClient({
                                                         </div>
                                                         <div
                                                             className={cn(
-                                                                "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
-                                                                maxBounds.x <= 0 && "bg-slate-300",
+                                                                "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
+                                                                maxBounds.x <= 0 && "bg-muted-foreground/30",
                                                                 thumbSettings.x !== 0 && "border-primary/20 ring-2 ring-primary/10"
                                                             )}
                                                             style={{
@@ -1218,12 +1218,12 @@ export function ItemDetailClient({
                                                 </div>
 
                                                 <div className="space-y-1">
-                                                    <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground">
                                                         <span className="whitespace-nowrap">По вертикали</span>
                                                     </div>
                                                     <div className="relative h-6 flex items-center select-none touch-none">
-                                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 rounded-full overflow-hidden">
-                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-slate-300 rounded-full z-0" />
+                                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-muted rounded-full overflow-hidden">
+                                                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-muted-foreground/30 rounded-full z-0" />
                                                             <div
                                                                 className="absolute top-0 bottom-0 bg-primary rounded-full transition-all duration-75"
                                                                 style={{
@@ -1238,8 +1238,8 @@ export function ItemDetailClient({
                                                         </div>
                                                         <div
                                                             className={cn(
-                                                                "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-slate-200 bg-white transition-all duration-75 pointer-events-none z-20",
-                                                                maxBounds.y <= 0 && "bg-slate-300",
+                                                                "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
+                                                                maxBounds.y <= 0 && "bg-muted-foreground/30",
                                                                 thumbSettings.y !== 0 && "border-primary/20 ring-2 ring-primary/10"
                                                             )}
                                                             style={{
@@ -1273,18 +1273,18 @@ export function ItemDetailClient({
 
                             {/* Wrapper for Info & Actions in right column on mobile */}
                             <div className="flex flex-col gap-2 justify-between md:contents h-full">
-                                <div className="md:hidden xl:flex flex flex-col flex-1 glass-panel rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
-                                    <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-slate-200/60">
-                                        <h3 className="text-[6px] sm:text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">Артикул / SKU</h3>
-                                        <p className="text-[14px] sm:text-[16px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
+                                <div className="md:hidden xl:flex flex flex-col flex-1 crm-card rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
+                                    <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-border">
+                                        <h3 className="text-[6px] sm:text-[11px] font-bold text-muted-foreground mb-0.5 uppercase tracking-wider">Артикул / SKU</h3>
+                                        <p className="text-[14px] sm:text-[16px] font-black text-foreground leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                     </div>
                                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 sm:gap-4">
                                         <div className="space-y-1 sm:space-y-3">
                                             <div>
-                                                <h2 className="text-[5px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Резерв и остаток</h2>
+                                                <h2 className="text-[5px] sm:text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5 leading-none">Резерв и остаток</h2>
                                                 <div className="flex items-baseline gap-1 sm:gap-1.5">
-                                                    <span className="text-5xl sm:text-5xl md:text-6xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
-                                                    <span className="text-[11px] sm:text-sm font-black text-slate-400">{displayUnit}</span>
+                                                    <span className="text-5xl sm:text-5xl md:text-6xl font-black text-foreground leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
+                                                    <span className="text-[11px] sm:text-sm font-black text-muted-foreground">{displayUnit}</span>
                                                 </div>
                                             </div>
 
@@ -1324,7 +1324,7 @@ export function ItemDetailClient({
 
                                 <button
                                     onClick={() => setShowTransfer(true)}
-                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-[#0F172A] rounded-3xl shadow-sm shadow-slate-900/10 hover:shadow-md hover:shadow-slate-900/20 transition-all active:scale-95 text-left overflow-hidden"
+                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-slate-900 rounded-3xl shadow-sm shadow-slate-900/10 hover:shadow-md hover:shadow-slate-900/20 transition-all active:scale-95 text-left overflow-hidden"
                                 >
                                     <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
                                     <div className="w-14 h-14 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/10 flex items-center justify-center text-white relative z-10 mb-0 sm:mb-0">
@@ -1339,7 +1339,7 @@ export function ItemDetailClient({
                                 <button
                                     onClick={() => setShowLabelDialog(true)}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Печать этикетки"
@@ -1349,7 +1349,7 @@ export function ItemDetailClient({
                                 <button
                                     onClick={handleDownload}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Экспорт PDF"
@@ -1365,7 +1365,7 @@ export function ItemDetailClient({
                                         setShowArchiveReason(true);
                                     }}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-slate-400 order-last md:hidden",
+                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Архивировать"
@@ -1375,7 +1375,7 @@ export function ItemDetailClient({
                             </div>
 
                             {/* MOBILE TABS NAVIGATION */}
-                            <div className="flex md:hidden col-span-2 bg-white rounded-full p-1 shadow-sm border border-slate-100 items-center justify-between gap-1 overflow-x-auto relative z-0 mt-1">
+                            <div className="flex md:hidden col-span-2 bg-card rounded-full p-1 shadow-sm border border-border items-center justify-between gap-1 overflow-x-auto relative z-0 mt-1">
                                 {[
                                     { id: 'characteristic', label: 'Инфо', icon: LayoutGrid },
                                     { id: 'placement', label: 'Склады', icon: MapPin },
@@ -1389,7 +1389,7 @@ export function ItemDetailClient({
                                             onClick={() => setTabletTab(tab.id)}
                                             className={cn(
                                                 "relative flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
-                                                isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
+                                                isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                                                 "bg-transparent"
                                             )}
                                             style={{ WebkitTapHighlightColor: "transparent" }}
@@ -1405,7 +1405,7 @@ export function ItemDetailClient({
                                                     }}
                                                 />
                                             )}
-                                            <tab.icon className={cn("relative z-10 w-3 h-3", isActive ? "text-white" : "text-slate-400")} />
+                                            <tab.icon className={cn("relative z-10 w-3 h-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
                                             <span className="relative z-10">{tab.label}</span>
                                         </button>
                                     );
@@ -1430,14 +1430,14 @@ export function ItemDetailClient({
                                     <div className="hidden md:grid xl:hidden grid-cols-3 gap-3">
                                         <button
                                             onClick={() => setShowLabelDialog(true)}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground"
                                             title="Печать этикетки"
                                         >
                                             <Printer className="w-8 h-8 transition-transform" />
                                         </button>
                                         <button
                                             onClick={handleDownload}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground"
                                             title="Экспорт PDF"
                                         >
                                             <FileDown className="w-8 h-8 transition-transform" />
@@ -1450,7 +1450,7 @@ export function ItemDetailClient({
                                                 }
                                                 setShowArchiveReason(true);
                                             }}
-                                            className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-slate-400"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground"
                                             title="В архив"
                                         >
                                             <Archive className="w-8 h-8 transition-transform" />
@@ -1460,22 +1460,22 @@ export function ItemDetailClient({
                                     {/* TABLET ONLY SKU + Alerts block */}
                                     <div className="hidden md:flex xl:hidden flex-col gap-4" >
                                         {/* SKU & Stock block */}
-                                        <div className="flex flex-col glass-panel rounded-3xl p-6 justify-between overflow-hidden bg-white/50" >
+                                        <div className="flex flex-col crm-card rounded-3xl p-6 justify-between overflow-hidden bg-card/50" >
                                             <div className="flex items-start justify-between mb-4 gap-4">
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
-                                                    <p className="text-[14px] font-black text-slate-900 leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
+                                                    <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
+                                                    <p className="text-[14px] font-black text-foreground leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                                                 </div>
                                                 <div className="text-right shrink-0">
-                                                    <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Остаток</h2>
+                                                    <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1 leading-none">Остаток</h2>
                                                     <div className="flex items-baseline gap-1 justify-end">
-                                                        <span className="text-5xl font-black text-slate-900 leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
-                                                        <span className="text-[12px] font-black text-slate-400">{displayUnit}</span>
+                                                        <span className="text-5xl font-black text-foreground leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.quantity}</span>
+                                                        <span className="text-[12px] font-black text-muted-foreground">{displayUnit}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-wrap items-center gap-2.5 pt-4 border-t border-slate-200/60">
+                                            <div className="flex flex-wrap items-center gap-2.5 pt-4 border-t border-border">
                                                 <div className={cn(
                                                     "inline-flex items-center px-3 py-1.5 rounded-2xl text-[9px] font-bold border shrink-0",
                                                     item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
@@ -1499,7 +1499,7 @@ export function ItemDetailClient({
                                             handleStartEdit={handleStartEdit}
                                             className={
                                                 cn(
-                                                    "glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50"
+                                                    "crm-card rounded-3xl p-6 relative group/alerts overflow-hidden bg-card/50"
                                                 )
                                             }
                                         />
@@ -1507,7 +1507,7 @@ export function ItemDetailClient({
                                 </div >
 
                                 {/* TABLET TABS NAVIGATION */}
-                                <div className="hidden md:flex xl:hidden col-span-2 bg-white rounded-[22px] p-1.5 shadow-sm border border-slate-100 items-center justify-between gap-2 overflow-x-auto relative z-0" >
+                                <div className="hidden md:flex xl:hidden col-span-2 bg-card rounded-[22px] p-1.5 shadow-sm border border-border items-center justify-between gap-2 overflow-x-auto relative z-0" >
                                     {
                                         [
                                             { id: 'characteristic', label: 'Характеристики', icon: LayoutGrid },
@@ -1522,7 +1522,7 @@ export function ItemDetailClient({
                                                     onClick={() => setTabletTab(tab.id)}
                                                     className={cn(
                                                         "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
-                                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-900",
+                                                        isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                                                         "bg-transparent" // Reset bg to handle it with motion.div
                                                     )}
                                                     style={{ WebkitTapHighlightColor: "transparent" }}
@@ -1540,7 +1540,7 @@ export function ItemDetailClient({
                                                     )}
                                                     <tab.icon className={cn(
                                                         "relative z-10 w-4 h-4 transition-transform duration-300",
-                                                        isActive ? "text-white scale-110" : "text-slate-400"
+                                                        isActive ? "text-primary-foreground scale-110" : "text-muted-foreground"
                                                     )} />
                                                     <span className="relative z-10">{tab.label}</span>
                                                 </button>
@@ -1552,24 +1552,24 @@ export function ItemDetailClient({
                                 {/* BLOCK: Specification */}
                                 <div className={
                                     cn(
-                                        "glass-panel rounded-3xl p-4 sm:p-6 bg-white/50 h-full",
+                                        "crm-card rounded-3xl p-4 sm:p-6 bg-card/50 h-full",
                                         "md:col-span-2 xl:col-span-8 xl:row-span-2",
                                         tabletTab === 'characteristic' ? "flex flex-col" : "hidden",
                                         "xl:flex xl:flex-col"
                                     )}>
                                     <div className="flex items-center justify-between gap-4 mb-8">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                            <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                                                 <LayoutGrid className="w-6 h-6" />
                                             </div>
-                                            <h3 className="text-xl font-bold text-slate-900">Характеристика</h3>
+                                            <h3 className="text-xl font-bold text-foreground">Характеристика</h3>
                                         </div>
 
                                         {isEditing && (
                                             <Link
                                                 href="/dashboard/warehouse?tab=characteristic"
                                                 target="_blank"
-                                                className="flex items-center gap-2 px-4 h-11 rounded-3xl text-[12px] font-bold text-slate-400 hover:text-primary hover:bg-primary/5 transition-all border border-transparent"
+                                                className="flex items-center gap-2 px-4 h-11 rounded-3xl text-[12px] font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all border border-transparent"
                                             >
                                                 <Book className="w-4 h-4" />
                                                 Перейти в характеристики
@@ -1602,14 +1602,14 @@ export function ItemDetailClient({
                                 <div className="hidden xl:grid xl:grid-cols-3 xl:gap-3 xl:col-span-4" >
                                     <button
                                         onClick={() => setShowLabelDialog(true)}
-                                        className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-slate-400"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground"
                                         title="Печать этикетки"
                                     >
                                         <Printer className="w-8 h-8 transition-transform" />
                                     </button>
                                     <button
                                         onClick={handleDownload}
-                                        className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-slate-400"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground"
                                         title="Экспорт PDF"
                                     >
                                         <FileDown className="w-8 h-8 transition-transform" />
@@ -1622,7 +1622,7 @@ export function ItemDetailClient({
                                             }
                                             setShowArchiveReason(true);
                                         }}
-                                        className="group aspect-square flex items-center justify-center bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-500/20 transition-all text-slate-400"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-500/20 transition-all text-muted-foreground"
                                         title="В архив"
                                     >
                                         <Archive className="w-8 h-8 transition-transform" />
@@ -1638,7 +1638,7 @@ export function ItemDetailClient({
                                     handleStartEdit={handleStartEdit}
                                     className={
                                         cn(
-                                            "hidden xl:block xl:col-span-4 glass-panel rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50 h-full"
+                                            "hidden xl:block xl:col-span-4 crm-card rounded-3xl p-6 relative group/alerts overflow-hidden bg-card/50 h-full"
                                         )
                                     }
                                 />
@@ -1662,19 +1662,19 @@ export function ItemDetailClient({
                                 {/* SUB-BLOCK: Warehouses List */}
                                 <div className={
                                     cn(
-                                        "glass-panel rounded-3xl p-6 flex-col flex-1 h-full",
+                                        "crm-card rounded-3xl p-6 flex-col flex-1 h-full",
                                         "md:col-span-2 xl:col-span-4",
                                         tabletTab === 'placement' ? "flex" : "hidden",
                                         "xl:flex"
                                     )}>
                                     <div className="flex items-center justify-between mb-8 text-left">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                                                 <MapPin className="w-5 h-5 md:w-6 md:h-6" />
                                             </div>
                                             <div>
-                                                <h3 className="text-lg md:text-xl font-black text-slate-900">Размещение</h3>
-                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-normal mt-0.5 md:mt-1">
+                                                <h3 className="text-lg md:text-xl font-black text-foreground">Размещение</h3>
+                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-normal mt-0.5 md:mt-1">
                                                     Всего {storageLocations.length} {pluralize(storageLocations.length, 'локация', 'локации', 'локаций')}
                                                 </p>
                                             </div>
@@ -1695,9 +1695,9 @@ export function ItemDetailClient({
                                                 .sort((a, b) => b.quantity - a.quantity);
 
                                             if (sortedStocks.length === 0) return (
-                                                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                                    <Package className="w-8 h-8 text-slate-300 mx-auto mb-2 opacity-50" />
-                                                    <p className="text-[10px] font-bold text-slate-400">Нет данных о размещении</p>
+                                                <div className="p-8 text-center bg-muted/50 rounded-2xl border border-dashed border-border">
+                                                    <Package className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                                                    <p className="text-[10px] font-bold text-muted-foreground">Нет данных о размещении</p>
                                                 </div>
                                             );
 
@@ -1719,21 +1719,21 @@ export function ItemDetailClient({
                                                                     isFullWidth && "md:col-span-1 xl:col-span-2",
                                                                     isMain
                                                                         ? "bg-emerald-50/30 border-emerald-200"
-                                                                        : "bg-slate-50/50 border-slate-200 hover:shadow-crm-md"
+                                                                        : "bg-muted/30 border-border hover:shadow-crm-md"
                                                                 )}
                                                             >
                                                                 <div className="flex flex-col gap-1">
                                                                     <span className={cn(
                                                                         "text-[14px] md:text-[15px] font-bold transition-colors truncate",
-                                                                        isMain ? "text-slate-900" : "text-slate-700"
+                                                                        isMain ? "text-foreground" : "text-muted-foreground"
                                                                     )}>
                                                                         {s.storageLocation?.name}
                                                                     </span>
                                                                     <div className="flex items-baseline gap-1 mt-1">
-                                                                        <span className="text-xl md:text-2xl font-black text-slate-900 tabular-nums leading-none">
+                                                                        <span className="text-xl md:text-2xl font-black text-foreground tabular-nums leading-none">
                                                                             {s.quantity}
                                                                         </span>
-                                                                        <span className="text-[10px] md:text-[11px] font-bold text-slate-400">
+                                                                        <span className="text-[10px] md:text-[11px] font-bold text-muted-foreground">
                                                                             шт.
                                                                         </span>
                                                                     </div>
@@ -1742,7 +1742,8 @@ export function ItemDetailClient({
                                                                     {isMain && (
                                                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
                                                                     )}
-                                                                    <span className="text-[10px] md:text-[11px] font-bold text-slate-400 whitespace-nowrap">
+
+                                                                    <span className="text-[10px] md:text-[11px] font-bold text-muted-foreground whitespace-nowrap">
                                                                         {isMain ? "Основной объём" : "Доп. склад"}
                                                                     </span>
                                                                 </div>
@@ -1774,7 +1775,7 @@ export function ItemDetailClient({
 
                             <div className={
                                 cn(
-                                    "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col",
+                                    "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-8 flex flex-col",
                                     tabletTab === 'characteristic' ? "flex" : "hidden",
                                     "xl:flex"
                                 )}>
@@ -1801,16 +1802,16 @@ export function ItemDetailClient({
                             </div >
 
                             <div className={cn(
-                                "md:col-span-2 xl:col-span-12 glass-panel rounded-3xl p-4 sm:p-8 flex flex-col space-y-4",
+                                "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-8 flex flex-col space-y-4",
                                 tabletTab === 'placement' ? "flex" : "hidden",
                                 "xl:flex"
                             )}>
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                        <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                                             <ShoppingBag className="w-6 h-6" />
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900">Зарезервировано в заказах</h3>
+                                        <h3 className="text-xl font-black text-foreground">Зарезервировано в заказах</h3>
                                     </div>
                                     {activeOrders.length > 0 && (
                                         <div className="px-4 py-2 bg-amber-100/50 rounded-3xl border border-amber-200/50 flex items-center gap-3">
@@ -1827,22 +1828,22 @@ export function ItemDetailClient({
 
                             {/* BLOCK: History */}
                             <div className={cn(
-                                "glass-panel rounded-3xl p-4 sm:p-8 space-y-4",
+                                "crm-card rounded-3xl p-4 sm:p-8 space-y-4",
                                 "md:col-span-2 xl:col-span-12",
                                 tabletTab === 'history' ? "block" : "hidden",
                                 "xl:block"
                             )}>
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                                        <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                                             <ClipboardList className="w-6 h-6" />
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900">История операций</h3>
+                                        <h3 className="text-xl font-black text-foreground">История операций</h3>
                                     </div>
                                     <Button
                                         size="sm"
                                         onClick={handleExportHistory}
-                                        className="h-10 px-6 rounded-2xl bg-slate-900 border-none text-white text-[13px] font-black hover:bg-black hover:text-white active:scale-95 shadow-lg shadow-slate-900/20 transition-all"
+                                        className="h-10 px-6 rounded-2xl bg-foreground border-none text-background text-[13px] font-black hover:bg-foreground/90 active:scale-95 shadow-lg shadow-foreground/20 transition-all"
                                     >
                                         <Printer className="w-4 h-4 mr-2" />
                                         Скачать
@@ -1877,7 +1878,7 @@ export function ItemDetailClient({
                                     animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                                     exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                                     transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                                    className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-white p-2.5 px-4 md:px-8 gap-4 md:gap-10 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 w-[calc(100%-2rem)] md:w-auto overflow-hidden"
+                                    className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-4 md:gap-10 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
                                     data-dialog-open="true"
                                 >
                                     {/* Left Side: Info */}
@@ -1889,7 +1890,7 @@ export function ItemDetailClient({
                                     >
                                         <div className="flex flex-col relative min-w-0">
                                             <div className="flex items-center gap-2 mb-0.5">
-                                                <span className="text-[10px] md:text-xs font-bold text-slate-400 whitespace-nowrap">Режим правки</span>
+                                                <span className="text-[10px] md:text-xs font-bold text-muted-foreground whitespace-nowrap">Режим правки</span>
                                                 {JSON.stringify(editData) !== JSON.stringify({
                                                     name: item.name,
                                                     sku: item.sku || "",
@@ -1912,11 +1913,11 @@ export function ItemDetailClient({
                                                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]" title="Есть несохраненные изменения" />
                                                     )}
                                             </div>
-                                            <span className="text-[13px] md:text-[15px] font-bold text-slate-900 truncate leading-none">
+                                            <span className="text-[13px] md:text-[15px] font-bold text-foreground truncate leading-none">
                                                 {editData.name || item.name}
                                             </span>
                                         </div>
-                                        <div className="hidden sm:block w-px h-8 bg-slate-100 shrink-0" />
+                                        <div className="hidden sm:block w-px h-8 bg-border shrink-0" />
                                     </motion.div>
 
                                     {/* Right Side: Actions */}
@@ -1976,7 +1977,7 @@ export function ItemDetailClient({
                                                     setIsEditing(false);
                                                 }
                                             }}
-                                            className="text-[13px] font-bold text-slate-400 hover:text-slate-900 transition-all hidden sm:block"
+                                            className="text-[13px] font-bold text-muted-foreground hover:text-foreground transition-all hidden sm:block"
                                         >
                                             Отмена
                                         </button>
@@ -1985,7 +1986,7 @@ export function ItemDetailClient({
                                             <button
                                                 onClick={() => handleSave()}
                                                 disabled={isSaving}
-                                                className="h-10 px-4 md:px-6 btn-dark text-white rounded-3xl flex items-center gap-2 font-bold text-[13px] transition-all active:scale-95 shadow-lg shadow-slate-900/10 border-none relative group/save"
+                                                className="h-10 px-4 md:px-6 btn-dark text-primary-foreground rounded-3xl flex items-center gap-2 font-bold text-[13px] transition-all active:scale-95 shadow-lg shadow-input/10 border-none relative group/save"
                                             >
                                                 {isSaving ? (
                                                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -1994,7 +1995,7 @@ export function ItemDetailClient({
                                                 )}
                                                 <span className="whitespace-nowrap">Сохранить</span>
                                                 {/* Shortcut Hint Overlay */}
-                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-slate-900 rounded-3xl text-[9px] font-bold text-white opacity-0 group-hover/save:opacity-100 transition-all pointer-events-none shadow-xl translate-y-2 group-hover:translate-y-0">
+                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-foreground rounded-3xl text-[9px] font-bold text-background opacity-0 group-hover/save:opacity-100 transition-all pointer-events-none shadow-xl translate-y-2 group-hover:translate-y-0">
                                                     ⌘ S
                                                 </div>
                                             </button>
@@ -2002,7 +2003,7 @@ export function ItemDetailClient({
                                             <button
                                                 onClick={() => handleDelete()}
                                                 disabled={isSaving || isAnyUploading}
-                                                className="w-10 h-10 md:w-11 md:h-11 rounded-3xl md:rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-slate-200 hover:border-amber-500 group/archive"
+                                                className="w-10 h-10 md:w-11 md:h-11 rounded-3xl md:rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-border hover:border-amber-500 group/archive"
                                                 title="Архивировать"
                                             >
                                                 <Archive className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/archive:scale-110" />
@@ -2216,13 +2217,13 @@ export function ItemDetailClient({
                 {
                     !isOnline && (
                         <div className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500" role="dialog" aria-modal="true" data-dialog-open="true">
-                            <div className="bg-white rounded-[3rem] p-12 shadow-2xl border border-rose-100 max-w-sm text-center space-y-6">
+                            <div className="crm-card !p-12 !rounded-[3rem] shadow-2xl !border-rose-100 max-w-sm text-center space-y-6">
                                 <div className="w-20 h-20 rounded-3xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto animate-pulse">
                                     <RefreshCcw className="w-10 h-10" />
                                 </div>
                                 <div className="space-y-2">
-                                    <h3 className="text-2xl font-bold text-slate-900">Соединение потеряно</h3>
-                                    <p className="text-sm font-medium text-slate-400 leading-relaxed">Интерфейс временно заблокирован для безопасности данных. Ждем возврата в сеть...</p>
+                                    <h3 className="text-2xl font-bold text-foreground">Соединение потеряно</h3>
+                                    <p className="text-sm font-medium text-muted-foreground leading-relaxed">Интерфейс временно заблокирован для безопасности данных. Ждем возврата в сеть...</p>
                                 </div>
                             </div>
                         </div>

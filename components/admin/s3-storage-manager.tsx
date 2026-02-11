@@ -23,7 +23,6 @@ import {
     CheckSquare,
     Square,
     Eye,
-    X,
     ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -231,7 +230,10 @@ export function S3StorageManager() {
                 if (isImage) {
                     setPreviewFile({ name, url: res.url, type: 'image' });
                 } else {
-                    window.open(res.url, '_blank');
+                    const win = window.open(res.url, '_blank');
+                    if (!win) {
+                        toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+                    }
                 }
             } else {
                 toast(res.error || "Ошибка при получении ссылки на файл", "error");
@@ -708,7 +710,7 @@ export function S3StorageManager() {
                                                     </div>
                                                 );
                                             } else {
-                                                const file = item as any;
+                                                const file = item as StorageFile;
                                                 const ext = name.split('.').pop()?.toLowerCase();
                                                 const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
                                                 return (
@@ -946,7 +948,12 @@ export function S3StorageManager() {
                             )}
                             <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
-                                    onClick={() => window.open(previewFile.url, '_blank')}
+                                    onClick={() => {
+                                        const win = window.open(previewFile.url, '_blank');
+                                        if (!win) {
+                                            toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+                                        }
+                                    }}
                                     className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl transition-colors"
                                 >
                                     <ExternalLink size={18} />
@@ -956,7 +963,12 @@ export function S3StorageManager() {
 
                         <div className="flex gap-3">
                             <Button
-                                onClick={() => window.open(previewFile.url, '_blank')}
+                                onClick={() => {
+                                    const win = window.open(previewFile.url, '_blank');
+                                    if (!win) {
+                                        toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+                                    }
+                                }}
                                 className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
                             >
                                 <ExternalLink size={16} className="mr-2" />

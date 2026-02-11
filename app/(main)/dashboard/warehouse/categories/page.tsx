@@ -57,13 +57,13 @@ import { Category } from "../types";
 import { Session } from "@/lib/auth";
 
 async function InventoryListContainer({ session }: { session: Session | null }) {
-    const [
-        { data: categoriesRes = [] },
-        { count: orphanedCount }
-    ] = await Promise.all([
+    const [categoriesResult, orphanedResult] = await Promise.all([
         getInventoryCategories(),
         getOrphanedItemCount()
     ]);
+
+    const categoriesRes = 'data' in categoriesResult && categoriesResult.data ? categoriesResult.data : [];
+    const orphanedCount = 'count' in orphanedResult && typeof orphanedResult.count === 'number' ? orphanedResult.count : 0;
 
     const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
     const categories: Category[] = [...categoriesRes];

@@ -101,7 +101,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center glass-panel p-4">
+            <div className="crm-card flex flex-col md:flex-row gap-4 items-center">
                 <div className="relative flex-1 w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input

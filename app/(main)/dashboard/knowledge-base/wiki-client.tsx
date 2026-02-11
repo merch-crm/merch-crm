@@ -137,7 +137,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     };
 
     return (
-        <div className="flex h-[calc(100vh-140px)] glass-panel overflow-hidden border-none shadow-crm-xl bg-white/40">
+        <div className="crm-card flex h-[calc(100vh-140px)] !p-0 !border-none !shadow-crm-xl !bg-white/40">
             {/* Desktop Sidebar */}
             <div className="hidden md:flex shrink-0">
                 <WikiSidebar {...sidebarProps} />

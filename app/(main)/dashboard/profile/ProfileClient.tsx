@@ -30,6 +30,8 @@ import { ScheduleView } from "./schedule-view";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { RoleBadge } from "@/components/ui/role-badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useBranding } from "@/components/branding-provider";
 
 interface UserProfile {
@@ -184,20 +186,21 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                             <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Profile</span>
                         </div>
                     </div>
-                    <button className="md:hidden p-2 text-slate-400 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="icon" className="md:hidden p-2 text-slate-400 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
                         <XIcon className="w-6 h-6" />
-                    </button>
+                    </Button>
                 </div>
 
                 <nav className="flex-1 space-y-2 mb-8">
                     {navItems.map((item) => (
-                        <button
+                        <Button
                             key={item.id}
+                            variant="ghost"
                             onClick={() => handleNavClick(item.id)}
                             className={cn(
-                                "w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
+                                "w-full flex items-center justify-start gap-4 px-4 py-6 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
                                 view === item.id
-                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                    ? "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary-hover"
                                     : "text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
@@ -209,18 +212,19 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                             {item.icon && <span className="w-5 h-5 relative z-10">{item.icon}</span>}
                             <span className="relative z-10">{item.label}</span>
                             {view === item.id && <ChevronRight className="ml-auto w-4 h-4 relative z-10" />}
-                        </button>
+                        </Button>
                     ))}
                 </nav>
 
                 <div className="mb-4 pt-4 border-t border-slate-800">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => router.push('/dashboard')}
-                        className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
+                        className="w-full flex items-center justify-start gap-4 px-4 py-6 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
                     >
                         <LogOut className="w-5 h-5" />
                         <span>Вернуться в CRM</span>
-                    </button>
+                    </Button>
                 </div>
 
                 {/* User Info Mini Card */}
@@ -242,12 +246,12 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                 <p className="text-[10px] text-slate-400 font-medium truncate">{getRoleName()}</p>
                             </div>
                         </div>
-                        <button
+                        <Button
                             onClick={() => handleNavClick("settings")}
-                            className="w-full py-2 bg-primary hover:bg-primary-hover rounded-xl text-[10px] font-bold tracking-wide uppercase shadow-lg shadow-primary/10 transition-all"
+                            className="w-full h-10 bg-primary hover:bg-primary-hover rounded-xl text-[10px] font-bold tracking-wide uppercase shadow-lg shadow-primary/10 transition-all border-none"
                         >
                             Редактировать
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </aside>
@@ -266,12 +270,14 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div className="flex items-center justify-between w-full md:w-auto">
                         <div className="md:hidden">
-                            <button
+                            <Button
+                                variant="outline"
+                                size="icon"
                                 onClick={() => setIsMobileMenuOpen(true)}
                                 className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm"
                             >
                                 <Menu className="w-6 h-6" />
-                            </button>
+                            </Button>
                         </div>
                         <div className="md:block">
                             <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-normal">
@@ -304,16 +310,16 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                     <div className="flex items-center gap-3">
                         <div className="relative hidden md:block group">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Поиск..."
                                 className="w-64 h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
                             />
                         </div>
-                        <button className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all relative">
+                        <Button variant="outline" size="icon" className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all relative">
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full border border-white" />
-                        </button>
+                        </Button>
                     </div>
                 </header>
 
@@ -332,12 +338,14 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                 <div className="lg:col-span-8 space-y-4">
                                     <div className="flex items-center justify-between">
                                         <h3 className="text-xl font-bold text-slate-900">Ключевые показатели</h3>
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
                                             onClick={() => handleNavClick("statistics")}
                                             className="text-xs font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all px-3 py-1.5 rounded-lg hover:bg-primary/5"
                                         >
                                             Вся статистика <ChevronRight className="w-3 h-3" />
-                                        </button>
+                                        </Button>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -361,7 +369,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                                 icon: <CreditCard />
                                             },
                                         ].map((stat, i) => (
-                                            <div key={i} className="group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all cursor-default">
+                                            <div key={i} className="group crm-card !p-6 !rounded-3xl hover:shadow-xl hover:shadow-primary/5 transition-all cursor-default">
                                                 <div className="flex justify-between items-start mb-8">
                                                     <div className={cn(
                                                         "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110",
@@ -391,7 +399,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                     </div>
 
                                     {/* Activity Chart Mock */}
-                                    <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+                                    <div className="crm-card !p-8 !rounded-3xl relative overflow-hidden">
                                         <div className="flex items-center justify-between mb-8 relative z-10">
                                             <div>
                                                 <h3 className="font-bold text-slate-900 text-lg">Активность за неделю</h3>
@@ -433,7 +441,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
                                 {/* Right Column - Info & Tasks */}
                                 <div className="lg:col-span-4 space-y-4">
-                                    <div className="bg-primary rounded-3xl p-8 text-white shadow-2xl shadow-primary/30 relative overflow-hidden group">
+                                    <div className="crm-card !bg-primary !border-primary/50 text-white !rounded-3xl !p-8 shadow-2xl shadow-primary/30 relative overflow-hidden group">
                                         <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
                                         <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
 
@@ -451,14 +459,14 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between px-2">
                                             <h3 className="text-lg font-bold text-slate-900">Последние задачи</h3>
-                                            <button className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors">
+                                            <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors">
                                                 <Plus className="w-4 h-4" />
-                                            </button>
+                                            </Button>
                                         </div>
 
                                         <div className="space-y-4">
                                             {tasks.length > 0 ? tasks.slice(0, 3).map((task, i) => (
-                                                <div key={i} className="flex gap-5 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group">
+                                                <div key={i} className="flex gap-5 p-5 crm-card !rounded-2xl hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group">
                                                     <div className="flex flex-col items-center justify-center shrink-0 border-r border-slate-200 pr-5 gap-1">
                                                         <Clock className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                                                         <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-600">{task.time}</span>
@@ -486,10 +494,10 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                                             )}
                                         </div>
 
-                                        <button className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs uppercase tracking-wider">
+                                        <Button variant="outline" className="w-full h-16 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs uppercase tracking-wider">
                                             <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                                             Добавить новую задачу
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -497,13 +505,13 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
                         {view === "settings" && (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12">
-                                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                                <div className="crm-card !p-8 !rounded-3xl">
                                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                                         <UserCircle className="w-6 h-6 text-primary" /> Личные данные
                                     </h2>
                                     <ProfileForm user={user} />
                                 </div>
-                                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                                <div className="crm-card !p-8 !rounded-3xl">
                                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                                         <Shield className="w-6 h-6 text-primary" /> Безопасность
                                     </h2>
@@ -513,7 +521,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         )}
 
                         {view === "statistics" && (
-                            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 min-h-[400px]">
+                            <div className="crm-card !p-8 !rounded-3xl min-h-[400px]">
                                 {loading && !statsData ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка данных...</div>
                                 ) : (
@@ -523,7 +531,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         )}
 
                         {view === "notifications" && (
-                            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 min-h-[400px]">
+                            <div className="crm-card !p-8 !rounded-3xl min-h-[400px]">
                                 <h2 className="text-xl font-bold mb-6">История уведомлений</h2>
                                 <div className="space-y-4">
                                     {activities.map((activity) => (
@@ -548,7 +556,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         )}
 
                         {view === "schedule" && (
-                            <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 min-h-[400px]">
+                            <div className="crm-card !p-6 md:!p-8 !rounded-3xl min-h-[400px]">
                                 {loading && scheduleData.length === 0 ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка расписания...</div>
                                 ) : (

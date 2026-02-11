@@ -201,7 +201,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
     return (
         <div className="space-y-6">
             {/* Single Unified Panel */}
-            <div className="glass-panel overflow-hidden">
+            <div className="crm-card !p-0">
                 {/* Header */}
                 <div className="px-6 pt-6 pb-2">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
@@ -586,7 +586,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                         exit={{ opacity: 0, y: 20 }}
                         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-lg"
                     >
-                        <div className="glass-panel p-4 px-6 flex items-center gap-4 shadow-2xl border-2 border-primary/20 bg-white/95 backdrop-blur-xl">
+                        <div className="crm-card flex items-center gap-4 !shadow-2xl !border-2 !border-primary/20 !bg-white/95 backdrop-blur-xl">
                             <div className="w-12 h-12 rounded-[12px] bg-primary flex items-center justify-center shrink-0">
                                 {(() => {
                                     const iconItem = iconGroups.flatMap(

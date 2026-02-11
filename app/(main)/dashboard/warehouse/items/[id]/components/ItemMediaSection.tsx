@@ -130,12 +130,12 @@ export function ItemMediaSection({
         <div className="space-y-6">
             <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white transition-all shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                         <ImageIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900">Галерея</h3>
-                        <p className="text-[11px] font-bold text-slate-400 mt-1">
+                        <h3 className="text-xl font-bold text-foreground">Галерея</h3>
+                        <p className="text-[11px] font-bold text-muted-foreground mt-1">
                             Загружено {allImages.filter(i => i.src).length} из 6 фото
                         </p>
                     </div>
@@ -160,7 +160,7 @@ export function ItemMediaSection({
                                     }
                                 }}
                             />
-                            <div className="h-10 px-6 rounded-2xl bg-slate-900 border-none text-white text-[13px] font-black hover:bg-black active:scale-95 shadow-lg shadow-slate-900/20 hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none transition-all flex items-center gap-2">
+                            <div className="h-10 px-6 rounded-2xl bg-foreground border-none text-background text-[13px] font-black hover:bg-foreground/90 active:scale-95 shadow-lg shadow-black/20 hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none transition-all flex items-center gap-2">
                                 <ImagePlus className="w-4 h-4" />
                                 <span>Добавить больше</span>
                             </div>
@@ -205,10 +205,10 @@ export function ItemMediaSection({
                                     }
                                 }}
                                 className={cn(
-                                    "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-slate-50 snap-start",
+                                    "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-muted/30 snap-start",
                                     img.src
-                                        ? "border-slate-200/60 hover:border-slate-300 cursor-pointer hover:shadow-2xl hover:shadow-slate-200/50"
-                                        : "border-dashed border-slate-200 hover:bg-slate-100/50"
+                                        ? "border-border/60 hover:border-border hover:shadow-2xl hover:shadow-black/5 cursor-pointer"
+                                        : "border-dashed border-border hover:bg-muted/50"
                                 )}
                             >
                                 {img.src ? (
@@ -226,7 +226,7 @@ export function ItemMediaSection({
                                             <p className="text-[10px] font-bold text-white">{img.label}</p>
                                         </div>
 
-                                        <div className="absolute inset-0 bg-slate-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                         {/* Action Buttons */}
                                         {isEditing && (
@@ -242,7 +242,7 @@ export function ItemMediaSection({
                                                 </button>
 
                                                 <label
-                                                    className="w-8 h-8 flex items-center justify-center bg-white text-slate-600 rounded-2xl shadow-lg hover:bg-slate-50 hover:text-primary active:scale-90 transition-all cursor-pointer z-20"
+                                                    className="w-8 h-8 flex items-center justify-center bg-background text-muted-foreground rounded-2xl shadow-lg hover:bg-muted hover:text-primary active:scale-90 transition-all cursor-pointer z-20"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
                                                     <input
@@ -285,7 +285,7 @@ export function ItemMediaSection({
                                                 <div className="relative w-12 h-12 flex items-center justify-center">
                                                     <svg className="w-full h-full rotate-[-90deg]" viewBox="0 0 36 36">
                                                         <path
-                                                            className="text-slate-100"
+                                                            className="text-muted/30"
                                                             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                                                             fill="none"
                                                             stroke="currentColor"
@@ -304,11 +304,11 @@ export function ItemMediaSection({
                                                         {uploadStates[img.type].progress}%
                                                     </span>
                                                 </div>
-                                                <span className="text-[9px] font-bold text-slate-400 animate-pulse">Загрузка...</span>
+                                                <span className="text-[9px] font-bold text-muted-foreground animate-pulse">Загрузка...</span>
                                             </div>
                                         ) : !isEditing ? (
-                                            <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center">
-                                                <ImageIcon className="w-5 h-5 text-slate-300" />
+                                            <div className="w-10 h-10 rounded-2xl bg-card shadow-sm flex items-center justify-center">
+                                                <ImageIcon className="w-5 h-5 text-muted-foreground/50" />
                                             </div>
                                         ) : (
                                             <label className="cursor-pointer group/upload flex flex-col items-center justify-center w-full h-full">
@@ -327,7 +327,7 @@ export function ItemMediaSection({
                                                 <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
                                                     <Plus className="w-5 h-5" />
                                                 </div>
-                                                <span className="text-[8px] font-bold text-slate-400 group-hover/upload:text-primary transition-colors">Добавить</span>
+                                                <span className="text-[8px] font-bold text-muted-foreground group-hover/upload:text-primary transition-colors">Добавить</span>
                                             </label>
                                         )}
                                     </div>
@@ -358,7 +358,7 @@ export function ItemMediaSection({
                     {/* Close Button */}
                     <button
                         onClick={() => setFullscreen(false)}
-                        className="absolute top-8 right-8 w-11 h-11 flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 active:scale-95 transition-all z-[110] border border-white/10 group"
+                        className="absolute top-8 right-8 w-11 h-11 flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground active:scale-95 transition-all z-[110] border border-white/10 group"
                     >
                         <X className="w-5 h-5 transition-transform group-hover:rotate-90 duration-500" />
                     </button>
@@ -366,14 +366,14 @@ export function ItemMediaSection({
                     {/* Navigation */}
                     <button
                         onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                        className="absolute left-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
+                        className="absolute left-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
                     >
                         <ChevronLeft className="w-7 h-7" />
                     </button>
 
                     <button
                         onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                        className="absolute right-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-slate-900 border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
+                        className="absolute right-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
                     >
                         <ChevronRight className="w-7 h-7" />
                     </button>
@@ -417,8 +417,8 @@ export function ItemMediaSection({
                                 {img.src ? (
                                     <Image src={img.src} alt="thumb" fill className="object-cover" unoptimized />
                                 ) : (
-                                    <div className="w-full h-full bg-slate-800 flex items-center justify-center">
-                                        <ImageIcon className="w-5 h-5 text-slate-600" />
+                                    <div className="w-full h-full bg-muted/20 flex items-center justify-center">
+                                        <ImageIcon className="w-5 h-5 text-muted-foreground" />
                                     </div>
                                 )}
                             </button>

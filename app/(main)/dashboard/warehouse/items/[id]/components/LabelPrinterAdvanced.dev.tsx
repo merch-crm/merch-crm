@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 import { Printer, X, AlignLeft, AlignCenter, RotateCw, Download, Minus, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, escapeHtml } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
 
 // Check if Switch exists, if not I will need to replace it.
@@ -19,6 +19,7 @@ interface LabelPrinterDialogProps {
 }
 
 import { useBranding } from "@/components/branding-provider";
+import { useToast } from "@/components/ui/toast";
 
 type PaperSize = '58x40' | '58x60' | '75x120' | 'a4' | 'custom';
 type LayoutStyle = 'standard' | 'side-by-side' | 'inline' | 'minimal';
@@ -26,6 +27,7 @@ type LayoutStyle = 'standard' | 'side-by-side' | 'inline' | 'minimal';
 
 export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allAttributes }: LabelPrinterDialogProps) {
     const { currencySymbol } = useBranding();
+    const { toast } = useToast();
     // Settings State
     const [paperSize, setPaperSize] = useState<PaperSize>('58x40');
 
@@ -133,7 +135,10 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return;
+        if (!printWindow) {
+            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
+            return;
+        }
 
         const styles = `
             @page {
@@ -187,7 +192,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Печать этикеток - ${item.name}</title>
+                    <title>Печать этикеток - ${escapeHtml(item.name)}</title>
                     <style>${styles}</style>
                 </head>
                 <body>

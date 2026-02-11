@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-    X, Mail, Phone, MapPin, Building2, Calendar,
+    Mail, Phone, MapPin, Building2, Calendar,
     TrendingUp, ShoppingBag, Edit2, ExternalLink,
     MessageCircle, Plus, Info, Activity, User, Link as LinkIcon
 } from "lucide-react";
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/components/branding-provider";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useToast } from "@/components/ui/toast";
 
 interface Order {
     id: string;
@@ -88,6 +89,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<TabType>("general");
     const router = useRouter();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (isOpen && clientId) {
@@ -128,7 +130,12 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             {!["Печатник", "Дизайнер"].includes(userRoleName || "") && (
                                 <Button
                                     className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs"
-                                    onClick={() => window.open(`tel:${client.phone}`)}
+                                    onClick={() => {
+                                        const win = window.open(`tel:${client.phone}`);
+                                        if (!win && !navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+                                            toast("Браузер заблокировал вызов. Разрешите всплывающие окна или используйте телефон.", "error");
+                                        }
+                                    }}
                                 >
                                     <Phone className="w-3.5 h-3.5 mr-2" /> Позвонить
                                 </Button>
@@ -136,7 +143,12 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             {client.telegram && (
                                 <Button
                                     className="h-9 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-xs"
-                                    onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}
+                                    onClick={() => {
+                                        const win = window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank');
+                                        if (!win) {
+                                            toast("Браузер заблокировал переход в Telegram. Разрешите всплывающие окна.", "error");
+                                        }
+                                    }}
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
                                 </Button>
@@ -278,13 +290,23 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {client.telegram && (
-                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank')}>
+                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => {
+                                                        const win = window.open(`https://t.me/${client.telegram?.replace('@', '')}`, '_blank');
+                                                        if (!win) {
+                                                            toast("Браузер заблокировал переход в Telegram. Разрешите всплывающие окна.", "error");
+                                                        }
+                                                    }}>
                                                         <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white"><MessageCircle className="w-3 h-3" /></div>
                                                         Telegram
                                                     </Badge>
                                                 )}
                                                 {client.instagram && (
-                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => window.open(`https://instagram.com/${client.instagram?.replace('@', '')}`, '_blank')}>
+                                                    <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => {
+                                                        const win = window.open(`https://instagram.com/${client.instagram?.replace('@', '')}`, '_blank');
+                                                        if (!win) {
+                                                            toast("Браузер заблокировал переход в Instagram. Разрешите всплывающие окна.", "error");
+                                                        }
+                                                    }}>
                                                         <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white"><ExternalLink className="w-3 h-3" /></div>
                                                         Instagram
                                                     </Badge>

@@ -6,6 +6,7 @@ import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX,
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 import { Button } from "@/components/ui/button";
 
@@ -122,15 +123,11 @@ export function CategoryDetailClient({
     const { toast } = useToast();
     const [subCategories, setSubCategories] = useState<Category[]>(initialSubCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const isMobile = useMediaQuery("(max-width: 767px)");
     const [mounted, setMounted] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     const canSeeCost = user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж';
@@ -249,7 +246,7 @@ export function CategoryDetailClient({
     useEffect(() => {
         const init = async () => {
             const res = await getInventoryCategories();
-            if (res.data) setAllCategories(res.data as Category[]);
+            if ('data' in res && res.data) setAllCategories(res.data as Category[]);
         };
         init();
     }, []);
@@ -658,7 +655,7 @@ export function CategoryDetailClient({
                         <ResponsiveDataView
                             data={currentItems}
                             renderTable={() => (
-                                <div className="glass-panel overflow-hidden">
+                                <div className="crm-card !p-0">
                                     <div className="overflow-x-auto">
                                         <table className="min-w-full divide-y divide-slate-100">
                                             <thead className="bg-slate-50/50">

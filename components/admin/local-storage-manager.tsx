@@ -23,8 +23,6 @@ import {
     Edit2,
     CheckSquare,
     Square,
-    Eye,
-    X,
     ExternalLink
 } from "lucide-react";
 import { format } from "date-fns";
@@ -222,7 +220,10 @@ export function LocalStorageManager() {
         if (isImage) {
             setPreviewFile({ name: file.name, url, type: 'image' });
         } else {
-            window.open(url, '_blank');
+            const win = window.open(url, '_blank');
+            if (!win) {
+                toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+            }
         }
     };
 
@@ -451,7 +452,7 @@ export function LocalStorageManager() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
-                                            {[...filteredFolders.map(path => ({ path, isDirectory: true, name: path.replace(currentPrefix, "").replace("/", "") })), ...filteredFiles].map((item: any) => {
+                                            {[...filteredFolders.map(path => ({ path, isDirectory: true, name: path.replace(currentPrefix, "").replace("/", "") })), ...filteredFiles].map((item: LocalFile | { path: string; isDirectory: boolean; name: string }) => {
                                                 const path = item.path;
                                                 const isDirectory = item.isDirectory;
                                                 const name = isDirectory ? item.name : (item as LocalFile).name;
@@ -524,7 +525,7 @@ export function LocalStorageManager() {
                                         </tbody>
                                     </table>
                                 )}
-                                renderCard={(item: any) => {
+                                renderCard={(item: LocalFile | { path: string; isDirectory: boolean; name: string }) => {
                                     const path = item.path;
                                     const isDirectory = item.isDirectory;
                                     const name = isDirectory ? item.name : (item as LocalFile).name;
@@ -710,7 +711,12 @@ export function LocalStorageManager() {
                             )}
                             <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
-                                    onClick={() => window.open(previewFile.url, '_blank')}
+                                    onClick={() => {
+                                        const win = window.open(previewFile.url, '_blank');
+                                        if (!win) {
+                                            toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+                                        }
+                                    }}
                                     className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl transition-colors"
                                 >
                                     <ExternalLink size={18} />
@@ -720,7 +726,12 @@ export function LocalStorageManager() {
 
                         <div className="flex gap-3">
                             <Button
-                                onClick={() => window.open(previewFile.url, '_blank')}
+                                onClick={() => {
+                                    const win = window.open(previewFile.url, '_blank');
+                                    if (!win) {
+                                        toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+                                    }
+                                }}
                                 className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
                             >
                                 <ExternalLink size={16} className="mr-2" />

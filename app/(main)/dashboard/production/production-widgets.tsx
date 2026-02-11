@@ -17,7 +17,7 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 mb-8">
             {/* Main Stats: Active in Production - Span 6 */}
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 bg-[#f59e0b] text-white rounded-[var(--radius-outer)] p-8 flex flex-col justify-between relative overflow-hidden group shadow-2xl shadow-[#f59e0b]/30 border border-[#f59e0b]">
+            <div className="crm-card col-span-12 md:col-span-6 lg:col-span-6 !bg-[#f59e0b] text-white flex flex-col justify-between relative group !shadow-2xl !shadow-[#f59e0b]/30 !border-[#f59e0b]">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl opacity-50 group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
 
                 <div className="flex items-start justify-between relative z-10">
@@ -54,7 +54,7 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
             {/* Right Column Grid - Span 6 */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Urgent Attention */}
-                <div className="col-span-1 sm:col-span-2 bg-white p-6 rounded-[var(--radius-outer)] border border-rose-100 shadow-crm-md relative overflow-hidden group hover:border-rose-200 transition-all duration-300">
+                <div className="crm-card col-span-1 sm:col-span-2 !border-rose-100 relative group hover:!border-rose-200">
                     <div className="absolute right-0 top-0 w-32 h-32 bg-rose-50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50" />
                     <div className="flex items-center gap-4 relative z-10">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-rose-50 flex items-center justify-center text-rose-500 shadow-sm">
@@ -68,7 +68,7 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                 </div>
 
                 {/* Efficiency */}
-                <div className="bg-white p-6 rounded-[var(--radius-outer)] border border-slate-200/60 shadow-crm-md relative overflow-hidden group hover:shadow-crm-lg transition-all duration-300">
+                <div className="crm-card relative group">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-10 h-10 rounded-[12px] bg-primary/5 flex items-center justify-center text-primary">
                             <Gauge className="w-5 h-5" />
@@ -82,7 +82,7 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                 </div>
 
                 {/* Completed Today */}
-                <div className="bg-white p-6 rounded-[var(--radius-outer)] border border-slate-200/60 shadow-crm-md relative overflow-hidden group hover:shadow-crm-lg transition-all duration-300">
+                <div className="crm-card relative group">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-10 h-10 rounded-[12px] bg-emerald-50 flex items-center justify-center text-emerald-600">
                             <CheckCircle2 className="w-5 h-5" />

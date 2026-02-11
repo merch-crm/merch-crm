@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Plus, Search, Calendar, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, CreateExpenseData } from "./actions";
 import { format } from "date-fns";
@@ -62,10 +64,10 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </Button>
             </div>
 
-            <div className="flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4 items-center bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm">
+            <div className="crm-card !p-6 flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input
+                    <Input
                         type="text"
                         placeholder="Поиск по описанию или категории..."
                         value={searchQuery}
@@ -75,7 +77,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="crm-card !p-0 border-slate-200/60 shadow-sm overflow-hidden">
                 <ResponsiveDataView
                     data={filteredExpenses}
                     mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
@@ -187,6 +189,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
 function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: (e: Expense) => void }) {
     const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
+    const [category, setCategory] = useState("purchase");
     const { toast } = useToast();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -222,23 +225,28 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             <form onSubmit={handleSubmit} className="p-4 space-y-6">
                 <div className="space-y-1.5">
                     <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
-                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
+                    <Input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                         <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
-                        <select name="category" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm">
-                            <option value="purchase">Закупки</option>
-                            <option value="rent">Аренда</option>
-                            <option value="salary">Зарплата</option>
-                            <option value="tax">Налоги</option>
-                            <option value="other">Прочее</option>
-                        </select>
+                        <PremiumSelect
+                            name="category"
+                            options={[
+                                { id: "purchase", title: "Закупки" },
+                                { id: "rent", title: "Аренда" },
+                                { id: "salary", title: "Зарплата" },
+                                { id: "tax", title: "Налоги" },
+                                { id: "other", title: "Прочее" }
+                            ]}
+                            value={category}
+                            onChange={setCategory}
+                        />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-sm font-bold text-slate-700 ml-1">Сумма {currencySymbol}</label>
-                        <input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
+                        <Input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-lg" />
                     </div>
                 </div>
 

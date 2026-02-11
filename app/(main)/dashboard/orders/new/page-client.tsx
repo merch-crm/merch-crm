@@ -18,10 +18,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { createOrder, searchClients } from "../actions";
+import { createOrder, searchClients, ActionResponse } from "../actions";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { useBranding } from "@/components/branding-provider";
 
 interface Client {
@@ -63,13 +66,19 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     const [searchResults, setSearchResults] = useState<Client[]>([]);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
-    const [searchHistory, setSearchHistory] = useState<string[]>(() => {
-        if (typeof window !== 'undefined') {
-            const history = localStorage.getItem("client_search_history");
-            return history ? JSON.parse(history) : [];
+    const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+    useEffect(() => {
+        const history = localStorage.getItem("client_search_history");
+        if (history) {
+            try {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setSearchHistory(JSON.parse(history));
+            } catch (e) {
+                console.error("Failed to parse search history", e);
+            }
         }
-        return [];
-    });
+    }, []);
     const [showHistory, setShowHistory] = useState(false);
 
     const addToHistory = (query: string) => {
@@ -173,7 +182,11 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         setLoading(true);
 
         const formData = new FormData();
-        if (!selectedClient) return;
+        if (!selectedClient) {
+            toast("Выберите клиента", "destructive");
+            setLoading(false);
+            return;
+        }
         formData.append("clientId", selectedClient.id);
         formData.append("priority", details.priority);
         formData.append("isUrgent", details.isUrgent ? "true" : "false");
@@ -188,10 +201,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             description: item.name
         }))));
 
-        const res = await createOrder(formData);
+        const res: ActionResponse = await createOrder(formData);
         setLoading(false);
 
-        if (res.error) {
+        if (!res.success) {
             toast(res.error, "error");
             playSound("notification_error");
         } else {
@@ -227,7 +240,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     ];
 
     return (
-        <div className="flex-1 flex flex-col md:h-[calc(100vh-130px)] overflow-hidden bg-slate-50/50">
+        <div className="flex-1 flex flex-col md:h-[calc(100vh-130px)] overflow-hidden bg-muted/50">
             <div className="px-8 pt-6 shrink-0">
                 <Breadcrumbs
                     items={[
@@ -239,14 +252,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
             <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-4 px-4 sm:px-8 pb-8 pt-4 overflow-y-auto lg:overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-full lg:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto lg:h-full">
+                <aside className="crm-card w-full lg:w-[320px] flex-shrink-0 h-fit sticky top-6 z-10 hidden lg:block overflow-hidden h-auto lg:h-full">
                     <div className="p-6 shrink-0">
-                        <button onClick={handleBack} className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm">
+                        <Button variant="ghost" onClick={handleBack} className="pl-0 gap-2 text-muted-foreground hover:text-foreground font-bold mb-4 group h-auto hover:bg-transparent">
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             Назад
-                        </button>
-                        <h1 className="text-2xl font-bold text-slate-900 leading-tight">Новый заказ</h1>
-                        <p className="text-[11px] text-slate-500 font-bold opacity-60 mt-1  tracking-wider">Оформление в CRM</p>
+                        </Button>
+                        <h1 className="text-2xl font-bold text-foreground leading-tight">Новый заказ</h1>
+                        <p className="text-[11px] text-muted-foreground font-bold opacity-60 mt-1  tracking-wider">Оформление в CRM</p>
                     </div>
 
                     <div className="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
@@ -261,25 +274,25 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                 }}
                                 className={cn(
                                     "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                    step === s.id ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                    step === s.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-muted active:scale-[0.98]"
                                 )}
                             >
                                 <div className={cn(
                                     "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
-                                    step === s.id ? "bg-white/10 border-white/20" : step > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-200"
+                                    step === s.id ? "bg-white/10 border-white/20" : step > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-muted border-border"
                                 )}>
                                     {step > s.id ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className={cn("text-xs font-bold leading-none mb-1", step === s.id ? "text-white" : "text-slate-900")}>{s.title}</div>
-                                    <div className={cn("text-[10px] font-bold truncate", step === s.id ? "text-white/60" : "text-slate-400")}>{s.desc}</div>
+                                    <div className={cn("text-xs font-bold leading-none mb-1", step === s.id ? "text-primary-foreground" : "text-foreground")}>{s.title}</div>
+                                    <div className={cn("text-[10px] font-bold truncate", step === s.id ? "text-primary-foreground/60" : "text-muted-foreground")}>{s.desc}</div>
                                 </div>
                             </button>
                         ))}
                     </div>
 
-                    <div className="h-[80px] border-t border-slate-200 bg-white px-7 flex items-center">
-                        <div className="text-[10px] font-bold text-slate-400  tracking-normal">
+                    <div className="h-[80px] border-t border-border bg-card px-7 flex items-center">
+                        <div className="text-[10px] font-bold text-muted-foreground tracking-normal">
                             {selectedClient ? selectedClient.name : "Клиент не выбран"}
                         </div>
                     </div>
@@ -287,16 +300,16 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
-                    <div className="bg-white rounded-3xl shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]">
+                    <div className="crm-card flex-1 min-w-0 flex flex-col h-full min-h-[400px]">
                         <div className="flex-1 overflow-y-auto p-6 md:p-10">
                             {step === 0 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <h4 className="text-lg font-bold text-slate-900">Выберите клиента</h4>
+                                    <h4 className="text-lg font-bold text-foreground">Выберите клиента</h4>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Search className="h-5 w-5 text-slate-400" />
+                                            <Search className="h-5 w-5 text-muted-foreground" />
                                         </div>
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="Поиск по имени, email или телефону..."
                                             value={searchQuery}
@@ -308,12 +321,12 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                     addToHistory(searchQuery);
                                                 }
                                             }}
-                                            className="w-full h-12 pl-12 pr-4 rounded-2xl border-slate-200 bg-slate-50 text-sm font-medium focus:bg-white focus:border-slate-900 transition-all outline-none"
+                                            className="pl-12"
                                         />
                                         {showHistory && searchHistory.length > 0 && !selectedClient && (
-                                            <div className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
-                                                <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                                                    <span className="text-[10px] font-bold text-slate-400  tracking-normal">Недавние поиски</span>
+                                            <div className="absolute top-full left-0 w-full mt-2 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                                <div className="px-6 py-3 bg-muted border-b border-border flex justify-between items-center">
+                                                    <span className="text-[10px] font-bold text-muted-foreground tracking-normal">Недавние поиски</span>
                                                 </div>
                                                 <div className="p-2">
                                                     {searchHistory.map((h, i) => (
@@ -340,7 +353,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </div>
 
                                     {searchResults.length > 0 && !selectedClient && (
-                                        <div className="border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
+                                        <div className="border border-border rounded-2xl shadow-xl bg-card overflow-hidden">
                                             {searchResults.map((client) => (
                                                 <button
                                                     key={client.id}
@@ -349,12 +362,12 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         setSearchQuery("");
                                                         setSearchResults([]);
                                                     }}
-                                                    className="w-full flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors border-b last:border-0"
+                                                    className="w-full flex items-center gap-4 px-6 py-4 hover:bg-muted transition-colors border-b border-border last:border-0"
                                                 >
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 font-bold ">{client.name?.charAt(0)}</div>
+                                                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground font-bold ">{client.name?.charAt(0)}</div>
                                                     <div className="text-left">
-                                                        <p className="font-bold text-slate-900">{client.name}</p>
-                                                        <p className="text-xs text-slate-500">
+                                                        <p className="font-bold text-foreground">{client.name}</p>
+                                                        <p className="text-xs text-muted-foreground">
                                                             {client.company} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : client.phone}
                                                         </p>
                                                     </div>
@@ -364,15 +377,15 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     )}
 
                                     {selectedClient && (
-                                        <div className="p-6 rounded-2xl bg-primary text-white flex items-center justify-between shadow-lg shadow-primary/20">
+                                        <div className="p-6 rounded-2xl bg-primary text-primary-foreground flex items-center justify-between shadow-lg shadow-primary/20">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name[0]}</div>
                                                 <div>
                                                     <p className="font-bold">{selectedClient.name}</p>
-                                                    <p className="text-xs text-white/60  tracking-normal">{selectedClient.company || "Личный заказ"}</p>
+                                                    <p className="text-xs text-primary-foreground/60 tracking-normal">{selectedClient.company || "Личный заказ"}</p>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-2xl transition-all">Изменить</button>
+                                            <Button variant="ghost" onClick={() => setSelectedClient(null)} className="text-xs font-bold bg-white/10 hover:bg-white/20 hover:text-white px-4 py-2 rounded-2xl h-auto">Изменить</Button>
                                         </div>
                                     )}
                                 </div>
@@ -381,16 +394,16 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                             {step === 1 && (
                                 <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <div className="flex justify-between items-center">
-                                        <h4 className="text-lg font-bold text-slate-900">Выберите товары из каталога</h4>
-                                        <div className="text-xs font-bold text-slate-400">ВЫБРАНО: {selectedItems.length}</div>
+                                        <h4 className="text-lg font-bold text-foreground">Выберите товары из каталога</h4>
+                                        <div className="text-xs font-bold text-muted-foreground">ВЫБРАНО: {selectedItems.length}</div>
                                     </div>
 
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                                         {/* Catalog */}
                                         <div className="space-y-4">
                                             <div className="relative">
-                                                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                                                <input placeholder="Поиск товара..." className="w-full pl-9 pr-4 py-2 bg-slate-50 border-slate-200 rounded-2xl text-sm outline-none" />
+                                                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                                <Input placeholder="Поиск товара..." className="pl-9" />
                                             </div>
                                             <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2">
                                                 {inventory.map(item => (
@@ -398,54 +411,54 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         key={item.id}
                                                         disabled={selectedItems.some(i => i.id === item.id)}
                                                         onClick={() => addItem(item)}
-                                                        className="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all text-left disabled:opacity-50"
+                                                        className="flex items-center justify-between p-3 rounded-2xl border border-border hover:bg-muted transition-all text-left disabled:opacity-50"
                                                     >
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-bold"><Package className="w-5 h-5" /></div>
+                                                            <div className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground font-bold"><Package className="w-5 h-5" /></div>
                                                             <div>
-                                                                <p className="text-sm font-bold text-slate-900">{item.name}</p>
-                                                                <p className="text-[10px] text-slate-500  font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
+                                                                <p className="text-sm font-bold text-foreground">{item.name}</p>
+                                                                <p className="text-[10px] text-muted-foreground font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
                                                             </div>
                                                         </div>
-                                                        <Plus className="w-4 h-4 text-slate-400" />
+                                                        <Plus className="w-4 h-4 text-muted-foreground" />
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
 
                                         {/* Selected */}
-                                        <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-200 space-y-4">
-                                            <p className="text-xs font-bold text-slate-400  tracking-normal">Выбранные позиции</p>
+                                        <div className="bg-muted/50 rounded-2xl p-6 border border-border space-y-4">
+                                            <p className="text-xs font-bold text-muted-foreground tracking-normal">Выбранные позиции</p>
                                             {selectedItems.length === 0 ? (
-                                                <div className="h-40 flex flex-col items-center justify-center text-slate-300 gap-2">
-                                                    <ShoppingCart className="w-8 h-8 opacity-20" />
+                                                <div className="h-40 flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
+                                                    <ShoppingCart className="w-8 h-8 opacity-50" />
                                                     <p className="text-xs font-bold">Список пуст</p>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-3">
                                                     {selectedItems.map(item => (
-                                                        <div key={item.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                                                        <div key={item.id} className="bg-card p-4 rounded-2xl shadow-sm border border-border space-y-4">
                                                             <div className="flex justify-between items-start">
                                                                 <p className="text-sm font-bold">{item.name}</p>
-                                                                <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-rose-500 font-bold">Удалить</button>
+                                                                <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive font-bold text-xs">Удалить</button>
                                                             </div>
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Кол-во</label>
-                                                                    <input
+                                                                    <label className="text-sm font-bold text-muted-foreground ml-1">Кол-во</label>
+                                                                    <Input
                                                                         type="number"
                                                                         value={item.orderQuantity || 0}
                                                                         onChange={(e) => updateItem(item.id, { orderQuantity: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-3 py-2 text-sm"
+                                                                        className="h-10"
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-sm font-bold text-slate-700 ml-1">Цена ({currencySymbol})</label>
-                                                                    <input
+                                                                    <label className="text-sm font-bold text-muted-foreground ml-1">Цена ({currencySymbol})</label>
+                                                                    <Input
                                                                         type="number"
                                                                         value={item.price || 0}
                                                                         onChange={(e) => updateItem(item.id, { price: Number(e.target.value) })}
-                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-3 py-2 text-sm"
+                                                                        className="h-10"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -460,93 +473,95 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
                             {step === 2 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <h4 className="text-lg font-bold text-slate-900">Детали заказа</h4>
+                                    <h4 className="text-lg font-bold text-foreground">Детали заказа</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700 ml-1">Приоритет</label>
-                                            <select
+                                            <label className="text-sm font-bold text-muted-foreground ml-1">Приоритет</label>
+                                            <PremiumSelect
                                                 value={details.priority}
-                                                onChange={(e) => setDetails({ ...details, priority: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
-                                            >
-                                                <option value="low">Низкий</option>
-                                                <option value="medium">Средний</option>
-                                                <option value="high">Высокий</option>
-                                            </select>
+                                                onChange={(val) => setDetails({ ...details, priority: val })}
+                                                options={[
+                                                    { id: "low", title: "Низкий" },
+                                                    { id: "medium", title: "Средний" },
+                                                    { id: "high", title: "Высокий" }
+                                                ]}
+                                                placeholder="Выберите приоритет"
+                                            />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700 ml-1">Дедлайн</label>
-                                            <input
+                                            <label className="text-sm font-bold text-muted-foreground ml-1">Дедлайн</label>
+                                            <Input
                                                 type="date"
                                                 value={details.deadline}
                                                 onChange={(e) => setDetails({ ...details, deadline: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700 ml-1">Срочный заказ</label>
+                                            <label className="text-sm font-bold text-muted-foreground ml-1">Срочный заказ</label>
                                             <div
                                                 onClick={() => setDetails({ ...details, isUrgent: !details.isUrgent })}
                                                 className={cn(
-                                                    "w-full h-12 px-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all",
-                                                    details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-slate-50 border-slate-200 text-slate-400"
+                                                    "w-full h-12 px-4 rounded-[var(--radius)] border flex items-center justify-between cursor-pointer transition-all",
+                                                    details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-muted/50 border-border text-muted-foreground hover:bg-muted"
                                                 )}
                                             >
                                                 <span>{details.isUrgent ? "ДА, СРОЧНО" : "НЕТ"}</span>
-                                                <div className={cn("w-2 h-2 rounded-full", details.isUrgent ? "bg-rose-500" : "bg-slate-300")} />
+                                                <div className={cn("w-2 h-2 rounded-full", details.isUrgent ? "bg-rose-500" : "bg-muted-foreground/30")} />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700 ml-1">Способ оплаты</label>
-                                            <select
+                                            <label className="text-sm font-bold text-muted-foreground ml-1">Способ оплаты</label>
+                                            <PremiumSelect
                                                 value={details.paymentMethod}
-                                                onChange={(e) => setDetails({ ...details, paymentMethod: e.target.value })}
-                                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white outline-none appearance-none"
-                                            >
-                                                <option value="cash">Наличные</option>
-                                                <option value="bank">Безнал (Карта)</option>
-                                                <option value="online">Онлайн-касса</option>
-                                                <option value="account">Расчетный счет</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <label className="text-sm font-bold text-slate-700 ml-1">Предоплата ({currencySymbol})</label>
-                                        <div className="relative">
-                                            <CreditCard className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
-                                            <input
-                                                type="number"
-                                                value={details.advanceAmount}
-                                                onChange={(e) => setDetails({ ...details, advanceAmount: e.target.value })}
-                                                className="w-full h-12 pl-12 pr-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-lg focus:bg-white focus:border-slate-900 outline-none"
+                                                onChange={(val) => setDetails({ ...details, paymentMethod: val })}
+                                                options={[
+                                                    { id: "cash", title: "Наличные" },
+                                                    { id: "bank", title: "Безнал (Карта)" },
+                                                    { id: "online", title: "Онлайн-касса" },
+                                                    { id: "account", title: "Расчетный счет" }
+                                                ]}
+                                                placeholder="Выберите способ оплаты"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-[11px] font-bold text-slate-400  tracking-normal ml-1">Промокод</label>
+                                        <label className="text-sm font-bold text-muted-foreground ml-1">Предоплата ({currencySymbol})</label>
+                                        <div className="relative">
+                                            <CreditCard className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                                            <Input
+                                                type="number"
+                                                value={details.advanceAmount}
+                                                onChange={(e) => setDetails({ ...details, advanceAmount: e.target.value })}
+                                                className="pl-12"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <label className="text-[11px] font-bold text-muted-foreground tracking-normal ml-1">Промокод</label>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <Tag className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
-                                                <input
+                                                <Tag className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                                                <Input
                                                     type="text"
                                                     placeholder="Введите промокод..."
                                                     value={promoInput}
                                                     onChange={(e) => setPromoInput(e.target.value)}
-                                                    className="w-full h-12 pl-12 pr-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm focus:bg-white focus:border-slate-900 outline-none "
+                                                    className="pl-12"
                                                 />
                                             </div>
-                                            <button
+                                            <Button
                                                 onClick={handleApplyPromo}
                                                 disabled={isApplyingPromo || !promoInput}
-                                                className="h-12 px-6 rounded-2xl bg-slate-100 font-bold text-slate-900 hover:bg-slate-200 transition-all disabled:opacity-50"
+                                                variant="secondary"
+                                                className="h-12 px-6"
                                             >
                                                 {isApplyingPromo ? "..." : "Применить"}
-                                            </button>
+                                            </Button>
                                         </div>
                                         {details.appliedPromo && (
                                             <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-2xl animate-in fade-in slide-in-from-top-2">
@@ -569,15 +584,15 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
                             {step === 3 && (
                                 <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <h4 className="text-xl font-bold text-slate-900">Подтверждение заказа</h4>
+                                    <h4 className="text-xl font-bold text-foreground">Подтверждение заказа</h4>
 
-                                    <div className="bg-slate-50 rounded-2xl p-6 space-y-4">
-                                        <div className="flex justify-between border-b pb-4">
-                                            <span className="text-slate-500 font-bold text-xs  tracking-wider">Клиент</span>
+                                    <div className="bg-muted/50 rounded-2xl p-6 space-y-4">
+                                        <div className="flex justify-between border-b border-border pb-4">
+                                            <span className="text-muted-foreground font-bold text-xs tracking-wider">Клиент</span>
                                             <span className="font-bold">{selectedClient?.name}</span>
                                         </div>
                                         <div className="space-y-2">
-                                            <span className="text-slate-500 font-bold text-xs  tracking-wider">Товары</span>
+                                            <span className="text-muted-foreground font-bold text-xs tracking-wider">Товары</span>
                                             {selectedItems.map(item => (
                                                 <div key={item.id} className="flex justify-between text-sm py-1">
                                                     <span>{item.name} x {item.orderQuantity || 0}</span>
@@ -585,19 +600,19 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="flex justify-between pt-4 border-t text-xl font-bold">
+                                        <div className="flex justify-between pt-4 border-t border-border text-xl font-bold">
                                             <span>ИТОГО</span>
                                             <div className="text-right">
                                                 {details.appliedPromo ? (
                                                     <>
-                                                        <span className="text-sm text-slate-400 line-through mr-2 font-bold">
+                                                        <span className="text-sm text-muted-foreground line-through mr-2 font-bold">
                                                             {selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0)} {currencySymbol}
                                                         </span>
                                                         <span>
                                                             {(() => {
                                                                 const total = selectedItems.reduce((acc, i) => acc + ((i.price || 0) * (i.orderQuantity || 0)), 0);
-                                                                const disc = details.appliedPromo?.calculatedDiscount || 0;
-                                                                return Math.max(0, Math.round(total - disc));
+                                                                const discount = details.appliedPromo?.calculatedDiscount ?? 0;
+                                                                return Math.max(0, Math.round(total - discount));
                                                             })()} {currencySymbol}
                                                         </span>
                                                     </>
@@ -609,13 +624,17 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--crm-grid-gap)]">
-                                        <div className="p-4 bg-white border rounded-2xl">
-                                            <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Приоритет</p>
-                                            <p className="font-bold  text-xs">{details.priority}</p>
+                                        <div className="p-4 bg-card border border-border rounded-2xl">
+                                            <p className="text-[10px] font-bold text-muted-foreground tracking-normal mb-1">Приоритет</p>
+                                            <p className="font-bold text-xs">{details.priority === 'low' ? 'Низкий' : details.priority === 'medium' ? 'Средний' : 'Высокий'}</p>
                                         </div>
-                                        <div className="p-4 bg-white border rounded-2xl">
-                                            <p className="text-[10px] font-bold text-slate-400  tracking-normal mb-1">Оплата</p>
-                                            <p className="font-bold  text-xs">{details.paymentMethod}</p>
+                                        <div className="p-4 bg-card border border-border rounded-2xl">
+                                            <p className="text-[10px] font-bold text-muted-foreground tracking-normal mb-1">Оплата</p>
+                                            <p className="font-bold text-xs">
+                                                {details.paymentMethod === 'cash' ? 'Наличные' :
+                                                    details.paymentMethod === 'bank' ? 'Безнал (Карта)' :
+                                                        details.paymentMethod === 'online' ? 'Онлайн-касса' : 'Расчетный счет'}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -623,22 +642,22 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 md:px-10 py-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center bg-slate-50/30 gap-4">
+                        <div className="px-6 md:px-10 py-6 border-t border-border flex flex-col sm:flex-row justify-between items-center bg-muted/30 gap-4">
                             <div className="flex flex-col">
                                 {validationError && (
                                     <span className="text-rose-500 text-xs font-bold animate-in fade-in slide-in-from-left-2">{validationError}</span>
                                 )}
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={handleBack} className="px-6 py-3 rounded-[var(--radius-inner)] border border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all">Назад</button>
+                                <Button variant="outline" onClick={handleBack} className="bg-background">Назад</Button>
                                 {step < 3 ? (
-                                    <button onClick={handleNext} className="px-8 py-3 btn-dark rounded-[var(--radius-inner)] text-sm font-bold shadow-lg transition-all flex items-center gap-2 border-none">
+                                    <Button onClick={handleNext} variant="btn-dark" className="px-8 shadow-lg gap-2">
                                         Далее <ChevronRight className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 ) : (
-                                    <button onClick={handleSubmit} disabled={loading} className="px-12 py-3 btn-dark rounded-[var(--radius-inner)] text-sm font-bold shadow-lg disabled:opacity-50 transition-all border-none">
+                                    <Button onClick={handleSubmit} disabled={loading} variant="btn-dark" className="px-12 shadow-lg">
                                         {loading ? "Создание..." : "Подтвердить и создать"}
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useRouter } from "next/navigation";
@@ -36,7 +37,6 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useBranding } from "@/components/branding-provider";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Promocode {
     id: string;
@@ -56,7 +56,6 @@ export interface Promocode {
 
 export function PromocodesClient({ initialData }: { initialData: Promocode[] }) {
     const { currencySymbol } = useBranding();
-    const isMobile = useIsMobile();
     const router = useRouter();
     const [data, setData] = useState(initialData);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -181,7 +180,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 md:min-w-[280px]">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
+                        <Input
                             type="text"
                             placeholder="ПОИСК КОДА..."
                             value={searchQuery}
@@ -264,7 +263,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     <div
                         key={promo.id}
                         className={cn(
-                            "group bg-white rounded-[12px] border border-slate-200 p-5 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden flex flex-col justify-between",
+                            "group crm-card !p-5 !rounded-[12px] hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden flex flex-col justify-between",
                             !promo.isActive && "opacity-75"
                         )}
                     >
@@ -284,24 +283,30 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => handleOpenEdit(promo)}
-                                        className="p-1.5 text-slate-400 hover:text-primary transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-primary transition-colors h-8 w-8"
                                     >
                                         <Edit3 className="w-4 h-4" />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => handleToggle(promo.id, promo.isActive)}
-                                        className="p-1.5 text-slate-400 hover:text-emerald-500 transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-emerald-500 transition-colors h-8 w-8"
                                     >
                                         {promo.isActive ? <ToggleRight className="w-5 h-5 text-emerald-500" /> : <ToggleLeft className="w-5 h-5" />}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => handleDelete(promo.id)}
-                                        className="p-1.5 rounded-[var(--radius-inner)] text-slate-400 btn-destructive-ghost"
+                                        className="p-1.5 rounded-[var(--radius-inner)] text-slate-400 btn-destructive-ghost h-8 w-8"
                                     >
                                         <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -410,12 +415,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                 </p>
                             </div>
                         </div>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setIsDialogOpen(false)}
-                            className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95"
+                            className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95 h-10 w-10 p-0"
                         >
                             <X className="w-5 h-5" />
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="flex-1 p-6 sm:p-8 overflow-y-auto custom-scrollbar">
@@ -445,23 +452,23 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             <div className="grid grid-cols-1 sm:grid-cols-[1fr,120px] gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Название</label>
-                                    <input
+                                    <Input
                                         name="name"
                                         required
                                         value={promoName}
                                         onChange={(e) => handleNameChange(e.target.value)}
-                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12"
                                         placeholder="Напр. Летняя распродажа"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Код</label>
-                                    <input
+                                    <Input
                                         name="code"
                                         required
                                         value={promoCode}
                                         onChange={(e) => handleCodeChange(e.target.value)}
-                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 uppercase text-center tracking-wider"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 uppercase text-center tracking-wider h-12"
                                         placeholder="SALE26"
                                     />
                                 </div>
@@ -485,12 +492,12 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Значение / ID Подарка</label>
-                                    <input
+                                    <Input
                                         name="value"
                                         type="number"
                                         required
                                         defaultValue={editingPromo?.value}
-                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12"
                                         placeholder="10"
                                     />
                                 </div>
@@ -499,11 +506,11 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Мин. сумма заказа</label>
-                                    <input
+                                    <Input
                                         name="minOrderAmount"
                                         type="number"
                                         defaultValue={editingPromo?.minOrderAmount || "0"}
-                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12"
                                         placeholder="0"
                                     />
                                 </div>
@@ -523,22 +530,22 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Лимит использований</label>
-                                    <input
+                                    <Input
                                         name="usageLimit"
                                         type="number"
                                         defaultValue={editingPromo?.usageLimit || ""}
-                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12"
                                         placeholder="Безлимитно"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Дата истечения</label>
                                     <div className="relative">
-                                        <input
+                                        <Input
                                             name="expiresAt"
                                             type="date"
                                             defaultValue={editingPromo?.expiresAt ? format(new Date(editingPromo.expiresAt), "yyyy-MM-dd") : ""}
-                                            className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none"
+                                            className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none h-12"
                                         />
                                         <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
                                     </div>
@@ -548,14 +555,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     </div>
 
                     <div className="p-6 sm:p-8 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
-                        <button
+                        <Button
                             form="promocode-form"
                             type="submit"
                             disabled={isLoading}
-                            className="w-full btn-dark text-white py-4 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none"
+                            className="w-full btn-dark text-white py-8 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none h-16"
                         >
                             {isLoading ? "Сохранение..." : (editingPromo ? "Сохранить изменения" : "Создать промокод")}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </ResponsiveModal>
@@ -582,12 +589,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                 </p>
                             </div>
                         </div>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setIsBulkDialogOpen(false)}
-                            className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95"
+                            className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95 h-10 w-10 p-0"
                         >
                             <X className="w-5 h-5" />
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="flex-1 p-6 sm:p-8 overflow-y-auto custom-scrollbar">
@@ -614,17 +623,17 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                         }} className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Название группы</label>
-                                <input name="name" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="Напр. Акция для блогеров" />
+                                <Input name="name" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="Напр. Акция для блогеров" />
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Префикс (напр. SALE-)</label>
-                                    <input name="prefix" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all uppercase placeholder:text-slate-300 tracking-wider" placeholder="SALE-" />
+                                    <Input name="prefix" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all uppercase placeholder:text-slate-300 tracking-wider h-12" placeholder="SALE-" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Количество кодов</label>
-                                    <input name="count" type="number" required min="1" max="100" defaultValue="10" className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all" />
+                                    <Input name="count" type="number" required min="1" max="100" defaultValue="10" className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12" />
                                 </div>
                             </div>
 
@@ -646,7 +655,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] sm:text-[13px] font-bold text-slate-700 ml-1">Значение</label>
-                                    <input name="value" type="number" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="10" />
+                                    <Input name="value" type="number" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="10" />
                                 </div>
                             </div>
 
@@ -661,14 +670,14 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
                     </div>
 
                     <div className="p-6 sm:p-8 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
-                        <button
+                        <Button
                             form="bulk-promocode-form"
                             type="submit"
                             disabled={isLoading}
-                            className="w-full btn-dark text-white py-4 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none"
+                            className="w-full btn-dark text-white py-8 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none h-16"
                         >
                             {isLoading ? "Генерация..." : "Сгенерировать коды"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </ResponsiveModal>

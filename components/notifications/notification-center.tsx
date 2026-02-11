@@ -9,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 import { formatDate } from "@/lib/formatters";
 import { AnimatePresence, motion } from "framer-motion";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export interface Notification {
     id: string;
@@ -38,6 +39,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
     const [loading, setLoading] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const isMobile = useMediaQuery("(max-width: 767px)");
     const [now, setNow] = useState<Date | null>(null);
 
     const unreadCount = manualUnreadCount !== undefined ? manualUnreadCount : notifications.filter(n => !n.isRead).length;
@@ -102,15 +104,15 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
 
                         {/* Dropdown/Curtain Panel */}
                         <motion.div
-                            initial={typeof window !== 'undefined' && window.innerWidth < 768
+                            initial={isMobile
                                 ? { y: "-100%", opacity: 0 }
                                 : { opacity: 0, scaleY: 0.8, y: -10, originY: 0 }
                             }
-                            animate={typeof window !== 'undefined' && window.innerWidth < 768
+                            animate={isMobile
                                 ? { y: 0, opacity: 1 }
                                 : { opacity: 1, scaleY: 1, y: 0 }
                             }
-                            exit={typeof window !== 'undefined' && window.innerWidth < 768
+                            exit={isMobile
                                 ? { y: "-100%", opacity: 0 }
                                 : { opacity: 0, scaleY: 0.8, y: -10 }
                             }
@@ -119,7 +121,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                 ease: [0.16, 1, 0.3, 1],
                                 opacity: { duration: 0.2 }
                             }}
-                            drag={typeof window !== 'undefined' && window.innerWidth < 768 ? "y" : false}
+                            drag={isMobile ? "y" : false}
                             dragConstraints={{ top: 0, bottom: 0 }}
                             dragElastic={{ top: 1, bottom: 0.1 }}
                             onDragEnd={(_, info) => {

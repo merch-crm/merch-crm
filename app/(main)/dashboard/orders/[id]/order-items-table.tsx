@@ -1,8 +1,8 @@
 "use client";
 
-import { Package, ChevronRight } from "lucide-react";
+import { Package } from "lucide-react";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { cn } from "@/lib/utils";
+
 
 interface OrderItem {
     id: string;
@@ -21,7 +21,7 @@ interface OrderItemsTableProps {
 
 export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAmount, discountAmount }: OrderItemsTableProps) {
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="crm-card !p-0 overflow-hidden">
             <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
                 <h3 className="font-bold text-slate-900 flex items-center">
                     <Package className="w-5 h-5 mr-3 text-primary" />
@@ -77,7 +77,7 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                     </table>
                 )}
                 renderCard={(item) => (
-                    <div key={item.id} className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm space-y-3">
+                    <div key={item.id} className="crm-card !p-4 space-y-3">
                         <div className="text-sm font-bold text-slate-900">{item.description}</div>
                         <div className="flex justify-between items-center pt-2 border-t border-slate-50">
                             <div className="text-xs text-slate-500">Количество: <span className="font-bold text-slate-700">{item.quantity} шт</span></div>

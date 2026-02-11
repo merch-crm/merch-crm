@@ -73,7 +73,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                 const Icon = stage.icon;
 
                 return (
-                    <div key={stage.id} className="glass-panel p-5 min-h-[500px] flex flex-col">
+                    <div key={stage.id} className="crm-card min-h-[500px] flex flex-col">
                         {/* Column Header */}
                         <div className="flex items-center gap-3 md:gap-4 mb-5 pb-4 border-b border-slate-200">
                             <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[16px] flex items-center justify-center shrink-0", stage.color)}>

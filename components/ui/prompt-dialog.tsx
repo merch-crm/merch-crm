@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Edit3, AlertCircle } from "lucide-react";
+import { Edit3, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";

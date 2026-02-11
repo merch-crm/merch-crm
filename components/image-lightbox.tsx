@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, ZoomIn, ZoomOut, Maximize2, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useToast } from "@/components/ui/toast";
 
 
 interface ImageLightboxProps {
@@ -14,6 +15,7 @@ interface ImageLightboxProps {
 
 export function ImageLightbox({ src, alt, isOpen, onClose }: ImageLightboxProps) {
     const [scale, setScale] = useState(1);
+    const { toast } = useToast();
 
     useEffect(() => {
         if (isOpen) {
@@ -66,7 +68,10 @@ export function ImageLightbox({ src, alt, isOpen, onClose }: ImageLightboxProps)
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            window.open(src, "_blank");
+                            const win = window.open(src, "_blank");
+                            if (!win) {
+                                toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для просмотра изображения.", "error");
+                            }
                         }}
                         className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all border border-white/10"
                     >

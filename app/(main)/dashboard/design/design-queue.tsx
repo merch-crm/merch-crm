@@ -25,7 +25,7 @@ interface DesignQueueProps {
 
 export function DesignQueue({ orders }: DesignQueueProps) {
     return (
-        <div className="glass-panel p-6">
+        <div className="crm-card">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-xl font-bold text-slate-900">Очередь дизайна</h2>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { updateRolePermissions, updateRole, getDepartments, deleteRole } from "../actions";
-import { Loader2, Save, Shield, Building, Trash2, Check } from "lucide-react";
+import { Loader2, Save, Shield, Building, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DeleteRoleDialog } from "./delete-role-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";

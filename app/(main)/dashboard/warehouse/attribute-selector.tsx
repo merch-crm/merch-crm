@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useToast } from "@/components/ui/toast";
 
 interface AttributeSelectorProps {
     type: string;
@@ -31,6 +32,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
     const [customName, setCustomName] = useState("");
     const [customHex, setCustomHex] = useState("#000000");
     const [isSaving, setIsSaving] = useState(false);
+    const { toast } = useToast();
 
     const [dbAttributes, setDbAttributes] = useState<DbAttribute[]>([]);
 
@@ -258,7 +260,10 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             <button
                                 type="button"
                                 onClick={() => {
-                                    window.open("/dashboard/warehouse/characteristics", "_blank");
+                                    const win = window.open("/dashboard/warehouse/characteristics", "_blank");
+                                    if (!win) {
+                                        toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.", "error");
+                                    }
                                 }}
                                 className="flex items-center justify-between p-4 w-full bg-slate-900/[0.03] hover:bg-primary/5 border border-slate-200/60 hover:border-primary/20 rounded-[var(--radius-inner)] transition-all group/link mt-3 cursor-pointer"
                             >
@@ -413,7 +418,10 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             <button
                                 type="button"
                                 onClick={() => {
-                                    window.open("/dashboard/warehouse/characteristics", "_blank");
+                                    const win = window.open("/dashboard/warehouse/characteristics", "_blank");
+                                    if (!win) {
+                                        toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.", "error");
+                                    }
                                 }}
                                 className="flex items-center justify-between p-4 w-full bg-slate-900/[0.03] hover:bg-primary/5 border border-slate-200/60 hover:border-primary/20 rounded-[var(--radius-inner)] transition-all group/link mt-3 cursor-pointer"
                             >

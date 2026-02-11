@@ -381,7 +381,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="bg-white border border-slate-200/60 rounded-[20px] shadow-sm overflow-hidden"
+                            className="crm-card !rounded-[20px] overflow-hidden"
                         >
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
                                 {/* Period Filter */}
@@ -464,7 +464,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 </div>
 
                 {/* Table Area */}
-                <div className="crm-card border-none bg-white overflow-hidden shadow-sm">
+                <div className="crm-card !p-0 border-none overflow-hidden shadow-sm">
                     <ResponsiveDataView
                         data={currentPageItems}
                         mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"

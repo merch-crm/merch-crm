@@ -19,11 +19,11 @@ interface ItemActiveOrdersSectionProps {
 export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps) {
     if (orders.length === 0) {
         return (
-            <div className="py-8 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200/50">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3 border border-slate-200">
-                    <ShoppingBag className="w-6 h-6 text-slate-200" />
+            <div className="py-8 text-center bg-muted/50 rounded-2xl border-2 border-dashed border-border/50">
+                <div className="w-12 h-12 bg-card rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3 border border-border">
+                    <ShoppingBag className="w-6 h-6 text-muted-foreground/20" />
                 </div>
-                <p className="text-[10px] font-bold text-slate-400">Нет заказов</p>
+                <p className="text-[10px] font-bold text-muted-foreground">Нет заказов</p>
             </div>
         );
     }
@@ -41,14 +41,14 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                     <Link
                         key={item.id}
                         href={`/dashboard/orders/${item.order.id}`}
-                        className="group relative overflow-hidden p-5 rounded-2xl bg-[#F8FAFC]/50 hover:bg-white border border-slate-200 hover:shadow-crm-md transition-all duration-300 flex flex-col justify-between h-full"
+                        className="group relative overflow-hidden p-5 rounded-2xl bg-muted/50 hover:bg-card border border-border hover:shadow-crm-md transition-all duration-300 flex flex-col justify-between h-full"
                         style={{ animationDelay: `${idx * 50}ms` }}
                     >
                         {/* Status Batch */}
                         <div className="flex items-center justify-between mb-4">
-                            <div className="h-7 px-3 rounded-full bg-white border border-slate-200 shadow-sm flex items-center gap-2 transition-colors">
+                            <div className="h-7 px-3 rounded-full bg-card border border-border shadow-sm flex items-center gap-2 transition-colors">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[9px] font-bold text-slate-900 whitespace-nowrap">
+                                <span className="text-[9px] font-bold text-foreground whitespace-nowrap">
                                     Заказ #{item.order.orderNumber}
                                 </span>
                             </div>
@@ -60,12 +60,12 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                         {/* Middle Content */}
                         <div className="space-y-3 mb-4">
                             <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors shrink-0">
+                                <div className="w-8 h-8 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors shrink-0">
                                     <User className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] font-bold text-slate-400 mb-0.5">Клиент</p>
-                                    <p className="text-[12px] font-bold text-slate-710 truncate">
+                                    <p className="text-[10px] font-bold text-muted-foreground mb-0.5">Клиент</p>
+                                    <p className="text-[12px] font-bold text-foreground truncate">
                                         {item.order.client?.company || clientName}
                                     </p>
                                 </div>
@@ -73,9 +73,9 @@ export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps
                         </div>
 
                         {/* Footer Info */}
-                        <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                                <Calendar className="w-3.5 h-3.5 text-slate-300" />
+                        <div className="pt-4 border-t border-border/60 flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
+                                <Calendar className="w-3.5 h-3.5 text-muted-foreground/50" />
                                 <span>
                                     {(() => {
                                         const d = new Date(item.order.createdAt);

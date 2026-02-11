@@ -94,7 +94,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* System & Push Settings */}
-                <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-8">
+                <div className="crm-card space-y-8">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                             <Monitor className="w-6 h-6" />

@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TaskDetailsDialog } from "./task-details-dialog";
 import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 import { playSound } from "@/lib/sounds";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
@@ -81,7 +82,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
 
     if (tasks.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200 mt-6">
+            <div className="crm-card flex flex-col items-center justify-center py-20 !border-2 !border-dashed mt-6">
                 <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                     <CheckCircle2 className="w-8 h-8 text-slate-200" />
                 </div>
@@ -93,7 +94,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
 
     return (
         <>
-            <div className="flex flex-col bg-white rounded-3xl border border-slate-200 overflow-hidden mt-6">
+            <div className="crm-card flex flex-col !p-0 mt-6">
                 {tasks.map((task, index) => {
                     const config = getPriorityConfig(task.priority);
                     const isDone = task.status === "done";
@@ -109,17 +110,19 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                             )}
                         >
                             <div className="flex items-center gap-4 flex-1 min-w-0">
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={(e) => handleToggle(e, task.id, isDone ? "in_progress" : "done")}
                                     className={cn(
                                         "h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all active:scale-90 border-2",
                                         isDone
-                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200"
+                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200 hover:bg-emerald-600"
                                             : "bg-white border-slate-200 text-slate-200 hover:text-primary hover:border-primary/20"
                                     )}
                                 >
                                     <CheckCircle2 className={cn("w-5 h-5", isDone && "animate-in zoom-in-50")} />
-                                </button>
+                                </Button>
 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
@@ -159,12 +162,14 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0 ml-4">
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={(e) => handleDelete(e, task.id)}
                                     className="p-2 text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 md:block hidden"
                                 >
                                     <Trash2 className="w-4 h-4" />
-                                </button>
+                                </Button>
                                 <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                             </div>
                         </div>

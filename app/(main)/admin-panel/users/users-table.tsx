@@ -134,7 +134,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                 mobileGridClassName="grid grid-cols-1 gap-4 md:hidden"
                 desktopClassName="hidden md:block"
                 renderTable={() => (
-                    <div className="bg-white shadow-sm rounded-[18px] border border-gray-200 overflow-hidden">
+                    <div className="crm-card !p-0">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead>

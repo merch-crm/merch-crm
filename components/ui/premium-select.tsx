@@ -54,6 +54,7 @@ interface PremiumSelectProps {
     autoLayout?: boolean; // Включить автоматический выбор layout
     center?: boolean; // Центрировать содержимое
     triggerClassName?: string;
+    name?: string;
 }
 
 export function PremiumSelect({
@@ -72,6 +73,7 @@ export function PremiumSelect({
     autoLayout = true,
     center = false,
     triggerClassName,
+    name,
     align = "start"
 }: PremiumSelectProps & { align?: "start" | "center" | "end" }) {
     const [open, setOpen] = useState(false);
@@ -105,10 +107,12 @@ export function PremiumSelect({
     return (
         <div className={cn("relative", variant === "default" && "space-y-1.5", className)}>
             {label && (
-                <label className="block text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest leading-none mb-1.5">
+                <label className="block text-[10px] font-bold text-muted-foreground ml-1 uppercase tracking-widest leading-none mb-1.5">
                     {label}
                 </label>
             )}
+
+            {name && <input type="hidden" name={name} value={value} />}
 
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -119,11 +123,11 @@ export function PremiumSelect({
                             "w-full transition-all group disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
-                                "bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
+                                "bg-background border border-border rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
                                 compact ? "h-10 px-3.5" : "h-11 px-4",
                                 open && "ring-4 ring-primary/5 border-primary/20 shadow-md"
                             ] : [
-                                "bg-slate-50 rounded-[var(--radius-inner)] h-11 px-5 border border-slate-200/60 hover:border-slate-300",
+                                "bg-background rounded-[var(--radius-inner)] h-11 px-5 border border-border hover:border-border/80",
                                 open && "ring-4 ring-primary/5 border-primary/20"
                             ],
                             triggerClassName
@@ -133,7 +137,7 @@ export function PremiumSelect({
                             <span className={cn(
                                 "font-bold transition-colors truncate",
                                 compact ? "text-[12px]" : "text-sm",
-                                selectedOption ? "text-slate-900" : "text-slate-400"
+                                selectedOption ? "text-foreground" : "text-muted-foreground"
                             )}>
                                 {selectedOption ? selectedOption.title : placeholder}
                             </span>
@@ -144,7 +148,7 @@ export function PremiumSelect({
                             )}
                         </div>
                         <ChevronDown className={cn(
-                            "text-slate-400 transition-transform duration-300 shrink-0 ml-1.5",
+                            "text-muted-foreground transition-transform duration-300 shrink-0 ml-1.5",
                             variant === "minimal" ? "w-3 h-3" : "w-3.5 h-3.5",
                             open && "rotate-180 text-primary"
                         )} />
@@ -169,21 +173,21 @@ export function PremiumSelect({
                                     opacity: { duration: 0.2 }
                                 }}
                                 className={cn(
-                                    "rounded-[22px] bg-white border border-slate-200/60 overflow-hidden shadow-crm-xl ring-1 ring-black/[0.03]",
+                                    "rounded-[22px] bg-popover border border-border overflow-hidden shadow-crm-xl ring-1 ring-black/[0.03]",
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
                                 <div className="p-2.5 flex flex-col max-h-[340px] w-full h-full gap-2">
                                     {effectiveShowSearch && (
-                                        <div className="px-0.5 pb-2.5 border-b border-slate-50 mb-1">
+                                        <div className="px-0.5 pb-2.5 border-b border-border mb-1">
                                             <div className="relative">
-                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                                                 <input
                                                     autoFocus
                                                     type="text"
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
-                                                    className="w-full h-10 pl-9 pr-3 rounded-[12px] bg-slate-50 border-none outline-none text-xs font-bold placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-primary/5 transition-all"
+                                                    className="w-full h-10 pl-9 pr-3 rounded-[12px] bg-muted border-none outline-none text-xs font-bold placeholder:text-muted-foreground focus:bg-background focus:ring-2 focus:ring-primary/5 transition-all"
                                                 />
                                             </div>
                                         </div>
@@ -209,10 +213,10 @@ export function PremiumSelect({
                                                                 "transition-all text-left group/item rounded-[var(--radius-inner)] border",
                                                                 effectiveGridColumns ? [
                                                                     "flex flex-col items-center justify-center p-3 gap-1",
-                                                                    isSelected ? "bg-indigo-50 ring-2 ring-indigo-500/20 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 border-slate-200/60"
+                                                                    isSelected ? "bg-primary/5 ring-2 ring-primary/20 border-primary/20" : "bg-muted/50 hover:bg-muted border-border"
                                                                 ] : [
                                                                     "flex items-center gap-2 p-2.5",
-                                                                    isSelected ? "bg-indigo-50/30 border-indigo-200/50" : "border-transparent hover:bg-slate-50 hover:border-slate-200/60"
+                                                                    isSelected ? "bg-primary/5 border-primary/10" : "border-transparent hover:bg-muted hover:border-border"
                                                                 ]
                                                             )}
                                                         >
@@ -231,7 +235,7 @@ export function PremiumSelect({
                                                             {!effectiveGridColumns && !option.color && (
                                                                 <div className={cn(
                                                                     "w-2 h-2 rounded-full shrink-0",
-                                                                    isSelected ? "bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" : "bg-slate-200"
+                                                                    isSelected ? "bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" : "bg-muted-foreground/30"
                                                                 )} />
                                                             )}
                                                             {/* Color circle for list mode */}
@@ -255,14 +259,14 @@ export function PremiumSelect({
                                                                         <span className={cn(
                                                                             "font-bold leading-none",
                                                                             effectiveGridColumns ? "text-[13px]" : "text-[13px] whitespace-nowrap",
-                                                                            isSelected ? "text-indigo-600" : "text-slate-600 group-hover/item:text-slate-900"
+                                                                            isSelected ? "text-primary" : "text-muted-foreground group-hover/item:text-foreground"
                                                                         )}>
                                                                             {option.title}
                                                                         </span>
                                                                         {option.badge && (
                                                                             <span className={cn(
                                                                                 "text-[8px] font-bold px-1.5 py-0.5 rounded-full shrink-0",
-                                                                                isSelected ? "bg-white text-slate-900 shadow-sm" : "bg-primary/10 text-primary"
+                                                                                isSelected ? "bg-background text-foreground shadow-sm" : "bg-primary/10 text-primary"
                                                                             )}>
                                                                                 {option.badge}
                                                                             </span>
@@ -282,7 +286,7 @@ export function PremiumSelect({
                                             </div>
                                         ) : (
                                             <div className="p-6 text-center">
-                                                <p className="text-[11px] font-bold text-slate-300 tracking-wider">НИЧЕГО НЕ НАЙДЕНО</p>
+                                                <p className="text-[11px] font-bold text-muted-foreground/50 tracking-wider">НИЧЕГО НЕ НАЙДЕНО</p>
                                             </div>
                                         )}
                                     </div>

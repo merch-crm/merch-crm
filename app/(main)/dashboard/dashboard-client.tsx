@@ -20,6 +20,8 @@ import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 import { getDashboardStatsByPeriod, getDashboardNotifications } from "./actions";
@@ -140,7 +142,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
             <div className="grid grid-cols-12 gap-4">
 
                 {/* Hero / Welcome Card - Spans 8 cols */}
-                <div className="col-span-12 md:col-span-8 lg:col-span-8 relative group overflow-hidden bg-white rounded-2xl border border-slate-200 p-8 md:p-10 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="crm-card col-span-12 md:col-span-8 lg:col-span-8 relative group !p-8 md:!p-10">
                     {/* Background Decorative Elements */}
                     <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent rounded-full -mr-20 -mt-20 blur-3xl animate-pulse" />
 
@@ -177,7 +179,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 </div>
 
                 {/* Main Metric - Revenue - Spans 4 cols */}
-                <div className="col-span-12 md:col-span-4 lg:col-span-4 bg-[#212121] rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
+                <div className="crm-card col-span-12 md:col-span-4 lg:col-span-4 !bg-[#212121] !border-[#333] flex flex-col justify-between relative group !shadow-xl">
                     <div className="absolute top-0 right-0 p-8">
                         <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
                             <TrendingUp className="h-6 w-6 text-primary" />
@@ -208,7 +210,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 {/* Secondary Metrics Row */}
                 <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Metric 1 */}
-                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="crm-card group">
                         <div className="flex justify-between items-start mb-6">
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
                                 <Users className="h-5 w-5" />
@@ -222,7 +224,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                     </div>
 
                     {/* Metric 2 */}
-                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="crm-card group">
                         <div className="flex justify-between items-start mb-6">
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
                                 <ShoppingBag className="h-5 w-5" />
@@ -236,7 +238,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                     </div>
 
                     {/* Metric 3 */}
-                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="crm-card group">
                         <div className="flex justify-between items-start mb-6">
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
                                 <Rouble className="h-5 w-5" />
@@ -262,7 +264,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 {/* Primary Action Button - Spans full width or grid */}
                 <div className="col-span-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Link href={primaryAction.href} className="group flex flex-col">
-                        <div className="h-full bg-primary rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white shadow-lg shadow-primary/20 hover:opacity-90 transition-all duration-300">
+                        <div className="crm-card h-full !bg-primary !border-primary flex flex-col items-center justify-center gap-4 text-white !shadow-lg !shadow-primary/20 hover:opacity-90">
                             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20 transition-all">
                                 <Plus className="h-8 w-8 text-white" />
                             </div>
@@ -272,7 +274,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
                     {actions.map((action) => (
                         <Link key={action.name} href={action.href} className="group">
-                            <div className="h-full bg-white rounded-2xl p-6 flex flex-col items-center justify-center gap-4 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="crm-card h-full flex flex-col items-center justify-center gap-4">
                                 <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-all", action.color === "bg-primary" ? "bg-primary/10" : action.color.replace('bg-', 'bg-').replace('500', '50'))}>
                                     <action.icon className={cn("h-7 w-7", action.color === "bg-primary" ? "text-primary" : action.color.replace('bg-', 'text-').replace('500', '600'))} />
                                 </div>
@@ -283,7 +285,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 </div>
 
                 {/* Bottom Decorative Row */}
-                <div className="col-span-12 lg:col-span-4 bg-primary rounded-2xl p-8 text-white relative overflow-hidden group shadow-lg shadow-primary/10">
+                <div className="crm-card col-span-12 lg:col-span-4 !bg-primary !border-primary text-white relative group !shadow-lg !shadow-primary/10">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
                     <div className="relative z-10">
                         < Zap className="w-8 h-8 text-primary-foreground/20 mb-4" />
@@ -297,13 +299,13 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                     </div>
                 </div>
 
-                <div className="col-span-12 lg:col-span-8 bg-white rounded-2xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
+                <div className="crm-card col-span-12 lg:col-span-8 relative group">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h4 className="text-xl font-bold text-slate-900 tracking-normal">Последние уведомления</h4>
                             <p className="text-slate-400 text-xs font-medium">Обновлено только что</p>
                         </div>
-                        <button className="text-primary text-xs font-bold hover:underline">Прочитать все</button>
+                        <Button variant="ghost" size="sm" className="text-primary text-xs font-bold hover:underline">Прочитать все</Button>
                     </div>
 
                     <div className="space-y-3">

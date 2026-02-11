@@ -83,15 +83,17 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const loadDialogData = useCallback(async (type: string) => {
         if (type === 'storage' && !locations.length) {
             const [i, l, u] = await Promise.all([getInventoryItems(), getStorageLocations(), getAllUsers()]);
-            setItems(i.data || []); setLocations(l.data || []); setUsers(u.data || []);
+            setItems(('data' in i && i.data) ? i.data : []);
+            setLocations(('data' in l && l.data) ? l.data : []);
+            setUsers(('data' in u && u.data) ? u.data : []);
         }
         if (type === 'history' && !history.length) {
             const h = await getInventoryHistory();
-            setHistory(h.data || []);
+            setHistory(('data' in h && h.data) ? h.data : []);
         }
         if (type === 'characteristics' && !categories.length) {
             const c = await getInventoryCategories();
-            setCategories(c.data || []);
+            setCategories(('data' in c && c.data) ? c.data : []);
         }
     }, [locations.length, history.length, categories.length]);
 
@@ -185,7 +187,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                     </div>
 
                     {/* Tabs Navigation */}
-                    <div className="glass-panel w-full p-1.5 rounded-[22px]">
+                    <div className="crm-card w-full !p-1.5 !rounded-[22px]">
                         {/* Mobile Navigation (Icons Only) */}
                         <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-2xl">
                             {TABS.map((tab) => {

@@ -4,11 +4,12 @@
 import React, { useState, useEffect } from "react";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../types";
 import { Printer, X, AlignLeft, AlignCenter, RotateCw, Download, Minus, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, escapeHtml } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useBranding } from "@/components/branding-provider";
+import { useToast } from "@/components/ui/toast";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;
@@ -49,6 +50,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
     const branding = useBranding();
     const { currencySymbol } = branding;
+    const { toast } = useToast();
     const [alignment, setAlignment] = useState<'center' | 'left'>('center');
     const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('side-by-side');
     const [quantity, setQuantity] = useState(1);
@@ -135,7 +137,10 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return;
+        if (!printWindow) {
+            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
+            return;
+        }
 
         const styles = `
             @page {
@@ -187,7 +192,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Печать этикеток - ${item.name}</title>
+                    <title>Печать этикеток - ${escapeHtml(item.name)}</title>
                     <style>${styles}</style>
                 </head>
                 <body>

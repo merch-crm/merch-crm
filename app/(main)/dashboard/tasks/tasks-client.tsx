@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Search,
     Filter,
@@ -19,6 +19,8 @@ import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Task } from "./types";
 import { X } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { Input } from "@/components/ui/input";
 
 
 interface User {
@@ -48,6 +50,7 @@ interface TasksClientProps {
 export function TasksClient({ initialTasks, users, departments, orders, currentUserId, currentUserDepartmentId }: TasksClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const isMobile = useMediaQuery("(max-width: 767px)");
     const [searchQuery, setSearchQuery] = useState("");
 
     // Initialize from URL params
@@ -60,8 +63,15 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     const [view, setView] = useState<'kanban' | 'calendar' | 'analytics' | 'list'>(
         initialView && ['kanban', 'calendar', 'analytics', 'list'].includes(initialView)
             ? initialView as 'kanban' | 'calendar' | 'analytics' | 'list'
-            : (typeof window !== 'undefined' && window.innerWidth < 768 ? 'list' : 'kanban')
+            : 'kanban'
     );
+
+    useEffect(() => {
+        if (!initialView && isMobile === true) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setView('list');
+        }
+    }, [initialView, isMobile]);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
 
@@ -104,7 +114,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     return (
         <div className="space-y-4 animate-in fade-in duration-500 h-full flex flex-col">
             {/* Premium Header */}
-            <div className="relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-xl shadow-slate-200/50 shrink-0 mb-6">
+            <div className="crm-card relative shrink-0 mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
 
@@ -122,7 +132,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                     <div className="flex items-center gap-4">
                         <div className="relative group flex-1">
                             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Найти поручение..."
                                 value={searchQuery}
