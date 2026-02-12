@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 import { Button } from "@/components/ui/button";

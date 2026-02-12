@@ -108,12 +108,12 @@ const FolderRow = ({ folderPrefix, currentPrefix, isSelected, isMultiSelectMode,
     return (
         <tr
             className={cn(
-                "crm-tr transition-colors group",
-                isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
+                "crm-tr-clickable group",
+                isSelected && "crm-tr-selected"
             )}
         >
             {isMultiSelectMode && (
-                <td className="crm-td w-12 text-center">
+                <td className="crm-td crm-td-selection text-center">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -148,7 +148,7 @@ const FolderRow = ({ folderPrefix, currentPrefix, isSelected, isMultiSelectMode,
             <td className="crm-td text-right">
                 <span className="text-[10px] font-bold text-slate-400 ">---</span>
             </td>
-            <td className="crm-td">
+            <td className="crm-td crm-td-actions">
                 <div className="flex items-center justify-center gap-2">
                     {!isMultiSelectMode && (
                         <>
@@ -206,12 +206,12 @@ const FileRow = ({ file, currentPrefix, isSelected, isMultiSelectMode, onSelect,
     return (
         <tr
             className={cn(
-                "crm-tr transition-colors group",
-                isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
+                "crm-tr-clickable group",
+                isSelected && "crm-tr-selected"
             )}
         >
             {isMultiSelectMode && (
-                <td className="crm-td w-12 text-center">
+                <td className="crm-td crm-td-selection text-center">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -251,7 +251,7 @@ const FileRow = ({ file, currentPrefix, isSelected, isMultiSelectMode, onSelect,
             <td className="crm-td text-right">
                 <span className="text-xs font-mono font-bold text-slate-500">{formatSize(file.size)}</span>
             </td>
-            <td className="crm-td">
+            <td className="crm-td crm-td-actions">
                 <div className="flex items-center justify-center gap-2">
                     {!isMultiSelectMode && (
                         <>
@@ -742,9 +742,9 @@ export function S3StorageManager() {
                                             <div className="table-container">
                                                 <table className="crm-table">
                                                     <thead className="crm-thead">
-                                                        <tr className="crm-tr">
+                                                        <tr>
                                                             {isMultiSelectMode && (
-                                                                <th className="crm-th w-12 text-center">
+                                                                <th className="crm-th crm-td-selection text-center">
                                                                     <button
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
@@ -769,7 +769,7 @@ export function S3StorageManager() {
                                                             )}
                                                             <th className="crm-th">Наименование</th>
                                                             <th className="crm-th text-right">Размер</th>
-                                                            <th className="crm-th text-center">Действия</th>
+                                                            <th className="crm-th crm-td-actions text-center">Действия</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="crm-tbody">

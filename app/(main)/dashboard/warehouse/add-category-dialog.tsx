@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, createElement, type ReactNode } from "react";
+import { useState, createElement } from "react";
 import { FolderPlus, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getIconNameFromName, getGradientStyles, getColorStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
+import { getIconNameFromName, getGradientStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 

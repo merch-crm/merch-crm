@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Shield, Loader2, Building, ChevronDown, Check } from "lucide-react";
+import { Plus, Shield, Loader2, Building, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PremiumSelect } from "@/components/ui/premium-select";

@@ -456,11 +456,11 @@ export function LocalStorageManager() {
                                     <div className="table-container">
                                         <table className="crm-table">
                                             <thead className="crm-thead">
-                                                <tr className="crm-tr">
-                                                    {isMultiSelectMode && <th className="crm-th w-12"></th>}
+                                                <tr>
+                                                    {isMultiSelectMode && <th className="crm-th crm-td-selection"></th>}
                                                     <th className="crm-th">Наименование</th>
                                                     <th className="crm-th text-right">Размер</th>
-                                                    <th className="crm-th text-center">Действия</th>
+                                                    <th className="crm-th crm-td-actions text-center">Действия</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="crm-tbody">
@@ -474,13 +474,13 @@ export function LocalStorageManager() {
                                                         <tr
                                                             key={path}
                                                             className={cn(
-                                                                "crm-tr transition-colors group cursor-pointer",
-                                                                isSelected ? "bg-emerald-50" : "hover:bg-emerald-50/30"
+                                                                "crm-tr-clickable group",
+                                                                isSelected && "crm-tr-selected"
                                                             )}
                                                             onClick={() => !isMultiSelectMode && (isDirectory ? navigateTo(path) : handleFileClick(item as LocalFile))}
                                                         >
                                                             {isMultiSelectMode && (
-                                                                <td className="crm-td w-12">
+                                                                <td className="crm-td crm-td-selection">
                                                                     <button
                                                                         onClick={(e) => { e.stopPropagation(); toggleSelection(path); }}
                                                                         className="p-1 hover:bg-emerald-100 rounded transition-colors"
@@ -508,7 +508,7 @@ export function LocalStorageManager() {
                                                             <td className="crm-td text-right">
                                                                 <span className="text-xs font-mono font-bold text-slate-500">{isDirectory ? "---" : formatSize((item as LocalFile).size)}</span>
                                                             </td>
-                                                            <td className="crm-td">
+                                                            <td className="crm-td crm-td-actions">
                                                                 <div className="flex items-center justify-center gap-2">
                                                                     {!isMultiSelectMode && (
                                                                         <>
@@ -554,7 +554,7 @@ export function LocalStorageManager() {
                                             onClick={() => !isMultiSelectMode && (isDirectory ? navigateTo(path) : handleFileClick(item as LocalFile))}
                                             className={cn(
                                                 "p-4 rounded-[24px] border transition-all active:scale-[0.98] flex items-center justify-between gap-4",
-                                                isSelected ? "bg-emerald-50 border-emerald-200" : "bg-white border-slate-100 shadow-sm"
+                                                isSelected ? "crm-tr-selected" : "bg-white border-slate-100 shadow-sm"
                                             )}
                                         >
                                             <div className="flex items-center gap-4 min-w-0">

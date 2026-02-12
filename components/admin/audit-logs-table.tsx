@@ -358,7 +358,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                     <div className="table-container">
                         <table className="crm-table">
                             <thead className="crm-thead">
-                                <tr className="crm-tr">
+                                <tr>
                                     <th className="crm-th">Действие</th>
                                     <th className="crm-th">Тип объекта</th>
                                     <th className="crm-th">Пользователь</th>
@@ -387,7 +387,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                         const Icon = entity.icon;
                                         const formattedDetails = formatLogDetails(log.details);
                                         return (
-                                            <tr key={log.id} className="crm-tr hover:bg-slate-50/50 transition-colors group">
+                                            <tr key={log.id} className="crm-tr">
                                                 <td className="crm-td">
                                                     <div className="flex items-center gap-3">
                                                         <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center transition-colors shadow-sm border border-transparent shrink-0", entity.bg, entity.color, "group-hover:scale-110")}>

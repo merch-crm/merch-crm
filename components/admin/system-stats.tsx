@@ -1278,7 +1278,7 @@ export function SystemStats() {
                       <div className="overflow-x-auto no-scrollbar">
                         <table className="crm-table min-w-[600px]">
                           <thead className="crm-thead">
-                            <tr className="crm-tr">
+                            <tr>
                               <th className="crm-th">Email / Аккаунт</th>
                               <th className="crm-th">Причина</th>
                               <th className="crm-th">IP Адрес</th>
@@ -1294,7 +1294,7 @@ export function SystemStats() {
                               </tr>
                             ) : (
                               securityData?.failedLogins.map((login) => (
-                                <tr key={login.id} className="crm-tr hover:bg-slate-50/50 transition-colors group">
+                                <tr key={login.id} className="crm-tr">
                                   <td className="crm-td">
                                     <div className="flex items-center gap-3">
                                       <div className="p-2 bg-rose-50 text-rose-500 rounded-[18px] group-hover:scale-110 transition-transform">
@@ -1405,11 +1405,11 @@ export function SystemStats() {
                   <div className="overflow-x-auto no-scrollbar">
                     <table className="crm-table min-w-[700px]">
                       <thead className="crm-thead">
-                        <tr className="crm-tr bg-rose-50/30">
-                          <th className="crm-th text-rose-400">Сообщение об ошибке</th>
-                          <th className="crm-th text-rose-400">Критичность</th>
-                          <th className="crm-th text-rose-400">IP / Путь</th>
-                          <th className="crm-th text-rose-400">Дата</th>
+                        <tr>
+                          <th className="crm-th">Сообщение об ошибке</th>
+                          <th className="crm-th">Критичность</th>
+                          <th className="crm-th">IP / Путь</th>
+                          <th className="crm-th">Дата</th>
                         </tr>
                       </thead>
                       <tbody className="crm-tbody divide-y divide-rose-50">
@@ -1424,7 +1424,7 @@ export function SystemStats() {
                           securityData?.systemErrors.map((error) => (
                             <tr
                               key={error.id}
-                              className="crm-tr hover:bg-rose-50/50 transition-colors group cursor-pointer"
+                              className="crm-tr cursor-pointer"
                               onClick={() => setSelectedError(error)}
                             >
                               <td className="crm-td max-w-md">
@@ -2093,7 +2093,7 @@ export function SystemStats() {
                     <div className="table-container">
                       <table className="crm-table">
                         <thead className="crm-thead">
-                          <tr className="crm-tr bg-slate-50/50 border-b border-slate-200">
+                          <tr>
                             <th className="crm-th">
                               Имя файла
                             </th>
@@ -2112,7 +2112,7 @@ export function SystemStats() {
                           {backups.map((backup) => (
                             <tr
                               key={backup.name}
-                              className="crm-tr hover:bg-slate-50/30 transition-colors group"
+                              className="crm-tr"
                             >
                               <td className="crm-td">
                                 <div className="flex items-center gap-3">

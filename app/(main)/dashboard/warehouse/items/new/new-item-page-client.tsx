@@ -108,7 +108,9 @@ export function NewItemPageClient({
 
     // Load initial state and draft after mount
     useEffect(() => {
-        setMounted(true);
+        Promise.resolve().then(() => {
+            setMounted(true);
+        });
 
         // 1. Initial params
         let initialStep = 0;
@@ -172,15 +174,19 @@ export function NewItemPageClient({
             }
         }
 
-        setStep(initialStep);
-        setSelectedCategory(initialCat);
-        setFormData(initialForm);
+        Promise.resolve().then(() => {
+            setStep(initialStep);
+            setSelectedCategory(initialCat);
+            setFormData(initialForm);
+        });
     }, [categories, initialCategoryId, initialSubcategoryId]);
 
     // Save draft on changes
     useEffect(() => {
         if (!mounted) return;
-        setIsSaving(true);
+        Promise.resolve().then(() => {
+            setIsSaving(true);
+        });
         const timer = setTimeout(() => {
             const dataToSave = {
                 formData: {

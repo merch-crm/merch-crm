@@ -10,7 +10,7 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-import { Loader2 } from "lucide-react";
+
 
 export default async function WarehouseCategoriesPage() {
     const session = await getSession();

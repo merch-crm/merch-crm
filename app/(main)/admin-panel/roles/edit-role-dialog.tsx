@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Shield, Loader2, Building, ChevronDown } from "lucide-react";
+import { Shield, Loader2, Building } from "lucide-react";
 import { updateRole, getDepartments } from "../actions";
 import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";

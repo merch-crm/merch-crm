@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getOrderById } from "../actions";
-import { getBrandingSettings, BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";

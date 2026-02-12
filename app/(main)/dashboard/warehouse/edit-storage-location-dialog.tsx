@@ -3,7 +3,7 @@
 import { StorageLocation } from "./storage-locations-tab";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Plus, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, MapPin, User, Building, Package, ArrowRightLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updateStorageLocation, moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
