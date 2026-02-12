@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { useBranding } from "@/components/branding-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 import { getDashboardStatsByPeriod, getDashboardNotifications } from "./actions";
