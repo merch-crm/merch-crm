@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2, Loader2 } from "lucide-react";
+import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2 } from "lucide-react";
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";

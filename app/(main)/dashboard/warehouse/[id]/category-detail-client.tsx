@@ -662,7 +662,7 @@ export function CategoryDetailClient({
                                     <table className="crm-table">
                                         <thead className="crm-thead">
                                             <tr>
-                                                <th className="crm-th w-16">
+                                                <th className="crm-th crm-td-selection">
                                                     <PremiumCheckbox
                                                         checked={selectedIds.length === filteredItems.length && filteredItems.length > 0}
                                                         onChange={toggleSelectAll}
@@ -671,11 +671,11 @@ export function CategoryDetailClient({
                                                 </th>
                                                 <th className="crm-th">Товар</th>
                                                 <th className="crm-th">Склад</th>
-                                                {canSeeCost && <th className="crm-th text-center">Себест.</th>}
-                                                {canSeeCost && <th className="crm-th text-center">Цена</th>}
-                                                <th className="crm-th w-32 text-center">Резерв</th>
-                                                <th className="crm-th w-32 text-center">Остаток</th>
-                                                <th className="crm-th text-right">Действия</th>
+                                                {canSeeCost && <th className="crm-th crm-td-number">Себест.</th>}
+                                                {canSeeCost && <th className="crm-th crm-td-number">Цена</th>}
+                                                <th className="crm-th w-32 crm-td-number text-center">Резерв</th>
+                                                <th className="crm-th w-32 crm-td-number text-center">Остаток</th>
+                                                <th className="crm-th crm-td-actions">Действия</th>
                                             </tr>
                                         </thead>
                                         <tbody className="crm-tbody">
@@ -694,7 +694,7 @@ export function CategoryDetailClient({
                                                             isSelected && "crm-tr-selected"
                                                         )}
                                                     >
-                                                        <td className="crm-td" onClick={(e) => e.stopPropagation()}>
+                                                        <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
                                                             <PremiumCheckbox
                                                                 checked={isSelected}
                                                                 onChange={() => toggleSelectItem(item.id)}
@@ -736,20 +736,20 @@ export function CategoryDetailClient({
                                                             </div>
                                                         </td>
                                                         {canSeeCost && (
-                                                            <td className="crm-td text-center">
+                                                            <td className="crm-td crm-td-number">
                                                                 <span className="text-[11px] font-medium text-slate-400">
                                                                     {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                                 </span>
                                                             </td>
                                                         )}
                                                         {canSeeCost && (
-                                                            <td className="crm-td text-center">
+                                                            <td className="crm-td crm-td-number">
                                                                 <span className="text-sm font-bold text-slate-900">
                                                                     {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                                 </span>
                                                             </td>
                                                         )}
-                                                        <td className="crm-td text-center">
+                                                        <td className="crm-td crm-td-number text-center">
                                                             <span className={cn(
                                                                 "text-sm font-bold tabular-nums",
                                                                 (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
@@ -757,8 +757,8 @@ export function CategoryDetailClient({
                                                                 {item.reservedQuantity || 0}
                                                             </span>
                                                         </td>
-                                                        <td className="crm-td text-center">
-                                                            <div className="flex flex-col items-center gap-1.5">
+                                                        <td className="crm-td crm-td-number text-center">
+                                                            <div className="flex flex-col items-center gap-1.5 translate-x-2">
                                                                 <div className={cn(
                                                                     "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
                                                                     isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
@@ -775,7 +775,7 @@ export function CategoryDetailClient({
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="crm-td text-right" onClick={(e) => e.stopPropagation()}>
+                                                        <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
                                                             <div className="flex items-center justify-end gap-1 transition-all">
                                                                 <Button
                                                                     variant="ghost"

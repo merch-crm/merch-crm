@@ -468,63 +468,64 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         desktopClassName="hidden md:block"
                         renderTable={() => (
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-100">
-                                    <thead>
-                                        <tr className="bg-slate-50/50">
-                                            <th className="w-[60px] px-3 md:px-4 py-4 text-left">
+                                <table className="crm-table">
+                                    <thead className="crm-thead">
+                                        <tr>
+                                            <th className="crm-th crm-td-selection">
                                                 <PremiumCheckbox
                                                     checked={isAllSelected}
                                                     onChange={handleSelectAll}
                                                 />
                                             </th>
-                                            <th className="px-3 md:px-4 py-4 text-left text-[10px] font-bold text-slate-400 cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("alphabet")}>
-                                                <div className="flex items-center gap-1.5">
-                                                    Клиент
-                                                </div>
+                                            <th className="crm-th crm-th-sortable" onClick={() => setSortBy("alphabet")}>
+                                                Клиент
                                             </th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400">
+                                            <th className="crm-th">
                                                 Контакты
                                             </th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400">
+                                            <th className="crm-th">
                                                 Ответственный
                                             </th>
-                                            <th className="px-3 md:px-4 py-4 text-left text-[10px] font-bold text-slate-400 cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("order_count")}>
+                                            <th className="crm-th crm-th-sortable" onClick={() => setSortBy("order_count")}>
                                                 <div className="flex items-center gap-1.5">
                                                     Заказы
                                                     <ChevronDown className={`h-3 w-3 ${sortBy === "order_count" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"} transition-all`} />
                                                 </div>
                                             </th>
-                                            <th className="px-3 md:px-4 py-4 text-left text-[10px] font-bold text-slate-400 cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("last_order")}>
+                                            <th className="crm-th crm-th-sortable" onClick={() => setSortBy("last_order")}>
                                                 <div className="flex items-center gap-1.5">
                                                     Активность
                                                     <ChevronDown className={`h-3 w-3 ${sortBy === "last_order" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"} transition-all`} />
                                                 </div>
                                             </th>
                                             {showFinancials && (
-                                                <th className="px-3 md:px-4 py-4 text-left text-[10px] font-bold text-slate-400 cursor-pointer group hover:text-primary transition-colors" onClick={() => setSortBy("revenue")}>
-                                                    <div className="flex items-center gap-1.5">
-                                                        LTV (Выручка)
+                                                <th className="crm-th crm-th-sortable crm-td-number" onClick={() => setSortBy("revenue")}>
+                                                    <div className="flex items-center justify-end gap-1.5">
+                                                        LTV
                                                         <ChevronDown className={`h-3 w-3 ${sortBy === "revenue" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"} transition-all`} />
                                                     </div>
                                                 </th>
                                             )}
-                                            <th className="px-6 py-4 text-right text-[10px] font-bold text-slate-400">Действия</th>
+                                            <th className="crm-th crm-td-actions">Действия</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="crm-tbody">
                                         {currentPageItems.map(client => (
                                             <tr
                                                 key={client.id}
                                                 onClick={() => router.push(`/dashboard/clients/${client.id}`)}
-                                                className={`hover:bg-gray-50 transition-colors group cursor-pointer ${selectedIds.includes(client.id) ? 'bg-primary/5' : ''}`}
+                                                className={cn(
+                                                    "crm-tr-clickable",
+                                                    selectedIds.includes(client.id) && "crm-tr-selected"
+                                                )}
                                             >
-                                                <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                                <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
                                                     <PremiumCheckbox
                                                         checked={selectedIds.includes(client.id)}
                                                         onChange={() => handleSelectRow(client.id)}
                                                     />
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-medium text-slate-700">{`${client.lastName} ${client.firstName}`}</span>
                                                         <span className="text-[10px] text-slate-400 font-medium tracking-normal">
@@ -537,7 +538,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-medium text-slate-700">{client.email || "—"}</span>
                                                         <span className="text-xs text-slate-400 font-medium tracking-normal">
@@ -547,7 +548,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                                <td className="crm-td" onClick={(e) => e.stopPropagation()}>
                                                     <PremiumSelect
                                                         value={client.managerId || ""}
                                                         onChange={(val) => handleUpdateField(client.id, "managerId", val)}
@@ -559,13 +560,13 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                         triggerClassName="h-8 border-none bg-transparent hover:bg-slate-50"
                                                     />
                                                 </td>
-                                                <td className="px-3 md:px-4 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <div className="flex flex-col">
                                                         <span className="font-bold text-slate-900">{client.totalOrders || 0}</span>
                                                         <span className="text-[10px] text-slate-400 font-medium">{pluralize(client.totalOrders || 0, 'заказ', 'заказа', 'заказов')}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-3 md:px-4 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     {client.lastOrderDate ? (
                                                         <div className="flex flex-col">
                                                             <span className="text-sm font-medium text-slate-700 flex items-center gap-2">
@@ -591,11 +592,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                     )}
                                                 </td>
                                                 {showFinancials && (
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-bold">
+                                                    <td className="crm-td crm-td-number">
                                                         {Math.round(Number(client.totalSpent) || 0)} {currencySymbol}
                                                     </td>
                                                 )}
-                                                <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                                <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <Button
                                                             variant="ghost"
@@ -635,7 +636,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     onClick={() => router.push(`/dashboard/clients/${client.id}`)}
                                     className={cn(
                                         "group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
-                                        isSelected ? "bg-primary/5" : "bg-white"
+                                        isSelected ? "crm-tr-selected" : "bg-white"
                                     )}
                                 >
                                     <div className="flex items-center gap-4 flex-1 min-w-0">

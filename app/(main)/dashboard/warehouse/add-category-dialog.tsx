@@ -9,7 +9,7 @@ import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getIconNameFromName, getColorStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
+import { getIconNameFromName, getGradientStyles, getColorStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 
@@ -105,8 +105,8 @@ export function AddCategoryDialog({
                 <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-4">
-                            <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 transition-all duration-500 shadow-sm border border-black/5", getColorStyles(selectedColor))}>
-                                {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6" })}
+                            <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-500 shadow-lg text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                                {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6 stroke-[2.5]" })}
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">
@@ -182,8 +182,8 @@ export function AddCategoryDialog({
                             <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-2 shadow-sm">
                                 <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                                 <div className="flex items-center justify-center py-1">
-                                    <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md", getColorStyles(selectedColor))}>
-                                        {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5" })}
+                                    <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                                        {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5 stroke-[2.5]" })}
                                     </div>
                                 </div>
                             </div>

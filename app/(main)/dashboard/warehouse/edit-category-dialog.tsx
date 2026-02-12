@@ -13,7 +13,7 @@ import { Session } from "@/lib/auth";
 
 import { Category } from "./types";
 import { createElement } from "react";
-import { getCategoryIcon, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix } from "./category-utils";
+import { getCategoryIcon, getGradientStyles, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Switch } from "@/components/ui/switch";
 
@@ -125,8 +125,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shadow-sm shrink-0", getColorStyles(selectedColor))}>
-                            {createElement(MainIcon, { className: "w-6 h-6" })}
+                        <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                            {createElement(MainIcon, { className: "w-6 h-6 stroke-[2.5]" })}
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
@@ -184,8 +184,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">
                             <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                             <div className="flex items-center justify-center py-2">
-                                <div className={cn("w-10 h-10 shrink-0 rounded-[var(--radius-inner)] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5", getColorStyles(selectedColor))}>
-                                    {createElement(MainIcon, { className: "w-5 h-5" })}
+                                <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5 text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                                    {createElement(MainIcon, { className: "w-5 h-5 stroke-[2.5]" })}
                                 </div>
                             </div>
                         </div>

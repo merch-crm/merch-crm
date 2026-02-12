@@ -3,10 +3,12 @@ import { inventoryCategories } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
-import { CategoryDetailClient, Category, InventoryItem } from "./category-detail-client";
-import { StorageLocation } from "../storage-locations-tab";
+import { CategoryDetailClient } from "./category-detail-client";
+import type { Category, InventoryItem, AttributeType, InventoryAttribute } from "./category-detail-client";
+import type { StorageLocation } from "../storage-locations-tab";
 import { getSession } from "@/lib/auth";
 import { serializeForClient } from "@/lib/serialize";
+import type { Serialized } from "@/lib/serialize";
 import { cache } from "react";
 
 type PageParams = {
@@ -167,14 +169,14 @@ export default async function CategoryPage({ params }: PageParams) {
     );
 
     // Унифицированная сериализация всех данных
-    const subCategories = serializeForClient(subCategoriesRaw) as any;
-    const items = serializeForClient(categoryItems) as any;
-    const locations = serializeForClient(locationsRes.data || []) as any;
-    const attributeTypes = serializeForClient(typesRes.data || []) as any;
-    const allAttributes = serializeForClient(attrsRes.data || []) as any;
+    const subCategories = serializeForClient(subCategoriesRaw) as Serialized<Category[]>;
+    const items = serializeForClient(categoryItems) as Serialized<InventoryItem[]>;
+    const locations = serializeForClient(locationsRes.data || []) as Serialized<StorageLocation[]>;
+    const attributeTypes = serializeForClient(typesRes.data || []) as Serialized<AttributeType[]>;
+    const allAttributes = serializeForClient(attrsRes.data || []) as Serialized<InventoryAttribute[]>;
 
     // Fallback object for UI if orphaned
-    const finalCategory = category ? serializeForClient(category) as any : {
+    const finalCategory = category ? serializeForClient(category) as Serialized<Category> : {
         id: "orphaned",
         name: "Без категории",
         description: "Товары, которым не назначена категория",
@@ -182,21 +184,23 @@ export default async function CategoryPage({ params }: PageParams) {
         color: "slate",
         icon: "box",
         isSystem: true,
-        gender: "neuter"
-    };
+        gender: "neuter",
+        sortOrder: 0,
+        isActive: true
+    } as Serialized<Category>;
 
-    const serializedParentCategory = parentCategory ? serializeForClient(parentCategory) as any : undefined;
+    const serializedParentCategory = parentCategory ? serializeForClient(parentCategory) as Serialized<Category> : undefined;
 
     return (
         <div className="p-4">
             <CategoryDetailClient
-                category={finalCategory}
-                parentCategory={serializedParentCategory}
-                subCategories={subCategories}
-                items={items}
-                storageLocations={locations}
-                attributeTypes={attributeTypes as any}
-                allAttributes={allAttributes as any}
+                category={finalCategory as Category}
+                parentCategory={serializedParentCategory as Category}
+                subCategories={subCategories as Category[]}
+                items={items as InventoryItem[]}
+                storageLocations={locations as StorageLocation[]}
+                attributeTypes={attributeTypes as AttributeType[]}
+                allAttributes={allAttributes as InventoryAttribute[]}
                 user={session}
             />
         </div>

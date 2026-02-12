@@ -211,25 +211,25 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                 </div>
                             ) : (
                                 <div className="bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] overflow-hidden shadow-sm">
-                                    <table className="w-full text-sm text-left">
-                                        <thead className="bg-slate-100 text-slate-500 font-bold text-xs tracking-wider">
+                                    <table className="crm-table">
+                                        <thead className="crm-thead">
                                             <tr>
-                                                <th className="px-4 py-3">Раздел</th>
+                                                <th className="crm-th">Раздел</th>
                                                 {ACTIONS.map(action => (
-                                                    <th key={action.id} className="px-4 py-3 text-center">{action.label}</th>
+                                                    <th key={action.id} className="crm-th text-center">{action.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-200 bg-white">
+                                        <tbody className="crm-tbody">
                                             {SECTIONS.map(section => (
-                                                <tr key={section.id} className="hover:bg-slate-50/50 transition-colors">
-                                                    <td className="px-4 py-3 font-bold text-slate-700 text-xs">
+                                                <tr key={section.id} className="crm-tr">
+                                                    <td className="crm-td font-bold text-slate-700 text-xs">
                                                         {section.label}
                                                     </td>
                                                     {ACTIONS.map(action => {
                                                         const isChecked = permissions[section.id]?.[action.id] || false;
                                                         return (
-                                                            <td key={action.id} className="px-4 py-3 text-center">
+                                                            <td key={action.id} className="crm-td text-center">
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"

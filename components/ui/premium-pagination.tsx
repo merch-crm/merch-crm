@@ -26,7 +26,6 @@ export function PremiumPagination({
     className,
     itemName = "позиций",
     itemNames,
-    variant = "light"
 }: PremiumPaginationProps) {
     const router = useRouter();
     const pathname = usePathname();

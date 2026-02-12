@@ -32,32 +32,32 @@ export function OrderHistoryTable({ orders, currencySymbol }: OrderHistoryTableP
                 <ResponsiveDataView
                     data={orders}
                     renderTable={() => (
-                        <table className="min-w-full divide-y divide-slate-100">
-                            <thead className="bg-white">
+                        <table className="crm-table">
+                            <thead className="crm-thead">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-400 tracking-wider uppercase">Номер</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-400 tracking-wider uppercase">Дата</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-400 tracking-wider uppercase">Статус</th>
-                                    <th className="px-6 py-4 text-right text-xs font-bold text-slate-400 tracking-wider uppercase">Сумма</th>
+                                    <th className="crm-th">Номер</th>
+                                    <th className="crm-th">Дата</th>
+                                    <th className="crm-th">Статус</th>
+                                    <th className="crm-th crm-td-number">Сумма</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 bg-white">
+                            <tbody className="crm-tbody">
                                 {orders.map((order) => (
-                                    <tr key={order.id} className="text-sm hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => { }}>
-                                        <td className="px-6 py-5 font-bold text-slate-900">
+                                    <tr key={order.id} className="crm-tr">
+                                        <td className="crm-td font-bold text-slate-900">
                                             <Link href={`/dashboard/orders/${order.id}`} className="hover:text-primary underline decoration-primary/20 underline-offset-4">
                                                 ORD-{order.orderNumber?.split('-')[2] || order.id.slice(0, 6)}
                                             </Link>
                                         </td>
-                                        <td className="px-6 py-5 text-slate-500">
+                                        <td className="crm-td text-slate-500">
                                             {format(new Date(order.createdAt), "d MMM yyyy", { locale: ru })}
                                         </td>
-                                        <td className="px-6 py-5">
+                                        <td className="crm-td">
                                             <span className="px-2 py-1 rounded-md bg-slate-100 text-xs font-bold text-slate-600 tracking-wider">
                                                 {order.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-5 text-right font-bold text-slate-900">
+                                        <td className="crm-td crm-td-number font-bold text-slate-900">
                                             {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                         </td>
                                     </tr>

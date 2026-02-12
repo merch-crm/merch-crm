@@ -19,33 +19,41 @@
 @utility crm-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    /* 13px */
 }
 
 /* ----------------------------------------
    Заголовок таблицы
    ---------------------------------------- */
 @utility crm-thead {
-    background: var(--muted);
-    border-bottom: 1px solid var(--border);
+    background: var(--accent);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 @utility crm-th {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
     text-align: left;
-    font-weight: 600;
-    font-size: 0.75rem;
+    font-weight: 800;
+    font-size: 0.65rem;
+    /* ~10.5px */
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: var(--muted-foreground);
     white-space: nowrap;
+    transition: background 0.2s ease;
 
     &:first-child {
-        padding-left: 1.25rem;
+        padding-left: 1.5rem;
+        border-top-left-radius: var(--radius-inner);
     }
 
     &:last-child {
-        padding-right: 1.25rem;
+        padding-right: 1.5rem;
+        border-top-right-radius: var(--radius-inner);
     }
 }
 
@@ -53,14 +61,16 @@
 @utility crm-th-sortable {
     cursor: pointer;
     user-select: none;
-    transition: color 0.15s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-        color: var(--foreground);
+        color: var(--primary);
+        background: rgba(93, 0, 255, 0.03);
     }
 
     &.sorted {
         color: var(--primary);
+        background: rgba(93, 0, 255, 0.05);
     }
 }
 
@@ -70,29 +80,31 @@
 @utility crm-tbody {
     & tr {
         border-bottom: 1px solid var(--border);
-        transition: background 0.15s ease;
+        transition: all 0.2s ease;
 
         &:last-child {
             border-bottom: none;
         }
 
         &:hover {
-            background: var(--muted);
+            background: rgba(241, 245, 249, 0.5);
+            /* Very light hover */
         }
     }
 }
 
 @utility crm-td {
-    padding: 0.875rem 1rem;
+    padding: 1.25rem;
     color: var(--foreground);
     vertical-align: middle;
+    font-weight: 500;
 
     &:first-child {
-        padding-left: 1.25rem;
+        padding-left: 1.5rem;
     }
 
     &:last-child {
-        padding-right: 1.25rem;
+        padding-right: 1.5rem;
     }
 }
 
@@ -101,6 +113,14 @@
     width: 1%;
     white-space: nowrap;
     text-align: right;
+    min-width: 120px;
+}
+
+/* Ячейка с чекбоксом */
+@utility crm-td-selection {
+    width: 40px;
+    padding: 0;
+    text-align: center;
 }
 
 /* Ячейка со статусом */
@@ -113,6 +133,7 @@
 @utility crm-td-number {
     font-variant-numeric: tabular-nums;
     text-align: right;
+    font-weight: 700;
 }
 
 /* ----------------------------------------
@@ -163,10 +184,10 @@
    Выделенная строка
    ---------------------------------------- */
 @utility crm-tr-selected {
-    background: var(--primary-light) !important;
+    background: var(--muted) !important;
 
     &:hover {
-        background: var(--primary-light) !important;
+        background: var(--border) !important;
     }
 }
 

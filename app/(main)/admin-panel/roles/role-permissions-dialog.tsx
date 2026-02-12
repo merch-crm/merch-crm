@@ -201,25 +201,25 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                     </div>
                 ) : (
                     <div className="bg-slate-50 border border-slate-200 rounded-[18px] overflow-hidden">
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-slate-500 font-bold text-xs">
+                        <table className="crm-table">
+                            <thead className="crm-thead">
                                 <tr>
-                                    <th className="px-4 py-3">Раздел</th>
+                                    <th className="crm-th">Раздел</th>
                                     {ACTIONS.map(action => (
-                                        <th key={action.id} className="px-4 py-3 text-center">{action.label}</th>
+                                        <th key={action.id} className="crm-th text-center">{action.label}</th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-200 bg-white">
+                            <tbody className="crm-tbody">
                                 {SECTIONS.map(section => (
-                                    <tr key={section.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-4 py-3 font-medium text-slate-900">
+                                    <tr key={section.id} className="crm-tr">
+                                        <td className="crm-td font-medium text-slate-900">
                                             {section.label}
                                         </td>
                                         {ACTIONS.map(action => {
                                             const isChecked = permissions[section.id]?.[action.id] || false;
                                             return (
-                                                <td key={action.id} className="px-4 py-3 text-center">
+                                                <td key={action.id} className="crm-td text-center">
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"

@@ -59,16 +59,13 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
 
     // Stack depth logic for z-index
     const stackDepth = getStackDepth(sheetId);
+    const [effectiveDepth, setEffectiveDepth] = React.useState(0);
 
-    // Persist depth for exit animation using ref to avoid unnecessary re-renders
-    const preservedDepthRef = React.useRef(0);
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         if (stackDepth >= 0) {
-            preservedDepthRef.current = stackDepth;
+            setEffectiveDepth(stackDepth);
         }
     }, [stackDepth]);
-
-    const effectiveDepth = stackDepth >= 0 ? stackDepth : preservedDepthRef.current;
 
     const dragControls = useDragControls();
     const zIndex = Z_INDEX_BASE + (effectiveDepth * Z_INDEX_INCREMENT);

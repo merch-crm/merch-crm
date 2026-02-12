@@ -94,10 +94,10 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 desktopClassName="hidden md:block"
                 renderTable={() => (
                     <div className="crm-card !p-0 overflow-hidden">
-                        <table className="crm-table min-w-full divide-y divide-slate-100 table-fixed">
+                        <table className="crm-table min-w-full table-fixed">
                             <thead className="crm-thead">
-                                <tr className="bg-slate-50/40">
-                                    <th className="crm-th w-[60px] px-6 py-4 text-left">
+                                <tr>
+                                    <th className="crm-th crm-td-selection">
                                         <PremiumCheckbox
                                             checked={isAllSelected}
                                             onChange={(val) => {
@@ -106,48 +106,48 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                             }}
                                         />
                                     </th>
-                                    <th className="crm-th w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">ID / Дата</th>
-                                    <th className="crm-th px-6 py-4 text-left text-xs font-bold text-slate-400">Клиент</th>
+                                    <th className="crm-th w-[160px]">ID / Дата</th>
+                                    <th className="crm-th">Клиент</th>
                                     {showFinancials && (
-                                        <th className="crm-th w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Бюджет</th>
+                                        <th className="crm-th w-[140px] crm-td-number text-left">Бюджет</th>
                                     )}
-                                    <th className="crm-th w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">Статус</th>
-                                    <th className="crm-th w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Приоритет</th>
-                                    <th className="crm-th w-[120px] px-6 py-4 text-right text-xs font-bold text-slate-400">Действия</th>
+                                    <th className="crm-th w-[160px]">Статус</th>
+                                    <th className="crm-th w-[140px]">Приоритет</th>
+                                    <th className="crm-th crm-td-actions">Действия</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50">
+                            <tbody className="crm-tbody">
                                 {orders.map((order) => (
                                     <tr
                                         key={order.id}
                                         onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
                                         className={cn(
                                             "crm-tr group hover:bg-white/80 transition-all cursor-pointer",
-                                            selectedIds.includes(order.id) && "bg-primary/5"
+                                            selectedIds.includes(order.id) && "crm-tr-selected"
                                         )}
                                     >
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                        <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
                                             <PremiumCheckbox
                                                 checked={selectedIds.includes(order.id)}
                                                 onChange={() => handleSelectRow(order.id)}
                                             />
                                         </td>
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td">
                                             <div className="text-sm font-bold text-slate-900 mb-0.5">ORD-{order.id.slice(0, 6)}</div>
                                             <div className="text-xs font-medium text-slate-400">{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</div>
                                         </td>
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td">
                                             <div className="text-sm font-bold text-slate-900 mb-0.5">{order.client.name}</div>
                                             <div className="text-xs font-medium text-slate-400">Отв: {order.creator?.name || "Система"}</div>
                                         </td>
                                         {showFinancials && (
-                                            <td className="crm-td px-6 py-5 whitespace-nowrap">
+                                            <td className="crm-td crm-td-number">
                                                 <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[var(--radius-sm)]">
                                                     {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                                 </span>
                                             </td>
                                         )}
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td">
                                             <div className="flex items-center gap-3">
                                                 <Button
                                                     variant="ghost"
@@ -169,7 +169,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                 <StatusBadgeInteractive orderId={order.id} status={order.status} />
                                             </div>
                                         </td>
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td">
                                             <div className="flex items-center gap-1">
                                                 <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
                                                 {isAdmin && (
@@ -193,7 +193,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="crm-td px-6 py-5 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                        <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
                                             <Button
                                                 asChild
                                                 variant="ghost"
@@ -222,7 +222,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                         key={order.id}
                         className={cn(
                             "group relative bg-white border-b border-slate-100 p-4 transition-all duration-300 active:bg-slate-50",
-                            selectedIds.includes(order.id) ? "bg-primary/5" : "bg-white"
+                            selectedIds.includes(order.id) ? "crm-tr-selected" : "bg-white"
                         )}
                         onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
                     >

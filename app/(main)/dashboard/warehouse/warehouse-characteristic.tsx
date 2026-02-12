@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode, type ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { Plus, Settings, Check, Book, Pencil, Trash2, Lock, AlertCircle, Loader2, Layers, Eye, EyeOff, Moon, Sun } from "lucide-react";
+import { Plus, Settings, Check, Book, Pencil, Trash2, Lock, AlertCircle, Loader2, Layers } from "lucide-react";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "./actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

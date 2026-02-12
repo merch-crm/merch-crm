@@ -11,7 +11,8 @@ import {
 import { ItemDetailClient } from "./item-detail-client";
 import { getSession } from "@/lib/auth";
 import { serializeForClient } from "@/lib/serialize";
-import { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
+import type { Serialized } from "@/lib/serialize";
+import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -61,23 +62,21 @@ export default async function ItemPage({ params }: PageParams) {
 
     /**
      * Сериализуем данные для клиента.
-     * Используем приведение к 'any', так как ItemDetailClient ожидает оригинальные интерфейсы (InventoryItem и т.д.),
-     * в которых даты могут быть как Date, так и string.
      */
-    const item = serializeForClient(itemRes.data) as any;
-    const locations = serializeForClient('data' in locationsRes && locationsRes.data ? locationsRes.data : []) as any;
-    const categories = serializeForClient('data' in categoriesRes && categoriesRes.data ? categoriesRes.data : []) as any;
-    const attributeTypes = serializeForClient('data' in typesRes && typesRes.data ? typesRes.data : []) as any;
-    const attributes = serializeForClient('data' in attrsRes && attrsRes.data ? attrsRes.data : []) as any;
+    const item = serializeForClient(itemRes.data) as Serialized<InventoryItem>;
+    const locations = serializeForClient('data' in locationsRes && locationsRes.data ? locationsRes.data : []) as Serialized<StorageLocation[]>;
+    const categories = serializeForClient('data' in categoriesRes && categoriesRes.data ? categoriesRes.data : []) as Serialized<Category[]>;
+    const attributeTypes = serializeForClient('data' in typesRes && typesRes.data ? typesRes.data : []) as Serialized<AttributeType[]>;
+    const attributes = serializeForClient('data' in attrsRes && attrsRes.data ? attrsRes.data : []) as Serialized<InventoryAttribute[]>;
 
     return (
         <div className="p-4">
             <ItemDetailClient
-                item={item}
-                storageLocations={locations}
-                categories={categories}
-                attributeTypes={attributeTypes}
-                allAttributes={attributes}
+                item={item as InventoryItem}
+                storageLocations={locations as StorageLocation[]}
+                categories={categories as Category[]}
+                attributeTypes={attributeTypes as AttributeType[]}
+                allAttributes={attributes as InventoryAttribute[]}
                 user={session}
             />
         </div>

@@ -99,35 +99,35 @@ export default function InvoiceDashboardCRM() {
 
                         {/* Desktop Table */}
                         <div className="hidden md:block">
-                            <table className="w-full text-left">
-                                <thead>
-                                    <tr className="bg-slate-50/50">
-                                        <th className="px-6 py-4 text-[10px] font-bold  tracking-normal text-slate-400">Product</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold  tracking-normal text-slate-400">Qty</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold  tracking-normal text-slate-400">Price</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold  tracking-normal text-slate-400">Tax</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold  tracking-normal text-slate-400">Total</th>
+                            <table className="crm-table">
+                                <thead className="crm-thead">
+                                    <tr>
+                                        <th className="crm-th">Product</th>
+                                        <th className="crm-th">Qty</th>
+                                        <th className="crm-th">Price</th>
+                                        <th className="crm-th">Tax</th>
+                                        <th className="crm-th crm-td-number">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-50">
+                                <tbody className="crm-tbody">
                                     {[
                                         { name: "Premium Hoodie", qty: 240, price: "$45.00", tax: "10%", total: "$10,800.00" },
                                         { name: "Sticker Pack", qty: 1200, price: "$0.50", tax: "0%", total: "$600.00" },
                                         { name: "Custom Cap", qty: 45, price: "$12.00", tax: "5%", total: "$540.00" },
                                     ].map((row, idx) => (
-                                        <tr key={idx} className="hover:bg-slate-50/50 transition-colors cursor-pointer group">
-                                            <td className="px-6 py-4">
+                                        <tr key={idx} className="crm-tr">
+                                            <td className="crm-td">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center text-slate-400 group-hover:scale-110 transition-transform">
+                                                    <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center text-slate-400 group-hover/tr:scale-110 transition-transform">
                                                         <Plus className="w-5 h-5" />
                                                     </div>
                                                     <span className="text-sm font-bold text-slate-900">{row.name}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-sm font-bold text-slate-500">{row.qty}</td>
-                                            <td className="px-6 py-4 text-sm font-bold text-slate-500">{row.price}</td>
-                                            <td className="px-6 py-4 text-sm font-bold text-slate-500">{row.tax}</td>
-                                            <td className="px-6 py-4 text-sm font-bold text-primary">{row.total}</td>
+                                            <td className="crm-td text-sm font-bold text-slate-500">{row.qty}</td>
+                                            <td className="crm-td text-sm font-bold text-slate-500">{row.price}</td>
+                                            <td className="crm-td text-sm font-bold text-slate-500">{row.tax}</td>
+                                            <td className="crm-td crm-td-number text-sm font-bold text-primary">{row.total}</td>
                                         </tr>
                                     ))}
                                 </tbody>

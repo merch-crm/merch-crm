@@ -11,7 +11,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";
 import { getNotifications } from "@/components/notifications/actions";
-import { getBrandingSettings, BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { NotificationManager } from "@/components/notifications/notification-manager";
 import { CommandMenu } from "@/components/layout/command-menu";
 import { checkAndRunNotifications } from "@/app/(main)/dashboard/notifications-actions";
@@ -20,7 +20,6 @@ import { GlobalUndo } from "@/components/global-undo";
 import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 import { FloatingSearch } from "@/components/layout/floating-search";
 import { MobileSearchSheet } from "@/components/layout/mobile-search-sheet";
-import { SoundConfig } from "@/lib/sounds";
 
 
 export default async function DashboardLayout({

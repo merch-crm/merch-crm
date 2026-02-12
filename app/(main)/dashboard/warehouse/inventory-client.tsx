@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Pencil, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { getCategoryIcon, getColorStyles, getGradientStyles } from "./category-utils";
+import { getCategoryIcon, getGradientStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
 

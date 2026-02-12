@@ -33,28 +33,28 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
             <ResponsiveDataView
                 data={items}
                 renderTable={() => (
-                    <table className="crm-table min-w-full divide-y divide-slate-100">
-                        <thead className="crm-thead bg-white">
+                    <table className="crm-table">
+                        <thead className="crm-thead">
                             <tr>
-                                <th className="crm-th px-8 py-4 text-left text-xs font-bold text-slate-400 tracking-wider">Наименование</th>
-                                <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Кол-во</th>
+                                <th className="crm-th">Наименование</th>
+                                <th className="crm-th crm-td-number">Кол-во</th>
                                 {showFinancials && (
                                     <>
-                                        <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Цена</th>
-                                        <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Сумма</th>
+                                        <th className="crm-th crm-td-number">Цена</th>
+                                        <th className="crm-th crm-td-number">Сумма</th>
                                     </>
                                 )}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 bg-white">
+                        <tbody className="crm-tbody">
                             {items.map((item) => (
-                                <tr key={item.id} className="text-sm hover:bg-slate-50/50 transition-colors">
-                                    <td className="px-8 py-5 text-slate-900 font-semibold">{item.description}</td>
-                                    <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.quantity} шт</td>
+                                <tr key={item.id} className="crm-tr">
+                                    <td className="crm-td font-semibold text-slate-900">{item.description}</td>
+                                    <td className="crm-td crm-td-number">{item.quantity} шт</td>
                                     {showFinancials && (
                                         <>
-                                            <td className="px-8 py-5 text-right text-slate-600 font-medium">{item.price} {currencySymbol}</td>
-                                            <td className="px-8 py-5 text-right text-slate-900 font-bold">{item.quantity * Number(item.price)} {currencySymbol}</td>
+                                            <td className="crm-td crm-td-number">{item.price} {currencySymbol}</td>
+                                            <td className="crm-td crm-td-number font-bold text-slate-900">{item.quantity * Number(item.price)} {currencySymbol}</td>
                                         </>
                                     )}
                                 </tr>

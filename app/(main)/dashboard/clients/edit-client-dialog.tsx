@@ -41,10 +41,12 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
     const [acquisitionSource, setAcquisitionSource] = useState(client.acquisitionSource || "");
     const [managerId, setManagerId] = useState(client.managerId || "");
 
-    useEffect(() => {
+    const [prevClient, setPrevClient] = useState(client);
+    if (client.id !== prevClient.id) {
+        setPrevClient(client);
         setAcquisitionSource(client.acquisitionSource || "");
         setManagerId(client.managerId || "");
-    }, [client]);
+    }
 
     useEffect(() => {
         if (isOpen) {

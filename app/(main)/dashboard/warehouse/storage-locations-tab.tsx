@@ -2,7 +2,6 @@
 
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
 import { useState, useEffect, memo } from "react";

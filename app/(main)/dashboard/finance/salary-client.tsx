@@ -87,38 +87,38 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                 desktopClassName="hidden md:block"
                                 renderTable={() => (
                                     <div className="overflow-x-auto">
-                                        <table className="w-full text-left border-collapse">
-                                            <thead>
-                                                <tr className="bg-white/50 border-b border-slate-100">
-                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Сотрудник</th>
-                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Роль</th>
-                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Оклад</th>
-                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">KPI & Бонусы</th>
-                                                    <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Итого</th>
+                                        <table className="crm-table">
+                                            <thead className="crm-thead">
+                                                <tr>
+                                                    <th className="crm-th">Сотрудник</th>
+                                                    <th className="crm-th text-center">Роль</th>
+                                                    <th className="crm-th text-center">Оклад</th>
+                                                    <th className="crm-th text-center">KPI & Бонусы</th>
+                                                    <th className="crm-th crm-td-number">Итого</th>
                                                 </tr>
                                             </thead>
-                                            <tbody className="divide-y divide-slate-50">
+                                            <tbody className="crm-tbody">
                                                 {emps.map((emp) => (
-                                                    <tr key={emp.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                        <td className="px-8 py-6">
+                                                    <tr key={emp.id} className="crm-tr">
+                                                        <td className="crm-td">
                                                             <div className="font-extrabold text-slate-900 mb-0.5 text-[15px]">{emp.name}</div>
                                                             <div className="text-[10px] text-primary font-black tracking-widest uppercase opacity-70">USR-{emp.id.split('-')[0]}</div>
                                                         </td>
-                                                        <td className="px-8 py-6 text-center">
+                                                        <td className="crm-td text-center">
                                                             <span className="px-3.5 py-1.5 bg-slate-100/70 rounded-full text-[11px] font-bold text-slate-600 border border-slate-200/50 whitespace-nowrap">
                                                                 {emp.role}
                                                             </span>
                                                         </td>
-                                                        <td className="px-8 py-6 text-center">
+                                                        <td className="crm-td text-center">
                                                             <span className="font-bold text-slate-900 text-sm">{emp.baseSalary.toLocaleString()} {currencySymbol}</span>
                                                         </td>
-                                                        <td className="px-8 py-6 text-center">
+                                                        <td className="crm-td text-center">
                                                             <div className="inline-flex flex-col items-center">
                                                                 <div className="font-black text-emerald-600 text-[15px]">+{emp.bonus.toLocaleString()} {currencySymbol}</div>
                                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">за {emp.ordersCount} заказов</div>
                                                             </div>
                                                         </td>
-                                                        <td className="px-8 py-6 text-right">
+                                                        <td className="crm-td crm-td-number">
                                                             <div className="font-black text-slate-900 border-l border-slate-200/50 pl-6 inline-block text-[20px] leading-none">
                                                                 {emp.total.toLocaleString()} <span className="text-slate-400 text-xs font-bold">{currencySymbol}</span>
                                                             </div>

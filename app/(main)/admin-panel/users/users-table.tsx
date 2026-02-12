@@ -139,10 +139,10 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                 renderTable={() => (
                     <div className="crm-card !p-0">
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                    <tr className="bg-gray-50">
-                                        <th className="w-[50px] px-6 py-3 text-left">
+                            <table className="crm-table">
+                                <thead className="crm-thead">
+                                    <tr>
+                                        <th className="crm-th crm-td-selection">
                                             <input
                                                 type="checkbox"
                                                 className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
@@ -150,13 +150,13 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 onChange={handleSelectAll}
                                             />
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Сотрудник</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Роль</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground  tracking-wider">Отдел</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground  tracking-wider">Действия</th>
+                                        <th className="crm-th">Сотрудник</th>
+                                        <th className="crm-th">Роль</th>
+                                        <th className="crm-th">Отдел</th>
+                                        <th className="crm-th crm-td-actions">Действия</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="crm-tbody">
                                     {initialUsers.map((user) => {
                                         const isSelected = selectedIds.includes(user.id);
                                         return (
@@ -164,11 +164,11 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 key={user.id}
                                                 onClick={() => setEditingUser(user)}
                                                 className={cn(
-                                                    "hover:bg-gray-50 transition-colors group cursor-pointer",
-                                                    isSelected ? "bg-primary/5" : ""
+                                                    "crm-tr-clickable",
+                                                    isSelected && "crm-tr-selected"
                                                 )}
                                             >
-                                                <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                                <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
                                                     <input
                                                         type="checkbox"
                                                         className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
@@ -176,7 +176,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                         onChange={() => handleSelectRow(user.id)}
                                                     />
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <div className="flex items-center gap-4">
                                                         <div
                                                             className={cn(
@@ -197,16 +197,16 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <RoleBadge roleName={user.role?.name} className="px-3 py-1 text-[10px] font-bold  tracking-wider" />
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="crm-td">
                                                     <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                                                         <Building className="w-4 h-4 text-slate-300" />
                                                         {user.department || "—"}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                                <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <Button
                                                             variant="ghost"
@@ -265,7 +265,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                             key={user.id}
                             className={cn(
                                 "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 active:scale-[0.98] transition-all",
-                                isSelected ? "ring-2 ring-primary/20 bg-primary/5" : ""
+                                isSelected ? "crm-tr-selected" : ""
                             )}
                             onClick={() => setEditingUser(user)}
                         >
