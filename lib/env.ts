@@ -8,6 +8,8 @@ const envSchema = z.object({
     S3_ACCESS_KEY: z.string().optional(),
     S3_SECRET_KEY: z.string().optional(),
     S3_ENDPOINT: z.string().optional(),
+    REDIS_HOST: z.string().default("127.0.0.1"),
+    REDIS_PASSWORD: z.string().optional(),
 });
 
 const result = envSchema.safeParse(process.env);
