@@ -2,6 +2,10 @@ import { getArchivedItems } from "../actions";
 import { ArchiveTable } from "../archive-table";
 import { InventoryItem } from "../types";
 
+export const metadata = {
+    title: "Архив | Склад",
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function ArchivePage() {

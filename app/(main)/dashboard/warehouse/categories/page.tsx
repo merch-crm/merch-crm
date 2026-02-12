@@ -4,6 +4,10 @@ import { WarehouseWidgetsContainer } from "./widgets-container";
 import { WarehouseWidgetsSkeleton } from "../warehouse-widgets";
 import { Suspense } from "react";
 
+export const metadata = {
+    title: "Категории | Склад",
+};
+
 export const dynamic = "force-dynamic";
 
 import { Loader2 } from "lucide-react";

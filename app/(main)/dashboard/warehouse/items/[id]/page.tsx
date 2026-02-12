@@ -9,6 +9,16 @@ import {
 import { ItemDetailClient } from "./item-detail-client";
 
 import { getSession } from "@/lib/auth";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const itemRes = await getInventoryItem(id);
+    if ('data' in itemRes && itemRes.data) {
+        return { title: `${itemRes.data.name} | Склад` };
+    }
+    return { title: "Товар | Склад" };
+}
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: itemId } = await params;

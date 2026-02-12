@@ -104,6 +104,13 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
         }
     }, [activeTab, loadDialogData]);
 
+    // Update document title immediately on client-side navigation
+    useEffect(() => {
+        if (currentInfo?.title) {
+            document.title = `${currentInfo.title} | Склад`;
+        }
+    }, [pathname, currentInfo]);
+
     const renderActions = () => {
         switch (activeTab) {
             case "categories":

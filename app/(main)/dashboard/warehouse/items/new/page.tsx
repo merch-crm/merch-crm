@@ -2,7 +2,7 @@ import { getInventoryCategories, getStorageLocations, getMeasurementUnits, getIn
 import { NewItemPageClient } from "./new-item-page-client";
 
 export const metadata = {
-    title: "Добавить товар | CRM",
+    title: "Новый товар | Склад",
     description: "Создание нового товара в складской системе",
 };
 

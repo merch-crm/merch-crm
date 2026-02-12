@@ -4,6 +4,21 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { CategoryDetailClient, Category, InventoryItem } from "./category-detail-client";
 import { StorageLocation } from "../storage-locations-tab";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id: paramId } = await params;
+    if (paramId === "orphaned") return { title: "Без категории | Склад" };
+
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
+    const [found] = await db
+        .select({ name: inventoryCategories.name })
+        .from(inventoryCategories)
+        .where(isUuid ? eq(inventoryCategories.id, paramId) : eq(inventoryCategories.slug, paramId))
+        .limit(1);
+
+    return { title: found ? `${found.name} | Склад` : "Категория | Склад" };
+}
 
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: paramId } = await params;

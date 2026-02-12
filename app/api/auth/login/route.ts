@@ -4,8 +4,33 @@ import { comparePassword } from "@/lib/password";
 import { logSecurityEvent } from "@/lib/security-logger";
 import { logError } from "@/lib/error-logger";
 import { NextResponse } from "next/server";
+import { rateLimit, getClientIP, resetRateLimit } from "@/lib/rate-limit";
+import { RATE_LIMITS } from "@/lib/rate-limit-config";
 
 export async function POST(request: Request) {
+    const ip = getClientIP(request);
+    const rateLimitKey = `login:${ip}`;
+
+    // Проверка лимита
+    const limit = await rateLimit(
+        rateLimitKey,
+        RATE_LIMITS.login.limit,
+        RATE_LIMITS.login.windowSec
+    );
+
+    if (!limit.success) {
+        return NextResponse.json(
+            {
+                error: RATE_LIMITS.login.message,
+                retryAfter: limit.resetIn,
+            },
+            {
+                status: 429,
+                headers: { "Retry-After": String(limit.resetIn) },
+            }
+        );
+    }
+
     try {
         const formData = await request.formData();
         const email = formData.get("email") as string;
@@ -110,6 +135,9 @@ export async function POST(request: Request) {
                 role: role?.name
             }
         });
+
+        // Успешный логин — сбросить счётчик
+        await resetRateLimit(rateLimitKey);
 
         console.log(`[API Login] Cookie set, returning success`);
         return response;

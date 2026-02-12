@@ -2,6 +2,10 @@ import { getInventoryHistory } from "../actions";
 import { HistoryTable, Transaction } from "../history-table";
 import { getSession } from "@/lib/auth";
 
+export const metadata = {
+    title: "История | Склад",
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {

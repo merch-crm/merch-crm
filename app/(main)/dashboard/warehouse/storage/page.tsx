@@ -1,6 +1,10 @@
 import { getStorageLocations, getAllUsers } from "../actions";
 import { StorageLocationsTab } from "../storage-locations-tab";
 
+export const metadata = {
+    title: "Хранение | Склад",
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function StoragePage() {

@@ -2,6 +2,10 @@ import { getInventoryAttributes, getInventoryAttributeTypes, getInventoryCategor
 import { WarehouseCharacteristic } from "../warehouse-characteristic";
 import { getSession } from "@/lib/auth";
 
+export const metadata = {
+    title: "Характеристики | Склад",
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function CharacteristicsPage() {

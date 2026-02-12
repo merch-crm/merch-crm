@@ -12,6 +12,8 @@ export async function proxy(request: NextRequest) {
         path.startsWith("/static") ||
         path.includes(".") // Likely a file (image, css, etc.)
     ) {
+        // NOTE: Глобальный Rate Limit для API лучше делать в самих роутах 
+        // через lib/api-middleware, так как Redis (ioredis) не работает в Edge Runtime.
         return NextResponse.next();
     }
 
