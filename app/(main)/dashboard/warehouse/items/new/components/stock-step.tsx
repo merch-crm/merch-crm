@@ -11,10 +11,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, ItemFormData } from "../../../types";
-import { AddStorageLocationDialog } from "../../../add-storage-location-dialog";
-import { StepFooter } from "./step-footer";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useBranding } from "@/components/branding-provider";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AddStorageLocationDialog } from "../../../add-storage-location-dialog";
+import { StepFooter } from "./step-footer";
 
 interface StockStepProps {
     category: Category;
@@ -75,11 +77,11 @@ export function StockStep({
                                 <div className="flex items-stretch gap-2 transition-all duration-300 group/widget w-full">
                                     <div className="flex-1 bg-slate-50 rounded-[22px] px-6 py-3 border border-slate-100 flex flex-col items-start gap-1">
                                         <div className="flex items-baseline gap-1">
-                                            <input
+                                            <Input
                                                 type="number"
                                                 value={formData.quantity || "0"}
                                                 onChange={(e) => updateFormData({ quantity: e.target.value })}
-                                                className="text-4xl font-black text-slate-900 bg-transparent border-none focus:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                className="text-4xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-auto shadow-none"
                                                 style={{ width: `${Math.max(1, (formData.quantity || "0").toString().length) * 22}px`, minWidth: '40px' }}
                                             />
                                             <span className="text-sm font-black text-primary uppercase tracking-[0.15em] mb-1.5 shrink-0">
@@ -93,20 +95,22 @@ export function StockStep({
                                     </div>
 
                                     <div className="w-16 flex flex-col gap-1">
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => adjustValue('quantity', 1)}
-                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all active:scale-95 group/plus"
+                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all active:scale-95 group/plus h-auto p-0"
                                         >
                                             <Plus className="w-5 h-5 transition-transform group-hover/plus:scale-110" strokeWidth={3} />
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => adjustValue('quantity', -1)}
-                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50 transition-all active:scale-95 group/minus"
+                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50 transition-all active:scale-95 group/minus h-auto p-0"
                                         >
                                             <Minus className="w-5 h-5 transition-transform group-hover/minus:scale-110" strokeWidth={3} />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -130,11 +134,11 @@ export function StockStep({
                                             <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Себестоимость</span>
                                         </div>
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                            <input
+                                            <Input
                                                 type="number"
                                                 value={formData.costPrice || "0"}
                                                 onChange={(e) => updateFormData({ costPrice: e.target.value })}
-                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus:ring-0 outline-none p-0 pr-8 min-w-0"
+                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
                                             />
                                             <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                         </div>
@@ -150,11 +154,11 @@ export function StockStep({
                                             <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Цена продажи</span>
                                         </div>
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                            <input
+                                            <Input
                                                 type="number"
                                                 value={formData.sellingPrice || "0"}
                                                 onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
-                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus:ring-0 outline-none p-0 pr-8 min-w-0"
+                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
                                             />
                                             <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                         </div>
@@ -177,11 +181,11 @@ export function StockStep({
                                     <div className="space-y-3 min-w-0">
                                         <div className="flex flex-col">
                                             <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
-                                                <input
+                                                <Input
                                                     type="number"
                                                     value={formData.lowStockThreshold || "10"}
                                                     onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus:ring-0 outline-none p-0 text-slate-900 min-w-0"
+                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
                                                 />
                                                 <span className="text-[12px] text-slate-700 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
                                             </div>
@@ -191,11 +195,11 @@ export function StockStep({
                                     <div className="space-y-3 min-w-0">
                                         <div className="flex flex-col">
                                             <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
-                                                <input
+                                                <Input
                                                     type="number"
                                                     value={formData.criticalStockThreshold || "0"}
                                                     onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus:ring-0 outline-none p-0 text-slate-900 min-w-0"
+                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
                                                 />
                                                 <span className="text-[12px] text-slate-700 font-bold uppercase tracking-widest shrink-0">{formData.unit}</span>
                                             </div>
@@ -239,37 +243,38 @@ export function StockStep({
                                     ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             {storageLocations.map(loc => (
-                                                <button
+                                                <Button
                                                     key={loc.id}
                                                     type="button"
+                                                    variant="ghost"
                                                     onClick={() => updateFormData({ storageLocationId: loc.id })}
                                                     className={cn(
-                                                        "p-3.5 rounded-[20px] text-left border transition-all duration-300 flex items-center justify-between group relative",
+                                                        "p-3.5 rounded-[20px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
                                                         formData.storageLocationId === loc.id
-                                                            ? "bg-primary border-primary text-white shadow-md shadow-black/10"
-                                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:shadow-md"
+                                                            ? "bg-primary border-primary text-white shadow-md shadow-black/10 hover:bg-primary hover:text-white"
+                                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:shadow-md hover:bg-white"
                                                     )}
                                                 >
-                                                    <div className="flex items-center gap-3 truncate relative z-10">
+                                                    <div className="flex items-center gap-3 truncate relative z-10 w-full">
                                                         <div className={cn(
                                                             "w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-300",
                                                             formData.storageLocationId === loc.id ? "bg-white/10" : "bg-slate-100 border border-slate-200/50"
                                                         )}>
                                                             <Warehouse className={cn("w-5 h-5", formData.storageLocationId === loc.id ? "text-white" : "text-slate-400")} />
                                                         </div>
-                                                        <div className="truncate">
+                                                        <div className="truncate text-left flex-1">
                                                             <div className="font-bold text-sm leading-tight truncate px-0.5">{loc.name}</div>
                                                             <div className={cn("text-[9px] font-black mt-0.5 uppercase tracking-wider opacity-60 px-0.5", formData.storageLocationId === loc.id ? "text-white/80" : "text-slate-700")}>
                                                                 Склад активен
                                                             </div>
                                                         </div>
+                                                        {formData.storageLocationId === loc.id && (
+                                                            <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 shadow-lg">
+                                                                <Check className="w-3.5 h-3.5 text-primary" strokeWidth={4} />
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    {formData.storageLocationId === loc.id && (
-                                                        <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 shadow-lg relative z-10">
-                                                            <Check className="w-3.5 h-3.5 text-primary" strokeWidth={4} />
-                                                        </div>
-                                                    )}
-                                                </button>
+                                                </Button>
                                             ))}
                                             <AddStorageLocationDialog
                                                 users={users}

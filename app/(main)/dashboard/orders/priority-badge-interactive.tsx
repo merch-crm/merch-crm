@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Circle, ChevronDown } from "lucide-react";
 import { updateOrderField } from "./actions";
+import { Button } from "@/components/ui/button";
 
 const priorities = [
     { id: "normal", label: "Обычный", icon: Circle, color: "text-slate-500", lightBg: "bg-slate-50 border-slate-200", dot: "bg-slate-400" },
@@ -71,12 +72,13 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
             {isOpen && (
                 <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-200 rounded-2xl shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
                     {priorities.map((p) => (
-                        <button
+                        <Button
                             key={p.id}
+                            variant="ghost"
                             onClick={() => handleChange(p.id)}
                             className={`
-                                w-full flex items-center gap-2 px-3 py-2 
-                                hover:bg-slate-50 transition-all text-left
+                                w-full flex items-center gap-2 px-3 py-2 h-auto
+                                hover:bg-slate-50 transition-all text-left justify-start rounded-xl
                                 ${p.id === currentPriority ? 'bg-primary/5' : ''}
                             `}
                         >
@@ -84,7 +86,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
                             <span className={`text-[11px] font-bold  tracking-wider ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
                                 {p.label}
                             </span>
-                        </button>
+                        </Button>
                     ))}
                 </div>
             )}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Bell,
     Send,
@@ -15,13 +15,54 @@ import {
     AlertTriangle,
     ShoppingBag,
     Boxes,
-    UserCheck
+    UserCheck,
+    Loader2,
+    type LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { updateNotificationSettingsAction, NotificationSettings } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+
+// --- Constants ---
+
+const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+    system: { enabled: true, browserPush: false },
+    telegram: {
+        enabled: false,
+        botToken: "",
+        chatId: "",
+        notifyOnNewOrder: true,
+        notifyOnLowStock: true,
+        notifyOnSystemError: true
+    },
+    events: {
+        new_order: true,
+        order_status_change: true,
+        stock_low: true,
+        task_assigned: true,
+        system_error: false,
+        big_payment: false,
+        client_update: false,
+        security_alert: false
+    }
+};
+
+const EVENT_CONFIG: { key: string; label: string; icon: LucideIcon; color: string }[] = [
+    { key: "new_order", label: "Новый заказ", icon: ShoppingBag, color: "bg-emerald-50 text-emerald-600" },
+    { key: "order_status_change", label: "Смена статуса", icon: CheckCircle2, color: "bg-blue-50 text-blue-600" },
+    { key: "stock_low", label: "Мало остатков", icon: Boxes, color: "bg-orange-50 text-orange-600" },
+    { key: "task_assigned", label: "Новая задача", icon: UserCheck, color: "bg-purple-50 text-purple-600" },
+    { key: "system_error", label: "Ошибки системы", icon: ShieldAlert, color: "bg-rose-50 text-rose-600" },
+    { key: "big_payment", label: "Крупный платеж", icon: Zap, color: "bg-amber-50 text-amber-600" },
+    { key: "client_update", label: "Изменение клиента", icon: Info, color: "bg-indigo-50 text-indigo-600" },
+    { key: "security_alert", label: "Безопасность", icon: AlertTriangle, color: "bg-red-50 text-red-600" },
+];
+
+// --- Component ---
 
 interface NotificationsClientProps {
     initialSettings: NotificationSettings;
@@ -29,34 +70,47 @@ interface NotificationsClientProps {
 
 export function NotificationsClient({ initialSettings }: NotificationsClientProps) {
     const { toast } = useToast();
-    const [settings, setSettings] = useState<NotificationSettings>(initialSettings || {
-        system: { enabled: true, browserPush: false },
-        telegram: { enabled: false, botToken: "", chatId: "", notifyOnNewOrder: true, notifyOnLowStock: true, notifyOnSystemError: true },
-        events: { new_order: true, order_status_change: true, stock_low: true, task_assigned: true }
-    });
+    const [settings, setSettings] = useState<NotificationSettings>(
+        initialSettings ?? DEFAULT_NOTIFICATION_SETTINGS
+    );
     const [loading, setLoading] = useState(false);
 
     const handleSave = async () => {
         setLoading(true);
-        const res = await updateNotificationSettingsAction(settings);
-        if (res.success) {
-            toast("Настройки уведомлений сохранены", "success");
-            playSound("notification_success");
-        } else {
-            toast(res.error || "Ошибка при сохранении", "error");
+        try {
+            const res = await updateNotificationSettingsAction(settings);
+            if (res.success) {
+                toast("Настройки уведомлений сохранены", "success");
+                playSound("notification_success");
+            } else {
+                toast(res.error || "Ошибка при сохранении", "error");
+                playSound("notification_error");
+            }
+        } catch (error) {
+            console.error("Failed to save notification settings:", error);
+            toast("Не удалось сохранить настройки", "error");
             playSound("notification_error");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const toggleNested = (section: keyof NotificationSettings, key: string) => {
-        setSettings((prev) => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [key]: !(prev[section][key] as boolean)
-            }
-        }));
+        setSettings((prev) => {
+            const sectionData = prev[section];
+            if (typeof sectionData !== "object" || sectionData === null) return prev;
+
+            const currentValue = (sectionData as Record<string, unknown>)[key];
+            if (typeof currentValue !== "boolean") return prev;
+
+            return {
+                ...prev,
+                [section]: {
+                    ...sectionData,
+                    [key]: !currentValue
+                }
+            };
+        });
     };
 
     const updateValue = (section: keyof NotificationSettings, key: string, value: string) => {
@@ -67,6 +121,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                 [key]: value
             }
         }));
+    };
+
+    const isEventEnabled = (key: string): boolean => {
+        return Boolean(settings.events[key]);
     };
 
     return (
@@ -87,7 +145,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                     size="lg"
                     className="btn-dark rounded-[var(--radius-inner)] font-bold shadow-xl shadow-slate-900/10 border-none"
                 >
-                    {loading ? <Zap className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                     Сохранить изменения
                 </Button>
             </div>
@@ -116,18 +174,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                     <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Показывать в колокольчике CRM</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => toggleNested("system", "enabled")}
-                                className={cn(
-                                    "w-12 h-6 rounded-full transition-all relative",
-                                    settings.system.enabled ? "bg-primary" : "bg-slate-200"
-                                )}
-                            >
-                                <div className={cn(
-                                    "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
-                                    settings.system.enabled ? "right-1" : "left-1"
-                                )} />
-                            </button>
+                            <Switch
+                                checked={settings.system.enabled}
+                                onCheckedChange={() => toggleNested("system", "enabled")}
+                            />
                         </div>
 
                         <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-200 transition-colors hover:border-blue-200">
@@ -140,18 +190,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                     <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Всплывающие окна рабочего стола</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => toggleNested("system", "browserPush")}
-                                className={cn(
-                                    "w-12 h-6 rounded-full transition-all relative",
-                                    settings.system.browserPush ? "bg-primary" : "bg-slate-200"
-                                )}
-                            >
-                                <div className={cn(
-                                    "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
-                                    settings.system.browserPush ? "right-1" : "left-1"
-                                )} />
-                            </button>
+                            <Switch
+                                checked={settings.system.browserPush}
+                                onCheckedChange={() => toggleNested("system", "browserPush")}
+                            />
                         </div>
                     </div>
                 </div>
@@ -167,39 +209,32 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                             <h3 className="font-bold">Telegram Бот</h3>
                             <p className="text-blue-300 text-[10px] font-bold uppercase tracking-widest mt-0.5">Мгновенные оповещения</p>
                         </div>
-                        <button
-                            onClick={() => toggleNested("telegram", "enabled")}
-                            className={cn(
-                                "ml-auto w-12 h-6 rounded-full transition-all relative",
-                                settings.telegram.enabled ? "bg-blue-400" : "bg-slate-700"
-                            )}
-                        >
-                            <div className={cn(
-                                "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
-                                settings.telegram.enabled ? "right-1" : "left-1"
-                            )} />
-                        </button>
+                        <Switch
+                            checked={settings.telegram.enabled}
+                            onCheckedChange={() => toggleNested("telegram", "enabled")}
+                            className="ml-auto"
+                        />
                     </div>
 
                     <div className={cn("space-y-5 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 ml-1">Токен бота (API Token)</label>
-                            <input
+                            <Input
                                 type="password"
                                 value={settings.telegram.botToken}
                                 onChange={(e) => updateValue("telegram", "botToken", e.target.value)}
                                 placeholder="123456789:ABCDEF..."
-                                className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 outline-none transition-all placeholder:text-slate-600"
+                                className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 ml-1">ID Группы или Чат-ID</label>
-                            <input
+                            <Input
                                 type="text"
                                 value={settings.telegram.chatId}
                                 onChange={(e) => updateValue("telegram", "chatId", e.target.value)}
                                 placeholder="-100123456789"
-                                className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 outline-none transition-all placeholder:text-slate-600"
+                                className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
                             />
                         </div>
                         <div className="flex items-center gap-3 p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-300 text-xs font-bold">
@@ -210,7 +245,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                 </div>
             </div>
 
-            {/* Event Triggers (Bento grid style events) */}
+            {/* Event Triggers */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold text-slate-900">События для уведомлений</h3>
@@ -220,35 +255,34 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                        { key: "new_order", label: "Новый заказ", icon: <ShoppingBag className="w-5 h-5" />, color: "bg-emerald-50 text-emerald-600" },
-                        { key: "order_status_change", label: "Смена статуса", icon: <CheckCircle2 className="w-5 h-5" />, color: "bg-blue-50 text-blue-600" },
-                        { key: "stock_low", label: "Мало остатков", icon: <Boxes className="w-5 h-5" />, color: "bg-orange-50 text-orange-600" },
-                        { key: "task_assigned", label: "Новая задача", icon: <UserCheck className="w-5 h-5" />, color: "bg-purple-50 text-purple-600" },
-                        { key: "system_error", label: "Ошибки системы", icon: <ShieldAlert className="w-5 h-5" />, color: "bg-rose-50 text-rose-600" },
-                        { key: "big_payment", label: "Крупный платеж", icon: <Zap className="w-5 h-5" />, color: "bg-amber-50 text-amber-600" },
-                        { key: "client_update", label: "Изменение клиента", icon: <Info className="w-5 h-5" />, color: "bg-indigo-50 text-indigo-600" },
-                        { key: "security_alert", label: "Безопасность", icon: <AlertTriangle className="w-5 h-5" />, color: "bg-red-50 text-red-600" },
-                    ].map((item) => (
-                        <div
-                            key={item.key}
-                            onClick={() => toggleNested("events", item.key)}
-                            className={cn(
-                                "p-6 rounded-3xl border transition-all cursor-pointer group hover:shadow-lg",
-                                (settings.events[item.key] || settings.telegram[`notifyOn${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`]) // Rough sync for now
-                                    ? "bg-white border-slate-200 shadow-sm"
-                                    : "bg-slate-50/50 border-transparent grayscale opacity-60"
-                            )}
-                        >
-                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110", item.color)}>
-                                {item.icon}
-                            </div>
-                            <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
-                            <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest group-hover:text-primary transition-colors">
-                                {(settings.events[item.key] || settings.telegram[`notifyOn${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`]) ? "Активно" : "Выключено"}
-                            </p>
-                        </div>
-                    ))}
+                    {EVENT_CONFIG.map((item) => {
+                        const Icon = item.icon;
+                        const enabled = isEventEnabled(item.key);
+
+                        return (
+                            <button
+                                key={item.key}
+                                type="button"
+                                onClick={() => toggleNested("events", item.key)}
+                                aria-pressed={enabled}
+                                aria-label={`${item.label}: ${enabled ? "активно" : "выключено"}`}
+                                className={cn(
+                                    "p-6 rounded-3xl border transition-all cursor-pointer group hover:shadow-lg text-left",
+                                    enabled
+                                        ? "bg-white border-slate-200 shadow-sm"
+                                        : "bg-slate-50/50 border-transparent grayscale opacity-60"
+                                )}
+                            >
+                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110", item.color)}>
+                                    <Icon className="w-5 h-5" />
+                                </div>
+                                <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
+                                <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest group-hover:text-primary transition-colors">
+                                    {enabled ? "Активно" : "Выключено"}
+                                </p>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         </div>

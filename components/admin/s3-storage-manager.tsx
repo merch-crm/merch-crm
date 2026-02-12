@@ -32,6 +32,31 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+// --- Constants & Helpers ---
+
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'] as const;
+
+const isImageFile = (filename: string): boolean => {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    return IMAGE_EXTENSIONS.includes(ext as typeof IMAGE_EXTENSIONS[number]);
+};
+
+const formatDate = (date: Date | string | undefined): string => {
+    if (!date) return "---";
+    try {
+        return format(new Date(date), "dd.MM.yy HH:mm");
+    } catch {
+        return "---";
+    }
+};
+
+const Z_INDEX = {
+    loadingOverlay: 50,
+} as const;
+
+// --- Types ---
 
 interface StorageFile {
     key: string;
@@ -53,6 +78,228 @@ interface StorageData {
         path: string;
     };
 }
+
+// Type guard for runtime checks
+function isStorageData(data: unknown): data is StorageData {
+    return (
+        typeof data === 'object' &&
+        data !== null &&
+        's3' in data &&
+        'local' in data
+    );
+}
+
+// --- Components ---
+
+interface FolderRowProps {
+    folderPrefix: string;
+    currentPrefix: string;
+    isSelected: boolean;
+    isMultiSelectMode: boolean;
+    onSelect: (prefix: string) => void;
+    onNavigate: (prefix: string) => void;
+    onRename: (prefix: string) => void;
+    onDelete: (prefix: string) => void;
+}
+
+const FolderRow = ({ folderPrefix, currentPrefix, isSelected, isMultiSelectMode, onSelect, onNavigate, onRename, onDelete }: FolderRowProps) => {
+    const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
+
+    return (
+        <tr
+            className={cn(
+                "crm-tr transition-colors group",
+                isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
+            )}
+        >
+            {isMultiSelectMode && (
+                <td className="crm-td w-12 text-center">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSelect(folderPrefix);
+                        }}
+                        className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                        aria-label={isSelected ? "Снять выделение" : "Выбрать папку"}
+                        aria-pressed={isSelected}
+                    >
+                        {isSelected ? (
+                            <CheckSquare size={20} className="text-primary" />
+                        ) : (
+                            <Square size={20} className="text-slate-300" />
+                        )}
+                    </button>
+                </td>
+            )}
+            <td
+                className="crm-td cursor-pointer"
+                onClick={() => !isMultiSelectMode && onNavigate(folderPrefix)}
+            >
+                <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[12px] group-hover:scale-110 transition-transform shadow-sm">
+                        <Folder size={18} fill="currentColor" fillOpacity={0.2} />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-slate-700">{name}</p>
+                        <p className="text-[10px] text-slate-400 font-bold tracking-normal">Папка</p>
+                    </div>
+                </div>
+            </td>
+            <td className="crm-td text-right">
+                <span className="text-[10px] font-bold text-slate-400 ">---</span>
+            </td>
+            <td className="crm-td">
+                <div className="flex items-center justify-center gap-2">
+                    {!isMultiSelectMode && (
+                        <>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onRename(folderPrefix);
+                                }}
+                                className="h-8 w-8 text-slate-300 hover:text-primary hover:bg-indigo-50"
+                                aria-label="Переименовать"
+                            >
+                                <Edit2 size={16} />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(folderPrefix);
+                                }}
+                                className="h-8 w-8 text-slate-300 hover:text-rose-600 hover:bg-rose-50"
+                                aria-label="Удалить"
+                            >
+                                <Trash2 size={16} />
+                            </Button>
+                        </>
+                    )}
+                    {!isMultiSelectMode && (
+                        <ChevronRight size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+                    )}
+                </div>
+            </td>
+        </tr>
+    );
+};
+
+interface FileRowProps {
+    file: StorageFile;
+    currentPrefix: string;
+    isSelected: boolean;
+    isMultiSelectMode: boolean;
+    onSelect: (key: string) => void;
+    onClick: (file: StorageFile) => void;
+    onRename: (key: string) => void;
+    onDelete: (key: string) => void;
+    formatSize: (bytes: number) => string;
+}
+
+const FileRow = ({ file, currentPrefix, isSelected, isMultiSelectMode, onSelect, onClick, onRename, onDelete, formatSize }: FileRowProps) => {
+    const name = file.key.replace(currentPrefix, "");
+    const isImage = isImageFile(name);
+
+    return (
+        <tr
+            className={cn(
+                "crm-tr transition-colors group",
+                isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
+            )}
+        >
+            {isMultiSelectMode && (
+                <td className="crm-td w-12 text-center">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSelect(file.key);
+                        }}
+                        className="p-1 hover:bg-indigo-100 rounded transition-colors"
+                        aria-label={isSelected ? "Снять выделение" : "Выбрать файл"}
+                        aria-pressed={isSelected}
+                    >
+                        {isSelected ? (
+                            <CheckSquare size={20} className="text-primary" />
+                        ) : (
+                            <Square size={20} className="text-slate-300" />
+                        )}
+                    </button>
+                </td>
+            )}
+            <td
+                className="crm-td cursor-pointer"
+                onClick={() => onClick(file)}
+            >
+                <div className="flex items-center gap-4">
+                    <div className={cn(
+                        "p-2.5 rounded-[12px] group-hover:scale-110 transition-transform shadow-sm",
+                        isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
+                    )}>
+                        {isImage ? <Eye size={18} /> : <File size={18} />}
+                    </div>
+                    <div className="max-w-[300px] sm:max-w-none">
+                        <p className="text-sm font-bold text-slate-700 truncate">{name}</p>
+                        <p className="text-[10px] text-slate-400 font-medium tracking-tight">
+                            {formatDate(file.lastModified)}
+                        </p>
+                    </div>
+                </div>
+            </td>
+            <td className="crm-td text-right">
+                <span className="text-xs font-mono font-bold text-slate-500">{formatSize(file.size)}</span>
+            </td>
+            <td className="crm-td">
+                <div className="flex items-center justify-center gap-2">
+                    {!isMultiSelectMode && (
+                        <>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onClick(file);
+                                }}
+                                className="h-8 w-8 text-slate-300 hover:text-primary hover:bg-indigo-50"
+                                aria-label="Просмотреть"
+                            >
+                                <Eye size={16} />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onRename(file.key);
+                                }}
+                                className="h-8 w-8 text-slate-300 hover:text-primary hover:bg-indigo-50"
+                                aria-label="Переименовать"
+                            >
+                                <Edit2 size={16} />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(file.key);
+                                }}
+                                className="h-8 w-8 text-slate-300 hover:text-rose-600 hover:bg-rose-50"
+                                aria-label="Удалить"
+                            >
+                                <Trash2 size={16} />
+                            </Button>
+                        </>
+                    )}
+                </div>
+            </td>
+        </tr>
+    );
+};
+
+// --- Main Component ---
 
 export function S3StorageManager() {
     const { toast } = useToast();
@@ -90,8 +337,12 @@ export function S3StorageManager() {
             const res = await getStorageDetails(prefix);
             if ("error" in res) {
                 toast(res.error as string, "error");
+            } else if (isStorageData(res)) {
+                setData(res);
             } else {
-                setData(res as unknown as StorageData);
+                // Fallback if type guard fails but no explicit error
+                console.error("Invalid data format received", res);
+                toast("Ошибка формата данных с сервера", "error");
             }
         } catch (e) {
             console.error(e);
@@ -116,7 +367,8 @@ export function S3StorageManager() {
             } else {
                 toast((res as { error?: string }).error || "Ошибка удаления", "error");
             }
-        } catch {
+        } catch (error) {
+            console.error("Delete error:", error);
             toast("Ошибка сети", "error");
         } finally {
             setIsDeleting(false);
@@ -138,7 +390,8 @@ export function S3StorageManager() {
             } else {
                 toast((res as { error?: string }).error || "Ошибка при создании папки", "error");
             }
-        } catch {
+        } catch (error) {
+            console.error("Create folder error:", error);
             toast("Ошибка сети", "error");
         } finally {
             setIsCreating(false);
@@ -163,7 +416,8 @@ export function S3StorageManager() {
             } else {
                 toast((res as { error?: string }).error || "Ошибка при переименовании", "error");
             }
-        } catch {
+        } catch (error) {
+            console.error("Rename error:", error);
             toast("Ошибка сети", "error");
         } finally {
             setIsRenaming(false);
@@ -185,7 +439,8 @@ export function S3StorageManager() {
             } else {
                 toast((res as { error?: string }).error || "Ошибка при удалении", "error");
             }
-        } catch {
+        } catch (error) {
+            console.error("Batch delete error:", error);
             toast("Ошибка сети", "error");
         } finally {
             setIsDeletingMultiple(false);
@@ -213,6 +468,13 @@ export function S3StorageManager() {
         setSelectedKeys(new Set());
     };
 
+    const openInNewTab = (url: string) => {
+        const win = window.open(url, '_blank');
+        if (!win) {
+            toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
+        }
+    };
+
     const handleFileClick = async (file: StorageFile) => {
         if (isMultiSelectMode) {
             toggleSelection(file.key);
@@ -220,8 +482,7 @@ export function S3StorageManager() {
         }
 
         const name = file.key.replace(currentPrefix, "");
-        const ext = name.split('.').pop()?.toLowerCase();
-        const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+        const isImage = isImageFile(name);
 
         setIsPreviewLoading(true);
         try {
@@ -230,15 +491,13 @@ export function S3StorageManager() {
                 if (isImage) {
                     setPreviewFile({ name, url: res.url, type: 'image' });
                 } else {
-                    const win = window.open(res.url, '_blank');
-                    if (!win) {
-                        toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
-                    }
+                    openInNewTab(res.url);
                 }
             } else {
                 toast(res.error || "Ошибка при получении ссылки на файл", "error");
             }
-        } catch {
+        } catch (error) {
+            console.error("Preview error:", error);
             toast("Ошибка сети", "error");
         } finally {
             setIsPreviewLoading(false);
@@ -279,6 +538,9 @@ export function S3StorageManager() {
         return name.toLowerCase().includes(searchTerm.toLowerCase()) && !name.endsWith("/");
     }) || [];
 
+    const totalItems = filteredFolders.length + filteredFiles.length;
+    const allSelected = selectedKeys.size === totalItems && totalItems > 0;
+
     return (
         <div className="space-y-6">
             {/* Header Info */}
@@ -286,7 +548,7 @@ export function S3StorageManager() {
                 <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-indigo-50 text-#5d00ff rounded-[18px]">
+                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-[18px]">
                                 <Database size={24} />
                             </div>
                             <div>
@@ -342,7 +604,7 @@ export function S3StorageManager() {
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-3.5 bg-#5d00ff text-white rounded-[24px] shadow-lg shadow-indigo-200">
+                                        <div className="p-3.5 bg-primary text-white rounded-[24px] shadow-lg shadow-indigo-200">
                                             <CloudUpload size={24} />
                                         </div>
                                         <div>
@@ -353,34 +615,38 @@ export function S3StorageManager() {
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                            <input
+                                            <Input
                                                 type="text"
                                                 placeholder="Поиск..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-[18px] text-sm font-bold focus:ring-2 focus:ring-indigo-500 w-full sm:w-48 transition-all"
+                                                className="pl-10 w-full sm:w-48 bg-slate-50 border-none focus-visible:ring-indigo-500"
                                             />
                                         </div>
-                                        <button
+                                        <Button
+                                            variant={isMultiSelectMode ? "default" : "secondary"}
+                                            size="sm"
                                             onClick={() => {
                                                 setIsMultiSelectMode(!isMultiSelectMode);
                                                 if (isMultiSelectMode) setSelectedKeys(new Set());
                                             }}
                                             className={cn(
-                                                "p-2.5 rounded-[18px] transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4",
-                                                isMultiSelectMode ? "bg-#5d00ff text-white" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                                                "gap-2",
+                                                isMultiSelectMode ? "bg-primary hover:bg-primary/90" : "bg-slate-50 text-slate-600 hover:bg-slate-100 border-none"
                                             )}
                                         >
                                             <CheckSquare size={18} />
-                                            <span className="text-[10px] font-bold ">Выбор</span>
-                                        </button>
-                                        <button
+                                            <span className="text-[10px] font-bold">Выбор</span>
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
                                             onClick={() => setIsCreateModalOpen(true)}
-                                            className="p-2.5 bg-indigo-50 text-#5d00ff rounded-[18px] hover:bg-indigo-100 transition-all active:scale-95 shadow-sm flex items-center gap-2 px-4"
+                                            className="gap-2 bg-indigo-50 text-primary hover:bg-indigo-100 border-none"
                                         >
                                             <FolderPlus size={18} />
-                                            <span className="text-[10px] font-bold ">Папка</span>
-                                        </button>
+                                            <span className="text-[10px] font-bold">Папка</span>
+                                        </Button>
                                     </div>
                                 </div>
 
@@ -388,31 +654,37 @@ export function S3StorageManager() {
                                 {isMultiSelectMode && selectedKeys.size > 0 && (
                                     <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-[18px] border border-indigo-100">
                                         <div className="flex items-center gap-3">
-                                            <div className="px-3 py-1.5 bg-#5d00ff text-white rounded-[18px] text-xs font-bold">
+                                            <div className="px-3 py-1.5 bg-primary text-white rounded-[18px] text-xs font-bold">
                                                 {selectedKeys.size}
                                             </div>
                                             <span className="text-sm font-bold text-slate-700">выбрано</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
                                                 onClick={selectAll}
-                                                className="px-4 py-2 bg-white text-slate-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
+                                                className="bg-white text-slate-600 hover:bg-slate-50 text-[10px] h-8"
                                             >
                                                 Выбрать все
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
                                                 onClick={deselectAll}
-                                                className="px-4 py-2 bg-white text-slate-600 rounded-[18px] text-[10px] font-bold  hover:bg-slate-50 transition-all"
+                                                className="bg-white text-slate-600 hover:bg-slate-50 text-[10px] h-8"
                                             >
                                                 Снять выбор
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                size="sm"
                                                 onClick={() => setShowDeleteMultipleConfirm(true)}
-                                                className="px-4 py-2 bg-rose-600 text-white rounded-[18px] text-[10px] font-bold  hover:bg-rose-700 transition-all flex items-center gap-2"
+                                                className="gap-2 text-[10px] h-8"
                                             >
                                                 <Trash2 size={14} />
                                                 Удалить
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 )}
@@ -423,7 +695,7 @@ export function S3StorageManager() {
                                         onClick={() => navigateTo("")}
                                         className={cn(
                                             "flex items-center gap-1.5 px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal shrink-0",
-                                            currentPrefix === "" ? "bg-white text-#5d00ff shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
+                                            currentPrefix === "" ? "bg-white text-primary shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
                                         <Home size={12} />
@@ -438,7 +710,7 @@ export function S3StorageManager() {
                                                     onClick={() => navigateTo(path)}
                                                     className={cn(
                                                         "px-3 py-1.5 rounded-[18px] transition-all font-bold text-[10px]  tracking-normal",
-                                                        currentPrefix === path ? "bg-white text-#5d00ff shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
+                                                        currentPrefix === path ? "bg-white text-primary shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
                                                     )}
                                                 >
                                                     {crumb}
@@ -467,215 +739,70 @@ export function S3StorageManager() {
                                     <ResponsiveDataView
                                         data={[...filteredFolders, ...filteredFiles]}
                                         renderTable={() => (
-                                            <table className="w-full text-left border-collapse">
-                                                <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
-                                                    <tr>
-                                                        {isMultiSelectMode && (
-                                                            <th className="px-4 py-4 w-12 text-center">
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        if (selectedKeys.size === (filteredFolders.length + filteredFiles.length)) {
-                                                                            setSelectedKeys(new Set());
-                                                                        } else {
-                                                                            const allKeys = new Set([...filteredFolders, ...filteredFiles.map(f => f.key)]);
-                                                                            setSelectedKeys(allKeys);
-                                                                        }
-                                                                    }}
-                                                                    className="p-1 hover:bg-slate-100 rounded transition-colors"
-                                                                >
-                                                                    {selectedKeys.size === (filteredFolders.length + filteredFiles.length) && (filteredFolders.length + filteredFiles.length) > 0 ? (
-                                                                        <CheckSquare size={20} className="text-primary" />
-                                                                    ) : (
-                                                                        <Square size={20} className="text-slate-300" />
-                                                                    )}
-                                                                </button>
-                                                            </th>
-                                                        )}
-                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal">Наименование</th>
-                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal text-right">Размер</th>
-                                                        <th className="px-8 py-4 text-[10px] font-bold text-slate-400 tracking-normal text-center">Действия</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-slate-50">
-                                                    {/* Render Folders */}
-                                                    {filteredFolders.map((folderPrefix) => {
-                                                        const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
-                                                        const isSelected = selectedKeys.has(folderPrefix);
-                                                        return (
-                                                            <tr
+                                            <div className="table-container">
+                                                <table className="crm-table">
+                                                    <thead className="crm-thead">
+                                                        <tr className="crm-tr">
+                                                            {isMultiSelectMode && (
+                                                                <th className="crm-th w-12 text-center">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            if (allSelected) {
+                                                                                setSelectedKeys(new Set());
+                                                                            } else {
+                                                                                const allKeys = new Set([...filteredFolders, ...filteredFiles.map(f => f.key)]);
+                                                                                setSelectedKeys(allKeys);
+                                                                            }
+                                                                        }}
+                                                                        className="p-1 hover:bg-slate-100 rounded transition-colors"
+                                                                        aria-label={allSelected ? "Снять выделение со всех" : "Выбрать все"}
+                                                                        aria-pressed={allSelected}
+                                                                    >
+                                                                        {allSelected ? (
+                                                                            <CheckSquare size={20} className="text-primary" />
+                                                                        ) : (
+                                                                            <Square size={20} className="text-slate-300" />
+                                                                        )}
+                                                                    </button>
+                                                                </th>
+                                                            )}
+                                                            <th className="crm-th">Наименование</th>
+                                                            <th className="crm-th text-right">Размер</th>
+                                                            <th className="crm-th text-center">Действия</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="crm-tbody">
+                                                        {filteredFolders.map((folderPrefix) => (
+                                                            <FolderRow
                                                                 key={folderPrefix}
-                                                                className={cn(
-                                                                    "transition-colors group",
-                                                                    isSelected ? "bg-indigo-50" : "hover:bg-indigo-50/30"
-                                                                )}
-                                                            >
-                                                                {isMultiSelectMode && (
-                                                                    <td className="px-4 py-4 text-center">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                toggleSelection(folderPrefix);
-                                                                            }}
-                                                                            className="p-1 hover:bg-indigo-100 rounded transition-colors"
-                                                                        >
-                                                                            {isSelected ? (
-                                                                                <CheckSquare size={20} className="text-primary" />
-                                                                            ) : (
-                                                                                <Square size={20} className="text-slate-300" />
-                                                                            )}
-                                                                        </button>
-                                                                    </td>
-                                                                )}
-                                                                <td
-                                                                    className="px-8 py-4 cursor-pointer"
-                                                                    onClick={() => !isMultiSelectMode && navigateTo(folderPrefix)}
-                                                                >
-                                                                    <div className="flex items-center gap-4">
-                                                                        <div className="p-2.5 bg-amber-50 text-amber-500 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm">
-                                                                            <Folder size={18} fill="currentColor" fillOpacity={0.2} />
-                                                                        </div>
-                                                                        <div>
-                                                                            <p className="text-sm font-bold text-slate-700">{name}</p>
-                                                                            <p className="text-[10px] text-slate-400 font-bold tracking-normal">Папка</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-8 py-4 text-right">
-                                                                    <span className="text-[10px] font-bold text-slate-400 ">---</span>
-                                                                </td>
-                                                                <td className="px-8 py-4">
-                                                                    <div className="flex items-center justify-center gap-2">
-                                                                        {!isMultiSelectMode && (
-                                                                            <>
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        openRenameModal(folderPrefix);
-                                                                                    }}
-                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                                    title="Переименовать"
-                                                                                >
-                                                                                    <Edit2 size={16} />
-                                                                                </button>
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        setDeletingKey(folderPrefix);
-                                                                                    }}
-                                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
-                                                                                    title="Удалить"
-                                                                                >
-                                                                                    <Trash2 size={16} />
-                                                                                </button>
-                                                                            </>
-                                                                        )}
-                                                                        {!isMultiSelectMode && (
-                                                                            <ChevronRight size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
-                                                                        )}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-
-                                                    {/* Render Files */}
-                                                    {filteredFiles.map((file) => {
-                                                        const name = file.key.replace(currentPrefix, "");
-                                                        const isSelected = selectedKeys.has(file.key);
-                                                        const ext = name.split('.').pop()?.toLowerCase();
-                                                        const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
-
-                                                        return (
-                                                            <tr
+                                                                folderPrefix={folderPrefix}
+                                                                currentPrefix={currentPrefix}
+                                                                isSelected={selectedKeys.has(folderPrefix)}
+                                                                isMultiSelectMode={isMultiSelectMode}
+                                                                onSelect={toggleSelection}
+                                                                onNavigate={navigateTo}
+                                                                onRename={openRenameModal}
+                                                                onDelete={setDeletingKey}
+                                                            />
+                                                        ))}
+                                                        {filteredFiles.map((file) => (
+                                                            <FileRow
                                                                 key={file.key}
-                                                                className={cn(
-                                                                    "transition-colors group",
-                                                                    isSelected ? "bg-indigo-50" : "hover:bg-slate-50/50"
-                                                                )}
-                                                            >
-                                                                {isMultiSelectMode && (
-                                                                    <td className="px-4 py-4 text-center">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                toggleSelection(file.key);
-                                                                            }}
-                                                                            className="p-1 hover:bg-indigo-100 rounded transition-colors"
-                                                                        >
-                                                                            {isSelected ? (
-                                                                                <CheckSquare size={20} className="text-primary" />
-                                                                            ) : (
-                                                                                <Square size={20} className="text-slate-300" />
-                                                                            )}
-                                                                        </button>
-                                                                    </td>
-                                                                )}
-                                                                <td
-                                                                    className="px-8 py-4 cursor-pointer"
-                                                                    onClick={() => handleFileClick(file)}
-                                                                >
-                                                                    <div className="flex items-center gap-4">
-                                                                        <div className={cn(
-                                                                            "p-2.5 rounded-[18px] group-hover:scale-110 transition-transform shadow-sm",
-                                                                            isImage ? "bg-indigo-50 text-indigo-500" : "bg-slate-100 text-slate-400"
-                                                                        )}>
-                                                                            {isImage ? <Eye size={18} /> : <File size={18} />}
-                                                                        </div>
-                                                                        <div className="max-w-[300px] sm:max-w-none">
-                                                                            <p className="text-sm font-bold text-slate-700 truncate">{name}</p>
-                                                                            <p className="text-[10px] text-slate-400 font-medium tracking-tight">
-                                                                                {file.lastModified ? new Date(file.lastModified).toLocaleString() : "---"}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-8 py-4 text-right">
-                                                                    <span className="text-xs font-mono font-bold text-slate-500">{formatSize(file.size)}</span>
-                                                                </td>
-                                                                <td className="px-8 py-4">
-                                                                    <div className="flex items-center justify-center gap-2">
-                                                                        {!isMultiSelectMode && (
-                                                                            <>
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        handleFileClick(file);
-                                                                                    }}
-                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                                    title="Просмотреть"
-                                                                                >
-                                                                                    <Eye size={16} />
-                                                                                </button>
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        openRenameModal(file.key);
-                                                                                    }}
-                                                                                    className="p-2.5 text-slate-300 hover:text-primary hover:bg-indigo-50 rounded-[18px] transition-all active:scale-90"
-                                                                                    title="Переименовать"
-                                                                                >
-                                                                                    <Edit2 size={16} />
-                                                                                </button>
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        setDeletingKey(file.key);
-                                                                                    }}
-                                                                                    className="p-2.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[18px] transition-all active:scale-90"
-                                                                                    title="Удалить"
-                                                                                >
-                                                                                    <Trash2 size={16} />
-                                                                                </button>
-                                                                            </>
-                                                                        )}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
+                                                                file={file}
+                                                                currentPrefix={currentPrefix}
+                                                                isSelected={selectedKeys.has(file.key)}
+                                                                isMultiSelectMode={isMultiSelectMode}
+                                                                onSelect={toggleSelection}
+                                                                onClick={handleFileClick}
+                                                                onRename={openRenameModal}
+                                                                onDelete={setDeletingKey}
+                                                                formatSize={formatSize}
+                                                            />
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         )}
                                         renderCard={(item) => {
                                             const isFolder = typeof item === 'string';
@@ -697,13 +824,18 @@ export function S3StorageManager() {
                                                         </div>
                                                         <div className="flex items-center gap-1 shrink-0">
                                                             {isMultiSelectMode ? (
-                                                                <button onClick={() => toggleSelection(key)} className="p-2">
+                                                                <button
+                                                                    onClick={() => toggleSelection(key)}
+                                                                    className="p-2"
+                                                                    aria-label={isSelected ? "Снять выделение" : "Выбрать"}
+                                                                    aria-pressed={isSelected}
+                                                                >
                                                                     {isSelected ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} className="text-slate-300" />}
                                                                 </button>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => openRenameModal(key)} className="p-2 text-slate-300 hover:text-primary"><Edit2 size={16} /></button>
-                                                                    <button onClick={() => setDeletingKey(key)} className="p-2 text-slate-300 hover:text-rose-500"><Trash2 size={16} /></button>
+                                                                    <Button variant="ghost" size="icon" onClick={() => openRenameModal(key)} className="h-8 w-8 text-slate-300 hover:text-primary" aria-label="Переименовать"><Edit2 size={16} /></Button>
+                                                                    <Button variant="ghost" size="icon" onClick={() => setDeletingKey(key)} className="h-8 w-8 text-slate-300 hover:text-rose-500" aria-label="Удалить"><Trash2 size={16} /></Button>
                                                                 </>
                                                             )}
                                                         </div>
@@ -711,8 +843,7 @@ export function S3StorageManager() {
                                                 );
                                             } else {
                                                 const file = item as StorageFile;
-                                                const ext = name.split('.').pop()?.toLowerCase();
-                                                const isImage = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '');
+                                                const isImage = isImageFile(name);
                                                 return (
                                                     <div key={key} className={cn("bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group", isSelected && "ring-2 ring-primary/20 bg-primary/5")}>
                                                         <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => handleFileClick(file)}>
@@ -721,19 +852,24 @@ export function S3StorageManager() {
                                                             </div>
                                                             <div className="min-w-0">
                                                                 <p className="text-sm font-bold text-slate-900 truncate">{name}</p>
-                                                                <p className="text-[10px] text-slate-400 font-medium">{formatSize(file.size)} • {file.lastModified ? format(new Date(file.lastModified), "dd.MM.yy HH:mm") : "---"}</p>
+                                                                <p className="text-[10px] text-slate-400 font-medium">{formatSize(file.size)} • {formatDate(file.lastModified)}</p>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-1 shrink-0">
                                                             {isMultiSelectMode ? (
-                                                                <button onClick={() => toggleSelection(key)} className="p-2">
+                                                                <button
+                                                                    onClick={() => toggleSelection(key)}
+                                                                    className="p-2"
+                                                                    aria-label={isSelected ? "Снять выделение" : "Выбрать"}
+                                                                    aria-pressed={isSelected}
+                                                                >
                                                                     {isSelected ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} className="text-slate-300" />}
                                                                 </button>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => handleFileClick(file)} className="p-2 text-slate-300 hover:text-primary"><Eye size={16} /></button>
-                                                                    <button onClick={() => openRenameModal(key)} className="p-2 text-slate-300 hover:text-primary"><Edit2 size={16} /></button>
-                                                                    <button onClick={() => setDeletingKey(key)} className="p-2 text-slate-300 hover:text-rose-500"><Trash2 size={16} /></button>
+                                                                    <Button variant="ghost" size="icon" onClick={() => handleFileClick(file)} className="h-8 w-8 text-slate-300 hover:text-primary" aria-label="Просмотреть"><Eye size={16} /></Button>
+                                                                    <Button variant="ghost" size="icon" onClick={() => openRenameModal(key)} className="h-8 w-8 text-slate-300 hover:text-primary" aria-label="Переименовать"><Edit2 size={16} /></Button>
+                                                                    <Button variant="ghost" size="icon" onClick={() => setDeletingKey(key)} className="h-8 w-8 text-slate-300 hover:text-rose-500" aria-label="Удалить"><Trash2 size={16} /></Button>
                                                                 </>
                                                             )}
                                                         </div>
@@ -793,7 +929,7 @@ export function S3StorageManager() {
                     <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-50 text-#5d00ff rounded-[18px]">
+                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-[18px]">
                                     <Info size={20} />
                                 </div>
                                 <div>
@@ -830,14 +966,14 @@ export function S3StorageManager() {
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Имя папки</label>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Название папки..."
                             value={newFolderName}
                             onChange={(e) => setNewFolderName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
+                            className="w-full text-lg font-bold"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
@@ -869,14 +1005,14 @@ export function S3StorageManager() {
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Новое имя</label>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Новое имя..."
                             value={newName}
                             onChange={(e) => setNewName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleRename()}
                             autoFocus
-                            className="w-full px-6 py-4 bg-slate-50 border-none rounded-[18px] text-lg font-bold text-slate-900 placeholder:text-slate-300 focus:ring-4 focus:ring-amber-100 transition-all outline-none"
+                            className="w-full text-lg font-bold"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
@@ -947,28 +1083,21 @@ export function S3StorageManager() {
                                 </div>
                             )}
                             <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                    onClick={() => {
-                                        const win = window.open(previewFile.url, '_blank');
-                                        if (!win) {
-                                            toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
-                                        }
-                                    }}
-                                    className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl transition-colors"
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    onClick={() => openInNewTab(previewFile.url)}
+                                    className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl border-none h-10 w-10"
+                                    aria-label="Открыть в новой вкладке"
                                 >
                                     <ExternalLink size={18} />
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
                         <div className="flex gap-3">
                             <Button
-                                onClick={() => {
-                                    const win = window.open(previewFile.url, '_blank');
-                                    if (!win) {
-                                        toast("Браузер заблокировал открытие файла. Разрешите всплывающие окна.", "error");
-                                    }
-                                }}
+                                onClick={() => openInNewTab(previewFile.url)}
                                 className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
                             >
                                 <ExternalLink size={16} className="mr-2" />
@@ -987,7 +1116,10 @@ export function S3StorageManager() {
 
             {/* Loading Overlay for Preview */}
             {isPreviewLoading && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex flex-col items-center justify-center gap-4 text-white">
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center gap-4 text-white"
+                    style={{ zIndex: Z_INDEX.loadingOverlay }}
+                >
                     <RefreshCw className="animate-spin" size={48} />
                     <p className="text-xs font-bold  tracking-normal">Генерация ссылки...</p>
                 </div>

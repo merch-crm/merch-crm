@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DateRangeFilter } from "./date-range-filter";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function OrdersToolbar() {
     const router = useRouter();
@@ -46,21 +48,23 @@ export function OrdersToolbar() {
             <div className="crm-filter-tray p-1.5 rounded-[22px]">
                 {/* Search Box */}
                 <div className="relative flex-1 min-w-0">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                    <Input
                         type="text"
                         placeholder="Поиск по заказам..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none text-[13px] md:text-sm"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none text-[13px] md:text-sm border-none bg-transparent shadow-none h-11"
                     />
                     {searchQuery && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setSearchQuery("")}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 w-8 h-8 rounded-full"
                         >
                             <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -70,27 +74,31 @@ export function OrdersToolbar() {
                             { id: "base", label: "База", active: !showArchived, icon: ArchiveRestore },
                             { id: "archived", label: "Архив", active: showArchived, icon: Archive }
                         ].map((tab) => (
-                            <button
+                            <Button
                                 key={tab.id}
+                                variant="ghost"
+                                asChild
                                 onClick={() => handleTabChange(tab.id === "archived")}
                                 className={cn(
-                                    "crm-filter-tray-tab shrink-0",
+                                    "crm-filter-tray-tab shrink-0 h-auto p-0 hover:bg-transparent",
                                     tab.active && "active"
                                 )}
                             >
-                                {tab.active && (
-                                    <motion.div
-                                        layoutId="activeOrderTab"
-                                        className={cn(
-                                            "absolute inset-0 rounded-[16px] z-0",
-                                            tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
-                                        )}
-                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                    />
-                                )}
-                                <tab.icon className="w-3.5 h-3.5 relative z-10" />
-                                <span className="relative z-10">{tab.label}</span>
-                            </button>
+                                <button>
+                                    {tab.active && (
+                                        <motion.div
+                                            layoutId="activeOrderTab"
+                                            className={cn(
+                                                "absolute inset-0 rounded-[16px] z-0",
+                                                tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
+                                            )}
+                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        />
+                                    )}
+                                    <tab.icon className="w-3.5 h-3.5 relative z-10" />
+                                    <span className="relative z-10">{tab.label}</span>
+                                </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -99,13 +107,15 @@ export function OrdersToolbar() {
 
                 {/* Create Order - Desktop ONLY */}
                 <div className="hidden md:flex items-center">
-                    <Link
-                        href="/dashboard/orders/new"
-                        className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 rounded-[16px]"
+                    <Button
+                        asChild
+                        className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 rounded-[16px] h-auto"
                     >
-                        <Plus className="w-4 h-4" />
-                        Создать заказ
-                    </Link>
+                        <Link href="/dashboard/orders/new">
+                            <Plus className="w-4 h-4" />
+                            Создать заказ
+                        </Link>
+                    </Button>
                 </div>
             </div>
 
@@ -130,13 +140,18 @@ export function OrdersToolbar() {
                     ))}
                 </div>
 
-                <Link
-                    href="/dashboard/orders/new"
-                    className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 shrink-0"
-                    title="Создать заказ"
+                <Button
+                    asChild
+                    variant="btn-dark"
+                    className="w-11 h-11 flex items-center justify-center rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 shrink-0 p-0"
                 >
-                    <Plus className="w-5 h-5" />
-                </Link>
+                    <Link
+                        href="/dashboard/orders/new"
+                        title="Создать заказ"
+                    >
+                        <Plus className="w-5 h-5" />
+                    </Link>
+                </Button>
             </div>
 
             {/* Date Range Filter - Separate Row */}

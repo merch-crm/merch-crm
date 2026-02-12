@@ -72,21 +72,25 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
                         <div className="flex-1 space-y-1">
                             <label className="text-sm font-bold text-foreground ml-1">Копии</label>
                             <div className="flex items-center gap-2">
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => setCopies(Math.max(1, copies - 1))}
-                                    className="w-10 h-10 rounded-2xl border border-border flex items-center justify-center hover:bg-muted transition-all active:scale-90"
+                                    className="w-10 h-10 rounded-2xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
                                 >
                                     <ChevronLeft className="w-4 h-4 text-muted-foreground" />
-                                </button>
-                                <div className="flex-1 h-10 bg-muted rounded-2xl flex items-center justify-center font-bold text-sm text-foreground border border-border tabular-nums">
+                                </Button>
+                                <div className="flex-1 h-10 bg-muted rounded-2xl flex items-center justify-center font-bold text-sm text-foreground border border-border tabular-nums min-w-[60px]">
                                     {copies}
                                 </div>
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => setCopies(copies + 1)}
-                                    className="w-10 h-10 rounded-2xl border border-border flex items-center justify-center hover:bg-muted transition-all active:scale-90"
+                                    className="w-10 h-10 rounded-2xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
                                 >
                                     <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                                </button>
+                                </Button>
                             </div>
                         </div>
 

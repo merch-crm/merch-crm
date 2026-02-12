@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Search, User, ShoppingCart, Package, Book, CheckCircle2, Tag, Layout, MapPin, CreditCard, Folder, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { globalSearch } from "@/app/(main)/dashboard/search-actions";
+import { Button } from "@/components/ui/button";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -111,12 +112,14 @@ export function CommandMenu() {
                                 />
                                 <div className="flex items-center gap-2">
 
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setOpen(false)}
-                                        className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+                                        className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600 h-9 w-9"
                                     >
                                         <X className="w-5 h-5" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -139,16 +142,17 @@ export function CommandMenu() {
                                                 { label: 'Склад', href: '/dashboard/warehouse', icon: icons.item },
                                                 { label: 'База знаний', href: '/dashboard/knowledge-base', icon: icons.wiki },
                                             ].map(item => (
-                                                <button
+                                                <Button
                                                     key={item.href}
+                                                    variant="ghost"
                                                     onClick={() => onSelect(item.href)}
-                                                    className="flex items-center gap-4 px-5 py-4 rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
+                                                    className="flex items-center justify-start gap-4 px-5 py-4 h-auto rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
                                                 >
                                                     <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                                                         {item.icon}
                                                     </div>
                                                     {item.label}
-                                                </button>
+                                                </Button>
                                             ))}
                                         </div>
                                     </div>
@@ -156,21 +160,22 @@ export function CommandMenu() {
 
                                 <div className="space-y-1.5 pt-1">
                                     {results.map((res) => (
-                                        <button
+                                        <Button
                                             key={`${res.type}-${res.id}`}
+                                            variant="ghost"
                                             onClick={() => onSelect(res.href)}
-                                            className="w-full flex items-center justify-between px-4 py-3.5 rounded-[22px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100"
+                                            className="w-full flex items-center justify-between px-4 py-3.5 h-auto rounded-[22px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100"
                                         >
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-[18px] bg-white border border-slate-200 flex items-center justify-center group-hover:scale-110 transition-all shadow-sm">
                                                     {icons[res.type as keyof typeof icons]}
                                                 </div>
                                                 <div className="text-left">
-                                                    <div className="text-sm font-bold text-slate-900 leading-tight">{res.title}</div>
+                                                    <div className="text-sm font-bold text-slate-900 leading-tight whitespace-normal">{res.title}</div>
                                                     <div className="text-[11px] text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
                                                 </div>
                                             </div>
-                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
                                                 {res.type === 'item' ? 'Товар' :
                                                     res.type === 'order' ? 'Заказ' :
                                                         res.type === 'client' ? 'Клиент' :
@@ -182,7 +187,7 @@ export function CommandMenu() {
                                                                                 res.type === 'expense' ? 'Расход' :
                                                                                     res.type === 'category' ? 'Категория' : 'Раздел'}
                                             </div>
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>

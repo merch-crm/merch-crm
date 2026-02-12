@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface DeleteDepartmentDialogProps {
     department: { id: string; name: string; userCount?: number; isSystem?: boolean } | null;
@@ -65,7 +67,7 @@ export function DeleteDepartmentDialog({ department, isOpen, onClose, onConfirm 
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системный отдел. Для подтверждения удаления введите пароль от своей учетной записи.
                         </p>
-                        <input
+                        <Input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -77,21 +79,23 @@ export function DeleteDepartmentDialog({ department, isOpen, onClose, onConfirm 
                 )}
 
                 <div className="flex gap-3">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={handleClose}
                         disabled={loading}
-                        className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-[18px] transition-colors disabled:opacity-50"
+                        className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-[18px] transition-colors disabled:opacity-50 h-auto border-none"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="destructive"
                         onClick={handleConfirm}
                         disabled={loading || (department.isSystem && !password.trim())}
-                        className="flex-1 inline-flex justify-center items-center gap-2 btn-destructive rounded-[18px] h-11"
+                        className="flex-1 inline-flex justify-center items-center gap-2 rounded-[18px] h-12"
                     >
                         {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                         {loading ? "Удаление..." : "Удалить"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>

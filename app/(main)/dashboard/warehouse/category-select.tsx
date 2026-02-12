@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Category } from "./types";
 import { getCategoryIcon, getColorStyles } from "./category-utils";
 import { GlassEmptyState } from "@/components/ui/glass-empty-state";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface CategorySelectProps {
     categories: Category[];
@@ -52,12 +54,12 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
 
     return (
         <div className="relative" ref={containerRef}>
-            <button
-                type="button"
+            <Button
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
+                variant="ghost"
                 className={cn(
-                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border flex items-center justify-between transition-all outline-none group",
+                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border flex items-center justify-between transition-all outline-none group p-0 bg-transparent hover:bg-transparent shadow-none",
                     isOpen ? "border-primary ring-4 ring-primary/10 bg-white shadow-crm-md" : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-crm-sm",
                     disabled && "opacity-50 cursor-not-allowed"
                 )}
@@ -78,7 +80,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                     )}
                 </div>
                 <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform duration-300", isOpen && "rotate-180 text-primary")} />
-            </button>
+            </Button>
 
             {isOpen && (
                 <div
@@ -87,7 +89,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                     <div className="p-3 border-b border-slate-200 bg-slate-50/30">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <input
+                            <Input
                                 autoFocus
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -105,12 +107,12 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                                 const colorStyles = getColorStyles(cat.color);
 
                                 return (
-                                    <button
+                                    <Button
                                         key={cat.id}
-                                        type="button"
                                         onClick={() => handleSelect(cat.id)}
+                                        variant="ghost"
                                         className={cn(
-                                            "w-full flex items-center justify-between p-3 rounded-[var(--radius-inner)] transition-all mb-1 group",
+                                            "w-full flex items-center justify-between p-3 rounded-[var(--radius-inner)] transition-all group h-auto mb-1 bg-transparent hover:bg-transparent shadow-none border-none",
                                             isSelected ? "bg-primary/5 text-primary" : "hover:bg-slate-50 text-slate-600"
                                         )}
                                     >
@@ -124,7 +126,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                                             <span className="font-bold text-sm ">{cat.name}</span>
                                         </div>
                                         {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
-                                    </button>
+                                    </Button>
                                 );
                             })
                         ) : (

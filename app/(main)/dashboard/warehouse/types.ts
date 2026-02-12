@@ -3,6 +3,10 @@ export interface InventoryAttribute {
     type: string;
     value: string;
     name: string;
+    hex?: string | null;
+    isSystem?: boolean;
+    sortOrder?: number;
+    semanticColor?: string | null;
     meta?: Record<string, unknown> | null | unknown;
 }
 

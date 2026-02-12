@@ -5,6 +5,7 @@ import { Search, Package, User, Database, Users, CheckCircle2, X, ArrowRight } f
 import { globalSearch, SearchResult } from "@/app/(main)/dashboard/search-actions";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function MobileSearchSheet() {
@@ -132,12 +133,14 @@ export function MobileSearchSheet() {
                         <div className="px-6 pb-4 shrink-0">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-xl font-black text-slate-900 tracking-tight">Поиск</h2>
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={handleClose}
-                                    className="p-2 rounded-full bg-slate-100/50 text-slate-400 active:scale-95 transition-transform"
+                                    className="p-2 rounded-full h-9 w-9"
                                 >
                                     <X className="h-5 w-5" />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Search Input */}
@@ -152,12 +155,14 @@ export function MobileSearchSheet() {
                                     className="w-full h-14 pl-12 pr-4 bg-slate-100/50 border border-slate-200/50 rounded-2xl text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-white transition-all"
                                 />
                                 {query && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setQuery("")}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-slate-200/50 text-slate-400"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full h-8 w-8"
                                     >
                                         <X className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>
@@ -197,13 +202,14 @@ export function MobileSearchSheet() {
                             {!loading && results.length > 0 && (
                                 <div className="space-y-2">
                                     {results.map((result) => (
-                                        <button
+                                        <Button
                                             key={`${result.type}-${result.id}`}
+                                            variant="ghost"
                                             onClick={() => handleSelect(result)}
-                                            className="w-full flex items-center gap-4 p-4 bg-slate-50/50 hover:bg-slate-100/50 active:scale-[0.98] rounded-2xl transition-all text-left"
+                                            className="w-full flex items-center justify-start gap-4 p-4 h-auto bg-slate-50/50 hover:bg-slate-100/50 active:scale-[0.98] rounded-2xl transition-all text-left"
                                         >
                                             <div className={cn(
-                                                "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0",
+                                                "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm",
                                                 result.type === 'order' ? 'bg-indigo-100 text-indigo-600' :
                                                     result.type === 'client' ? 'bg-emerald-100 text-emerald-600' :
                                                         result.type === 'item' ? 'bg-amber-100 text-amber-600' :
@@ -220,11 +226,11 @@ export function MobileSearchSheet() {
                                                     </span>
                                                 </div>
                                                 {result.subtitle && (
-                                                    <p className="text-sm text-slate-500 truncate">{result.subtitle}</p>
+                                                    <p className="text-sm text-slate-500 truncate whitespace-normal">{result.subtitle}</p>
                                                 )}
                                             </div>
                                             <ArrowRight className="w-5 h-5 text-slate-300 shrink-0" />
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             )}

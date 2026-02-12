@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useToast } from "@/components/ui/toast";
@@ -192,7 +193,7 @@ export function MoveInventoryDialog({
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500 uppercase-none">*</span></label>
                                 <div className="relative group">
-                                    <input
+                                    <Input
                                         type="number"
                                         name="quantity"
                                         placeholder="0"
@@ -206,9 +207,23 @@ export function MoveInventoryDialog({
                                             fieldErrors.quantity && "border-rose-300 bg-rose-50 text-rose-900"
                                         )}
                                     />
-                                    <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button type="button" onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))} className="w-7 h-4 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"><ChevronUp className="w-2.5 h-2.5 text-slate-400" /></button>
-                                        <button type="button" onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))} className="w-7 h-4 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"><ChevronDown className="w-2.5 h-2.5 text-slate-400" /></button>
+                                    <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
+                                            className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"
+                                        >
+                                            <ChevronUp className="w-2.5 h-2.5 text-slate-400" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
+                                            className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"
+                                        >
+                                            <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
+                                        </Button>
                                     </div>
                                 </div>
                                 {fieldErrors.quantity && <p className="text-[9px] font-bold text-rose-500 ml-1">{fieldErrors.quantity}</p>}
@@ -216,7 +231,7 @@ export function MoveInventoryDialog({
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Причина перемещения <span className="text-rose-500 uppercase-none">*</span></label>
-                                <input
+                                <Input
                                     name="comment"
                                     placeholder="Напр: Пополнение дефицита..."
                                     value={comment}
@@ -236,13 +251,13 @@ export function MoveInventoryDialog({
                     </div>
 
                     <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
+                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <SubmitButton />
                     </div>
                 </div>

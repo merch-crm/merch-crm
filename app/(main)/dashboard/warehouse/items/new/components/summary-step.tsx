@@ -11,6 +11,8 @@ import { createElement } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 
 
@@ -104,7 +106,7 @@ export function SummaryStep({
                                     <div className="flex items-center gap-4 group/name relative">
                                         {(isEditingName && !isMobile) ? (
                                             <div className="flex-1 flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-                                                <input
+                                                <Input
                                                     autoFocus
                                                     type="text"
                                                     value={tempName}
@@ -119,27 +121,28 @@ export function SummaryStep({
                                                             setIsEditingName(false);
                                                         }
                                                     }}
-                                                    className="text-4xl sm:text-5xl font-black text-slate-900 bg-slate-50 border-b-2 border-slate-900 focus:outline-none w-full py-1 h-auto"
+                                                    className="text-4xl sm:text-5xl font-black text-slate-900 bg-slate-50 border-none border-b-2 border-slate-900 focus-visible:ring-0 shadow-none w-full py-1 h-auto rounded-none"
                                                 />
                                                 <div className="flex items-center gap-1">
-                                                    <button
+                                                    <Button
                                                         onClick={() => {
                                                             updateFormData({ itemName: tempName });
                                                             setIsEditingName(false);
                                                         }}
-                                                        className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-emerald-600 transition-colors shadow-lg active:scale-90"
+                                                        size="icon"
+                                                        variant="default"
+                                                        className="w-10 h-10 rounded-full bg-slate-900 hover:bg-emerald-600 shadow-lg active:scale-90"
                                                     >
                                                         <CheckCircle2 className="w-5 h-5" strokeWidth={3} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setTempName(formData.itemName);
-                                                            setIsEditingName(false);
-                                                        }}
-                                                        className="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center hover:bg-slate-50 transition-colors active:scale-90"
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => setIsEditingName(false)}
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 active:scale-95"
                                                     >
                                                         <X className="w-5 h-5" />
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         ) : (
@@ -147,12 +150,14 @@ export function SummaryStep({
                                                 <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.1] tracking-tight pr-4">
                                                     {formData.itemName}
                                                 </h1>
-                                                <button
+                                                <Button
                                                     onClick={() => setIsEditingName(true)}
-                                                    className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center opacity-0 group-hover/name:opacity-100 hover:text-slate-900 hover:border-slate-900 transition-all shrink-0 active:scale-90"
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-400 opacity-0 group-hover/name:opacity-100 hover:text-slate-900 hover:border-slate-900 transition-all shrink-0 active:scale-90 hidden sm:flex"
                                                 >
                                                     <Pencil className="w-4 h-4" />
-                                                </button>
+                                                </Button>
                                             </>
                                         )}
                                     </div>
@@ -497,12 +502,14 @@ export function SummaryStep({
                                 <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-1">Редактирование</p>
                             </div>
                         </div>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setIsEditingName(false)}
-                            className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors active:scale-95"
+                            className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors active:scale-95 p-0"
                         >
                             <X className="w-5 h-5" />
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="flex-1 p-6 space-y-6 overflow-y-auto min-h-0">
@@ -528,25 +535,27 @@ export function SummaryStep({
                     {/* Sticky Footer with blur */}
                     <div className="p-6 pt-4 border-t border-slate-100 bg-white/80 backdrop-blur-md sticky bottom-0 z-20">
                         <div className="flex flex-col sm:flex-row gap-3">
-                            <button
+                            <Button
                                 onClick={() => {
                                     setTempName(formData.itemName);
                                     setIsEditingName(false);
                                 }}
-                                className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-slate-500 font-bold hover:bg-slate-50 transition-all text-sm flex items-center justify-center gap-2"
+                                variant="ghost"
+                                className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-slate-500 font-bold hover:bg-slate-50 text-sm gap-2"
                             >
                                 Отмена
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 onClick={() => {
                                     updateFormData({ itemName: tempName });
                                     setIsEditingName(false);
                                 }}
-                                className="h-11 w-full sm:flex-1 btn-dark rounded-[var(--radius-inner)] text-sm font-bold flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all"
+                                variant="default" // or 'btn-dark' if custom variant exists, keeping simple default for now as it's typically primary
+                                className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-sm font-bold gap-2 shadow-sm active:scale-95"
                             >
                                 <CheckCircle2 className="w-5 h-5" strokeWidth={3} />
                                 Сохранить
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

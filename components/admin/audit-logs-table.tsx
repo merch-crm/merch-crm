@@ -12,14 +12,32 @@ import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
+
+const PAGE_SIZE = 20;
+
+interface AuditLogDetails {
+    fileName?: string;
+    name?: string;
+    reason?: string;
+    oldKey?: string;
+    newKey?: string;
+    oldPath?: string;
+    newPath?: string;
+    key?: string;
+    path?: string;
+    count?: number;
+    [key: string]: unknown;
+}
 
 interface AuditLog {
     id: string;
     action: string;
     entityType: string;
     entityId: string | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    details: Record<string, any> | null;
+    details: AuditLogDetails | null;
     createdAt: Date | string;
     userId: string | null;
     user?: {
@@ -27,6 +45,62 @@ interface AuditLog {
         avatar?: string | null;
     } | null;
 }
+
+const formatLogDetails = (details: AuditLogDetails | null): string | null => {
+    if (!details) return null;
+
+    return (
+        (details.fileName as string) ||
+        (details.name as string) ||
+        (details.reason as string) ||
+        (details.oldKey && details.newKey ? `${details.oldKey} → ${details.newKey}` : null) ||
+        (details.oldPath && details.newPath ? `${details.oldPath} → ${details.newPath}` : null) ||
+        (details.key as string) ||
+        (details.path as string) ||
+        (details.count ? `Объектов: ${details.count}` : null) ||
+        JSON.stringify(details)
+    );
+};
+
+const formatDate = (date: Date | string, formatStr: string) => {
+    try {
+        return format(new Date(date), formatStr, { locale: ru });
+    } catch {
+        return "—";
+    }
+};
+
+const UserAvatar = ({ user, size = 28 }: { user: AuditLog['user']; size?: number }) => {
+    const initial = (user?.name || "С")[0];
+
+    return (
+        <div
+            className={cn(
+                "rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center",
+                "text-[10px] font-bold text-slate-500 shrink-0 overflow-hidden relative"
+            )}
+            style={{ width: size, height: size }}
+        >
+            {user?.avatar ? (
+                <>
+                    <span className="absolute inset-0 flex items-center justify-center">
+                        {initial}
+                    </span>
+                    <NextImage
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-full h-full object-cover relative z-10"
+                        width={size}
+                        height={size}
+                        unoptimized
+                    />
+                </>
+            ) : (
+                initial
+            )}
+        </div>
+    );
+};
 
 export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
     const { toast } = useToast();
@@ -57,7 +131,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
         try {
             const res = await getAuditLogs(
                 page,
-                20,
+                PAGE_SIZE,
                 query,
                 selectedUserId || null,
                 selectedEntityType || null,
@@ -77,11 +151,16 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const res = await getUsers(1, 100);
-            if (res.data) setAllUsers(res.data);
+            try {
+                const res = await getUsers(1, 100);
+                if (res.data) setAllUsers(res.data);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+                toast("Не удалось загрузить список пользователей", "destructive");
+            }
         };
         fetchUsers();
-    }, []);
+    }, [toast]);
 
     const handleClearLogs = async () => {
         setClearing(true);
@@ -91,11 +170,11 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 toast("Логи успешно очищены", "success");
                 fetchLogs();
             } else {
-                toast(res.error || "Ошибка при очистке логов", "error");
+                toast(res.error || "Ошибка при очистке логов", "destructive");
             }
         } catch (error) {
             console.error(error);
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка", "destructive");
         } finally {
             setClearing(false);
             setShowConfirmDialog(false);
@@ -162,76 +241,79 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-6">
-                <div className="flex flex-col md:flex-row items-end gap-4">
+                <div className="flex flex-col xl:flex-row xl:items-end gap-4">
                     <div className="flex-1 space-y-2 min-w-[200px]">
-                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Поиск</label>
+                        <label className="text-[10px] font-bold text-slate-400 tracking-normal ml-1">Поиск</label>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Действие..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full h-11 pl-10 pr-4 bg-white border border-slate-200 rounded-[18px] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                className="pl-10"
                             />
                         </div>
                     </div>
 
-                    <div className="w-full md:w-48 space-y-2">
-                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Сотрудник</label>
-                        <select
+                    <div className="w-full xl:w-48 space-y-2">
+                        <PremiumSelect
+                            label="Сотрудник"
+                            placeholder="Все сотрудники"
                             value={selectedUserId}
-                            onChange={(e) => setSelectedUserId(e.target.value)}
-                            className="w-full h-11 px-4 bg-white border border-slate-200 rounded-[18px] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none font-medium"
-                        >
-                            <option value="">Все сотрудники</option>
-                            {allUsers.map(u => (
-                                <option key={u.id} value={u.id}>{u.name}</option>
-                            ))}
-                        </select>
+                            onChange={setSelectedUserId}
+                            options={[
+                                { title: "Все сотрудники", id: "" },
+                                ...allUsers.map(u => ({ title: u.name, id: u.id }))
+                            ]}
+                            compact
+                        />
                     </div>
 
-                    <div className="w-full md:w-48 space-y-2">
-                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Тип объекта</label>
-                        <select
+                    <div className="w-full xl:w-48 space-y-2">
+                        <PremiumSelect
+                            label="Тип объекта"
+                            placeholder="Все типы"
                             value={selectedEntityType}
-                            onChange={(e) => setSelectedEntityType(e.target.value)}
-                            className="w-full h-11 px-4 bg-white border border-slate-200 rounded-[18px] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none font-medium"
-                        >
-                            <option value="">Все типы</option>
-                            <option value="user">Пользователи</option>
-                            <option value="order">Заказы</option>
-                            <option value="client">Клиенты</option>
-                            <option value="inventory">Склад</option>
-                            <option value="role">Роли</option>
-                            <option value="department">Отделы</option>
-                            <option value="system_settings">Система</option>
-                            <option value="auth">Авторизация</option>
-                        </select>
+                            onChange={setSelectedEntityType}
+                            options={[
+                                { title: "Все типы", id: "" },
+                                { title: "Пользователи", id: "user" },
+                                { title: "Заказы", id: "order" },
+                                { title: "Клиенты", id: "client" },
+                                { title: "Склад", id: "inventory" },
+                                { title: "Роли", id: "role" },
+                                { title: "Отделы", id: "department" },
+                                { title: "Система", id: "system_settings" },
+                                { title: "Авторизация", id: "auth" },
+                            ]}
+                            compact
+                        />
                     </div>
 
-                    <div className="w-full md:w-80 space-y-2">
-                        <label className="text-[10px] font-bold text-slate-400  tracking-normal ml-1">Период</label>
+                    <div className="w-full xl:w-80 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-400 tracking-normal ml-1">Период</label>
                         <div className="flex items-center gap-2">
-                            <input
+                            <Input
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full h-11 px-4 bg-white border border-slate-200 rounded-[18px] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                className="text-xs font-bold"
                             />
                             <span className="text-slate-300">—</span>
-                            <input
+                            <Input
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full h-11 px-4 bg-white border border-slate-200 rounded-[18px] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                className="text-xs font-bold"
                             />
                         </div>
                     </div>
 
                     <div className="flex gap-2 shrink-0">
                         {(searchTerm || selectedUserId || selectedEntityType || startDate || endDate) && (
-                            <button
+                            <Button
+                                variant="secondary"
                                 onClick={() => {
                                     setSearchTerm("");
                                     setSelectedUserId("");
@@ -239,18 +321,21 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                     setStartDate("");
                                     setEndDate("");
                                 }}
-                                className="h-11 px-4 bg-slate-100 text-slate-600 rounded-[18px] text-[10px] font-bold hover:bg-slate-200 transition-all  tracking-normal"
+                                className="h-10 px-4 text-[10px]"
                             >
                                 Сбросить
-                            </button>
+                            </Button>
                         )}
                         {isAdmin && (
-                            <button
+                            <Button
+                                variant="destructive"
+                                size="icon"
                                 onClick={() => setShowConfirmDialog(true)}
-                                className="h-11 px-4 bg-rose-50 text-rose-600 rounded-[18px] text-[10px] font-bold hover:bg-rose-100 transition-all  tracking-normal"
+                                className="h-10 w-10 bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-100"
+                                aria-label="Очистить логи аудита"
                             >
                                 <Trash2 size={16} />
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>
@@ -270,17 +355,17 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
             <ResponsiveDataView
                 data={logs}
                 renderTable={() => (
-                    <div className="bg-white rounded-[18px] border border-slate-200 shadow-sm overflow-hidden">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-200">
-                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Действие</th>
-                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Тип объекта</th>
-                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Пользователь</th>
-                                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
+                    <div className="table-container">
+                        <table className="crm-table">
+                            <thead className="crm-thead">
+                                <tr className="crm-tr">
+                                    <th className="crm-th">Действие</th>
+                                    <th className="crm-th">Тип объекта</th>
+                                    <th className="crm-th">Пользователь</th>
+                                    <th className="crm-th">Дата и время</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="crm-tbody">
                                 {loading && logs.length === 0 ? (
                                     <tr>
                                         <td colSpan={4} className="py-20 text-center">
@@ -300,75 +385,52 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                     logs.map((log) => {
                                         const entity = getEntityInfo(log.entityType);
                                         const Icon = entity.icon;
+                                        const formattedDetails = formatLogDetails(log.details);
                                         return (
-                                            <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
-                                                <td className="px-6 py-4">
+                                            <tr key={log.id} className="crm-tr hover:bg-slate-50/50 transition-colors group">
+                                                <td className="crm-td">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={cn("h-10 w-10 rounded-[18px] flex items-center justify-center transition-colors shadow-sm border border-transparent", entity.bg, entity.color, "group-hover:scale-110")}>
-                                                            <Icon className="w-5 h-5" />
+                                                        <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center transition-colors shadow-sm border border-transparent shrink-0", entity.bg, entity.color, "group-hover:scale-110")}>
+                                                            <Icon className="w-4 h-4" />
                                                         </div>
                                                         <div>
                                                             <div className="font-bold text-slate-700 text-sm leading-tight">{log.action}</div>
-                                                            {log.details && (
+                                                            {formattedDetails && (
                                                                 <div className="text-[10px] text-slate-400 mt-1 line-clamp-1 font-medium bg-slate-50/50 px-2 py-0.5 rounded-md border border-slate-200/50 w-fit">
-                                                                    {log.details?.fileName ||
-                                                                        log.details?.name ||
-                                                                        log.details?.reason ||
-                                                                        (log.details?.oldKey && log.details?.newKey ? `${log.details.oldKey} → ${log.details.newKey}` : null) ||
-                                                                        (log.details?.oldPath && log.details?.newPath ? `${log.details.oldPath} → ${log.details.newPath}` : null) ||
-                                                                        log.details?.key ||
-                                                                        log.details?.path ||
-                                                                        (log.details?.count ? `Объектов: ${log.details.count}` : null) ||
-                                                                        JSON.stringify(log.details)}
+                                                                    {formattedDetails}
                                                                 </div>
                                                             )}
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="crm-td">
                                                     <span className={cn(
-                                                        "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
+                                                        "px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight",
                                                         entity.bg,
                                                         entity.color
                                                     )}>
                                                         {log.entityType}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="crm-td">
                                                     {log.user ? (
                                                         <div className="flex items-center gap-2">
-                                                            <div className="h-7 w-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
-                                                                {log.user.avatar ? (
-                                                                    <>
-                                                                        <span className="absolute inset-0 flex items-center justify-center">{(log.user?.name || "С")[0]}</span>
-                                                                        <NextImage
-                                                                            src={log.user.avatar}
-                                                                            alt={log.user.name}
-                                                                            className="w-full h-full object-cover relative z-10"
-                                                                            width={28}
-                                                                            height={28}
-                                                                            unoptimized
-                                                                        />
-                                                                    </>
-                                                                ) : (
-                                                                    (log.user?.name || "С")[0]
-                                                                )}
-                                                            </div>
-                                                            <span className="text-sm text-slate-900 truncate max-w-[150px] font-medium">{log.user?.name}</span>
+                                                            <UserAvatar user={log.user} size={24} />
+                                                            <span className="text-xs text-slate-900 truncate max-w-[150px] font-bold">{log.user?.name}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-slate-400 text-sm font-medium">Система</span>
+                                                        <span className="text-slate-400 text-xs font-medium">Система</span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="crm-td">
                                                     <div className="flex flex-col">
-                                                        <div className="flex items-center gap-1.5 text-sm font-bold text-slate-700">
-                                                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                                                            {format(new Date(log.createdAt), "dd.MM.yyyy", { locale: ru })}
+                                                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                                                            <Calendar className="w-3 h-3 text-slate-400" />
+                                                            {formatDate(log.createdAt, "dd.MM.yyyy")}
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                                                            <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                            {format(new Date(log.createdAt), "HH:mm:ss")}
+                                                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium mt-0.5">
+                                                            <Clock className="w-3 h-3 text-slate-400" />
+                                                            {formatDate(log.createdAt, "HH:mm:ss")}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -383,6 +445,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 renderCard={(log) => {
                     const entity = getEntityInfo(log.entityType);
                     const Icon = entity.icon;
+                    const formattedDetails = formatLogDetails(log.details);
                     return (
                         <div key={log.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                             <div className="flex items-center justify-between">
@@ -402,42 +465,21 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-[10px] font-bold text-slate-900">{format(new Date(log.createdAt), "dd.MM.yyyy", { locale: ru })}</div>
-                                    <div className="text-[9px] font-medium text-slate-400">{format(new Date(log.createdAt), "HH:mm:ss")}</div>
+                                    <div className="text-[10px] font-bold text-slate-900">{formatDate(log.createdAt, "dd.MM.yyyy")}</div>
+                                    <div className="text-[9px] font-medium text-slate-400">{formatDate(log.createdAt, "HH:mm:ss")}</div>
                                 </div>
                             </div>
 
-                            {log.details && (
+                            {formattedDetails && (
                                 <div className="text-[10px] text-slate-500 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100 break-words">
-                                    {log.details?.fileName ||
-                                        log.details?.name ||
-                                        log.details?.reason ||
-                                        (log.details?.oldKey && log.details?.newKey ? `${log.details.oldKey} → ${log.details.newKey}` : null) ||
-                                        (log.details?.oldPath && log.details?.newPath ? `${log.details.oldPath} → ${log.details.newPath}` : null) ||
-                                        log.details?.key ||
-                                        log.details?.path ||
-                                        (log.details?.count ? `Объектов: ${log.details.count}` : null) ||
-                                        JSON.stringify(log.details)}
+                                    {formattedDetails}
                                 </div>
                             )}
 
                             <div className="flex items-center gap-2 pt-2 border-t border-slate-50">
                                 {log.user ? (
                                     <div className="flex items-center gap-2">
-                                        <div className="h-6 w-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 shrink-0 overflow-hidden relative">
-                                            {log.user.avatar ? (
-                                                <NextImage
-                                                    src={log.user.avatar}
-                                                    alt={log.user.name}
-                                                    className="w-full h-full object-cover relative z-10"
-                                                    width={28}
-                                                    height={28}
-                                                    unoptimized
-                                                />
-                                            ) : (
-                                                (log.user?.name || "С")[0]
-                                            )}
-                                        </div>
+                                        <UserAvatar user={log.user} size={28} />
                                         <span className="text-xs text-slate-600 font-medium">{log.user?.name}</span>
                                     </div>
                                 ) : (
@@ -452,10 +494,10 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
 
             <PremiumPagination
                 totalItems={totalLogs}
-                pageSize={20}
+                pageSize={PAGE_SIZE}
                 currentPage={page}
                 itemNames={['запись', 'записи', 'записей']}
             />
-        </div >
+        </div>
     );
 }

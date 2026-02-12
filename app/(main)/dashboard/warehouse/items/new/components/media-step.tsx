@@ -3,6 +3,7 @@ import { Trash2, Plus, Images, RotateCcw, RefreshCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StepFooter } from "./step-footer";
 import { ItemFormData } from "../../../types";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { compressImage } from "@/lib/image-processing";
 
@@ -374,13 +375,14 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                             <span className="text-[12px] font-bold text-slate-900">Заменить</span>
                                                             <input type="file" accept="image/*" className="hidden" onChange={handleMainImageChange} />
                                                         </label>
-                                                        <button
+                                                        <Button
                                                             onClick={(e) => { e.preventDefault(); removeMainImage(); }}
-                                                            className="flex items-center gap-2 px-7 py-4 btn-destructive rounded-full shadow-xl active:scale-95"
+                                                            variant="destructive"
+                                                            className="flex items-center gap-2 px-7 py-6 rounded-full shadow-xl active:scale-95 h-auto"
                                                         >
                                                             <Trash2 className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
                                                             <span className="text-[12px] font-bold">Удалить</span>
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </>
                                             ) : (
@@ -450,13 +452,15 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                     />
                                                 </div>
                                             </div>
-                                            <button
+                                            <Button
                                                 onClick={resetThumbSettings}
-                                                className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
+                                                size="icon"
+                                                variant="ghost"
+                                                className="w-6 h-6 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
                                                 title="Сбросить"
                                             >
                                                 <RotateCcw className="w-3 h-3" />
-                                            </button>
+                                            </Button>
                                         </div>
 
                                         {/* X/Y Sliders */}
@@ -619,13 +623,15 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                                                         onChange={(e) => handleDetailImageReplace(idx, e)}
                                                                     />
                                                                 </label>
-                                                                <button
+                                                                <Button
                                                                     onClick={(e) => { e.preventDefault(); removeDetailImage(idx); }}
-                                                                    className="w-10 h-10 flex items-center justify-center btn-destructive border-none rounded-full shadow-lg active:scale-90"
+                                                                    size="icon"
+                                                                    variant="destructive"
+                                                                    className="w-10 h-10 rounded-full shadow-lg active:scale-90"
                                                                     title="Удалить"
                                                                 >
                                                                     <Trash2 className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
-                                                                </button>
+                                                                </Button>
                                                             </div>
                                                         </>
                                                     )}
@@ -702,13 +708,14 @@ function CompactDropzone({ label, preview, onChange, onRemove, uploading, progre
                                 <span className="text-[10px] font-bold text-slate-900">Заменить</span>
                                 <input type="file" accept="image/*" className="hidden" onChange={onChange} />
                             </label>
-                            <button
+                            <Button
                                 onClick={(e) => { e.preventDefault(); onRemove(); }}
-                                className="flex items-center gap-2 px-6 py-3 btn-destructive border-none rounded-full shadow-xl active:scale-95"
+                                variant="destructive"
+                                className="flex items-center gap-2 px-6 py-6 rounded-full shadow-xl active:scale-95 h-auto"
                             >
                                 <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
                                 <span className="text-[10px] font-bold ">Удалить</span>
-                            </button>
+                            </Button>
                         </div>
                     </>
                 ) : (

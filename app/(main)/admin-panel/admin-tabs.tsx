@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface AdminUser {
     id: string;
@@ -55,11 +56,12 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                     : pathname.startsWith(item.href);
 
                 return (
-                    <button
+                    <Button
                         key={item.name}
+                        variant="ghost"
                         onClick={() => router.push(item.href)}
                         className={cn(
-                            "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-[13px] font-black transition-all group relative outline-none",
+                            "w-full flex items-center justify-start gap-4 px-4 py-3 rounded-2xl text-[13px] font-black transition-all group relative outline-none h-auto border-none hover:bg-transparent",
                             isActive ? "text-white" : "text-slate-400 hover:text-slate-100"
                         )}
                     >
@@ -97,7 +99,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                                 ? "opacity-100 text-primary translate-x-0"
                                 : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-slate-600"
                         )} />
-                    </button>
+                    </Button>
                 );
             })}
         </nav>
@@ -109,13 +111,14 @@ export function AdminUserCard({ user }: AdminSidebarProps) {
     return (
         <div className="mt-auto space-y-4">
             <div className="pt-4 border-t border-slate-800">
-                <button
+                <Button
+                    variant="ghost"
                     onClick={() => router.push('/dashboard')}
-                    className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
+                    className="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group h-auto border-none"
                 >
                     <LogOut className="w-5 h-5" />
                     <span>Вернуться в CRM</span>
-                </button>
+                </Button>
             </div>
 
             <div

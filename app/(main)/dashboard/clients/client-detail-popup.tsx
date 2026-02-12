@@ -9,6 +9,7 @@ import StatusBadgeInteractive from "../orders/status-badge-interactive";
 import { EditClientDialog } from "./edit-client-dialog";
 import { PremiumPagination } from "@/components/ui/premium-pagination";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
 
 interface ClientOrder {
     id: string;
@@ -112,9 +113,13 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
 
                 <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-200">
                     <div className="absolute top-0 right-0 pt-4 pr-4 z-10">
-                        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-colors">
+                        <Button
+                            variant="ghost"
+                            onClick={onClose}
+                            className="text-slate-400 hover:text-slate-600 p-2 h-auto rounded-full hover:bg-slate-100 transition-colors"
+                        >
                             <X className="h-6 w-6" />
-                        </button>
+                        </Button>
                     </div>
 
                     {loading ? (
@@ -131,20 +136,22 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                             </h2>
                                             {!confirmDelete && (
                                                 <div className="flex items-center gap-1">
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
                                                         onClick={() => setShowEditDialog(true)}
-                                                        className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                                                        className="p-2 h-auto text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
                                                         title="Редактировать клиента"
                                                     >
                                                         <Pencil className="w-5 h-5" />
-                                                    </button>
-                                                    <button
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
                                                         onClick={() => setConfirmDelete(true)}
-                                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                        className="p-2 h-auto text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
                                                         title="Удалить клиента"
                                                     >
                                                         <Trash2 className="w-5 h-5" />
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             )}
                                         </div>
@@ -181,20 +188,21 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                             Вы уверены, что хотите удалить клиента? Все данные будут стерты.
                                         </div>
                                         <div className="flex gap-3">
-                                            <button
+                                            <Button
+                                                variant="ghost"
                                                 onClick={() => setConfirmDelete(false)}
-                                                className="px-4 py-2 text-slate-600 hover:bg-white rounded-2xl text-sm font-bold transition-colors"
+                                                className="px-4 py-2 h-auto text-slate-600 hover:bg-white rounded-2xl text-sm font-bold transition-colors"
                                                 disabled={isDeleting}
                                             >
                                                 Отмена
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
                                                 onClick={handleDelete}
-                                                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-2xl text-sm font-bold transition-colors disabled:opacity-50"
+                                                className="px-4 py-2 h-auto bg-red-600 text-white hover:bg-red-700 rounded-2xl text-sm font-bold transition-colors disabled:opacity-50"
                                                 disabled={isDeleting}
                                             >
                                                 {isDeleting ? "Удаление..." : "удалить"}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 )}
@@ -267,27 +275,30 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                             <div className="flex items-center justify-between mb-3">
                                                 <h3 className="text-xs font-bold text-slate-400  tracking-normal">Комментарии</h3>
                                                 {!isEditingComments ? (
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
                                                         onClick={() => setIsEditingComments(true)}
-                                                        className="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                                                        className="p-1.5 h-auto text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
                                                         title="Редактировать"
                                                     >
                                                         <Pencil className="w-4 h-4" />
-                                                    </button>
+                                                    </Button>
                                                 ) : (
                                                     <div className="flex gap-1">
-                                                        <button
+                                                        <Button
+                                                            variant="ghost"
                                                             disabled={isSavingComments}
                                                             onClick={() => setIsEditingComments(false)}
-                                                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all"
+                                                            className="p-1.5 h-auto text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all"
                                                             title="Отменить"
                                                         >
                                                             <X className="w-4 h-4" />
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
                                                             disabled={isSavingComments}
                                                             onClick={handleSaveComments}
-                                                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-2xl transition-all"
+                                                            className="p-1.5 h-auto text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-2xl transition-all"
                                                             title="Сохранить"
                                                         >
                                                             {isSavingComments ? (
@@ -295,7 +306,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
                                                             ) : (
                                                                 <Check className="w-4 h-4" />
                                                             )}
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 )}
                                             </div>

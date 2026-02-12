@@ -42,16 +42,7 @@ import Image from "next/image";
 import { UserNav } from "./user-nav";
 import { NotificationCenter } from "@/components/notifications/notification-center";
 
-interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-    [key: string]: unknown;
-}
+import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 import { Notification } from "@/components/notifications/notification-center";
 

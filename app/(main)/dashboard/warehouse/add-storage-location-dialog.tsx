@@ -8,6 +8,7 @@ import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Input } from "@/components/ui/input";
 
 
 interface AddStorageLocationDialogProps {
@@ -106,7 +107,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                 <label className="text-sm font-bold text-slate-700 ml-1">
                                     Название склада <span className="text-rose-500 font-bold">*</span>
                                 </label>
-                                <input
+                                <Input
                                     name="name"
                                     placeholder="Центральный склад"
                                     className={cn(
@@ -145,7 +146,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                             </label>
                             <div className="relative group">
                                 <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-primary transition-colors" />
-                                <input
+                                <Input
                                     name="address"
                                     placeholder="Ул. Промышленная, д. 15..."
                                     className={cn(
@@ -203,13 +204,13 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                     </form>
 
                     <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 flex items-center justify-end lg:justify-between gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto">
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
                             onClick={() => setIsOpen(false)}
                             className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <SubmitButton />
                     </div>
                 </div>

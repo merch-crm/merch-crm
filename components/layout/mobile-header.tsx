@@ -8,18 +8,10 @@ import { UserNav } from "./user-nav";
 import { NotificationCenter, Notification } from "@/components/notifications/notification-center";
 import { useSheetStack } from "@/components/ui/sheet-stack-context";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 
-interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-    [key: string]: unknown;
-}
+import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 const routeNames: Record<string, string> = {
     "/dashboard": "Главная",
@@ -98,15 +90,16 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
             </div>
 
             <div className="flex items-center gap-1">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
-                        // This will be handled by the CommandMenu or Global Search
                         window.dispatchEvent(new CustomEvent("open-global-search"));
                     }}
                     className="p-2 text-slate-500 hover:text-slate-900 transition-colors active:scale-90"
                 >
                     <Search className="h-5 w-5" strokeWidth={2.5} />
-                </button>
+                </Button>
                 <NotificationCenter notifications={notifications} unreadCount={unreadCount} branding={branding} />
                 <div className="w-1" />
                 <UserNav user={user} branding={branding} />

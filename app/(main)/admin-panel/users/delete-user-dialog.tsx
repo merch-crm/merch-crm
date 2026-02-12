@@ -4,6 +4,8 @@ import { useState } from "react";
 import { deleteUser } from "../actions";
 import { Loader2, Lock } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface DeleteUserDialogProps {
     user: { id: string; name: string; isSystem?: boolean } | null;
@@ -68,7 +70,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системный пользователь. Для подтверждения удаления введите пароль от своей учетной записи.
                         </p>
-                        <input
+                        <Input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -86,21 +88,23 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                 )}
 
                 <div className="flex gap-3">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-[var(--radius-inner)] transition-colors disabled:opacity-50 border border-slate-200 shadow-sm"
+                        className="flex-1 px-4 py-3 text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-[var(--radius-inner)] transition-colors border border-slate-200 shadow-sm h-11"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="destructive"
                         onClick={handleDelete}
                         disabled={isLoading || (user.isSystem && !password.trim())}
-                        className="flex-1 inline-flex justify-center items-center gap-2 btn-destructive rounded-[var(--radius-inner)] h-11"
+                        className="flex-1 inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] h-11 font-bold shadow-lg shadow-red-500/10"
                     >
-                        {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                        {isLoading && <Loader2 className="w-4 h-4 animate-spin mr-1" />}
                         {isLoading ? "Удаление..." : "Удалить"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>

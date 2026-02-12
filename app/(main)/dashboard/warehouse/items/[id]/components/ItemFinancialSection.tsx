@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 import { useBranding } from "@/components/branding-provider";
 import { InventoryItem, ItemHistoryTransaction } from "../../../types";
 import { Session } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface ItemFinancialSectionProps {
     item: InventoryItem;
@@ -228,11 +230,11 @@ export function ItemFinancialSection({
                         <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-normal mb-1 transition-colors group-hover:text-muted-foreground/80">Себестоимость</span>
                         {isEditing ? (
                             <div className="flex items-center gap-1">
-                                <input
+                                <Input
                                     type="number"
                                     value={editData.costPrice ?? ""}
                                     onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, costPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus:ring-0 rounded-lg"
+                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus-visible:ring-0 shadow-none rounded-lg h-auto"
                                 />
                             </div>
                         ) : (
@@ -260,11 +262,11 @@ export function ItemFinancialSection({
                         <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-normal mb-1 transition-colors group-hover:text-muted-foreground/80">Цена продажи</span>
                         {isEditing ? (
                             <div className="flex items-center gap-1">
-                                <input
+                                <Input
                                     type="number"
                                     value={editData.sellingPrice ?? ""}
                                     onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, sellingPrice: e.target.value === "" ? 0 : parseFloat(e.target.value) }))}
-                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus:ring-0 rounded-lg"
+                                    className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus-visible:ring-0 shadow-none rounded-lg h-auto"
                                 />
                             </div>
                         ) : (
@@ -330,11 +332,11 @@ export function ItemFinancialSection({
                     {/* Timeframe Selector Row - Full Width */}
                     <div className="flex bg-muted/50 p-1.5 rounded-[28px] border border-border/50 transition-all w-full">
                         {(['1m', '3m', '6m', '1y', 'all'] as const).map((tf) => (
-                            <button
+                            <Button
                                 key={tf}
                                 onClick={() => setCostTimeframe(tf)}
                                 className={cn(
-                                    "relative flex-1 py-2 text-[10px] font-black transition-all duration-300 rounded-3xl",
+                                    "relative flex-1 py-2 text-[10px] font-black transition-all duration-300 rounded-3xl h-auto border-none bg-transparent hover:bg-transparent shadow-none",
                                     costTimeframe === tf ? "text-background" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
@@ -348,7 +350,7 @@ export function ItemFinancialSection({
                                 <span className="relative z-10">
                                     {tf === '1m' ? 'Месяц' : tf === '3m' ? '3 месяца' : tf === '6m' ? 'Полгода' : tf === '1y' ? 'Год' : 'Все время'}
                                 </span>
-                            </button>
+                            </Button>
                         ))}
                     </div>
 

@@ -15,6 +15,7 @@ import { updateOrderStatus } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
 
 const statuses = [
     { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-500", bgColor: "bg-blue-500", lightBg: "bg-blue-50" },
@@ -94,11 +95,12 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
     return (
         <div className="relative" ref={containerRef}>
             {/* Trigger Button */}
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 disabled={loading}
                 className={`
-                    w-full flex items-center justify-between px-4 py-3.5 
+                    w-full flex items-center justify-between px-4 py-3.5 h-auto
                     ${activeStatus.lightBg} border border-slate-200 rounded-2xl shadow-sm
                     hover:border-primary/40 hover:shadow-md transition-all duration-200
                     active:scale-[0.98] group relative overflow-hidden
@@ -115,7 +117,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                     <activeStatus.icon className={`w-4 h-4 ${activeStatus.color} opacity-80`} />
                     <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
-            </button>
+            </Button>
 
             {/* Dropdown Menu */}
             {isOpen && (
@@ -123,12 +125,13 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                     <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-20" />
 
                     {statuses.map((s) => (
-                        <button
+                        <Button
                             key={s.id}
+                            variant="ghost"
                             onClick={() => handleStatusChange(s.id)}
                             className={`
-                                w-full flex items-center justify-between px-5 py-3 
-                                hover:bg-slate-50 transition-all group/item
+                                w-full flex items-center justify-between px-5 py-3 h-auto
+                                hover:bg-slate-50 transition-all group/item rounded-none
                                 ${s.id === statusId ? 'bg-primary/5' : ''}
                             `}
                         >
@@ -139,7 +142,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                                 </span>
                             </div>
                             <s.icon className={`w-4 h-4 ${s.id === statusId ? s.color : 'text-slate-300 group-hover/item:text-slate-400'} transition-colors`} />
-                        </button>
+                        </Button>
                     ))}
                 </div>
             )}
@@ -167,19 +170,21 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                     </div>
 
                     <div className="flex items-center justify-end gap-4 bg-white sticky bottom-0 pt-4">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => setShowCancelDialog(false)}
-                            className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center"
+                            className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center p-0"
                         >
                             Назад
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="destructive"
                             disabled={!cancelReason.trim() || loading}
                             onClick={() => handleStatusChange("cancelled", cancelReason)}
-                            className="h-11 w-full md:w-auto md:px-8 bg-rose-500 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                            className="h-11 w-full md:w-auto md:px-8 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none p-0"
                         >
                             {loading ? "Отмена..." : "ОТМЕНИТЬ ЗАКАЗ"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </ResponsiveModal>

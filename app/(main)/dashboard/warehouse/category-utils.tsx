@@ -256,6 +256,28 @@ export const getColorStyles = (color: string | null | undefined) => {
     return styles[c] || styles["slate"];
 };
 
+/**
+ * Возвращает классы градиентного фона и тени для карточек категорий.
+ */
+export const getGradientStyles = (color: string | null | undefined) => {
+    const c = color || "slate";
+    const styles: Record<string, string> = {
+        primary: "from-[#5d00ff] to-[#8b4aff] shadow-indigo-500/25",
+        blue: "from-blue-500 to-indigo-500 shadow-blue-500/25",
+        emerald: "from-emerald-500 to-teal-500 shadow-emerald-500/25",
+        amber: "from-amber-500 to-orange-500 shadow-orange-500/25",
+        rose: "from-rose-500 to-pink-500 shadow-rose-500/25",
+        purple: "from-purple-500 to-violet-500 shadow-purple-500/25",
+        fuchsia: "from-fuchsia-500 to-purple-500 shadow-fuchsia-500/25",
+        orange: "from-orange-500 to-red-500 shadow-orange-500/25",
+        lime: "from-lime-500 to-green-500 shadow-lime-500/25",
+        sky: "from-sky-500 to-blue-500 shadow-sky-500/25",
+        cyan: "from-cyan-500 to-sky-500 shadow-cyan-500/25",
+        slate: "from-slate-500 to-slate-700 shadow-slate-500/25",
+    };
+    return styles[c] || styles["slate"];
+};
+
 export const CLOTHING_COLORS = [
     { name: "Белый", code: "WHT", hex: "#FFFFFF" },
     { name: "Черный", code: "BLK", hex: "#000000" },

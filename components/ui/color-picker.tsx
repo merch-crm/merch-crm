@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
 import { Pipette, Hash } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 interface ColorPickerProps {
@@ -61,9 +63,9 @@ export function ColorPicker({
             <div className="flex items-center gap-3">
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button
-                            type="button"
-                            className="relative w-11 h-11 shrink-0 group active:scale-95 transition-all"
+                        <Button
+                            variant="ghost"
+                            className="relative w-11 h-11 shrink-0 p-0 rounded-xl hover:bg-transparent"
                         >
                             <div
                                 className="w-full h-full rounded-xl border border-slate-200 shadow-sm transition-all group-hover:shadow-md group-hover:border-primary/30"
@@ -72,7 +74,7 @@ export function ColorPicker({
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-xl">
                                 <Pipette className="w-4 h-4 text-white drop-shadow-sm" />
                             </div>
-                        </button>
+                        </Button>
                     </PopoverTrigger>
                     <PopoverContent
                         className="w-[240px] p-0 bg-white shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] rounded-2xl border border-slate-200 overflow-hidden z-[1000]"
@@ -105,12 +107,12 @@ export function ColorPicker({
 
                                 <div className="grid grid-cols-5 gap-2 px-0.5">
                                     {presets.map((p) => (
-                                        <button
+                                        <Button
                                             key={p}
-                                            type="button"
+                                            variant="ghost"
                                             onClick={() => onChange(p)}
                                             className={cn(
-                                                "w-full aspect-square rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center",
+                                                "w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
                                                 color.toLowerCase() === p.toLowerCase() && "ring-2 ring-primary ring-offset-1"
                                             )}
                                             style={{ backgroundColor: p }}
@@ -118,7 +120,7 @@ export function ColorPicker({
                                             {color.toLowerCase() === p.toLowerCase() && (
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p === "#FFFFFF" ? "#cbd5e1" : "white" }} />
                                             )}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
@@ -130,11 +132,11 @@ export function ColorPicker({
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
                         <Hash className="w-4 h-4" />
                     </div>
-                    <input
+                    <Input
                         value={inputValue}
                         onChange={handleInputChange}
                         placeholder="#000000"
-                        className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all font-bold text-sm text-slate-900 shadow-sm"
+                        className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 outline-none font-mono transition-all font-bold text-sm text-slate-900 shadow-sm"
                     />
                 </div>
             </div>

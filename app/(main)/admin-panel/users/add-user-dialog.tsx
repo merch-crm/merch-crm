@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Plus, User, Mail, Lock, Shield, Building, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { createUser, getRoles, getDepartments } from "../actions";
@@ -90,13 +92,13 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">ФИО сотрудника</label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                <Input
                                     type="text"
                                     name="name"
                                     required
                                     placeholder="Иван Иванов"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
                                 />
                             </div>
                         </div>
@@ -104,13 +106,13 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Email (Логин)</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                <Input
                                     type="email"
                                     name="email"
                                     required
                                     placeholder="ivan@crm.local"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
                                 />
                             </div>
                         </div>
@@ -118,13 +120,13 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Пароль</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                <Input
                                     type="password"
                                     name="password"
                                     required
                                     placeholder="••••••••"
-                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                    className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
                                 />
                             </div>
                         </div>
@@ -133,50 +135,46 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 pl-1">Роль в системе</label>
                                 <div className="relative">
-                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <select
+                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                    <PremiumSelect
                                         name="roleId"
-                                        required
                                         value={selectedRoleId}
-                                        onChange={(e) => handleRoleChange(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
-                                    >
-                                        <option value="" disabled>Выберите роль</option>
-                                        {roles.map(role => (
-                                            <option key={role.id} value={role.id}>{role.name}</option>
-                                        ))}
-                                    </select>
+                                        options={roles.map(role => ({ id: role.id, title: role.name }))}
+                                        placeholder="Выбрать роль"
+                                        className="pl-10 h-11"
+                                        onChange={(val) => handleRoleChange(val)}
+                                    />
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 pl-1">Отдел</label>
                                 <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <select
+                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                    <PremiumSelect
                                         name="departmentId"
                                         value={selectedDeptId}
-                                        onChange={(e) => setSelectedDeptId(e.target.value)}
-                                        className="block w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
-                                    >
-                                        <option value="">Выберите отдел</option>
-                                        {departments.map(dept => (
-                                            <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                        ))}
-                                    </select>
+                                        options={[
+                                            { id: "", title: "Все отделы" },
+                                            ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                                        ]}
+                                        placeholder="Выбрать отдел"
+                                        className="pl-10 h-11"
+                                        onChange={(val) => setSelectedDeptId(val)}
+                                    />
                                     <input type="hidden" name="department" value={departments.find(d => d.id === selectedDeptId)?.name || ""} />
                                 </div>
                             </div>
                         </div>
 
                         <div className="mt-6 pt-2 sticky bottom-0 bg-white border-t border-slate-100">
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full inline-flex justify-center rounded-[var(--radius-inner)] border border-transparent bg-primary h-11 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:opacity-90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98] items-center gap-2"
+                                className="w-full justify-center rounded-[var(--radius-inner)] h-11 font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-2"
                             >
-                                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                                {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                                 {loading ? "Создание..." : "Создать сотрудника"}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>

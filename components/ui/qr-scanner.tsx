@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { X, Camera, RefreshCw, Zap, ZapOff, QrCode } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface QRScannerProps {
@@ -115,12 +115,15 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Наведите на QR-код</p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-lg bg-slate-50 transition-all active:scale-95 shadow-sm"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900"
+                        aria-label="Закрыть"
                     >
-                        <X className="w-4 h-4" />
-                    </button>
+                        <X className="w-5 h-5 stroke-[2.5]" />
+                    </Button>
                 </div>
 
                 <div className="relative aspect-square bg-black group">
@@ -170,17 +173,18 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                 </div>
 
                 <div className="p-5 flex items-center justify-between bg-slate-50/50">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={toggleTorch}
                         className={cn(
-                            "w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm",
+                            "w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm p-0 hover:bg-white hover:text-slate-600",
                             torchOn
-                                ? "bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20"
+                                ? "bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20 hover:bg-amber-100 hover:text-amber-700"
                                 : "bg-white text-slate-400 border-slate-200"
                         )}
                     >
                         {torchOn ? <Zap className="w-5 h-5 fill-current" /> : <ZapOff className="w-5 h-5" />}
-                    </button>
+                    </Button>
                     <div className="text-right">
                         <p className="text-[10px] font-black text-slate-900 uppercase tracking-tighter">Система готова</p>
                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Ожидание кода...</p>

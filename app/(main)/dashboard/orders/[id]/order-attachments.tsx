@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useTransition, useRef } from "react";
 import { uploadOrderFile } from "../actions";
+import { Button } from "@/components/ui/button";
 
 interface Attachment {
     id: string;
@@ -69,14 +70,15 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                 />
-                <button
+                <Button
+                    variant="ghost"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isPending}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-2xl text-[10px] font-bold hover:bg-primary/10 transition-all disabled:opacity-50  tracking-normal"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-2xl text-[10px] font-bold hover:bg-primary/10 transition-all disabled:opacity-50 tracking-normal h-auto"
                 >
                     <UploadCloud className="w-3.5 h-3.5" />
                     Загрузить
-                </button>
+                </Button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

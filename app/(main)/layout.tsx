@@ -11,7 +11,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";
 import { getNotifications } from "@/components/notifications/actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings, BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { NotificationManager } from "@/components/notifications/notification-manager";
 import { CommandMenu } from "@/components/layout/command-menu";
 import { checkAndRunNotifications } from "@/app/(main)/dashboard/notifications-actions";
@@ -22,23 +22,6 @@ import { FloatingSearch } from "@/components/layout/floating-search";
 import { MobileSearchSheet } from "@/components/layout/mobile-search-sheet";
 import { SoundConfig } from "@/lib/sounds";
 
-interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    notificationSound?: string | null;
-    printLogoUrl?: string | null;
-    backgroundColor?: string | null;
-    crmBackgroundUrl?: string | null;
-    crmBackgroundBlur?: number;
-    crmBackgroundBrightness?: number;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-    soundConfig?: Record<string, SoundConfig>;
-    [key: string]: unknown;
-}
 
 export default async function DashboardLayout({
     children,
@@ -94,7 +77,7 @@ export default async function DashboardLayout({
     const { notifications, unreadCount } = await getNotifications();
 
     // Fetch branding settings
-    const branding = (await getBrandingSettings() as BrandingSettings) || {
+    const branding = (await getBrandingSettings()) || {
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",

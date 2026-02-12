@@ -1,28 +1,16 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
 import { initSoundSettings, setGlobalSoundConfig } from "@/lib/sounds";
-import { SoundConfig } from "@/lib/sounds";
-
-export interface BrandingSettings {
-    primary_color?: string;
-    system_name?: string;
-    system_logo?: string | null;
-    radius_outer?: number;
-    radius_inner?: number;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-    printLogoUrl?: string | null;
-    soundConfig?: Record<string, SoundConfig>;
-    [key: string]: unknown;
-}
+import { BrandingSettings, getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 const BrandingContext = createContext<BrandingSettings>({
-    primary_color: "#5d00ff",
-    radius_outer: 24,
-    radius_inner: 14,
+    companyName: "MerchCRM",
+    logoUrl: null,
+    primaryColor: "#5d00ff",
+    faviconUrl: null,
+    radiusOuter: 24,
+    radiusInner: 14,
     currencySymbol: "₽",
     dateFormat: "DD.MM.YYYY",
     timezone: "Europe/Moscow"
@@ -35,9 +23,8 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         async function loadBranding() {
-            const result = await getBrandingAction();
-            if (result.data) {
-                const data = result.data as BrandingSettings;
+            const data = await getBrandingSettings();
+            if (data) {
                 setBranding(data);
 
                 // Initialize sounds
@@ -51,17 +38,20 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const values = branding || {
-        primary_color: "#5d00ff",
-        radius_outer: 24,
-        radius_inner: 14,
+        companyName: "MerchCRM",
+        logoUrl: null,
+        primaryColor: "#5d00ff",
+        faviconUrl: null,
+        radiusOuter: 24,
+        radiusInner: 14,
         currencySymbol: "₽",
         dateFormat: "DD.MM.YYYY",
         timezone: "Europe/Moscow"
     };
 
-    const primaryColor = values.primary_color || "#5d00ff";
-    const radiusOuter = values.radius_outer || 24;
-    const radiusInner = values.radius_inner || 14;
+    const primaryColor = values.primaryColor || "#5d00ff";
+    const radiusOuter = values.radiusOuter || 24;
+    const radiusInner = values.radiusInner || 14;
 
     return (
         <BrandingContext.Provider value={values}>

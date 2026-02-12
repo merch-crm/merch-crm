@@ -14,7 +14,8 @@ import {
     ChevronRight,
     Plus,
     Tag,
-    CreditCard
+    CreditCard,
+    AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
@@ -26,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useBranding } from "@/components/branding-provider";
+import { Switch } from "@/components/ui/switch";
 
 interface Client {
     id: string;
@@ -264,30 +266,36 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
                     <div className="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
                         {steps.map((s, idx) => (
-                            <button
+                            <Button
                                 key={idx}
-                                onClick={() => {
-                                    if (s.id < step || validateStep(step)) {
-                                        setStep(s.id);
-                                        setValidationError("");
-                                    }
-                                }}
-                                className={cn(
-                                    "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                    step === s.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-muted active:scale-[0.98]"
-                                )}
+                                asChild
+                                variant="ghost"
+                                className="p-0 border-none bg-transparent hover:bg-transparent shadow-none w-full h-auto"
                             >
-                                <div className={cn(
-                                    "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
-                                    step === s.id ? "bg-white/10 border-white/20" : step > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-muted border-border"
-                                )}>
-                                    {step > s.id ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
-                                </div>
-                                <div className="min-w-0">
-                                    <div className={cn("text-xs font-bold leading-none mb-1", step === s.id ? "text-primary-foreground" : "text-foreground")}>{s.title}</div>
-                                    <div className={cn("text-[10px] font-bold truncate", step === s.id ? "text-primary-foreground/60" : "text-muted-foreground")}>{s.desc}</div>
-                                </div>
-                            </button>
+                                <button
+                                    onClick={() => {
+                                        if (s.id < step || validateStep(step)) {
+                                            setStep(s.id);
+                                            setValidationError("");
+                                        }
+                                    }}
+                                    className={cn(
+                                        "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
+                                        step === s.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-muted active:scale-[0.98]"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
+                                        step === s.id ? "bg-white/10 border-white/20" : step > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-muted border-border"
+                                    )}>
+                                        {step > s.id ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className={cn("text-xs font-bold leading-none mb-1", step === s.id ? "text-primary-foreground" : "text-foreground")}>{s.title}</div>
+                                        <div className={cn("text-[10px] font-bold truncate", step === s.id ? "text-primary-foreground/60" : "text-muted-foreground")}>{s.desc}</div>
+                                    </div>
+                                </button>
+                            </Button>
                         ))}
                     </div>
 
@@ -330,17 +338,23 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                 </div>
                                                 <div className="p-2">
                                                     {searchHistory.map((h, i) => (
-                                                        <button
+                                                        <Button
                                                             key={i}
-                                                            onClick={() => {
-                                                                setSearchQuery(h);
-                                                                setShowHistory(false);
-                                                            }}
-                                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-2xl text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
+                                                            variant="ghost"
+                                                            asChild
+                                                            className="w-full h-auto p-0 hover:bg-transparent"
                                                         >
-                                                            <RotateCcw className="w-4 h-4 text-slate-300" />
-                                                            {h}
-                                                        </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSearchQuery(h);
+                                                                    setShowHistory(false);
+                                                                }}
+                                                                className="w-full text-left px-4 py-3 hover:bg-slate-50 rounded-2xl text-sm font-bold text-slate-600 transition-colors flex items-center gap-3"
+                                                            >
+                                                                <RotateCcw className="w-4 h-4 text-slate-300" />
+                                                                {h}
+                                                            </button>
+                                                        </Button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -355,23 +369,29 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     {searchResults.length > 0 && !selectedClient && (
                                         <div className="border border-border rounded-2xl shadow-xl bg-card overflow-hidden">
                                             {searchResults.map((client) => (
-                                                <button
+                                                <Button
                                                     key={client.id}
-                                                    onClick={() => {
-                                                        setSelectedClient(client);
-                                                        setSearchQuery("");
-                                                        setSearchResults([]);
-                                                    }}
-                                                    className="w-full flex items-center gap-4 px-6 py-4 hover:bg-muted transition-colors border-b border-border last:border-0"
+                                                    asChild
+                                                    variant="ghost"
+                                                    className="w-full h-auto p-0 hover:bg-transparent rounded-none border-b border-border last:border-0"
                                                 >
-                                                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground font-bold ">{client.name?.charAt(0)}</div>
-                                                    <div className="text-left">
-                                                        <p className="font-bold text-foreground">{client.name}</p>
-                                                        <p className="text-xs text-muted-foreground">
-                                                            {client.company} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : client.phone}
-                                                        </p>
-                                                    </div>
-                                                </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedClient(client);
+                                                            setSearchQuery("");
+                                                            setSearchResults([]);
+                                                        }}
+                                                        className="w-full flex items-center gap-4 px-6 py-4 hover:bg-muted transition-colors"
+                                                    >
+                                                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground font-bold ">{client.name?.charAt(0)}</div>
+                                                        <div className="text-left">
+                                                            <p className="font-bold text-foreground">{client.name}</p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {client.company} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : client.phone}
+                                                            </p>
+                                                        </div>
+                                                    </button>
+                                                </Button>
                                             ))}
                                         </div>
                                     )}
@@ -407,21 +427,27 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                             </div>
                                             <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2">
                                                 {inventory.map(item => (
-                                                    <button
+                                                    <Button
                                                         key={item.id}
+                                                        asChild
+                                                        variant="ghost"
                                                         disabled={selectedItems.some(i => i.id === item.id)}
-                                                        onClick={() => addItem(item)}
-                                                        className="flex items-center justify-between p-3 rounded-2xl border border-border hover:bg-muted transition-all text-left disabled:opacity-50"
+                                                        className="w-full h-auto p-0 hover:bg-transparent"
                                                     >
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground font-bold"><Package className="w-5 h-5" /></div>
-                                                            <div>
-                                                                <p className="text-sm font-bold text-foreground">{item.name}</p>
-                                                                <p className="text-[10px] text-muted-foreground font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
+                                                        <button
+                                                            onClick={() => addItem(item)}
+                                                            className="flex items-center justify-between p-3 rounded-2xl border border-border hover:bg-muted transition-all text-left disabled:opacity-50"
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground font-bold"><Package className="w-5 h-5" /></div>
+                                                                <div>
+                                                                    <p className="text-sm font-bold text-foreground">{item.name}</p>
+                                                                    <p className="text-[10px] text-muted-foreground font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <Plus className="w-4 h-4 text-muted-foreground" />
-                                                    </button>
+                                                            <Plus className="w-4 h-4 text-muted-foreground" />
+                                                        </button>
+                                                    </Button>
                                                 ))}
                                             </div>
                                         </div>
@@ -440,7 +466,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         <div key={item.id} className="bg-card p-4 rounded-2xl shadow-sm border border-border space-y-4">
                                                             <div className="flex justify-between items-start">
                                                                 <p className="text-sm font-bold">{item.name}</p>
-                                                                <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive font-bold text-xs">Удалить</button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={() => removeItem(item.id)}
+                                                                    className="text-muted-foreground hover:text-destructive font-bold text-xs h-auto p-0 hover:bg-transparent"
+                                                                >
+                                                                    Удалить
+                                                                </Button>
                                                             </div>
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
                                                                 <div className="space-y-1.5">
@@ -502,14 +535,20 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-muted-foreground ml-1">Срочный заказ</label>
                                             <div
-                                                onClick={() => setDetails({ ...details, isUrgent: !details.isUrgent })}
                                                 className={cn(
-                                                    "w-full h-12 px-4 rounded-[var(--radius)] border flex items-center justify-between cursor-pointer transition-all",
-                                                    details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-muted/50 border-border text-muted-foreground hover:bg-muted"
+                                                    "w-full h-12 px-4 rounded-[var(--radius)] border flex items-center justify-between transition-all",
+                                                    details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-muted/50 border-border text-muted-foreground"
                                                 )}
                                             >
-                                                <span>{details.isUrgent ? "ДА, СРОЧНО" : "НЕТ"}</span>
-                                                <div className={cn("w-2 h-2 rounded-full", details.isUrgent ? "bg-rose-500" : "bg-muted-foreground/30")} />
+                                                <div className="flex items-center gap-3">
+                                                    <AlertCircle className={cn("w-4 h-4", details.isUrgent ? "text-rose-500" : "text-muted-foreground/40")} />
+                                                    <span className="text-sm">{details.isUrgent ? "ДА, СРОЧНО" : "Обычный заказ"}</span>
+                                                </div>
+                                                <Switch
+                                                    checked={details.isUrgent}
+                                                    onCheckedChange={(val) => setDetails({ ...details, isUrgent: val })}
+                                                    variant="success"
+                                                />
                                             </div>
                                         </div>
                                         <div className="space-y-2">

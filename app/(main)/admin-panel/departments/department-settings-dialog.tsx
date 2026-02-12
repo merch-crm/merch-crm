@@ -5,6 +5,10 @@ import { Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react
 import { updateDepartment, getRolesByDepartment, getRoles, updateRoleDepartment } from "../actions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 interface Role {
     id: string;
@@ -132,25 +136,25 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                 <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-700 ml-1">Название подразделения</label>
                     <div className="relative">
-                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                        <Input
                             type="text"
                             name="name"
                             defaultValue={department.name}
                             required
-                            className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all font-bold"
+                            className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 transition-all font-bold h-12"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-700 ml-1">Описание деятельности</label>
-                    <textarea
+                    <Textarea
                         name="description"
                         defaultValue={department.description || ""}
                         rows={3}
                         placeholder="Опишите, чем занимается этот отдел..."
-                        className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 border transition-all resize-none leading-relaxed"
+                        className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 transition-all resize-none leading-relaxed"
                     />
                 </div>
 
@@ -158,30 +162,34 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     <label className="text-sm font-bold text-slate-700 ml-1">Визуальный идентификатор (Цвет)</label>
                     <div className="flex flex-wrap gap-3">
                         {COLORS.map((color) => (
-                            <button
+                            <Button
                                 key={color.value}
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setSelectedColor(color.value)}
-                                className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100 hover:scale-110'}`}
+                                className={cn(
+                                    "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110",
+                                    selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100'
+                                )}
                                 style={{ backgroundColor: getColorHex(color.value) }}
                                 title={color.name}
                             >
                                 <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} className="hidden" readOnly />
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
             </div>
 
             <div className="pt-6 border-t border-slate-200">
-                <button
+                <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark h-11 px-4 text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
+                    className="w-full h-12 rounded-[var(--radius-inner)] font-bold text-white shadow-xl transition-all active:scale-[0.98]"
                 >
-                    {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                    {loading ? "СОХРАНЕНИЕ..." : <><Save className="w-5 h-5" /> СОХРАНИТЬ ИЗМЕНЕНИЯ</>}
-                </button>
+                    {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
+                    {loading ? "СОХРАНЕНИЕ..." : <><Save className="w-5 h-5 mr-2" /> СОХРАНИТЬ ИЗМЕНЕНИЯ</>}
+                </Button>
             </div>
         </div>
     );
@@ -226,10 +234,12 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                         <span className="text-[9px] text-slate-400 font-bold  tracking-normal">Активная роль</span>
                                     </div>
                                 </div>
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => handleRemoveRole(role.id)}
                                     disabled={!!actionLoading}
-                                    className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-[18px] transition-all"
+                                    className="p-2.5 h-10 w-10 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-[18px] transition-all border-none"
                                     title="Удалить из отдела"
                                 >
                                     {actionLoading === role.id ? (
@@ -237,7 +247,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                     ) : (
                                         <Trash2 className="w-4 h-4" />
                                     )}
-                                </button>
+                                </Button>
                             </div>
                         ))
                     )}
@@ -277,10 +287,12 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                         </span>
                                     </div>
                                 </div>
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => handleAddRole(role.id)}
                                     disabled={!!actionLoading}
-                                    className="p-2.5 bg-white text-slate-400 hover:text-primary border border-slate-200 rounded-[18px] transition-all hover:shadow-lg hover:shadow-primary/10 active:scale-90"
+                                    className="p-2.5 h-10 w-10 bg-white text-slate-400 hover:text-primary border border-slate-200 rounded-[18px] transition-all hover:shadow-lg hover:shadow-primary/10 active:scale-90"
                                     title="Добавить в отдел"
                                 >
                                     {actionLoading === role.id ? (
@@ -288,7 +300,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                     ) : (
                                         <Plus className="w-4 h-4" />
                                     )}
-                                </button>
+                                </Button>
                             </div>
                         ))
                     )}

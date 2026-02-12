@@ -16,54 +16,74 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
     return (
-        <div className={cn("flex items-center gap-2 text-[12px] font-bold text-slate-400 tracking-tight pl-1 flex-wrap", className)}>
-            {items.map((item, index) => {
-                const isLast = index === items.length - 1;
+        <nav aria-label="Навигация" className={className}>
+            <ol className="flex items-center gap-2 text-[12px] font-bold text-slate-400 tracking-tight pl-1 flex-wrap">
+                {items.map((item, index) => {
+                    const isLast = index === items.length - 1;
+                    const isClickable = !isLast && (item.href || item.onClick);
+                    const Icon = item.icon;
 
-                // Helper to render content with icon
-                const content = (
-                    <>
-                        {item.icon && <item.icon className="w-3 h-3 mb-0.5" />}
-                        <span className={cn(isLast && "line-clamp-1 break-all")}>{item.label}</span>
-                    </>
-                );
-
-                const itemClasses = cn(
-                    "flex items-center gap-1 transition-colors",
-                    !isLast && (item.href || item.onClick)
-                        ? "hover:text-#5d00ff cursor-pointer"
-                        : "text-slate-500"
-                );
-
-                let Component: React.ReactNode;
-
-                if (!isLast && item.href) {
-                    Component = (
-                        <Link href={item.href} className={itemClasses}>
-                            {content}
-                        </Link>
+                    const content = (
+                        <>
+                            {Icon && <Icon className="w-3 h-3 mb-0.5" />}
+                            <span className={cn(isLast && "line-clamp-1 break-all")}>
+                                {item.label}
+                            </span>
+                        </>
                     );
-                } else if (!isLast && item.onClick) {
-                    Component = (
-                        <button onClick={item.onClick} className={itemClasses} type="button">
-                            {content}
-                        </button>
-                    );
-                } else {
-                    Component = (
-                        <span className={itemClasses}>
-                            {content}
-                        </span>
-                    );
-                }
 
-                return (
-                    <React.Fragment key={index}>
-                        {index > 0 && <span className="text-slate-300 select-none">/</span>}
-                        {Component}
-                    </React.Fragment>
-                );
-            })}
-        </div>
+                    const itemClasses = cn(
+                        "flex items-center gap-1 transition-colors",
+                        isClickable && "hover:text-primary cursor-pointer",
+                        isLast ? "text-slate-500" : "text-slate-400"
+                    );
+
+                    const renderItem = () => {
+                        if (!isLast && item.href) {
+                            return (
+                                <Link href={item.href} className={itemClasses}>
+                                    {content}
+                                </Link>
+                            );
+                        }
+
+                        if (!isLast && item.onClick) {
+                            return (
+                                <button
+                                    type="button"
+                                    onClick={item.onClick}
+                                    className={itemClasses}
+                                >
+                                    {content}
+                                </button>
+                            );
+                        }
+
+                        return (
+                            <span className={itemClasses} aria-current={isLast ? "page" : undefined}>
+                                {content}
+                            </span>
+                        );
+                    };
+
+                    return (
+                        <li
+                            key={item.href || item.label || index}
+                            className="flex items-center gap-2"
+                        >
+                            {index > 0 && (
+                                <span
+                                    className="text-slate-300 select-none"
+                                    aria-hidden="true"
+                                >
+                                    /
+                                </span>
+                            )}
+                            {renderItem()}
+                        </li>
+                    );
+                })}
+            </ol>
+        </nav>
     );
 }

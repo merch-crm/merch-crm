@@ -6,6 +6,7 @@ import { Package, Hash, Ruler, Wrench, ClipboardList, Printer, Shirt, Scissors, 
 import { UnitSelect } from "@/components/ui/unit-select";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { Input } from "@/components/ui/input";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "../../../attribute-selector";
 import { Category } from "../../../types";
@@ -459,12 +460,12 @@ export function BasicInfoStep({
                                                 <Package className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                                                 Название позиции <span className="text-rose-500">*</span>
                                             </label>
-                                            <input
+                                            <Input
                                                 type="text"
                                                 value={formData.itemName}
                                                 onChange={(e) => updateFormData({ itemName: e.target.value })}
                                                 placeholder="Например: Коробка картонная 40x40"
-                                                className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-base focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
+                                                className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-base focus-visible:border-slate-900 focus-visible:ring-4 focus-visible:ring-slate-900/5 transition-all shadow-none"
                                             />
                                         </div>
 
@@ -474,12 +475,12 @@ export function BasicInfoStep({
                                                     <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                                                     Артикул (SKU) <span className="text-rose-500">*</span>
                                                 </label>
-                                                <input
+                                                <Input
                                                     type="text"
                                                     value={formData.sku}
                                                     onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase() })}
                                                     placeholder="SKU-123"
-                                                    className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus:border-slate-900 transition-all outline-none font-mono"
+                                                    className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus-visible:border-slate-900 transition-all font-mono shadow-none"
                                                 />
                                             </div>
                                             <div className="space-y-4">
@@ -560,13 +561,13 @@ export function BasicInfoStep({
                                                                 {dim === 'width' ? 'Ширина' : dim === 'height' ? 'Высота' : 'Глубина'}
                                                             </label>
                                                             <div className="relative">
-                                                                <input
+                                                                <Input
                                                                     type="number"
                                                                     value={(formData[dim] as string) || ""}
                                                                     onChange={(e) => updateFormData({ [dim]: e.target.value })}
-                                                                    className="w-full h-11 px-4 pr-10 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus:border-amber-500 outline-none transition-all"
+                                                                    className="w-full h-11 px-4 pr-10 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus-visible:border-amber-500 transition-all shadow-none"
                                                                 />
-                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">СМ</span>
+                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300 pointer-events-none">СМ</span>
                                                             </div>
                                                         </div>
                                                     ))}

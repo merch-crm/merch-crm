@@ -83,12 +83,14 @@ export function BarcodeScannerDialog({
                             <p className="text-[10px] font-bold text-slate-500 mt-0.5">Наведите на код товара</p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handleClose}
-                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-2xl bg-slate-50 transition-all active:scale-95 shadow-sm"
+                        className="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 hover:text-slate-900 transition-all active:scale-95 shadow-sm"
                     >
                         <X className="h-5 w-5" />
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="p-6 space-y-6 flex-1 overflow-y-auto">

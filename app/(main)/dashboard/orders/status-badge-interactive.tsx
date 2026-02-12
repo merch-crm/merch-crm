@@ -13,6 +13,7 @@ import {
 import { updateOrderStatus } from "./actions";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const statuses = [
     { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-600", lightBg: "bg-blue-50 border-blue-100", dot: "bg-blue-500" },
@@ -89,11 +90,12 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
                         className="absolute top-[calc(100%+8px)] left-0 min-w-[170px] bg-white border border-slate-200 rounded-[22px] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] z-[70] p-1.5 overflow-hidden ring-1 ring-slate-900/5"
                     >
                         {statuses.map((s) => (
-                            <button
+                            <Button
                                 key={s.id}
+                                variant="ghost"
                                 onClick={() => handleChange(s.id)}
                                 className={cn(
-                                    "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[16px] transition-all text-left group",
+                                    "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[16px] transition-all text-left group h-auto justify-start",
                                     s.id === currentStatus ? "bg-primary/5 text-primary shadow-sm" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                                 )}
                             >
@@ -102,7 +104,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
                                     {s.label}
                                 </span>
                                 {s.id === currentStatus && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                            </button>
+                            </Button>
                         ))}
                     </motion.div>
                 )}

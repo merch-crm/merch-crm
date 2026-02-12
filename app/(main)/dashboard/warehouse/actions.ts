@@ -1249,11 +1249,17 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const imageSideFile = formData.get("imageSide") as File;
         const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
-        let imageBackUrl = formData.get("currentImageBack") as string || (existingItem?.imageBack ?? null);
+        let imageBackUrl = formData.get("currentImageBack") as string | null;
+        if (imageBackUrl === "") imageBackUrl = null;
+        else if (imageBackUrl === null) imageBackUrl = existingItem?.imageBack ?? null;
+
         const newImageBackUrl = await saveFile(imageBackFile, itemFolderPath);
         if (newImageBackUrl) imageBackUrl = newImageBackUrl;
 
-        let imageSideUrl = formData.get("currentImageSide") as string || (existingItem?.imageSide ?? null);
+        let imageSideUrl = formData.get("currentImageSide") as string | null;
+        if (imageSideUrl === "") imageSideUrl = null;
+        else if (imageSideUrl === null) imageSideUrl = existingItem?.imageSide ?? null;
+
         const newImageSideUrl = await saveFile(imageSideFile, itemFolderPath);
         if (newImageSideUrl) imageSideUrl = newImageSideUrl;
 
@@ -1272,7 +1278,10 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             if (url) imageDetailsUrls.push(url);
         }
 
-        let imageUrl = formData.get("currentImage") as string || (existingItem?.image ?? null);
+        let imageUrl = formData.get("currentImage") as string | null;
+        if (imageUrl === "") imageUrl = null;
+        else if (imageUrl === null) imageUrl = existingItem?.image ?? null;
+
         const newImageUrl = await saveFile(imageFile, itemFolderPath);
         if (newImageUrl) imageUrl = newImageUrl;
 

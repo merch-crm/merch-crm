@@ -114,9 +114,9 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     ];
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-700">
             {/* Top Navigation / Breadcrumbs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 px-1">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                         <LayoutGrid className="h-4 w-4" />
@@ -138,7 +138,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
             </div>
 
             {/* MAIN BENTO GRID */}
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-12 gap-5">
 
                 {/* Hero / Welcome Card - Spans 8 cols */}
                 <div className="crm-card col-span-12 md:col-span-8 lg:col-span-8 relative group !p-8 md:!p-10">

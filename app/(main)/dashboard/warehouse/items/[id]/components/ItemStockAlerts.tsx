@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InventoryItem } from "../../../types";
+import { Input } from "@/components/ui/input";
 
 interface ItemStockAlertsProps {
     item: InventoryItem;
@@ -52,11 +53,11 @@ export function ItemStockAlerts({
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-baseline gap-1">
-                                    <input
+                                    <Input
                                         type="number"
                                         value={editData.lowStockThreshold || 0}
                                         onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
-                                        className="text-2xl font-black text-foreground leading-none bg-transparent border-none p-0 w-16 outline-none focus:ring-0"
+                                        className="text-2xl font-black text-foreground leading-none bg-transparent border-none p-0 w-16 outline-none focus-visible:ring-0 shadow-none h-auto"
                                     />
                                     <span className="text-[11px] font-black text-muted-foreground">шт.</span>
                                 </div>
@@ -113,11 +114,11 @@ export function ItemStockAlerts({
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-baseline gap-1.5">
-                                    <input
+                                    <Input
                                         type="number"
                                         value={editData.criticalStockThreshold || 0}
                                         onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
-                                        className="text-3xl font-black text-foreground leading-none bg-transparent border-none p-0 w-20 outline-none focus:ring-0"
+                                        className="text-3xl font-black text-foreground leading-none bg-transparent border-none p-0 w-20 outline-none focus-visible:ring-0 shadow-none h-auto"
                                     />
                                     <span className="text-[13px] font-black text-muted-foreground">шт.</span>
                                 </div>

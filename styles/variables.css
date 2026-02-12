@@ -1,0 +1,117 @@
+:root {
+    /* Accent Color */
+    --primary: #5d00ff;
+    --primary-hover: #731cff;
+    --primary-light: rgba(93, 0, 255, 0.1);
+    --primary-foreground: #ffffff;
+
+    /* Background */
+    --background: #f2f2f2;
+    --foreground: #0f172a;
+
+    /* Cards */
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+
+    /* Popover */
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+
+    /* Secondary */
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+
+    /* Muted */
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+
+    /* Accent */
+    --accent: #f8fafc;
+    --accent-foreground: #0f172a;
+
+    /* Destructive */
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+
+    /* Borders & Inputs */
+    --border: #e2e8f0;
+    --input: #f1f5f9;
+    --ring: #5d00ff;
+
+    /* Radii */
+    --radius: 24px;
+    --radius-outer: 24px;
+    --radius-inner: 18px;
+    --radius-padding: 24px;
+
+    /* Shadows */
+    --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
+    --crm-shadow-md: 0 12px 32px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04);
+    --crm-shadow-lg: 0 24px 64px -12px rgba(0, 0, 0, 0.12), 0 8px 24px -8px rgba(0, 0, 0, 0.08);
+    --crm-shadow-xl: 0 40px 96px -16px rgba(0, 0, 0, 0.16), 0 16px 48px -12px rgba(0, 0, 0, 0.12);
+
+    /* Grid & Spacing */
+    --crm-blur: 24px;
+    --crm-grid-gap: 20px;
+    --crm-border-alpha: rgba(15, 23, 42, 0.05);
+
+    /* Graphite */
+    --graphite-dark: #2d3748;
+    --graphite-medium: #4a5568;
+    --graphite-light: #718096;
+
+    /* Department Colors */
+    --dept-management: #6366f1;
+    --dept-sales: #0ea5e9;
+    --dept-production: #f59e0b;
+    --dept-design: #ec4899;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-3xl: var(--radius-outer);
+    --radius-2xl: var(--radius-inner);
+    --radius-xl: 12px;
+    --radius-lg: 8px;
+    --radius-md: 6px;
+    --radius-sm: 4px;
+
+    --spacing-container: var(--radius-padding);
+
+    --font-sans: var(--font-manrope);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --shadow-crm-sm: var(--crm-shadow-sm);
+    --shadow-crm-md: var(--crm-shadow-md);
+    --shadow-crm-lg: var(--crm-shadow-lg);
+    --shadow-crm-xl: var(--crm-shadow-xl);
+    --shadow-sm: var(--shadow-crm-sm);
+    --shadow-md: var(--shadow-crm-md);
+    --shadow-lg: var(--shadow-crm-lg);
+    --shadow-xl: var(--shadow-crm-xl);
+    --shadow-2xl: 0 32px 64px -12px rgba(0, 0, 0, 0.14);
+
+    --color-dept-management: var(--dept-management);
+    --color-dept-sales: var(--dept-sales);
+    --color-dept-production: var(--dept-production);
+    --color-dept-design: var(--dept-design);
+}

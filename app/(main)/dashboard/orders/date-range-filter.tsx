@@ -69,36 +69,42 @@ export function DateRangeFilter() {
             {/* Quick Range Buttons Grid */}
             <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 p-1 bg-slate-100/50 rounded-[22px] sm:rounded-2xl border border-slate-200/50 shadow-sm">
                 {ranges.slice(0, 4).map((range) => (
-                    <button
+                    <Button
                         key={range.value}
+                        variant="ghost"
+                        asChild
                         onClick={() => handleRangeChange(range.value)}
                         className={cn(
-                            "px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] sm:rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto",
+                            "px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] sm:rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto h-auto hover:bg-white/50",
                             currentRange === range.value && !isCustom
-                                ? "bg-white text-primary shadow-sm"
+                                ? "bg-white text-primary shadow-sm hover:bg-white"
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
-                        {range.label}
-                    </button>
+                        <button>{range.label}</button>
+                    </Button>
                 ))}
 
                 {/* Custom Date Picker Button inside the same grid/flex container */}
                 <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
-                        <button
+                        <Button
+                            variant="ghost"
+                            asChild
                             className={cn(
-                                "flex items-center justify-center gap-2 px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto col-span-2 sm:col-span-1",
+                                "flex items-center justify-center gap-2 px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto col-span-2 sm:col-span-1 h-auto hover:bg-white/50",
                                 isCustom
-                                    ? "bg-white text-primary shadow-sm"
+                                    ? "bg-white text-primary shadow-sm hover:bg-white"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
-                            <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ? "text-primary" : "text-slate-400")} />
-                            <span className="hidden sm:inline">Выбрать период</span>
-                            <span className="sm:hidden">Период</span>
-                            <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-50" />
-                        </button>
+                            <button>
+                                <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ? "text-primary" : "text-slate-400")} />
+                                <span className="hidden sm:inline">Выбрать период</span>
+                                <span className="sm:hidden">Период</span>
+                                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-50" />
+                            </button>
+                        </Button>
                     </PopoverTrigger>
                     <AnimatePresence>
                         {isPopoverOpen && (
@@ -163,12 +169,14 @@ export function DateRangeFilter() {
                         <span className="text-primary font-bold text-sm">
                             {format(new Date(fromParam), "dd.MM.yy")} — {format(new Date(toParam), "dd.MM.yy")}
                         </span>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleRangeChange("all")}
-                            className="text-slate-300 hover:text-rose-500 transition-colors"
+                            className="w-6 h-6 p-0 text-slate-300 hover:text-rose-500 transition-colors hover:bg-transparent"
                         >
                             <Check className="w-4 h-4" />
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>

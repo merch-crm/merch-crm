@@ -9,6 +9,8 @@ import { playSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
 import { LocationSelect } from "../../location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface ItemStock {
     storageLocationId: string;
@@ -158,7 +160,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 </div>
 
                                 <div className="px-6 flex items-center justify-center relative">
-                                    <div className="w-14 h-14 rounded-full flex items-center justify-center bg-primary shadow-lg shadow-primary/30 group-hover:scale-110 transition-all duration-500 relative z-20">
+                                    <div className="w-14 h-14 rounded-full flex items-center justify-center bg-primary shadow-lg shadow-primary/30 transition-all duration-500 relative z-20">
                                         <ArrowRight className="w-7 h-7 text-white" />
                                         <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-20" />
                                     </div>
@@ -187,52 +189,57 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Количество</label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-2xl flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setAmount((prev: number) => Math.max(0, prev - 1))}
-                                        className="w-14 rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                                        className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
                                     >
                                         <Minus className="w-5 h-5 stroke-[3]" />
-                                    </button>
+                                    </Button>
 
                                     <div className="flex-1 flex items-center justify-center gap-1.5 relative px-2">
-                                        <input
+                                        <Input
                                             type="number"
                                             inputMode="numeric"
                                             required
-                                            min="0"
+                                            min={0}
                                             value={amount}
                                             onChange={(e) => setAmount(Number(e.target.value))}
-                                            className="w-20 bg-transparent border-none text-center text-3xl font-black text-slate-900 outline-none tabular-nums p-0 leading-none"
+                                            className="w-20 bg-transparent border-none shadow-none text-center text-3xl font-black text-slate-900 outline-none tabular-nums p-0 leading-none h-auto focus-visible:ring-0"
                                         />
                                         <span className="text-sm font-bold text-slate-400 mt-1">
                                             {(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}
                                         </span>
                                     </div>
 
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setAmount((prev: number) => prev + 1)}
-                                        className="w-14 rounded-2xl flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                                        className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
                                     >
                                         <Plus className="w-5 h-5 stroke-[3]" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-transparent select-none ml-1">Максимум</label>
                                 {fromLocationId && fromStock > 0 ? (
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
                                         onClick={() => {
                                             setAmount(fromStock);
                                             toast(`Максимальное кол-во: ${fromStock} ${item.unit}`, "info");
                                         }}
-                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4"
+                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                                     >
                                         Переместить всё ({fromStock})
-                                    </button>
+                                    </Button>
                                 ) : (
                                     <div className="h-[72px] w-full rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 flex items-center justify-center">
                                         <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Выберите склад</span>
@@ -247,9 +254,9 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                             <textarea
                                 value={reason}
                                 required
-                                onChange={(e) => setReason(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReason(e.target.value)}
                                 placeholder="Напр: Смена места хранения..."
-                                className="w-full min-h-[80px] p-3 rounded-2xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-900 focus:border-primary outline-none focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300 leading-snug shadow-sm"
+                                className="w-full min-h-[80px] p-3 rounded-2xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300 leading-snug shadow-sm"
                             />
                         </div>
 
@@ -263,15 +270,17 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                 </form>
 
                 <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={onClose}
                         className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-2xl items-center justify-center"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="submit"
+                        variant="default"
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
                         onClick={() => handleSubmit()}
                         className={cn(
@@ -286,7 +295,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 Переместить
                             </>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>

@@ -1,0 +1,68 @@
+.glass-panel {
+    background-color: white;
+    border: 1px solid var(--border);
+    box-shadow: var(--crm-shadow-sm);
+    border-radius: var(--radius-outer);
+    transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+    box-shadow: var(--crm-shadow-md);
+}
+
+.glass-panel:focus,
+.glass-panel:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.crm-card {
+    background-color: white;
+    border: 1px solid var(--border);
+    color: var(--card-foreground);
+    border-radius: var(--radius-outer);
+    padding: var(--radius-padding);
+    box-shadow: var(--crm-shadow-sm);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 0;
+}
+
+.crm-card:hover {
+    box-shadow: var(--crm-shadow-md);
+}
+
+@media (max-width: 640px) {
+    .crm-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+}
+
+.sticky-glass-header {
+    position: sticky;
+    top: 8px;
+    z-index: 40;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(100% - 32px);
+    max-width: 1480px;
+    border-radius: var(--radius-outer);
+    background-color: white;
+    border: 1px solid var(--border);
+    box-shadow: var(--crm-shadow-sm);
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.sticky-glass-header.scrolled {
+    box-shadow: var(--crm-shadow-md);
+    transform: translateY(4px);
+}
+
+.bento-grid {
+    display: grid;
+    gap: var(--crm-grid-gap);
+    grid-template-columns: repeat(12, 1fr);
+}

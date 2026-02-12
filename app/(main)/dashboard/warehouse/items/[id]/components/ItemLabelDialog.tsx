@@ -149,7 +149,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                 <div className="flex flex-col items-center">
                     <label className="text-sm font-bold text-foreground mb-3">Предпросмотр (58x40мм)</label>
                     <div
-                        className="w-[280px] h-[180px] bg-card shadow-2xl shadow-border/50 rounded-2xl p-5 flex flex-col border border-border relative group transition-transform hover:scale-[1.02]"
+                        className="w-[280px] h-[180px] bg-card shadow-2xl shadow-border/50 rounded-2xl p-5 flex flex-col border border-border relative group transition-all"
                     >
                         <div className="text-[13px] font-bold text-foreground leading-tight mb-3 line-clamp-2 pr-2">
                             {item.name}

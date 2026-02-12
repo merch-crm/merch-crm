@@ -11,13 +11,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Image from "next/image";
 import { RoleBadge } from "@/components/ui/role-badge";
+import { Button } from "@/components/ui/button";
 
-interface BrandingSettings {
-    socialTelegram?: string | null;
-    socialWhatsapp?: string | null;
-    socialWebsite?: string | null;
-    [key: string]: unknown;
-}
+import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export function UserNav({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null },
@@ -40,9 +36,10 @@ export function UserNav({ user, branding }: {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 p-1.5 rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 focus:outline-none group hover:shadow-sm"
+                className="flex items-center gap-3 p-1.5 h-auto rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 group hover:shadow-sm"
             >
                 <div className="relative shrink-0">
                     <div className="h-10 w-10 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center text-indigo-400 border border-indigo-100/50 overflow-hidden shadow-sm">
@@ -59,7 +56,7 @@ export function UserNav({ user, branding }: {
                     <div className="text-[12px] text-slate-400 font-medium">{user.roleName}</div>
                 </div>
                 <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-primary")} />
-            </button>
+            </Button>
 
             <AnimatePresence>
                 {isOpen && (
@@ -128,12 +125,14 @@ export function UserNav({ user, branding }: {
                                         <span className="text-sm md:text-[12px] text-slate-400 font-medium truncate">{user.email}</span>
                                         <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit" />
                                     </div>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setIsOpen(false)}
-                                        className="md:hidden p-2 rounded-full bg-slate-100/50 text-slate-400"
+                                        className="md:hidden p-2 rounded-full"
                                     >
                                         <ChevronDown className="h-5 w-5 rotate-180" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -216,13 +215,14 @@ export function UserNav({ user, branding }: {
                                     await logout();
                                     router.push("/login");
                                 }}>
-                                    <button
+                                    <Button
                                         type="submit"
+                                        variant="ghost"
                                         className="w-full dropdown-item py-3 md:py-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700 justify-center md:justify-start"
                                     >
                                         <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100" />
                                         <span className="text-base md:text-sm font-black md:font-bold">Выйти</span>
-                                    </button>
+                                    </Button>
                                 </form>
                             </div>
                         </motion.div>

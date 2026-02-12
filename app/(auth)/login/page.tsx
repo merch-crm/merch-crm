@@ -55,7 +55,7 @@ export default function LoginPage() {
     }
 
     const primaryColor = branding?.primaryColor || "#5d00ff";
-    const logoUrl = branding?.logoUrl || ((branding as Record<string, unknown> | null)?.['logo_url'] as string);
+    const logoUrl = branding?.logoUrl;
     const bgUrl = branding?.loginBackgroundUrl;
     const slogan = branding?.loginSlogan || "Система управления производством";
     const companyName = branding?.companyName || "MerchCRM";
@@ -77,31 +77,42 @@ export default function LoginPage() {
                 </div>
             ) : (
                 <>
-                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none opacity-50" style={{ backgroundColor: primaryColor }} />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none opacity-30" style={{ backgroundColor: primaryColor }} />
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none opacity-50 bg-[var(--primary)]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none opacity-30 bg-[var(--primary)]" />
                 </>
             )}
 
             <Card className="w-full max-w-md p-8 shadow-2xl bg-white/80 backdrop-blur-xl border-white/20 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500 rounded-[32px]">
                 <div className="flex flex-col items-center mb-10 space-y-5">
-                    <div
-                        className="p-4 rounded-2xl shadow-lg transform transition-transform group-hover:scale-110 duration-300 w-20 h-20 flex items-center justify-center overflow-hidden relative"
-                        style={{ backgroundColor: primaryColor }}
-                    >
-                        {logoUrl ? (
-                            <Image src={logoUrl} alt="Logo" fill className="object-contain" priority />
-                        ) : (
-                            <Building2 className="w-10 h-10 text-white" />
-                        )}
-                    </div>
-                    <div className="text-center">
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-                            {companyName}
-                        </h1>
-                        <p className="text-sm text-slate-500 mt-2 font-medium">
-                            {slogan}
-                        </p>
-                    </div>
+                    {!branding ? (
+                        <>
+                            <div className="w-20 h-20 rounded-2xl bg-slate-200 animate-pulse" />
+                            <div className="space-y-3 flex flex-col items-center">
+                                <div className="h-8 w-48 bg-slate-200 rounded-lg animate-pulse" />
+                                <div className="h-4 w-32 bg-slate-200 rounded-lg animate-pulse" />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div
+                                className="p-4 rounded-2xl shadow-lg transform transition-transform group-hover:scale-110 duration-300 w-20 h-20 flex items-center justify-center overflow-hidden relative bg-[var(--primary)]"
+                            >
+                                {logoUrl ? (
+                                    <Image src={logoUrl} alt="Logo" fill className="object-contain" priority />
+                                ) : (
+                                    <Building2 className="w-10 h-10 text-white" />
+                                )}
+                            </div>
+                            <div className="text-center">
+                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                                    {companyName}
+                                </h1>
+                                <p className="text-sm text-slate-500 mt-2 font-medium">
+                                    {slogan}
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -117,7 +128,6 @@ export default function LoginPage() {
                                     name="email"
                                     type="email"
                                     placeholder="Введите логин"
-                                    defaultValue="admin@crm.local"
                                     className="pl-11 h-12 bg-white/50 border-slate-200 focus:border-primary focus:ring-primary/10 transition-all rounded-2xl"
                                     required
                                 />
@@ -138,13 +148,16 @@ export default function LoginPage() {
                                     className="pl-11 pr-11 h-12 bg-white/50 border-slate-200 focus:border-primary focus:ring-primary/10 transition-all rounded-2xl"
                                     required
                                 />
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 transition-colors outline-none"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-all h-10 w-10 rounded-xl"
                                 >
                                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -159,18 +172,22 @@ export default function LoginPage() {
 
                     <Button
                         type="submit"
+                        variant="default"
                         disabled={isLoading}
-                        className="w-full h-14 text-lg font-bold transition-all active:scale-[0.98] rounded-2xl shadow-lg border-none hover:opacity-90"
-                        style={{ backgroundColor: primaryColor, color: 'white' }}
+                        className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg border-none bg-[var(--primary)] text-white hover:opacity-90"
                     >
                         {isLoading ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : "Войти в систему"}
                     </Button>
                 </form>
 
-                <div className="mt-8 text-center">
-                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-                        © 2026 {companyName}. CRM System
-                    </p>
+                <div className="mt-8 text-center h-4">
+                    {branding ? (
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                            © {new Date().getFullYear()} {companyName}. CRM System
+                        </p>
+                    ) : (
+                        <div className="mx-auto h-2.5 w-32 bg-slate-200 rounded-full animate-pulse" />
+                    )}
                 </div>
             </Card>
         </div>

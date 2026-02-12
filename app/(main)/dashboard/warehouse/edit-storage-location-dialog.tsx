@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Input } from "@/components/ui/input";
+import { PremiumPagination } from "@/components/ui/premium-pagination";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
@@ -102,7 +104,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
             <div className="space-y-4">
                 <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 ml-1">Название склада <span className="text-rose-500">*</span></label>
-                    <input
+                    <Input
                         name="name"
                         value={localName}
                         placeholder="Напр. Склад А"
@@ -142,8 +144,8 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                 <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
                     <div className="relative group">
-                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
-                        <input
+                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
+                        <Input
                             name="address"
                             value={localAddress}
                             placeholder="Ул. Примерная, 10"
@@ -180,14 +182,14 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                 </div>
 
                 <div className="pt-2 space-y-3">
-                    <button
-                        type="button"
+                    <Button
+                        variant="ghost"
                         onClick={() => {
                             const next = !localIsDefault;
                             setLocalIsDefault(next);
                             handleAutoSave({ isDefault: next });
                         }}
-                        className="w-full flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 active:scale-[0.98] transition-all"
+                        className="w-full flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 transition-all h-auto"
                     >
                         <div className={cn(
                             "w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-white text-slate-400 border border-slate-200 shadow-sm",
@@ -202,16 +204,16 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                         <div className={cn("w-10 h-6 rounded-full transition-all flex items-center px-0.5", localIsDefault ? "bg-primary" : "bg-slate-300")}>
                             <div className={cn("w-5 h-5 rounded-full bg-white transition-all shadow-sm", localIsDefault ? "translate-x-4" : "translate-x-0")} />
                         </div>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="ghost"
                         onClick={() => {
                             const next = !localIsActive;
                             setLocalIsActive(next);
                             handleAutoSave({ isActive: next });
                         }}
-                        className="w-full flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 active:scale-[0.98] transition-all"
+                        className="w-full flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 transition-all h-auto"
                     >
                         <div className={cn(
                             "w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-white text-slate-400 border border-slate-200 shadow-sm",
@@ -226,7 +228,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                         <div className={cn("w-10 h-6 rounded-full transition-all flex items-center px-0.5", localIsActive ? "bg-emerald-500" : "bg-slate-300")}>
                             <div className={cn("w-5 h-5 rounded-full bg-white transition-all shadow-sm", localIsActive ? "translate-x-4" : "translate-x-0")} />
                         </div>
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -255,7 +257,9 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                 <div className="text-[11px] font-bold text-primary tabular-nums">
                                     {item.quantity} {item.unit || "шт"}
                                 </div>
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setTransferItem(item);
@@ -263,7 +267,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                     className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 active:bg-primary active:text-white transition-all shadow-sm"
                                 >
                                     <ArrowRightLeft className="w-4 h-4" />
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     ))
@@ -276,12 +280,15 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
             </div>
 
             {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-4">
-                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 disabled:opacity-30"><ChevronLeft className="w-5 h-5" /></button>
-                    <div className="text-[10px] font-bold text-slate-400">
-                        <span className="text-slate-900">{currentPage}</span> / {totalPages}
-                    </div>
-                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 disabled:opacity-30"><ChevronRight className="w-5 h-5" /></button>
+                <div className="pt-4">
+                    <PremiumPagination
+                        currentPage={currentPage}
+                        totalItems={localItems?.length || 0}
+                        pageSize={ITEMS_PER_PAGE}
+                        onPageChange={setCurrentPage}
+                        itemNames={['товар', 'товара', 'товаров']}
+                        variant="light"
+                    />
                 </div>
             )}
         </div>
@@ -400,13 +407,13 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
                     {/* Mobile Footer - Fixed bottom */}
                     <div className="md:hidden sticky bottom-0 z-20 p-5 pt-3 flex items-center gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100">
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
                             onClick={onClose}
-                            className="flex h-11 flex-1 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
+                            className="flex h-11 flex-1 text-slate-400 hover:text-slate-600 font-bold text-sm"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <Button variant="btn-dark" onClick={onClose} className="h-11 flex-1 rounded-[var(--radius-inner)] text-sm font-bold shadow-sm">
                             Сохранить
                         </Button>
@@ -514,7 +521,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500">*</span></label>
-                            <input
+                            <Input
                                 type="number"
                                 name="quantity"
                                 min="1"
@@ -528,7 +535,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
-                            <input
+                            <Input
                                 name="comment"
                                 placeholder="..."
                                 className={cn(
@@ -540,13 +547,13 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
                     </div>
 
                     <div className="pt-2 flex items-center gap-3 w-full">
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
                             onClick={onClose}
-                            className="flex h-11 w-full max-w-[120px] text-slate-400 font-bold text-sm hover:text-slate-600 transition-all items-center justify-center"
+                            className="flex h-11 w-full max-w-[120px] text-slate-400 font-bold text-sm hover:text-slate-600 transition-all items-center justify-center p-0"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <div className="flex-1">
                             <TransferSubmitButton />
                         </div>

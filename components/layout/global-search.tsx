@@ -6,6 +6,8 @@ import { globalSearch, SearchResult } from "@/app/(main)/dashboard/search-action
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function GlobalSearch() {
     const [query, setQuery] = useState("");
@@ -75,7 +77,7 @@ export function GlobalSearch() {
         <div ref={containerRef} className="relative w-full max-w-md mx-4">
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
+                <Input
                     type="text"
                     placeholder="Быстрый поиск (cmd+k)..."
                     value={query}
@@ -84,7 +86,7 @@ export function GlobalSearch() {
                         setIsOpen(true);
                     }}
                     onFocus={() => setIsOpen(true)}
-                    className="w-full h-10 pl-10 pr-10 bg-slate-100/50 border border-slate-200/50 rounded-[18px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-white transition-all"
+                    className="w-full h-10 pl-10 pr-10 bg-slate-100/50 border border-slate-200/50 rounded-[18px] text-sm font-medium focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 focus-visible:bg-white transition-all shadow-none"
                 />
 
             </div>
@@ -100,14 +102,15 @@ export function GlobalSearch() {
                         {results.length > 0 ? (
                             <div className="p-2 space-y-1">
                                 {results.map((result) => (
-                                    <button
+                                    <Button
                                         key={`${result.type}-${result.id}`}
+                                        variant="ghost"
                                         onClick={() => handleSelect(result)}
-                                        className="w-full flex items-center gap-3 p-3 hover:bg-slate-50 rounded-[18px] transition-all group text-left"
+                                        className="w-full flex items-center justify-start gap-3 p-3 hover:bg-slate-50 rounded-[18px] transition-all group text-left h-auto font-normal"
                                     >
                                         <div className={cn(
                                             "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 transition-transform group-hover:scale-110",
-                                            result.type === 'order' ? 'bg-indigo-50 text-#5d00ff' :
+                                            result.type === 'order' ? 'bg-indigo-50 text-[#5d00ff]' :
                                                 result.type === 'client' ? 'bg-emerald-50 text-emerald-600' :
                                                     result.type === 'item' ? 'bg-amber-50 text-amber-600' :
                                                         result.type === 'user' ? 'bg-blue-50 text-blue-600' :
@@ -118,7 +121,7 @@ export function GlobalSearch() {
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-bold text-slate-900 text-sm truncate">{result.title}</span>
-                                                <span className="text-[10px] font-bold  tracking-normal text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded-md">
+                                                <span className="text-[10px] font-bold tracking-normal text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded-md">
                                                     {getTypeLabel(result.type)}
                                                 </span>
                                             </div>
@@ -126,12 +129,12 @@ export function GlobalSearch() {
                                                 <p className="text-xs text-slate-500 truncate mt-0.5">{result.subtitle}</p>
                                             )}
                                         </div>
-                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity pr-2">
+                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity pl-2">
                                             <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center">
                                                 <X className="w-3 h-3 text-slate-400 rotate-45" />
                                             </div>
                                         </div>
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         ) : !loading ? (

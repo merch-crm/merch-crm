@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { updateOrderPriority } from "../actions";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { Button } from "@/components/ui/button";
 const priorities = [
     { id: "normal", label: "Обычный", icon: Circle, color: "text-slate-400", bgColor: "bg-slate-400", lightBg: "bg-slate-50" },
     { id: "high", label: "Срочный", icon: Zap, color: "text-rose-500", bgColor: "bg-rose-500", lightBg: "bg-rose-50" },
@@ -54,11 +54,12 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
     return (
         <div className="relative" ref={containerRef}>
             {/* Trigger Button */}
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 disabled={loading}
                 className={`
-                    w-full flex items-center justify-between px-4 py-3.5 
+                    w-full flex items-center justify-between px-4 py-3.5 h-auto
                     ${activePriority.lightBg} border border-slate-200 rounded-2xl shadow-sm
                     hover:border-primary/40 hover:shadow-md transition-all duration-200
                     active:scale-[0.98] group relative overflow-hidden
@@ -75,7 +76,7 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                     <activePriority.icon className={`w-4 h-4 ${activePriority.color} opacity-80`} />
                     <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
-            </button>
+            </Button>
 
             {/* Dropdown Menu */}
             <AnimatePresence>
@@ -92,11 +93,12 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                         className="absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-slate-200 rounded-[22px] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] z-50 py-1.5 overflow-hidden ring-1 ring-slate-900/5"
                     >
                         {priorities.map((p) => (
-                            <button
+                            <Button
                                 key={p.id}
+                                variant="ghost"
                                 onClick={() => handlePriorityChange(p.id)}
                                 className={`
-                                    w-full flex items-center justify-between px-4 py-3 
+                                    w-full flex items-center justify-between px-4 py-3 h-auto
                                     hover:bg-slate-50 transition-all group/item rounded-[16px]
                                     ${p.id === priorityId ? 'bg-primary/5 text-primary' : 'text-slate-600'}
                                 `}
@@ -108,7 +110,7 @@ export default function PrioritySelect({ orderId, currentPriority }: { orderId: 
                                     </span>
                                 </div>
                                 <p.icon className={`w-4 h-4 ${p.id === priorityId ? p.color : 'text-slate-300 group-hover/item:text-slate-400'} transition-colors`} />
-                            </button>
+                            </Button>
                         ))}
                     </motion.div>
                 )}

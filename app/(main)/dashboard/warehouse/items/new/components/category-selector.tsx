@@ -5,6 +5,7 @@ import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getColorStyles } from "../../../category-utils";
 import { Category } from "../../../types";
+import { Button } from "@/components/ui/button";
 
 interface CategorySelectorProps {
     categories: Category[];
@@ -42,14 +43,15 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
 
                         if (variant === "compact") {
                             return (
-                                <button
+                                <Button
                                     key={category.id}
+                                    variant="ghost"
                                     onClick={() => onSelect(category)}
                                     className={cn(
-                                        "group flex flex-row items-center gap-3 p-4 rounded-2xl border border-slate-200 transition-all text-left shadow-sm",
+                                        "group flex flex-row items-center gap-3 p-4 rounded-2xl border border-slate-200 transition-all text-left shadow-sm h-auto justify-start",
                                         selectedCategoryId === category.id
-                                            ? "border-slate-900 bg-slate-50 shadow-md"
-                                            : "bg-white hover:border-slate-300 hover:shadow-md"
+                                            ? "border-slate-900 bg-slate-50 shadow-md hover:bg-slate-50"
+                                            : "bg-white hover:border-slate-300 hover:shadow-md hover:bg-white"
                                     )}
                                 >
                                     <div className={cn(
@@ -64,19 +66,20 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                             {category.name}
                                         </h3>
                                     </div>
-                                </button>
+                                </Button>
                             );
                         }
 
                         return (
-                            <button
+                            <Button
                                 key={category.id}
+                                variant="ghost"
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-slate-200 transition-all text-center shadow-sm aspect-square xl:aspect-auto",
+                                    "group flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-slate-200 transition-all text-center shadow-sm aspect-square xl:aspect-auto h-auto",
                                     selectedCategoryId === category.id
-                                        ? "border-slate-900 bg-slate-50 shadow-md"
-                                        : "bg-white hover:border-slate-300 hover:shadow-md"
+                                        ? "border-slate-900 bg-slate-50 shadow-md hover:bg-slate-50"
+                                        : "bg-white hover:border-slate-300 hover:shadow-md hover:bg-white"
                                 )}
                             >
                                 <div className={cn(
@@ -90,10 +93,8 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                     <h3 className="text-sm sm:text-lg font-bold text-slate-900 mb-1 break-words leading-tight">
                                         {category.name}
                                     </h3>
-
                                 </div>
-
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

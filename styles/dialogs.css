@@ -1,0 +1,40 @@
+/* ========================================
+   DIALOG & MODAL STYLES
+   ======================================== */
+
+.crm-dialog-overlay {
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+}
+
+.crm-dialog-content {
+    background-color: white;
+    border-radius: var(--radius-outer);
+    box-shadow: var(--crm-shadow-xl);
+    border: 1px solid var(--border);
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 95vw;
+    max-width: 500px;
+    z-index: 51;
+    padding: 24px;
+}
+
+.crm-sheet-content {
+    background-color: white;
+    box-shadow: var(--crm-shadow-xl);
+    border-left: 1px solid var(--border);
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    z-index: 52;
+    padding: 24px;
+}

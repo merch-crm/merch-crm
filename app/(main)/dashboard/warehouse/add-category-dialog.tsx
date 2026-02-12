@@ -3,59 +3,14 @@
 import { useState, createElement, type ReactNode } from "react";
 import { FolderPlus, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { SubmitButton } from "./submit-button";
 import { addInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getIconNameFromName, getColorStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-
-function Switch({
-    checked,
-    onChange,
-    disabled,
-    label,
-    description
-}: {
-    checked: boolean,
-    onChange: (val: boolean) => void,
-    disabled?: boolean,
-    label?: ReactNode,
-    description?: string
-}) {
-    return (
-        <div className={cn(
-            "flex items-center justify-between group w-full",
-            disabled && "opacity-50"
-        )}>
-            <div className="flex flex-col gap-0.5">
-                {label && (
-                    <div className="flex flex-col">
-                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">{label}</span>
-                    </div>
-                )}
-                {description && <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">{description}</span>}
-            </div>
-            <button
-                type="button"
-                disabled={disabled}
-                onClick={() => onChange(!checked)}
-                className={cn(
-                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-inner",
-                    checked ? "bg-primary" : "bg-slate-200",
-                    disabled && "cursor-not-allowed"
-                )}
-            >
-                <span
-                    className={cn(
-                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
-                        checked ? "translate-x-5" : "translate-x-0"
-                    )}
-                />
-            </button>
-        </div>
-    );
-}
 
 
 interface AddCategoryDialogProps {
@@ -166,7 +121,7 @@ export function AddCategoryDialog({
                         <div className="flex gap-4">
                             <div className="space-y-1.5 flex-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название категории</label>
-                                <input
+                                <Input
                                     name="name"
                                     required
                                     value={categoryName}
@@ -179,10 +134,10 @@ export function AddCategoryDialog({
                                         }
                                     }}
                                     className={cn(
-                                        "w-full h-11 px-4 rounded-[var(--radius-inner)] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
+                                        "h-11 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
                                         fieldErrors.name
                                             ? "border-rose-300 bg-rose-50 text-rose-900"
-                                            : "border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50"
+                                            : "border-slate-200 bg-slate-50"
                                     )}
                                     onInput={() => {
                                         if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: "" }));
@@ -192,7 +147,7 @@ export function AddCategoryDialog({
                             </div>
                             <div className="space-y-1.5 w-24">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Артикул</label>
-                                <input
+                                <Input
                                     name="prefix"
                                     required
                                     value={categoryPrefix}
@@ -204,10 +159,10 @@ export function AddCategoryDialog({
                                         if (fieldErrors.prefix) setFieldErrors(prev => ({ ...prev, prefix: "" }));
                                     }}
                                     className={cn(
-                                        "w-full h-11 px-4 rounded-[var(--radius-inner)] border transition-all font-bold text-slate-900 placeholder:text-slate-300 text-center text-sm shadow-sm",
+                                        "h-11 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-center text-sm shadow-sm",
                                         fieldErrors.prefix
                                             ? "border-rose-300 bg-rose-50 text-rose-900"
-                                            : "border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50"
+                                            : "border-slate-200 bg-slate-50"
                                     )}
                                 />
                                 {fieldErrors.prefix && <p className="text-[9px] font-bold text-rose-500 ml-1">{fieldErrors.prefix}</p>}
@@ -239,18 +194,20 @@ export function AddCategoryDialog({
                                     {COLORS.map((color) => {
                                         const isSelected = selectedColor === color.name;
                                         return (
-                                            <button
+                                            <Button
                                                 key={color.name}
                                                 type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() => setSelectedColor(color.name)}
                                                 className={cn(
-                                                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90 shadow-sm",
+                                                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90 shadow-sm p-0",
                                                     color.class,
-                                                    isSelected ? "ring-2 ring-offset-2 ring-primary/40 scale-110" : "opacity-80 hover:opacity-100 hover:scale-105"
+                                                    isSelected ? "ring-2 ring-offset-2 ring-primary/40 scale-110" : "opacity-80 hover:opacity-100"
                                                 )}
                                             >
                                                 {isSelected && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white stroke-[4]" />}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -259,20 +216,30 @@ export function AddCategoryDialog({
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="p-3 bg-slate-100 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                                <Switch
-                                    checked={showInSku}
-                                    onChange={setShowInSku}
-                                    label={<span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span>}
-                                    description="Будет в SKU"
-                                />
+                                <div className={cn("flex items-center justify-between group w-full")}>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]"><span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span></span>
+                                        <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в SKU</span>
+                                    </div>
+                                    <Switch
+                                        checked={showInSku}
+                                        onCheckedChange={setShowInSku}
+                                        variant="success"
+                                    />
+                                </div>
                             </div>
                             <div className="p-3 bg-slate-100 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                                <Switch
-                                    checked={showInName}
-                                    onChange={setShowInName}
-                                    label={<span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span>}
-                                    description="Будет в имени"
-                                />
+                                <div className={cn("flex items-center justify-between group w-full")}>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]"><span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span></span>
+                                        <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в имени</span>
+                                    </div>
+                                    <Switch
+                                        checked={showInName}
+                                        onCheckedChange={setShowInName}
+                                        variant="success"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -285,13 +252,14 @@ export function AddCategoryDialog({
                     </form>
 
                     <div className="sticky bottom-0 z-10 shrink-0 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-end lg:justify-between gap-3 mt-auto">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center"
+                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
                         >
                             Отмена
-                        </button>
+                        </Button>
                         <SubmitButton
                             form="add-category-form"
                             label="Сохранить"

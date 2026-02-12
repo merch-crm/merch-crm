@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Bell, Info, AlertCircle, CheckCircle2, AlertTriangle, ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { markAsRead, markAllAsRead } from "./actions";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -20,10 +21,12 @@ export interface Notification {
     createdAt: string | Date;
 }
 
+import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+
 interface NotificationCenterProps {
     notifications: Notification[];
     unreadCount?: number;
-    branding?: { dateFormat?: string; timezone?: string;[key: string]: unknown };
+    branding?: BrandingSettings;
 }
 
 const typeConfig = {
@@ -77,10 +80,12 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
     return (
         <div className="relative" ref={containerRef}>
             {/* Bell Button */}
-            <button
+            <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "relative p-3 rounded-2xl transition-all duration-300 group",
+                    "relative h-12 w-12 rounded-2xl transition-all duration-300 group",
                     isOpen ? "bg-primary text-white shadow-lg shadow-primary/25" : "text-slate-400 hover:text-primary hover:bg-white hover:shadow-md hover:shadow-slate-200/50"
                 )}
             >
@@ -88,7 +93,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                 {unreadCount > 0 && (
                     <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
                 )}
-            </button>
+            </Button>
 
             <AnimatePresence>
                 {isOpen && (
@@ -151,20 +156,24 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {unreadCount > 0 && (
-                                        <button
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
                                             onClick={handleMarkAllAsRead}
                                             disabled={loading === "all"}
-                                            className="h-9 px-4 rounded-[var(--radius-inner)] bg-primary/5 text-primary text-[10px] font-bold hover:bg-primary/10 transition-colors disabled:opacity-50 uppercase tracking-normal"
+                                            className="h-9 px-4 text-[10px] font-bold uppercase tracking-normal"
                                         >
                                             {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
-                                        </button>
+                                        </Button>
                                     )}
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setIsOpen(false)}
-                                        className="md:hidden p-2 rounded-full bg-slate-100/50 text-slate-400"
+                                        className="md:hidden p-2 rounded-full"
                                     >
                                         <ArrowRightLeft className="h-5 w-5 rotate-90" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -226,17 +235,19 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                             </p>
 
                                                             {!notification.isRead && (
-                                                                <button
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleMarkAsRead(notification.id);
                                                                     }}
                                                                     disabled={loading === notification.id}
-                                                                    className="flex items-center gap-1.5 text-[11px] font-black md:font-bold text-primary hover:text-primary/80 transition-colors bg-white px-3 py-1.5 md:px-2 md:py-1 rounded-xl md:rounded-lg border border-primary/10 hover:border-primary/20 shadow-sm"
+                                                                    className="flex items-center gap-1.5 h-auto py-1.5 md:py-1 px-3 md:px-2 text-[11px] font-black md:font-bold text-primary border-primary/10 hover:bg-primary/5 hover:border-primary/20 shadow-sm rounded-xl md:rounded-lg"
                                                                 >
                                                                     <CheckCircle2 className="w-3.5 h-3.5" />
                                                                     Отметить прочитанным
-                                                                </button>
+                                                                </Button>
                                                             )}
                                                         </div>
                                                     </div>

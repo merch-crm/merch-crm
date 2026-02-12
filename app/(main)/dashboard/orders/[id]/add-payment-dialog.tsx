@@ -8,6 +8,9 @@ import { playSound } from "@/lib/sounds";
 import { useBranding } from "@/components/branding-provider";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
+import { cn } from "@/lib/utils";
 
 interface AddPaymentDialogProps {
     orderId: string;
@@ -52,13 +55,14 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
 
     return (
         <>
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => setIsOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-50 text-emerald-600 font-bold text-sm hover:bg-emerald-100 transition-all active:scale-[0.98] border border-emerald-100"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-50 text-emerald-600 font-bold text-sm hover:bg-emerald-100 transition-all active:scale-[0.98] border border-emerald-100 h-auto"
             >
                 <PlusCircle className="w-4 h-4" />
                 Внести оплату / Аванс
-            </button>
+            </Button>
 
             <ResponsiveModal
                 isOpen={isOpen}
@@ -70,7 +74,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                 <form onSubmit={handleSubmit} className="flex flex-col h-full space-y-5 p-4">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-700 ml-1">Сумма ({currencySymbol})</label>
-                        <input
+                        <Input
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
@@ -91,25 +95,29 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                                 { id: "online", label: "Онлайн" },
                                 { id: "account", label: "Р/С" },
                             ].map((m) => (
-                                <button
+                                <Button
                                     key={m.id}
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setMethod(m.id)}
-                                    className={`py-2.5 rounded-[12px] text-xs font-bold transition-all border ${method === m.id
-                                        ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
-                                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-                                        }`}
+                                    className={cn(
+                                        "py-2.5 rounded-[12px] text-xs font-bold transition-all border h-auto",
+                                        method === m.id
+                                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm hover:bg-emerald-100"
+                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                    )}
                                 >
                                     {m.label}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-[14px] border border-slate-100 cursor-pointer" onClick={() => setIsAdvance(!isAdvance)}>
-                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${isAdvance ? "bg-emerald-500 border-emerald-500" : "bg-white border-slate-300"}`}>
-                            {isAdvance && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-                        </div>
+                        <PremiumCheckbox
+                            checked={isAdvance}
+                            onChange={setIsAdvance}
+                        />
                         <span className="text-xs font-bold text-slate-700 select-none">Это аванс / предоплата</span>
                     </div>
 

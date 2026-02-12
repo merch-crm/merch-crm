@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { InventoryItem } from "../../../types";
 
 interface ItemMediaSectionProps {
@@ -136,35 +137,39 @@ export function ItemMediaSection({
                     <div>
                         <h3 className="text-xl font-bold text-foreground">Галерея</h3>
                         <p className="text-[11px] font-bold text-muted-foreground mt-1">
-                            Загружено {allImages.filter(i => i.src).length} из 6 фото
+                            Загружено {allImages.filter(i => i.src).length} из {allImages.length} фото
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {allImages.some(i => !i.src) && (
-                        <label className="cursor-pointer group/upload">
-                            <input
-                                type="file"
-                                className="hidden"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        const firstEmptyIdx = allImages.findIndex(img => !img.src);
-                                        if (firstEmptyIdx !== -1) {
-                                            const img = allImages[firstEmptyIdx];
-                                            setLoadingIndex(firstEmptyIdx);
-                                            onImageChange(file, img.type, img.index);
+                        <Button
+                            asChild
+                            variant="btn-dark"
+                            className="h-10 px-6 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center gap-2 border-none"
+                        >
+                            <label className="cursor-pointer">
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const firstEmptyIdx = allImages.findIndex(img => !img.src);
+                                            if (firstEmptyIdx !== -1) {
+                                                const img = allImages[firstEmptyIdx];
+                                                setLoadingIndex(firstEmptyIdx);
+                                                onImageChange(file, img.type, img.index);
+                                            }
                                         }
-                                    }
-                                }}
-                            />
-                            <div className="h-10 px-6 rounded-2xl bg-foreground border-none text-background text-[13px] font-black hover:bg-foreground/90 active:scale-95 shadow-lg shadow-black/20 hover:[box-shadow:0_8px_20px_-4px_rgba(0,0,0,0.2),0_4px_12px_-2px_rgba(0,0,0,0.1)] active:shadow-none transition-all flex items-center gap-2">
+                                    }}
+                                />
                                 <ImagePlus className="w-4 h-4" />
                                 <span>Добавить больше</span>
-                            </div>
-                        </label>
+                            </label>
+                        </Button>
                     )}
                 </div>
             </div>
@@ -197,13 +202,18 @@ export function ItemMediaSection({
                                         }
                                     }
                                 }}
-                                onMouseUp={() => {
-                                    // Fallback for very quick clics where dragDistance might be slightly off
-                                    if (dragDistance < 3 && img.src && !isDragging) {
-                                        if (onImageClick) onImageClick(idx);
-                                        else openFullscreen(img.src);
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        if (img.src) {
+                                            if (onImageClick) onImageClick(idx);
+                                            else openFullscreen(img.src);
+                                        }
                                     }
                                 }}
+                                role="button"
+                                tabIndex={img.src ? 0 : -1}
+                                aria-label={`Просмотреть ${img.label}`}
                                 className={cn(
                                     "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-muted/30 snap-start",
                                     img.src
@@ -217,7 +227,7 @@ export function ItemMediaSection({
                                             src={img.src}
                                             alt={img.label}
                                             fill
-                                            className="object-cover transition-transform duration-1000 cubic-bezier"
+                                            className="object-cover transition-transform duration-1000 ease-out"
                                             unoptimized
                                         />
 
@@ -231,45 +241,57 @@ export function ItemMediaSection({
                                         {/* Action Buttons */}
                                         {isEditing && (
                                             <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
-                                                <button
-                                                    onClick={(e) => {
+                                                <Button
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    aria-label="Удалить изображение"
+                                                    onClick={(e: React.MouseEvent) => {
                                                         e.stopPropagation();
                                                         onImageRemove(img.type, img.index);
                                                     }}
-                                                    className="w-8 h-8 flex items-center justify-center bg-rose-500 text-white rounded-2xl shadow-lg hover:bg-rose-600 active:scale-90 transition-all z-20"
+                                                    className="w-8 h-8 flex items-center justify-center bg-rose-500 text-white rounded-2xl shadow-lg hover:bg-rose-600 active:scale-90 transition-all z-20 p-0 border-none"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
-                                                </button>
+                                                </Button>
 
-                                                <label
-                                                    className="w-8 h-8 flex items-center justify-center bg-background text-muted-foreground rounded-2xl shadow-lg hover:bg-muted hover:text-primary active:scale-90 transition-all cursor-pointer z-20"
+                                                <Button
+                                                    asChild
+                                                    variant="secondary"
+                                                    size="icon"
+                                                    aria-label="Изменить изображение"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-2xl shadow-lg active:scale-90 transition-all cursor-pointer z-20 p-0 border-none"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    <input
-                                                        type="file"
-                                                        className="hidden"
-                                                        accept="image/*"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                setLoadingIndex(idx);
-                                                                onImageChange(file, img.type, img.index);
-                                                            }
-                                                        }}
-                                                    />
-                                                    <RefreshCcw className="w-4 h-4" />
-                                                </label>
+                                                    <label>
+                                                        <input
+                                                            type="file"
+                                                            className="hidden"
+                                                            accept="image/*"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) {
+                                                                    setLoadingIndex(idx);
+                                                                    onImageChange(file, img.type, img.index);
+                                                                }
+                                                            }}
+                                                        />
+                                                        <RefreshCcw className="w-4 h-4" />
+                                                    </label>
+                                                </Button>
 
                                                 {img.type !== "front" && (
-                                                    <button
-                                                        onClick={(e) => {
+                                                    <Button
+                                                        variant="btn-dark"
+                                                        size="icon"
+                                                        aria-label="Сделать основным"
+                                                        onClick={(e: React.MouseEvent) => {
                                                             e.stopPropagation();
                                                             onSetMain(img.type, img.index);
                                                         }}
-                                                        className="w-8 h-8 flex items-center justify-center btn-dark rounded-2xl shadow-lg active:scale-90 transition-all border-none z-20"
+                                                        className="w-8 h-8 flex items-center justify-center btn-dark rounded-2xl shadow-lg active:scale-90 transition-all border-none z-20 p-0"
                                                     >
                                                         <Star className="w-4 h-4 fill-current" />
-                                                    </button>
+                                                    </Button>
                                                 )}
                                             </div>
                                         )}
@@ -297,11 +319,11 @@ export function ItemMediaSection({
                                                             fill="none"
                                                             stroke="currentColor"
                                                             strokeWidth="3"
-                                                            strokeDasharray={`${uploadStates[img.type].progress}, 100`}
+                                                            strokeDasharray={`${uploadStates?.[img.type]?.progress ?? 0}, 100`}
                                                         />
                                                     </svg>
                                                     <span className="absolute text-[10px] font-bold text-primary">
-                                                        {uploadStates[img.type].progress}%
+                                                        {uploadStates?.[img.type]?.progress ?? 0}%
                                                     </span>
                                                 </div>
                                                 <span className="text-[9px] font-bold text-muted-foreground animate-pulse">Загрузка...</span>
@@ -311,24 +333,30 @@ export function ItemMediaSection({
                                                 <ImageIcon className="w-5 h-5 text-muted-foreground/50" />
                                             </div>
                                         ) : (
-                                            <label className="cursor-pointer group/upload flex flex-col items-center justify-center w-full h-full">
-                                                <input
-                                                    type="file"
-                                                    className="hidden"
-                                                    accept="image/*"
-                                                    onChange={(e) => {
-                                                        const file = e.target.files?.[0];
-                                                        if (file) {
-                                                            setLoadingIndex(idx);
-                                                            onImageChange(file, img.type, img.index);
-                                                        }
-                                                    }}
-                                                />
-                                                <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
-                                                    <Plus className="w-5 h-5" />
-                                                </div>
-                                                <span className="text-[8px] font-bold text-muted-foreground group-hover/upload:text-primary transition-colors">Добавить</span>
-                                            </label>
+                                            <Button
+                                                asChild
+                                                variant="ghost"
+                                                className="w-full h-full flex flex-col items-center justify-center p-0 rounded-2xl border-none hover:bg-primary/5 group/upload"
+                                            >
+                                                <label className="cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        className="hidden"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                setLoadingIndex(idx);
+                                                                onImageChange(file, img.type, img.index);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
+                                                        <Plus className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="text-[8px] font-bold text-muted-foreground group-hover/upload:text-primary transition-colors">Добавить</span>
+                                                </label>
+                                            </Button>
                                         )}
                                     </div>
                                 )}
@@ -356,27 +384,36 @@ export function ItemMediaSection({
                     />
 
                     {/* Close Button */}
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setFullscreen(false)}
-                        className="absolute top-8 right-8 w-11 h-11 flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground active:scale-95 transition-all z-[110] border border-white/10 group"
+                        aria-label="Закрыть"
+                        className="absolute top-8 right-8 w-11 h-11 flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground active:scale-95 transition-all z-[110] border border-white/10 group p-0"
                     >
                         <X className="w-5 h-5 transition-transform group-hover:rotate-90 duration-500" />
-                    </button>
+                    </Button>
 
                     {/* Navigation */}
-                    <button
-                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                        className="absolute left-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Назад"
+                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); prevImage(); }}
+                        className="absolute left-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90 p-0"
                     >
                         <ChevronLeft className="w-7 h-7" />
-                    </button>
+                    </Button>
 
-                    <button
-                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                        className="absolute right-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90"
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Вперед"
+                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); nextImage(); }}
+                        className="absolute right-10 w-14 h-14 hidden md:flex items-center justify-center rounded-2xl bg-white/5 text-white hover:bg-white hover:text-foreground border border-white/10 transition-all z-[110] backdrop-blur-md active:scale-90 p-0"
                     >
                         <ChevronRight className="w-7 h-7" />
-                    </button>
+                    </Button>
 
                     {/* Main Content */}
                     <div className="relative w-full max-w-5xl aspect-square md:aspect-auto h-full flex flex-col items-center justify-center gap-8 z-[105]">
@@ -399,18 +436,19 @@ export function ItemMediaSection({
                         <div className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center gap-4">
                             <span className="text-[10px] font-bold text-white">{allImages[currentIndex].label}</span>
                             <div className="w-px h-4 bg-white/20" />
-                            <span className="text-[10px] font-bold text-white/40">{currentIndex + 1} / 6</span>
+                            <span className="text-[10px] font-bold text-white/40">{currentIndex + 1} / {allImages.length}</span>
                         </div>
                     </div>
 
                     {/* Bottom Thumbnails */}
                     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10">
                         {allImages.map((img, i) => (
-                            <button
+                            <Button
                                 key={i}
-                                onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
+                                variant="ghost"
+                                onClick={(e: React.MouseEvent) => { e.stopPropagation(); setCurrentIndex(i); }}
                                 className={cn(
-                                    "relative w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all duration-300",
+                                    "relative w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all duration-300 p-0 min-w-0 flex-shrink-0",
                                     i === currentIndex ? "border-primary scale-110 shadow-lg shadow-primary/20" : "border-transparent opacity-40 hover:opacity-100"
                                 )}
                             >
@@ -421,7 +459,7 @@ export function ItemMediaSection({
                                         <ImageIcon className="w-5 h-5 text-muted-foreground" />
                                     </div>
                                 )}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>

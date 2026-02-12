@@ -1,0 +1,44 @@
+/* ========================================
+   TOAST STYLES
+   ======================================== */
+
+.crm-toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: 2rem;
+    border-width: 1px;
+    box-shadow: var(--crm-shadow-xl);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: white;
+}
+
+.crm-toast-success {
+    border-color: rgba(16, 185, 129, 0.2);
+    color: #064e3b;
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.1);
+}
+
+.crm-toast-error,
+.crm-toast-destructive {
+    border-color: rgba(244, 63, 94, 0.2);
+    color: #4c0519;
+    box-shadow: 0 8px 30px rgba(244, 63, 94, 0.1);
+}
+
+.crm-toast-warning {
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #451a03;
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.1);
+}
+
+.crm-toast-info {
+    border-color: rgba(93, 0, 255, 0.2);
+    color: var(--primary);
+    box-shadow: 0 8px 30px rgba(93, 0, 255, 0.1);
+}

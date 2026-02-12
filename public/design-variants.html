@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Variants - Category Edit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --primary: #7c5cfc;
+            --primary-dark: #6344e0;
+            --primary-light: #f5f3ff;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-700: #334155;
+            --slate-900: #0f172a;
+            --radius-outer: 24px;
+            --radius-inner: 16px;
+            --crm-grid-gap: 20px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f4f7;
+            color: var(--slate-900);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            align-items: center;
+        }
+
+        h1 { font-weight: 900; letter-spacing: -0.02em; font-size: 32px; }
+
+        /* Existing Design Language */
+        .crm-card {
+            background: white;
+            border-radius: var(--radius-outer);
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        /* Variant Wrapper */
+        .variant-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .variant-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .variant-badge {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        /* Common Elements */
+        .header-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 24px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-inner);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .content-section {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-700);
+            margin-left: 4px;
+        }
+
+        .input-field {
+            height: 48px;
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-inner);
+            padding: 0 16px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.1);
+            outline: none;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bento-card {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-inner);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Color Selection */
+        .color-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .color-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-dot.active {
+            border-color: white;
+            box-shadow: 0 0 0 2px var(--slate-400);
+            transform: scale(1.1);
+        }
+
+        /* Toggle */
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #10b981;
+            border-radius: 99px;
+            position: relative;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Subcategories */
+        .subcategory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 16px;
+        }
+
+        .sub-chip {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-inner);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .sub-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .sub-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate-500);
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .footer {
+            padding: 24px;
+            border-top: 1px solid var(--slate-100);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            height: 48px;
+            padding: 0 24px;
+            border-radius: var(--radius-inner);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost { background: transparent; color: var(--slate-400); }
+        .btn-destructive { background: #ef4444; color: white; }
+        .btn-dark { background: var(--slate-900); color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Specific Variant Styling */
+        /* Variant D: The "Perfect Match" Popup */
+        .variant-d .crm-card {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+        .purple-bg { background: #7c5cfc15; color: var(--primary); }
+        .emerald-bg { background: #10b98115; color: #10b981; }
+        .orange-bg { background: #f9731615; color: #f97316; }
+        .blue-bg { background: #3b82f615; color: #3b82f6; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Категории: Дизайн Меню</h1>
+
+    <!-- Variant D -->
+    <div class="variant-container variant-d">
+        <div class="variant-header">
+            <div class="variant-badge">D</div>
+            <h3>Попап в стиле "Warehouse Perfect" (Максимально похож на CRM)</h3>
+        </div>
+        
+        <div class="crm-card">
+            <div class="header-section">
+                <div class="icon-box purple-bg">
+                    <i class="ph-light ph-t-shirt"></i>
+                </div>
+                <div style="flex: 1;">
+                    <h2 style="font-size: 24px; font-weight: 800;">Редактировать</h2>
+                    <p style="font-size: 11px; font-weight: 700; color: var(--slate-500); margin-top: 2px;">
+                        Категория: <span style="color: var(--slate-900);">Одежда</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="input-label">Название категории</label>
+                        <input class="input-field" value="Одежда">
+                    </div>
+                    <div class="input-group" style="width: 120px; margin-left: auto;">
+                        <label class="input-label">Артикул</label>
+                        <input class="input-field" value="TS" style="text-align: center;">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="bento-card">
+                        <span class="input-label" style="font-size: 12px; margin-left: 0;">Иконка</span>
+                        <div style="display: flex; justify-content: center; padding: 4px;">
+                            <div class="icon-box purple-bg" style="width: 48px; height: 48px; font-size: 24px;">
+                                <i class="ph-light ph-t-shirt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bento-card">
+                        <span class="input-label" style="font-size: 12px; margin-left: 0;">Цвет темы</span>
+                        <div class="color-row">
+                            <div class="color-dot active" style="background: var(--primary);"></div>
+                            <div class="color-dot" style="background: #ef4444;"></div>
+                            <div class="color-dot" style="background: #10b981;"></div>
+                            <div class="color-dot" style="background: #f59e0b;"></div>
+                            <div class="color-dot" style="background: #3b82f6;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="bento-card toggle-box">
+                        <div>
+                            <p style="font-size: 11px; font-weight: 800;">Добавлять в артикул</p>
+                            <p style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">Будет в SKU</p>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="bento-card toggle-box">
+                        <div>
+                            <p style="font-size: 11px; font-weight: 800;">Добавлять в название</p>
+                            <p style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">Будет в имени</p>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Описание категории</label>
+                    <textarea class="input-field" style="height: 80px; padding: 12px; resize: none;" placeholder="Расскажите об этой категории..."></textarea>
+                </div>
+
+                <div class="subcategory-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h4 style="font-size: 14px; font-weight: 800;">Подкатегории</h4>
+                        <span style="background: var(--slate-100); padding: 2px 10px; border-radius: 99px; font-size: 10px; font-weight: 700;">6</span>
+                    </div>
+                    <div class="subcategory-grid">
+                        <div class="sub-chip">
+                            <div class="btn-delete">✕</div>
+                            <div class="sub-icon blue-bg"><i class="ph-light ph-t-shirt"></i></div>
+                            <span class="sub-name">Футболка</span>
+                        </div>
+                        <div class="sub-chip">
+                            <div class="btn-delete">✕</div>
+                            <div class="sub-icon yellow-bg" style="background: #f59e0b15; color:#f59e0b;"><i class="ph-light ph-baseball-cap"></i></div>
+                            <span class="sub-name">Кепка</span>
+                        </div>
+                        <div class="sub-chip">
+                            <div class="btn-delete">✕</div>
+                            <div class="sub-icon emerald-bg"><i class="ph-light ph-hoodie"></i></div>
+                            <span class="sub-name">Худи</span>
+                        </div>
+                        <div class="sub-chip" style="border: 2px dashed var(--slate-200); background: transparent;">
+                            <div style="font-size: 20px; color: var(--slate-400);">+</div>
+                            <span class="sub-name" style="color: var(--slate-400);">Добавить</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <button class="btn btn-destructive" style="margin-right: auto;">
+                    <i class="ph-bold ph-trash"></i> Удалить
+                </button>
+                <button class="btn btn-ghost">Отмена</button>
+                <button class="btn btn-dark">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

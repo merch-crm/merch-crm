@@ -4,6 +4,7 @@ import React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 
 interface PremiumPaginationProps {
@@ -77,55 +78,55 @@ export function PremiumPagination({
         : itemName;
 
     return (
-        <div className={cn("flex flex-col items-center justify-center p-2 gap-2", className)}>
-            <div className="text-[11px] font-bold text-slate-400/80 whitespace-nowrap uppercase tracking-wider">
-                Показано {Math.min((currentPage - 1) * pageSize + 1, totalItems)} - {Math.min(currentPage * pageSize, totalItems)} из {totalItems} {genitiveItemName}
+        <div className={cn("pagination pagination-with-info", className)}>
+            <div className="pagination-info">
+                Показано <strong>{Math.min((currentPage - 1) * pageSize + 1, totalItems)}</strong> - <strong>{Math.min(currentPage * pageSize, totalItems)}</strong> из <strong>{totalItems}</strong> {genitiveItemName}
             </div>
 
             {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-1">
-                    <button
+                <div className="pagination-controls">
+                    <Button
+                        variant="ghost"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
+                        className="pagination-nav h-10 w-auto px-3 bg-transparent hover:bg-transparent"
                     >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
+                        <ChevronLeft />
+                        <span>Назад</span>
+                    </Button>
 
-                    <div className={cn(
-                        variant === "light" ? "crm-filter-tray-light" : "crm-filter-tray",
-                        "!rounded-full p-0.5"
-                    )}>
+                    <div className="flex items-center gap-1">
                         {getPages().map((page, idx) => (
                             <React.Fragment key={idx}>
                                 {typeof page === "number" ? (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => handlePageChange(page)}
                                         className={cn(
-                                            "w-8 h-8 rounded-full text-[11px] font-black transition-all active:scale-90 flex items-center justify-center",
-                                            currentPage === page
-                                                ? "bg-slate-950 text-white shadow-lg shadow-slate-900/10"
-                                                : "text-slate-500/80 hover:text-slate-950 hover:bg-white/50"
+                                            "pagination-item h-9 w-9 p-0 bg-transparent hover:bg-transparent",
+                                            currentPage === page && "active"
                                         )}
                                     >
                                         {page}
-                                    </button>
+                                    </Button>
                                 ) : (
-                                    <div className="w-8 h-8 flex items-center justify-center text-slate-400">
-                                        <MoreHorizontal className="w-3 h-3" />
+                                    <div className="pagination-ellipsis">
+                                        <MoreHorizontal />
                                     </div>
                                 )}
                             </React.Fragment>
                         ))}
                     </div>
 
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
+                        className="pagination-nav h-10 w-auto px-3 bg-transparent hover:bg-transparent"
                     >
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
+                        <span>Вперёд</span>
+                        <ChevronRight />
+                    </Button>
                 </div>
             )}
         </div>

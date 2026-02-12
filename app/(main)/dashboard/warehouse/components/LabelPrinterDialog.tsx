@@ -10,6 +10,9 @@ import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useBranding } from "@/components/branding-provider";
 import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;
@@ -320,31 +323,34 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
             <div className="flex items-center justify-between">
                 <label className="text-sm font-bold text-slate-900 ml-1">Тираж</label>
                 <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-[var(--radius-inner)]">
-                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
+                    <Button size="icon" variant="outline" onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border-slate-200 hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                         <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <input
+                    </Button>
+                    <Input
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-10 bg-transparent text-center font-bold text-base text-slate-900 outline-none"
+                        className="w-12 h-8 bg-transparent text-center font-bold text-base text-slate-900 focus-visible:ring-0 border-none shadow-none p-0"
                     />
-                    <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
+                    <Button size="icon" variant="outline" onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-[var(--radius-inner)] bg-white border-slate-200 hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                         <Plus className="w-3.5 h-3.5" />
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className="flex gap-3 w-full">
-                <button className="flex-1 h-11 rounded-[var(--radius-inner)] bg-white border-2 border-slate-200 text-slate-900 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 group shadow-sm">
+                <Button
+                    variant="outline"
+                    className="flex-1 h-11 rounded-[var(--radius-inner)] bg-white border-2 border-slate-200 text-slate-900 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 group shadow-sm px-0"
+                >
                     <Download className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
-                </button>
-                <button
+                </Button>
+                <Button
                     onClick={handlePrint}
                     className="flex-1 h-11 bg-slate-900 hover:bg-black text-white rounded-[var(--radius-inner)] font-bold text-sm flex items-center justify-center gap-2.5 shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] group"
                 >
                     <Printer className="w-4 h-4 transition-transform" />
                     Печать
-                </button>
+                </Button>
             </div>
         </div>
     );
@@ -382,40 +388,41 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                             <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Размер этикетки</label>
                             <div className="grid grid-cols-3 gap-2">
                                 {['58x40', '58x60', '75x120', 'a4', 'custom'].map((size) => (
-                                    <button
+                                    <Button
                                         key={size}
                                         onClick={() => setPaperSize(size as PaperSize)}
+                                        variant="ghost"
                                         className={cn(
                                             "w-full h-11 rounded-[var(--radius-inner)] text-xs font-bold border-2 transition-all duration-200 flex items-center justify-center leading-none",
                                             paperSize === size
-                                                ? "bg-slate-900 text-white border-slate-900 shadow-md"
-                                                : "bg-white text-slate-500 border-slate-200 hover:border-slate-200 hover:bg-slate-50"
+                                                ? "bg-slate-900 text-white border-slate-900 shadow-md hover:bg-slate-800 hover:text-white"
+                                                : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                         )}
                                     >
                                         {size === 'custom' ? 'Свой' : size.replace('x', ' × ')}
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
 
                             {paperSize === 'custom' && (
                                 <div className="grid grid-cols-2 gap-2 animate-in slide-in-from-top-2 fade-in duration-300">
                                     <div className="relative">
-                                        <input
+                                        <Input
                                             type="number"
                                             value={customWidth}
                                             onChange={(e) => setCustomWidth(Number(e.target.value))}
-                                            className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                            className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
                                         />
-                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">MM</span>
+                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 pointer-events-none">MM</span>
                                     </div>
                                     <div className="relative">
-                                        <input
+                                        <Input
                                             type="number"
                                             value={customHeight}
                                             onChange={(e) => setCustomHeight(Number(e.target.value))}
-                                            className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                            className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
                                         />
-                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">MM</span>
+                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 pointer-events-none">MM</span>
                                     </div>
                                 </div>
                             )}
@@ -431,16 +438,17 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                                     { id: 'inline', label: 'Строчный' },
                                     { id: 'minimal', label: 'Минимум' }
                                 ].map((style) => (
-                                    <button
+                                    <Button
                                         key={style.id}
                                         onClick={() => setLayoutStyle(style.id as LayoutStyle)}
+                                        variant="ghost"
                                         className={cn(
                                             "w-full h-11 rounded-[var(--radius-inner)] border-2 font-bold text-xs transition-all flex items-center justify-center",
-                                            layoutStyle === style.id ? "bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10" : "bg-white border-slate-200 text-slate-400 hover:border-slate-200"
+                                            layoutStyle === style.id ? "bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10 hover:bg-slate-800 hover:text-white" : "bg-white border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50"
                                         )}
                                     >
                                         {style.label}
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         </div>
@@ -480,13 +488,13 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         {/* Custom Text */}
                         <div className={cn("space-y-2.5 transition-opacity", layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
                             <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Дополнительная строка</label>
-                            <input
+                            <Input
                                 type="text"
                                 value={customText}
                                 onChange={(e) => setCustomText(e.target.value)}
                                 placeholder="Например: Сделано в России"
                                 disabled={layoutStyle === 'minimal'}
-                                className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus:outline-none focus:border-primary/20 focus:bg-white transition-all outline-none"
+                                className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
                             />
                         </div>
 
@@ -494,32 +502,35 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         <div className="space-y-2.5 pb-2">
                             <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Расположение контента</label>
                             <div className="grid grid-cols-2 gap-2">
-                                <button
+                                <Button
                                     onClick={() => setIsLandscape(!isLandscape)}
-                                    className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-[var(--radius-inner)] border-2 border-slate-900 bg-slate-900 text-white font-bold text-xs transition-all active:scale-[0.98]"
+                                    variant="ghost"
+                                    className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-[var(--radius-inner)] border-2 border-slate-900 bg-slate-900 text-white font-bold text-xs transition-all active:scale-[0.98] hover:bg-slate-800 hover:text-white w-full h-auto"
                                 >
                                     <RotateCw className={cn("w-3.5 h-3.5 transition-transform duration-500", isLandscape && "rotate-90")} />
                                     {currentW > currentH ? 'Горизонтальный' : 'Вертикальный'}
-                                </button>
+                                </Button>
                                 <div className="flex bg-slate-50 p-1 rounded-[var(--radius-inner)] border-2 border-transparent">
-                                    <button
+                                    <Button
                                         onClick={() => setAlignment('left')}
+                                        variant="ghost"
                                         className={cn(
-                                            "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all",
-                                            alignment === 'left' ? "bg-white shadow-sm text-slate-900" : "text-slate-400 hover:text-slate-600"
+                                            "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all h-auto",
+                                            alignment === 'left' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                         )}
                                     >
                                         <AlignLeft className="w-4 h-4" />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         onClick={() => setAlignment('center')}
+                                        variant="ghost"
                                         className={cn(
-                                            "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all",
-                                            alignment === 'center' ? "bg-white shadow-sm text-slate-900" : "text-slate-400 hover:text-slate-600"
+                                            "flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all h-auto",
+                                            alignment === 'center' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                         )}
                                     >
                                         <AlignCenter className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -536,9 +547,14 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
                     {!isMobile && (
                         <div className="absolute top-8 left-8 right-8 flex justify-end items-start z-50 pointer-events-none">
-                            <button onClick={onClose} className="h-11 w-11 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all shadow-xl active:scale-95 group pointer-events-auto cursor-pointer">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={onClose}
+                                className="h-11 w-11 rounded-[var(--radius-inner)] bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-100 hover:text-rose-500 transition-all shadow-xl active:scale-95 group pointer-events-auto cursor-pointer"
+                            >
                                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                            </button>
+                            </Button>
                         </div>
                     )}
 
@@ -715,26 +731,7 @@ function ToggleItem({ label, checked, onChange, compact }: { label: string; chec
                 "font-bold text-slate-700 group-hover:text-slate-900 transition-colors",
                 compact ? "text-xs" : "text-sm"
             )}>{label}</span>
-            <CustomSwitch checked={checked} onCheckedChange={onChange} small={compact} />
+            <Switch checked={checked} onCheckedChange={onChange} variant="success" className={compact ? "scale-75 origin-right" : ""} />
         </label>
-    );
-}
-
-function CustomSwitch({ checked, onCheckedChange, small }: { checked: boolean; onCheckedChange: (v: boolean) => void; small?: boolean }) {
-    return (
-        <button
-            onClick={() => onCheckedChange(!checked)}
-            className={cn(
-                "rounded-full transition-all duration-300 relative",
-                checked ? "bg-emerald-500" : "bg-slate-200",
-                small ? "w-8 h-5" : "w-10 h-6"
-            )}
-        >
-            <div className={cn(
-                "absolute bg-white rounded-full transition-all duration-300 shadow-sm",
-                small ? "top-0.5 left-0.5 w-4 h-4" : "top-1 left-1 w-4 h-4",
-                checked ? (small ? "translate-x-3" : "translate-x-4") : "translate-x-0"
-            )} />
-        </button>
     );
 }

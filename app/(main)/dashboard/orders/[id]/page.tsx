@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getOrderById } from "../actions";
-import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings, BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import StatusSelect from "./status-select";
@@ -14,10 +14,10 @@ import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { RefundDialog } from "./refund-dialog";
 import { Wallet, Receipt } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import OrderActions from "./order-actions";
 import { AddPaymentDialog } from "./add-payment-dialog";
-import { BrandingSettings } from "@/components/branding-provider";
 import { OrderItemsTable } from "./order-items-table";
 
 
@@ -39,8 +39,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
         notFound();
     }
 
-    const brandingResult = await getBrandingAction();
-    const branding = brandingResult.data as BrandingSettings;
+    const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
 
     const session = await getSession();
@@ -61,9 +60,11 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between crm-card !p-4 sm:!p-6 gap-4">
                 <div className="flex items-center gap-3 sm:gap-6 min-w-0 flex-1">
-                    <Link href="/dashboard/orders" className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0">
-                        <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </Link>
+                    <Button variant="ghost" size="icon" asChild className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0 w-auto h-auto">
+                        <Link href="/dashboard/orders">
+                            <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                        </Link>
+                    </Button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-2 sm:gap-3">
                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">Заказ #{order.id.slice(0, 8)}</h1>
@@ -132,7 +133,9 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <User className="w-5 h-5 mr-3 text-primary" />
                                 Клиент
                             </h3>
-                            <Link href={`/dashboard/clients?id=${order.client.id}`} className="text-xs font-bold text-primary hover:text-primary/80">Профиль</Link>
+                            <Button variant="ghost" size="sm" asChild className="text-xs font-bold text-primary hover:text-primary/80 h-auto p-0 hover:bg-transparent">
+                                <Link href={`/dashboard/clients?id=${order.client.id}`}>Профиль</Link>
+                            </Button>
                         </div>
 
                         <div className="space-y-6">

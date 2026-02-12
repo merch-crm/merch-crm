@@ -12,6 +12,7 @@ import {
     BarChart3,
     HardDrive
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -79,9 +80,9 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
     ];
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-5 pb-20">
             {/* Page Header */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-5">
                 <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
                     <ShieldCheck className="w-6 h-6 text-primary" />
                 </div>
@@ -92,16 +93,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
             </div>
 
             {/* Row 1: Greetings & Recommended Items (Platform Health) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-                <div className="lg:col-span-8 space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                <div className="lg:col-span-8 space-y-5">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-bold text-slate-900">Состояние платформы</h2>
-                        <button className="text-xs font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all group">
+                        <Button
+                            variant="ghost"
+                            className="text-xs font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all group h-auto p-2"
+                        >
                             Подробный мониторинг <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                        </button>
+                        </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {platformItems.map((item, i) => (
                             <div key={i} className="crm-card group cursor-default">
                                 <div className="flex justify-between items-start mb-8">
@@ -162,7 +166,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                 </div>
 
                 {/* Right Column - Status & Logs */}
-                <div className="lg:col-span-4 space-y-4">
+                <div className="lg:col-span-4 space-y-5">
                     {/* System Guard Card (Premium Perks style) */}
                     <div className="crm-card !bg-primary !border-primary text-white !shadow-2xl !shadow-primary/30 relative min-h-[300px] flex flex-col justify-between group">
                         <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
@@ -178,21 +182,27 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                             </p>
                         </div>
 
-                        <button className="relative z-10 w-full py-4 bg-white text-slate-900 rounded-2xl font-bold text-sm tracking-wide uppercase shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all">
+                        <Button
+                            className="relative z-10 w-full py-6 bg-white text-slate-900 rounded-2xl font-bold text-sm tracking-wide uppercase shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all h-auto border-none hover:bg-white/90"
+                        >
                             Запустить диагностику
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Active Sessions List (Daily Schedule style) */}
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-lg font-bold text-slate-900">Сотрудники онлайн</h3>
-                            <button className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors h-10 w-10"
+                            >
                                 <Users className="w-4 h-4" />
-                            </button>
+                            </Button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                             {activeUsers.length > 0 ? activeUsers.slice(0, 5).map((user: ActiveUser, i: number) => (
                                 <div key={i} className="crm-card flex items-center gap-5 cursor-pointer group !p-4">
                                     <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0">
@@ -222,16 +232,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                             )}
                         </div>
 
-                        <button className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs uppercase tracking-wider">
+                        <Button
+                            variant="outline"
+                            className="w-full py-8 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs uppercase tracking-wider h-auto bg-transparent border-slate-200"
+                        >
                             <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                             Уведомить всех
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
 
             {/* Row 2: Secondary Metrics (Bento Grid Bottom) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 {[
                     { title: "Пользователей", value: entityStats.find((s: EntityStat) => s.type === "users")?.count || 0, icon: <Users />, color: "text-blue-600 bg-blue-50" },
                     { title: "Всего заказов", value: entityStats.find((s: EntityStat) => s.type === "orders")?.count || 0, icon: <BarChart3 />, color: "text-emerald-600 bg-emerald-50" },

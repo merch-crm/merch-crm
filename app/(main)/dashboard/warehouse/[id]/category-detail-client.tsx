@@ -440,7 +440,7 @@ export function CategoryDetailClient({
                             router.push(url);
                         }}
                         className={cn(
-                            "h-10 w-10 sm:h-11 sm:w-auto btn-primary rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                            "h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
                         )}
                     >
                         <Plus className="w-5 h-5" />
@@ -496,16 +496,18 @@ export function CategoryDetailClient({
                             )}
                         />
                         {searchQuery && (
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSearchQuery("");
                                     setIsSearchExpanded(false);
                                 }}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors duration-300"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors duration-300"
                             >
                                 <X className="w-4 h-4" />
-                            </button>
+                            </Button>
                         )}
                     </div>
 
@@ -549,11 +551,12 @@ export function CategoryDetailClient({
                     ].map((f) => {
                         const isActive = filterStatus === f.id;
                         return (
-                            <button
+                            <Button
                                 key={f.id}
+                                variant="ghost"
                                 onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                 className={cn(
-                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-colors duration-200 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] relative",
+                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-colors duration-200 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] h-9 min-h-0 border-none hover:bg-transparent",
                                     isActive && "active"
                                 )}
                             >
@@ -565,7 +568,7 @@ export function CategoryDetailClient({
                                     />
                                 )}
                                 <span className="relative z-10 whitespace-nowrap">{f.label}</span>
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>
@@ -655,163 +658,170 @@ export function CategoryDetailClient({
                         <ResponsiveDataView
                             data={currentItems}
                             renderTable={() => (
-                                <div className="crm-card !p-0">
-                                    <div className="overflow-x-auto">
-                                        <table className="min-w-full divide-y divide-slate-100">
-                                            <thead className="bg-slate-50/50">
-                                                <tr>
-                                                    <th className="w-16 px-6 py-4">
-                                                        <PremiumCheckbox
-                                                            checked={selectedIds.length === filteredItems.length && filteredItems.length > 0}
-                                                            onChange={toggleSelectAll}
-                                                            className="mx-auto"
-                                                        />
-                                                    </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Товар</th>
-                                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-500">Склад</th>
-                                                    {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Себест.</th>}
-                                                    {canSeeCost && <th className="px-6 py-4 text-center text-xs font-bold text-slate-500">Цена</th>}
-                                                    <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Резерв</th>
-                                                    <th className="w-32 px-6 py-4 text-center text-xs font-bold text-slate-500">Остаток</th>
-                                                    <th className="px-6 py-4 text-right text-xs font-bold text-slate-500">Действия</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="bg-white divide-y divide-slate-50">
-                                                {currentItems.map((item) => {
-                                                    const isSelected = selectedIds.includes(item.id);
-                                                    const available = item.quantity - (item.reservedQuantity || 0);
-                                                    const isCritical = available <= (item.criticalStockThreshold || 0);
-                                                    const isLowStock = !isCritical && available <= (item.lowStockThreshold || 10);
+                                <div className="table-container">
+                                    <table className="crm-table">
+                                        <thead className="crm-thead">
+                                            <tr>
+                                                <th className="crm-th w-16">
+                                                    <PremiumCheckbox
+                                                        checked={selectedIds.length === filteredItems.length && filteredItems.length > 0}
+                                                        onChange={toggleSelectAll}
+                                                        className="mx-auto"
+                                                    />
+                                                </th>
+                                                <th className="crm-th">Товар</th>
+                                                <th className="crm-th">Склад</th>
+                                                {canSeeCost && <th className="crm-th text-center">Себест.</th>}
+                                                {canSeeCost && <th className="crm-th text-center">Цена</th>}
+                                                <th className="crm-th w-32 text-center">Резерв</th>
+                                                <th className="crm-th w-32 text-center">Остаток</th>
+                                                <th className="crm-th text-right">Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="crm-tbody">
+                                            {currentItems.map((item) => {
+                                                const isSelected = selectedIds.includes(item.id);
+                                                const available = item.quantity - (item.reservedQuantity || 0);
+                                                const isCritical = available <= (item.criticalStockThreshold || 0);
+                                                const isLowStock = !isCritical && available <= (item.lowStockThreshold || 10);
 
-                                                    return (
-                                                        <tr
-                                                            key={item.id}
-                                                            onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                                            className={cn(
-                                                                "group hover:bg-slate-50 transition-all cursor-pointer",
-                                                                isSelected && "bg-slate-50"
-                                                            )}
-                                                        >
-                                                            <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                                                                <PremiumCheckbox
-                                                                    checked={isSelected}
-                                                                    onChange={() => toggleSelectItem(item.id)}
-                                                                    className="mx-auto"
-                                                                />
-                                                            </td>
-                                                            <td className="px-6 py-4">
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
-                                                                        <ItemThumbnail item={item} />
+                                                return (
+                                                    <tr
+                                                        key={item.id}
+                                                        onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                                        className={cn(
+                                                            "crm-tr-clickable",
+                                                            isSelected && "crm-tr-selected"
+                                                        )}
+                                                    >
+                                                        <td className="crm-td" onClick={(e) => e.stopPropagation()}>
+                                                            <PremiumCheckbox
+                                                                checked={isSelected}
+                                                                onChange={() => toggleSelectItem(item.id)}
+                                                                className="mx-auto"
+                                                            />
+                                                        </td>
+                                                        <td className="crm-td">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-100 overflow-hidden border border-slate-200 shrink-0 relative">
+                                                                    <ItemThumbnail item={item} />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
+                                                                        {item.name}
                                                                     </div>
-                                                                    <div>
-                                                                        <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
-                                                                            {item.name}
-                                                                        </div>
-                                                                        <div className="text-xs font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
-                                                                            {item.sku || "N/A"}
-                                                                        </div>
+                                                                    <div className="text-[10px] font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
+                                                                        {item.sku || "N/A"}
                                                                     </div>
                                                                 </div>
-                                                            </td>
-                                                            <td className="px-6 py-4">
-                                                                <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
-                                                                    {(() => {
-                                                                        if (item.stocks && item.stocks.length > 0) {
-                                                                            const activeStocks = item.stocks.filter((s) => s.quantity > 0);
-                                                                            if (activeStocks.length > 0) {
-                                                                                return activeStocks.map((s) => {
-                                                                                    const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
-                                                                                    return (
-                                                                                        <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
-                                                                                            <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
-                                                                                            <span>{locName}</span>
-                                                                                            <span className="text-slate-400">({s.quantity})</span>
-                                                                                        </div>
-                                                                                    );
-                                                                                });
-                                                                            }
-                                                                        }
-                                                                        return (
-                                                                            <div className="flex items-center gap-2 whitespace-nowrap">
-                                                                                <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
-                                                                                <span>—</span>
-                                                                            </div>
-                                                                        );
-                                                                    })()}
-                                                                </div>
-                                                            </td>
-                                                            {canSeeCost && (
-                                                                <td className="px-6 py-4 text-center">
-                                                                    <span className="text-xs font-medium text-slate-400">
-                                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
-                                                                    </span>
-                                                                </td>
-                                                            )}
-                                                            {canSeeCost && (
-                                                                <td className="px-6 py-4 text-center">
-                                                                    <span className="text-sm font-bold text-slate-900">
-                                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
-                                                                    </span>
-                                                                </td>
-                                                            )}
-                                                            <td className="px-6 py-4 text-center">
-                                                                <span className={cn(
-                                                                    "text-sm font-bold tabular-nums",
-                                                                    (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
-                                                                )}>
-                                                                    {item.reservedQuantity || 0}
+                                                            </div>
+                                                        </td>
+                                                        <td className="crm-td">
+                                                            <div className="flex flex-col gap-1 text-[11px] text-slate-500 font-medium">
+                                                                {item.stocks?.filter(s => s.quantity > 0).map((s) => {
+                                                                    const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
+                                                                    return (
+                                                                        <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
+                                                                            <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                            <span>{locName}</span>
+                                                                            <span className="text-slate-400">({s.quantity})</span>
+                                                                        </div>
+                                                                    );
+                                                                }) || (
+                                                                        <div className="flex items-center gap-2 whitespace-nowrap">
+                                                                            <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
+                                                                            <span>—</span>
+                                                                        </div>
+                                                                    )}
+                                                            </div>
+                                                        </td>
+                                                        {canSeeCost && (
+                                                            <td className="crm-td text-center">
+                                                                <span className="text-[11px] font-medium text-slate-400">
+                                                                    {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-6 py-4 text-center">
-                                                                <div className="flex flex-col items-center gap-1.5">
+                                                        )}
+                                                        {canSeeCost && (
+                                                            <td className="crm-td text-center">
+                                                                <span className="text-sm font-bold text-slate-900">
+                                                                    {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
+                                                                </span>
+                                                            </td>
+                                                        )}
+                                                        <td className="crm-td text-center">
+                                                            <span className={cn(
+                                                                "text-sm font-bold tabular-nums",
+                                                                (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
+                                                            )}>
+                                                                {item.reservedQuantity || 0}
+                                                            </span>
+                                                        </td>
+                                                        <td className="crm-td text-center">
+                                                            <div className="flex flex-col items-center gap-1.5">
+                                                                <div className={cn(
+                                                                    "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
+                                                                    isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
+                                                                        isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :
+                                                                            "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                                                )}>
                                                                     <div className={cn(
-                                                                        "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
-                                                                        isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
-                                                                            isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :
-                                                                                "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                                                    )}>
-                                                                        <div className={cn(
-                                                                            "w-1.5 h-1.5 rounded-full shrink-0",
-                                                                            isCritical ? "bg-rose-500 animate-pulse" :
-                                                                                isLowStock ? "bg-amber-500" :
-                                                                                    "bg-emerald-500"
-                                                                        )} />
-                                                                        <span className="tabular-nums">{available} {item.unit}</span>
-                                                                    </div>
+                                                                        "w-1.5 h-1.5 rounded-full shrink-0",
+                                                                        isCritical ? "bg-rose-500 animate-pulse" :
+                                                                            isLowStock ? "bg-amber-500" :
+                                                                                "bg-emerald-500"
+                                                                    )} />
+                                                                    <span className="tabular-nums">{available} {item.unit}</span>
                                                                 </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                                                                <div className="flex items-center justify-end gap-1 transition-all">
-                                                                    <button
-                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
-                                                                        onClick={() => handlePrintLabel(item)}
-                                                                        title="Печать"
-                                                                    >
-                                                                        <Tag className="w-4 h-4" />
-                                                                    </button>
-                                                                    <button
-                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-[var(--radius-inner)] transition-all"
-                                                                        onClick={() => handleOpenAdjust(item)}
-                                                                        title="Запас"
-                                                                    >
-                                                                        <PlusSquare className="w-5 h-5" />
-                                                                    </button>
-                                                                    <button
-                                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-[var(--radius-inner)] transition-all"
-                                                                        onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                                                        title="Изм."
-                                                                    >
-                                                                        <Edit className="w-5 h-5" />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="crm-td text-right" onClick={(e) => e.stopPropagation()}>
+                                                            <div className="flex items-center justify-end gap-1 transition-all">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => handlePrintLabel(item)}
+                                                                    className="w-8 h-8 rounded-xl bg-slate-50 text-slate-400 hover:text-primary border border-slate-200"
+                                                                    title="Печать"
+                                                                >
+                                                                    <Tag className="w-4 h-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => handleOpenAdjust(item)}
+                                                                    className="w-8 h-8 rounded-xl bg-primary/5 text-primary hover:bg-primary/10 border border-primary/10"
+                                                                    title="Запас"
+                                                                >
+                                                                    <PlusSquare className="w-5 h-5" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => {
+                                                                        setIdsToDelete([item.id]);
+                                                                    }}
+                                                                    className="w-8 h-8 rounded-xl bg-rose-50 text-rose-400 hover:text-rose-600 border border-rose-100"
+                                                                    title="Удалить"
+                                                                >
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                                                    className="w-8 h-8 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-900 border border-slate-200"
+                                                                    title="Открыть карточку"
+                                                                >
+                                                                    <ChevronRight className="w-4 h-4" />
+                                                                </Button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
                                 </div>
                             )}
                             renderCard={(item) => {
@@ -909,7 +919,7 @@ export function CategoryDetailClient({
                         </p>
                     </div>
                 )}
-            </div>
+            </div >
 
             <ConfirmDialog
                 isOpen={idsToDelete.length > 0}
@@ -994,25 +1004,31 @@ export function CategoryDetailClient({
                                     <div className="w-px h-6 bg-slate-200 mx-1 shrink-0" />
 
                                     <div className="flex items-center gap-0.5 md:gap-1 flex-1 justify-around md:justify-start">
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => setIsBulkMoveOpen(true)}
                                             className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full hover:bg-slate-100 transition-all group shrink-0"
                                             title="Переместить"
                                         >
                                             <MapPin className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
                                             <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Переместить</span>
-                                        </button>
+                                        </Button>
 
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={handleBulkPrint}
                                             className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full hover:bg-slate-100 transition-all group shrink-0"
                                             title="Этикетки"
                                         >
                                             <Tag className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
                                             <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Этикетки</span>
-                                        </button>
+                                        </Button>
 
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => {
                                                 const itemsToExport = items.filter(i => selectedIds.includes(i.id));
                                                 exportToCSV(itemsToExport, "inventory_export", [
@@ -1046,11 +1062,13 @@ export function CategoryDetailClient({
                                         >
                                             <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
                                             <span className="hidden md:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
-                                        </button>
+                                        </Button>
 
                                         <div className="w-px h-8 bg-slate-200 mx-1" />
 
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => {
                                                 const itemsToArchive = items.filter(i => selectedIds.includes(i.id));
                                                 const hasStock = itemsToArchive.some(i => i.quantity > 0);
@@ -1064,14 +1082,16 @@ export function CategoryDetailClient({
                                             className="w-10 h-10 flex items-center justify-center rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all"
                                         >
                                             <Archive className="w-4 h-4" />
-                                        </button>
+                                        </Button>
 
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => setSelectedIds([])}
                                             className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all"
                                         >
                                             <X className="w-4 h-4" />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </motion.div>
                             </>
@@ -1229,26 +1249,30 @@ function SubCategoryCardContent({
                 "flex items-center gap-0.5 transition-all relative z-10",
                 isDragging && "opacity-0"
             )}>
-                <button
-                    onClick={(e) => {
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e: React.MouseEvent) => {
                         e.stopPropagation();
                         onEdit?.();
                     }}
-                    className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
+                    className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-all p-0"
                     title="Редактировать"
                 >
                     <Edit className="w-3.5 h-3.5" />
-                </button>
-                <button
-                    onClick={(e) => {
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e: React.MouseEvent) => {
                         e.stopPropagation();
                         onDelete?.();
                     }}
-                    className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                    className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all p-0"
                     title="Удалить"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                </Button>
                 <div className="w-7 h-7 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:border-primary ml-1">
                     <ChevronRight className="w-3.5 h-3.5" />
                 </div>

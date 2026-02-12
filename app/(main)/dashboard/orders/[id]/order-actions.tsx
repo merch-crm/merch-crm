@@ -6,6 +6,7 @@ import { archiveOrder, deleteOrder } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Button } from "@/components/ui/button";
 
 interface OrderActionsProps {
     orderId: string;
@@ -60,10 +61,11 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
     return (
         <div className="flex items-center gap-2 sm:gap-3">
             {canArchive && (
-                <button
+                <Button
+                    variant="ghost"
                     onClick={handleArchive}
                     disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95 p-0 sm:p-auto"
                     title={isArchived ? "Восстановить" : "В архив"}
                 >
                     {loading ? (
@@ -74,19 +76,20 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                         <Archive className="w-4 h-4" />
                     )}
                     <span className="hidden sm:inline">{isArchived ? "Восстановить" : "В архив"}</span>
-                </button>
+                </Button>
             )}
 
             {canDelete && (
-                <button
+                <Button
+                    variant="destructive"
                     onClick={() => setShowDeleteDialog(true)}
                     disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl btn-destructive group active:scale-95 transition-all"
+                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl group active:scale-95 transition-all p-0 sm:p-auto"
                     title="Удалить"
                 >
                     <Trash2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Удалить</span>
-                </button>
+                </Button>
             )}
 
             <ConfirmDialog

@@ -14,6 +14,10 @@ import { cn } from "@/lib/utils";
 import { addClient } from "../actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
+import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
 
 interface NewClientPageClientProps {
     managers: { id: string; name: string }[];
@@ -163,13 +167,14 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
             {/* Sidebar */}
             <aside className="w-full md:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto md:h-full">
                 <div className="p-6 shrink-0">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={handleBack}
-                        className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm"
+                        className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm p-0 h-auto hover:bg-transparent"
                     >
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         Назад
-                    </button>
+                    </Button>
 
                     <h1 className="text-2xl font-bold text-slate-900 leading-tight">
                         Новый клиент
@@ -185,8 +190,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                         const isCompleted = step > s.id;
 
                         return (
-                            <button
+                            <Button
                                 key={idx}
+                                variant="ghost"
                                 onClick={() => {
                                     if (isActive) return;
                                     if (s.id < step || validateStep(step)) {
@@ -195,8 +201,8 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     }
                                 }}
                                 className={cn(
-                                    "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                    isActive ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                    "relative w-full justify-start p-4 h-auto rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
+                                    isActive ? "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                 )}
                             >
                                 <div className={cn(
@@ -209,7 +215,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         <s.icon className="w-5 h-5" />
                                     )}
                                 </div>
-                                <div className="min-w-0">
+                                <div className="min-w-0 text-left">
                                     <div className={cn("text-xs font-bold leading-none mb-1", isActive ? "text-white" : "text-slate-900")}>
                                         {s.title}
                                     </div>
@@ -217,19 +223,20 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         {s.desc}
                                     </div>
                                 </div>
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>
 
                 <div className="h-[80px] shrink-0 border-t border-slate-200 bg-white z-30 px-7 flex items-center">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={handleReset}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold text-slate-400 hover:text-slate-900 group"
+                        className="flex items-center gap-1.5 px-3 py-2 h-auto rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold text-slate-400 hover:text-slate-900 group"
                     >
                         <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
                         Начать заново
-                    </button>
+                    </Button>
                 </div>
             </aside>
 
@@ -242,46 +249,48 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="space-y-4">
                                     <label className="text-sm font-bold text-slate-700 ml-1">Тип клиента</label>
                                     <div className="flex p-1 bg-slate-50 rounded-[var(--radius)]">
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => setClientType("b2c")}
                                             className={cn(
-                                                "flex-1 py-3 text-[11px] font-bold  tracking-normal rounded-[var(--radius)] transition-all",
-                                                clientType === "b2c" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                                                "flex-1 py-3 h-auto text-[11px] font-bold tracking-normal rounded-[var(--radius)] transition-all",
+                                                clientType === "b2c" ? "bg-white text-slate-900 shadow-sm hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                             )}
                                         >
                                             Физическое лицо
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => setClientType("b2b")}
                                             className={cn(
-                                                "flex-1 py-3 text-[11px] font-bold  tracking-normal rounded-[var(--radius)] transition-all",
-                                                clientType === "b2b" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                                                "flex-1 py-3 h-auto text-[11px] font-bold tracking-normal rounded-[var(--radius)] transition-all",
+                                                clientType === "b2b" ? "bg-white text-slate-900 shadow-sm hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                             )}
                                         >
                                             Юридическое лицо
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Фамилия *</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.lastName}
                                             onChange={(e) => updateFormData({ lastName: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Имя *</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.firstName}
                                             onChange={(e) => updateFormData({ firstName: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -289,22 +298,22 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Отчество</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.patronymic}
                                             onChange={(e) => updateFormData({ patronymic: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">
                                             Компания {clientType === "b2b" && "*"}
                                         </label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.company}
                                             onChange={(e) => updateFormData({ company: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -316,20 +325,20 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Телефон *</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.phone}
                                             onChange={(e) => updateFormData({ phone: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
-                                        <input
+                                        <Input
                                             type="email"
                                             value={formData.email}
                                             onChange={(e) => updateFormData({ email: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -337,31 +346,31 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Telegram</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.telegram}
                                             onChange={(e) => updateFormData({ telegram: e.target.value })}
                                             placeholder="@username"
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Instagram</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.instagram}
                                             onChange={(e) => updateFormData({ instagram: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Соцсеть</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.socialLink}
                                             onChange={(e) => updateFormData({ socialLink: e.target.value })}
                                             placeholder="vk.com/..."
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -373,24 +382,24 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Менеджер</label>
-                                        <select
+                                        <PremiumSelect
                                             value={formData.managerId}
-                                            onChange={(e) => updateFormData({ managerId: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
-                                        >
-                                            <option value="">Не назначен</option>
-                                            {managers.map(m => (
-                                                <option key={m.id} value={m.id}>{m.name}</option>
-                                            ))}
-                                        </select>
+                                            onChange={(val) => updateFormData({ managerId: val })}
+                                            options={[
+                                                { id: "", title: "Не назначен" },
+                                                ...managers.map(m => ({ id: m.id, title: m.name }))
+                                            ]}
+                                            className="w-full"
+                                            triggerClassName="h-12 bg-slate-50 border-slate-200"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Город</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.city}
                                             onChange={(e) => updateFormData({ city: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -398,26 +407,28 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Источник (откуда пришел)</label>
-                                        <select
+                                        <PremiumSelect
                                             value={formData.acquisitionSource}
-                                            onChange={(e) => updateFormData({ acquisitionSource: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none appearance-none cursor-pointer"
-                                        >
-                                            <option value="">Не указано</option>
-                                            <option value="instagram">Instagram</option>
-                                            <option value="telegram">Telegram</option>
-                                            <option value="recommendation">Рекомендация</option>
-                                            <option value="ads">Реклама</option>
-                                            <option value="other">Другое</option>
-                                        </select>
+                                            onChange={(val) => updateFormData({ acquisitionSource: val })}
+                                            options={[
+                                                { id: "", title: "Не указано" },
+                                                { id: "instagram", title: "Instagram" },
+                                                { id: "telegram", title: "Telegram" },
+                                                { id: "recommendation", title: "Рекомендация" },
+                                                { id: "ads", title: "Реклама" },
+                                                { id: "other", title: "Другое" },
+                                            ]}
+                                            className="w-full"
+                                            triggerClassName="h-12 bg-slate-50 border-slate-200"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Адрес</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={formData.address}
                                             onChange={(e) => updateFormData({ address: e.target.value })}
-                                            className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all outline-none"
+                                            className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none"
                                         />
                                     </div>
                                 </div>
@@ -448,11 +459,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             ))}
                                         </div>
                                         <label className="flex items-center gap-3 cursor-pointer pt-1">
-                                            <input
-                                                type="checkbox"
+                                            <PremiumCheckbox
                                                 checked={ignoreDuplicates}
-                                                onChange={(e) => setIgnoreDuplicates(e.target.checked)}
-                                                className="w-4 h-4 rounded border-amber-300 text-amber-600"
+                                                onChange={(val) => setIgnoreDuplicates(val)}
                                             />
                                             <span className="text-xs font-bold text-amber-900">Всё равно создать</span>
                                         </label>
@@ -471,27 +480,28 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                         </div>
 
                         <div className="flex gap-4">
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={handleBack}
-                                className="px-6 py-3 rounded-[var(--radius-inner)] border border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all"
+                                className="px-6 py-3 h-auto rounded-[var(--radius-inner)] border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all"
                             >
                                 Назад
-                            </button>
-                            {step < 3 ? (
-                                <button
+                            </Button>
+                            {step < 2 ? (
+                                <Button
                                     onClick={handleNext}
-                                    className="px-8 py-3 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none"
+                                    className="px-8 py-3 h-auto btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none"
                                 >
                                     Далее
-                                </button>
+                                </Button>
                             ) : (
-                                <button
+                                <Button
                                     onClick={handleSubmit}
                                     disabled={loading}
-                                    className="px-8 py-3 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none"
+                                    className="px-8 py-3 h-auto btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none"
                                 >
                                     {loading ? "Создание..." : "Создать клиента"}
-                                </button>
+                                </Button>
                             )}
                         </div>
                     </div>

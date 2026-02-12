@@ -1,27 +1,68 @@
 import { db } from "@/lib/db";
 import { inventoryCategories } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
 import { CategoryDetailClient, Category, InventoryItem } from "./category-detail-client";
 import { StorageLocation } from "../storage-locations-tab";
-import { Metadata } from "next";
+import { getSession } from "@/lib/auth";
+import { serializeForClient } from "@/lib/serialize";
+import { cache } from "react";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+type PageParams = {
+    params: Promise<{ id: string }>;
+};
+
+// Дедупликация запроса категории
+const getCachedCategory = cache(async (id: string, isUuid: boolean) => {
+    const query = db
+        .select({
+            id: inventoryCategories.id,
+            name: inventoryCategories.name,
+            description: inventoryCategories.description,
+            icon: inventoryCategories.icon,
+            color: inventoryCategories.color,
+            prefix: inventoryCategories.prefix,
+            parentId: inventoryCategories.parentId,
+            sortOrder: inventoryCategories.sortOrder,
+            isActive: inventoryCategories.isActive,
+            isSystem: inventoryCategories.isSystem,
+            gender: inventoryCategories.gender,
+            singularName: inventoryCategories.singularName,
+            pluralName: inventoryCategories.pluralName,
+            createdAt: inventoryCategories.createdAt,
+            slug: inventoryCategories.slug,
+            fullPath: inventoryCategories.fullPath,
+        })
+        .from(inventoryCategories);
+
+    if (isUuid) {
+        query.where(eq(inventoryCategories.id, id));
+    } else {
+        query.where(eq(inventoryCategories.slug, id));
+    }
+
+    const [found] = await query.limit(1);
+    return found;
+});
+
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
     const { id: paramId } = await params;
     if (paramId === "orphaned") return { title: "Без категории | Склад" };
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
-    const [found] = await db
-        .select({ name: inventoryCategories.name })
-        .from(inventoryCategories)
-        .where(isUuid ? eq(inventoryCategories.id, paramId) : eq(inventoryCategories.slug, paramId))
-        .limit(1);
+    const found = await getCachedCategory(paramId, isUuid);
 
     return { title: found ? `${found.name} | Склад` : "Категория | Склад" };
 }
 
-export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CategoryPage({ params }: PageParams) {
     const { id: paramId } = await params;
+
+    const session = await getSession();
+    if (!session) {
+        redirect("/login");
+    }
 
     // Fetch category info and its parent if exists
     let category = null;
@@ -31,38 +72,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
     if (paramId === "orphaned") {
         resolvedCategoryId = null; // orphaned
     } else {
-        // Check if ID is UUID
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
-
-        const query = db
-            .select({
-                id: inventoryCategories.id,
-                name: inventoryCategories.name,
-                description: inventoryCategories.description,
-                icon: inventoryCategories.icon,
-                color: inventoryCategories.color,
-                prefix: inventoryCategories.prefix,
-                parentId: inventoryCategories.parentId,
-                sortOrder: inventoryCategories.sortOrder,
-                isActive: inventoryCategories.isActive,
-                isSystem: inventoryCategories.isSystem,
-                gender: inventoryCategories.gender,
-                singularName: inventoryCategories.singularName,
-                pluralName: inventoryCategories.pluralName,
-                createdAt: inventoryCategories.createdAt,
-                slug: inventoryCategories.slug,
-                fullPath: inventoryCategories.fullPath,
-            })
-            .from(inventoryCategories);
-
-        if (isUuid) {
-            query.where(eq(inventoryCategories.id, paramId));
-        } else {
-            query.where(eq(inventoryCategories.slug, paramId));
-        }
-
-        const [found] = await query.limit(1);
-        category = found;
+        category = await getCachedCategory(paramId, isUuid);
 
         if (!category) {
             notFound();
@@ -122,14 +133,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
             .where(eq(inventoryCategories.parentId, resolvedCategoryId))
         : [];
 
-    const subCategories = subCategoriesRaw.map(sc => ({
-        ...sc,
-        createdAt: sc.createdAt.toISOString()
-    }));
-
     // Fetch items
-    const { getInventoryItems } = await import("../actions");
-    const { data: allItems = [] } = await getInventoryItems();
+    const { getInventoryItems, getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../actions");
+
+    const [itemsRes, locationsRes, typesRes, attrsRes, allCategoriesRaw] = await Promise.all([
+        getInventoryItems(),
+        getStorageLocations(),
+        getInventoryAttributeTypes(),
+        getInventoryAttributes(),
+        db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories)
+    ]);
+
+    const allItems = itemsRes.data || [];
 
     // Aggregate IDs of this category and all its descendants
     const getAllDescendantIds = (catId: string, allCats: { id: string; parentId: string | null }[]): string[] => {
@@ -141,9 +156,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         return ids;
     };
 
-    // We need all categories for recursion
-    const allCategoriesRaw = await db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories);
-
     const targetCategoryIds: (string | null)[] = resolvedCategoryId
         ? getAllDescendantIds(resolvedCategoryId, allCategoriesRaw)
         : [null];
@@ -154,17 +166,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
             : !item.categoryId
     );
 
-    const items = categoryItems.map(item => ({
-        ...item,
-        createdAt: new Date(item.createdAt).toISOString(),
-        attributes: (item.attributes as Record<string, string | number | boolean | null>) || {},
-    }));
+    // Унифицированная сериализация всех данных
+    const subCategories = serializeForClient(subCategoriesRaw) as any;
+    const items = serializeForClient(categoryItems) as any;
+    const locations = serializeForClient(locationsRes.data || []) as any;
+    const attributeTypes = serializeForClient(typesRes.data || []) as any;
+    const allAttributes = serializeForClient(attrsRes.data || []) as any;
 
     // Fallback object for UI if orphaned
-    const finalCategory = category ? {
-        ...category,
-        createdAt: new Date(category.createdAt).toISOString()
-    } : {
+    const finalCategory = category ? serializeForClient(category) as any : {
         id: "orphaned",
         name: "Без категории",
         description: "Товары, которым не назначена категория",
@@ -175,31 +185,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         gender: "neuter"
     };
 
-    // Fetch storage locations
-    const { getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../actions");
-    const [locationsRes, typesRes, attrsRes] = await Promise.all([
-        getStorageLocations(),
-        getInventoryAttributeTypes(),
-        getInventoryAttributes()
-    ]);
-
-    const locations = locationsRes.data || [];
-    const attributeTypes = typesRes.data || [];
-    const allAttributes = attrsRes.data || [];
-
-    const { getSession } = await import("@/lib/auth");
-    const session = await getSession();
+    const serializedParentCategory = parentCategory ? serializeForClient(parentCategory) as any : undefined;
 
     return (
-        <div className="p-1">
+        <div className="p-4">
             <CategoryDetailClient
-                category={finalCategory as unknown as Category}
-                parentCategory={parentCategory ? { ...parentCategory, createdAt: parentCategory.createdAt.toISOString() } as unknown as Category : undefined}
-                subCategories={subCategories as unknown as Category[]}
-                items={items as unknown as InventoryItem[]}
-                storageLocations={locations as unknown as StorageLocation[]}
-                attributeTypes={attributeTypes as unknown as import("./category-detail-client").AttributeType[]}
-                allAttributes={allAttributes as unknown as import("./category-detail-client").InventoryAttribute[]}
+                category={finalCategory}
+                parentCategory={serializedParentCategory}
+                subCategories={subCategories}
+                items={items}
+                storageLocations={locations}
+                attributeTypes={attributeTypes as any}
+                allAttributes={allAttributes as any}
                 user={session}
             />
         </div>

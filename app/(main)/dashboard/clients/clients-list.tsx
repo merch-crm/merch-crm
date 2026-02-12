@@ -32,6 +32,9 @@ import { pluralize } from "@/lib/pluralize";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { ChevronRight } from "lucide-react";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
+import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
+import { PremiumSelect } from "@/components/ui/premium-select";
 
 interface Client {
     id: string;
@@ -302,39 +305,42 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <div className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-[60] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
                             <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-slate-400  tracking-normal">Недавние поиски</span>
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => {
                                         setSearchHistory([]);
                                         localStorage.removeItem("client_search_history");
                                     }}
-                                    className="text-[9px] font-bold text-rose-400 hover:text-rose-600 "
+                                    className="text-[9px] font-bold text-rose-400 hover:text-rose-600 p-0 h-auto hover:bg-transparent"
                                 >
                                     Очистить
-                                </button>
+                                </Button>
                             </div>
                             <div className="p-1">
                                 {searchHistory.map((h, i) => (
-                                    <button
+                                    <Button
                                         key={i}
+                                        variant="ghost"
                                         onClick={() => {
                                             setSearchQuery(h);
                                             setShowHistory(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 hover:bg-slate-50 rounded-2xl text-xs font-bold text-slate-600 transition-colors flex items-center gap-2"
+                                        className="w-full justify-start px-4 py-2.5 hover:bg-slate-50 rounded-2xl text-xs font-bold text-slate-600 transition-colors flex items-center gap-2 h-auto"
                                     >
                                         <RotateCcw className="w-3 h-3 text-slate-300" />
                                         {h}
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         </div>
                     )}
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setShowFilters(!showFilters)}
                         className={cn(
-                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px]",
+                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px] p-0 px-4",
                             showFilters && "active"
                         )}
                     >
@@ -349,11 +355,12 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <span className="relative z-10 hidden sm:inline">Параметры</span>
                         <span className="relative z-10 sm:hidden">Фильтры</span>
                         <ChevronDown className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4 relative z-10 transition-all duration-300", showFilters && "rotate-180")} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={() => setShowArchived(!showArchived)}
                         className={cn(
-                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px]",
+                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px] p-0 px-4",
                             showArchived && "active"
                         )}
                     >
@@ -369,7 +376,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                             <span className="hidden sm:inline">{showArchived ? "Архив" : "База"}</span>
                             <span className="sm:hidden">{showArchived ? "Архив" : "База"}</span>
                         </span>
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -387,71 +394,61 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 {/* Period Filter */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-semibold text-slate-500 ml-1">Период</label>
-                                    <div className="relative group">
-                                        <select
-                                            value={filterPeriod}
-                                            onChange={(e) => setFilterPeriod(e.target.value)}
-                                            className="w-full appearance-none bg-white border border-slate-200 text-slate-900 text-[13px] rounded-[10px] focus:ring-2 focus:ring-slate-100 focus:border-slate-2000 block p-3 pr-10 font-semibold cursor-pointer group-hover:border-slate-300 transition-all"
-                                        >
-                                            <option value="all">За все время</option>
-                                            <option value="month">Месяц</option>
-                                            <option value="quarter">Квартал</option>
-                                            <option value="year">Год</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none transition-colors group-hover:text-slate-600" />
-                                    </div>
+                                    <PremiumSelect
+                                        value={filterPeriod}
+                                        onChange={(val) => setFilterPeriod(val)}
+                                        options={[
+                                            { id: "all", title: "За все время" },
+                                            { id: "month", title: "Месяц" },
+                                            { id: "quarter", title: "Квартал" },
+                                            { id: "year", title: "Год" },
+                                        ]}
+                                        className="w-full"
+                                    />
                                 </div>
 
                                 {/* Order Count Filter */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-semibold text-slate-500 ml-1">Активность (зак.)</label>
-                                    <div className="relative group">
-                                        <select
-                                            value={filterOrderCount}
-                                            onChange={(e) => setFilterOrderCount(e.target.value)}
-                                            className="w-full appearance-none bg-white border border-slate-200 text-slate-900 text-[13px] rounded-[10px] focus:ring-2 focus:ring-slate-100 focus:border-slate-2000 block p-3 pr-10 font-semibold cursor-pointer group-hover:border-slate-300 transition-all"
-                                        >
-                                            <option value="any">Любая</option>
-                                            <option value="0">Новые (0)</option>
-                                            <option value="1-5">Средняя (1-5)</option>
-                                            <option value="5+">Постоянные (5+)</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none transition-colors group-hover:text-slate-600" />
-                                    </div>
+                                    <PremiumSelect
+                                        value={filterOrderCount}
+                                        onChange={(val) => setFilterOrderCount(val)}
+                                        options={[
+                                            { id: "any", title: "Любая" },
+                                            { id: "0", title: "Новые (0)" },
+                                            { id: "1-5", title: "Средняя (1-5)" },
+                                            { id: "5+", title: "Постоянные (5+)" },
+                                        ]}
+                                        className="w-full"
+                                    />
                                 </div>
 
                                 {/* Region Filter */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-semibold text-slate-500 ml-1">Локация</label>
-                                    <div className="relative group">
-                                        <select
-                                            value={filterRegion}
-                                            onChange={(e) => setFilterRegion(e.target.value)}
-                                            className="w-full appearance-none bg-white border border-slate-200 text-slate-900 text-[13px] rounded-[10px] focus:ring-2 focus:ring-slate-100 focus:border-slate-2000 block p-3 pr-10 font-semibold cursor-pointer group-hover:border-slate-300 transition-all"
-                                        >
-                                            <option value="all">Все регионы</option>
-                                            {regions.map(city => (
-                                                <option key={city} value={city}>{city}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none transition-colors group-hover:text-slate-600" />
-                                    </div>
+                                    <PremiumSelect
+                                        value={filterRegion}
+                                        onChange={(val) => setFilterRegion(val)}
+                                        options={[
+                                            { id: "all", title: "Все регионы" },
+                                            ...regions.map(city => ({ id: city, title: city }))
+                                        ]}
+                                        className="w-full"
+                                    />
                                 </div>
 
                                 {/* Status Filter */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-semibold text-slate-500 ml-1">Статус</label>
-                                    <div className="relative group">
-                                        <select
-                                            value={filterStatus}
-                                            onChange={(e) => setFilterStatus(e.target.value)}
-                                            className="w-full appearance-none bg-white border border-slate-200 text-slate-900 text-[13px] rounded-[10px] focus:ring-2 focus:ring-slate-100 focus:border-slate-2000 block p-3 pr-10 font-semibold cursor-pointer group-hover:border-slate-300 transition-all"
-                                        >
-                                            <option value="all">Все клиенты</option>
-                                            <option value="lost">Потерянные (3+ мес)</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none transition-colors group-hover:text-slate-600" />
-                                    </div>
+                                    <PremiumSelect
+                                        value={filterStatus}
+                                        onChange={(val) => setFilterStatus(val)}
+                                        options={[
+                                            { id: "all", title: "Все клиенты" },
+                                            { id: "lost", title: "Потерянные (3+ мес)" },
+                                        ]}
+                                        className="w-full"
+                                    />
                                 </div>
                             </div>
                         </motion.div>
@@ -475,9 +472,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                     <thead>
                                         <tr className="bg-slate-50/50">
                                             <th className="w-[60px] px-3 md:px-4 py-4 text-left">
-                                                <input
-                                                    type="checkbox"
-                                                    className="rounded-[6px] border-slate-300 text-primary focus:ring-0 cursor-pointer h-4 w-4"
+                                                <PremiumCheckbox
                                                     checked={isAllSelected}
                                                     onChange={handleSelectAll}
                                                 />
@@ -524,9 +519,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                 className={`hover:bg-gray-50 transition-colors group cursor-pointer ${selectedIds.includes(client.id) ? 'bg-primary/5' : ''}`}
                                             >
                                                 <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
+                                                    <PremiumCheckbox
                                                         checked={selectedIds.includes(client.id)}
                                                         onChange={() => handleSelectRow(client.id)}
                                                     />
@@ -555,16 +548,16 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                                    <select
+                                                    <PremiumSelect
                                                         value={client.managerId || ""}
-                                                        onChange={(e) => handleUpdateField(client.id, "managerId", e.target.value)}
-                                                        className="bg-transparent border-none text-[11px] font-bold text-slate-600 focus:ring-0 cursor-pointer hover:text-primary transition-colors max-w-[120px] truncate outline-none"
-                                                    >
-                                                        <option value="">Общий</option>
-                                                        {managers.map(m => (
-                                                            <option key={m.id} value={m.id}>{m.name}</option>
-                                                        ))}
-                                                    </select>
+                                                        onChange={(val) => handleUpdateField(client.id, "managerId", val)}
+                                                        options={[
+                                                            { id: "", title: "Общий" },
+                                                            ...managers.map(m => ({ id: m.id, title: m.name }))
+                                                        ]}
+                                                        className="w-[140px]"
+                                                        triggerClassName="h-8 border-none bg-transparent hover:bg-slate-50"
+                                                    />
                                                 </td>
                                                 <td className="px-3 md:px-4 py-4 whitespace-nowrap">
                                                     <div className="flex flex-col">
@@ -604,20 +597,24 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                 )}
                                                 <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex items-center justify-end gap-1">
-                                                        <button
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => router.push(`/dashboard/clients/${client.id}`)}
-                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-2xl transition-all"
+                                                            className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl"
                                                             title="Просмотреть"
                                                         >
                                                             <Eye className="w-4 h-4" />
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => setEditingClient(client)}
-                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all"
+                                                            className="h-8 w-8 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl"
                                                             title="Редактировать"
                                                         >
                                                             <Pencil className="w-4 h-4" />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -643,9 +640,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 >
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                                            <input
-                                                type="checkbox"
-                                                className="rounded-[6px] border-slate-300 text-primary focus:ring-0 cursor-pointer h-5 w-5"
+                                            <PremiumCheckbox
                                                 checked={isSelected}
                                                 onChange={() => handleSelectRow(client.id)}
                                             />
@@ -787,13 +782,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                             <div className="flex items-center gap-1">
                                 {/* Export */}
                                 {["Администратор", "Управляющий", "Отдел продаж"].includes(userRoleName || "") && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={handleExport}
-                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group"
+                                        className="flex items-center gap-2 px-4 py-2.5 rounded-full hover:bg-slate-100 transition-all group h-auto"
                                     >
                                         <Download className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
                                         <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
-                                    </button>
+                                    </Button>
                                 )}
 
                                 {/* Manager Change */}

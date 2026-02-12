@@ -5,6 +5,7 @@ import { ChevronDown, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { AnimatePresence, motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
 
 export interface PremiumSelectOption {
     id: string;
@@ -157,7 +158,7 @@ export function PremiumSelect({
                 <AnimatePresence>
                     {open && (
                         <PopoverContent
-                            className="p-0 bg-transparent border-none shadow-crm-xl w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
+                            className="p-0 bg-white border-none shadow-crm-xl w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
                             align={align}
                             sideOffset={8}
                             forceMount
@@ -173,7 +174,7 @@ export function PremiumSelect({
                                     opacity: { duration: 0.2 }
                                 }}
                                 className={cn(
-                                    "rounded-[22px] bg-popover border border-border overflow-hidden shadow-crm-xl ring-1 ring-black/[0.03]",
+                                    "rounded-[22px] bg-white border border-border overflow-hidden shadow-crm-xl ring-1 ring-black/[0.03]",
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
                                 <div className="p-2.5 flex flex-col max-h-[340px] w-full h-full gap-2">
@@ -181,13 +182,12 @@ export function PremiumSelect({
                                         <div className="px-0.5 pb-2.5 border-b border-border mb-1">
                                             <div className="relative">
                                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                                                <input
+                                                <Input
                                                     autoFocus
-                                                    type="text"
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
-                                                    className="w-full h-10 pl-9 pr-3 rounded-[12px] bg-muted border-none outline-none text-xs font-bold placeholder:text-muted-foreground focus:bg-background focus:ring-2 focus:ring-primary/5 transition-all"
+                                                    className="w-full h-10 pl-9 pr-3 rounded-[12px] bg-muted border-none shadow-none text-xs font-bold focus-visible:bg-background focus-visible:ring-2 focus-visible:ring-primary/5 focus-visible:ring-offset-0 transition-all placeholder:text-muted-foreground"
                                                 />
                                             </div>
                                         </div>
@@ -213,10 +213,10 @@ export function PremiumSelect({
                                                                 "transition-all text-left group/item rounded-[var(--radius-inner)] border",
                                                                 effectiveGridColumns ? [
                                                                     "flex flex-col items-center justify-center p-3 gap-1",
-                                                                    isSelected ? "bg-primary/5 ring-2 ring-primary/20 border-primary/20" : "bg-muted/50 hover:bg-muted border-border"
+                                                                    isSelected ? "bg-primary/5 ring-2 ring-primary/20 border-primary/20" : "bg-slate-50 hover:bg-slate-100 border-border"
                                                                 ] : [
                                                                     "flex items-center gap-2 p-2.5",
-                                                                    isSelected ? "bg-primary/5 border-primary/10" : "border-transparent hover:bg-muted hover:border-border"
+                                                                    isSelected ? "bg-primary/5 border-primary/10" : "border-transparent hover:bg-slate-50 hover:border-border"
                                                                 ]
                                                             )}
                                                         >

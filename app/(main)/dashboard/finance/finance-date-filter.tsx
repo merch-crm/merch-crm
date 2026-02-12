@@ -65,47 +65,50 @@ export function FinanceDateFilter() {
         <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-2xl w-fit border border-slate-200/50 shadow-sm">
                 {ranges.map((range) => (
-                    <button
+                    <Button
                         key={range.value}
+                        variant="ghost"
                         onClick={() => handleRangeChange(range.value)}
                         className={cn(
-                            "px-4 py-2 text-sm font-bold rounded-2xl transition-all",
+                            "px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
                             currentRange === range.value && !isCustom
-                                ? "bg-white text-slate-900 shadow-sm"
+                                ? "bg-white text-slate-900 shadow-sm hover:bg-white"
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
                         {range.label}
-                    </button>
+                    </Button>
                 ))}
-                <button
+                <Button
+                    variant="ghost"
                     onClick={() => handleRangeChange("all")}
                     className={cn(
-                        "px-4 py-2 text-sm font-bold rounded-2xl transition-all",
+                        "px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
                         currentRange === "all" && !isCustom
-                            ? "bg-white text-slate-900 shadow-sm"
+                            ? "bg-white text-slate-900 shadow-sm hover:bg-white"
                             : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                     )}
                 >
                     Все время
-                </button>
+                </Button>
             </div>
 
             <div className="flex items-center gap-2">
                 <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
-                        <button
+                        <Button
+                            variant="outline"
                             className={cn(
-                                "flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-2xl transition-all border border-slate-200 shadow-sm",
+                                "flex items-center gap-2 px-6 py-2.5 h-auto text-sm font-bold rounded-2xl transition-all border border-slate-200 shadow-sm",
                                 isCustom
-                                    ? "bg-white text-slate-900"
-                                    : "bg-white text-slate-500 hover:text-slate-700"
+                                    ? "bg-white text-slate-900 hover:bg-white"
+                                    : "bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50"
                             )}
                         >
                             <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-primary" : "text-slate-400")} />
                             <span>Выбрать период</span>
                             <ChevronDown className="w-4 h-4 opacity-50" />
-                        </button>
+                        </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 rounded-[1.5rem] overflow-hidden border-slate-200 shadow-2xl bg-white" align="end" sideOffset={8}>
                         <div className="p-4 bg-white">

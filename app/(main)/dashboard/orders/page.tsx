@@ -60,9 +60,9 @@ export default async function OrdersPage({
     const stats = await getOrderStats(from, to);
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Area */}
-            <div className="flex flex-row items-center justify-between gap-4 px-1">
+            <div className="flex flex-row items-center justify-between gap-5 px-1">
                 <div className="flex-1 min-w-0">
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Заказы</h1>
                     <p className="hidden sm:block text-slate-400 text-sm font-medium mt-3">Управление производственным циклом и логистикой</p>

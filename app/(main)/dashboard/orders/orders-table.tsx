@@ -6,17 +6,17 @@ import { ru } from "date-fns/locale";
 import StatusBadgeInteractive from "./status-badge-interactive";
 import PriorityBadgeInteractive from "./priority-badge-interactive";
 import { BulkActionsPanel } from "./bulk-actions-panel";
-import { Zap, Archive, ArchiveRestore } from "lucide-react";
+import { Zap, Archive, ArchiveRestore, PackageOpen, ChevronRight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateOrderField, toggleOrderArchived } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { GlassEmptyState } from "@/components/ui/glass-empty-state";
-import { PackageOpen } from "lucide-react";
 import { exportToCSV } from "@/lib/export-utils";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { ChevronRight } from "lucide-react";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
+import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
 
 export interface Order {
     id: string;
@@ -59,14 +59,6 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
 
     const isAllSelected = orders.length > 0 && orders.every(o => selectedIds.includes(o.id));
 
-    const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.checked) {
-            setSelectedIds(orders.map(o => o.id));
-        } else {
-            setSelectedIds([]);
-        }
-    };
-
     const handleSelectRow = (id: string) => {
         setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
@@ -77,14 +69,14 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
         const selectedOrders = orders.filter(o => selectedIds.includes(o.id));
         exportToCSV(selectedOrders, "orders_export", [
             { header: "ID", key: "id" },
-            { header: "Дата", key: (o) => new Date(o.createdAt) },
-            { header: "Клиент", key: (o) => o.client.name },
+            { header: "Дата", key: (o: Order) => new Date(o.createdAt) },
+            { header: "Клиент", key: (o: Order) => o.client.name },
             { header: "Сумма", key: "totalAmount" },
             { header: "Статус", key: "status" },
             { header: "Приоритет", key: "priority" },
-            { header: "Срочно", key: (o) => o.isUrgent ? "Да" : "Нет" },
-            { header: "Создал", key: (o) => o.creator?.name || "Система" },
-            { header: "Роль", key: (o) => (o.creator as { role?: { name: string } | null })?.role?.name || (o.creator ? "Оператор" : "Система") }
+            { header: "Срочно", key: (o: Order) => o.isUrgent ? "Да" : "Нет" },
+            { header: "Создал", key: (o: Order) => o.creator?.name || "Система" },
+            { header: "Роль", key: (o: Order) => (o.creator as { role?: { name: string } | null })?.role?.name || (o.creator ? "Оператор" : "Система") }
         ]);
         toast("Экспорт завершен", "success");
         playSound("notification_success");
@@ -101,26 +93,27 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                 desktopClassName="hidden md:block"
                 renderTable={() => (
-                    <div className="crm-card !p-0">
-                        <table className="min-w-full divide-y divide-slate-100 table-fixed">
-                            <thead>
+                    <div className="crm-card !p-0 overflow-hidden">
+                        <table className="crm-table min-w-full divide-y divide-slate-100 table-fixed">
+                            <thead className="crm-thead">
                                 <tr className="bg-slate-50/40">
-                                    <th className="w-[60px] px-6 py-4 text-left">
-                                        <input
-                                            type="checkbox"
-                                            className="rounded-[var(--radius-sm)] border-slate-300 text-primary focus:ring-0 cursor-pointer h-4 w-4 transition-all"
+                                    <th className="crm-th w-[60px] px-6 py-4 text-left">
+                                        <PremiumCheckbox
                                             checked={isAllSelected}
-                                            onChange={handleSelectAll}
+                                            onChange={(val) => {
+                                                if (val) setSelectedIds(orders.map(o => o.id));
+                                                else setSelectedIds([]);
+                                            }}
                                         />
                                     </th>
-                                    <th className="w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">ID / Дата</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-400">Клиент</th>
+                                    <th className="crm-th w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">ID / Дата</th>
+                                    <th className="crm-th px-6 py-4 text-left text-xs font-bold text-slate-400">Клиент</th>
                                     {showFinancials && (
-                                        <th className="w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Бюджет</th>
+                                        <th className="crm-th w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Бюджет</th>
                                     )}
-                                    <th className="w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">Статус</th>
-                                    <th className="w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Приоритет</th>
-                                    <th className="w-[120px] px-6 py-4 text-right text-xs font-bold text-slate-400">Действия</th>
+                                    <th className="crm-th w-[160px] px-6 py-4 text-left text-xs font-bold text-slate-400">Статус</th>
+                                    <th className="crm-th w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-400">Приоритет</th>
+                                    <th className="crm-th w-[120px] px-6 py-4 text-right text-xs font-bold text-slate-400">Действия</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -128,40 +121,43 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                     <tr
                                         key={order.id}
                                         onClick={() => window.location.href = `/dashboard/orders/${order.id}`}
-                                        className={`group hover:bg-white/80 transition-all cursor-pointer ${selectedIds.includes(order.id) ? 'bg-primary/5' : ''}`}
+                                        className={cn(
+                                            "crm-tr group hover:bg-white/80 transition-all cursor-pointer",
+                                            selectedIds.includes(order.id) && "bg-primary/5"
+                                        )}
                                     >
-                                        <td className="px-6 py-5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                            <input
-                                                type="checkbox"
-                                                className="rounded-[var(--radius-sm)] border-slate-300 text-primary focus:ring-0 cursor-pointer h-4 w-4 transition-all"
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                            <PremiumCheckbox
                                                 checked={selectedIds.includes(order.id)}
                                                 onChange={() => handleSelectRow(order.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
                                             <div className="text-sm font-bold text-slate-900 mb-0.5">ORD-{order.id.slice(0, 6)}</div>
                                             <div className="text-xs font-medium text-slate-400">{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</div>
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
                                             <div className="text-sm font-bold text-slate-900 mb-0.5">{order.client.name}</div>
                                             <div className="text-xs font-medium text-slate-400">Отв: {order.creator?.name || "Система"}</div>
                                         </td>
                                         {showFinancials && (
-                                            <td className="px-6 py-5 whitespace-nowrap">
+                                            <td className="crm-td px-6 py-5 whitespace-nowrap">
                                                 <span className="text-sm font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-[var(--radius-sm)]">
                                                     {Number(order.totalAmount).toLocaleString()} {currencySymbol}
                                                 </span>
                                             </td>
                                         )}
-                                        <td className="px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
                                             <div className="flex items-center gap-3">
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleUpdateField(order.id, "isUrgent", !order.isUrgent);
                                                     }}
                                                     className={cn(
-                                                        "p-1.5 rounded-2xl transition-all",
+                                                        "w-8 h-8 rounded-2xl transition-all",
                                                         order.isUrgent
                                                             ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
                                                             : "bg-slate-50 text-slate-400 hover:text-slate-600"
@@ -169,36 +165,44 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                     title={order.isUrgent ? "Срочно" : "Обычный"}
                                                 >
                                                     <Zap className={cn("w-4 h-4", order.isUrgent && "fill-rose-600")} />
-                                                </button>
+                                                </Button>
                                                 <StatusBadgeInteractive orderId={order.id} status={order.status} />
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap">
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap">
                                             <div className="flex items-center gap-1">
                                                 <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
                                                 {isAdmin && (
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         onClick={async (e) => {
                                                             e.stopPropagation();
                                                             const res = await toggleOrderArchived(order.id, !showArchived);
                                                             if (res.success) {
                                                                 toast(showArchived ? "Заказ восстановлен" : "Заказ архивирован", "success");
                                                                 playSound("notification_success");
-                                                                window.location.reload(); // Quick reach to re-fetch
+                                                                window.location.reload();
                                                             }
                                                         }}
-                                                        className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-2xl transition-all"
+                                                        className="w-8 h-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-2xl transition-all"
                                                         title={showArchived ? "Восстановить" : "Архивировать"}
                                                     >
                                                         {showArchived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
-                                                    </button>
+                                                    </Button>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                            <a href={`/dashboard/orders/${order.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-[10px] bg-slate-100 text-slate-400 hover:bg-primary hover:text-white transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                            </a>
+                                        <td className="crm-td px-6 py-5 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                                            <Button
+                                                asChild
+                                                variant="ghost"
+                                                className="w-8 h-8 p-0 hover:bg-primary hover:text-white transition-all bg-slate-100 text-slate-400 rounded-[10px]"
+                                            >
+                                                <a href={`/dashboard/orders/${order.id}`}>
+                                                    <ArrowRight className="w-4 h-4" />
+                                                </a>
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -225,9 +229,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-4 flex-1 min-w-0">
                                 <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded-[6px] border-slate-300 text-primary focus:ring-0 h-5 w-5 cursor-pointer"
+                                    <PremiumCheckbox
                                         checked={selectedIds.includes(order.id)}
                                         onChange={() => handleSelectRow(order.id)}
                                     />

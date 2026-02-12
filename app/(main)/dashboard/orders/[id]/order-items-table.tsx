@@ -33,15 +33,15 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
             <ResponsiveDataView
                 data={items}
                 renderTable={() => (
-                    <table className="min-w-full divide-y divide-slate-100">
-                        <thead className="bg-white">
+                    <table className="crm-table min-w-full divide-y divide-slate-100">
+                        <thead className="crm-thead bg-white">
                             <tr>
-                                <th className="px-8 py-4 text-left text-xs font-bold text-slate-400 tracking-wider">Наименование</th>
-                                <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Кол-во</th>
+                                <th className="crm-th px-8 py-4 text-left text-xs font-bold text-slate-400 tracking-wider">Наименование</th>
+                                <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Кол-во</th>
                                 {showFinancials && (
                                     <>
-                                        <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Цена</th>
-                                        <th className="px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Сумма</th>
+                                        <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Цена</th>
+                                        <th className="crm-th px-8 py-4 text-right text-xs font-bold text-slate-400 tracking-wider">Сумма</th>
                                     </>
                                 )}
                             </tr>

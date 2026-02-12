@@ -43,13 +43,14 @@ export function ArchiveReasonDialog({
 
     const footerContent = (
         <div className="p-5 pt-3 flex items-center justify-end gap-3 bg-white/95 backdrop-blur-md border-t border-slate-100">
-            <button
+            <Button
                 type="button"
+                variant="ghost"
                 onClick={onClose}
-                className="flex h-11 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center px-6"
+                className="flex h-11 text-slate-400 hover:text-slate-600 font-bold text-sm px-6"
             >
                 Отмена
-            </button>
+            </Button>
             <Button
                 onClick={handleConfirm}
                 disabled={isLoading || !reason.trim()}

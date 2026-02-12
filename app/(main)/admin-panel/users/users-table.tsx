@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface User {
     id: string;
@@ -110,22 +111,24 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
     return (
         <div className="space-y-6">
             <div className="relative max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <input
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 z-10" />
+                <Input
                     type="text"
                     placeholder="Поиск сотрудника..."
                     value={searchValue}
                     onChange={(e) => handleSearch(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && applySearch()}
-                    className="w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-[18px] shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-400 font-medium"
+                    className="w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-[18px] shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-400 font-medium h-12"
                 />
                 {searchValue && (
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => { setSearchValue(""); router.push(pathname); }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 h-auto w-auto p-0 hover:bg-transparent"
                     >
                         <X className="w-4 h-4" />
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -205,37 +208,45 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => setImpersonateUserConfirm(user)}
                                                             disabled={isImpersonatingLoading === user.id}
                                                             className={cn(
-                                                                "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all",
+                                                                "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all h-auto w-auto",
                                                                 isImpersonatingLoading === user.id && "animate-pulse"
                                                             )}
                                                             title="Войти как пользователь"
                                                         >
                                                             <LogIn className="w-4 h-4" />
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => setViewingStatsUser(user)}
-                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-[18px] transition-all"
+                                                            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-white rounded-[18px] transition-all h-auto w-auto"
                                                             title="Статистика"
                                                         >
                                                             <BarChart2 className="w-4 h-4" />
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => setEditingUser(user)}
-                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-[18px] transition-all"
+                                                            className="p-2 text-slate-400 hover:text-primary hover:bg-white rounded-[18px] transition-all h-auto w-auto"
                                                         >
                                                             <Edit className="w-4 h-4" />
-                                                        </button>
+                                                        </Button>
                                                         {!user.isSystem && (
-                                                            <button
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => setDeletingUser(user)}
-                                                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-[18px] transition-all"
+                                                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-white rounded-[18px] transition-all h-auto w-auto"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
-                                                            </button>
+                                                            </Button>
                                                         )}
                                                     </div>
                                                 </td>

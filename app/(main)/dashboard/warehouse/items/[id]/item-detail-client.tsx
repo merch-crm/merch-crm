@@ -121,29 +121,6 @@ export function ItemDetailClient({
     const router = useRouter();
     const { toast } = useToast();
     const [mounted, setMounted] = useState(false);
-    const tabletGraphRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const observer = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.target === tabletGraphRef.current) {
-                    // This state variable is no longer used, but keeping the observer logic for tabletGraphRef
-                    // in case it's used elsewhere or will be re-introduced.
-                    // setTabletGraphWidth(Math.max(100, entry.contentRect.width));
-                }
-            }
-        });
-
-        const tabletEl = tabletGraphRef.current;
-
-        if (tabletEl) observer.observe(tabletEl);
-
-        return () => {
-            if (tabletEl) observer.unobserve(tabletEl);
-            observer.disconnect();
-        };
-    }, [mounted]); // Re-run when mounted to catch the refs
-
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -171,6 +148,52 @@ export function ItemDetailClient({
         isArchived: initialItem.isArchived || false,
         materialComposition: initialItem.materialComposition || {},
     });
+
+    // Helper for comparing data to detect changes
+    const hasChanges = useMemo(() => {
+        const checkFields = (data: Partial<InventoryItem>, original: InventoryItem) => {
+            return JSON.stringify({
+                name: data.name,
+                sku: data.sku || "",
+                description: data.description || "",
+                unit: data.unit,
+                lowStockThreshold: data.lowStockThreshold || 10,
+                criticalStockThreshold: data.criticalStockThreshold || 0,
+                attributes: (data.attributes as Record<string, string>) || {},
+                categoryId: data.categoryId || "",
+                qualityCode: data.qualityCode || "",
+                attributeCode: data.attributeCode || "",
+                sizeCode: data.sizeCode || "",
+                materialCode: data.materialCode || "",
+                brandCode: data.brandCode || "",
+                thumbnailSettings: data.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+                costPrice: Number(data.costPrice) || 0,
+                sellingPrice: Number(data.sellingPrice) || 0,
+                isArchived: data.isArchived || false,
+                materialComposition: data.materialComposition || {},
+            }) !== JSON.stringify({
+                name: original.name,
+                sku: original.sku || "",
+                description: original.description || "",
+                unit: original.unit,
+                lowStockThreshold: original.lowStockThreshold || 10,
+                criticalStockThreshold: original.criticalStockThreshold || 0,
+                attributes: (original.attributes as Record<string, string>) || {},
+                categoryId: original.categoryId || "",
+                qualityCode: original.qualityCode || "",
+                attributeCode: original.attributeCode || "",
+                sizeCode: original.sizeCode || "",
+                materialCode: original.materialCode || "",
+                brandCode: original.brandCode || "",
+                thumbnailSettings: original.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
+                costPrice: Number(original.costPrice) || 0,
+                sellingPrice: Number(original.sellingPrice) || 0,
+                isArchived: original.isArchived || false,
+                materialComposition: original.materialComposition || {},
+            });
+        };
+        return checkFields(editData, item);
+    }, [editData, item]);
 
     const [history, setHistory] = useState<ItemHistoryTransaction[]>([]);
     const [stocks, setStocks] = useState<ItemStock[]>([]);
@@ -417,37 +440,15 @@ export function ItemDetailClient({
         };
     }, [isMainImageZoomed, allGalleryImages.length]);
 
-    // Autosave Logic
+    // Autosave draft logic
     useEffect(() => {
-        if (isEditing) {
+        if (isEditing && mounted && hasChanges) {
             const timer = setTimeout(() => {
-                const hasChanges = JSON.stringify({
-                    name: editData.name,
-                    sku: editData.sku,
-                    description: editData.description,
-                    unit: editData.unit,
-                    lowStockThreshold: editData.lowStockThreshold,
-                    criticalStockThreshold: editData.criticalStockThreshold,
-                    attributes: editData.attributes,
-                    categoryId: editData.categoryId,
-                }) !== JSON.stringify({
-                    name: item.name,
-                    sku: item.sku || "",
-                    description: item.description || "",
-                    unit: item.unit,
-                    lowStockThreshold: item.lowStockThreshold || 10,
-                    criticalStockThreshold: item.criticalStockThreshold || 0,
-                    attributes: (item.attributes as Record<string, string>) || {},
-                    categoryId: item.categoryId || "",
-                });
-
-                if (hasChanges) {
-                    localStorage.setItem(`item_draft_${item.id}`, JSON.stringify(editData));
-                }
+                localStorage.setItem(`item_draft_${item.id}`, JSON.stringify(editData));
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [editData, isEditing, item]);
+    }, [editData, isEditing, item, mounted, hasChanges]);
 
     useEffect(() => {
         if (!item) return;
@@ -1157,13 +1158,15 @@ export function ItemDetailClient({
                                                     />
                                                 </div>
                                             </div>
-                                            <button
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={resetThumbSettings}
-                                                className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
+                                                className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors p-0 border-none shadow-none"
                                                 title="Сбросить"
                                             >
                                                 <RotateCcw className="w-3 h-3" />
-                                            </button>
+                                            </Button>
                                         </div>
 
                                         {/* X/Y Sliders */}
@@ -1308,55 +1311,61 @@ export function ItemDetailClient({
 
                             </div>
                             {/* BLOCK: Consolidated Mobile Actions */}
-                            <div className="col-span-2 grid grid-cols-5 md:grid-cols-2 gap-2 md:gap-3 mt-2 md:mt-0">
-                                <button
+                            <div className="col-span-2 grid grid-cols-2 gap-3 mt-2 md:mt-0">
+                                <Button
                                     onClick={() => setAdjustType("set")}
-                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-primary rounded-3xl shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/40 transition-all active:scale-95 text-left overflow-hidden"
+                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-primary rounded-[24px] shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 overflow-hidden border-none text-white h-auto"
                                 >
-                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
-                                    <div className="w-14 h-14 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/20 flex items-center justify-center text-white relative z-10 mb-0 sm:mb-0">
-                                        <SlidersHorizontal className="w-7 h-7 sm:w-5 sm:h-5" />
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
+                                    <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-white relative z-10 p-0">
+                                        <SlidersHorizontal className="w-5 h-5" />
                                     </div>
-                                    <span className="hidden sm:block text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
+                                    <span className="text-[11px] sm:text-[13px] font-bold text-white leading-tight relative z-10 text-left">
                                         Корректировка<br />остатка
                                     </span>
-                                </button>
+                                </Button>
 
-                                <button
+                                <Button
                                     onClick={() => setShowTransfer(true)}
-                                    className="group relative col-span-1 flex flex-col items-center justify-center sm:items-start sm:justify-between p-2 sm:p-4 aspect-square bg-slate-900 rounded-3xl shadow-sm shadow-slate-900/10 hover:shadow-md hover:shadow-slate-900/20 transition-all active:scale-95 text-left overflow-hidden"
+                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-slate-900 rounded-[24px] shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 overflow-hidden border-none text-white h-auto"
                                 >
-                                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-6 -mt-6 transition-transform duration-700" />
-                                    <div className="w-14 h-14 sm:w-10 sm:h-10 rounded-2xl sm:rounded-3xl bg-white/10 flex items-center justify-center text-white relative z-10 mb-0 sm:mb-0">
-                                        <ArrowRightLeft className="w-7 h-7 sm:w-5 sm:h-5" />
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
+                                    <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white relative z-10 p-0">
+                                        <ArrowRightLeft className="w-5 h-5" />
                                     </div>
-                                    <span className="hidden sm:block text-[10px] sm:text-[13px] font-bold text-white leading-tight relative z-10">
+                                    <span className="text-[11px] sm:text-[13px] font-bold text-white leading-tight relative z-10 text-left">
                                         Перемещение<br />товара
                                     </span>
-                                </button>
+                                </Button>
 
                                 {/* Additional Actions - Mobile Only */}
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => setShowLabelDialog(true)}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground order-last md:hidden",
+                                        "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Печать этикетки"
                                 >
                                     <Printer className="w-7 h-7" />
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={handleDownload}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground order-last md:hidden",
+                                        "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Экспорт PDF"
                                 >
                                     <FileDown className="w-7 h-7" />
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => {
                                         if (item.quantity > 0) {
                                             toast("Нельзя архивировать товар с остатком > 0", "error");
@@ -1365,13 +1374,13 @@ export function ItemDetailClient({
                                         setShowArchiveReason(true);
                                     }}
                                     className={cn(
-                                        "group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground order-last md:hidden",
+                                        "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground order-last md:hidden",
                                         tabletTab !== 'characteristic' && "hidden"
                                     )}
                                     title="Архивировать"
                                 >
                                     <Archive className="w-7 h-7" />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* MOBILE TABS NAVIGATION */}
@@ -1384,13 +1393,13 @@ export function ItemDetailClient({
                                 ].map((tab) => {
                                     const isActive = tabletTab === tab.id;
                                     return (
-                                        <button
+                                        <Button
                                             key={tab.id}
                                             onClick={() => setTabletTab(tab.id)}
+                                            variant="ghost"
                                             className={cn(
-                                                "relative flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
-                                                isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-                                                "bg-transparent"
+                                                "relative flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-1 active:scale-95 outline-none focus:outline-none border-none shadow-none h-auto p-0 bg-transparent hover:bg-transparent",
+                                                isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                                             )}
                                             style={{ WebkitTapHighlightColor: "transparent" }}
                                         >
@@ -1407,11 +1416,11 @@ export function ItemDetailClient({
                                             )}
                                             <tab.icon className={cn("relative z-10 w-3 h-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
                                             <span className="relative z-10">{tab.label}</span>
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
-                        </div >
+                        </div>
 
 
 
@@ -1421,28 +1430,30 @@ export function ItemDetailClient({
                                 "md:contents xl:flex-1 xl:w-full xl:grid xl:grid-cols-12 xl:gap-4",
                                 item.isArchived && "grayscale opacity-70"
                             )
-                        } >
+                        }>
                             {/* LEFT COLUMN: Specs & Finance */}
-                            <div className="md:contents xl:contents" >
+                            <div className="md:contents xl:contents">
                                 {/* TABLET/MOBILE: Actions & SKU Group */}
-                                <div className="grid grid-cols-1 md:col-start-2 md:flex md:flex-col gap-4 xl:contents" >
+                                <div className="grid grid-cols-1 md:col-start-2 md:flex md:flex-col gap-4 xl:contents">
                                     {/* Actions Grid (Tablet Only - Restored) */}
                                     <div className="hidden md:grid xl:hidden grid-cols-3 gap-3">
-                                        <button
+                                        <Button
                                             onClick={() => setShowLabelDialog(true)}
-                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground"
+                                            variant="outline"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground p-0 h-auto"
                                             title="Печать этикетки"
                                         >
                                             <Printer className="w-8 h-8 transition-transform" />
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             onClick={handleDownload}
-                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground"
+                                            variant="outline"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground p-0 h-auto"
                                             title="Экспорт PDF"
                                         >
                                             <FileDown className="w-8 h-8 transition-transform" />
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             onClick={() => {
                                                 if (item.quantity > 0) {
                                                     toast("Нельзя архивировать товар с остатком > 0", "error");
@@ -1450,17 +1461,18 @@ export function ItemDetailClient({
                                                 }
                                                 setShowArchiveReason(true);
                                             }}
-                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground"
+                                            variant="outline"
+                                            className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground p-0 h-auto"
                                             title="В архив"
                                         >
                                             <Archive className="w-8 h-8 transition-transform" />
-                                        </button>
-                                    </div >
+                                        </Button>
+                                    </div>
 
                                     {/* TABLET ONLY SKU + Alerts block */}
-                                    <div className="hidden md:flex xl:hidden flex-col gap-4" >
+                                    <div className="hidden md:flex xl:hidden flex-col gap-4">
                                         {/* SKU & Stock block */}
-                                        <div className="flex flex-col crm-card rounded-3xl p-6 justify-between overflow-hidden bg-card/50" >
+                                        <div className="flex flex-col crm-card rounded-3xl p-6 justify-between overflow-hidden bg-card/50">
                                             <div className="flex items-start justify-between mb-4 gap-4">
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 leading-none">Артикул / SKU</h3>
@@ -1488,7 +1500,7 @@ export function ItemDetailClient({
                                                     Резерв: {reservedQuantity} {displayUnit}
                                                 </div>
                                             </div>
-                                        </div >
+                                        </div>
 
                                         {/* Stock Alerts component */}
                                         <ItemStockAlerts
@@ -1503,11 +1515,11 @@ export function ItemDetailClient({
                                                 )
                                             }
                                         />
-                                    </div >
-                                </div >
+                                    </div>
+                                </div>
 
                                 {/* TABLET TABS NAVIGATION */}
-                                <div className="hidden md:flex xl:hidden col-span-2 bg-card rounded-[22px] p-1.5 shadow-sm border border-border items-center justify-between gap-2 overflow-x-auto relative z-0" >
+                                <div className="hidden md:flex xl:hidden col-span-2 bg-card rounded-[22px] p-1.5 shadow-sm border border-border items-center justify-between gap-2 overflow-x-auto relative z-0">
                                     {
                                         [
                                             { id: 'characteristic', label: 'Характеристики', icon: LayoutGrid },
@@ -1517,13 +1529,13 @@ export function ItemDetailClient({
                                         ].map((tab) => {
                                             const isActive = tabletTab === tab.id;
                                             return (
-                                                <button
+                                                <Button
                                                     key={tab.id}
                                                     onClick={() => setTabletTab(tab.id)}
+                                                    variant="ghost"
                                                     className={cn(
-                                                        "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 hover:scale-[1.02] active:scale-95 outline-none focus:outline-none",
-                                                        isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-                                                        "bg-transparent" // Reset bg to handle it with motion.div
+                                                        "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 active:scale-95 outline-none focus:outline-none border-none shadow-none h-auto bg-transparent hover:bg-transparent p-0",
+                                                        isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                                                     )}
                                                     style={{ WebkitTapHighlightColor: "transparent" }}
                                                 >
@@ -1543,11 +1555,11 @@ export function ItemDetailClient({
                                                         isActive ? "text-primary-foreground scale-110" : "text-muted-foreground"
                                                     )} />
                                                     <span className="relative z-10">{tab.label}</span>
-                                                </button>
+                                                </Button>
                                             );
                                         })
                                     }
-                                </div >
+                                </div>
 
                                 {/* BLOCK: Specification */}
                                 <div className={
@@ -1591,30 +1603,32 @@ export function ItemDetailClient({
                                         totalStock={stocks.reduce((acc, s) => acc + s.quantity, 0)}
                                         onEdit={handleStartEdit}
                                     />
-                                </div >
+                                </div>
 
 
-                            </div >
+                            </div>
 
                             {/* RIGHT: Bento Grid Column */}
-                            <div className="md:contents xl:contents" >
+                            <div className="md:contents xl:contents">
                                 {/* Actions Grid (Vertical above Alerts - Desktop Only) */}
-                                <div className="hidden xl:grid xl:grid-cols-3 xl:gap-3 xl:col-span-4" >
-                                    <button
+                                <div className="hidden xl:grid xl:grid-cols-3 xl:gap-3 xl:col-span-4">
+                                    <Button
                                         onClick={() => setShowLabelDialog(true)}
-                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground"
+                                        variant="outline"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground p-0 h-auto"
                                         title="Печать этикетки"
                                     >
                                         <Printer className="w-8 h-8 transition-transform" />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         onClick={handleDownload}
-                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground"
+                                        variant="outline"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground p-0 h-auto"
                                         title="Экспорт PDF"
                                     >
                                         <FileDown className="w-8 h-8 transition-transform" />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         onClick={() => {
                                             if (item.quantity > 0) {
                                                 toast("Нельзя архивировать товар с остатком > 0", "error");
@@ -1622,12 +1636,13 @@ export function ItemDetailClient({
                                             }
                                             setShowArchiveReason(true);
                                         }}
-                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-500/20 transition-all text-muted-foreground"
+                                        variant="outline"
+                                        className="group aspect-square flex items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-500/20 transition-all text-muted-foreground p-0 h-auto"
                                         title="В архив"
                                     >
                                         <Archive className="w-8 h-8 transition-transform" />
-                                    </button>
-                                </div >
+                                    </Button>
+                                </div>
 
                                 {/* SUB-BLOCK: Stock Alerts */}
                                 <ItemStockAlerts
@@ -1754,8 +1769,8 @@ export function ItemDetailClient({
                                             );
                                         })()}
                                     </div>
-                                </div >
-                            </div >
+                                </div>
+                            </div>
 
                             {/* TABLET: Financial & Price Analytics (Full Width) */}
                             <ItemFinancialSection
@@ -1799,7 +1814,7 @@ export function ItemDetailClient({
                                     }}
                                     uploadStates={uploadStates}
                                 />
-                            </div >
+                            </div>
 
                             <div className={cn(
                                 "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-8 flex flex-col space-y-4",
@@ -1851,9 +1866,9 @@ export function ItemDetailClient({
                                 </div>
                                 <ItemHistorySection history={history} />
                             </div>
-                        </div >
-                    </div >
-                </div >
+                        </div>
+                    </div>
+                </div>
 
                 {/* Editing Bar */}
                 <AnimatePresence>
@@ -1891,27 +1906,9 @@ export function ItemDetailClient({
                                         <div className="flex flex-col relative min-w-0">
                                             <div className="flex items-center gap-2 mb-0.5">
                                                 <span className="text-[10px] md:text-xs font-bold text-muted-foreground whitespace-nowrap">Режим правки</span>
-                                                {JSON.stringify(editData) !== JSON.stringify({
-                                                    name: item.name,
-                                                    sku: item.sku || "",
-                                                    description: item.description || "",
-                                                    unit: item.unit,
-                                                    lowStockThreshold: item.lowStockThreshold || 10,
-                                                    criticalStockThreshold: item.criticalStockThreshold || 0,
-                                                    attributes: (item.attributes as Record<string, string>) || {},
-                                                    categoryId: item.categoryId || "",
-                                                    qualityCode: item.qualityCode || "",
-                                                    attributeCode: item.attributeCode || "",
-                                                    sizeCode: item.sizeCode || "",
-                                                    materialCode: item.materialCode || "",
-                                                    brandCode: item.brandCode || "",
-                                                    thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
-                                                    costPrice: item.costPrice || 0,
-                                                    isArchived: item.isArchived || false,
-                                                    materialComposition: item.materialComposition || {},
-                                                }) && (
-                                                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]" title="Есть несохраненные изменения" />
-                                                    )}
+                                                {hasChanges && (
+                                                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]" title="Есть несохраненные изменения" />
+                                                )}
                                             </div>
                                             <span className="text-[13px] md:text-[15px] font-bold text-foreground truncate leading-none">
                                                 {editData.name || item.name}
@@ -1927,28 +1924,9 @@ export function ItemDetailClient({
                                         transition={{ delay: 0.2 }}
                                         className="flex items-center gap-3 md:gap-6 shrink-0"
                                     >
-                                        <button
+                                        <Button
+                                            variant="ghost"
                                             onClick={() => {
-                                                const hasChanges = JSON.stringify(editData) !== JSON.stringify({
-                                                    name: item.name,
-                                                    sku: item.sku || "",
-                                                    description: item.description || "",
-                                                    unit: item.unit,
-                                                    lowStockThreshold: item.lowStockThreshold || 10,
-                                                    criticalStockThreshold: item.criticalStockThreshold || 0,
-                                                    attributes: (item.attributes as Record<string, string>) || {},
-                                                    categoryId: item.categoryId || "",
-                                                    qualityCode: item.qualityCode || "",
-                                                    attributeCode: item.attributeCode || "",
-                                                    sizeCode: item.sizeCode || "",
-                                                    materialCode: item.materialCode || "",
-                                                    brandCode: item.brandCode || "",
-                                                    thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
-                                                    costPrice: item.costPrice || 0,
-                                                    isArchived: item.isArchived || false,
-                                                    materialComposition: item.materialComposition || {},
-                                                });
-
                                                 if (hasChanges) {
                                                     setShowUnsavedChangesConfirm(true);
                                                     setPendingExitAction(() => () => {
@@ -1969,6 +1947,7 @@ export function ItemDetailClient({
                                                             brandCode: item.brandCode || "",
                                                             thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
                                                             costPrice: item.costPrice || 0,
+                                                            sellingPrice: item.sellingPrice || 0,
                                                             isArchived: item.isArchived || false,
                                                             materialComposition: item.materialComposition || {},
                                                         });
@@ -1977,53 +1956,55 @@ export function ItemDetailClient({
                                                     setIsEditing(false);
                                                 }
                                             }}
-                                            className="text-[13px] font-bold text-muted-foreground hover:text-foreground transition-all hidden sm:block"
+                                            className="h-10 md:h-12 px-5 md:px-8 rounded-2xl md:rounded-full font-bold text-[13px] md:text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all active:scale-95 border-none"
                                         >
                                             Отмена
-                                        </button>
+                                        </Button>
 
-                                        <div className="flex items-center gap-2 md:gap-3">
-                                            <button
-                                                onClick={() => handleSave()}
-                                                disabled={isSaving}
-                                                className="h-10 px-4 md:px-6 btn-dark text-primary-foreground rounded-3xl flex items-center gap-2 font-bold text-[13px] transition-all active:scale-95 shadow-lg shadow-input/10 border-none relative group/save"
-                                            >
+                                        <Button
+                                            variant="default"
+                                            disabled={isSaving}
+                                            onClick={() => handleSave()}
+                                            className="h-10 md:h-12 px-6 md:px-10 rounded-2xl md:rounded-full font-bold text-[13px] md:text-sm bg-primary text-white shadow-[0_10px_20px_rgba(var(--primary-rgb),0.2)] hover:shadow-[0_15px_25px_rgba(var(--primary-rgb),0.3)] hover:scale-[1.02] active:scale-95 transition-all border-none"
+                                        >
+                                            <div className="flex items-center gap-2">
                                                 {isSaving ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    <>
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                        <span>Сохранение...</span>
+                                                    </>
                                                 ) : (
-                                                    <Save className="w-4 h-4" />
+                                                    <>
+                                                        <Save className="w-4 h-4" />
+                                                        <span>Сохранить</span>
+                                                    </>
                                                 )}
-                                                <span className="whitespace-nowrap">Сохранить</span>
-                                                {/* Shortcut Hint Overlay */}
-                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-foreground rounded-3xl text-[9px] font-bold text-background opacity-0 group-hover/save:opacity-100 transition-all pointer-events-none shadow-xl translate-y-2 group-hover:translate-y-0">
-                                                    ⌘ S
-                                                </div>
-                                            </button>
-
-                                            <button
-                                                onClick={() => handleDelete()}
-                                                disabled={isSaving || isAnyUploading}
-                                                className="w-10 h-10 md:w-11 md:h-11 rounded-3xl md:rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-border hover:border-amber-500 group/archive"
-                                                title="Архивировать"
-                                            >
-                                                <Archive className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/archive:scale-110" />
-                                            </button>
-                                        </div>
+                                            </div>
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="icon"
+                                            onClick={() => handleDelete()}
+                                            disabled={isSaving || isAnyUploading}
+                                            className="w-10 h-10 md:w-11 md:h-11 rounded-3xl md:rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-border hover:border-amber-500 group/archive"
+                                            title="Архивировать"
+                                        >
+                                            <Archive className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/archive:scale-110" />
+                                        </Button>
                                     </motion.div>
                                 </motion.div>
                             </>,
                             document.body
                         )
                     }
-                </AnimatePresence >
+                </AnimatePresence>
 
                 {/* Dialogs */}
-                < AdjustStockDialog
+                <AdjustStockDialog
                     item={item}
                     locations={storageLocations}
                     itemStocks={stocks}
-                    initialType={adjustType || "in"
-                    }
+                    initialType={adjustType || "in"}
                     user={user}
                     isOpen={!!adjustType}
                     onClose={() => {
@@ -2033,7 +2014,7 @@ export function ItemDetailClient({
                     }}
                 />
 
-                < TransferItemDialog
+                <TransferItemDialog
                     item={item}
                     locations={storageLocations}
                     itemStocks={stocks}
@@ -2045,7 +2026,7 @@ export function ItemDetailClient({
                     }}
                 />
 
-                < ArchiveReasonDialog
+                <ArchiveReasonDialog
                     isOpen={showArchiveReason}
                     onClose={() => setShowArchiveReason(false)}
                     onConfirm={handleArchive}
@@ -2124,34 +2105,37 @@ export function ItemDetailClient({
                                         {allGalleryImages[currentGalleryIndex]?.label} — {currentGalleryIndex + 1} / {allGalleryImages.length}
                                     </p>
                                 </div>
-                                <button
-                                    className="w-11 h-11 bg-white/5 hover:bg-white/10 hover:scale-105 active:scale-95 rounded-3xl flex items-center justify-center text-white transition-all border border-white/10 group"
+                                <Button
+                                    variant="ghost"
+                                    className="w-11 h-11 bg-white/5 hover:bg-white/10 active:scale-95 rounded-3xl flex items-center justify-center text-white transition-all border border-white/10 group p-0"
                                     onClick={(e) => { e.stopPropagation(); setIsMainImageZoomed(false); }}
                                 >
                                     <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Navigation Buttons */}
                             <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-20">
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCurrentGalleryIndex(prev => (prev - 1 + allGalleryImages.length) % allGalleryImages.length);
                                     }}
-                                    className="w-14 h-14 rounded-3xl bg-white/5 hover:bg-white text-white hover:text-slate-900 border border-white/10 transition-all flex items-center justify-center pointer-events-auto active:scale-90 backdrop-blur-xl"
+                                    className="w-14 h-14 rounded-3xl bg-white/5 hover:bg-white text-white hover:text-slate-900 border border-white/10 transition-all flex items-center justify-center pointer-events-auto active:scale-90 backdrop-blur-xl p-0"
                                 >
                                     <ChevronLeft className="w-7 h-7" />
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="ghost"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCurrentGalleryIndex(prev => (prev + 1) % allGalleryImages.length);
                                     }}
-                                    className="w-14 h-14 rounded-3xl bg-white/5 hover:bg-white text-white hover:text-slate-900 border border-white/10 transition-all flex items-center justify-center pointer-events-auto active:scale-90 backdrop-blur-xl"
+                                    className="w-14 h-14 rounded-3xl bg-white/5 hover:bg-white text-white hover:text-slate-900 border border-white/10 transition-all flex items-center justify-center pointer-events-auto active:scale-90 backdrop-blur-xl p-0"
                                 >
                                     <ChevronRight className="w-7 h-7" />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Main Image View */}
@@ -2178,21 +2162,22 @@ export function ItemDetailClient({
                             {/* Thumbnails Strip */}
                             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 p-3 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 z-10">
                                 {allGalleryImages.map((img, i) => (
-                                    <button
+                                    <Button
                                         key={i}
+                                        variant="ghost"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setCurrentGalleryIndex(i);
                                         }}
                                         className={cn(
-                                            "relative w-16 h-16 rounded-3xl overflow-hidden border-2 transition-all duration-300",
+                                            "relative w-16 h-16 rounded-3xl overflow-hidden border-2 transition-all duration-300 p-0",
                                             i === currentGalleryIndex
                                                 ? "border-primary scale-110 shadow-lg shadow-primary/20"
-                                                : "border-transparent opacity-40 hover:opacity-100 hover:scale-105"
+                                                : "border-transparent opacity-40 hover:opacity-100"
                                         )}
                                     >
                                         <Image src={img.src} alt="thumb" fill className="object-cover" unoptimized />
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         </div>

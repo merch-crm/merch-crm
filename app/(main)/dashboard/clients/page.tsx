@@ -2,8 +2,7 @@ import Link from "next/link";
 import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions";
-import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
-import { BrandingSettings } from "@/components/branding-provider";
+import { getBrandingSettings, BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 
 import { db } from "@/lib/db";
@@ -30,8 +29,7 @@ export default async function ClientsPage() {
         totalRevenue: 0
     };
 
-    const brandingResult = await getBrandingAction();
-    const branding = brandingResult.data as BrandingSettings;
+    const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
 
     const statCards = [
@@ -74,9 +72,9 @@ export default async function ClientsPage() {
     ].filter(card => card.visible);
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-row items-center justify-between gap-4 px-1">
+        <div className="space-y-5">
+            <div className="flex flex-col gap-5">
+                <div className="flex flex-row items-center justify-between gap-5 px-1">
                     <div className="min-w-0 flex-1">
                         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Клиенты</h1>
                         <p className="text-slate-500 text-[11px] sm:text-[13px] font-medium mt-1.5 sm:mt-3 line-clamp-1">

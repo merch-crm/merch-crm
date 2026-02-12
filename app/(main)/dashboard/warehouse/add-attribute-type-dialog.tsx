@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Plus, RefreshCw, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
@@ -28,57 +30,6 @@ interface AddAttributeTypeDialogProps {
     categories: Category[];
     className?: string;
 }
-
-function Switch({
-    checked,
-    onChange,
-    disabled,
-    label,
-    icon: Icon,
-    description
-}: {
-    checked: boolean,
-    onChange: (val: boolean) => void,
-    disabled?: boolean,
-    label?: string,
-    icon?: React.ComponentType<{ className?: string }>,
-    description?: string
-}) {
-    return (
-        <div className={cn(
-            "flex items-center justify-between group",
-            disabled && "opacity-50"
-        )}>
-            <div className="flex flex-col gap-0.5">
-                {label && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-900">{label}</span>
-                        {Icon && <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-primary transition-colors" />}
-                    </div>
-                )}
-                {description && <span className="text-[10px] text-slate-500 font-bold">{description}</span>}
-            </div>
-            <button
-                type="button"
-                disabled={disabled}
-                onClick={() => onChange(!checked)}
-                className={cn(
-                    "relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-sm",
-                    checked ? "bg-primary" : "bg-slate-200",
-                    disabled && "cursor-not-allowed"
-                )}
-            >
-                <span
-                    className={cn(
-                        "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
-                        checked ? "translate-x-5" : "translate-x-0"
-                    )}
-                />
-            </button>
-        </div>
-    );
-}
-
 
 
 export function AddAttributeTypeDialog({ categories, className }: AddAttributeTypeDialogProps) {
@@ -191,7 +142,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
-                                <input
+                                <Input
                                     value={label}
                                     onChange={e => {
                                         const val = e.target.value;
@@ -201,61 +152,69 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                         }
                                     }}
                                     placeholder="Напр. Цвет"
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
+                                    className="h-11 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-bold text-sm text-slate-900 shadow-sm"
                                 />
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Системный SLUG</label>
                                 <div className="relative">
-                                    <input
+                                    <Input
                                         value={slug}
                                         onChange={e => {
                                             setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""));
                                             setIsSlugManuallyEdited(true);
                                         }}
                                         placeholder="color"
-                                        className="w-full h-11 pl-4 pr-10 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono placeholder:text-slate-300 text-sm font-bold text-primary shadow-sm"
+                                        className="h-11 pr-10 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-mono text-sm font-bold text-primary shadow-sm"
                                     />
                                     {isSlugManuallyEdited && label && (
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => {
                                                 setSlug(transliterateToSlug(label));
                                                 setIsSlugManuallyEdited(false);
                                             }}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1 h-8 w-8"
                                             title="Сгенерировать автоматически"
                                         >
                                             <RefreshCw className="w-4 h-4" />
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             </div>
                         </div>
 
                         <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
-                            <Switch
-                                checked={isSystem}
-                                onChange={setIsSystem}
-                                label="Глобальная характеристика"
-                                description="Будет видна во всех категориях товаров"
-                            />
+                            <div className={cn("flex items-center justify-between group")}>
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-[11px] font-bold text-slate-900">Глобальная характеристика</span>
+                                    <span className="text-[10px] text-slate-500 font-bold">Будет видна во всех категориях товаров</span>
+                                </div>
+                                <Switch
+                                    checked={isSystem}
+                                    onCheckedChange={setIsSystem}
+                                    variant="success"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-end lg:justify-between gap-3 shrink-0">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all items-center justify-center rounded-[var(--radius-inner)]"
+                            className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 font-bold text-sm"
                         >
                             Отмена
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleCreate}
                             disabled={isLoading || !label || !slug}
-                            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm"
+                            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
                         >
                             {isLoading ? (
                                 <RefreshCw className="w-4 h-4 animate-spin text-white" />
@@ -263,7 +222,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                 <Check className="w-4 h-4 stroke-[3] text-white" />
                             )}
                             Сохранить
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </ResponsiveModal>

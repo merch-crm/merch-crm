@@ -2531,7 +2531,11 @@ export async function getNotificationSettingsAction() {
                 new_order: true,
                 order_status_change: true,
                 stock_low: true,
-                task_assigned: true
+                task_assigned: true,
+                system_error: false,
+                big_payment: false,
+                client_update: false,
+                security_alert: false
             }
         };
 

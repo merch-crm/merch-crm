@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface DeleteRoleDialogProps {
     role: { id: string; name: string; isSystem?: boolean } | null;
@@ -59,7 +61,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системная роль. Для подтверждения удаления введите пароль от своей учетной записи.
                         </p>
-                        <input
+                        <Input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -71,24 +73,26 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                 )}
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => {
                             setPassword("");
                             onClose();
                         }}
                         disabled={loading}
-                        className="btn-dialog-secondary flex-1"
+                        className="flex-1 rounded-[18px] h-12 text-slate-500 hover:bg-slate-100 transition-all border-none"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="destructive"
                         onClick={handleConfirm}
                         disabled={loading || (role.isSystem && !password.trim())}
-                        className="btn-dialog-destructive flex-[1.2]"
+                        className="flex-[1.2] rounded-[18px] h-12 font-bold shadow-lg shadow-red-500/10"
                     >
-                        {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                        {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                         {loading ? "Удаление..." : "Удалить роль"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>

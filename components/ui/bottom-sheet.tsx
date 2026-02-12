@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useSheetStack } from "@/components/ui/sheet-stack-context";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface BottomSheetProps {
     isOpen: boolean;
@@ -15,73 +16,64 @@ interface BottomSheetProps {
     hideClose?: boolean;
 }
 
+const DRAG_CLOSE_THRESHOLD = {
+    offset: 150,
+    velocity: 500,
+} as const;
+
+const Z_INDEX_BASE = 150;
+const Z_INDEX_INCREMENT = 10;
+
 export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle = true, className, footer, hideClose }: BottomSheetProps) {
     const { registerSheet, unregisterSheet, getStackDepth } = useSheetStack();
-    const [sheetId] = React.useState(() => Math.random().toString(36).substr(2, 9));
+    const [sheetId] = React.useState(() => Math.random().toString(36).slice(2, 11));
 
-
-    // Register/Unregister sheet
+    // Register/Unregister sheet & handle overflow
     React.useEffect(() => {
         if (isOpen) {
             registerSheet(sheetId);
+            const previousOverflow = document.body.style.overflow;
             document.body.style.overflow = "hidden";
+
             return () => {
                 unregisterSheet(sheetId);
-                // Only unset overflow if this was the last sheet (simplification: just unset)
-                // A better approach checks stack length, but this is safe for now
-                document.body.style.overflow = "unset";
+                // Simple restoration strategy. Ideally should check if other sheets are open via context.
+                document.body.style.overflow = previousOverflow;
             };
         }
     }, [isOpen, sheetId, registerSheet, unregisterSheet]);
 
-    // Update depth periodically or ideally reactive if context allowed,
-    // but here we can check depth on render if we force update?
-    // Actually, simple way: check depth whenever stack changes.
-    // However, our context exposes methods. Let's make it simple:
-    // We will assume this component re-renders when parent re-renders or on mount.
-    // For proper reactivity, the context should provide the stack array or version.
-    // Let's rely on CSS mostly, but we need the index.
-    // Updated Plan: The context provider created earlier uses 'stack'.
-    // We need to subscribe to it. The current 'useSheetStack' exposes getStackDepth but that doesn't trigger re-render if stack updates unless we expose stack.
-    // Let's just use a simple z-index increment for now based on a global variable or simpler approach if context is hard to reuse without changing it.
-    // Wait, I can update the context to expose the stack or simply rely on the fact that when a new sheet opens,
-    // it mounds and gets a higher Z-index naturally?
-    // Not enough for "scale down" effect.
-    // Let's modify this component to assume it's "on top" if it's the latest.
+    // Handle Escape key
+    React.useEffect(() => {
+        if (!isOpen) return;
 
-    // For now, let's just make sure z-index is high enough to stack.
-    // We will use a standard high z-index, but nested sheets need higher.
-    // We can use a simple prop or context.
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
 
-    // Let's use the context properly. I'll stick to the Z-Index fix for overlap first.
-    // Scale effect is bonus.
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [isOpen, onClose]);
 
-    // RE-READING SCREENSHOT: The issue is they are both on z-[151].
-    // If I just increase Z-index for subsequent sheets, it fixes the overlap.
-
-    // Let's use a ref to count how many valid sheets are open? No, React state is separate.
-    // I will use a simple z-index increment based on the order in DOM? No, generic Portals.
-
-    // Let's stick to the plan: Use the context.
-    // BUT I need to fix the Context first to expose the stack so I can 'use' it to trigger re-renders.
-    // I will edit this file to use the context, assuming I will update the context next to be reactive.
-
+    // Stack depth logic for z-index
     const stackDepth = getStackDepth(sheetId);
 
-    // Persist depth for exit animation
-    const [preservedDepth, setPreservedDepth] = React.useState(0);
+    // Persist depth for exit animation using ref to avoid unnecessary re-renders
+    const preservedDepthRef = React.useRef(0);
     React.useEffect(() => {
         if (stackDepth >= 0) {
-            setPreservedDepth(stackDepth);
+            preservedDepthRef.current = stackDepth;
         }
     }, [stackDepth]);
 
-    const effectiveDepth = stackDepth >= 0 ? stackDepth : preservedDepth;
+    const effectiveDepth = stackDepth >= 0 ? stackDepth : preservedDepthRef.current;
 
     const dragControls = useDragControls();
+    const zIndex = Z_INDEX_BASE + (effectiveDepth * Z_INDEX_INCREMENT);
 
-    // Adjust Z-Index base
-    const zIndex = 150 + (effectiveDepth * 10);
+    const hasCustomRounding = className && /rounded-(?!b-)/.test(className);
 
     return (
         <AnimatePresence>
@@ -105,7 +97,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                         dragConstraints={{ top: 0 }}
                         dragElastic={0.2}
                         onDragEnd={(_, info) => {
-                            if (info.offset.y > 150 || info.velocity.y > 500) {
+                            if (info.offset.y > DRAG_CLOSE_THRESHOLD.offset || info.velocity.y > DRAG_CLOSE_THRESHOLD.velocity) {
                                 onClose();
                             }
                         }}
@@ -119,14 +111,12 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                             mass: 0.8
                         }}
                         className={cn(
-                            "fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col touch-none overflow-hidden",
-                            // Default rounding top if no rounding specified
-                            !className?.includes('rounded') && "rounded-t-[32px]",
+                            "fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col touch-none overflow-hidden bg-white",
+                            !hasCustomRounding && "rounded-t-[32px]",
                             className,
-                            "rounded-b-none" // Force flat bottom to avoid gaps and background leaks
+                            "rounded-b-none" // Force flat bottom to avoid gaps
                         )}
                         style={{
-                            backgroundColor: 'var(--sheet-bg, #ffffff)',
                             zIndex: zIndex + 1,
                         }}
                     >
@@ -140,9 +130,9 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
 
                         {/* Header: Title and Close button */}
                         {(!hideClose || (title && showVisualTitle)) && (
-                            <div className="flex items-center px-6 pt-2 pb-4 shrink-0">
-                                {/* Left Spacer to balance the close button for perfect centering */}
-                                {!hideClose && <div className="w-10 h-10 shrink-0 invisible" />}
+                            <div className="flex items-center justify-between px-6 pt-2 pb-4 shrink-0 relative">
+                                {/* Left Spacer to balance the close button */}
+                                <div className={cn("w-10 h-10 shrink-0", "invisible")} />
 
                                 <div className={cn("flex-1 text-center px-2", (!title || !showVisualTitle) && "sr-only")}>
                                     {title && (
@@ -152,14 +142,18 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                                     )}
                                 </div>
 
-                                {!hideClose && (
-                                    <button
+                                {!hideClose ? (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={onClose}
-                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0"
+                                        className="w-10 h-10 rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900"
                                         aria-label="Закрыть"
                                     >
                                         <X className="w-5 h-5 stroke-[2.5]" />
-                                    </button>
+                                    </Button>
+                                ) : (
+                                    <div className="w-10 h-10 shrink-0 invisible" />
                                 )}
                             </div>
                         )}
@@ -174,12 +168,11 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                             </div>
                         )}
 
-                        {/* Safe area spacer with same background to prevent gaps */}
+                        {/* Safe area spacer */}
                         <div className="h-[env(safe-area-inset-bottom,24px)] shrink-0 bg-inherit" />
                     </motion.div>
                 </>
-            )
-            }
-        </AnimatePresence >
+            )}
+        </AnimatePresence>
     );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X, TrendingUp, CheckCircle, PieChart, Loader2, Calendar } from "lucide-react";
 import { getUserStats } from "./stats/actions";
 import { useBranding } from "@/components/branding-provider";
+import { Button } from "@/components/ui/button";
 
 
 interface UserStatsDrawerProps {
@@ -81,12 +82,14 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                 {stats?.user.role || "Сотрудник"}
                             </p>
                         </div>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={onClose}
                             className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-[18px] bg-slate-50 hover:bg-white transition-all font-bold shadow-sm"
                         >
                             <X className="h-5 w-5" />
-                        </button>
+                        </Button>
                     </div>
                 </div>
 

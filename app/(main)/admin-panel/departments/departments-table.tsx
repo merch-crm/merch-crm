@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getDepartments, deleteDepartment } from "../actions";
 import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { DeleteDepartmentDialog } from "./delete-department-dialog";
 import { DepartmentSettingsDialog } from "./department-settings-dialog";
@@ -117,25 +118,29 @@ export function DepartmentsTable() {
                                         <p className={`text-[10px] font-bold  tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
                                     </div>
                                     <div className="flex flex-col gap-1 -mr-3 -mt-3">
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setSelectedDepartment(dept);
                                             }}
-                                            className="p-2 text-slate-300 hover:text-primary transition-colors rounded-[18px] hover:bg-white shadow-sm"
+                                            className="p-2 h-10 w-10 text-slate-300 hover:text-primary transition-colors rounded-[18px] hover:bg-white shadow-sm border-none"
                                         >
                                             <Settings2 className="w-4 h-4" />
-                                        </button>
+                                        </Button>
                                         {!dept.isSystem && (
-                                            <button
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteClick(dept);
                                                 }}
-                                                className="p-2 text-slate-300 hover:text-red-600 transition-colors rounded-[18px] hover:bg-white shadow-sm"
+                                                className="p-2 h-10 w-10 text-slate-300 hover:text-red-600 transition-colors rounded-[18px] hover:bg-white shadow-sm border-none"
                                             >
                                                 <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

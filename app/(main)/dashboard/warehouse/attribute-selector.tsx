@@ -3,6 +3,8 @@ import { Plus, Palette, Settings2, ArrowRight } from "lucide-react";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { createInventoryAttribute, getInventoryAttributes } from "./actions";
 import { CLOTHING_COLORS, CLOTHING_QUALITIES, CLOTHING_SIZES } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -173,16 +175,15 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 </div>
                 <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
                     {filteredOptions.map(c => (
-                        <button
+                        <Button
                             key={c.name}
-                            type="button"
                             onClick={() => {
                                 onChange(c.name, c.code);
                                 if (onCodeChange) onCodeChange(c.code);
                                 setShowCustom(false);
                             }}
                             className={cn(
-                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border transition-all duration-300 shadow-sm",
+                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border transition-all duration-300 shadow-sm p-0 w-auto",
                                 value === c.code
                                     ? "bg-white border-slate-900 shadow-md z-10"
                                     : "bg-white border-slate-200 hover:border-slate-400 hover:shadow-md"
@@ -196,21 +197,20 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 "text-[10px] font-bold truncate w-full px-2 text-center transition-colors duration-300",
                                 value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
                             )}>{c.name}</span>
-                        </button>
+                        </Button>
                     ))}
                     {allowCustom && (
-                        <button
-                            type="button"
+                        <Button
                             onClick={() => setShowCustom(true)}
                             className={cn(
-                                "group h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border border-dashed transition-all duration-300 shadow-sm hover:shadow-md",
+                                "group h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border border-dashed transition-all duration-300 shadow-sm hover:shadow-md p-0 w-auto",
                                 showCustom
                                     ? "bg-slate-50 border-slate-300 text-slate-900 shadow-md"
                                     : "bg-white border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
                             <span className="text-[10px] font-bold">Добавить</span>
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -236,7 +236,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         <div className="px-6 py-6 pb-5 bg-slate-50/30 overflow-y-auto custom-scrollbar space-y-6">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название цвета</label>
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Напр: Полночный синий"
                                     className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
@@ -257,15 +257,15 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 </div>
                             </div>
 
-                            <button
-                                type="button"
+                            <Button
+                                variant="ghost"
+                                className="p-4 border border-slate-200/60 bg-slate-900/[0.03] hover:bg-primary/5 hover:border-primary/20 hover:bg-transparent shadow-none w-full h-auto mt-3 rounded-[var(--radius-inner)] transition-all group/link cursor-pointer flex items-center justify-between"
                                 onClick={() => {
                                     const win = window.open("/dashboard/warehouse/characteristics", "_blank");
                                     if (!win) {
                                         toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.", "error");
                                     }
                                 }}
-                                className="flex items-center justify-between p-4 w-full bg-slate-900/[0.03] hover:bg-primary/5 border border-slate-200/60 hover:border-primary/20 rounded-[var(--radius-inner)] transition-all group/link mt-3 cursor-pointer"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-slate-400 group-hover/link:text-primary transition-colors">
@@ -277,27 +277,29 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-primary group-hover/link:translate-x-1 transition-all" />
-                            </button>
+                            </Button>
                         </div>
 
                         <div className="sticky bottom-0 z-10 p-5 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-end shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setShowCustom(false)}
-                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
                             >
                                 Отмена
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
                                 onClick={handleCustomSubmit}
                                 disabled={isSaving || !customName.trim()}
-                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                                variant="btn-dark"
+                                className="h-11 w-full sm:w-auto sm:px-8 rounded-[var(--radius-inner)] text-sm font-bold flex items-center justify-center gap-2"
                             >
                                 {isSaving && (
                                     <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
                                 )}
                                 Сохранить
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </ResponsiveModal>
@@ -336,13 +338,14 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         </h4>
                     </div>
                     {allowCustom && (
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setShowCustom(true)}
-                            className="flex items-center py-1 text-slate-400 hover:text-slate-900 transition-all active:scale-95 group/add shrink-0"
+                            className="flex items-center py-1 text-slate-400 hover:text-slate-900 transition-all group/add shrink-0 h-auto"
                         >
                             <span className="text-[9px] font-bold uppercase tracking-wider whitespace-nowrap">{addLabel}</span>
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -396,7 +399,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
-                                    <input
+                                    <Input
                                         type="text"
                                         placeholder="Напр: Muse Wear"
                                         className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
@@ -415,15 +418,15 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                             </div>
                             <p className="text-[10px] text-slate-400 font-bold mt-4 ml-1 italic opacity-60">Короткий код для артикула генерируется автоматически на основе названия</p>
 
-                            <button
-                                type="button"
+                            <Button
+                                variant="ghost"
+                                className="p-4 border border-slate-200/60 bg-slate-900/[0.03] hover:bg-primary/5 hover:border-primary/20 hover:bg-transparent shadow-none w-full h-auto mt-3 rounded-[var(--radius-inner)] transition-all group/link cursor-pointer flex items-center justify-between"
                                 onClick={() => {
                                     const win = window.open("/dashboard/warehouse/characteristics", "_blank");
                                     if (!win) {
                                         toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.", "error");
                                     }
                                 }}
-                                className="flex items-center justify-between p-4 w-full bg-slate-900/[0.03] hover:bg-primary/5 border border-slate-200/60 hover:border-primary/20 rounded-[var(--radius-inner)] transition-all group/link mt-3 cursor-pointer"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-slate-400 group-hover/link:text-primary transition-colors">
@@ -435,27 +438,29 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-primary group-hover/link:translate-x-1 transition-all" />
-                            </button>
+                            </Button>
                         </div>
 
                         <div className="sticky bottom-0 z-10 p-5 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center sm:justify-end shrink-0 sm:rounded-b-[var(--radius-outer)] gap-3">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setShowCustom(false)}
-                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center rounded-[var(--radius-inner)]"
+                                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
                             >
                                 Отмена
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
                                 onClick={handleCustomSubmit}
                                 disabled={isSaving || !customName.trim()}
-                                className="h-11 w-full sm:w-auto sm:px-8 btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+                                variant="btn-dark"
+                                className="h-11 w-full sm:w-auto sm:px-8 rounded-[var(--radius-inner)] text-sm font-bold flex items-center justify-center gap-2"
                             >
                                 {isSaving && (
                                     <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
                                 )}
                                 Сохранить
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </ResponsiveModal>

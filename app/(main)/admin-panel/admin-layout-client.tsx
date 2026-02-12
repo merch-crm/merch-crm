@@ -32,14 +32,7 @@ interface UserNavUser {
     avatar?: string | null;
 }
 
-interface Branding {
-    dateFormat?: string;
-    timezone?: string;
-    socialTelegram?: string | null;
-    socialWhatsapp?: string | null;
-    socialWebsite?: string | null;
-    [key: string]: unknown;
-}
+import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export function AdminLayoutClient({
     children,
@@ -52,7 +45,7 @@ export function AdminLayoutClient({
     currentUser: AdminUser;
     user: UserNavUser;
     notifications: Notification[];
-    branding: Branding;
+    branding: BrandingSettings;
 }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -77,12 +70,14 @@ export function AdminLayoutClient({
             {/* Mobile Header */}
             <header className="md:hidden h-16 bg-[#0F172A] text-white px-4 flex items-center justify-between shrink-0 z-30 shadow-lg">
                 <div className="flex items-center gap-3">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white active:scale-95 transition-all"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white active:scale-95 transition-all hover:bg-white/20 border-none"
                     >
                         <Menu className="w-5 h-5" />
-                    </button>
+                    </Button>
                     <div>
                         <span className="font-bold text-sm block">Админ-панель</span>
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Система</span>

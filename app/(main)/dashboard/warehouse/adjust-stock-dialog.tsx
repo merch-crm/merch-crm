@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
 
 
 import { Session } from "@/lib/auth";
@@ -151,12 +152,13 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                     ].map((op) => {
                                         const isActive = type === op.id;
                                         return (
-                                            <button
+                                            <Button
                                                 key={op.id}
                                                 type="button"
+                                                variant="ghost"
                                                 onClick={() => { setType(op.id as "in" | "out" | "set"); setAmount(op.id === 'set' ? item.quantity : 1); }}
                                                 className={cn(
-                                                    "flex flex-col items-center justify-center h-14 rounded-[var(--radius-inner)] border transition-all active:scale-95 shadow-sm group/op",
+                                                    "flex flex-col items-center justify-center h-14 rounded-[var(--radius-inner)] border transition-all active:scale-95 shadow-sm group/op p-0",
                                                     isActive
                                                         ? (op.color === 'emerald' ? "bg-emerald-50 border-emerald-200 text-emerald-600 ring-2 ring-emerald-500/10" :
                                                             op.color === 'rose' ? "bg-rose-50 border-rose-200 text-rose-600 ring-2 ring-rose-500/10" :
@@ -166,7 +168,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                             >
                                                 <op.icon className={cn("w-5 h-5", isActive && "stroke-[3]")} />
                                                 <span className="text-[10px] font-black uppercase mt-1 tracking-tighter">{op.label}</span>
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -209,7 +211,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
 
                                 <div className="px-6 flex items-center justify-center relative">
                                     <div className={cn(
-                                        "w-14 h-14 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-500 relative z-20",
+                                        "w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 relative z-20",
                                         type === 'in' ? "bg-emerald-500 shadow-emerald-500/30" :
                                             type === 'out' ? "bg-rose-500 shadow-rose-500/30" :
                                                 "bg-primary shadow-lg shadow-primary/30"
@@ -273,13 +275,15 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                     {type === "set" ? "Новое количество" : "Количество"}
                                 </label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setAmount(prev => Math.max(0, prev - 1))}
-                                        className="w-14 rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                                        className="w-14 h-full rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all"
                                     >
                                         <Minus className="w-5 h-5 stroke-[3]" />
-                                    </button>
+                                    </Button>
 
                                     <div className="flex-1 flex items-center justify-center gap-1.5 relative px-2">
                                         <input
@@ -296,13 +300,15 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                         </span>
                                     </div>
 
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setAmount(prev => prev + 1)}
-                                        className="w-14 rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                                        className="w-14 h-full rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all"
                                     >
                                         <Plus className="w-5 h-5 stroke-[3]" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -363,19 +369,20 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                 </form>
 
                 <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={onClose}
-                        className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
+                        className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 font-bold text-sm"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="submit"
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
                         onClick={handleSubmit}
                         className={cn(
-                            "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
+                            "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                         )}
                     >
                         {isSubmitting ? (
@@ -386,7 +393,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                 Сохранить
                             </>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>

@@ -4,10 +4,12 @@ import { useEffect } from "react";
 import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
 import { CLOTHING_COLORS } from "../../../category-utils";
 import { StepFooter } from "./step-footer";
+import { Button } from "@/components/ui/button";
 
 interface PackagingBasicInfoStepProps {
     category: Category;
@@ -135,12 +137,12 @@ export function PackagingBasicInfoStep({
                 {label}
             </label>
             <div className="relative">
-                <input
+                <Input
                     type={type}
                     value={value || ""}
                     onChange={(e) => updateFormData({ [field]: e.target.value })}
                     placeholder={placeholder}
-                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-bold text-sm text-slate-900 shadow-sm placeholder:text-slate-300 placeholder:font-medium"
+                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm text-slate-900 shadow-sm placeholder:text-slate-300 placeholder:font-medium shadow-none"
                 />
                 {suffix && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md pointer-events-none">
@@ -192,28 +194,30 @@ export function PackagingBasicInfoStep({
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Тип упаковки</label>
                                 <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[14px]">
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => updateFormData({ packagingType: "individual" })}
                                         className={cn(
-                                            "h-9 rounded-[10px] text-xs font-bold transition-all shadow-sm",
+                                            "h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
                                             formData.packagingType === "individual" || !formData.packagingType
-                                                ? "bg-white text-slate-900 shadow"
-                                                : "text-slate-500 hover:text-slate-700"
+                                                ? "bg-white text-slate-900 shadow hover:bg-white"
+                                                : "text-slate-500 hover:text-slate-700 hover:bg-transparent"
                                         )}
                                     >
                                         Индивидуальная
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => updateFormData({ packagingType: "transport" })}
                                         className={cn(
-                                            "h-9 rounded-[10px] text-xs font-bold transition-all shadow-sm",
+                                            "h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
                                             formData.packagingType === "transport"
-                                                ? "bg-white text-slate-900 shadow"
-                                                : "text-slate-500 hover:text-slate-700"
+                                                ? "bg-white text-slate-900 shadow hover:bg-white"
+                                                : "text-slate-500 hover:text-slate-700 hover:bg-transparent"
                                         )}
                                     >
                                         Транспортная
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -284,18 +288,19 @@ export function PackagingBasicInfoStep({
                                     {CLOTHING_COLORS.map(c => {
                                         const isActive = formData.attributeCode === c.code;
                                         return (
-                                            <button
+                                            <Button
                                                 key={c.code}
+                                                variant="ghost"
                                                 onClick={() => updateFormData({ attributeCode: c.code })}
                                                 className={cn(
-                                                    "w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 transition-all relative flex items-center justify-center",
-                                                    isActive ? "scale-110 ring-2 ring-primary ring-offset-2" : "hover:scale-105"
+                                                    "w-6 h-6 p-0 rounded-full shadow-sm ring-1 ring-black/5 transition-all relative flex items-center justify-center min-w-0 h-6",
+                                                    isActive ? "scale-110 ring-2 ring-primary ring-offset-2 hover:bg-transparent" : "hover:bg-transparent"
                                                 )}
                                                 style={{ backgroundColor: c.hex }}
                                                 title={c.name}
                                             >
                                                 {isActive && <Check className={cn("w-3 h-3", c.code === "WHT" ? "text-slate-900" : "text-white")} strokeWidth={4} />}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -361,11 +366,11 @@ export function PackagingBasicInfoStep({
                                     <ExternalLink className="w-3 h-3 text-slate-400" />
                                     Ссылка на поставщика
                                 </label>
-                                <input
+                                <Input
                                     value={formData.supplierLink || ""}
                                     onChange={(e) => updateFormData({ supplierLink: e.target.value })}
                                     placeholder="https://..."
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-bold text-sm text-slate-900 shadow-sm text-blue-600 underline-offset-2 placeholder:text-slate-300 placeholder:no-underline"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm text-slate-900 shadow-sm text-blue-600 underline-offset-2 placeholder:text-slate-300 placeholder:no-underline shadow-none"
                                 />
                             </div>
 

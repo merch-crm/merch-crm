@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Search, X, FileDown, Book, LayoutGrid, Tag, Archive, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // ... lower down ...
@@ -19,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { PremiumPagination } from "@/components/ui/premium-pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { pluralize, sentence } from "@/lib/pluralize";
@@ -173,7 +176,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     )}
                 >
                     <Search className={cn("absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 transition-colors", isMobileSearchExpanded && "text-primary")} />
-                    <input
+                    <Input
                         type="text"
                         placeholder={isMobileSearchExpanded ? "Поиск по истории..." : "Поиск"}
                         value={searchQuery}
@@ -187,21 +190,23 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             }
                         }}
                         className={cn(
-                            "w-full h-full pl-11 pr-10 bg-transparent focus:outline-none text-[13px] font-bold text-slate-800 transition-all duration-300",
+                            "w-full h-full pl-11 pr-10 bg-transparent border-none shadow-none focus-visible:ring-0 text-[13px] font-bold text-slate-800 transition-all duration-300 rounded-[16px]",
                             isMobileSearchExpanded ? "xl:placeholder:text-slate-400" : "xl:placeholder:text-slate-400 xl:cursor-text cursor-pointer"
                         )}
                     />
                     {searchQuery && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setSearchQuery("");
                                 setCurrentPage(1);
                             }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors"
                         >
                             <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -221,7 +226,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     >
                         <Search className={cn("w-4 h-4 text-slate-400 transition-colors", isMobileSearchExpanded && "text-primary")} />
                     </div>
-                    <input
+                    <Input
                         type="text"
                         placeholder="Поиск..."
                         value={searchQuery}
@@ -239,22 +244,24 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             setIsMobileSearchExpanded(true);
                         }}
                         className={cn(
-                            "crm-filter-tray-search w-full focus:outline-none min-w-0 transition-all duration-300",
+                            "crm-filter-tray-search w-full border-none shadow-none focus-visible:ring-0 min-w-0 transition-all duration-300",
                             isMobileSearchExpanded
                                 ? "pl-11 pr-4 opacity-100"
                                 : "pl-11 pr-10 w-full opacity-100 bg-white"
                         )}
                     />
                     {searchQuery && isMobileSearchExpanded && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => {
                                 setSearchQuery("");
                                 setCurrentPage(1);
                             }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600"
                         >
                             <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -277,14 +284,15 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                         ].map(f => {
                             const isActive = activeFilter === f.id;
                             return (
-                                <button
+                                <Button
                                     key={f.id}
+                                    variant="ghost"
                                     onClick={() => {
                                         setActiveFilter(f.id as typeof activeFilter);
                                         setCurrentPage(1);
                                     }}
                                     className={cn(
-                                        "crm-filter-tray-tab",
+                                        "crm-filter-tray-tab border-none hover:bg-transparent",
                                         isActive && "active"
                                     )}
                                 >
@@ -296,7 +304,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         />
                                     )}
                                     <span className="relative z-10">{f.label}</span>
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>
@@ -316,7 +324,10 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 )}>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="w-full h-11 flex items-center justify-between gap-2 px-4 rounded-[16px] bg-white shadow-sm hover:bg-slate-50 transition-colors border-none">
+                            <Button
+                                variant="ghost"
+                                className="w-full h-11 flex items-center justify-between gap-2 px-4 rounded-[16px] bg-white shadow-sm hover:bg-slate-50 transition-colors border-none"
+                            >
                                 <span className="text-[13px] font-bold text-slate-800 truncate">
                                     {[
                                         { id: "all", label: "Все операции" },
@@ -328,7 +339,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                     ].find(f => f.id === activeFilter)?.label || "Фильтр"}
                                 </span>
                                 <ChevronDown className="w-3 h-3 text-slate-400" />
-                            </button>
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[180px]">
                             {[
@@ -394,7 +405,9 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                 <div className="w-px h-6 sm:h-8 bg-slate-200 mx-1 sm:mx-2 shrink-0" />
 
                                 <div className="flex items-center gap-1">
-                                    <button
+                                    <Button
+                                        variant="default"
+                                        size="default"
                                         onClick={() => {
                                             const transactionsToExport = transactions.filter(t => selectedIds.includes(t.id));
                                             exportToCSV(transactionsToExport, "history_export", [
@@ -412,30 +425,34 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             toast("Экспорт завершен", "success");
                                             playSound("notification_success");
                                         }}
-                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full hover:bg-slate-50 transition-all group"
+                                        className="h-auto py-2.5 rounded-full bg-transparent hover:bg-slate-50 hover:text-slate-900 border-none shadow-none text-slate-500"
                                     >
                                         <FileDown className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
-                                        <span className="hidden sm:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Экспорт</span>
-                                    </button>
+                                        <span className="hidden sm:inline text-xs font-bold transition-colors">Экспорт</span>
+                                    </Button>
 
                                     {isAdmin && (
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="default"
                                             onClick={handleDeleteSelected}
-                                            className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full hover:bg-rose-500/10 transition-all group"
+                                            className="h-auto py-2.5 rounded-full hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 border-none shadow-none"
                                         >
                                             <Trash2 className="w-4 h-4 text-slate-400 group-hover:text-rose-500 transition-colors" />
-                                            <span className="hidden sm:inline text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Удалить</span>
-                                        </button>
+                                            <span className="hidden sm:inline text-xs font-bold transition-colors">Удалить</span>
+                                        </Button>
                                     )}
 
                                     <div className="w-px h-6 sm:h-8 bg-slate-200 mx-1 sm:mx-2 shrink-0" />
 
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setSelectedIds([])}
                                         className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-200 hover:text-slate-900 transition-all shrink-0"
                                     >
                                         <X className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </motion.div>
                         </>
@@ -445,216 +462,208 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
             )
             }
             {/* Desktop Table View */}
-            <div className="hidden md:block crm-card !p-0">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr className="bg-gray-50">
-                                <th className="w-[40px] px-3 md:px-4 lg:px-6 py-2 md:py-3 text-left">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
-                                        checked={isAllSelected}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th className="px-3 md:px-4 lg:px-6 py-2 md:py-3 text-left text-xs font-semibold text-muted-foreground md:w-[80px]">Тип</th>
-                                <th className="pl-0 md:pl-0 lg:pl-0 pr-2 py-2 md:py-3 text-left text-xs font-semibold text-muted-foreground">Товар</th>
-                                <th className="pl-2 pr-2 py-2 md:py-3 text-left text-xs font-semibold text-muted-foreground">Склад</th>
-                                <th className="pl-2 pr-4 lg:pr-6 py-2 md:py-3 text-center text-xs font-semibold text-muted-foreground">Изм.</th>
-                                <th className="hidden xl:table-cell px-6 py-3 text-left text-xs font-semibold text-muted-foreground">Причина</th>
-                                <th className="hidden lg:table-cell px-6 py-3 text-right text-xs font-semibold text-muted-foreground">Пользователь</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {currentItems.map((t) => {
-                                const isIn = t.type === "in";
-                                const amount = Math.abs(t.changeAmount);
-                                const isSelected = selectedIds.includes(t.id);
+            <div className="table-container">
+                <table className="crm-table">
+                    <thead className="crm-thead">
+                        <tr>
+                            <th className="crm-th w-[40px]">
+                                <PremiumCheckbox
+                                    checked={isAllSelected}
+                                    onChange={handleSelectAll}
+                                />
+                            </th>
+                            <th className="crm-th md:w-[80px]">Тип</th>
+                            <th className="crm-th">Товар</th>
+                            <th className="crm-th">Склад</th>
+                            <th className="crm-th text-center">Изм.</th>
+                            <th className="crm-th hidden xl:table-cell">Причина</th>
+                            <th className="crm-th hidden lg:table-cell text-right">Пользователь</th>
+                        </tr>
+                    </thead>
+                    <tbody className="crm-tbody">
+                        {currentItems.map((t) => {
+                            const isIn = t.type === "in";
+                            const amount = Math.abs(t.changeAmount);
+                            const isSelected = selectedIds.includes(t.id);
 
-                                return (
-                                    <tr
-                                        key={t.id}
-                                        onClick={() => {
-                                            /* Movement details */
-                                        }}
-                                        className={cn(
-                                            "hover:bg-gray-50 transition-colors group cursor-pointer",
-                                            isSelected ? "bg-primary/5" : ""
-                                        )}
-                                    >
-                                        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                            <input
-                                                type="checkbox"
-                                                className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer"
-                                                checked={isSelected}
-                                                onChange={() => handleSelectRow(t.id)}
-                                            />
-                                        </td>
-                                        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-slate-900">
-                                            <div className="flex items-center">
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
-                                                    t.type === "transfer"
-                                                        ? "bg-primary/5 text-primary border border-primary/20"
-                                                        : t.type === "attribute_change"
-                                                            ? "bg-amber-50 text-amber-600 border border-amber-100"
-                                                            : t.type === "archive"
-                                                                ? "bg-rose-50 text-rose-600 border border-rose-100"
-                                                                : t.type === "restore"
+                            return (
+                                <tr
+                                    key={t.id}
+                                    onClick={() => {
+                                        /* Movement details */
+                                    }}
+                                    className={cn(
+                                        "crm-tr-clickable",
+                                        isSelected && "crm-tr-selected"
+                                    )}
+                                >
+                                    <td className="crm-td" onClick={(e) => e.stopPropagation()}>
+                                        <PremiumCheckbox
+                                            checked={isSelected}
+                                            onChange={() => handleSelectRow(t.id)}
+                                        />
+                                    </td>
+                                    <td className="crm-td">
+                                        <div className="flex items-center">
+                                            <div className={cn(
+                                                "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
+                                                t.type === "transfer"
+                                                    ? "bg-primary/5 text-primary border border-primary/20"
+                                                    : t.type === "attribute_change"
+                                                        ? "bg-amber-50 text-amber-600 border border-amber-100"
+                                                        : t.type === "archive"
+                                                            ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                                            : t.type === "restore"
+                                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                : isIn
                                                                     ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                    : isIn
-                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                        : "bg-rose-50 text-rose-600 border border-rose-100"
-                                                )}>
-                                                    {t.type === "transfer" ? (
-                                                        <ArrowLeftRight className="w-5 h-5" />
-                                                    ) : t.type === "attribute_change" ? (
-                                                        <Book className="w-5 h-5" />
-                                                    ) : t.type === "archive" ? (
-                                                        <Clock className="w-5 h-5" />
-                                                    ) : t.type === "restore" ? (
-                                                        <Package className="w-5 h-5" />
-                                                    ) : isIn ? (
-                                                        <ArrowUpRight className="w-5 h-5" />
-                                                    ) : (
-                                                        <ArrowDownLeft className="w-5 h-5" />
+                                                                    : "bg-rose-50 text-rose-600 border border-rose-100"
+                                            )}>
+                                                {t.type === "transfer" ? (
+                                                    <ArrowLeftRight className="w-5 h-5" />
+                                                ) : t.type === "attribute_change" ? (
+                                                    <Book className="w-5 h-5" />
+                                                ) : t.type === "archive" ? (
+                                                    <Clock className="w-5 h-5" />
+                                                ) : t.type === "restore" ? (
+                                                    <Package className="w-5 h-5" />
+                                                ) : isIn ? (
+                                                    <ArrowUpRight className="w-5 h-5" />
+                                                ) : (
+                                                    <ArrowDownLeft className="w-5 h-5" />
+                                                )}
+                                            </div>
+                                            <div className="hidden xl:block ml-4">
+                                                <div className="text-sm font-bold text-slate-900 leading-tight">
+                                                    {t.type === "transfer" ? "Перемещение" :
+                                                        t.type === "attribute_change" ? "Характеристика" :
+                                                            t.type === "archive" ? "Архивация" :
+                                                                t.type === "restore" ? "Восстановление" :
+                                                                    isIn ? "Приход" : "Расход"}
+                                                </div>
+                                                <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                                                    {format(new Date(t.createdAt), "d MMM, HH:mm", { locale: ru })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="crm-td">
+                                        {t.item ? (
+                                            <div
+                                                className="flex items-center gap-3 cursor-pointer group/item hover:opacity-80 transition-all"
+                                                onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}
+                                            >
+                                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-primary/5 group-hover/item:text-primary transition-colors">
+                                                    <Package className="w-4 h-4" />
+                                                </div>
+                                                <div className="max-w-[150px] lg:max-w-[220px] xl:max-w-[300px]">
+                                                    <div className="text-sm font-bold text-slate-900 truncate group-hover/item:text-primary transition-colors">{t.item.name}</div>
+                                                    {t.item.sku && (
+                                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">Арт.: {t.item.sku}</div>
                                                     )}
                                                 </div>
-                                                <div className="hidden xl:block ml-4">
-                                                    <div className="text-sm font-bold text-slate-900 leading-tight">
-                                                        {t.type === "transfer" ? "Перемещение" :
-                                                            t.type === "attribute_change" ? "Характеристика" :
-                                                                t.type === "archive" ? "Архивация" :
-                                                                    t.type === "restore" ? "Восстановление" :
-                                                                        isIn ? "Приход" : "Расход"}
-                                                    </div>
-                                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
-                                                        {format(new Date(t.createdAt), "d MMM, HH:mm", { locale: ru })}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-3 py-1">
+                                                <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                                                    <Book className="w-4 h-4" />
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-bold text-slate-900 ">Характеристики</div>
+                                                    <div className="text-xs font-bold text-slate-400 mt-0.5">
+                                                        {t.reason?.includes("категория") ? "Категории" :
+                                                            t.reason?.includes("атрибут") ? "Атрибуты" : "Система"}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td className="pl-0 md:pl-0 lg:pl-0 pr-2 py-3 md:py-4 whitespace-nowrap">
-                                            {t.item ? (
-                                                <div
-                                                    className="flex items-center gap-3 cursor-pointer group/item hover:opacity-80 transition-all"
-                                                    onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}
-                                                >
-                                                    <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-slate-50 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-primary/5 group-hover/item:text-primary transition-colors">
-                                                        <Package className="w-4 h-4" />
-                                                    </div>
-                                                    <div className="max-w-[150px] lg:max-w-[220px] xl:max-w-[300px]">
-                                                        <div className="text-sm font-bold text-slate-900 truncate group-hover/item:text-primary transition-colors">{t.item.name}</div>
-                                                        {t.item.sku && (
-                                                            <div className="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">Арт.: {t.item.sku}</div>
-                                                        )}
-                                                    </div>
+                                        )}
+                                    </td>
+                                    <td className="crm-td">
+                                        {t.type === "transfer" ? (
+                                            <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                                                <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 max-w-[150px]" title={t.fromStorageLocation?.name || "???"}>
+                                                    <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
+                                                    <span className="font-medium truncate">{t.fromStorageLocation?.name || "Неизвестно"}</span>
                                                 </div>
-                                            ) : (
-                                                <div className="flex items-center gap-3 py-1">
-                                                    <div className="w-8 h-8 rounded-[var(--radius-inner)] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
-                                                        <Book className="w-4 h-4" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-sm font-bold text-slate-900 ">Характеристики</div>
-                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">
-                                                            {t.reason?.includes("категория") ? "Категории" :
-                                                                t.reason?.includes("атрибут") ? "Атрибуты" : "Система"}
-                                                        </div>
-                                                    </div>
+                                                <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                                <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 max-w-[150px]" title={t.storageLocation?.name || "???"}>
+                                                    <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
+                                                    <span className="font-medium truncate">{t.storageLocation?.name || "Неизвестно"}</span>
                                                 </div>
-                                            )}
-                                        </td>
-                                        <td className="pl-2 pr-2 py-3 md:py-4 whitespace-nowrap">
-                                            {t.type === "transfer" ? (
-                                                <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                                                    <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 max-w-[150px]" title={t.fromStorageLocation?.name || "???"}>
-                                                        <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
-                                                        <span className="font-medium truncate">{t.fromStorageLocation?.name || "Неизвестно"}</span>
-                                                    </div>
-                                                    <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
-                                                    <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 max-w-[150px]" title={t.storageLocation?.name || "???"}>
-                                                        <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
-                                                        <span className="font-medium truncate">{t.storageLocation?.name || "Неизвестно"}</span>
-                                                    </div>
-                                                </div>
-                                            ) : t.storageLocation ? (
-                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[var(--radius-inner)] border border-slate-200 w-fit">
-                                                    <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                                                    <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-xs text-slate-400">Склад не указан</span>
-                                            )}
-                                        </td>
-                                        <td className="pl-2 pr-4 lg:pr-6 py-3 md:py-4 whitespace-nowrap text-center">
-                                            {t.type === "attribute_change" ? (
-                                                <Badge className="bg-amber-100/50 text-amber-700 border border-amber-200/50 px-3 py-1 font-semibold text-xs shadow-none hover:bg-amber-100/70">
-                                                    {t.reason?.includes("Создана") || t.reason?.includes("Добавлен") ? "Создание" :
-                                                        t.reason?.includes("Удален") ? "Удаление" : "Изменение"}
-                                                </Badge>
-                                            ) : (
-                                                <Badge className={cn(
-                                                    "px-3 py-1 font-semibold text-xs border-none shadow-none",
-                                                    t.type === "transfer"
-                                                        ? "bg-primary/5 text-primary hover:bg-primary/10"
-                                                        : isIn
-                                                            ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-50"
-                                                            : "bg-rose-50 text-rose-600 hover:bg-rose-50"
-                                                )}>
-                                                    {t.type === "transfer" ? "" : isIn ? "+" : "-"}{amount} {t.item?.unit || ""}
-                                                </Badge>
-                                            )}
-                                        </td>
-                                        <td className="hidden xl:table-cell px-6 py-4">
-                                            <div className="flex items-start gap-2">
-                                                <span className="text-sm font-medium text-slate-500 leading-snug">
-                                                    {(() => {
-                                                        const transferMatch = t.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
+                                            </div>
+                                        ) : t.storageLocation ? (
+                                            <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[var(--radius-inner)] border border-slate-200 w-fit">
+                                                <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                                                <span className="text-xs font-medium text-slate-700">{t.storageLocation.name}</span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-slate-400">Склад не указан</span>
+                                        )}
+                                    </td>
+                                    <td className="crm-td text-center">
+                                        {t.type === "attribute_change" ? (
+                                            <Badge className="bg-amber-100/50 text-amber-700 border border-amber-200/50 px-3 py-1 font-semibold text-xs shadow-none hover:bg-amber-100/70">
+                                                {t.reason?.includes("Создана") || t.reason?.includes("Добавлен") ? "Создание" :
+                                                    t.reason?.includes("Удален") ? "Удаление" : "Изменение"}
+                                            </Badge>
+                                        ) : (
+                                            <Badge className={cn(
+                                                "px-3 py-1 font-semibold text-xs border-none shadow-none",
+                                                t.type === "transfer"
+                                                    ? "bg-primary/5 text-primary hover:bg-primary/10"
+                                                    : isIn
+                                                        ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-50"
+                                                        : "bg-rose-50 text-rose-600 hover:bg-rose-50"
+                                            )}>
+                                                {t.type === "transfer" ? "" : isIn ? "+" : "-"}{amount} {t.item?.unit || ""}
+                                            </Badge>
+                                        )}
+                                    </td>
+                                    <td className="crm-td hidden xl:table-cell">
+                                        <div className="flex items-start gap-2">
+                                            <span className="text-sm font-medium text-slate-500 leading-snug">
+                                                {(() => {
+                                                    const transferMatch = t.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
 
-                                                        if (transferMatch) {
-                                                            const from = transferMatch[1];
-                                                            const to = transferMatch[2];
-                                                            const comment = transferMatch[3];
+                                                    if (transferMatch) {
+                                                        const from = transferMatch[1];
+                                                        const to = transferMatch[2];
+                                                        const comment = transferMatch[3];
 
-                                                            return (
-                                                                <span className="flex flex-col gap-0.5">
-                                                                    <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                                                                        {from} <ArrowRight className="w-3 h-3 text-slate-400" /> {to}
-                                                                    </span>
-                                                                    {comment && <span className="text-slate-500 font-normal">{comment}</span>}
+                                                        return (
+                                                            <span className="flex flex-col gap-0.5">
+                                                                <span className="font-bold text-slate-700 flex items-center gap-1.5">
+                                                                    {from} <ArrowRight className="w-3 h-3 text-slate-400" /> {to}
                                                                 </span>
-                                                            );
-                                                        }
+                                                                {comment && <span className="text-slate-500 font-normal">{comment}</span>}
+                                                            </span>
+                                                        );
+                                                    }
 
-                                                        return t.reason || "Без описания";
-                                                    })()}
-                                                </span>
+                                                    return t.reason || "Без описания";
+                                                })()}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="crm-td hidden lg:table-cell text-right" onClick={(e) => e.stopPropagation()}>
+                                        <div className="text-right">
+                                            <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
+                                            <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                                                {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
                                             </div>
-                                        </td>
-                                        <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                            <div className="text-right">
-                                                <div className="text-sm font-bold text-slate-900 whitespace-nowrap">{t.creator?.name || "Система"}</div>
-                                                <div className="text-[10px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
-                                                    {t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
 
             {/* Mobile Compact List View */}
             <div className="md:hidden crm-card !p-0 !rounded-[var(--radius-outer)] overflow-hidden shadow-sm divide-y divide-slate-100">
                 {currentItems.map((t) => {
-
                     const isSelected = selectedIds.includes(t.id);
-
                     return (
                         <MobileHistoryItem
                             key={t.id}
@@ -670,17 +679,18 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
             {
                 filteredTransactions.length > 0 && (
-                    <PremiumPagination
-                        currentPage={currentPage}
-                        totalItems={filteredTransactions.length}
-                        pageSize={itemsPerPage}
-                        onPageChange={setCurrentPage}
-                        itemNames={['операция', 'операции', 'операций']}
-                    />
+                    <div className="mt-4">
+                        <PremiumPagination
+                            currentPage={currentPage}
+                            totalItems={filteredTransactions.length}
+                            pageSize={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                            itemNames={['операция', 'операции', 'операций']}
+                        />
+                    </div>
                 )
             }
 
-            {/* Confirmation Dialogs */}
             <ConfirmDialog
                 isOpen={isDeleteDialogOpen}
                 onClose={() => setIsDeleteDialogOpen(false)}
@@ -691,8 +701,6 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 confirmText="Удалить"
                 variant="destructive"
             />
-
-
         </div>
     );
 }
@@ -725,11 +733,10 @@ function MobileHistoryItem({
             >
                 {/* Selection Checkbox - Stop propagation to avoid toggling accordion */}
                 <div onClick={(e) => e.stopPropagation()}>
-                    <input
-                        type="checkbox"
-                        className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer w-3 h-3"
+                    <PremiumCheckbox
                         checked={isSelected}
                         onChange={onSelect}
+                        className="w-[16px] h-[16px]"
                     />
                 </div>
 
@@ -839,15 +846,17 @@ function MobileHistoryItem({
 
                                 {t.item && (
                                     <div className="pt-2 mt-1 border-t border-slate-200/60">
-                                        <button
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 router.push(`/dashboard/warehouse/items/${t.item!.id}`);
                                             }}
-                                            className="w-full h-8 bg-white border border-slate-200 rounded-[var(--radius-inner)] text-xs font-bold text-slate-600 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
+                                            className="w-full h-8 rounded-[var(--radius-inner)] text-xs font-bold text-slate-600"
                                         >
                                             Открыть карточку товара
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
                             </div>

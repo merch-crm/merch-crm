@@ -18,6 +18,8 @@ import { ItemHistoryTransaction } from "../../../types";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { PremiumPagination } from "@/components/ui/premium-pagination";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface ItemHistorySectionProps {
     history: ItemHistoryTransaction[];
@@ -50,121 +52,6 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
         return filteredHistory.slice(start, start + pageSize);
     }, [filteredHistory, currentPage, pageSize]);
 
-    const renderTableView = () => (
-        <>
-            {/* Desktop Table View */}
-            <div className="hidden md:block rounded-2xl border border-border overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-muted/50 border-b border-border">
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Тип</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Изменение</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Склад</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Причина</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground">Автор</th>
-                                <th className="px-4 py-4 text-[12px] font-bold text-muted-foreground text-right">Дата</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/50">
-                            {paginatedHistory.map((tx, idx) => {
-                                const isPositive = tx.changeAmount > 0;
-                                return (
-                                    <tr key={tx.id || idx} className="hover:bg-muted/50 transition-colors group">
-                                        <td className="px-4 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-3">
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm transition-transform",
-                                                    tx.type === "transfer"
-                                                        ? "bg-primary/5 text-primary border border-primary/20"
-                                                        : tx.type === "attribute_change"
-                                                            ? "bg-amber-50 text-amber-600 border border-amber-100"
-                                                            : tx.type === "archive"
-                                                                ? "bg-rose-50 text-rose-600 border border-rose-100"
-                                                                : tx.type === "restore"
-                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                    : tx.type === 'in'
-                                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                        : "bg-rose-50 text-rose-600 border border-rose-100"
-                                                )}>
-                                                    {tx.type === 'in' && <ArrowDownCircle className="w-5 h-5" />}
-                                                    {tx.type === 'out' && <ArrowUpCircle className="w-5 h-5" />}
-                                                    {tx.type === 'transfer' && <ArrowRightLeft className="w-5 h-5" />}
-                                                    {tx.type === 'attribute_change' && <Book className="w-4 h-4" />}
-                                                    {tx.type === 'archive' && <Clock className="w-4 h-4" />}
-                                                    {tx.type === 'restore' && <Package className="w-4 h-4" />}
-                                                </div>
-                                                <span className="hidden lg:inline text-[13px] font-bold text-foreground">
-                                                    {tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещение" : "Обновление"}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-left">
-                                            <span className={cn(
-                                                "text-[13px] font-bold",
-                                                isPositive ? "text-emerald-600" : "text-rose-600"
-                                            )}>
-                                                {isPositive ? "+" : ""}{tx.changeAmount}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap">
-                                            <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name || "—"}</span>
-                                        </td>
-                                        <td className="px-4 py-4 min-w-[120px] max-w-[240px]">
-                                            <div className="text-[12px] font-bold text-muted-foreground leading-snug">
-                                                {(() => {
-                                                    const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
-
-                                                    if (transferMatch) {
-                                                        const from = transferMatch[1];
-                                                        const to = transferMatch[2];
-                                                        const comment = transferMatch[3];
-
-                                                        return (
-                                                            <div className="flex flex-col gap-0.5">
-                                                                <div className="font-bold text-foreground flex items-center gap-1.5">
-                                                                    {from} <ArrowRight className="w-3 h-3 text-muted-foreground" /> {to}
-                                                                </div>
-                                                                {comment && <div className="text-muted-foreground font-medium truncate">{comment}</div>}
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return tx.reason || "—";
-                                                })()}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap">
-                                            <span className="text-[13px] font-bold text-muted-foreground">
-                                                {tx.creator?.name || "Система"}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-right">
-                                            {(() => {
-                                                const d = new Date(tx.createdAt);
-                                                if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-muted-foreground/30">—</span>;
-                                                return (
-                                                    <div className="flex flex-col items-end">
-                                                        <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy")}</span>
-                                                        <span className="text-[10px] font-bold text-muted-foreground">{format(d, "HH:mm")}</span>
-                                                    </div>
-                                                );
-                                            })()}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                {filteredHistory.length === 0 && renderEmpty()}
-            </div>
-
-            {/* Mobile Compact List View */}
-            <MobileItemHistoryList history={paginatedHistory} />
-            {filteredHistory.length === 0 && <div className="md:hidden">{renderEmpty()}</div>}
-        </>
-    );
-
     const renderEmpty = () => (
         <div className="py-20 text-center bg-muted/50 rounded-2xl border-2 border-dashed border-border/50">
             <div className="w-20 h-20 bg-card rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 border border-border">
@@ -174,14 +61,127 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
         </div>
     );
 
+    const renderTableView = () => (
+        <>
+            {/* Desktop Table View */}
+            <div className="table-container hidden md:block">
+                <table className="crm-table">
+                    <thead className="crm-thead">
+                        <tr>
+                            <th className="crm-th">Тип</th>
+                            <th className="crm-th">Изменение</th>
+                            <th className="crm-th">Склад</th>
+                            <th className="crm-th">Причина</th>
+                            <th className="crm-th">Автор</th>
+                            <th className="crm-th text-right">Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody className="crm-tbody">
+                        {paginatedHistory.map((tx, idx) => {
+                            const isPositive = tx.changeAmount > 0;
+                            return (
+                                <tr key={tx.id || idx} className="crm-tr-clickable group">
+                                    <td className="crm-td">
+                                        <div className="flex items-center gap-3">
+                                            <div className={cn(
+                                                "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
+                                                tx.type === "transfer"
+                                                    ? "bg-primary/5 text-primary border border-primary/20"
+                                                    : tx.type === "attribute_change"
+                                                        ? "bg-amber-50 text-amber-600 border border-amber-100"
+                                                        : tx.type === "archive"
+                                                            ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                                            : tx.type === "restore"
+                                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                : tx.type === 'in'
+                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                    : "bg-rose-50 text-rose-600 border border-rose-100"
+                                            )}>
+                                                {tx.type === 'in' && <ArrowDownCircle className="w-5 h-5" />}
+                                                {tx.type === 'out' && <ArrowUpCircle className="w-5 h-5" />}
+                                                {tx.type === 'transfer' && <ArrowRightLeft className="w-5 h-5" />}
+                                                {tx.type === 'attribute_change' && <Book className="w-4 h-4" />}
+                                                {tx.type === 'archive' && <Clock className="w-4 h-4" />}
+                                                {tx.type === 'restore' && <Package className="w-4 h-4" />}
+                                            </div>
+                                            <span className="hidden lg:inline text-[13px] font-bold text-foreground">
+                                                {tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещение" : "Обновление"}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="crm-td">
+                                        <span className={cn(
+                                            "text-[13px] font-bold",
+                                            isPositive ? "text-emerald-600" : "text-rose-600"
+                                        )}>
+                                            {isPositive ? "+" : ""}{tx.changeAmount}
+                                        </span>
+                                    </td>
+                                    <td className="crm-td">
+                                        <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name || "—"}</span>
+                                    </td>
+                                    <td className="crm-td min-w-[120px] max-w-[240px]">
+                                        <div className="text-[12px] font-bold text-muted-foreground leading-snug">
+                                            {(() => {
+                                                const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
+
+                                                if (transferMatch) {
+                                                    const from = transferMatch[1];
+                                                    const to = transferMatch[2];
+                                                    const comment = transferMatch[3];
+
+                                                    return (
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <div className="font-bold text-foreground flex items-center gap-1.5">
+                                                                {from} <ArrowRight className="w-3 h-3 text-muted-foreground" /> {to}
+                                                            </div>
+                                                            {comment && <div className="text-muted-foreground font-medium truncate">{comment}</div>}
+                                                        </div>
+                                                    );
+                                                }
+                                                return tx.reason || "—";
+                                            })()}
+                                        </div>
+                                    </td>
+                                    <td className="crm-td">
+                                        <span className="text-[13px] font-bold text-muted-foreground">
+                                            {tx.creator?.name || "Система"}
+                                        </span>
+                                    </td>
+                                    <td className="crm-td text-right">
+                                        {(() => {
+                                            const d = new Date(tx.createdAt);
+                                            if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-muted-foreground/30">—</span>;
+                                            return (
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy")}</span>
+                                                    <span className="text-[10px] font-bold text-muted-foreground">{format(d, "HH:mm")}</span>
+                                                </div>
+                                            );
+                                        })()}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+            {filteredHistory.length === 0 && renderEmpty()}
+
+            {/* Mobile Compact List View */}
+            <MobileItemHistoryList history={paginatedHistory} />
+            {filteredHistory.length === 0 && <div className="md:hidden">{renderEmpty()}</div>}
+        </>
+    );
+
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Header / Controls - Photo 2 Style */}
             <div className="crm-filter-tray-light p-1.5 rounded-[22px]">
                 {/* Search Input Box */}
                 <div className="relative flex-1">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                    <Input
                         type="text"
                         placeholder="Поиск по истории..."
                         value={searchQuery}
@@ -189,18 +189,20 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none h-11"
                     />
                     {searchQuery && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => {
                                 setSearchQuery("");
                                 setCurrentPage(1);
                             }}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground"
+                            className="absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 text-muted-foreground/50 hover:text-foreground"
                         >
                             <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -215,14 +217,15 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                     ].map((btn) => {
                         const isActive = filterType === btn.id;
                         return (
-                            <button
+                            <Button
                                 key={String(btn.id)}
+                                variant="ghost"
                                 onClick={() => {
                                     setFilterType(btn.id);
                                     setCurrentPage(1);
                                 }}
                                 className={cn(
-                                    "crm-filter-tray-tab rounded-[16px]",
+                                    "crm-filter-tray-tab rounded-[16px] border-none hover:bg-transparent",
                                     isActive && "active"
                                 )}
                             >
@@ -234,7 +237,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     />
                                 )}
                                 <span className="relative z-10">{btn.label}</span>
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

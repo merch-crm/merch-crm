@@ -9,14 +9,13 @@ import { logAction } from "@/lib/audit";
 import { saveLocalFile } from "@/lib/local-storage";
 import sharp from "sharp";
 
-interface BrandingSettings {
+export interface BrandingSettings {
     companyName: string;
     logoUrl: string | null;
     primaryColor: string;
     faviconUrl: string | null;
-    primary_color?: string;
-    radius_outer?: number;
-    radius_inner?: number;
+    radiusOuter?: number;
+    radiusInner?: number;
     // New fields
     loginSlogan?: string | null;
     loginBackgroundUrl?: string | null;
@@ -40,7 +39,6 @@ interface BrandingSettings {
     currencySymbol?: string;
     dateFormat?: string;
     timezone?: string;
-    [key: string]: unknown;
 }
 
 import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
@@ -51,8 +49,8 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
         logoUrl: null,
         primaryColor: "#5d00ff",
         faviconUrl: null,
-        radius_outer: 24,
-        radius_inner: 14,
+        radiusOuter: 24,
+        radiusInner: 14,
         loginSlogan: "Ваша CRM для управления мерчем",
         dashboardWelcome: "Добро пожаловать в систему управления",
         notificationSound: "/sounds/notification.wav",
@@ -84,9 +82,11 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             primaryColor: (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff",
             logoUrl: (val.logoUrl as string) || (val.logo_url as string) || null,
             faviconUrl: (val.faviconUrl as string) || (val.favicon_url as string) || null,
+            radiusOuter: (val.radiusOuter as number) || (val.radius_outer as number) || 24,
+            radiusInner: (val.radiusInner as number) || (val.radius_inner as number) || 14,
             vibrationEnabled: val.vibrationEnabled !== undefined ? (val.vibrationEnabled as boolean) : true,
             soundConfig: (val.soundConfig as BrandingSettings['soundConfig']) || {}
-        };
+        } as BrandingSettings;
     } catch (error) {
         console.error("Error fetching branding settings from DB:", error);
         return defaultBranding;
@@ -104,12 +104,14 @@ export async function updateBrandingSettings(data: BrandingSettings) {
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
         const existing = result[0];
 
-        const saveData = { ...data };
+        const saveData: Record<string, unknown> = { ...data };
 
-        // Sync camelCase and snake_case properties
-        if (saveData.primaryColor) saveData.primary_color = saveData.primaryColor;
-        if (saveData.logoUrl !== undefined) saveData['logo_url'] = saveData.logoUrl;
-        if (saveData.faviconUrl !== undefined) saveData['favicon_url'] = saveData.faviconUrl;
+        // Sync camelCase and snake_case properties for DB compatibility (legacy support)
+        if (data.primaryColor) saveData['primary_color'] = data.primaryColor;
+        if (data.logoUrl !== undefined) saveData['logo_url'] = data.logoUrl;
+        if (data.faviconUrl !== undefined) saveData['favicon_url'] = data.faviconUrl;
+        if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
+        if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
 
         if (existing) {
             await db.update(systemSettings)

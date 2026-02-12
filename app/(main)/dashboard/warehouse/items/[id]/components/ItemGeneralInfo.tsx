@@ -18,6 +18,7 @@ import { PremiumSelect } from "@/components/ui/premium-select";
 import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
 import { Session } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ItemGeneralInfoProps {
     item: InventoryItem;
@@ -331,26 +332,29 @@ export function ItemGeneralInfo({
                                     {/* Action Buttons */}
                                     <div className="flex items-center gap-1">
                                         {isEditing && onRemoveAttribute && (
-                                            <button
-                                                type="button"
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     e.preventDefault();
                                                     onRemoveAttribute(param.slug);
                                                 }}
-                                                className="w-7 h-7 rounded-lg bg-red-50 border border-red-100 flex items-center justify-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all transform active:scale-95 shadow-sm"
+                                                className="w-7 h-7 rounded-lg bg-red-50 border border-red-100 flex items-center justify-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all transform active:scale-95 shadow-sm p-0"
                                                 title="Удалить характеристику"
                                             >
                                                 <X className="w-3 h-3" />
-                                            </button>
+                                            </Button>
                                         )}
                                         {!isEditing && onEdit && (
-                                            <button
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
                                                 onClick={onEdit}
-                                                className="w-7 h-7 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-foreground hover:text-background transition-all transform active:scale-95 shadow-sm"
+                                                className="w-7 h-7 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-foreground hover:text-background transition-all transform active:scale-95 shadow-sm p-0"
                                             >
                                                 <Pencil className="w-3 h-3" />
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

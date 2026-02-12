@@ -3,6 +3,7 @@
 import { LogOut } from "lucide-react";
 import { stopImpersonating } from "@/app/(main)/admin-panel/actions";
 import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -47,16 +48,16 @@ export function ImpersonationBanner({ impersonatorName, targetName }: Impersonat
                     </span>
                 </div>
             </div>
-            <button
+            <Button
                 onClick={handleStop}
                 disabled={isLoading}
                 className={cn(
-                    "ml-4 px-4 py-1.5 bg-white text-amber-600 rounded-full text-xs font-bold  tracking-normal hover:bg-amber-50 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap",
+                    "ml-4 px-4 py-1.5 bg-white text-amber-600 rounded-full text-xs font-bold tracking-normal hover:bg-amber-50 hover:text-amber-700 transition-all gap-2 shadow-sm whitespace-nowrap h-auto border-none",
                     isLoading && "opacity-50 cursor-not-allowed"
                 )}
             >
                 {isLoading ? "Выход..." : "Вернуться к админу"}
-            </button>
+            </Button>
         </div>
     );
 }

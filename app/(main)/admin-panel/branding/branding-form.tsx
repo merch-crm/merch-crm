@@ -21,13 +21,10 @@ interface BrandingFormProps {
     initialSettings: {
         companyName: string;
         logoUrl: string | null;
-        logo_url?: string | null;
         primaryColor: string;
-        primary_color?: string;
         faviconUrl: string | null;
-        favicon_url?: string | null;
-        radius_outer?: number;
-        radius_inner?: number;
+        radiusOuter?: number;
+        radiusInner?: number;
         loginSlogan?: string | null;
         loginBackgroundUrl?: string | null;
         dashboardWelcome?: string | null;
@@ -315,19 +312,20 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     </label>
                                     <div className="flex flex-wrap gap-2">
                                         {["₽", "$", "€", "₴", "₸"].map((sym) => (
-                                            <button
+                                            <Button
                                                 key={sym}
                                                 type="button"
+                                                variant="outline"
                                                 onClick={() => setFormData({ ...formData, currencySymbol: sym })}
                                                 className={cn(
-                                                    "w-10 h-10 rounded-xl border font-bold text-sm transition-all",
+                                                    "w-10 h-10 rounded-xl font-bold text-sm transition-all p-0",
                                                     formData.currencySymbol === sym
-                                                        ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                                                        ? "bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
                                                         : "bg-white text-slate-500 border-slate-200 hover:border-primary/50"
                                                 )}
                                             >
                                                 {sym}
-                                            </button>
+                                            </Button>
                                         ))}
                                         <Input
                                             value={formData.currencySymbol || ""}
@@ -345,19 +343,20 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                     </label>
                                     <div className="flex flex-wrap gap-2">
                                         {["DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY"].map((fmt) => (
-                                            <button
+                                            <Button
                                                 key={fmt}
                                                 type="button"
+                                                variant="outline"
                                                 onClick={() => setFormData({ ...formData, dateFormat: fmt })}
                                                 className={cn(
-                                                    "px-3 h-10 rounded-xl border font-bold text-[11px] transition-all",
+                                                    "px-3 h-10 rounded-xl font-bold text-[11px] transition-all",
                                                     formData.dateFormat === fmt
-                                                        ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                                                        ? "bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
                                                         : "bg-white text-slate-500 border-slate-200 hover:border-primary/50"
                                                 )}
                                             >
                                                 {fmt}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                     <p className="text-[10px] text-slate-400">Глобальный формат отображения календаря</p>
@@ -425,13 +424,15 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                                 alt="CRM Background"
                                                                 className="h-20 w-32 object-cover rounded-[18px] border border-slate-200 p-1 bg-white"
                                                             />
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => setFormData({ ...formData, crmBackgroundUrl: null })}
-                                                                className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
+                                                                className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-rose-600 hover:text-white p-0"
                                                             >
                                                                 <X className="w-3 h-3" />
-                                                            </button>
+                                                            </Button>
                                                         </div>
                                                     ) : (
                                                         <div className="h-20 w-32 rounded-[18px] border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300">
@@ -462,49 +463,100 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                 </div>
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <div className="flex justify-between items-center">
-                                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                                                            Размытие
-                                                        </label>
-                                                        <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBlur || 0}px</span>
+                                            <div className="space-y-6 pt-4 border-t border-slate-100">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-center">
+                                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                                                                Скругление (внешнее)
+                                                            </label>
+                                                            <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.radiusOuter || 24}px</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <MousePointer2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="40"
+                                                                step="1"
+                                                                value={formData.radiusOuter || 24}
+                                                                onChange={(e) => setFormData({ ...formData, radiusOuter: Number(e.target.value) })}
+                                                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
+                                                                style={{ accentColor: formData.primaryColor }}
+                                                            />
+                                                            <span className="text-[10px] text-slate-400 w-8 text-right">40px</span>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex items-center gap-3">
-                                                        <Eye className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                                        <input
-                                                            type="range"
-                                                            min="0"
-                                                            max="40"
-                                                            step="1"
-                                                            value={formData.crmBackgroundBlur || 0}
-                                                            onChange={(e) => setFormData({ ...formData, crmBackgroundBlur: Number(e.target.value) })}
-                                                            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
-                                                            style={{ accentColor: formData.primaryColor }}
-                                                        />
-                                                        <EyeOff className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-center">
+                                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                                                                Скругление (внутреннее)
+                                                            </label>
+                                                            <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.radiusInner || 14}px</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <MousePointer2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="40"
+                                                                step="1"
+                                                                value={formData.radiusInner || 14}
+                                                                onChange={(e) => setFormData({ ...formData, radiusInner: Number(e.target.value) })}
+                                                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
+                                                                style={{ accentColor: formData.primaryColor }}
+                                                            />
+                                                            <span className="text-[10px] text-slate-400 w-8 text-right">40px</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <div className="flex justify-between items-center">
-                                                        <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                                                            Яркость
-                                                        </label>
-                                                        <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBrightness || 100}%</span>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-center">
+                                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                                                                Размытие фона CRM
+                                                            </label>
+                                                            <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBlur || 0}px</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <Eye className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="40"
+                                                                step="1"
+                                                                value={formData.crmBackgroundBlur || 0}
+                                                                onChange={(e) => setFormData({ ...formData, crmBackgroundBlur: Number(e.target.value) })}
+                                                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
+                                                                style={{ accentColor: formData.primaryColor }}
+                                                            />
+                                                            <EyeOff className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                        </div>
                                                     </div>
-                                                    <div className="flex items-center gap-3">
-                                                        <Moon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                                        <input
-                                                            type="range"
-                                                            min="20"
-                                                            max="180"
-                                                            step="5"
-                                                            value={formData.crmBackgroundBrightness || 100}
-                                                            onChange={(e) => setFormData({ ...formData, crmBackgroundBrightness: Number(e.target.value) })}
-                                                            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
-                                                            style={{ accentColor: formData.primaryColor }}
-                                                        />
-                                                        <Sun className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-center">
+                                                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                                                                Яркость фона CRM
+                                                            </label>
+                                                            <span className="text-[11px] font-bold" style={{ color: formData.primaryColor }}>{formData.crmBackgroundBrightness || 100}%</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <Moon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                            <input
+                                                                type="range"
+                                                                min="20"
+                                                                max="180"
+                                                                step="1"
+                                                                value={formData.crmBackgroundBrightness || 100}
+                                                                onChange={(e) => setFormData({ ...formData, crmBackgroundBrightness: Number(e.target.value) })}
+                                                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all hover:bg-slate-300"
+                                                                style={{ accentColor: formData.primaryColor }}
+                                                            />
+                                                            <Sun className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -524,13 +576,15 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                                 alt="Login Background"
                                                                 className="h-20 w-32 object-cover rounded-[18px] border border-slate-200 p-1 bg-white"
                                                             />
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => setFormData({ ...formData, loginBackgroundUrl: null })}
-                                                                className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
+                                                                className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-rose-600 hover:text-white p-0"
                                                             >
                                                                 <X className="w-3 h-3" />
-                                                            </button>
+                                                            </Button>
                                                         </div>
                                                     ) : (
                                                         <div className="h-20 w-32 rounded-[18px] border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300">
@@ -577,7 +631,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                     {formData.logoUrl ? (
                                                         <div className="relative">
                                                             <img src={formData.logoUrl} alt="Logo" className="h-14 w-auto min-w-[56px] object-contain" />
-                                                            <button type="button" onClick={() => setFormData({ ...formData, logoUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"><X className="w-3 h-3" /></button>
+                                                            <Button type="button" variant="ghost" size="icon" onClick={() => setFormData({ ...formData, logoUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-rose-600 hover:text-white p-0"><X className="w-3 h-3" /></Button>
                                                         </div>
                                                     ) : <div className="h-14 w-14 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><LucideImage className="w-6 h-6" /></div>}
                                                 </div>
@@ -600,7 +654,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                                                     {formData.faviconUrl ? (
                                                         <div className="relative">
                                                             <img src={formData.faviconUrl} alt="Favicon" className="w-12 h-12 object-contain" />
-                                                            <button type="button" onClick={() => setFormData({ ...formData, faviconUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"><X className="w-3 h-3" /></button>
+                                                            <Button type="button" variant="ghost" size="icon" onClick={() => setFormData({ ...formData, faviconUrl: null })} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-rose-600 hover:text-white p-0"><X className="w-3 h-3" /></Button>
                                                         </div>
                                                     ) : <div className="h-12 w-12 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><LucideImage className="w-5 h-5" /></div>}
                                                 </div>

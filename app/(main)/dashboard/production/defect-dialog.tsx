@@ -51,12 +51,13 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
 
     return (
         <>
-            <button
+            <Button
+                variant="ghost"
                 onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
-                className="flex-1 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-[8px] text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
+                className="flex-1 px-3 py-1.5 h-auto bg-rose-50 text-rose-600 rounded-[8px] text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
             >
                 Брак
-            </button>
+            </Button>
 
             <ResponsiveModal
                 isOpen={isOpen}

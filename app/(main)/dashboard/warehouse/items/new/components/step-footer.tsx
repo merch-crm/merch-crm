@@ -65,7 +65,7 @@ export function StepFooter({
                             variant="default"
                             onClick={onNext}
                             disabled={isNextDisabled || isSubmitting}
-                            className="h-10 sm:h-11 pl-4 pr-3 sm:pl-8 sm:pr-6 rounded-[var(--radius)] font-bold text-xs sm:text-sm shadow-md shadow-primary/10 transition-all w-auto btn-primary"
+                            className="h-10 sm:h-11 pl-4 pr-3 sm:pl-8 sm:pr-6 rounded-[var(--radius)] font-bold text-xs sm:text-sm shadow-md shadow-primary/10 transition-all w-auto"
                         >
                             <div className="flex items-center justify-end sm:justify-center gap-2 sm:gap-2.5">
                                 {isSubmitting ? (

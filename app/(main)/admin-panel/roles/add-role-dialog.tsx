@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Shield, Loader2, Building, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 import { createRole, getDepartments } from "../actions";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -35,6 +37,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
+    const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>("none");
     const [permissions, setPermissions] = useState<Record<string, Record<string, boolean>>>({});
 
     useEffect(() => {
@@ -114,13 +117,13 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название роли</label>
                                 <div className="relative">
-                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input
+                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                    <Input
                                         type="text"
                                         name="name"
                                         required
                                         placeholder="Например: Оператор цеха"
-                                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
                                     />
                                 </div>
                             </div>
@@ -128,17 +131,18 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Привязка к отделу</label>
                                 <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <select
+                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                                    <PremiumSelect
                                         name="departmentId"
-                                        className="block w-full pl-10 h-[46px] rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
-                                    >
-                                        <option value="">Общая роль (без отдела)</option>
-                                        {departments.map(dept => (
-                                            <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                                        value={selectedDepartmentId}
+                                        options={[
+                                            { id: "none", title: "Общая роль (без отдела)" },
+                                            ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                                        ]}
+                                        placeholder="Выбрать отдел"
+                                        className="pl-10 h-11"
+                                        onChange={(val: string) => setSelectedDepartmentId(val)}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -179,15 +183,16 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                                 {ACTIONS.map(action => {
                                                     const isChecked = permissions[section.id]?.[action.id] || false;
                                                     return (
-                                                        <button
+                                                        <Button
                                                             key={action.id}
                                                             type="button"
+                                                            variant="ghost"
                                                             onClick={() => handleToggle(section.id, action.id)}
                                                             className={cn(
-                                                                "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all",
+                                                                "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all h-auto",
                                                                 isChecked
-                                                                    ? "bg-primary/10 border-primary/20 text-primary"
-                                                                    : "bg-white border-slate-200 text-slate-400"
+                                                                    ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                                                                    : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
                                                             )}
                                                         >
                                                             <div className={cn(
@@ -197,7 +202,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                                                 {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
                                                             </div>
                                                             {action.label}
-                                                        </button>
+                                                        </Button>
                                                     );
                                                 })}
                                             </div>
@@ -225,18 +230,20 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                                         const isChecked = permissions[section.id]?.[action.id] || false;
                                                         return (
                                                             <td key={action.id} className="px-4 py-3 text-center">
-                                                                <button
+                                                                <Button
                                                                     type="button"
+                                                                    variant="ghost"
+                                                                    size="icon"
                                                                     onClick={() => handleToggle(section.id, action.id)}
                                                                     className={cn(
-                                                                        "w-5 h-5 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90",
+                                                                        "w-6 h-6 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90 p-0 hover:bg-transparent",
                                                                         isChecked
-                                                                            ? "bg-primary border-primary text-white shadow-sm"
+                                                                            ? "bg-primary border-primary text-white shadow-sm hover:text-white"
                                                                             : "bg-white border-slate-200 hover:border-primary/40"
                                                                     )}
                                                                 >
                                                                     {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
-                                                                </button>
+                                                                </Button>
                                                             </td>
                                                         );
                                                     })}
@@ -249,21 +256,22 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                         </div>
 
                         <div className="mt-5 pt-5 border-t border-slate-200 flex flex-col md:flex-row gap-3 sticky bottom-0 bg-white">
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setIsOpen(false)}
                                 className="flex-1 inline-flex justify-center items-center rounded-[var(--radius-inner)] border border-slate-200 bg-white h-11 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
                             >
                                 Отмена
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent bg-primary h-11 px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 focus:outline-none focus:outline-none disabled:opacity-50 transition-all active:scale-[0.98]"
+                                className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] h-11"
                             >
-                                {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                                {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
                                 {loading ? "Создание..." : "Создать роль"}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>

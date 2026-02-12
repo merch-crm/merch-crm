@@ -388,7 +388,7 @@ const QuickSettings = () => {
             </motion.div>
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between px-10 py-5 bg-black rounded-3xl text-white">
                 <div className="flex gap-6 items-center">
-                    <span className="text-[18px] font-black">2024</span>
+                    <span className="text-[18px] font-black">{new Date().getFullYear()}</span>
                     <div className="flex flex-col text-[10px] font-bold uppercase tracking-wider opacity-60">
                         <span>23</span>
                         <span>Янв</span>
@@ -1770,7 +1770,7 @@ export default function NewReferencesCRM() {
             </motion.div>
 
             <footer className="pt-24 pb-12 border-t mt-24 text-center">
-                <p className="text-slate-300 font-black uppercase tracking-widest text-[10px]">Merch CRM Design System © 2026</p>
+                <p className="text-slate-300 font-black uppercase tracking-widest text-[10px]">Merch CRM Design System © {new Date().getFullYear()}</p>
             </footer>
         </section>
     );

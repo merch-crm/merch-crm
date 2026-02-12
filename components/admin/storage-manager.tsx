@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Cloud, HardDrive, AlertTriangle, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { S3StorageManager } from "./s3-storage-manager";
 import { LocalStorageManager } from "./local-storage-manager";
 import { checkStorageQuotas, StorageQuotaUsage } from "@/app/(main)/admin-panel/storage-actions";
@@ -41,40 +42,44 @@ export function StorageManager() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
-                <div className="flex items-center gap-3 p-2 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
-                    <button
+                <div className="flex items-center gap-2 p-1.5 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab("s3")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
+                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold tracking-normal transition-all h-auto",
                             activeTab === "s3"
-                                ? "bg-white text-#5d00ff shadow-sm border border-slate-200"
-                                : "text-slate-400 hover:text-slate-600"
+                                ? "bg-white text-[#5d00ff] shadow-sm border border-slate-200 hover:bg-white hover:text-[#5d00ff]"
+                                : "text-slate-400 hover:text-slate-600 bg-transparent"
                         )}
                     >
                         <Cloud size={18} />
                         Облачное S3
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab("local")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-[20px] text-sm font-bold  tracking-normal transition-all",
+                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold tracking-normal transition-all h-auto",
                             activeTab === "local"
-                                ? "bg-white text-emerald-600 shadow-sm border border-slate-200"
-                                : "text-slate-400 hover:text-slate-600"
+                                ? "bg-white text-emerald-600 shadow-sm border border-slate-200 hover:bg-white hover:text-emerald-600"
+                                : "text-slate-400 hover:text-slate-600 bg-transparent"
                         )}
                     >
                         <HardDrive size={18} />
                         Локальный диск
-                    </button>
+                    </Button>
                 </div>
 
-                <button
+                <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => setIsSettingsOpen(true)}
-                    className="p-3 bg-white text-slate-500 hover:text-#5d00ff hover:bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm transition-all active:scale-95"
+                    className="bg-white text-slate-500 hover:text-[#5d00ff] hover:bg-slate-50 rounded-[18px] border-slate-200 shadow-sm h-11 w-11"
                     title="Настройки лимитов"
                 >
                     <Settings2 size={20} />
-                </button>
+                </Button>
             </div>
 
             {/* Quota Alerts */}

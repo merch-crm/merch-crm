@@ -6,6 +6,9 @@ import { updateClient, getManagers } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 
 
 interface EditClientDialogProps {
@@ -34,6 +37,14 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
     const [loading, setLoading] = useState(false);
     const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
     const { toast } = useToast();
+
+    const [acquisitionSource, setAcquisitionSource] = useState(client.acquisitionSource || "");
+    const [managerId, setManagerId] = useState(client.managerId || "");
+
+    useEffect(() => {
+        setAcquisitionSource(client.acquisitionSource || "");
+        setManagerId(client.managerId || "");
+    }, [client]);
 
     useEffect(() => {
         if (isOpen) {
@@ -75,24 +86,24 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <User className="w-3.5 h-3.5 inline mr-1" /> Фамилия <span className="text-rose-500">*</span>
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="lastName"
                                 defaultValue={client.lastName}
                                 required
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <User className="w-3.5 h-3.5 inline mr-1" /> Имя <span className="text-rose-500">*</span>
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="firstName"
                                 defaultValue={client.firstName}
                                 required
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                     </div>
@@ -102,22 +113,22 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Отчество
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="patronymic"
                                 defaultValue={client.patronymic || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Building2 className="w-3.5 h-3.5 inline mr-1" /> Компания
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="company"
                                 defaultValue={client.company || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                     </div>
@@ -128,23 +139,23 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Phone className="w-3.5 h-3.5 inline mr-1" /> Телефон <span className="text-rose-500">*</span>
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="phone"
                                 defaultValue={client.phone || ""}
                                 required
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Mail className="w-3.5 h-3.5 inline mr-1" /> Email
                             </label>
-                            <input
+                            <Input
                                 type="email"
                                 name="email"
                                 defaultValue={client.email || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                     </div>
@@ -154,11 +165,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Telegram
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="telegram"
                                 defaultValue={client.telegram || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="@username"
                             />
                         </div>
@@ -166,11 +177,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Instagram
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="instagram"
                                 defaultValue={client.instagram || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="insta_link"
                             />
                         </div>
@@ -181,11 +192,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <LinkIcon className="w-3.5 h-3.5 inline mr-1" /> Ссылка на соцсеть
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="socialLink"
                                 defaultValue={client.socialLink || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="vk.com/..."
                             />
                         </div>
@@ -193,17 +204,19 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Источник
                             </label>
-                            <select
+                            <PremiumSelect
                                 name="acquisitionSource"
-                                defaultValue={client.acquisitionSource || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Не указан</option>
-                                <option value="instagram">Instagram</option>
-                                <option value="website">Сайт</option>
-                                <option value="recommendation">Рекомендация</option>
-                                <option value="other">Другое</option>
-                            </select>
+                                value={acquisitionSource}
+                                onChange={setAcquisitionSource}
+                                options={[
+                                    { id: "", title: "Не указан" },
+                                    { id: "instagram", title: "Instagram" },
+                                    { id: "website", title: "Сайт" },
+                                    { id: "recommendation", title: "Рекомендация" },
+                                    { id: "other", title: "Другое" },
+                                ]}
+                                triggerClassName="h-12 bg-slate-50 border-slate-200"
+                            />
                         </div>
                     </div>
 
@@ -212,19 +225,16 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Менеджер
                             </label>
-                            <select
+                            <PremiumSelect
                                 name="managerId"
-                                defaultValue={client.managerId || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Не назначен</option>
-                                <option value="high">Высокий</option>
-                                <option value="medium">Средний</option>
-                                <option value="low">Низкий</option>
-                                {managers.map(m => (
-                                    <option key={m.id} value={m.id}>{m.name}</option>
-                                ))}
-                            </select>
+                                value={managerId}
+                                onChange={setManagerId}
+                                options={[
+                                    { id: "", title: "Не назначен" },
+                                    ...managers.map(m => ({ id: m.id, title: m.name }))
+                                ]}
+                                triggerClassName="h-12 bg-slate-50 border-slate-200"
+                            />
                         </div>
                     </div>
 
@@ -233,22 +243,22 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <MapPin className="w-3.5 h-3.5 inline mr-1" /> Город
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="city"
                                 defaultValue={client.city || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Адрес
                             </label>
-                            <input
+                            <Input
                                 type="text"
                                 name="address"
                                 defaultValue={client.address || ""}
-                                className="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none"
+                                className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
                     </div>
@@ -268,21 +278,22 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
                 {/* Footer Actions */}
                 <div className="p-6 md:p-8 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto flex-shrink-0">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={onClose}
                         className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-2xl bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center"
                     >
                         Отмена
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="submit"
                         disabled={loading}
                         className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
                     >
                         {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                         {loading ? "Сохранение..." : "Сохранить изменения"}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </ResponsiveModal>

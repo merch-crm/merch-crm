@@ -5,6 +5,9 @@ import { Shield, Loader2, Building, ChevronDown } from "lucide-react";
 import { updateRole, getDepartments } from "../actions";
 import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 
 interface EditRoleDialogProps {
     role: {
@@ -22,6 +25,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
+    const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>(role?.departmentId || "none");
 
     useEffect(() => {
         if (isOpen) {
@@ -69,14 +73,14 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                     <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Название роли</label>
                         <div className="relative">
-                            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <input
+                            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                            <Input
                                 type="text"
                                 name="name"
                                 required
                                 defaultValue={role?.name}
                                 placeholder="Например: Оператор цеха"
-                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all placeholder:text-slate-300"
+                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-12"
                             />
                         </div>
                     </div>
@@ -84,18 +88,18 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                     <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Привязка к отделу</label>
                         <div className="relative">
-                            <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <select
+                            <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                            <PremiumSelect
                                 name="departmentId"
-                                defaultValue={role?.departmentId || ""}
-                                className="block w-full pl-10 h-[46px] rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all appearance-none"
-                            >
-                                <option value="">Общая роль (без отдела)</option>
-                                {departments.map(dept => (
-                                    <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                ))}
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                                value={selectedDepartmentId || ""}
+                                options={[
+                                    { id: "none", title: "Общая роль (без отдела)" },
+                                    ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                                ]}
+                                placeholder="Выбрать отдел"
+                                className="pl-10 h-11"
+                                onChange={(val: string) => setSelectedDepartmentId(val)}
+                            />
                         </div>
                     </div>
 
@@ -124,21 +128,22 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-slate-200 flex gap-3 sticky bottom-0 bg-white">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={onClose}
-                            className="flex-1 inline-flex justify-center items-center rounded-[18px] border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98]"
+                            className="flex-1 inline-flex justify-center items-center rounded-[18px] border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all active:scale-[0.98] h-12 border-none"
                         >
                             Отмена
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={loading}
-                            className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark py-3 px-4 text-sm font-bold text-white shadow-lg transition-all active:scale-[0.98]"
+                            className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] font-bold text-white shadow-lg transition-all active:scale-[0.98] h-12"
                         >
-                            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+                            {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
                             {loading ? "Сохранение..." : "Сохранить изменения"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

@@ -18,6 +18,7 @@ import { PremiumSelect } from "@/components/ui/premium-select";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { pluralize, sentence } from "@/lib/pluralize";
+import { Button } from "@/components/ui/button";
 
 interface BulkActionsPanelProps {
     selectedIds: string[];
@@ -160,42 +161,50 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                             {/* Quick Tools */}
                             <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 title="Печать бланков"
                                 className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all hidden xs:flex"
                                 onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
                             >
                                 <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 title="Экспорт в Excel"
                                 className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-emerald-600 transition-all"
                                 onClick={onExport}
                             >
                                 <FileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            </button>
+                            </Button>
 
                             {isAdmin && (
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     title="Удалить выбранные"
                                     className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-slate-400 btn-destructive-ghost"
                                     onClick={() => setShowDeleteConfirm(true)}
                                     disabled={isProcessing}
                                 >
                                     <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                </button>
+                                </Button>
                             )}
 
                             <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={onClear}
                                 className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all"
                                 disabled={isProcessing}
                             >
                                 <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            </button>
+                            </Button>
                         </div>
 
                         <ConfirmDialog

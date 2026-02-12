@@ -52,6 +52,8 @@ import {
 } from "@/components/ui/card";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 function translateErrorMessage(message: string): string {
   if (!message) return "Неизвестная ошибка";
@@ -499,62 +501,67 @@ export function SystemStats() {
             Мониторинг, диагностика и резервное копирование
           </p>
         </div>
-        <div className="flex bg-slate-100/80 p-1 rounded-[18px] mx-auto sm:mx-0 overflow-x-auto no-scrollbar max-w-full">
-          <button
+        <div className="flex bg-slate-100/80 p-1 rounded-[18px] mx-auto sm:mx-0 overflow-x-auto no-scrollbar max-w-full gap-1">
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab("monitoring")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all tracking-wider h-8",
               activeTab === "monitoring"
-                ? "bg-white text-#5d00ff shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
             Мониторинг
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab("diagnostics")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all tracking-wider h-8",
               activeTab === "diagnostics"
-                ? "bg-white text-#5d00ff shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
             Диагностика
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab("backups")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all tracking-wider h-8",
               activeTab === "backups"
-                ? "bg-white text-#5d00ff shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
             Бэкапы
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab("security")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all tracking-wider h-8",
               activeTab === "security"
-                ? "bg-white text-#5d00ff shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
             Безопасность
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab("action_log")}
             className={cn(
-              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all  tracking-wider",
+              "px-4 py-2 text-xs font-bold rounded-[18px] transition-all tracking-wider h-8",
               activeTab === "action_log"
-                ? "bg-white text-#5d00ff shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
             Лог действий
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -573,15 +580,17 @@ export function SystemStats() {
                   {lastUpdated.toLocaleTimeString()}
                 </p>
               </div>
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => fetchStats(true)}
                 disabled={loading}
-                className="p-2.5 rounded-[18px] border border-slate-200 bg-white text-slate-600 hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/30 transition-all active:scale-95 disabled:opacity-50"
+                className="bg-white border-slate-200 text-slate-600 hover:text-[#5d00ff] hover:bg-indigo-50/30 rounded-[18px] h-10 w-10"
               >
                 <RefreshCw
                   className={cn("w-5 h-5", loading && "animate-spin")}
                 />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -903,13 +912,14 @@ export function SystemStats() {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={handleClearRam}
                   disabled={clearingRam}
-                  className="px-5 py-2.5 bg-slate-50 text-slate-600 text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-indigo-50 hover:text-#5d00ff border border-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                  className="bg-slate-50 text-slate-600 rounded-[18px] hover:bg-indigo-50 hover:text-[#5d00ff] border border-slate-200 h-9 text-[11px] font-bold tracking-wider px-5"
                 >
                   {clearingRam ? "Очистка..." : "Очистить"}
-                </button>
+                </Button>
               </div>
 
               <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-rose-100 transition-all">
@@ -926,13 +936,13 @@ export function SystemStats() {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => setShowRestartConfirm(true)}
                   disabled={restarting}
-                  className="px-5 py-2.5 bg-rose-500 text-white text-[11px] font-bold  tracking-wider rounded-[18px] hover:bg-rose-600 shadow-md shadow-rose-100 transition-all active:scale-95 disabled:opacity-50"
+                  className="bg-rose-500 text-white rounded-[18px] hover:bg-rose-600 shadow-md shadow-rose-100 h-9 text-[11px] font-bold tracking-wider px-5"
                 >
                   {restarting ? "Запуск..." : "Рестарт"}
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -1145,13 +1155,15 @@ export function SystemStats() {
                   Режим обслуживания и фильтрация входа
                 </p>
               </div>
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => fetchStats(true)}
-                className="p-2.5 bg-white border border-slate-200 text-slate-400 rounded-[18px] hover:text-#5d00ff hover:border-indigo-100 hover:bg-indigo-50/50 transition-all active:scale-95 shadow-sm"
+                className="bg-white border-slate-200 text-slate-400 hover:text-[#5d00ff] hover:bg-indigo-50/50 rounded-[18px] h-9 w-9"
                 title="Обновить данные"
               >
                 <RefreshCw size={16} />
-              </button>
+              </Button>
             </div>
 
             <div className="flex flex-col gap-6 pb-4">
@@ -1193,27 +1205,11 @@ export function SystemStats() {
                         администраторам.
                       </p>
                     </div>
-                    <button
-                      onClick={() =>
-                        handleToggleMaintenance(!securityData?.maintenanceMode)
-                      }
+                    <Switch
+                      checked={securityData?.maintenanceMode || false}
+                      onCheckedChange={handleToggleMaintenance}
                       disabled={togglingMaintenance}
-                      className={cn(
-                        "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
-                        securityData?.maintenanceMode
-                          ? "bg-#5d00ff shadow-[0_0_15px_rgba(79,70,229,0.4)]"
-                          : "bg-slate-200",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "pointer-events-none block h-6 w-6 rounded-full bg-white shadow-md ring-0 transition-transform duration-300",
-                          securityData?.maintenanceMode
-                            ? "translate-x-7"
-                            : "translate-x-1",
-                        )}
-                      />
-                    </button>
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -1235,19 +1231,20 @@ export function SystemStats() {
                         </p>
                       </div>
                     </div>
-                    <button
+                    <Button
+                      size="sm"
                       onClick={handleClearFailedLogins}
                       disabled={clearingLogins || !securityData?.failedLogins.length}
                       className={cn(
-                        "flex items-center gap-2 px-4 py-2 text-[10px] font-bold  tracking-normal rounded-[18px] transition-all active:scale-95 shadow-sm",
+                        "gap-2 text-[10px] h-8 rounded-[18px]",
                         securityData?.failedLogins.length && !clearingLogins
                           ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
-                          : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
+                          : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100"
                       )}
                     >
                       <Trash2 size={14} />
                       {clearingLogins ? "Очистка..." : "Очистить список"}
-                    </button>
+                    </Button>
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -1279,16 +1276,16 @@ export function SystemStats() {
                     )}
                     renderTable={() => (
                       <div className="overflow-x-auto no-scrollbar">
-                        <table className="w-full text-left border-collapse min-w-[600px]">
-                          <thead>
-                            <tr className="bg-slate-50/50">
-                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Email / Аккаунт</th>
-                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Причина</th>
-                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">IP Адрес</th>
-                              <th className="px-6 py-4 text-[10px] font-bold text-slate-400  tracking-normal">Дата и время</th>
+                        <table className="crm-table min-w-[600px]">
+                          <thead className="crm-thead">
+                            <tr className="crm-tr">
+                              <th className="crm-th">Email / Аккаунт</th>
+                              <th className="crm-th">Причина</th>
+                              <th className="crm-th">IP Адрес</th>
+                              <th className="crm-th">Дата и время</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-50">
+                          <tbody className="crm-tbody">
                             {securityData?.failedLogins.length === 0 ? (
                               <tr>
                                 <td colSpan={4} className="py-12 text-center text-slate-400 font-bold text-[10px]  tracking-normal">
@@ -1297,8 +1294,8 @@ export function SystemStats() {
                               </tr>
                             ) : (
                               securityData?.failedLogins.map((login) => (
-                                <tr key={login.id} className="hover:bg-slate-50/50 transition-colors group">
-                                  <td className="px-6 py-4">
+                                <tr key={login.id} className="crm-tr hover:bg-slate-50/50 transition-colors group">
+                                  <td className="crm-td">
                                     <div className="flex items-center gap-3">
                                       <div className="p-2 bg-rose-50 text-rose-500 rounded-[18px] group-hover:scale-110 transition-transform">
                                         <AlertTriangle size={14} />
@@ -1306,7 +1303,7 @@ export function SystemStats() {
                                       <span className="text-sm font-bold text-slate-700">{login.email}</span>
                                     </div>
                                   </td>
-                                  <td className="px-6 py-4">
+                                  <td className="crm-td">
                                     <span className={cn(
                                       "px-2 py-0.5 rounded-[18px] text-[10px] font-bold  tracking-tight",
                                       login.reason === "password_mismatch" ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600"
@@ -1314,12 +1311,12 @@ export function SystemStats() {
                                       {login.reason === "password_mismatch" ? "Неверный пароль" : "Пользователь не найден"}
                                     </span>
                                   </td>
-                                  <td className="px-6 py-4">
+                                  <td className="crm-td">
                                     <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100/50 px-2 py-1 rounded">
                                       {login.ipAddress || "Unknown"}
                                     </code>
                                   </td>
-                                  <td className="px-6 py-4">
+                                  <td className="crm-td">
                                     <span className="text-[10px] font-bold text-slate-400 ">
                                       {getTimeAgo(login.createdAt)} назад
                                     </span>
@@ -1355,19 +1352,20 @@ export function SystemStats() {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
+                  size="sm"
                   onClick={handleClearSecurityErrors}
                   disabled={clearingErrors || !securityData?.systemErrors.length}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 text-[10px] font-bold  tracking-normal rounded-[18px] transition-all active:scale-95 shadow-sm",
+                    "gap-2 text-[10px] h-8 rounded-[18px]",
                     securityData?.systemErrors.length && !clearingErrors
                       ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
-                      : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
+                      : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100"
                   )}
                 >
                   <Trash2 size={14} />
                   {clearingErrors ? "Очистка..." : "Очистить ошибки"}
-                </button>
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -1405,16 +1403,16 @@ export function SystemStats() {
                 )}
                 renderTable={() => (
                   <div className="overflow-x-auto no-scrollbar">
-                    <table className="w-full text-left border-collapse min-w-[700px]">
-                      <thead>
-                        <tr className="bg-rose-50/30">
-                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Сообщение об ошибке</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Критичность</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">IP / Путь</th>
-                          <th className="px-6 py-4 text-[10px] font-bold text-rose-400  tracking-normal">Дата</th>
+                    <table className="crm-table min-w-[700px]">
+                      <thead className="crm-thead">
+                        <tr className="crm-tr bg-rose-50/30">
+                          <th className="crm-th text-rose-400">Сообщение об ошибке</th>
+                          <th className="crm-th text-rose-400">Критичность</th>
+                          <th className="crm-th text-rose-400">IP / Путь</th>
+                          <th className="crm-th text-rose-400">Дата</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-rose-50">
+                      <tbody className="crm-tbody divide-y divide-rose-50">
                         {securityData?.systemErrors.length === 0 ? (
                           <tr>
                             <td colSpan={4} className="py-16 text-center text-emerald-600 font-bold text-[10px]  tracking-normal">
@@ -1426,10 +1424,10 @@ export function SystemStats() {
                           securityData?.systemErrors.map((error) => (
                             <tr
                               key={error.id}
-                              className="hover:bg-rose-50/50 transition-colors group cursor-pointer"
+                              className="crm-tr hover:bg-rose-50/50 transition-colors group cursor-pointer"
                               onClick={() => setSelectedError(error)}
                             >
-                              <td className="px-6 py-4 max-w-md">
+                              <td className="crm-td max-w-md">
                                 <div className="flex items-start gap-3">
                                   <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500 animate-pulse" />
                                   <div className="space-y-1">
@@ -1445,7 +1443,7 @@ export function SystemStats() {
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="crm-td">
                                 <span className={cn(
                                   "px-2 py-0.5 rounded-[18px] text-[9px] font-bold  tracking-tight",
                                   error.severity === "critical" ? "bg-rose-600 text-white" : "bg-amber-100 text-amber-600"
@@ -1453,14 +1451,14 @@ export function SystemStats() {
                                   {error.severity === "critical" ? "Критично" : "Предупреждение"}
                                 </span>
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="crm-td">
                                 <div className="flex flex-col gap-1">
                                   <code className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded w-fit">
                                     {error.ipAddress || "Unknown IP"}
                                   </code>
                                 </div>
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="crm-td">
                                 <div className="flex flex-col">
                                   <span className="text-[10px] font-bold text-slate-900 ">
                                     {getTimeAgo(error.createdAt)}
@@ -1496,17 +1494,19 @@ export function SystemStats() {
                     Проверка целостности и связи с сервисами
                   </CardDescription>
                 </div>
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={runDiagnostics}
                   disabled={diagnosing}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm"
+                  className="bg-white border-slate-200 text-slate-600 text-xs font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm gap-2 h-9"
                 >
                   <RefreshCw
                     size={14}
                     className={cn(diagnosing && "animate-spin")}
                   />
                   {diagnosing ? "Проверка..." : "Запустить тест"}
-                </button>
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-6">
@@ -2015,31 +2015,32 @@ export function SystemStats() {
                   { id: "weekly", label: "Неделя" },
                   { id: "monthly", label: "Месяц" },
                 ].map((freq) => (
-                  <button
+                  <Button
                     key={freq.id}
+                    variant="ghost"
                     onClick={() => updateSetting("backup_frequency", freq.id)}
                     className={cn(
-                      "px-3 py-1.5 text-[10px] font-bold  tracking-wider rounded-[18px] transition-all",
+                      "px-3 py-1.5 text-[10px] font-bold tracking-wider rounded-[18px] transition-all h-7",
                       settings.backup_frequency === freq.id
-                        ? "bg-white text-#5d00ff shadow-sm"
-                        : "text-slate-500 hover:text-slate-700",
+                        ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                        : "text-slate-500 hover:text-slate-700 bg-transparent"
                     )}
                   >
                     {freq.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
-              <button
+              <Button
                 onClick={handleCreateBackup}
                 disabled={creatingBackup}
-                className="flex items-center gap-2 px-6 py-2.5 bg-#5d00ff text-white text-xs font-bold rounded-[18px] hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-100"
+                className="bg-[#5d00ff] hover:bg-indigo-700 text-white text-xs font-bold rounded-[18px] shadow-md shadow-indigo-100 gap-2 h-9"
               >
                 <History
                   size={14}
                   className={cn(creatingBackup && "animate-spin")}
                 />
                 {creatingBackup ? "Создание..." : "Создать бэкап"}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -2076,42 +2077,44 @@ export function SystemStats() {
                           >
                             <Download size={16} />
                           </a>
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setBackupToDelete(backup.name)}
-                            className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                            className="hover:text-rose-500 hover:bg-red-50 h-8 w-8 rounded-[18px]"
                           >
                             <Trash2 size={16} />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
                   )}
                   renderTable={() => (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
-                        <thead>
-                          <tr className="bg-slate-50/50 border-b border-slate-200">
-                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
+                    <div className="table-container">
+                      <table className="crm-table">
+                        <thead className="crm-thead">
+                          <tr className="crm-tr bg-slate-50/50 border-b border-slate-200">
+                            <th className="crm-th">
                               Имя файла
                             </th>
-                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal">
+                            <th className="crm-th">
                               Размер
                             </th>
-                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
+                            <th className="crm-th text-right">
                               Дата создания
                             </th>
-                            <th className="px-6 py-4 text-[10px] font-bold  text-slate-400 tracking-normal text-right">
+                            <th className="crm-th text-right">
                               Действия
                             </th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="crm-tbody">
                           {backups.map((backup) => (
                             <tr
                               key={backup.name}
-                              className="border-b border-slate-200 hover:bg-slate-50/30 transition-colors group"
+                              className="crm-tr hover:bg-slate-50/30 transition-colors group"
                             >
-                              <td className="px-6 py-4">
+                              <td className="crm-td">
                                 <div className="flex items-center gap-3">
                                   <div className="p-2 rounded-[18px] bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
                                     <FileJson size={16} />
@@ -2121,17 +2124,17 @@ export function SystemStats() {
                                   </span>
                                 </div>
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="crm-td">
                                 <span className="text-xs font-bold text-slate-500">
                                   {formatSize(backup.size)}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-right">
+                              <td className="crm-td text-right">
                                 <span className="text-xs font-medium text-slate-500">
                                   {new Date(backup.createdAt).toLocaleString()}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-right">
+                              <td className="crm-td text-right">
                                 <div className="flex items-center justify-end gap-2 text-slate-400">
                                   <a
                                     href={`/uploads/backups/${backup.name}`}
@@ -2141,13 +2144,15 @@ export function SystemStats() {
                                   >
                                     <Download size={16} />
                                   </a>
-                                  <button
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => setBackupToDelete(backup.name)}
-                                    className="p-2 hover:text-red-600 hover:bg-red-50 rounded-[18px] transition-all"
+                                    className="hover:text-rose-600 hover:bg-red-50 rounded-[18px] h-8 w-8"
                                     title="Удалить"
                                   >
                                     <Trash2 size={16} />
-                                  </button>
+                                  </Button>
                                 </div>
                               </td>
                             </tr>

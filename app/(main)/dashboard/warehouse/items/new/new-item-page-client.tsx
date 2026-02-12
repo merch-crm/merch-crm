@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, RotateCcw, Loader2, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 import { addInventoryItem } from "../../actions";
 import { CategorySelector } from "./components/category-selector";
@@ -16,6 +17,7 @@ import { StepFooter } from "./components/step-footer";
 import { InventoryAttribute, AttributeType, ItemFormData, Category, StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
+import { ROUTES } from "@/lib/routes";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -27,6 +29,47 @@ interface NewItemPageClientProps {
     attributeTypes: AttributeType[];
     users: { id: string; name: string }[];
 }
+
+const DEFAULT_FORM_DATA: ItemFormData = {
+    subcategoryId: "",
+    brandCode: "",
+    qualityCode: "",
+    materialCode: "",
+    attributeCode: "",
+    sizeCode: "",
+    itemName: "",
+    sku: "",
+    unit: "шт",
+    description: "",
+    width: "",
+    height: "",
+    depth: "",
+    department: "",
+    imageFile: null,
+    imageBackFile: null,
+    imageSideFile: null,
+    imageDetailsFiles: [],
+    imagePreview: null,
+    imageBackPreview: null,
+    imageSidePreview: null,
+    imageDetailsPreviews: [],
+    thumbSettings: { zoom: 1, x: 0, y: 0 },
+    storageLocationId: "",
+    quantity: "0",
+    criticalStockThreshold: "0",
+    lowStockThreshold: "10",
+    costPrice: "0",
+    sellingPrice: "0",
+    responsibleUserId: "",
+    attributes: {}
+};
+
+const CATEGORY_TYPES = {
+    packaging: "упаковка",
+    clothing: "одежда",
+    consumables: "расходники",
+    uncategorized: "без категории",
+} as const;
 
 export function NewItemPageClient({
     categories,
@@ -52,39 +95,7 @@ export function NewItemPageClient({
 
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-    const [formData, setFormData] = useState<ItemFormData>({
-        subcategoryId: "",
-        brandCode: "",
-        qualityCode: "",
-        materialCode: "",
-        attributeCode: "",
-        sizeCode: "",
-        itemName: "",
-        sku: "",
-        unit: "шт",
-        description: "",
-        width: "",
-        height: "",
-        depth: "",
-        department: "",
-        imageFile: null,
-        imageBackFile: null,
-        imageSideFile: null,
-        imageDetailsFiles: [],
-        imagePreview: null,
-        imageBackPreview: null,
-        imageSidePreview: null,
-        imageDetailsPreviews: [],
-        thumbSettings: { zoom: 1, x: 0, y: 0 },
-        storageLocationId: "",
-        quantity: "0",
-        criticalStockThreshold: "0",
-        lowStockThreshold: "10",
-        costPrice: "0",
-        sellingPrice: "0",
-        responsibleUserId: "",
-        attributes: {}
-    });
+    const [formData, setFormData] = useState<ItemFormData>(DEFAULT_FORM_DATA);
 
     const [validationError, setValidationError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,7 +113,7 @@ export function NewItemPageClient({
         // 1. Initial params
         let initialStep = 0;
         let initialCat: Category | null = null;
-        let initialForm = { ...formData };
+        let initialForm = { ...DEFAULT_FORM_DATA };
 
         if (initialSubcategoryId || initialCategoryId) {
             let resolvedSubId = initialSubcategoryId;
@@ -128,7 +139,7 @@ export function NewItemPageClient({
 
             if (resolvedSubId) {
                 const subCat = categories.find(c => c.id === resolvedSubId);
-                const isClothing = subCat?.name.toLowerCase().includes("одежда") || initialCat?.name.toLowerCase().includes("одежда");
+                const isClothing = subCat?.name.toLowerCase().includes(CATEGORY_TYPES.clothing) || initialCat?.name.toLowerCase().includes(CATEGORY_TYPES.clothing);
                 initialForm = {
                     ...initialForm,
                     subcategoryId: resolvedSubId,
@@ -137,7 +148,7 @@ export function NewItemPageClient({
             }
         } else {
             // 2. Draft
-            const saved = localStorage.getItem("merch_crm_new_item_draft");
+            const saved = typeof window !== "undefined" ? localStorage.getItem("merch_crm_new_item_draft") : null;
             if (saved) {
                 try {
                     const draft = JSON.parse(saved);
@@ -164,8 +175,7 @@ export function NewItemPageClient({
         setStep(initialStep);
         setSelectedCategory(initialCat);
         setFormData(initialForm);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [categories, initialCategoryId, initialSubcategoryId]);
 
     // Save draft on changes
     useEffect(() => {
@@ -187,7 +197,9 @@ export function NewItemPageClient({
                 step,
                 selectedCategoryId: selectedCategory?.id
             };
-            localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
+            if (typeof window !== "undefined") {
+                localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
+            }
             setIsSaving(false);
         }, 1000); // Debounce saving
 
@@ -195,7 +207,9 @@ export function NewItemPageClient({
     }, [formData, step, selectedCategory, mounted]);
 
     const clearDraft = () => {
-        localStorage.removeItem("merch_crm_new_item_draft");
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("merch_crm_new_item_draft");
+        }
     };
 
 
@@ -205,38 +219,7 @@ export function NewItemPageClient({
         setStep(0);
         setSelectedCategory(null);
         setValidationError("");
-        setFormData({
-            subcategoryId: "",
-            brandCode: "",
-            qualityCode: "",
-            materialCode: "",
-            attributeCode: "",
-            sizeCode: "",
-            itemName: "",
-            sku: "",
-            unit: "шт",
-            description: "",
-            width: "",
-            height: "",
-            depth: "",
-            department: "",
-            imageFile: null,
-            imageBackFile: null,
-            imageSideFile: null,
-            imageDetailsFiles: [],
-            imagePreview: null,
-            imageBackPreview: null,
-            imageSidePreview: null,
-            imageDetailsPreviews: [],
-            thumbSettings: { zoom: 1, x: 0, y: 0 },
-            storageLocationId: "",
-            quantity: "0",
-            criticalStockThreshold: "0",
-            lowStockThreshold: "10",
-            costPrice: "0",
-            sellingPrice: "0",
-            attributes: {}
-        });
+        setFormData(DEFAULT_FORM_DATA);
         toast("Форма сброшена", "info");
     };
 
@@ -246,13 +229,13 @@ export function NewItemPageClient({
         ? categories.filter(c => c.parentId === selectedCategory.id)
         : [];
 
-    const isPackaging = selectedCategory?.name.toLowerCase().includes("упаковка");
+    const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
 
     const topLevelCategories = categories
         .filter(c => !c.parentId || c.parentId === "")
         .sort((a, b) => {
-            if (a.name.toLowerCase().includes("без категории")) return 1;
-            if (b.name.toLowerCase().includes("без категории")) return -1;
+            if (a.name.toLowerCase().includes(CATEGORY_TYPES.uncategorized)) return 1;
+            if (b.name.toLowerCase().includes(CATEGORY_TYPES.uncategorized)) return -1;
             return a.name.localeCompare(b.name);
         });
     const hasSubCategories = subCategories.length > 0;
@@ -271,7 +254,7 @@ export function NewItemPageClient({
             attributeCode: "",
             sizeCode: "",
             itemName: "",
-            unit: category.name.toLowerCase().includes("одежда") ? "шт" : prev.unit || "шт"
+            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ? "шт" : prev.unit || "шт"
         }));
     };
 
@@ -292,7 +275,7 @@ export function NewItemPageClient({
         } else if (step > 2) {
             setStep(step - 1);
         } else {
-            router.push("/dashboard/warehouse/categories");
+            router.push(ROUTES.WAREHOUSE.CATEGORIES);
         }
     };
 
@@ -310,8 +293,8 @@ export function NewItemPageClient({
             }
         }
 
-        const isClothing = selectedCategory?.name.toLowerCase().includes("одежда");
-        const isPackaging = selectedCategory?.name.toLowerCase().includes("упаковка");
+        const isClothing = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.clothing);
+        const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
 
         if (currentStep === 2) {
             if (hasSubCategories && !formData.subcategoryId) {
@@ -384,8 +367,8 @@ export function NewItemPageClient({
 
             // Determine item type
             let itemType = "clothing";
-            if (selectedCategory?.name.toLowerCase().includes("упаковка")) itemType = "packaging";
-            else if (selectedCategory?.name.toLowerCase().includes("расходники")) itemType = "consumables";
+            if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging)) itemType = "packaging";
+            else if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.consumables)) itemType = "consumables";
 
             submitFormData.append("itemType", itemType);
 
@@ -445,11 +428,16 @@ export function NewItemPageClient({
                 clearDraft();
                 playSound("item_created");
                 toast("Позиция создана", "success");
-                router.push(result?.id ? `/dashboard/warehouse/items/${result.id}` : "/dashboard/warehouse");
+                router.push(result?.id ? ROUTES.WAREHOUSE.ITEM_DETAIL(result.id) : ROUTES.WAREHOUSE.ROOT);
                 router.refresh();
             }
-        } catch {
-            setValidationError("Произошла ошибка при создании позиции");
+        } catch (error) {
+            console.error("[NEW_ITEM_SUBMIT] Error creating item:", error);
+            setValidationError(
+                error instanceof Error
+                    ? error.message
+                    : "Произошла ошибка при создании позиции"
+            );
             playSound("notification_error");
             setIsSubmitting(false);
         }
@@ -463,7 +451,7 @@ export function NewItemPageClient({
         { id: 5, title: "Итог", desc: "Проверка и создание" }
     ];
 
-    const currentStepIndex = step;
+
 
     return (
         <div className="flex flex-col">
@@ -475,34 +463,38 @@ export function NewItemPageClient({
                 )}>
                     {/* Tablet/Mobile Horizontal Step View */}
                     <div className="xl:hidden flex items-center gap-3 p-3 border-b border-slate-100">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={handleBack}
-                            className="w-10 h-10 shrink-0 rounded-[14px] bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors active:scale-95"
+                            aria-label="Вернуться назад"
+                            className="w-10 h-10 shrink-0 rounded-[14px] bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors active:scale-95 hover:bg-slate-100"
                         >
                             <ArrowLeft className="w-5 h-5" />
-                        </button>
+                        </Button>
 
                         <div className="flex-1 py-1">
                             <div className="flex items-center justify-between gap-1 w-full">
                                 {steps.map((s, idx) => {
-                                    const isActive = currentStepIndex === s.id;
-                                    const isCompleted = currentStepIndex > s.id;
+                                    const isActive = step === s.id;
+                                    const isCompleted = step > s.id;
 
-                                    if (s.id === 1 && !hasSubCategories && currentStepIndex !== 1) return null;
+                                    if (s.id === 1 && !hasSubCategories && step !== 1) return null;
 
                                     return (
-                                        <button
+                                        <Button
                                             key={idx}
+                                            variant={isActive ? "default" : "ghost"}
                                             onClick={() => {
-                                                if (s.id === currentStepIndex) return;
+                                                if (s.id === step) return;
 
-                                                if (s.id < currentStepIndex) {
+                                                if (s.id < step) {
                                                     setStep(s.id);
                                                     setValidationError("");
                                                     window.scrollTo({ top: 0, behavior: 'smooth' });
                                                 } else {
-                                                    if (validateStep(currentStepIndex)) {
-                                                        if (s.id > 2 && currentStepIndex < 2) {
+                                                    if (validateStep(step)) {
+                                                        if (s.id > 2 && step < 2) {
                                                             if (validateStep(2)) {
                                                                 setStep(s.id);
                                                                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -515,8 +507,8 @@ export function NewItemPageClient({
                                                 }
                                             }}
                                             className={cn(
-                                                "flex-1 flex items-center justify-center gap-2 px-1 py-2 rounded-[12px] transition-all",
-                                                isActive ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-50 text-slate-500"
+                                                "flex-1 flex items-center justify-center gap-2 px-1 py-2 rounded-[12px] h-auto transition-all",
+                                                isActive ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-50 text-slate-500 hover:bg-slate-100"
                                             )}
                                         >
                                             <div className={cn(
@@ -531,7 +523,7 @@ export function NewItemPageClient({
                                             )}>
                                                 {s.title}
                                             </span>
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -549,13 +541,14 @@ export function NewItemPageClient({
                     {/* Desktop Full View */}
                     <div className="hidden xl:flex flex-col h-full">
                         <div className="p-6 shrink-0">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={handleBack}
-                                className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm"
+                                className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold mb-4 transition-all group text-sm h-auto p-0 hover:bg-transparent justify-start"
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                                 Назад
-                            </button>
+                            </Button>
 
                             <h1 className="text-xl font-bold text-slate-900  leading-tight">
                                 Новая позиция
@@ -567,27 +560,28 @@ export function NewItemPageClient({
 
                         <div className="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
                             {steps.map((s, idx) => {
-                                const isActive = currentStepIndex === s.id;
-                                const isCompleted = currentStepIndex > s.id;
+                                const isActive = step === s.id;
+                                const isCompleted = step > s.id;
 
                                 // Hide subcategory step logic was already handled in the mapping but we keep it safe
-                                if (s.id === 1 && !hasSubCategories && currentStepIndex !== 1) return null;
+                                if (s.id === 1 && !hasSubCategories && step !== 1) return null;
 
                                 return (
-                                    <button
+                                    <Button
                                         key={idx}
+                                        variant={isActive ? "default" : "ghost"}
                                         onClick={() => {
-                                            if (s.id === currentStepIndex) return;
+                                            if (s.id === step) return;
 
-                                            if (s.id < currentStepIndex) {
+                                            if (s.id < step) {
                                                 setStep(s.id);
                                                 setValidationError("");
                                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                             } else {
                                                 // When clicking ahead, validate current step
-                                                if (validateStep(currentStepIndex)) {
+                                                if (validateStep(step)) {
                                                     // Additionally, if jumping to step 3 or 4, validate step 2
-                                                    if (s.id > 2 && currentStepIndex < 2) {
+                                                    if (s.id > 2 && step < 2) {
                                                         if (validateStep(2)) {
                                                             setStep(s.id);
                                                             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -600,8 +594,8 @@ export function NewItemPageClient({
                                             }
                                         }}
                                         className={cn(
-                                            "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-4 group",
-                                            isActive ? "bg-primary text-white shadow-md shadow-black/10" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                            "relative w-full text-left p-4 rounded-[var(--radius)] h-auto transition-all duration-300 flex items-center justify-start gap-4 group",
+                                            isActive ? "bg-primary text-white shadow-md shadow-black/10 hover:bg-primary" : "text-slate-400 hover:bg-slate-50 shadow-none"
                                         )}
                                     >
                                         <div className={cn(
@@ -626,7 +620,7 @@ export function NewItemPageClient({
                                         {isActive && (
                                             <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                                         )}
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>
@@ -649,13 +643,14 @@ export function NewItemPageClient({
                                     </div>
                                 </div>
 
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={handleReset}
-                                    className="flex items-center gap-1.5 px-3 py-2 rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold  text-slate-400 hover:text-slate-900 group"
+                                    className="flex items-center gap-1.5 px-3 py-2 h-auto rounded-2xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-[10px] font-bold text-slate-400 hover:text-slate-900 group"
                                 >
                                     <RotateCcw className="w-3 h-3 group-hover:rotate-[-90deg] transition-transform duration-300" />
                                     Начать заново
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -669,7 +664,6 @@ export function NewItemPageClient({
                                     <div className="flex-1 overflow-y-auto min-h-0">
 
                                         <CategorySelector
-                                            key="step-0-selector"
                                             categories={topLevelCategories}
                                             onSelect={handleCategorySelect}
                                             selectedCategoryId={selectedCategory?.id}
@@ -693,7 +687,6 @@ export function NewItemPageClient({
 
                                                 {subCategories.length > 0 ? (
                                                     <CategorySelector
-                                                        key="step-0-sub-selector"
                                                         categories={subCategories}
                                                         onSelect={handleSubCategorySelect}
                                                         variant="compact"
@@ -713,7 +706,6 @@ export function NewItemPageClient({
                                     </div>
 
                                     <StepFooter
-                                        key="step-0-footer"
                                         onBack={handleBack}
                                         onNext={() => {
                                             if (!selectedCategory) {
@@ -734,7 +726,6 @@ export function NewItemPageClient({
                             {step === 2 && selectedCategory && (
                                 isPackaging ? (
                                     <PackagingBasicInfoStep
-                                        key="step-2-packaging"
                                         category={selectedCategory}
                                         subCategories={subCategories}
                                         measurementUnits={measurementUnits}
@@ -748,7 +739,6 @@ export function NewItemPageClient({
                                     />
                                 ) : (
                                     <BasicInfoStep
-                                        key="step-2-basic"
                                         category={selectedCategory}
                                         subCategories={subCategories}
                                         measurementUnits={measurementUnits}
@@ -765,7 +755,6 @@ export function NewItemPageClient({
 
                             {step === 3 && (
                                 <MediaStep
-                                    key="step-3"
                                     formData={formData}
                                     updateFormData={updateFormData}
                                     onNext={handleNext}
@@ -775,7 +764,6 @@ export function NewItemPageClient({
 
                             {step === 4 && selectedCategory && (
                                 <StockStep
-                                    key="step-4"
                                     category={selectedCategory}
                                     storageLocations={storageLocations}
                                     users={users}
@@ -790,7 +778,6 @@ export function NewItemPageClient({
 
                             {step === 5 && selectedCategory && (
                                 <SummaryStep
-                                    key="step-5"
                                     category={selectedCategory}
                                     subCategories={subCategories}
                                     storageLocations={storageLocations}

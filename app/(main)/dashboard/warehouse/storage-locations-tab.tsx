@@ -2,6 +2,8 @@
 
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
@@ -218,12 +220,12 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                             <Lock className="w-4 h-4" />
                             <span className="text-sm font-semibold">Системная защита</span>
                         </div>
-                        <input
+                        <Input
                             type="password"
                             value={deletePassword}
                             onChange={(e) => setDeletePassword(e.target.value)}
                             placeholder="Пароль администратора"
-                            className="w-full h-11 px-5 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:outline-none focus:border-rose-300 transition-all font-medium text-slate-900 placeholder:text-rose-200 text-sm"
+                            className="h-11 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:border-rose-300 font-medium text-slate-900 placeholder:text-rose-200 text-sm"
                             autoFocus
                         />
                     </div>

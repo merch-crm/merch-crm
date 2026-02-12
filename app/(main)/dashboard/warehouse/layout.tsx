@@ -11,7 +11,7 @@ import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
 import { AddAttributeTypeDialog } from "./add-attribute-type-dialog";
 import { QRScanner } from "@/components/ui/qr-scanner";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession, getInventoryCategories } from "./actions";
@@ -137,8 +137,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                         onTouchStart={() => loadDialogData('storage')}
                         onClick={() => loadDialogData('storage')}
                     >
-                        <MoveInventoryDialog items={items} locations={locations} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6" />
-                        <AddStorageLocationDialog users={users} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6" />
+                        <MoveInventoryDialog
+                            items={items}
+                            locations={locations}
+                            className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 border-none"
+                        />
+                        <AddStorageLocationDialog
+                            users={users}
+                            className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 border-none"
+                        />
                     </div>
                 );
             case "characteristics":
@@ -156,14 +163,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                         onClick={() => loadDialogData('history')}
                     >
                         {session?.roleName === "Администратор" && (
-                            <button
+                            <Button
+                                variant="destructive"
                                 onClick={() => setIsClearHistoryOpen(true)}
                                 disabled={history.length === 0}
-                                className="h-10 w-10 sm:h-11 sm:w-auto btn-destructive rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-rose-500/20"
+                                className="h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold flex items-center justify-center shadow-lg shadow-rose-500/20"
                             >
                                 <Eraser className="w-5 h-5 text-white" />
                                 <span className="hidden sm:inline">Очистить историю</span>
-                            </button>
+                            </Button>
                         )}
                     </div>
                 );
@@ -173,7 +181,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     };
 
     return (
-        <div className="flex flex-col gap-6 animate-in fade-in duration-700">
+        <div className="flex flex-col gap-5 animate-in fade-in duration-700">
             {isRootPage && (
                 <>
                     {/* Header */}

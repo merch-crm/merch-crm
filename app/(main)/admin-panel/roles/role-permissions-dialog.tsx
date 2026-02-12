@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { updateRolePermissions, updateRole, getDepartments, deleteRole } from "../actions";
-import { Loader2, Save, Shield, Building, Trash2 } from "lucide-react";
+import { Loader2, Save, Shield, Building, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DeleteRoleDialog } from "./delete-role-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PremiumSelect } from "@/components/ui/premium-select";
 
 interface RolePermissionsDialogProps {
     role: {
@@ -131,12 +134,12 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-700 tracking-normal pl-1">Название роли</label>
                     <div className="relative">
-                        <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
+                        <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                        <Input
                             type="text"
                             value={roleName}
                             onChange={(e) => setRoleName(e.target.value)}
-                            className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 border transition-all"
+                            className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all font-bold h-11"
                         />
                     </div>
                 </div>
@@ -144,17 +147,17 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-700 tracking-normal pl-1">Отдел</label>
                     <div className="relative">
-                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <select
-                            value={departmentId}
-                            onChange={(e) => setDepartmentId(e.target.value)}
-                            className="block w-full pl-10 pr-4 py-2.5 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 border transition-all appearance-none outline-none"
-                        >
-                            <option value="">Без отдела</option>
-                            {departments.map(dept => (
-                                <option key={dept.id} value={dept.id}>{dept.name}</option>
-                            ))}
-                        </select>
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                        <PremiumSelect
+                            value={departmentId || "none"}
+                            options={[
+                                { id: "none", title: "Без отдела" },
+                                ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                            ]}
+                            placeholder="Выбрать отдел"
+                            className="pl-10 h-11"
+                            onChange={(val) => setDepartmentId(val === "none" ? "" : val)}
+                        />
                     </div>
                 </div>
             </div>
@@ -171,28 +174,25 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                     {ACTIONS.map(action => {
                                         const isChecked = permissions[section.id]?.[action.id] || false;
                                         return (
-                                            <button
+                                            <Button
                                                 key={action.id}
+                                                variant="ghost"
                                                 onClick={() => handleToggle(section.id, action.id)}
                                                 className={cn(
-                                                    "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all",
+                                                    "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all h-auto",
                                                     isChecked
-                                                        ? "bg-primary/10 border-primary/20 text-primary"
-                                                        : "bg-white border-slate-200 text-slate-400"
+                                                        ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                                                        : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
                                                 )}
                                             >
                                                 <div className={cn(
                                                     "w-4 h-4 rounded border flex items-center justify-center transition-all",
                                                     isChecked ? "bg-primary border-primary text-white" : "bg-white border-slate-300"
                                                 )}>
-                                                    {isChecked && (
-                                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
+                                                    {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
                                                 </div>
                                                 {action.label}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -220,21 +220,19 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                             const isChecked = permissions[section.id]?.[action.id] || false;
                                             return (
                                                 <td key={action.id} className="px-4 py-3 text-center">
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         onClick={() => handleToggle(section.id, action.id)}
                                                         className={cn(
-                                                            "w-5 h-5 rounded border flex items-center justify-center transition-all mx-auto",
+                                                            "w-6 h-6 rounded border flex items-center justify-center transition-all mx-auto p-0 hover:bg-transparent",
                                                             isChecked
-                                                                ? "bg-primary border-primary text-white"
+                                                                ? "bg-primary border-primary text-white hover:text-white"
                                                                 : "bg-white border-slate-300 hover:border-primary/40"
                                                         )}
                                                     >
-                                                        {isChecked && (
-                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                        )}
-                                                    </button>
+                                                        {isChecked && <Check className="w-3.5 h-3.5 stroke-[4px]" />}
+                                                    </Button>
                                                 </td>
                                             );
                                         })}
@@ -251,36 +249,38 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     const ActionsContent = (
         <div className="flex items-center justify-between gap-3 w-full">
             {role && role.name !== "Администратор" && (
-                <button
+                <Button
+                    variant="ghost"
                     onClick={handleDelete}
                     disabled={loading}
-                    className="flex-1 inline-flex items-center justify-center gap-2 h-11 text-rose-600 bg-rose-50 hover:bg-rose-100/50 text-sm font-bold rounded-[var(--radius-inner)] transition-all active:scale-95 disabled:opacity-50"
+                    className="flex-1 inline-flex items-center justify-center gap-2 h-11 text-rose-600 bg-rose-50 hover:bg-rose-100/50 text-sm font-bold rounded-[var(--radius-inner)] transition-all active:scale-95 disabled:opacity-50 border-none"
                 >
                     <Trash2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Удалить роль</span>
                     <span className="sm:hidden">Удалить</span>
-                </button>
+                </Button>
             )}
             <div className="flex items-center gap-3 flex-1 justify-end">
-                <button
+                <Button
+                    variant="ghost"
                     onClick={onClose}
-                    className="hidden sm:flex btn-dialog-ghost h-11 px-6"
+                    className="hidden sm:flex h-11 px-6 font-bold text-slate-500 hover:bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200"
                     disabled={loading}
                 >
                     Отмена
-                </button>
-                <button
+                </Button>
+                <Button
                     onClick={handleSave}
                     disabled={loading}
-                    className="flex-1 sm:flex-none btn-dialog-dark h-11 sm:px-10 min-w-[120px]"
+                    className="flex-1 sm:flex-none h-11 sm:px-10 min-w-[120px] font-bold text-white shadow-lg shadow-primary/20"
                 >
                     {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                        <Save className="w-4 h-4" />
+                        <Save className="w-4 h-4 mr-2" />
                     )}
                     Сохранить
-                </button>
+                </Button>
             </div>
         </div>
     );

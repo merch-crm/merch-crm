@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { InventoryItem, ItemStock } from "../../../types";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 interface ItemInventorySectionProps {
@@ -126,20 +127,20 @@ export function ItemInventorySection({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-500">
                     <div className="crm-card !p-8 !rounded-2xl space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Лимит предупреждения</label>
-                        <input
+                        <Input
                             type="number"
                             value={editData.lowStockThreshold}
                             onChange={(e) => onUpdateField("lowStockThreshold", parseInt(e.target.value))}
-                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-4 focus:ring-primary/10 transition-all"
+                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus-visible:ring-4 focus-visible:ring-primary/10 transition-all h-auto shadow-none"
                         />
                     </div>
                     <div className="crm-card !p-8 !rounded-2xl space-y-4">
                         <label className="text-sm font-bold text-slate-700 ml-1">Критический лимит</label>
-                        <input
+                        <Input
                             type="number"
                             value={editData.criticalStockThreshold}
                             onChange={(e) => onUpdateField("criticalStockThreshold", parseInt(e.target.value))}
-                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-4 focus:ring-rose-500/10 transition-all"
+                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus-visible:ring-4 focus-visible:ring-rose-500/10 transition-all h-auto shadow-none"
                         />
                     </div>
                 </div>
@@ -210,18 +211,22 @@ export function ItemInventorySection({
                                     </div>
 
                                     <div className="flex gap-2">
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => onAdjustStock(stock.storageLocationId)}
-                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground"
+                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                                         >
                                             <PlusCircle className="w-4 h-4" />
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => onTransferStock(stock.storageLocationId)}
-                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground"
+                                            className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                                         >
                                             <ArrowRightLeft className="w-4 h-4" />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

@@ -10,6 +10,7 @@ import { DefectDialog } from "./defect-dialog";
 import { ImageLightbox } from "@/components/image-lightbox";
 import { Maximize } from "lucide-react";
 import { pluralize } from "@/lib/pluralize";
+import { Button } from "@/components/ui/button";
 
 interface OrderItem {
     id: string;
@@ -67,7 +68,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 overflow-x-auto pb-4 custom-scrollbar lg:overflow-visible">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 overflow-x-auto pb-4 custom-scrollbar lg:overflow-visible">
             {stages.map((stage) => {
                 const stageItems = getItemsByStage(stage.id);
                 const Icon = stage.icon;
@@ -129,16 +130,17 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                         fill
                                                         className="object-cover transition-transform duration-500 group-hover/mockup:scale-110"
                                                     />
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setLightboxImage(item.order.attachments?.[0]?.fileUrl || null);
                                                         }}
-                                                        className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/mockup:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold gap-2"
+                                                        className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/mockup:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold gap-2 p-0 h-auto hover:bg-slate-900/50 hover:text-white"
                                                     >
                                                         <Maximize className="w-3.5 h-3.5" />
                                                         Открыть во весь экран
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             )}
 
@@ -156,22 +158,24 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                             {/* Actions */}
                                             <div className="flex gap-3 pt-4 border-t border-slate-200">
                                                 {currentStatus === 'pending' && (
-                                                    <button
+                                                    <Button
+                                                        variant="default"
                                                         onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 px-4 py-2.5 bg-primary text-white rounded-[10px] text-sm font-bold hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-primary/20"
+                                                        className="flex-1 h-11 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20"
                                                     >
                                                         {loading === item.id ? '...' : 'Начать'}
-                                                    </button>
+                                                    </Button>
                                                 )}
                                                 {currentStatus === 'in_progress' && (
-                                                    <button
+                                                    <Button
+                                                        variant="default"
                                                         onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 px-4 py-2.5 bg-emerald-500 text-white rounded-[10px] text-sm font-bold hover:bg-emerald-600 active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-emerald-500/20"
+                                                        className="flex-1 h-11 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold active:scale-95 transition-all shadow-lg shadow-emerald-500/20"
                                                     >
                                                         {loading === item.id ? '...' : 'Завершить'}
-                                                    </button>
+                                                    </Button>
                                                 )}
                                                 <DefectDialog
                                                     orderItemId={item.id}

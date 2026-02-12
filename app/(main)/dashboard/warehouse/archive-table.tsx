@@ -3,10 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { InventoryItem } from "./types";
@@ -104,7 +107,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
             <div className="crm-card flex flex-col md:flex-row gap-4 items-center">
                 <div className="relative flex-1 w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
+                    <Input
                         type="text"
                         placeholder="Поиск в архиве..."
                         value={searchQuery}
@@ -112,141 +115,149 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full h-11 pl-10 pr-4 rounded-[var(--radius-inner)] border border-slate-200 bg-white text-xs font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
+                        className="pl-10 h-11"
                     />
                 </div>
                 {selectedIds.length > 0 && (
                     <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
-                        <button
+                        <Button
                             onClick={() => handleRestore(selectedIds)}
                             disabled={isRestoring}
                             className="h-11 px-4 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2 hover:bg-emerald-100 transition-all disabled:opacity-50"
                         >
                             <RotateCcw className="w-4 h-4" />
                             Восстановить ({selectedIds.length})
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="destructive"
                             onClick={() => setIdsToDelete(selectedIds)}
-                            className="h-11 px-4 btn-destructive rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2"
+                            className="h-11 px-4 rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2"
                         >
                             <Trash2 className="w-4 h-4" />
                             Удалить ({selectedIds.length})
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-hidden rounded-[var(--radius-outer)] border border-slate-200">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="w-[50px] px-6 py-3 text-left">
+            <div className="table-container">
+                <table className="crm-table">
+                    <thead className="crm-thead">
+                        <tr>
+                            <th className="crm-th w-[50px]">
+                                <PremiumCheckbox
+                                    checked={currentItems.length > 0 && currentItems.every(i => selectedIds.includes(i.id))}
+                                    onChange={() => {
+                                        const allIds = currentItems.map(i => i.id);
+                                        if (allIds.every(id => selectedIds.includes(id))) {
+                                            setSelectedIds(prev => prev.filter(id => !allIds.includes(id)));
+                                        } else {
+                                            setSelectedIds(prev => Array.from(new Set([...prev, ...allIds])));
+                                        }
+                                    }}
+                                    className="mx-auto"
+                                />
+                            </th>
+                            <th className="crm-th">Товар</th>
+                            <th className="crm-th">Артикул</th>
+                            <th className="crm-th">Дата архивации</th>
+                            <th className="crm-th">Причина</th>
+                            <th className="crm-th text-right">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody className="crm-tbody">
+                        {currentItems.map((item) => (
+                            <tr
+                                key={item.id}
+                                onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                className={cn(
+                                    "crm-tr-clickable",
+                                    selectedIds.includes(item.id) && "crm-tr-selected"
+                                )}
+                            >
+                                <td className="crm-td" onClick={(e) => e.stopPropagation()}>
                                     <PremiumCheckbox
-                                        checked={currentItems.length > 0 && currentItems.every(i => selectedIds.includes(i.id))}
+                                        checked={selectedIds.includes(item.id)}
                                         onChange={() => {
-                                            const allIds = currentItems.map(i => i.id);
-                                            if (allIds.every(id => selectedIds.includes(id))) {
-                                                setSelectedIds(prev => prev.filter(id => !allIds.includes(id)));
-                                            } else {
-                                                setSelectedIds(prev => Array.from(new Set([...prev, ...allIds])));
-                                            }
+                                            setSelectedIds(prev => prev.includes(item.id) ? prev.filter(id => id !== item.id) : [...prev, item.id]);
                                         }}
                                         className="mx-auto"
                                     />
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground">Товар</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground">Артикул</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground">Дата архивации</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground">Причина</th>
-                                <th className="px-6 py-3 text-right text-xs font-bold text-muted-foreground">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 text-sm">
-                            {currentItems.map((item) => (
-                                <tr
-                                    key={item.id}
-                                    onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                    className="hover:bg-slate-50 transition-colors group cursor-pointer"
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                        <PremiumCheckbox
-                                            checked={selectedIds.includes(item.id)}
-                                            onChange={() => {
-                                                setSelectedIds(prev => prev.includes(item.id) ? prev.filter(id => id !== item.id) : [...prev, item.id]);
-                                            }}
-                                            className="mx-auto"
-                                        />
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 overflow-hidden relative grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
-                                                {item.image ? (
-                                                    <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                        <Package className="w-5 h-5" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-slate-900 leading-tight">{item.name}</div>
-                                                <div className="text-[10px] font-bold text-slate-400 mt-0.5">{item.category?.name || "Без категории"}</div>
-                                            </div>
+                                </td>
+                                <td className="crm-td">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 overflow-hidden relative grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                                            {item.image ? (
+                                                <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                    <Package className="w-5 h-5" />
+                                                </div>
+                                            )}
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="text-xs font-mono font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-[var(--radius-inner)]">
-                                            {item.sku || "—"}
+                                        <div>
+                                            <div className="font-bold text-slate-900 leading-tight">{item.name}</div>
+                                            <div className="text-[10px] font-bold text-slate-400 mt-0.5">{item.category?.name || "Без категории"}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="crm-td">
+                                    <span className="text-xs font-mono font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-[var(--radius-inner)]">
+                                        {item.sku || "—"}
+                                    </span>
+                                </td>
+                                <td className="crm-td">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        <span className="text-xs font-medium">
+                                            {item.archivedAt ? format(new Date(item.archivedAt), "d MMM yyyy, HH:mm", { locale: ru }) : "—"}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 text-slate-500">
-                                            <Clock className="w-3.5 h-3.5" />
-                                            <span className="text-xs font-medium">
-                                                {item.archivedAt ? format(new Date(item.archivedAt), "d MMM yyyy, HH:mm", { locale: ru }) : "—"}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2 max-w-[200px]">
-                                            <MessageCircle className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                                            <span className="text-xs text-slate-500 truncate" title={item.archiveReason || ""}>
-                                                {item.archiveReason || "—"}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button
-                                                onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                                className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:text-slate-900 transition-all border border-slate-200"
-                                                title="Просмотреть карточку"
-                                            >
-                                                <Eye className="w-4 h-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleRestore([item.id])}
-                                                className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all border border-emerald-100"
-                                                title="Восстановить"
-                                            >
-                                                <RotateCcw className="w-4 h-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => setIdsToDelete([item.id])}
-                                                className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] text-slate-400 btn-destructive-ghost border border-slate-200"
-                                                title="Удалить навсегда"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                                <td className="crm-td">
+                                    <div className="flex items-center gap-2 max-w-[200px]">
+                                        <MessageCircle className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                                        <span className="text-xs text-slate-500 truncate" title={item.archiveReason || ""}>
+                                            {item.archiveReason || "—"}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td className="crm-td text-right" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:text-slate-900 transition-all border border-slate-200"
+                                            title="Просмотреть карточку"
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleRestore([item.id])}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all border border-emerald-100"
+                                            title="Восстановить"
+                                        >
+                                            <RotateCcw className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => setIdsToDelete([item.id])}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200"
+                                            title="Удалить навсегда"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
 
             {/* Mobile Compact List View */}
@@ -282,12 +293,12 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 variant="destructive"
             >
                 <div className="mt-4">
-                    <input
+                    <Input
                         type="password"
                         placeholder="Пароль от своей учетной записи"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 outline-none text-sm transition-all"
+                        className="h-11 bg-slate-50 focus:bg-white focus:border-rose-500 focus:ring-rose-500/10"
                         autoFocus
                     />
                 </div>
@@ -329,11 +340,10 @@ function MobileArchiveList({
                         >
                             {/* Checkbox */}
                             <div onClick={(e) => e.stopPropagation()}>
-                                <input
-                                    type="checkbox"
-                                    className="rounded border-slate-300 text-primary focus:ring-0 cursor-pointer w-3 h-3"
+                                <PremiumCheckbox
                                     checked={isSelected}
                                     onChange={() => onSelect(item.id)}
+                                    className="w-[16px] h-[16px]"
                                 />
                             </div>
 
@@ -397,35 +407,41 @@ function MobileArchiveList({
 
                                             {/* Actions */}
                                             <div className="pt-2 mt-1 border-t border-slate-200/60 flex gap-2">
-                                                <button
-                                                    onClick={(e) => {
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={(e: React.MouseEvent) => {
                                                         e.stopPropagation();
                                                         router.push(`/dashboard/warehouse/items/${item.id}`);
                                                     }}
-                                                    className="flex-1 h-9 bg-white border border-slate-200 rounded-[var(--radius-inner)] text-xs font-bold text-slate-600 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
+                                                    className="flex-1 h-9 rounded-[var(--radius-inner)] text-xs font-bold text-slate-600 flex items-center justify-center gap-2"
                                                 >
                                                     <Eye className="w-3.5 h-3.5" />
                                                     Карточка
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={(e: React.MouseEvent) => {
                                                         e.stopPropagation();
                                                         onRestore([item.id]);
                                                     }}
-                                                    className="flex-1 h-9 bg-emerald-50 border border-emerald-100 rounded-[var(--radius-inner)] text-xs font-bold text-emerald-600 flex items-center justify-center gap-2 hover:bg-emerald-100 transition-colors"
+                                                    className="flex-1 h-9 bg-emerald-50 border border-emerald-100 rounded-[var(--radius-inner)] text-xs font-bold text-emerald-600 flex items-center justify-center gap-2 hover:bg-emerald-100"
                                                 >
                                                     <RotateCcw className="w-3.5 h-3.5" />
                                                     Восстановить
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={(e: React.MouseEvent) => {
                                                         e.stopPropagation();
                                                         onDelete(item.id);
                                                     }}
-                                                    className="h-9 px-3 bg-rose-50 border border-rose-100 rounded-[var(--radius-inner)] text-xs font-bold text-rose-600 flex items-center justify-center hover:bg-rose-100 transition-colors"
+                                                    className="h-9 w-9 bg-rose-50 border border-rose-100 rounded-[var(--radius-inner)] text-rose-600 hover:bg-rose-100"
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>

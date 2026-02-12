@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Undo2, X } from "lucide-react";
 import { undoLastAction } from "@/app/(main)/dashboard/undo-actions";
 import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function GlobalUndo() {
@@ -59,19 +60,21 @@ export function GlobalUndo() {
 
             <div className="w-[1px] h-8 bg-slate-800" />
 
-            <button
+            <Button
                 onClick={handleUndo}
-                className="h-10 px-6 rounded-[18px] bg-white text-slate-900 text-[11px] font-bold  tracking-normal hover:bg-slate-100 transition-all active:scale-95"
+                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-[11px] font-bold tracking-normal"
             >
                 {isUndoing ? "Отмена..." : "Отменить"}
-            </button>
+            </Button>
 
-            <button
+            <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsVisible(false)}
-                className="p-2 text-slate-500 hover:text-white transition-colors"
+                className="text-slate-500 hover:text-white hover:bg-white/10 h-8 w-8 rounded-full"
             >
                 <X className="w-4 h-4" />
-            </button>
+            </Button>
         </div>
     );
 }

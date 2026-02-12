@@ -1,0 +1,62 @@
+@keyframes crm-blink {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1.2);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+        filter: brightness(1);
+    }
+}
+
+@utility animate-crm-blink {
+    animation: crm-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-8deg);
+    }
+
+    75% {
+        transform: rotate(8deg);
+    }
+}
+
+@keyframes shimmer-flow {
+    0% {
+        transform: translateX(-150%) skewX(-25deg);
+    }
+
+    100% {
+        transform: translateX(150%) skewX(-25deg);
+    }
+}
+
+@utility animate-shimmer-flow {
+    animation: shimmer-flow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@utility shimmer-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0) 30%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 70%,
+            transparent 100%);
+    z-index: 5;
+    pointer-events: none;
+}
