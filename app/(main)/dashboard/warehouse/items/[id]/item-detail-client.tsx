@@ -1312,9 +1312,10 @@ export function ItemDetailClient({
                             </div>
                             {/* BLOCK: Consolidated Mobile Actions */}
                             <div className="col-span-2 grid grid-cols-2 gap-3 mt-2 md:mt-0">
-                                <Button
+                                <div
+                                    role="button"
                                     onClick={() => setAdjustType("set")}
-                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-primary rounded-[24px] shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 overflow-hidden border-none text-white h-auto"
+                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-primary rounded-[24px] shadow-lg shadow-primary/20 hover:bg-[#731cff] transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer"
                                 >
                                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
                                     <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-white relative z-10 p-0">
@@ -1323,11 +1324,12 @@ export function ItemDetailClient({
                                     <span className="text-[11px] sm:text-[13px] font-bold text-white leading-tight relative z-10 text-left">
                                         Корректировка<br />остатка
                                     </span>
-                                </Button>
+                                </div>
 
-                                <Button
+                                <div
+                                    role="button"
                                     onClick={() => setShowTransfer(true)}
-                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-slate-900 rounded-[24px] shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 overflow-hidden border-none text-white h-auto"
+                                    className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-slate-900 rounded-[24px] shadow-lg shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer"
                                 >
                                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
                                     <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white relative z-10 p-0">
@@ -1336,7 +1338,7 @@ export function ItemDetailClient({
                                     <span className="text-[11px] sm:text-[13px] font-bold text-white leading-tight relative z-10 text-left">
                                         Перемещение<br />товара
                                     </span>
-                                </Button>
+                                </div>
 
                                 {/* Additional Actions - Mobile Only */}
                                 <Button

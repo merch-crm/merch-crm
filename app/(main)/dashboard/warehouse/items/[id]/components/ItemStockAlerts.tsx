@@ -61,8 +61,8 @@ export function ItemStockAlerts({
                                     />
                                     <span className="text-[11px] font-black text-muted-foreground">шт.</span>
                                 </div>
-                                <div className="px-2 py-0.5 bg-amber-500/10 rounded-full border border-amber-500/20">
-                                    <span className="text-[9px] font-bold text-amber-600 uppercase">Минимум</span>
+                                <div className="px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center">
+                                    <span className="text-[10px] font-bold text-amber-600 leading-none">МИНИМУМ</span>
                                 </div>
                             </div>
                             <div className="relative h-6 flex items-center">
@@ -94,8 +94,8 @@ export function ItemStockAlerts({
                                 <span className="text-2xl font-black text-foreground leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.lowStockThreshold}</span>
                                 <span className="text-[10px] font-bold text-muted-foreground">шт.</span>
                             </div>
-                            <div className="px-2.5 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-amber-600 leading-none">Скоро закончится</span>
+                            <div className="px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center">
+                                <span className="text-[10px] font-bold text-amber-600 leading-none">МИНИМУМ</span>
                             </div>
                         </div>
                     )}
@@ -155,7 +155,7 @@ export function ItemStockAlerts({
                                 <span className="text-[10px] font-bold text-muted-foreground">шт.</span>
                             </div>
                             <div className="px-3 py-1 bg-destructive/10 rounded-full border border-destructive/20 flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-destructive leading-none">Критический</span>
+                                <span className="text-[10px] font-bold text-destructive leading-none">КРИТИЧНО</span>
                             </div>
                         </div>
                     )}
