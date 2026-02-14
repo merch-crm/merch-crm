@@ -112,8 +112,15 @@ export async function loginAction(prevState: unknown, formData: FormData) {
 
         const cookieStore = await cookies();
 
-        const { getSessionCookieOptions } = await import("@/lib/auth");
-        cookieStore.set("session", session, getSessionCookieOptions(expires));
+        cookieStore.set("session", session, {
+            expires,
+            httpOnly: true,  // Prevent XSS token theft
+            secure: process.env.NODE_ENV === "production",  // HTTPS only in prod
+            sameSite: "lax",  // CSRF protection
+            path: "/",
+        });
+
+        // Removed debug cookie: cookieStore.set("test_cookie", ...)
 
         // Log successful login to security events
         await logSecurityEvent({
