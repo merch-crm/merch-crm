@@ -76,7 +76,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             try {
                 const history = localStorage.getItem("client_search_history");
                 if (history) {
-                    const timer = setTimeout(() => setSearchHistory(JSON.parse(history)), 0);
+                    const timer = setTimeout(() => setSearchHistory(JSON.parse(history) as string[]), 0);
                     return () => clearTimeout(timer);
                 }
             } catch (e) {
@@ -134,13 +134,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             setDetails({
                 ...details,
                 appliedPromo: {
-                    ...res.data,
-                    id: res.data.id || "",
-                    code: res.data.code || "",
-                    discountType: res.data.discountType || "percentage",
-                    value: String(res.data.value || "0")
+                    id: String(res.data.id || ""),
+                    code: String(res.data.code || ""),
+                    discountType: String(res.data.discountType || "percentage"),
+                    value: String(res.data.value || "0"),
+                    message: res.data.message as string | undefined,
+                    calculatedDiscount: res.data.calculatedDiscount as number | undefined
                 },
-                promocodeId: res.data.id || ""
+                promocodeId: String(res.data.id || "")
             });
             const message = res.data.message || `Промокод ${promoInput} применен!`;
             toast(message, "success");
@@ -213,7 +214,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         formData.append("paymentMethod", details.paymentMethod);
         formData.append("promocodeId", details.promocodeId);
         formData.append("deadline", details.deadline);
-        formData.append("items", JSON.stringify(selectedItems.map(item => ({
+        formData.append("items", JSON.stringify(selectedItems.map((item: OrderInventoryItem) => ({
             inventoryId: item.id,
             quantity: item.orderQuantity || 0,
             price: item.price || 0,
@@ -452,7 +453,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                         className="w-full h-auto p-0 hover:bg-transparent"
                                                     >
                                                         <button
-                                                            onClick={() => addItem(item)}
+                                                            onClick={() => addItem(item as OrderInventoryItem)}
                                                             className="flex items-center justify-between p-3 rounded-2xl border border-border hover:bg-muted transition-all text-left disabled:opacity-50"
                                                         >
                                                             <div className="flex items-center gap-3">
@@ -649,7 +650,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                         </div>
                                         <div className="space-y-2">
                                             <span className="text-muted-foreground font-bold text-xs tracking-wider">Товары</span>
-                                            {selectedItems.map(item => (
+                                            {selectedItems.map((item: OrderInventoryItem) => (
                                                 <div key={item.id} className="flex justify-between text-sm py-1">
                                                     <span>{item.name} x {item.orderQuantity || 0}</span>
                                                     <span className="font-bold">{(item.price || 0) * (item.orderQuantity || 0)} {currencySymbol}</span>

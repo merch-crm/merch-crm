@@ -4,7 +4,7 @@ description: Startup routine to initialize SSH tunnel to remote Docker DB and st
 
 // turbo-all
 
-> **ВАЖНОЕ ПРАВИЛО:** Всегда используйте этот workflow или скрипт `./dev.sh`. 
+> **ВАЖНОЕ ПРАВИЛО:** Всегда используйте этот workflow или скрипт `./scripts/dev.sh`. 
 > **Почему это важно:** Ваше приложение настроено на `localhost:5432`. Без SSH-туннеля эта "дверь" либо закрыта, либо ведет к вашей локальной пустой БД с другим паролем. Туннель перенаправляет этот адрес на реальный сервер 89.104.69.25.
 
 1. Очистка старых туннелей и порта 5432.
@@ -20,7 +20,7 @@ ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:637
 
 3. **Синхронизация пароля:** Принудительно устанавливаем пароль 'postgres' в Docker-контейнере, чтобы он всегда совпадал с вашим .env.local.
 ```bash
-ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD 'da1c8fe9f308039384edeecbe252fdda51f305d59cae0c94';\""
+ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD '5738870192e24949b02a700547743048';\""
 ```
 
 4. Проверка подключения к базе данных.

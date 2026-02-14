@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments, inventoryStocks, promocodes, payments, roles } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, inArray, and, gte, lte, sql, ilike, or } from "drizzle-orm";
+import { desc, eq, inArray, and, gte, lte, sql, ilike, or, type SQL } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -26,8 +26,7 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
 }>> {
     try {
         const offset = (page - 1) * limit;
-
-        const whereClause = [eq(orders.isArchived, showArchived)];
+        const whereClause: (SQL | undefined)[] = [eq(orders.isArchived, showArchived)];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
         if (search) {
@@ -166,7 +165,7 @@ export async function searchClients(query: string): Promise<ActionResult<(typeof
             limit: 5
         });
 
-        const mappedResults = results.map(client => ({
+        const mappedResults = results.map((client: typeof clients.$inferSelect) => ({
             ...client,
             name: client.name || [client.lastName, client.firstName].filter(Boolean).join(' ') || 'Unnamed Client'
         }));
@@ -866,7 +865,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
 // Separate stats fetcher to avoid fetching all orders for pagination
 export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResult<{ total: number; new: number; inProduction: number; completed: number; revenue: number }>> {
     try {
-        const whereClause = [];
+        const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
 
@@ -913,7 +912,7 @@ export async function updateOrderField(orderId: string, field: string, value: st
                 throw new Error("У вас нет прав для редактирования этого заказа");
             }
 
-            const updateData: Record<string, unknown> = { updatedAt: new Date() };
+            const updateData: Partial<typeof orders.$inferInsert> = { updatedAt: new Date() };
 
             if (field === "isUrgent") {
                 updateData.isUrgent = Boolean(value);
@@ -922,9 +921,7 @@ export async function updateOrderField(orderId: string, field: string, value: st
             } else if (field === "deadline") {
                 updateData.deadline = value ? new Date(value as string | number | Date) : null;
             } else if (field === "status") {
-                // For status, we might want to reuse updateOrderStatus logic 
-                // but for simple field update we handle it here if it's just a status change
-                updateData.status = String(value);
+                updateData.status = value as "new" | "design" | "production" | "done" | "shipped" | "cancelled";
             } else {
                 throw new Error(`Поле ${field} не поддерживает быстрое редактирование`);
             }
@@ -933,7 +930,7 @@ export async function updateOrderField(orderId: string, field: string, value: st
 
             await logAction("Быстрое редактирование заказа", "order", orderId, {
                 field,
-                oldValue: String((order as Record<string, unknown>)[field]),
+                oldValue: String(order[field as keyof typeof order]),
                 newValue: String(value)
             });
         });

@@ -92,12 +92,10 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
 
     if (items.length === 0 && searchQuery === "") {
         return (
-            <div className="bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[var(--radius-inner)] p-20 flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center text-slate-300 mb-6 border border-slate-200 shadow-sm">
-                    <Clock className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">Архив пуст</h3>
-                <p className="text-slate-500 mt-2 max-w-[320px] font-medium leading-relaxed">Здесь будут отображаться позиции, выведенные из оборота.</p>
+            <div className="table-empty py-20">
+                <Clock />
+                <p>Архив пуст</p>
+                <span className="text-muted-foreground mt-2 max-w-[320px] font-bold leading-relaxed text-sm">Здесь будут отображаться позиции, выведенные из оборота.</span>
             </div>
         );
     }

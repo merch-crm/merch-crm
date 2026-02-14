@@ -21,6 +21,25 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
     const router = useRouter();
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
+    // Helper function to recursively count total quantity for a category and all its descendants
+    const countRecursiveTotalQuantity = (categoryId: string): number => {
+        const category = categories.find(c => c.id === categoryId);
+        if (!category) return 0;
+
+        // Direct items quantity
+        let total = category.totalQuantity || 0;
+
+        // Find direct children
+        const children = categories.filter(c => c.parentId === categoryId);
+
+        // Add children's quantities recursively
+        for (const child of children) {
+            total += countRecursiveTotalQuantity(child.id);
+        }
+
+        return total;
+    };
+
     const topLevelCategories = categories
         .filter(c => !c.parentId || c.parentId === "")
         .sort((a, b) => {
@@ -40,14 +59,22 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
     const itemsByCategory = topLevelCategories.map(category => {
         const children = subCategories
             .filter(sc => sc.parentId === category.id)
-            .sort((a, b) => (b.itemCount ?? 0) - (a.itemCount ?? 0));
+            .sort((a, b) => {
+                const qtyA = countRecursiveTotalQuantity(a.id);
+                const qtyB = countRecursiveTotalQuantity(b.id);
+                return qtyB - qtyA;
+            });
 
         const totalItemsCount = (category.itemCount ?? 0) +
             children.reduce((sum, child) => sum + (child.itemCount ?? 0), 0);
 
+        // Calculate total quantity recursively including all descendants
+        const totalQty = countRecursiveTotalQuantity(category.id);
+
         return {
             ...category,
             itemCount: totalItemsCount,
+            totalQuantity: totalQty,
             children: children
         };
     });
@@ -81,7 +108,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                             {category.name}
                                         </h3>
                                         <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full inline-block">
-                                            {category.itemCount || 0} {pluralize(category.itemCount || 0, 'товаров', 'товара', 'товаров')}
+                                            {category.totalQuantity || 0} шт.
                                         </span>
                                     </div>
                                 </div>

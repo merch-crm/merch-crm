@@ -1,6 +1,7 @@
 
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { BreadcrumbsProvider } from "@/components/layout/breadcrumbs-context";
+import { SheetStackProvider } from "@/components/ui/sheet-stack-context";
 import { Navbar as DesktopHeader } from "@/components/layout/navbar";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
@@ -117,10 +118,11 @@ export default async function DashboardLayout({
     }
 
     return (
-        <BreadcrumbsProvider>
-            {/* Dynamic Branding Styles */}
-            <style dangerouslySetInnerHTML={{
-                __html: `
+        <SheetStackProvider>
+            <BreadcrumbsProvider>
+                {/* Dynamic Branding Styles */}
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     :root { 
                         --primary: ${branding.primaryColor}; 
                         --background: ${branding.backgroundColor || "#f2f2f2"};
@@ -142,43 +144,44 @@ export default async function DashboardLayout({
                         }
                     ` : ''}
                 `
-            }} />
+                }} />
 
-            <PullToRefresh>
-                <div className="min-h-screen pb-24 md:pb-0 relative">
-                    {branding.crmBackgroundUrl && <div className="crm-background" />}
-                    {session?.impersonatorId && (
-                        <ImpersonationBanner
-                            impersonatorName={session.impersonatorName || "Admin"}
-                            targetName={user.name}
+                <PullToRefresh>
+                    <div className="min-h-screen pb-24 md:pb-0 relative">
+                        {branding.crmBackgroundUrl && <div className="crm-background" />}
+                        {session?.impersonatorId && (
+                            <ImpersonationBanner
+                                impersonatorName={session.impersonatorName || "Admin"}
+                                targetName={user.name}
+                            />
+                        )}
+                        <GlobalUndo />
+                        <CommandMenu />
+                        <ActivityTracker />
+                        <NotificationManager
+                            initialUnreadCount={unreadCount}
+                            customSoundUrl={branding.notificationSound as string}
                         />
-                    )}
-                    <GlobalUndo />
-                    <CommandMenu />
-                    <ActivityTracker />
-                    <NotificationManager
-                        initialUnreadCount={unreadCount}
-                        customSoundUrl={branding.notificationSound as string}
-                    />
 
-                    {/* Desktop Header - Floating Glass */}
-                    <DesktopHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
+                        {/* Desktop Header - Floating Glass */}
+                        <DesktopHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
-                    {/* Mobile Header - Top Fixed */}
-                    <MobileHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
+                        {/* Mobile Header - Top Fixed */}
+                        <MobileHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
-                    {/* Mobile Bottom Nav - Bottom Fixed */}
-                    <MobileBottomNav user={user} />
+                        {/* Mobile Bottom Nav - Bottom Fixed */}
+                        <MobileBottomNav user={user} />
 
-                    <FloatingSearch />
-                    <MobileSearchSheet />
+                        <FloatingSearch />
+                        <MobileSearchSheet />
 
-                    <main className="flex-1 px-4 sm:px-6 md:px-8 lg:px-12 pt-4 md:pt-6 pb-4 max-w-[1480px] mx-auto w-full">
-                        <Breadcrumbs />
-                        {children}
-                    </main>
-                </div>
-            </PullToRefresh>
-        </BreadcrumbsProvider>
+                        <main className="flex-1 px-4 sm:px-6 md:px-8 lg:px-12 pt-4 md:pt-6 pb-4 max-w-[1480px] mx-auto w-full">
+                            <Breadcrumbs />
+                            {children}
+                        </main>
+                    </div>
+                </PullToRefresh>
+            </BreadcrumbsProvider>
+        </SheetStackProvider>
     );
 }

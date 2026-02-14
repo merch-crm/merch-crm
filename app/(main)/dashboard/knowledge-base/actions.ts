@@ -5,6 +5,7 @@ import { wikiFolders, wikiPages } from "@/lib/schema";
 import { eq, asc, desc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { ActionResult } from "@/lib/types";
 
 // --- Folders ---
 
@@ -20,9 +21,9 @@ export async function getWikiFolders() {
     }
 }
 
-export async function createWikiFolder(name: string, parentId: string | null = null) {
+export async function createWikiFolder(name: string, parentId: string | null = null): Promise<ActionResult<typeof wikiFolders.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { error: "Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const [newFolder] = await db.insert(wikiFolders).values({
@@ -31,10 +32,10 @@ export async function createWikiFolder(name: string, parentId: string | null = n
         }).returning();
 
         revalidatePath("/dashboard/knowledge-base");
-        return { success: true, folder: newFolder };
+        return { success: true, data: newFolder };
     } catch (error) {
         console.error("Error creating wiki folder:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
@@ -73,9 +74,9 @@ export async function getWikiPageDetail(id: string) {
     }
 }
 
-export async function createWikiPage(data: { title: string, content: string, folderId: string | null }) {
+export async function createWikiPage(data: { title: string, content: string, folderId: string | null }): Promise<ActionResult<typeof wikiPages.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { error: "Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const [newPage] = await db.insert(wikiPages).values({
@@ -84,16 +85,16 @@ export async function createWikiPage(data: { title: string, content: string, fol
         }).returning();
 
         revalidatePath("/dashboard/knowledge-base");
-        return { success: true, page: newPage };
+        return { success: true, data: newPage };
     } catch (error) {
         console.error("Error creating wiki page:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
-export async function updateWikiPage(id: string, data: { title?: string, content?: string, folderId?: string | null }) {
+export async function updateWikiPage(id: string, data: { title?: string, content?: string, folderId?: string | null }): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(wikiPages)
@@ -109,13 +110,13 @@ export async function updateWikiPage(id: string, data: { title?: string, content
         return { success: true };
     } catch (error) {
         console.error("Error updating wiki page:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
-export async function deleteWikiPage(id: string) {
+export async function deleteWikiPage(id: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.delete(wikiPages).where(eq(wikiPages.id, id));
@@ -123,6 +124,6 @@ export async function deleteWikiPage(id: string) {
         return { success: true };
     } catch (error) {
         console.error("Error deleting wiki page:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
     }
 }

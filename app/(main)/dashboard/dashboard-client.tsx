@@ -13,8 +13,8 @@ import {
     ShoppingBag,
     Zap,
     LayoutGrid,
-    Timer,
-    CheckCircle2
+    Clock,
+    CalendarDays
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -53,12 +53,15 @@ interface Notification {
     isRead: boolean;
 }
 
+
+
+
 export function DashboardClient({ initialStats, period, userName, branding: initialBranding }: DashboardClientProps) {
     const { currencySymbol } = useBranding();
     const [statsData, setStatsData] = useState<DashboardStats>(initialStats);
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    // ✅ FIX: Hydration mismatch protection
+    // ✅ Hydration mismatch protection
     const [mounted, setMounted] = useState(false);
     const [time, setTime] = useState<Date | null>(null);
 
@@ -84,9 +87,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
             }
         };
 
-        // Initial fetch
         fetchData();
-
         const interval = setInterval(fetchData, 15000);
         const clockInterval = setInterval(() => setTime(new Date()), 60000);
 
@@ -96,7 +97,6 @@ export function DashboardClient({ initialStats, period, userName, branding: init
         };
     }, [period]);
 
-    // ✅ FIX: Memoized time formatting to prevent hydration issues
     const formattedTime = useMemo(() => {
         if (!mounted || !time) return "--:--";
         return time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -135,8 +135,10 @@ export function DashboardClient({ initialStats, period, userName, branding: init
         },
     ];
 
+
+
     return (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-700">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
             {/* Top Navigation / Breadcrumbs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 px-1">
                 <div className="flex items-center gap-3">
@@ -147,18 +149,25 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight">Главная</h1>
                     </div>
                 </div>
-                <div className="flex items-center gap-1.5 p-1 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 shadow-sm group hover:bg-white/60 transition-all duration-300 hover:scale-[1.02]">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700">
-                        <Timer className="w-3.5 h-3.5 text-primary animate-pulse" />
-                        {formattedTime}
-                    </div>
-                    <div className="h-4 w-px bg-slate-200/50" />
-                    <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
-                        {formattedDate}
+
+                <div className="flex items-center gap-4">
+
+
+                    <div className="flex items-center gap-1.5 p-1 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 shadow-sm group hover:bg-white/60 transition-all duration-300 hover:scale-[1.02]">
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700">
+                            <Clock className="w-3.5 h-3.5 text-primary animate-pulse" />
+                            {formattedTime}
+                        </div>
+                        <div className="h-4 w-px bg-slate-200/50" />
+                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600">
+                            <CalendarDays className="w-3.5 h-3.5 text-primary/70" />
+                            {formattedDate}
+                        </div>
                     </div>
                 </div>
             </div>
+
+
 
             {/* MAIN BENTO GRID */}
             <div className="grid grid-cols-12 gap-5">
@@ -170,14 +179,6 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
                     <div className="relative z-10 h-full flex flex-col justify-between">
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 rounded-2xl text-[10px] font-bold text-primary mb-6 border border-primary/10 shadow-sm tracking-normal">
-                                <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
-                                </span>
-                                AI-Integrated CRM v2.0
-                            </div>
-
                             <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
                                 {initialBranding?.dashboardWelcome?.includes('%name%')
                                     ? initialBranding.dashboardWelcome.replace('%name%', userName.split(' ')[0])
@@ -201,29 +202,29 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 </div>
 
                 {/* Main Metric - Revenue - Spans 4 cols */}
-                <div className="crm-card col-span-12 md:col-span-4 lg:col-span-4 !bg-[#212121] !border-[#333] flex flex-col justify-between relative group !shadow-xl">
+                <div className="crm-card col-span-12 md:col-span-4 lg:col-span-4 flex flex-col justify-between relative group">
                     <div className="absolute top-0 right-0 p-8">
-                        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
                             <TrendingUp className="h-6 w-6 text-primary" />
                         </div>
                     </div>
 
                     <div>
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 text-white rounded-2xl text-[10px] font-bold tracking-normal mb-2 border border-primary/30">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-bold tracking-normal mb-2 border border-emerald-100">
                             +18.4% рост
                         </div>
-                        <h3 className="text-slate-400 text-sm font-semibold mb-1">Выручка за период</h3>
+                        <h3 className="text-slate-500 text-sm font-semibold mb-1">Выручка за период</h3>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-4xl sm:text-5xl font-bold text-white tracking-normal">
+                            <span className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-normal">
                                 {statsData?.revenue.replace(' ' + currencySymbol, '')}
                             </span>
-                            <span className="text-2xl font-bold text-slate-500">{currencySymbol}</span>
+                            <span className="text-2xl font-bold text-slate-400">{currencySymbol}</span>
                         </div>
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-xs font-bold text-slate-500">
+                    <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
                         <span>Прогноз: 1.2M {currencySymbol}</span>
-                        <div className="flex h-1.5 w-24 bg-white/5 rounded-2xl overflow-hidden">
+                        <div className="flex h-1.5 w-24 bg-slate-100 rounded-2xl overflow-hidden">
                             <div className="h-full bg-primary w-2/3" />
                         </div>
                     </div>

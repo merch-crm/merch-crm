@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, payments, expenses, inventoryTransactions } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { and, gte, lte, sql, eq, desc } from "drizzle-orm";
+import { and, gte, lte, sql, eq, desc, type SQL } from "drizzle-orm";
 import { subDays } from "date-fns";
 import { logError } from "@/lib/error-logger";
 import { ActionResult } from "@/lib/types";
@@ -76,7 +76,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
     }
 
     try {
-        const whereClause = [];
+        const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
 
@@ -137,12 +137,12 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                 averageCost: Number(summaryData.orderCount || 0) > 0 ? (actualCOGS / Number(summaryData.orderCount)) : 0,
                 writeOffs: actualCOGS * 0.05,
             },
-            chartData: dailyStats.map(d => ({
+            chartData: dailyStats.map((d: { date: string; revenue: number; count: number }) => ({
                 date: d.date,
                 revenue: Number(d.revenue || 0),
                 count: Number(d.count || 0)
             })),
-            categories: categoryStats.map(c => ({
+            categories: categoryStats.map((c: { category: string | null; revenue: number; count: number }) => ({
                 name: c.category as string,
                 revenue: Number(c.revenue || 0),
                 count: Number(c.count || 0)
@@ -173,7 +173,7 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const whereClause = [];
+        const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
         const finalWhere = and(...whereClause, eq(orders.status, "done"));
@@ -236,7 +236,7 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const whereClause = [];
+        const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
 
@@ -258,7 +258,7 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
             { name: "Маркетинг", percentage: 5, color: "bg-rose-500", icon: "Megaphone" },
         ];
 
-        const funds = fundDefinitions.map(f => ({
+        const funds = fundDefinitions.map((f: typeof fundDefinitions[number]) => ({
             ...f,
             amount: (totalRevenue * f.percentage) / 100
         }));
@@ -310,7 +310,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
 
     try {
         if (type === 'payment') {
-            const whereClause = [];
+            const whereClause: (SQL | undefined)[] = [];
             if (from) whereClause.push(gte(payments.createdAt, from));
             if (to) whereClause.push(lte(payments.createdAt, to));
 
@@ -321,7 +321,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
             });
             return { success: true, data };
         } else {
-            const whereClause = [];
+            const whereClause: (SQL | undefined)[] = [];
             if (from) whereClause.push(gte(expenses.createdAt, from));
             if (to) whereClause.push(lte(expenses.createdAt, to));
 

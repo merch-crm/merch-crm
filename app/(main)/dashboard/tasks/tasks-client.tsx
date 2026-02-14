@@ -153,7 +153,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
                 {/* Filter Toolbar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-6">
-                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-3xl">
+                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
@@ -162,14 +162,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl relative",
+                                            "crm-filter-tab flex-1 sm:flex-none shrink-0",
                                             isActive && "active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskTab"
-                                                className="absolute inset-0 bg-primary rounded-2xl z-0"
+                                                className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
@@ -188,7 +188,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                         </div>
                     </div>
 
-                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5 rounded-3xl">
+                    <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {viewTabs.map((tab) => {
                                 const isActive = view === tab.id;
@@ -197,14 +197,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => setView(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl relative",
+                                            "crm-filter-tab flex-1 sm:flex-none shrink-0",
                                             isActive && "active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskView"
-                                                className="absolute inset-0 bg-primary rounded-2xl z-0"
+                                                className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}

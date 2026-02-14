@@ -275,6 +275,12 @@ export async function getInventoryCategories() {
                 FROM ${inventoryItems} 
                 WHERE ${inventoryItems.categoryId} = ${inventoryCategories.id} 
                 AND ${inventoryItems.isArchived} = false
+            )`,
+                totalQuantity: sql<number>`(
+                SELECT COALESCE(SUM(${inventoryItems.quantity}), 0)::int 
+                FROM ${inventoryItems} 
+                WHERE ${inventoryItems.categoryId} = ${inventoryCategories.id} 
+                AND ${inventoryItems.isArchived} = false
             )`
             })
                 .from(inventoryCategories)
@@ -3006,7 +3012,7 @@ export async function syncAllInventoryQuantities() {
 
 export async function getOrphanedItemCount() {
     try {
-        const result = await db.select({ count: sql<number>`count(*)` })
+        const result = await db.select({ count: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)::int` })
             .from(inventoryItems)
             .where(and(
                 isNull(inventoryItems.categoryId),

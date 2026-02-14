@@ -82,6 +82,7 @@ export interface Category {
     showInSku?: boolean;
     showInName?: boolean;
     itemCount?: number;
+    totalQuantity?: number;
     parent?: {
         id: string;
         name: string;

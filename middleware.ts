@@ -50,7 +50,7 @@ export async function middleware(req: NextRequest) {
             await jwtVerify(token, key);
             isValid = true;
             // payload = verified.payload;
-        } catch (error) {
+        } catch {
             // Token invalid or expired
             // console.warn("Invalid token:", error);
         }

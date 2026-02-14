@@ -277,7 +277,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     return (
         <div className="space-y-6">
             {/* New Filter Panel - Photo 2 Style */}
-            <div className="crm-filter-tray flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 p-1.5 rounded-[22px]">
+            <div className="crm-filter-tray flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 p-1.5">
                 <Search className="h-4 w-4 text-slate-400 hidden sm:block" />
                 <div className="flex-1 relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 sm:hidden" />
@@ -340,14 +340,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         variant="ghost"
                         onClick={() => setShowFilters(!showFilters)}
                         className={cn(
-                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px] p-0 px-4",
+                            "crm-filter-tab flex-1 sm:flex-none h-10 sm:h-auto p-0 px-4",
                             showFilters && "active"
                         )}
                     >
                         {showFilters && (
                             <motion.div
                                 layoutId="activeClientFilters"
-                                className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                             />
                         )}
@@ -359,14 +359,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         variant="ghost"
                         onClick={() => setShowArchived(!showArchived)}
                         className={cn(
-                            "crm-filter-tray-tab flex-1 sm:flex-none h-10 sm:h-auto rounded-[16px] p-0 px-4",
+                            "crm-filter-tab flex-1 sm:flex-none h-10 sm:h-auto p-0 px-4",
                             showArchived && "active"
                         )}
                     >
                         {showArchived && (
                             <motion.div
                                 layoutId="activeClientArchive"
-                                className="absolute inset-0 bg-amber-100 rounded-[16px] z-0"
+                                className="absolute inset-0 bg-amber-100 rounded-[10px] z-0"
                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                             />
                         )}

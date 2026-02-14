@@ -17,7 +17,6 @@ import { cn } from "@/lib/utils";
 import { useBranding } from "@/components/branding-provider";
 import { InventoryItem, ItemHistoryTransaction } from "../../../types";
 import { Session } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface ItemFinancialSectionProps {
@@ -29,7 +28,17 @@ interface ItemFinancialSectionProps {
     handleStartEdit: () => void;
     user: Session | null;
     className?: string;
+    timeframe: 'month' | 'quarter' | 'half-year' | 'year' | 'all';
+    setTimeframe: (tf: 'month' | 'quarter' | 'half-year' | 'year' | 'all') => void;
 }
+
+const PERIODS = [
+    { label: "Месяц", value: "month" },
+    { label: "3 месяца", value: "quarter" },
+    { label: "Полгода", value: "half-year" },
+    { label: "Год", value: "year" },
+    { label: "Все время", value: "all" },
+] as const;
 
 export function ItemFinancialSection({
     item,
@@ -39,10 +48,11 @@ export function ItemFinancialSection({
     setEditData,
     handleStartEdit,
     user,
-    className
+    className,
+    timeframe,
+    setTimeframe
 }: ItemFinancialSectionProps) {
     const { currencySymbol } = useBranding();
-    const [costTimeframe, setCostTimeframe] = useState<'1m' | '3m' | '6m' | '1y' | 'all'>('1m');
     const [hoveredCostPoint, setHoveredCostPoint] = useState<number | null>(null);
     const [graphWidth, setGraphWidth] = useState(1000);
     const graphRef = useRef<HTMLDivElement>(null);
@@ -64,6 +74,8 @@ export function ItemFinancialSection({
             observer.disconnect();
         };
     }, []);
+
+    // ... (logic before costHistoryStats)
 
     // Calculate last purchase price (most recent supply)
     const lastInCostPrice = useMemo(() => {
@@ -128,19 +140,19 @@ export function ItemFinancialSection({
         let filteredPoints = [...supplyPoints];
         const now = new Date();
 
-        if (costTimeframe === '1m') {
+        if (timeframe === 'month') {
             const oneMonthAgo = new Date();
             oneMonthAgo.setMonth(now.getMonth() - 1);
             filteredPoints = supplyPoints.filter(p => p.date >= oneMonthAgo);
-        } else if (costTimeframe === '3m') {
+        } else if (timeframe === 'quarter') {
             const threeMonthsAgo = new Date();
             threeMonthsAgo.setMonth(now.getMonth() - 3);
             filteredPoints = supplyPoints.filter(p => p.date >= threeMonthsAgo);
-        } else if (costTimeframe === '6m') {
+        } else if (timeframe === 'half-year') {
             const sixMonthsAgo = new Date();
             sixMonthsAgo.setMonth(now.getMonth() - 6);
             filteredPoints = supplyPoints.filter(p => p.date >= sixMonthsAgo);
-        } else if (costTimeframe === '1y') {
+        } else if (timeframe === 'year') {
             const oneYearAgo = new Date();
             oneYearAgo.setFullYear(now.getFullYear() - 1);
             filteredPoints = supplyPoints.filter(p => p.date >= oneYearAgo);
@@ -200,7 +212,7 @@ export function ItemFinancialSection({
             avg: wacForStats,
             yearlyChange: yearlyChange
         };
-    }, [history, item.costPrice, costTimeframe]);
+    }, [history, item.costPrice, timeframe]);
 
 
     if (user?.roleName === 'Менеджер') return null;
@@ -293,7 +305,7 @@ export function ItemFinancialSection({
             </div>
 
             {/* SECTION 2: History & Chart */}
-            <div className="flex flex-col gap-4 mt-4 flex-1">
+            <div className="flex flex-col gap-4 flex-1">
                 <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3 relative z-10">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground shrink-0">
@@ -328,61 +340,31 @@ export function ItemFinancialSection({
                     ))}
                 </div>
 
-                <div className="flex flex-col gap-1 mt-auto">
-                    {/* Timeframe Selector Row - Full Width */}
-                    <div className="flex bg-muted/50 p-1.5 rounded-[28px] border border-border/50 transition-all w-full">
-                        {(['1m', '3m', '6m', '1y', 'all'] as const).map((tf) => (
-                            <Button
-                                key={tf}
-                                onClick={() => setCostTimeframe(tf)}
-                                className={cn(
-                                    "relative flex-1 py-2 text-[10px] font-black transition-all duration-300 rounded-3xl h-auto border-none bg-transparent hover:bg-transparent shadow-none",
-                                    costTimeframe === tf ? "text-background" : "text-muted-foreground hover:text-foreground"
-                                )}
-                            >
-                                {costTimeframe === tf && (
-                                    <motion.div
-                                        layoutId="activeCostTimeframeIndicatorLocal"
-                                        className="absolute inset-0 bg-primary rounded-3xl shadow-lg shadow-primary/20"
-                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                    />
-                                )}
-                                <span className="relative z-10">
-                                    {tf === '1m' ? (
-                                        <>
-                                            <span className="hidden sm:inline">Месяц</span>
-                                            <span className="sm:hidden">1М</span>
-                                        </>
-                                    ) : tf === '3m' ? (
-                                        <>
-                                            <span className="hidden sm:inline">3 месяца</span>
-                                            <span className="sm:hidden">3М</span>
-                                        </>
-                                    ) : tf === '6m' ? (
-                                        <>
-                                            <span className="hidden sm:inline">Полгода</span>
-                                            <span className="sm:hidden">6М</span>
-                                        </>
-                                    ) : tf === '1y' ? (
-                                        <>
-                                            <span className="hidden sm:inline">Год</span>
-                                            <span className="sm:hidden">1Г</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className="hidden sm:inline">Все время</span>
-                                            <span className="sm:hidden">Все</span>
-                                        </>
+                <div className="flex flex-col gap-6 mt-6">
+                    {/* Timeframe selector tabs */}
+                    <div className="flex items-center justify-center">
+                        <div className="inline-flex p-1 bg-muted/30 backdrop-blur-md border border-border/40 rounded-full shadow-sm">
+                            {PERIODS.map((p) => (
+                                <button
+                                    key={p.value}
+                                    onClick={() => setTimeframe(p.value)}
+                                    className={cn(
+                                        "px-4 py-1.5 text-[10px] font-bold transition-all duration-300 rounded-full whitespace-nowrap",
+                                        timeframe === p.value
+                                            ? "bg-foreground text-background shadow-md transform scale-105"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-background/40"
                                     )}
-                                </span>
-                            </Button>
-                        ))}
+                                >
+                                    {p.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="relative h-[120px] w-full group/chart overflow-visible" ref={graphRef}>
                         <AnimatePresence mode="wait">
                             <motion.div
-                                key={costTimeframe}
+                                key={timeframe}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}

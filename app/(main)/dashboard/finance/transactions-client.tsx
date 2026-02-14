@@ -107,7 +107,7 @@ export function TransactionsClient({
 
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="crm-filter-tray w-full overflow-hidden flex items-center p-1.5 rounded-[22px]">
+            <div className="crm-filter-tray w-full overflow-hidden flex items-center p-1.5">
                 {/* Search Box */}
                 <div className="relative flex-1 min-w-0">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -147,7 +147,7 @@ export function TransactionsClient({
                                     variant="ghost"
                                     onClick={() => setView(t.id as "all" | "payments" | "expenses")}
                                     className={cn(
-                                        "crm-filter-tray-tab shrink-0 relative px-3 sm:px-6",
+                                        "crm-filter-tab shrink-0 px-3 sm:px-6",
                                         isActive && "active"
                                     )}
                                 >
@@ -155,7 +155,7 @@ export function TransactionsClient({
                                         <motion.div
                                             layoutId="activeFinanceTab"
                                             className={cn(
-                                                "absolute inset-0 rounded-[16px] z-0",
+                                                "absolute inset-0 rounded-[10px] z-0",
                                                 t.activeColor || "bg-primary shadow-primary/20",
                                                 t.shadowColor
                                             )}

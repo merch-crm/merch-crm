@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { clients, orders, users, orderItems, inventoryItems, payments } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { asc, desc, eq, sql, or, and, ilike, inArray } from "drizzle-orm";
+import { asc, desc, eq, sql, or, and, ilike, inArray, type SQL } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -70,7 +70,7 @@ export async function getClients(showArchived = false): Promise<ActionResult<Cli
         const userRole = session?.roleName;
         const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
 
-        const safeData = data.map(client => ({
+        const safeData = data.map((client: typeof data[number]) => ({
             ...client,
             phone: shouldHidePhone ? "HIDDEN" : client.phone
         }));
@@ -88,7 +88,7 @@ export async function getClients(showArchived = false): Promise<ActionResult<Cli
 
 export async function checkClientDuplicates(data: { phone?: string, email?: string, lastName?: string, firstName?: string }): Promise<ActionResult<(typeof clients.$inferSelect)[]>> {
     try {
-        const conditions = [];
+        const conditions: (SQL | undefined)[] = [];
 
         if (data.phone) {
             const phoneDigits = data.phone.replace(/\D/g, "");
@@ -110,8 +110,11 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
 
         if (conditions.length === 0) return { success: true, data: [] };
 
+        const filteredConditions = conditions.filter((c): c is SQL => !!c);
+        if (filteredConditions.length === 0) return { success: true, data: [] };
+
         const duplicates = await db.select().from(clients)
-            .where(and(or(...conditions), eq(clients.isArchived, false)))
+            .where(and(or(...filteredConditions), eq(clients.isArchived, false)))
             .limit(5);
 
         return { success: true, data: duplicates };
@@ -432,7 +435,7 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
             });
 
             if (clientToDelete && clientToDelete.orders.length > 0) {
-                const orderIds = clientToDelete.orders.map(o => o.id);
+                const orderIds = clientToDelete.orders.map((o: { id: string }) => o.id);
                 await releaseReservationsForOrders(orderIds, tx);
 
                 for (const orderId of orderIds) {
@@ -477,7 +480,7 @@ export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResu
             });
 
             if (clientOrders.length > 0) {
-                const orderIds = clientOrders.map(o => o.id);
+                const orderIds = clientOrders.map((o: { id: string }) => o.id);
                 await releaseReservationsForOrders(orderIds, tx);
 
                 await tx.delete(orders).where(inArray(orders.clientId, clientIds));

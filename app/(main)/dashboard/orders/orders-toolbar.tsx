@@ -45,7 +45,7 @@ export function OrdersToolbar() {
     return (
         <div className="space-y-3">
             {/* Main Toolbar Row */}
-            <div className="crm-filter-tray p-1.5 rounded-[22px]">
+            <div className="crm-filter-tray p-1.5">
                 {/* Search Box */}
                 <div className="relative flex-1 min-w-0">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
@@ -77,29 +77,26 @@ export function OrdersToolbar() {
                             <Button
                                 key={tab.id}
                                 variant="ghost"
-                                asChild
                                 onClick={() => handleTabChange(tab.id === "archived")}
                                 className={cn(
-                                    "crm-filter-tray-tab shrink-0 h-auto p-0 hover:bg-transparent relative",
+                                    "crm-filter-tab shrink-0",
                                     tab.active && "active"
                                 )}
                             >
-                                <button>
-                                    {tab.active && (
-                                        <motion.div
-                                            layoutId="activeOrderTab"
-                                            className={cn(
-                                                "absolute inset-0 rounded-[16px] z-0",
-                                                tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
-                                            )}
-                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                                        />
-                                    )}
-                                    <div className="relative z-10 flex items-center justify-center gap-2 px-4 sm:px-6 h-9">
-                                        <tab.icon className="w-3.5 h-3.5" />
-                                        <span className="hidden sm:inline">{tab.label}</span>
-                                    </div>
-                                </button>
+                                {tab.active && (
+                                    <motion.div
+                                        layoutId="activeOrderTab"
+                                        className={cn(
+                                            "absolute inset-0 rounded-[10px] z-0",
+                                            tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
+                                        )}
+                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                    />
+                                )}
+                                <div className="relative z-10 flex items-center justify-center gap-2">
+                                    <tab.icon className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">{tab.label}</span>
+                                </div>
                             </Button>
                         ))}
                     </div>
@@ -111,7 +108,7 @@ export function OrdersToolbar() {
                 <div className="hidden md:flex items-center">
                     <Button
                         asChild
-                        className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 rounded-[16px] h-auto"
+                        className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 !rounded-[10px] h-auto"
                     >
                         <Link href="/dashboard/orders/new">
                             <Plus className="w-4 h-4" />
@@ -132,7 +129,7 @@ export function OrdersToolbar() {
                             key={tab.id}
                             onClick={() => handleTabChange(tab.id === "archived")}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-sm font-bold transition-all relative",
+                                "flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-bold transition-all relative",
                                 tab.active ? "bg-white text-primary shadow-sm" : "text-slate-500"
                             )}
                         >

@@ -1,45 +1,82 @@
 .crm-filter-tray {
     position: relative;
-    background-color: #e9e9e9;
+    background-color: var(--accent);
     padding: 6px;
-    border-radius: 22px;
+    border-radius: var(--radius-outer);
     display: flex;
     align-items: center;
     gap: 6px;
     transition: all 0.15s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: var(--crm-shadow-sm), inset 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border);
+    box-shadow: var(--crm-shadow-sm), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
 }
 
 .crm-filter-tray-light {
-    background-color: #f2f2f2;
+    position: relative;
+    background-color: var(--accent);
     padding: 6px;
-    border-radius: 22px;
+    border-radius: var(--radius-outer);
     display: flex;
     align-items: center;
     gap: 6px;
     transition: all 0.15s ease;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
     box-shadow: var(--crm-shadow-sm), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
 }
 
 .crm-filter-tray-search {
     height: 44px;
     background-color: white;
-    border-radius: 16px;
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 700;
     transition: all 0.2s ease;
 }
 
+/* Tab — переключатель между страницами/фильтрами */
+.crm-filter-tab {
+    position: relative;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.crm-filter-tab:not(.active) {
+    color: var(--muted-foreground);
+}
+
+.crm-filter-tab:not(.active):hover {
+    color: var(--foreground);
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.crm-filter-tab.active {
+    color: white;
+    transition: color 0.05s ease-out;
+}
+
+/* Legacy alias — используется на кнопках (напр. «Создать заказ») */
 .crm-filter-tray-tab {
     position: relative;
     height: 44px;
     padding: 0 24px;
-    border-radius: 16px;
+    border-radius: 10px !important;
     font-size: 13px;
     font-weight: 700;
-    transition: color 0.1s ease-out, background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,11 +99,12 @@
 
 @media (max-width: 640px) {
     .crm-filter-tray {
-        border-radius: 18px;
+        border-radius: calc(var(--radius-inner) - 4px);
         padding: 8px;
         gap: 8px;
     }
 
+    .crm-filter-tab,
     .crm-filter-tray-tab {
         padding: 0 12px;
     }

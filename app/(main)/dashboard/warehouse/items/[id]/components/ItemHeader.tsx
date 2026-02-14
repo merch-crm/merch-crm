@@ -21,6 +21,8 @@ interface ItemHeaderProps {
     onUnarchive: () => void;
 }
 
+
+
 export function ItemHeader({
     item,
     isEditing,
@@ -71,8 +73,8 @@ export function ItemHeader({
             )}
 
             {/* Main Header Content */}
-            <div className="flex flex-row items-center justify-between gap-4 w-full">
-                <div className="flex-1 min-w-0 overflow-hidden">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 w-full">
+                <div className="flex-1 min-w-0 overflow-hidden w-full">
                     <div className="flex items-center gap-2 sm:gap-4">
                         {isEditing ? (
                             <div className="relative group w-full">
@@ -154,47 +156,52 @@ export function ItemHeader({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 sm:gap-3 shrink-0">
-                    {isEditing ? (
-                        <>
-                            <Button
-                                variant="ghost"
-                                onClick={onCancel}
-                                className="h-10 px-4 sm:h-11 md:px-8 rounded-2xl sm:rounded-2xl font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
-                            >
-                                <X className="w-4 h-4" />
-                                <span className="hidden md:inline">Отмена</span>
-                            </Button>
-                            <Button
-                                onClick={onSave}
-                                disabled={isSaving || isAnyUploading}
-                                className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
-                            >
-                                {isSaving ? (
-                                    <RefreshCcw className="w-4 h-4 animate-spin" />
-                                ) : (
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Save className="w-4 h-4" />
-                                        <span className="hidden sm:inline">{isAnyUploading ? "Загрузка…" : "Сохранить"}</span>
-                                    </div>
-                                )}
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            {!item.isArchived && (
+                <div className="flex items-center justify-end gap-4 shrink-0 w-full lg:w-auto">
+
+
+                    <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
+                        {isEditing ? (
+                            <>
                                 <Button
-                                    onClick={onEdit}
-                                    className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] group border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center"
+                                    variant="ghost"
+                                    onClick={onCancel}
+                                    className="h-10 px-4 sm:h-11 md:px-8 rounded-2xl sm:rounded-2xl font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
                                 >
-                                    <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 transition-transform sm:mr-3" />
-                                    <span className="hidden sm:inline">Редактировать</span>
+                                    <X className="w-4 h-4" />
+                                    <span className="hidden md:inline">Отмена</span>
                                 </Button>
-                            )}
-                        </>
-                    )}
+                                <Button
+                                    onClick={onSave}
+                                    disabled={isSaving || isAnyUploading}
+                                    className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
+                                >
+                                    {isSaving ? (
+                                        <RefreshCcw className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Save className="w-4 h-4" />
+                                            <span className="hidden sm:inline">{isAnyUploading ? "Загрузка…" : "Сохранить"}</span>
+                                        </div>
+                                    )}
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                {!item.isArchived && (
+                                    <Button
+                                        onClick={onEdit}
+                                        className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] group border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center"
+                                    >
+                                        <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 transition-transform sm:mr-3" />
+                                        <span className="hidden sm:inline">Редактировать</span>
+                                    </Button>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+

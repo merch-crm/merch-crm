@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 
 interface PremiumPaginationProps {
@@ -47,26 +46,44 @@ export function PremiumPagination({
 
 
     const getPages = () => {
-        const pages: (number | string)[] = [];
+        // If total pages is 7 or less, show all numbers
         if (totalPages <= 7) {
-            for (let i = 1; i <= totalPages; i++) pages.push(i);
-        } else {
-            if (currentPage <= 4) {
-                for (let i = 1; i <= 5; i++) pages.push(i);
-                pages.push("...");
-                pages.push(totalPages);
-            } else if (currentPage >= totalPages - 3) {
-                pages.push(1);
-                pages.push("...");
-                for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
-            } else {
-                pages.push(1);
-                pages.push("...");
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-                pages.push("...");
-                pages.push(totalPages);
-            }
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
         }
+
+        const pages: (number | string)[] = [];
+
+        // Always show first page
+        pages.push(1);
+
+        // Window range (current - 1 to current + 1)
+        const windowStart = Math.max(2, currentPage - 1);
+        const windowEnd = Math.min(totalPages - 1, currentPage + 1);
+
+        // Add ellipsis before window if window starts after page 2
+        // This covers the case "When on page 4, hide page 2" (window starts at 3, gap 2 hidden)
+        if (windowStart > 2) {
+            pages.push("...");
+        } else if (windowStart === 2) {
+            // Case where window starts at 2, so no gap (current page is 3)
+            // We just let the loop handle adding 2.
+        }
+
+        // Add window pages
+        for (let i = windowStart; i <= windowEnd; i++) {
+            pages.push(i);
+        }
+
+        // Add ellipsis after window if window ends before second to last page
+        if (windowEnd < totalPages - 1) {
+            pages.push("...");
+        }
+
+        // Always show last page if > 1
+        if (totalPages > 1) {
+            pages.push(totalPages);
+        }
+
         return pages;
     };
 
@@ -82,50 +99,42 @@ export function PremiumPagination({
                 Показано <strong>{Math.min((currentPage - 1) * pageSize + 1, totalItems)}</strong> - <strong>{Math.min(currentPage * pageSize, totalItems)}</strong> из <strong>{totalItems}</strong> {genitiveItemName}
             </div>
 
+
             {totalPages > 1 && (
                 <div className="pagination-controls">
-                    <Button
-                        variant="ghost"
+                    <button
+                        className="pagination-nav"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="pagination-nav h-10 w-auto px-3 bg-transparent hover:bg-transparent"
                     >
-                        <ChevronLeft />
-                        <span>Назад</span>
-                    </Button>
+                        <ChevronLeft className="h-4 w-4" />
+                        Пред
+                    </button>
 
                     <div className="flex items-center gap-1">
-                        {getPages().map((page, idx) => (
-                            <React.Fragment key={idx}>
-                                {typeof page === "number" ? (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => handlePageChange(page)}
-                                        className={cn(
-                                            "pagination-item h-9 w-9 p-0 bg-transparent hover:bg-transparent",
-                                            currentPage === page && "active"
-                                        )}
-                                    >
-                                        {page}
-                                    </Button>
-                                ) : (
-                                    <div className="pagination-ellipsis">
-                                        <MoreHorizontal />
-                                    </div>
+                        {getPages().map((page, index) => (
+                            <button
+                                key={index}
+                                onClick={() => typeof page === 'number' ? handlePageChange(page) : undefined}
+                                disabled={typeof page !== 'number'}
+                                className={cn(
+                                    page === "..." ? "pagination-ellipsis" : "pagination-item",
+                                    page === currentPage && "active"
                                 )}
-                            </React.Fragment>
+                            >
+                                {page}
+                            </button>
                         ))}
                     </div>
 
-                    <Button
-                        variant="ghost"
+                    <button
+                        className="pagination-nav"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="pagination-nav h-10 w-auto px-3 bg-transparent hover:bg-transparent"
                     >
-                        <span>Вперёд</span>
-                        <ChevronRight />
-                    </Button>
+                        След
+                        <ChevronRight className="h-4 w-4" />
+                    </button>
                 </div>
             )}
         </div>

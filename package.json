@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:ssh": "./dev.sh",
-    "stop:ssh": "./stop-dev.sh",
+    "dev:ssh": "./scripts/dev.sh",
+    "stop:ssh": "./scripts/stop-dev.sh",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

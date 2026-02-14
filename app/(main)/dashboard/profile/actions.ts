@@ -65,8 +65,15 @@ export async function updateProfile(formData: FormData) {
     if (!name) return { success: false, error: "Имя обязательно" };
 
     try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: Record<string, any> = { name, phone, telegram, instagram, socialMax, birthday: birthday || null };
+        const updateData: Partial<typeof users.$inferInsert> = {
+            name,
+            phone,
+            telegram,
+            instagram,
+            socialMax,
+            birthday: birthday || null,
+            updatedAt: new Date()
+        };
 
         if (avatarFile && avatarFile.size > 0) {
             // Get current user to check for existing avatar

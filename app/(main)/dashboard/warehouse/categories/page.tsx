@@ -80,6 +80,7 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
             id: "orphaned",
             name: "Без категории",
             itemCount: orphanedCount,
+            totalQuantity: orphanedCount,
             description: "Позиции без привязки к категории",
             color: "slate",
             icon: "box",

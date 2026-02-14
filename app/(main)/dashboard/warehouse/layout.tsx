@@ -202,7 +202,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                     </div>
 
                     {/* Tabs Navigation */}
-                    <div className="crm-card w-full !p-1.5 !rounded-[22px]">
+                    <div className="crm-card w-full !p-1.5 !rounded-[var(--radius-inner)]">
                         {/* Mobile Navigation (Icons Only) */}
                         <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-2xl">
                             {TABS.map((tab) => {
@@ -213,7 +213,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                         key={tab.id}
                                         href={tab.href}
                                         className={cn(
-                                            "flex-1 h-11 relative flex items-center justify-center rounded-[14px] transition-all duration-300",
+                                            "flex-1 h-11 relative flex items-center justify-center rounded-[10px] transition-all duration-300",
                                             isActive ? "text-white" : "text-slate-400 hover:text-slate-600 active:scale-90"
                                         )}
                                     >
@@ -221,7 +221,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                             <motion.div
                                                 layoutId="mobileActiveTab"
                                                 className={cn(
-                                                    "absolute inset-0 rounded-[14px] z-0 shadow-md",
+                                                    "absolute inset-0 rounded-[10px] z-0 shadow-md",
                                                     tab.activeColor || "bg-primary shadow-primary/20",
                                                     tab.shadowColor
                                                 )}
@@ -243,15 +243,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                         key={tab.id}
                                         href={tab.href}
                                         className={cn(
-                                            "flex-1 h-10 sm:h-11 relative flex items-center justify-center gap-2 px-3 sm:px-5 shrink-0 rounded-[16px] text-[12px] sm:text-[13px] font-bold group whitespace-nowrap transition-all duration-300",
-                                            isActive ? "text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
+                                            "crm-filter-tab flex-1 h-10 sm:h-11 px-3 sm:px-5 shrink-0 text-[12px] sm:text-[13px] group",
+                                            isActive ? "active text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeWarehouseTab"
                                                 className={cn(
-                                                    "absolute inset-0 rounded-[16px] z-0 shadow-sm",
+                                                    "absolute inset-0 rounded-[10px] z-0 shadow-sm",
                                                     tab.activeColor || "bg-primary shadow-primary/20",
                                                     tab.shadowColor
                                                 )}

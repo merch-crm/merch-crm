@@ -111,28 +111,30 @@ export default async function CategoryPage({ params }: PageParams) {
     }
 
     // Fetch subcategories for this category
+    // Fetch all categories to calculate recursive counts
+    const { getInventoryCategories } = await import("../actions");
+    const allCatsRes = await getInventoryCategories();
+    const allCats = (allCatsRes.success && allCatsRes.data) ? allCatsRes.data : [];
+
+    const countRecursiveTotalQty = (catId: string): number => {
+        const cat = allCats.find(c => c.id === catId);
+        if (!cat) return 0;
+        let sum = cat.totalQuantity || 0;
+        const children = allCats.filter(c => c.parentId === catId);
+        for (const child of children) {
+            sum += countRecursiveTotalQty(child.id);
+        }
+        return sum;
+    };
+
     const subCategoriesRaw = resolvedCategoryId
-        ? await db
-            .select({
-                id: inventoryCategories.id,
-                name: inventoryCategories.name,
-                description: inventoryCategories.description,
-                icon: inventoryCategories.icon,
-                color: inventoryCategories.color,
-                prefix: inventoryCategories.prefix,
-                parentId: inventoryCategories.parentId,
-                sortOrder: inventoryCategories.sortOrder,
-                isActive: inventoryCategories.isActive,
-                isSystem: inventoryCategories.isSystem,
-                gender: inventoryCategories.gender,
-                singularName: inventoryCategories.singularName,
-                pluralName: inventoryCategories.pluralName,
-                createdAt: inventoryCategories.createdAt,
-                slug: inventoryCategories.slug,
-                fullPath: inventoryCategories.fullPath,
-            })
-            .from(inventoryCategories)
-            .where(eq(inventoryCategories.parentId, resolvedCategoryId))
+        ? allCats
+            .filter(c => c.parentId === resolvedCategoryId)
+            .map(c => ({
+                ...c,
+                totalQuantity: countRecursiveTotalQty(c.id)
+            }))
+            .sort((a, b) => (b.totalQuantity || 0) - (a.totalQuantity || 0)) // Sort by qty desc
         : [];
 
     // Fetch items

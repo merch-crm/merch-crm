@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { WikiSidebar } from "./wiki-sidebar";
 import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, deleteWikiPage } from "./actions";
 import { useRouter } from "next/navigation";
@@ -55,33 +55,29 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
 
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
-    useEffect(() => {
-        let isCancelled = false;
-        if (selectedPageId) {
-            const load = async () => {
-                const page = await getWikiPageDetail(selectedPageId);
-                if (!isCancelled) {
-                    setPageContent(page as unknown as WikiPage);
-                    setEditData({ title: page?.title || "", content: page?.content || "" });
-                    setLoading(false);
-                }
-            };
-            load();
+    const fetchPageDetail = useCallback(async (id: string) => {
+        setLoading(true);
+        try {
+            const page = await getWikiPageDetail(id);
+            setPageContent(page as unknown as WikiPage);
+            setEditData({ title: page?.title || "", content: page?.content || "" });
+        } finally {
+            setLoading(false);
         }
-        return () => {
-            isCancelled = true;
-        };
-    }, [selectedPageId]);
+    }, []);
+
+    useEffect(() => {
+        if (selectedPageId) {
+            fetchPageDetail(selectedPageId);
+        }
+    }, [selectedPageId, fetchPageDetail]);
 
     const handleSave = async () => {
         if (!selectedPageId) return;
         setLoading(true);
         await updateWikiPage(selectedPageId, editData);
         setIsEditing(false);
-        const page = await getWikiPageDetail(selectedPageId);
-        setPageContent(page as unknown as WikiPage);
-        setEditData({ title: page?.title || "", content: page?.content || "" });
-        setLoading(false);
+        await fetchPageDetail(selectedPageId);
         router.refresh();
     };
 
@@ -110,9 +106,9 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     const confirmCreatePage = async (title: string) => {
         setCreatePageDialog(prev => ({ ...prev, open: false }));
         const res = await createWikiPage({ title, content: "", folderId: createPageDialog.folderId });
-        if (res.success && res.page) {
+        if (res.success && res.data) {
             setLoading(true);
-            setSelectedPageId(res.page.id);
+            setSelectedPageId(res.data.id);
             setIsEditing(true);
             router.refresh();
         }

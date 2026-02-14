@@ -208,6 +208,7 @@ export function ItemDetailClient({
 
     // Unified tab navigation for desktop/tablet/mobile
     const [tabletTab, setTabletTab] = useState("characteristic");
+    const [timeframe, setTimeframe] = useState<'month' | 'quarter' | 'half-year' | 'year' | 'all'>('month');
     const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
     const thumbSettings = useMemo(() => (editData.thumbnailSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 }, [editData.thumbnailSettings]);
@@ -1027,29 +1028,8 @@ export function ItemDetailClient({
                         editName={editData.name || ""}
                         onEditNameChange={(name) => setEditData(prev => ({ ...prev, name }))}
                         onCancel={() => {
-                            const hasChanges = JSON.stringify({
-                                name: editData.name,
-                                sku: editData.sku,
-                                description: editData.description,
-                                unit: editData.unit,
-                                lowStockThreshold: editData.lowStockThreshold,
-                                criticalStockThreshold: editData.criticalStockThreshold,
-                                attributes: editData.attributes,
-                                categoryId: editData.categoryId,
-                            }) !== JSON.stringify({
-                                name: item.name,
-                                sku: item.sku || "",
-                                description: item.description || "",
-                                unit: item.unit,
-                                lowStockThreshold: item.lowStockThreshold || 10,
-                                criticalStockThreshold: item.criticalStockThreshold || 0,
-                                attributes: (item.attributes as Record<string, string>) || {},
-                                categoryId: item.categoryId || "",
-                            });
-
                             if (hasChanges) {
                                 setShowUnsavedChangesConfirm(true);
-                                // Action to perform if user confirms "exit without saving"
                                 setPendingExitAction(() => () => {
                                     setIsEditing(false);
                                     setEditData(prev => ({ ...prev, ...item }));
@@ -1671,11 +1651,9 @@ export function ItemDetailClient({
                                     setEditData={setEditData}
                                     handleStartEdit={handleStartEdit}
                                     user={user}
-                                    className={
-                                        cn(
-                                            "hidden xl:flex xl:col-span-8 xl:h-full"
-                                        )
-                                    }
+                                    className="hidden xl:flex xl:col-span-8 xl:h-full"
+                                    timeframe={timeframe}
+                                    setTimeframe={setTimeframe}
                                 />
 
                                 {/* SUB-BLOCK: Warehouses List */}
@@ -1714,7 +1692,7 @@ export function ItemDetailClient({
                                                 .sort((a, b) => b.quantity - a.quantity);
 
                                             if (sortedStocks.length === 0) return (
-                                                <div className="p-8 text-center bg-muted/50 rounded-2xl border border-dashed border-border">
+                                                <div className="table-empty p-8">
                                                     <Package className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                                                     <p className="text-[10px] font-bold text-muted-foreground">Нет данных о размещении</p>
                                                 </div>
@@ -1785,11 +1763,12 @@ export function ItemDetailClient({
                                 setEditData={setEditData}
                                 handleStartEdit={handleStartEdit}
                                 user={user}
-                                className={
-                                    cn(
-                                        "hidden md:col-span-2 xl:hidden",
-                                        tabletTab === 'cost' ? "md:flex" : "md:hidden"
-                                    )}
+                                className={cn(
+                                    "md:col-span-2 xl:hidden",
+                                    tabletTab === 'cost' ? "flex" : "hidden"
+                                )}
+                                timeframe={timeframe}
+                                setTimeframe={setTimeframe}
                             />
 
                             <div className={

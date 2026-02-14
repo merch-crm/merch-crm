@@ -12,7 +12,10 @@ import {
     Book,
     Clock,
     Package,
-    Layers
+    Layers,
+    User,
+    Calendar,
+    Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemHistoryTransaction } from "../../../types";
@@ -54,11 +57,9 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     }, [filteredHistory, currentPage, pageSize]);
 
     const renderEmpty = () => (
-        <div className="py-20 text-center bg-muted/50 rounded-2xl border-2 border-dashed border-border/50">
-            <div className="w-20 h-20 bg-card rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 border border-border">
-                <History className="w-10 h-10 text-muted-foreground/30" />
-            </div>
-            <p className="text-xs font-bold text-muted-foreground">{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
+        <div className="table-empty py-16">
+            <History />
+            <p>{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
         </div>
     );
 
@@ -69,12 +70,42 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                 <table className="crm-table">
                     <thead className="crm-thead">
                         <tr>
-                            <th className="crm-th">Тип</th>
-                            <th className="crm-th">Изменение</th>
-                            <th className="crm-th">Склад</th>
-                            <th className="crm-th">Причина</th>
-                            <th className="crm-th">Автор</th>
-                            <th className="crm-th text-right">Дата</th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <Layers className="w-3.5 h-3.5" />
+                                    <span>ТИП</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <ArrowRightLeft className="w-3.5 h-3.5" />
+                                    <span>ИЗМЕНЕНИЕ</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <Building2 className="w-3.5 h-3.5" />
+                                    <span>СКЛАД</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <Book className="w-3.5 h-3.5" />
+                                    <span>ПРИЧИНА</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <User className="w-3.5 h-3.5" />
+                                    <span>АВТОР</span>
+                                </div>
+                            </th>
+                            <th className="crm-th text-right">
+                                <div className="crm-th-content justify-end">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    <span>ДАТА</span>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="crm-tbody">
@@ -178,7 +209,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Header / Controls - Photo 2 Style */}
-            <div className="crm-filter-tray-light p-1.5 rounded-[22px]">
+            <div className="crm-filter-tray-light p-1.5 ">
                 {/* Search Input Box */}
                 <div className="relative flex-1">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
@@ -226,14 +257,14 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     setCurrentPage(1);
                                 }}
                                 className={cn(
-                                    "crm-filter-tray-tab rounded-[16px] border-none hover:bg-transparent",
+                                    "crm-filter-tab",
                                     isActive && "active"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeItemHistoryTab"
-                                        className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                        className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}

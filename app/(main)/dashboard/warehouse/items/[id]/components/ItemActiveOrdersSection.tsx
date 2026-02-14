@@ -19,11 +19,9 @@ interface ItemActiveOrdersSectionProps {
 export function ItemActiveOrdersSection({ orders }: ItemActiveOrdersSectionProps) {
     if (orders.length === 0) {
         return (
-            <div className="py-8 text-center bg-muted/50 rounded-2xl border-2 border-dashed border-border/50">
-                <div className="w-12 h-12 bg-card rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3 border border-border">
-                    <ShoppingBag className="w-6 h-6 text-muted-foreground/20" />
-                </div>
-                <p className="text-[10px] font-bold text-muted-foreground">Нет заказов</p>
+            <div className="table-empty py-12">
+                <ShoppingBag />
+                <p>Нет заказов</p>
             </div>
         );
     }

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 
-import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Search, X, FileDown, Book, LayoutGrid, Tag, Archive, ChevronDown, Layers } from "lucide-react";
+import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Search, X, FileDown, Book, LayoutGrid, Tag, Archive, ChevronDown, Layers, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -145,12 +145,10 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     if (transactions.length === 0 && searchQuery === "" && activeFilter === "all") {
         return (
-            <div className="crm-card flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-[var(--radius-inner)] flex items-center justify-center text-slate-300 mb-6 border border-slate-200 shadow-sm">
-                    <Clock className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">История пуста</h3>
-                <p className="text-slate-500 mt-2 max-w-[320px] font-medium leading-relaxed">Здесь будут отображаться все перемещения товаров, списания и поставки.</p>
+            <div className="table-empty py-20">
+                <Clock />
+                <p>История пуста</p>
+                <span className="text-muted-foreground mt-2 max-w-[320px] font-bold leading-relaxed text-sm">Здесь будут отображаться все перемещения товаров, списания и поставки.</span>
             </div>
         );
     }
@@ -159,7 +157,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         <div className="space-y-3 relative pb-0">
             {/* Toolbar Panel */}
             <div className={cn(
-                "crm-filter-tray w-full overflow-hidden flex items-center p-1.5 rounded-[22px]",
+                "crm-filter-tray w-full overflow-hidden flex items-center p-1.5",
                 isMobileSearchExpanded ? "!gap-0 !p-[6px]" : "gap-1"
             )}>
                 {/* Desktop: Search Box */}
@@ -169,7 +167,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                         setIsMobileSearchExpanded(true);
                     }}
                     className={cn(
-                        "hidden md:block relative transition-all duration-400 ease-in-out overflow-hidden h-11 bg-white rounded-[16px] shadow-sm",
+                        "hidden md:block relative transition-all duration-400 ease-in-out overflow-hidden h-11 bg-white rounded-[10px] shadow-sm",
                         isMobileSearchExpanded
                             ? "flex-1"
                             : "xl:flex-1 xl:w-auto xl:cursor-default xl:hover:bg-white w-[120px] cursor-pointer hover:bg-slate-50"
@@ -190,7 +188,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                             }
                         }}
                         className={cn(
-                            "w-full h-full pl-11 pr-10 bg-transparent border-none shadow-none focus-visible:ring-0 text-[13px] font-bold text-slate-800 transition-all duration-300 rounded-[16px]",
+                            "w-full h-full pl-11 pr-10 bg-transparent border-none shadow-none focus-visible:ring-0 text-[13px] font-bold text-slate-800 transition-all duration-300 rounded-[10px]",
                             isMobileSearchExpanded ? "xl:placeholder:text-slate-400" : "xl:placeholder:text-slate-400 xl:cursor-text cursor-pointer"
                         )}
                     />
@@ -292,14 +290,14 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                         setCurrentPage(1);
                                     }}
                                     className={cn(
-                                        "crm-filter-tray-tab border-none hover:bg-transparent",
+                                        "crm-filter-tab",
                                         isActive && "active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeFilterHistory"
-                                            className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                            className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
@@ -329,7 +327,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="w-full h-11 flex items-center justify-between gap-2 px-4 rounded-[16px] bg-white shadow-sm hover:bg-slate-50 transition-colors border-none"
+                                className="w-full h-11 flex items-center justify-between gap-2 px-4 rounded-[10px] bg-white shadow-sm hover:bg-slate-50 transition-colors border-none"
                             >
                                 <span className="text-[13px] font-bold text-slate-800 truncate">
                                     {[
@@ -475,12 +473,42 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                     onChange={handleSelectAll}
                                 />
                             </th>
-                            <th className="crm-th md:w-[80px]">Тип</th>
-                            <th className="crm-th">Товар</th>
-                            <th className="crm-th">Склад</th>
-                            <th className="crm-th text-center">Изм.</th>
-                            <th className="crm-th hidden xl:table-cell">Причина</th>
-                            <th className="crm-th hidden lg:table-cell text-right">Пользователь</th>
+                            <th className="crm-th md:w-[120px]">
+                                <div className="crm-th-content">
+                                    <Layers className="w-3.5 h-3.5" />
+                                    <span>ТИП</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <Package className="w-3.5 h-3.5" />
+                                    <span>ТОВАР</span>
+                                </div>
+                            </th>
+                            <th className="crm-th">
+                                <div className="crm-th-content">
+                                    <Building2 className="w-3.5 h-3.5" />
+                                    <span>СКЛАД</span>
+                                </div>
+                            </th>
+                            <th className="crm-th text-center">
+                                <div className="crm-th-content justify-center">
+                                    <ArrowLeftRight className="w-3.5 h-3.5" />
+                                    <span>ИЗМ.</span>
+                                </div>
+                            </th>
+                            <th className="crm-th hidden xl:table-cell">
+                                <div className="crm-th-content">
+                                    <Book className="w-3.5 h-3.5" />
+                                    <span>ПРИЧИНА</span>
+                                </div>
+                            </th>
+                            <th className="crm-th hidden lg:table-cell text-right">
+                                <div className="crm-th-content justify-end">
+                                    <User className="w-3.5 h-3.5" />
+                                    <span>АВТОР</span>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="crm-tbody">
@@ -531,9 +559,9 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                 ) : t.type === "restore" ? (
                                                     <Package className="w-5 h-5" />
                                                 ) : isIn ? (
-                                                    <ArrowUpRight className="w-5 h-5" />
-                                                ) : (
                                                     <ArrowDownLeft className="w-5 h-5" />
+                                                ) : (
+                                                    <ArrowUpRight className="w-5 h-5" />
                                                 )}
                                             </div>
                                             <div className="hidden xl:block ml-4">
@@ -767,9 +795,9 @@ function MobileHistoryItem({
                     ) : t.type === "restore" ? (
                         <Package className="w-4 h-4" />
                     ) : isIn ? (
-                        <ArrowUpRight className="w-4 h-4" />
-                    ) : (
                         <ArrowDownLeft className="w-4 h-4" />
+                    ) : (
+                        <ArrowUpRight className="w-4 h-4" />
                     )}
                 </div>
 

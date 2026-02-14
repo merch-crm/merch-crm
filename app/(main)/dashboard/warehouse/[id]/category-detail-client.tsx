@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive, Layers, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive, Layers, CheckCircle2, AlertTriangle, XCircle, Building2, TrendingUp, Clock, Zap, TrendingDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, formatUnit } from "@/lib/utils";
@@ -451,7 +451,7 @@ export function CategoryDetailClient({
 
             {/* Sub-header with Search and Filters */}
             <div className={cn(
-                "crm-filter-tray w-full overflow-hidden flex flex-col lg:flex-row items-stretch lg:items-center p-1.5 rounded-[22px] gap-1 lg:gap-3",
+                "crm-filter-tray w-full overflow-hidden flex flex-col lg:flex-row items-stretch lg:items-center p-1.5 gap-1 lg:gap-3",
                 (isSearchExpanded && isMobile) ? "gap-0" : ""
             )}>
                 {/* Search & Storage Group */}
@@ -557,14 +557,14 @@ export function CategoryDetailClient({
                                 variant="ghost"
                                 onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                 className={cn(
-                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-all duration-300 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] h-9 min-h-0 border-none hover:bg-transparent relative",
+                                    "crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0",
                                     isActive && "active"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeItemStatusTab"
-                                        className="absolute inset-0 bg-primary rounded-[16px] z-0"
+                                        className="absolute inset-0 bg-primary rounded-[10px] z-0"
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
@@ -676,13 +676,52 @@ export function CategoryDetailClient({
                                                         className="mx-auto"
                                                     />
                                                 </th>
-                                                <th className="crm-th">Товар</th>
-                                                <th className="crm-th">Склад</th>
-                                                {canSeeCost && <th className="crm-th crm-td-number">Себест.</th>}
-                                                {canSeeCost && <th className="crm-th crm-td-number">Цена</th>}
-                                                <th className="crm-th w-32 crm-td-number text-center">Резерв</th>
-                                                <th className="crm-th w-32 crm-td-number text-center">Остаток</th>
-                                                <th className="crm-th crm-td-actions">Действия</th>
+                                                <th className="crm-th">
+                                                    <div className="crm-th-content">
+                                                        <Package className="w-3.5 h-3.5" />
+                                                        <span>ТОВАР</span>
+                                                    </div>
+                                                </th>
+                                                <th className="crm-th">
+                                                    <div className="crm-th-content">
+                                                        <Building2 className="w-3.5 h-3.5" />
+                                                        <span>СКЛАД</span>
+                                                    </div>
+                                                </th>
+                                                {canSeeCost && (
+                                                    <th className="crm-th crm-td-number">
+                                                        <div className="crm-th-content justify-end">
+                                                            <TrendingDown className="w-3.5 h-3.5" />
+                                                            <span>СЕБЕСТ.</span>
+                                                        </div>
+                                                    </th>
+                                                )}
+                                                {canSeeCost && (
+                                                    <th className="crm-th crm-td-number">
+                                                        <div className="crm-th-content justify-end">
+                                                            <TrendingUp className="w-3.5 h-3.5" />
+                                                            <span>ЦЕНА</span>
+                                                        </div>
+                                                    </th>
+                                                )}
+                                                <th className="crm-th w-32 crm-td-number text-center">
+                                                    <div className="crm-th-content justify-center">
+                                                        <Clock className="w-3.5 h-3.5" />
+                                                        <span>РЕЗЕРВ</span>
+                                                    </div>
+                                                </th>
+                                                <th className="crm-th w-32 crm-td-number text-center">
+                                                    <div className="crm-th-content justify-center">
+                                                        <Layers className="w-3.5 h-3.5" />
+                                                        <span>ОСТАТОК</span>
+                                                    </div>
+                                                </th>
+                                                <th className="crm-th crm-td-actions">
+                                                    <div className="crm-th-content justify-end">
+                                                        <Zap className="w-3.5 h-3.5" />
+                                                        <span>ДЕЙСТВИЯ</span>
+                                                    </div>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="crm-tbody">
@@ -1249,6 +1288,9 @@ function SubCategoryCardContent({
                     <h4 className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">
                         {subcat.name}
                     </h4>
+                    <span className="text-[11px] font-medium text-slate-500 block mt-0.5">
+                        {subcat.totalQuantity || 0} шт.
+                    </span>
                 </div>
             </div>
 
