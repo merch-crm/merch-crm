@@ -52,6 +52,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/dashboard/warehouse',
+        destination: '/dashboard/warehouse/categories',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
