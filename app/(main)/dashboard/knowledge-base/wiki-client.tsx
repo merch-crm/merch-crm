@@ -41,6 +41,11 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
     const [loading, setLoading] = useState(false);
     const [editData, setEditData] = useState({ title: "", content: "" });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Dialog states
     const [createFolderDialog, setCreateFolderDialog] = useState<{ open: boolean, parentId: string | null }>({ open: false, parentId: null });
@@ -264,7 +269,7 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
                 {!isEditing && pageContent && selectedPageId && (
                     <div className="px-4 md:px-8 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[10px] md:text-[11px] font-bold text-slate-400 tracking-normal bg-white/20">
                         <span>Автор: {pageContent.author?.name || "Система"}</span>
-                        <span>Обновлено: {new Date(pageContent.updatedAt).toLocaleString('ru-RU')}</span>
+                        <span>Обновлено: {mounted ? new Date(pageContent.updatedAt).toLocaleString('ru-RU') : "..."}</span>
                     </div>
                 )}
             </div>

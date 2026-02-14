@@ -69,18 +69,20 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     const [searchResults, setSearchResults] = useState<Client[]>([]);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
-    const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+    useEffect(() => {
         if (typeof window !== "undefined") {
             try {
                 const history = localStorage.getItem("client_search_history");
-                return history ? JSON.parse(history) : [];
+                if (history) {
+                    setSearchHistory(JSON.parse(history));
+                }
             } catch (e) {
                 console.error("Failed to parse search history", e);
-                return [];
             }
         }
-        return [];
-    });
+    }, []);
     const [showHistory, setShowHistory] = useState(false);
 
     const addToHistory = (query: string) => {

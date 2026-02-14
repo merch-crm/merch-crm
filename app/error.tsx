@@ -1,68 +1,62 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { AlertCircle, RotateCcw, Home } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useEffect } from 'react'
 
 export default function Error({
     error,
     reset,
 }: {
-    error: Error & { digest?: string };
-    reset: () => void;
+    error: Error & { digest?: string }
+    reset: () => void
 }) {
     useEffect(() => {
-        console.error("Global Error:", error);
-    }, [error]);
+        // Log the error for diagnosis
+        console.error('--- CLIENT EXCEPTION CAUGHT BY ERROR BOUNDARY ---')
+        console.error('Message:', error.message)
+        console.error('Stack:', error.stack)
+        console.error('Digest:', error.digest)
+        console.error('--------------------------------------------------')
+
+        // In a real app, you would send this to Sentry or a custom endpoint
+        // Optional: fetch('/api/log/error', { method: 'POST', body: JSON.stringify({ message: error.message, stack: error.stack }) }).catch(() => {})
+    }, [error])
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-4">
-            <div className="max-w-[360px] w-full bg-white rounded-[2rem] shadow-crm-xl border border-slate-100/50 overflow-hidden text-center p-8 space-y-6 animate-in zoom-in-95 duration-700">
-
-                {/* Icon Container */}
-                <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mx-auto border border-rose-100/50 shadow-sm">
-                    <AlertCircle className="w-8 h-8 stroke-[2.5]" />
+        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+            <div className="text-center p-8 md:p-12 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-8 animate-in zoom-in-95 duration-700">
+                <div className="w-[80px] h-[80px] bg-rose-50 rounded-[24px] flex items-center justify-center text-rose-500 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                 </div>
 
-                {/* Text Section */}
-                <div className="space-y-2">
-                    <h1 className="text-xl font-bold text-slate-900 leading-tight">
-                        Упс! Что-то пошло не так
-                    </h1>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-[240px] mx-auto">
-                        Произошла системная ошибка. Мы уже работаем над её исправлением.
+                <div className="space-y-3">
+                    <h2 className="text-2xl font-bold text-slate-900 leading-tight">Произошла ошибка</h2>
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed">
+                        Приложение столкнулось с неожиданной проблемой на стороне клиента.
                     </p>
+                    <div className="mt-4 p-4 bg-slate-50 rounded-2xl text-[11px] font-mono text-slate-500 break-all border border-slate-100 italic">
+                        {error.message || "Unknown client-side exception"}
+                    </div>
                 </div>
 
-                {/* Buttons Section */}
-                <div className="flex flex-col gap-2.5">
-                    <Button
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                    <button
                         onClick={() => reset()}
-                        className="h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-[14px] font-bold text-xs shadow-lg shadow-slate-200 transition-all active:scale-[0.98] w-full flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3.5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10"
                     >
-                        <RotateCcw className="w-3.5 h-3.5" />
                         Попробовать снова
-                    </Button>
-
-                    <Link href="/dashboard" className="block w-full">
-                        <Button
-                            variant="ghost"
-                            className="h-11 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 rounded-[14px] font-bold text-xs w-full flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-                        >
-                            <Home className="w-3.5 h-3.5" />
-                            Вернуться на главную
-                        </Button>
-                    </Link>
+                    </button>
+                    <button
+                        onClick={() => window.location.href = '/dashboard'}
+                        className="flex-1 px-6 py-3.5 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98]"
+                    >
+                        В панель
+                    </button>
                 </div>
 
-                {/* Footer Section */}
-                <div className="pt-5 border-t border-slate-50">
-                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">
-                        Код ошибки: <span className="font-medium text-slate-400">{error.digest || "449102760"}</span>
-                    </p>
+                <div className="pt-4 border-t border-slate-100 text-[10px] font-bold text-slate-300 tracking-widest uppercase">
+                    Merch CRM Recovery Mode
                 </div>
             </div>
         </div>
-    );
+    )
 }
