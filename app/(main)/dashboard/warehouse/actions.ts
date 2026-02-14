@@ -290,7 +290,7 @@ export async function getInventoryCategories() {
                     desc(inventoryCategories.createdAt)
                 );
 
-            return { success: true, data: categories };
+            return { success: true as const, data: categories };
         }, 3600); // 1 hour cache
     } catch (error) {
         console.error(error);
@@ -664,7 +664,7 @@ export async function getInventoryItems() {
             },
             orderBy: desc(inventoryItems.createdAt)
         });
-        return { success: true, data: items as unknown as InventoryItem[] };
+        return { success: true as const, data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getInventoryItems error", error);
         return { success: false, error: "Не удалось загрузить инвентарь товары" };
@@ -1713,7 +1713,7 @@ export async function getInventoryAttributes() {
         }
         console.log("============================");
 
-        return { success: true, data: attrs };
+        return { success: true as const, data: attrs };
     } catch {
         return { success: false, error: "Не удалось загрузить инвентарь атрибуты" };
     }
@@ -2175,7 +2175,7 @@ export async function getStorageLocations() {
             };
         });
 
-        return { success: true, data: locationsWithItems };
+        return { success: true as const, data: locationsWithItems };
     } catch {
         return { success: false, error: "Не удалось загрузить места хранения" };
     }
@@ -2821,7 +2821,7 @@ export async function getInventoryAttributeTypes() {
     try {
         const types = await db.select().from(inventoryAttributeTypes)
             .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt));
-        return { success: true, data: types };
+        return { success: true as const, data: types };
     } catch {
         return { success: false, error: "Не удалось загрузить атрибут types" };
     }

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getGradientStyles } from "./category-utils";
 import { Session } from "@/lib/auth";
-import { pluralize } from "@/lib/pluralize";
+
 
 import { InventoryItem, Category } from "./types";
 import { EditCategoryDialog } from "./edit-category-dialog";

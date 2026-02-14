@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { isSuccess } from "@/lib/types";
 import { inventoryCategories } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
@@ -114,9 +115,7 @@ export default async function CategoryPage({ params }: PageParams) {
     // Fetch all categories to calculate recursive counts
     const { getInventoryCategories } = await import("../actions");
     const allCatsRes = await getInventoryCategories();
-    // Assuming getInventoryCategories returns { success: boolean, data?: Category[], error?: string }
-    // We need to verify success and data existence.
-    const allCats = (allCatsRes.success && (allCatsRes as any).data) ? (allCatsRes as any).data as Category[] : [];
+    const allCats = isSuccess(allCatsRes) ? allCatsRes.data : [];
 
     const countRecursiveTotalQty = (catId: string): number => {
         const cat = allCats.find((c: Category) => c.id === catId);
@@ -150,10 +149,10 @@ export default async function CategoryPage({ params }: PageParams) {
         db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories)
     ]);
 
-    const allItems = (itemsRes.success && (itemsRes as any).data) ? (itemsRes as any).data as InventoryItem[] : [];
-    const locationsData = (locationsRes.success && (locationsRes as any).data) ? (locationsRes as any).data as StorageLocation[] : [];
-    const typesData = (typesRes.success && (typesRes as any).data) ? (typesRes as any).data as AttributeType[] : [];
-    const attrsData = (attrsRes.success && (attrsRes as any).data) ? (attrsRes as any).data as InventoryAttribute[] : [];
+    const allItems = isSuccess(itemsRes) ? itemsRes.data : [];
+    const locationsData = isSuccess(locationsRes) ? locationsRes.data : [];
+    const typesData = isSuccess(typesRes) ? typesRes.data : [];
+    const attrsData = isSuccess(attrsRes) ? attrsRes.data : [];
 
     // Aggregate IDs of this category and all its descendants
     const getAllDescendantIds = (catId: string, allCats: { id: string; parentId: string | null }[]): string[] => {
