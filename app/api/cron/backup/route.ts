@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { systemSettings } from "@/lib/schema";
 import { performDatabaseBackup } from "@/lib/backup";
 
-const SYSTEM_ENTITY_ID = "00000000-0000-0000-0000-000000000000";
 
 export async function GET(request: NextRequest) {
     try {

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, roles, auditLogs, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, systemSettings, securityEvents, systemErrors } from "@/lib/schema";
+import { users, roles, auditLogs, departments, clients, orders, inventoryItems, tasks, systemSettings, securityEvents, systemErrors } from "@/lib/schema";
 import { getSession, encrypt } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { cookies } from "next/headers";
@@ -1144,7 +1144,8 @@ export async function getSystemStats() {
                 },
                 database: {
                     size: dbSize,
-                    tableCounts
+                    tableCounts,
+                    lastBackupAt
                 },
                 storage: {
                     size: storageStats.size,
