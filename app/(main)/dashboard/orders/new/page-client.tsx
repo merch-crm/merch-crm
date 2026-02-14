@@ -76,7 +76,8 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             try {
                 const history = localStorage.getItem("client_search_history");
                 if (history) {
-                    setSearchHistory(JSON.parse(history));
+                    const timer = setTimeout(() => setSearchHistory(JSON.parse(history)), 0);
+                    return () => clearTimeout(timer);
                 }
             } catch (e) {
                 console.error("Failed to parse search history", e);
