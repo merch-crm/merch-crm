@@ -1429,7 +1429,7 @@ export async function createDatabaseBackup() {
         // M-06: Use streaming and chunking to avoid OOM
         const writeStream = fs.createWriteStream(filePath);
 
-        const write = (str: string) => new Promise<void>((resolve, reject) => {
+        const write = (str: string) => new Promise<void>((resolve) => {
             if (!writeStream.write(str)) {
                 writeStream.once('drain', resolve);
             } else {

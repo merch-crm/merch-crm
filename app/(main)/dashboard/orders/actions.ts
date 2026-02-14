@@ -799,7 +799,7 @@ export async function deleteOrder(orderId: string) {
     }
 }
 
-import { ExtractTablesWithRelations } from "drizzle-orm";
+
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "@/lib/schema";
 

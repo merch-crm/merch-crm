@@ -80,14 +80,7 @@ interface StorageData {
 }
 
 // Type guard for runtime checks
-function isStorageData(data: unknown): data is StorageData {
-    return (
-        typeof data === 'object' &&
-        data !== null &&
-        's3' in data &&
-        'local' in data
-    );
-}
+
 
 // --- Components ---
 

@@ -1,4 +1,4 @@
-import { OrdersTable, Order } from "./orders-table";
+import { OrdersTable } from "./orders-table";
 import { OrdersWidgets } from "./orders-widgets";
 import { OrdersToolbar } from "./orders-toolbar";
 import { getOrders, getOrderStats } from "./actions";

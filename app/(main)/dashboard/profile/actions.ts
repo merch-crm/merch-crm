@@ -12,7 +12,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { saveAvatarFile } from "@/lib/avatar-storage";
-import { ActionResult } from "@/lib/types";
+
 
 export async function logout() {
     (await cookies()).delete("session");

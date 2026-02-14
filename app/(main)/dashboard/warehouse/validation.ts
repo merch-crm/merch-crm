@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const emptyToNull = (val: unknown) => (val === "" ? null : val);
+
 
 export const InventoryCategorySchema = z.object({
     name: z.string().min(1, "Название обязательно"),

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn, formatUnit } from "@/lib/utils";
+import { formatUnit } from "@/lib/utils";
 import { Store } from "lucide-react";
 import { ItemStock } from "../../../types";
 

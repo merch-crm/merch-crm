@@ -32,7 +32,7 @@ import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
 import { InventoryItem } from "./types";
 import { InventoryCategorySchema, InventoryItemSchema, AdjustStockSchema } from "./validation";
 
-import { ActionResult } from "@/lib/types";
+
 
 export async function getSession() {
     return await getAuthSession();
@@ -489,7 +489,7 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         gender,
         sortOrder,
         isActive,
-        defaultUnit,
+
         showInSku,
         showInName,
         prefix,
@@ -811,9 +811,7 @@ export async function addInventoryItem(formData: FormData) {
     }
 
     const imageFile = formData.get("image") as File;
-    const imageBackFile = formData.get("imageBack") as File;
-    const imageSideFile = formData.get("imageSide") as File;
-    const imageDetailsFiles = formData.getAll("imageDetails") as File[];
+
 
     try {
         console.log("Starting transaction for new item:", { name, finalSku: sku });
