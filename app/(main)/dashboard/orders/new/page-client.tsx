@@ -124,9 +124,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             quantity: i.orderQuantity || 0
         })));
         setIsApplyingPromo(false);
-        if (!res.success || !res.data) {
+
+        if (!res.success) {
             toast(res.error || "Промокод не найден", "error");
-        } else {
+        } else if (res.data) {
             setDetails({
                 ...details,
                 appliedPromo: {

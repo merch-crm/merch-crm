@@ -1,8 +1,7 @@
-import { db } from '@/lib/db';
-import { sql } from 'drizzle-orm';
+import { pool } from '@/lib/db';
 import redis from '@/lib/redis';
 
-export const dynamic = 'force-dynamic'; // Отключить кэширование
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface HealthStatus {
@@ -12,9 +11,8 @@ interface HealthStatus {
     checks: {
         database: { status: 'ok' | 'error'; latency?: number; error?: string };
         redis: { status: 'ok' | 'error' | 'skipped'; latency?: number; error?: string };
-        storage: { status: 'ok' | 'error' | 'skipped' };
     };
-    version?: string;
+    version: string;
 }
 
 const startTime = Date.now();
@@ -27,15 +25,14 @@ export async function GET() {
         checks: {
             database: { status: 'ok' },
             redis: { status: 'skipped' },
-            storage: { status: 'skipped' },
         },
         version: process.env.npm_package_version || '0.1.0',
     };
 
-    // Проверка PostgreSQL
+    // Check PostgreSQL — используем pool.query напрямую
     try {
         const dbStart = Date.now();
-        await db.execute(sql`SELECT 1`);
+        await pool.query('SELECT 1');
         health.checks.database = {
             status: 'ok',
             latency: Date.now() - dbStart,
@@ -48,7 +45,7 @@ export async function GET() {
         };
     }
 
-    // Проверка Redis (если используется)
+    // Check Redis
     try {
         const redisStart = Date.now();
         await redis.ping();
@@ -57,7 +54,6 @@ export async function GET() {
             latency: Date.now() - redisStart,
         };
     } catch (error) {
-        // Redis не критичен — статус degraded, не error
         if (health.status === 'ok') health.status = 'degraded';
         health.checks.redis = {
             status: 'error',

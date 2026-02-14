@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getRoles, deleteRole } from "../actions";
 import { Shield, Key, Palette, Printer, Scissors, Package, ShoppingBag, UserCog, LucideIcon } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 import { RolePermissionsDialog } from "./role-permissions-dialog";
 import { AddRoleDialog } from "./add-role-dialog";
 import { EditRoleDialog } from "./edit-role-dialog";
@@ -27,6 +28,7 @@ export default function AdminRolesPage() {
     const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
     const [editingRole, setEditingRole] = useState<Role | null>(null);
     const [deletingRole, setDeletingRole] = useState<Role | null>(null);
+    const { toast } = useToast();
 
     const fetchRoles = () => {
         getRoles().then(res => {
@@ -42,8 +44,9 @@ export default function AdminRolesPage() {
     const handleDeleteRole = async (id: string, password?: string) => {
         const res = await deleteRole(id, password);
         if (res.error) {
-            alert(res.error);
+            toast(res.error, "error");
         } else {
+            toast("Роль успешно удалена", "success");
             fetchRoles();
         }
     };

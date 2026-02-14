@@ -15,7 +15,7 @@ import { ActionResult } from "@/lib/types";
 
 export async function undoLastAction(): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         // Find last reversible action for this user

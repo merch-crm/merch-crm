@@ -101,7 +101,7 @@ export async function getWarehouseStats() {
         };
     } catch (error) {
         console.error("DEBUG: getWarehouseStats error", error);
-        return { success: false, error: "Failed to fetch warehouse statistics" };
+        return { success: false, error: "Не удалось загрузить warehouse статистика" };
     }
 }
 
@@ -288,7 +288,7 @@ export async function getInventoryCategories() {
         }, 3600); // 1 hour cache
     } catch (error) {
         console.error(error);
-        return { success: false, error: "Failed to fetch inventory categories" };
+        return { success: false, error: "Не удалось загрузить инвентарь категории" };
     }
 }
 
@@ -315,7 +315,7 @@ export async function addInventoryCategory(formData: FormData) {
     const showInName = formData.get("showInName") === "on" || formData.get("showInName") === "true";
 
     if (!name) {
-        return { success: false, error: "Name is required" };
+        return { success: false, error: "Имя обязательно" };
     }
 
     try {
@@ -369,7 +369,7 @@ export async function addInventoryCategory(formData: FormData) {
         refreshWarehouse();
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to add category" };
+        return { success: false, error: "Не удалось добавить категория" };
     }
 }
 
@@ -433,7 +433,7 @@ export async function deleteInventoryCategory(id: string, password?: string) {
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to delete category" };
+        return { success: false, error: "Не удалось удалить категория" };
     }
 }
 
@@ -553,7 +553,7 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         refreshWarehouse();
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to update category" };
+        return { success: false, error: "Не удалось обновить категория" };
     }
 }
 
@@ -592,7 +592,7 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
 export async function migrateCategories() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { success: false, error: "Access denied" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -661,7 +661,7 @@ export async function getInventoryItems() {
         return { success: true, data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getInventoryItems error", error);
-        return { success: false, error: "Failed to fetch inventory items" };
+        return { success: false, error: "Не удалось загрузить инвентарь товары" };
     }
 }
 
@@ -677,7 +677,7 @@ export async function getArchivedItems() {
         return { success: true, data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getArchivedItems error", error);
-        return { success: false, error: "Failed to fetch archived items" };
+        return { success: false, error: "Не удалось загрузить archived товары" };
     }
 }
 
@@ -697,7 +697,7 @@ export async function getInventoryItem(id: string) {
         return { success: true, data: item };
     } catch (error) {
         console.error("DEBUG: getInventoryItem error", error);
-        return { success: false, error: "Failed to fetch item" };
+        return { success: false, error: "Не удалось загрузить товар" };
     }
 }
 
@@ -772,7 +772,7 @@ export async function autoArchiveStaleItems() {
         };
     } catch (error) {
         console.error("Auto-archive error:", error);
-        return { success: false, error: "Failed to run auto-archive" };
+        return { success: false, error: "Не удалось run auto-archive" };
     }
 }
 
@@ -853,14 +853,14 @@ export async function addInventoryItem(formData: FormData) {
             // Task 2.1: Enforce units for specific types
             let finalUnit = unit;
             if (itemType === "clothing") {
-                finalUnit = "pcs";
+                finalUnit = "шт.";
             }
 
             const [insertedItem] = await tx.insert(inventoryItems).values({
                 name,
                 sku: finalSku || null,
                 quantity,
-                unit: finalUnit as "pcs" | "liters" | "meters" | "kg",
+                unit: finalUnit as "шт." | "л" | "м" | "кг",
                 itemType: itemType || "clothing",
                 lowStockThreshold,
                 criticalStockThreshold,
@@ -1174,7 +1174,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
 
         if (existingItem) {
             if (existingItem.itemType === "clothing") {
-                unit = "pcs";
+                unit = "шт.";
             }
         }
 
@@ -1262,7 +1262,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             imageSide: imageSideUrl,
             imageDetails: imageDetailsUrls,
             reservedQuantity: reservedQuantity ?? 0,
-            unit: unit as "pcs" | "liters" | "meters" | "kg",
+            unit: unit as "шт." | "л" | "м" | "кг",
             costPrice: costPrice?.toString() || null,
             sellingPrice: sellingPrice?.toString() || null,
             materialComposition: materialComposition || {},
@@ -1375,7 +1375,7 @@ export async function getInventoryHistory() {
         return { success: true, data: history };
     } catch (error) {
         console.error("DEBUG: getInventoryHistory error", error);
-        return { success: false, error: "Failed to fetch inventory history" };
+        return { success: false, error: "Не удалось загрузить инвентарь history" };
     }
 }
 
@@ -1396,7 +1396,7 @@ export async function adjustInventoryStock(
     }
 
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.transaction(async (tx) => {
@@ -1551,10 +1551,10 @@ export async function adjustInventoryStock(
 
 export async function transferInventoryStock(itemId: string, fromLocationId: string, toLocationId: string, amount: number, reason: string) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
-    if (amount <= 0) return { success: false, error: "Invalid amount" };
-    if (fromLocationId === toLocationId) return { success: false, error: "Source and destination must be different" };
+    if (amount <= 0) return { success: false, error: "Некорректная сумма" };
+    if (fromLocationId === toLocationId) return { success: false, error: "Точка отправления и назначения должны быть разными" };
 
     try {
         await db.transaction(async (tx) => {
@@ -1709,7 +1709,7 @@ export async function getInventoryAttributes() {
 
         return { success: true, data: attrs };
     } catch {
-        return { success: false, error: "Failed to fetch inventory attributes" };
+        return { success: false, error: "Не удалось загрузить инвентарь атрибуты" };
     }
 }
 
@@ -1768,7 +1768,7 @@ export async function deleteInventoryAttribute(id: string) {
 
 export async function createInventoryAttribute(type: string, name: string, value: string, meta?: Record<string, unknown>) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         console.log("=== CREATE ATTRIBUTE DEBUG ===");
@@ -1798,7 +1798,7 @@ export async function createInventoryAttribute(type: string, name: string, value
         return { success: true, data: newAttr };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to create attribute" };
+        return { success: false, error: "Не удалось создать атрибут" };
     }
 }
 
@@ -1920,7 +1920,7 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to update attribute" };
+        return { success: false, error: "Не удалось обновить атрибут" };
     }
 }
 
@@ -2058,7 +2058,7 @@ export async function getItemStocks(itemId: string) {
         });
         return { success: true, data: stocks };
     } catch {
-        return { success: false, error: "Failed to fetch item stocks" };
+        return { success: false, error: "Не удалось загрузить товар stocks" };
     }
 }
 
@@ -2079,7 +2079,7 @@ export async function getItemHistory(itemId: string) {
         });
         return { success: true, data: history };
     } catch {
-        return { success: false, error: "Failed to fetch item history" };
+        return { success: false, error: "Не удалось загрузить товар history" };
     }
 }
 
@@ -2171,13 +2171,13 @@ export async function getStorageLocations() {
 
         return { success: true, data: locationsWithItems };
     } catch {
-        return { success: false, error: "Failed to fetch storage locations" };
+        return { success: false, error: "Не удалось загрузить места хранения" };
     }
 }
 
 export async function addStorageLocation(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const name = formData.get("name") as string;
     const address = formData.get("address") as string;
@@ -2188,7 +2188,7 @@ export async function addStorageLocation(formData: FormData) {
     const isDefault = formData.get("isDefault") === "on";
 
     if (!name || !address) {
-        return { success: false, error: "Name and address are required" };
+        return { success: false, error: "Имя и адрес обязательны" };
     }
 
     try {
@@ -2212,7 +2212,7 @@ export async function addStorageLocation(formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to add storage location" };
+        return { success: false, error: "Не удалось добавить место хранения" };
     }
 }
 
@@ -2288,13 +2288,13 @@ export async function deleteStorageLocation(id: string, password?: string) {
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to delete storage location. Ensure it is empty." };
+        return { success: false, error: "Не удалось удалить место хранения. Ensure it is empty." };
     }
 }
 
 export async function updateStorageLocation(id: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const name = formData.get("name") as string;
     const address = formData.get("address") as string;
@@ -2326,7 +2326,7 @@ export async function updateStorageLocation(id: string, formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to update storage location" };
+        return { success: false, error: "Не удалось обновить место хранения" };
     }
 }
 
@@ -2338,7 +2338,7 @@ export async function getAllUsers() {
         return { success: true, data: allUsers };
     } catch (error) {
         console.error("DEBUG: getAllUsers error", error);
-        return { success: false, error: "Failed to fetch users" };
+        return { success: false, error: "Не удалось загрузить пользователи" };
     }
 }
 
@@ -2363,13 +2363,13 @@ export async function seedStorageLocations() {
         // Removed revalidatePath - this function is called during render
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to seed" };
+        return { success: false, error: "Не удалось seed" };
     }
 }
 
 export async function moveInventoryItem(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Not authorized" };
+    if (!session) return { success: false, error: "Нет авторизации" };
 
     const itemId = formData.get("itemId") as string;
     const fromLocationId = formData.get("fromLocationId") as string;
@@ -2378,11 +2378,11 @@ export async function moveInventoryItem(formData: FormData) {
     const comment = formData.get("comment") as string;
 
     if (!itemId || !fromLocationId || !toLocationId || !quantity) {
-        return { success: false, error: "Missing required fields" };
+        return { success: false, error: "Отсутствуют необходимые данные" };
     }
 
     if (fromLocationId === toLocationId) {
-        return { success: false, error: "Source and destination cannot be the same" };
+        return { success: false, error: "Точка отправления и назначения не могут совпадать" };
     }
 
     try {
@@ -2632,10 +2632,10 @@ export async function getMeasurementUnits() {
     return {
         success: true,
         data: [
-            { id: "pcs", name: "шт." },
-            { id: "liters", name: "л" },
-            { id: "meters", name: "м" },
-            { id: "kg", name: "кг" }
+            { id: "шт.", name: "шт." },
+            { id: "л", name: "л" },
+            { id: "м", name: "м" },
+            { id: "кг", name: "кг" }
         ]
     };
 }
@@ -2751,7 +2751,7 @@ export async function seedSystemCategories() {
         };
     } catch (error) {
         console.error("Seed error:", error);
-        return { success: false, error: "Failed to seed categories" };
+        return { success: false, error: "Не удалось seed категории" };
     }
 }
 
@@ -2805,7 +2805,7 @@ export async function seedSystemAttributes() {
         return { success: true };
     } catch (error) {
         console.error("Seed attributes error:", error);
-        return { success: false, error: "Failed to seed attributes" };
+        return { success: false, error: "Не удалось seed атрибуты" };
     }
 }
 
@@ -2817,7 +2817,7 @@ export async function getInventoryAttributeTypes() {
             .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt));
         return { success: true, data: types };
     } catch {
-        return { success: false, error: "Failed to fetch attribute types" };
+        return { success: false, error: "Не удалось загрузить атрибут types" };
     }
 }
 
@@ -2957,7 +2957,7 @@ export async function getItemActiveOrders(itemId: string) {
         return { success: true, data: filtered };
     } catch (error) {
         console.error("DEBUG: getItemActiveOrders error", error);
-        return { success: false, error: "Failed to fetch item orders" };
+        return { success: false, error: "Не удалось загрузить товар заказы" };
     }
 }
 
@@ -3015,6 +3015,6 @@ export async function getOrphanedItemCount() {
         return { success: true, data: Number(result[0]?.count || 0) };
     } catch (error) {
         console.error("Error getting orphaned item count:", error);
-        return { success: false, error: "Error getting orphaned count", data: 0 };
+        return { success: false, error: "Ошибка получения количества потерянных записей", data: 0 };
     }
 }

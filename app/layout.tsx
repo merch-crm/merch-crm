@@ -15,13 +15,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBrandingSettings();
   return {
     title: (branding as { companyName?: string })?.companyName || "MerchCRM",
-    description: "CRM система для типографии",
+    description: "CRM система для типографий и производителей одежды",
     robots: {
       index: false,
       follow: false,
     },
     icons: {
-      icon: branding?.faviconUrl || "/icon.png",
+      icon: (branding as { faviconUrl?: string })?.faviconUrl || "/icon.png",
       apple: "/apple-icon.png",
     },
   };

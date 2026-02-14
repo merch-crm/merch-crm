@@ -11,6 +11,7 @@ import { ImageLightbox } from "@/components/image-lightbox";
 import { Maximize } from "lucide-react";
 import { pluralize } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 interface OrderItem {
     id: string;
@@ -47,6 +48,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const { toast } = useToast();
 
     const getItemsByStage = (stage: Stage): OrderItem[] => {
         return items.filter(item => {
@@ -61,8 +63,9 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
         setLoading(null);
 
         if (!result.success) {
-            alert(result.error);
+            toast(result.error, "error");
         } else {
+            toast("Статус успешно обновлен", "success");
             router.refresh();
         }
     };

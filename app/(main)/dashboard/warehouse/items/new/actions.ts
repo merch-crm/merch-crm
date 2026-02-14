@@ -61,6 +61,6 @@ export async function addInventoryAttribute(type: string, name: string, value: s
         revalidatePath("/dashboard/warehouse/items/new");
         return { success: true, data: newAttr };
     } catch {
-        return { success: false, error: "Failed to add attribute" };
+        return { success: false, error: "Не удалось добавить атрибут" };
     }
 }

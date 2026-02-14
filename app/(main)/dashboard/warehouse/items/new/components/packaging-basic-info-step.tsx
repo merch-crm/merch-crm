@@ -382,7 +382,7 @@ export function PackagingBasicInfoStep({
                                     label=""
                                     placeholder=""
                                     options={measurementUnits.map(u => ({ id: u.id, title: u.name }))}
-                                    value={formData.unit || "pcs"}
+                                    value={formData.unit || "шт."}
                                     onChange={(val) => updateFormData({ unit: val })}
                                 />
                             </div>

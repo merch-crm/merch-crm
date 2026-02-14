@@ -26,6 +26,8 @@ import {
     useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useToast } from "@/components/ui/toast";
+
 
 export interface StorageLocation {
     id: string;
@@ -68,6 +70,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     const [activeId, setActiveId] = useState<string | null>(null);
     const [localLocations, setLocalLocations] = useState(locations);
     const [prevPropsLocations, setPrevPropsLocations] = useState(locations);
+    const { toast } = useToast();
 
     // State during render pattern for synchronizing props with local state
     if (locations !== prevPropsLocations) {
@@ -99,8 +102,13 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     const handleConfirmDelete = async () => {
         if (!deleteId) return;
         setIsDeleting(true);
-        await deleteStorageLocation(deleteId, deletePassword);
+        const res = await deleteStorageLocation(deleteId, deletePassword);
         setIsDeleting(false);
+        if (res.success) {
+            toast("Локация удалена", "success");
+        } else {
+            toast(res.error || "Ошибка при удалении", "error");
+        }
         setDeleteId(null);
         setDeleteName(null);
         setDeleteIsSystem(false);
@@ -146,7 +154,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             const result = await updateStorageLocationsOrder(itemsToUpdate);
             if (!result.success) {
                 setLocalLocations(localLocations);
-                alert(result.error || "Failed to update order");
+                toast(result.error || "Не удалось обновить порядок", "error");
             }
         }
     };

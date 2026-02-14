@@ -10,6 +10,7 @@ import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PremiumSelect } from "@/components/ui/premium-select";
+import { useToast } from "@/components/ui/toast";
 
 interface RolePermissionsDialogProps {
     role: {
@@ -48,6 +49,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     const [roleName, setRoleName] = useState("");
     const [departmentId, setDepartmentId] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const { toast } = useToast();
 
     useEffect(() => {
         if (isOpen) {
@@ -94,9 +96,10 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
         try {
             const res = await deleteRole(role.id);
             if (res.error) {
-                alert(res.error);
+                toast(res.error, "error");
                 setLoading(false);
             } else {
+                toast("Роль успешно удалена", "success");
                 setShowDeleteConfirm(false);
                 onClose();
             }
@@ -114,13 +117,26 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
             const formData = new FormData();
             formData.append("name", roleName);
             formData.append("departmentId", departmentId);
-            await updateRole(role.id, formData);
+            const roleUpdateRes = await updateRole(role.id, formData);
+
+            if (!roleUpdateRes.success) {
+                toast(roleUpdateRes.error || "Ошибка при обновлении параметров роли", "error");
+                setLoading(false);
+                return;
+            }
 
             // Update permissions
-            await updateRolePermissions(role.id, permissions);
-            onClose();
+            const permsUpdateRes = await updateRolePermissions(role.id, permissions);
+
+            if (!permsUpdateRes.success) {
+                toast(permsUpdateRes.error || "Ошибка при обновлении прав доступа", "error");
+            } else {
+                toast("Роль успешно обновлена", "success");
+                onClose();
+            }
         } catch (error) {
             console.error("Failed to update role:", error);
+            toast("Произошла непредвиденная ошибка", "error");
         } finally {
             setLoading(false);
         }

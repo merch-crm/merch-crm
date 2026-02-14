@@ -1,9 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { systemSettings, users } from "@/lib/schema";
+import { systemSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
 import { saveLocalFile } from "@/lib/local-storage";
@@ -93,13 +94,11 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
     }
 }
 
-// ... updateBrandingSettings uses generic spread so it will handle soundConfig automatically ...
-
 export async function updateBrandingSettings(data: BrandingSettings) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
     try {
+        await requireAdmin(session);
+
         // Check if settings exist
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
         const existing = result[0];
@@ -139,53 +138,46 @@ export async function updateBrandingSettings(data: BrandingSettings) {
 
 export async function uploadBrandingFile(formData: FormData) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") {
-        return { error: "Unauthorized" };
-    }
-
-    const file = formData.get("file") as File;
-    const type = formData.get("type") as "logo" | "favicon" | "background" | "sound" | "print_logo" | "crm_background" | "email_logo";
-    const soundKey = formData.get("soundKey") as string | null;
-
-    if (!file || !type) {
-        return { error: "Missing file or type" };
-    }
-
     try {
+        await requireAdmin(session);
+
+        const file = formData.get("file") as File;
+        const type = formData.get("type") as "logo" | "favicon" | "background" | "sound" | "print_logo" | "crm_background" | "email_logo";
+        const soundKey = formData.get("soundKey") as string | null;
+
+        if (!file || !type) {
+            return { error: "Отсутствуют необходимые данные" };
+        }
+
         const buffer = Buffer.from(await file.arrayBuffer());
         let processedBuffer: Buffer;
         let fileName: string;
 
         if (type === "logo") {
-            // Processing logo: resize to max-width 500px, keep aspect ratio, convert to webp for best compression
             processedBuffer = await sharp(buffer)
                 .resize({ width: 500, withoutEnlargement: true })
                 .webp({ quality: 80 })
                 .toBuffer();
             fileName = `branding/logo_brand_crm.webp`;
         } else if (type === "favicon") {
-            // Processing favicon: resize to 48x48, convert to png
             processedBuffer = await sharp(buffer)
                 .resize(48, 48)
                 .png()
                 .toBuffer();
             fileName = `branding/favicon.png`;
         } else if (type === "background") {
-            // Processing login background: resize to 1920px width, convert to webp
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1920, withoutEnlargement: true })
                 .webp({ quality: 70 })
                 .toBuffer();
             fileName = `branding/bg_${Date.now()}.webp`;
         } else if (type === "print_logo") {
-            // Processing print logo: high quality png or webp, no enlargement, max width 1000px
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1000, withoutEnlargement: true })
                 .png({ quality: 90 })
                 .toBuffer();
             fileName = `branding/print_logo_${Date.now()}.png`;
         } else if (type === "crm_background") {
-            // Processing CRM background: resize to 1920px width, convert to webp
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1920, withoutEnlargement: true })
                 .webp({ quality: 70 })
@@ -198,18 +190,15 @@ export async function uploadBrandingFile(formData: FormData) {
                 .toBuffer();
             fileName = `branding/email_logo_${Date.now()}.png`;
         } else if (type === "sound") {
-            // For sounds, we just save the buffer as is
             processedBuffer = buffer;
             const extension = file.name.split('.').pop() || 'mp3';
-
-            // If soundKey is provided, use it for filename to correspond to category
             if (soundKey) {
                 fileName = `sounds/${soundKey}.${extension}`;
             } else {
                 fileName = `sounds/sound_${Date.now()}.${extension}`;
             }
         } else {
-            return { error: "Invalid type" };
+            return { error: "Некорректный тип" };
         }
 
         const result = await saveLocalFile(fileName, processedBuffer);
@@ -224,17 +213,15 @@ export async function uploadBrandingFile(formData: FormData) {
         }
     } catch (error) {
         console.error("Error processing branding file:", error);
-        return { error: "Failed to process image" };
+        return { error: "Не удалось process image" };
     }
 }
 
 export async function exportDatabaseBackup() {
     const session = await getSession();
-    if (!session || (await db.query.users.findFirst({ where: eq(users.id, session.id), with: { role: true } }))?.role?.name !== "Администратор") {
-        return { error: "Permission denied" };
-    }
-
     try {
+        await requireAdmin(session);
+
         const data = {
             users: await db.query.users.findMany(),
             roles: await db.query.roles.findMany(),
@@ -269,28 +256,23 @@ export async function getIconGroups(): Promise<SerializedIconGroup[]> {
         const settings = result[0];
 
         if (!settings) {
-            // If no settings in DB, return default groups (Serialized!)
             return serializeIconGroups(ICON_GROUPS);
         }
 
         const val = settings.value as unknown as SerializedIconGroup[];
-        // Return raw JSON (serialized), let client hydrate it
         return val;
     } catch (error) {
         console.error("Error fetching icon groups:", error);
-        return serializeIconGroups(ICON_GROUPS); // Fallback to default serialized
+        return serializeIconGroups(ICON_GROUPS);
     }
 }
 
 export async function updateIconGroups(groups: SerializedIconGroup[]) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
     try {
-        // Prepare data for storage (serialized on client)
-        const serialized = groups;
+        await requireAdmin(session);
 
-        // Check if settings exist
+        const serialized = groups;
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "icon_groups")).limit(1);
         const existing = result[0];
 

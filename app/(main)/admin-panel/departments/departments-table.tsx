@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getDepartments, deleteDepartment } from "../actions";
 import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 import { DeleteDepartmentDialog } from "./delete-department-dialog";
 import { DepartmentSettingsDialog } from "./department-settings-dialog";
@@ -34,19 +35,13 @@ export function DepartmentsTable() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [departmentToDelete, setDepartmentToDelete] = useState<Department | null>(null);
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+    const { toast } = useToast();
 
     const fetchDepartments = (isInitial = true) => {
         if (isInitial) setLoading(true);
         getDepartments().then(res => {
-            console.log('getDepartments response:', res);
-            if (res.error) {
-                console.error('Error loading departments:', res.error);
-            }
             if (res.data) {
-                console.log('Departments loaded:', res.data.length);
                 setDepartments(res.data as Department[]);
-            } else {
-                console.warn('No departments data in response');
             }
             if (isInitial) setLoading(false);
         }).catch(err => {
@@ -70,8 +65,9 @@ export function DepartmentsTable() {
     const handleDeleteConfirm = async (id: string, password?: string) => {
         const res = await deleteDepartment(id, password);
         if (res.error) {
-            alert(res.error);
+            toast(res.error, "error");
         } else {
+            toast("Отдел успешно удален", "success");
             fetchDepartments();
         }
         setDeleteDialogOpen(false);

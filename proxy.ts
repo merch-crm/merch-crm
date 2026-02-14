@@ -9,6 +9,7 @@ export async function proxy(request: NextRequest) {
     if (
         path.startsWith("/_next") ||
         path.startsWith("/api/auth") ||
+        path.startsWith("/api/cron") ||
         path.startsWith("/static") ||
         path === '/favicon.ico' ||
         path.includes(".") // Likely a file

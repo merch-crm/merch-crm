@@ -787,7 +787,7 @@ export function ItemDetailClient({
             formData.append("name", editData.name || "");
             formData.append("sku", editData.sku || "");
             formData.append("description", editData.description || "");
-            formData.append("unit", editData.unit || "pcs");
+            formData.append("unit", editData.unit || "шт.");
             formData.append("categoryId", editData.categoryId || "");
             formData.append("lowStockThreshold", String(editData.lowStockThreshold || 10));
             formData.append("criticalStockThreshold", String(editData.criticalStockThreshold || 0));

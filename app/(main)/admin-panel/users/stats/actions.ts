@@ -7,7 +7,7 @@ import { getSession } from "@/lib/auth";
 
 export async function getUserStats(userId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
         // Basic user info
@@ -16,7 +16,7 @@ export async function getUserStats(userId: string) {
             with: { role: true, department: true }
         });
 
-        if (!user) return { error: "User not found" };
+        if (!user) return { error: "пользователь not found" };
 
         // Helper to get start of current month
         const startOfMonth = new Date();
@@ -71,6 +71,6 @@ export async function getUserStats(userId: string) {
         };
     } catch (error) {
         console.error("Error fetching user stats:", error);
-        return { error: "Failed to fetch stats" };
+        return { error: "Не удалось загрузить stats" };
     }
 }

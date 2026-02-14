@@ -18,10 +18,10 @@ interface UnitSelectProps {
 }
 
 const DEFAULT_OPTIONS: UnitOption[] = [
-    { id: "pcs", name: "шт." },
-    { id: "kg", name: "кг" },
-    { id: "m", name: "м" },
-    { id: "l", name: "л" },
+    { id: "шт.", name: "шт." },
+    { id: "кг", name: "кг" },
+    { id: "м", name: "м" },
+    { id: "л", name: "л" },
 ];
 
 export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, className, name, disabled }: UnitSelectProps) {

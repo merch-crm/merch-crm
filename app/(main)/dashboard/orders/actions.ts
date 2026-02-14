@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments, inventoryStocks, promocodes, payments, roles } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, inArray, and, gte, lte, sql } from "drizzle-orm";
+import { desc, eq, inArray, and, gte, lte, sql, ilike, or } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -31,13 +31,14 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
         if (search) {
-            whereClause.push(sql`(
-                ${orders.orderNumber} ILIKE ${`%${search}%`} OR 
-                ${clients.name} ILIKE ${`%${search}%`} OR 
-                ${clients.phone} ILIKE ${`%${search}%`} OR 
-                ${clients.email} ILIKE ${`%${search}%`} OR 
-                ${orders.totalAmount} ILIKE ${`%${search}%`}
-            )`);
+            const searchPattern = `%${search}%`;
+            whereClause.push(or(
+                ilike(orders.orderNumber, searchPattern),
+                ilike(clients.name, searchPattern),
+                ilike(clients.phone, searchPattern),
+                ilike(clients.email, searchPattern),
+                ilike(orders.totalAmount, searchPattern)
+            )!);
         }
 
         const finalWhere = and(...whereClause);
@@ -115,7 +116,7 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
             details: { from, to, page, limit }
         });
         console.error("Error fetching orders:", error);
-        return { success: false, error: "Failed to fetch orders" };
+        return { success: false, error: "Не удалось загрузить заказы" };
     }
 }
 
@@ -128,7 +129,7 @@ export async function getClientsForSelect(): Promise<ActionResult<{ id: string; 
         return { success: true, data };
     } catch (error) {
         console.error("Error fetching clients for select:", error);
-        return { success: false, error: "Failed to fetch clients" };
+        return { success: false, error: "Не удалось загрузить клиенты" };
     }
 }
 
@@ -145,7 +146,7 @@ export async function getInventoryForSelect(): Promise<ActionResult<{ id: string
         return { success: true, data };
     } catch (error) {
         console.error("Error fetching inventory for select:", error);
-        return { success: false, error: "Failed to fetch inventory" };
+        return { success: false, error: "Не удалось загрузить инвентарь" };
     }
 }
 
@@ -173,13 +174,13 @@ export async function searchClients(query: string): Promise<ActionResult<(typeof
         return { success: true, data: mappedResults };
     } catch (error) {
         console.error("Error searching clients:", error);
-        return { success: false, error: "Search failed" };
+        return { success: false, error: "Ошибка поиска" };
     }
 }
 
 export async function createOrder(formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = CreateOrderSchema.safeParse({
         clientId: formData.get("clientId"),
@@ -404,14 +405,14 @@ export async function createOrder(formData: FormData): Promise<ActionResult> {
             details: { clientId, priority }
         });
         console.error("Error creating order:", error);
-        return { success: false, error: "Failed to create order" };
+        return { success: false, error: "Не удалось создать заказ" };
     }
 }
 
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.transaction(async (tx) => {
@@ -526,16 +527,16 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             details: { orderId, newStatus }
         });
         console.error("Error updating order status:", error);
-        return { success: false, error: "Failed to update status" };
+        return { success: false, error: "Не удалось обновить status" };
     }
 }
 
 export async function updateOrderPriority(orderId: string, newPriority: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = UpdateOrderPrioritySchema.safeParse({ priority: newPriority });
-    if (!validation.success) return { success: false, error: "Invalid priority" };
+    if (!validation.success) return { success: false, error: "Некорректный приоритет" };
 
     try {
         await db.update(orders).set({ priority: validation.data.priority, updatedAt: new Date() }).where(eq(orders.id, orderId));
@@ -543,13 +544,13 @@ export async function updateOrderPriority(orderId: string, newPriority: string):
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch {
-        return { success: false, error: "Failed to update priority" };
+        return { success: false, error: "Не удалось обновить priority" };
     }
 }
 
 export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (typeof orders.$inferInsert)["status"]) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         for (const orderId of orderIds) {
@@ -563,13 +564,13 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to update status" };
+        return { success: false, error: "Не удалось обновить status" };
     }
 }
 
 export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: string) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(orders).set({ priority: newPriority, updatedAt: new Date() }).where(inArray(orders.id, orderIds));
@@ -585,13 +586,13 @@ export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: s
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { success: false, error: "Failed to update priority" };
+        return { success: false, error: "Не удалось обновить priority" };
     }
 }
 
 export async function archiveOrder(orderId: string, archive: boolean = true) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -617,13 +618,13 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
         return { success: true };
     } catch (error) {
         console.error("Error archiving order:", error);
-        return { success: false, error: "Failed to archive order" };
+        return { success: false, error: "Не удалось archive заказ" };
     }
 }
 
 export async function bulkArchiveOrders(orderIds: string[], archive: boolean = true) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -651,13 +652,13 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
         return { success: true };
     } catch (error) {
         console.error("Error bulk archiving orders:", error);
-        return { success: false, error: "Failed to archive orders" };
+        return { success: false, error: "Не удалось archive заказы" };
     }
 }
 
 export async function bulkDeleteOrders(orderIds: string[]) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     // Check if admin OR management department
     const user = await db.query.users.findFirst({
@@ -694,7 +695,7 @@ export async function bulkDeleteOrders(orderIds: string[]) {
         return { success: true };
     } catch (error) {
         console.error("Error bulk deleting orders:", error);
-        return { success: false, error: "Failed to delete orders" };
+        return { success: false, error: "Не удалось удалить заказы" };
     }
 }
 
@@ -723,7 +724,7 @@ export async function getOrderById(id: string): Promise<ActionResult<typeof orde
             }
         });
 
-        if (!order) return { success: false, error: "Order not found" };
+        if (!order) return { success: false, error: "заказ not found" };
 
         if (order && order.client) {
             const client = order.client;
@@ -744,13 +745,13 @@ export async function getOrderById(id: string): Promise<ActionResult<typeof orde
         return { success: true, data: order };
     } catch (error) {
         console.error("Error fetching order:", error);
-        return { success: false, error: "Failed to fetch order" };
+        return { success: false, error: "Не удалось загрузить заказ" };
     }
 }
 
 export async function deleteOrder(orderId: string) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -795,7 +796,7 @@ export async function deleteOrder(orderId: string) {
             details: { orderId }
         });
         console.error("Error deleting order:", error);
-        return { success: false, error: "Failed to delete order" };
+        return { success: false, error: "Не удалось удалить заказ" };
     }
 }
 
@@ -827,10 +828,10 @@ async function releaseOrderReservation(orderId: string, tx?: Transaction) {
 
 export async function uploadOrderFile(orderId: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const file = formData.get("file") as File;
-    if (!file) return { success: false, error: "No file provided" };
+    if (!file) return { success: false, error: "Файл не предоставлен" };
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -858,7 +859,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
         return { success: true };
     } catch (error) {
         console.error("Error uploading order file:", error);
-        return { success: false, error: "Failed to upload file" };
+        return { success: false, error: "Не удалось upload file" };
     }
 }
 
@@ -888,13 +889,13 @@ export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResul
         };
     } catch (error) {
         console.error("Error fetching order stats:", error);
-        return { success: false, error: "Failed to fetch order statistics" };
+        return { success: false, error: "Не удалось загрузить заказ статистика" };
     }
 }
 
 export async function updateOrderField(orderId: string, field: string, value: string | number | boolean | null | Date) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.transaction(async (tx) => {
@@ -952,7 +953,7 @@ export async function updateOrderField(orderId: string, field: string, value: st
 
 export async function toggleOrderArchived(orderId: string, isArchived: boolean) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(orders)
@@ -964,13 +965,13 @@ export async function toggleOrderArchived(orderId: string, isArchived: boolean) 
         return { success: true };
     } catch (error) {
         console.error("Error toggling order archive:", error);
-        return { success: false, error: "Failed to archive order" };
+        return { success: false, error: "Не удалось archive заказ" };
     }
 }
 
 export async function refundOrder(orderId: string, amount: number, reason: string) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.transaction(async (tx) => {
@@ -1000,13 +1001,13 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
         return { success: true };
     } catch (error) {
         console.error("Error refunding order:", error);
-        return { success: false, error: "Failed to process refund" };
+        return { success: false, error: "Не удалось process refund" };
     }
 }
 
 export async function addPayment(orderId: string, amount: number, method: string, isAdvance: boolean, comment?: string) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.insert(payments).values({
@@ -1028,6 +1029,6 @@ export async function addPayment(orderId: string, amount: number, method: string
         return { success: true };
     } catch (error) {
         console.error("Error adding payment:", error);
-        return { success: false, error: "Failed to add payment" };
+        return { success: false, error: "Не удалось добавить payment" };
     }
 }

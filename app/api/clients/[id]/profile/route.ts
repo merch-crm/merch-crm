@@ -11,7 +11,7 @@ export async function GET(
     try {
         const session = await getSession();
         if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
         }
 
         const { id } = await params;
@@ -29,7 +29,7 @@ export async function GET(
         });
 
         if (!client) {
-            return NextResponse.json({ error: "Client not found" }, { status: 404 });
+            return NextResponse.json({ error: "клиент not found" }, { status: 404 });
         }
 
         const userRole = session?.roleName;
@@ -91,7 +91,7 @@ export async function GET(
         });
     } catch (error) {
         console.error("Error fetching client profile:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "Внутренняя ошибка сервера" }, { status: 500 });
     }
 }
 

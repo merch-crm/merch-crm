@@ -9,6 +9,7 @@ import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Session } from "@/lib/auth";
+import { useToast } from "@/components/ui/toast";
 
 
 import { Category } from "./types";
@@ -27,6 +28,7 @@ interface EditCategoryDialogProps {
 }
 
 export function EditCategoryDialog({ category, categories, isOpen, onClose }: EditCategoryDialogProps) {
+    const { toast } = useToast();
     const [isPending, setIsPending] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -109,9 +111,10 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setSubPending(true);
         const result = await deleteInventoryCategory(subToDelete);
         if (result?.success) {
+            toast("Подкатегория удалена", "success");
             router.refresh();
         } else {
-            alert("Ошибка при удалении");
+            toast(result?.error || "Ошибка при удалении", "error");
         }
         setSubPending(false);
         setSubToDelete(null);

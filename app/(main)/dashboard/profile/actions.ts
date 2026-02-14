@@ -20,7 +20,7 @@ export async function logout() {
 
 export async function getUserProfile() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -31,7 +31,7 @@ export async function getUserProfile() {
             }
         });
 
-        if (!user) return { success: false, error: "User not found" };
+        if (!user) return { success: false, error: "пользователь not found" };
 
 
 
@@ -43,7 +43,7 @@ export async function getUserProfile() {
             method: "getUserProfile"
         });
         console.error("Error fetching profile:", error);
-        return { success: false, error: "Failed to fetch profile" };
+        return { success: false, error: "Не удалось загрузить profile" };
     }
 }
 
@@ -51,7 +51,7 @@ export async function getUserProfile() {
 
 export async function updateProfile(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
@@ -110,7 +110,7 @@ export async function updateProfile(formData: FormData) {
 
 export async function updatePassword(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const currentPassword = formData.get("currentPassword") as string;
     const newPassword = formData.get("newPassword") as string;
@@ -153,13 +153,13 @@ export async function updatePassword(formData: FormData) {
             method: "updatePassword"
         });
         console.error("Error updating password:", error);
-        return { success: false, error: "Failed to update password" };
+        return { success: false, error: "Не удалось обновить password" };
     }
 }
 
 export async function getUserStatistics() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const now = new Date();
@@ -221,7 +221,7 @@ export async function getUserStatistics() {
             method: "getUserStatistics"
         });
         console.error("Error fetching user statistics:", error);
-        return { success: false, error: "Failed to fetch statistics" };
+        return { success: false, error: "Не удалось загрузить статистика" };
     }
 }
 
@@ -244,7 +244,7 @@ export async function getUpcomingBirthdays() {
         };
     } catch (error) {
         console.error("Error fetching birthdays:", error);
-        return { success: false, error: "Failed to fetch birthdays", data: [] };
+        return { success: false, error: "Не удалось загрузить birthdays", data: [] };
     }
 }
 
@@ -265,13 +265,13 @@ export async function getLostClientsCount() {
         return { success: true, data: lostClients.length };
     } catch (error) {
         console.error("Error fetching lost clients:", error);
-        return { success: false, error: "Failed to fetch lost clients", data: 0 };
+        return { success: false, error: "Не удалось загрузить lost клиенты", data: 0 };
     }
 }
 
 export async function getUserSchedule() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const userTasks = await db.query.tasks.findMany({
@@ -287,7 +287,7 @@ export async function getUserSchedule() {
             method: "getUserSchedule"
         });
         console.error("Error fetching user schedule:", error);
-        return { success: false, error: "Failed to fetch schedule" };
+        return { success: false, error: "Не удалось загрузить schedule" };
     }
 }
 
@@ -295,7 +295,7 @@ export async function getUserSchedule() {
 
 export async function getUserActivities() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const logs = await db.select()
@@ -312,6 +312,6 @@ export async function getUserActivities() {
             method: "getUserActivities"
         });
         console.error("Error fetching user activities:", error);
-        return { success: false, error: "Failed to fetch activities" };
+        return { success: false, error: "Не удалось загрузить activities" };
     }
 }

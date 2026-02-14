@@ -11,8 +11,9 @@ import {
     date,
     AnyPgColumn,
     index,
+    primaryKey,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 // Enums
 export const orderStatusEnum = pgEnum("order_status", [
@@ -88,7 +89,7 @@ export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
 
 export const clientTypeEnum = pgEnum("client_type", ["b2c", "b2b"]);
 
-export const measurementUnitEnum = pgEnum("measurement_unit_v2", ["pcs", "liters", "meters", "kg"]);
+export const measurementUnitEnum = pgEnum("measurement_unit_v2", ["шт.", "л", "м", "кг"]);
 
 export const paymentMethodEnum = pgEnum("payment_method", ["cash", "bank", "online", "account"]);
 
@@ -116,6 +117,7 @@ export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
     showInSku: boolean("show_in_sku").default(true).notNull(),
     showInName: boolean("show_in_name").default(true).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
@@ -131,6 +133,7 @@ export const roles = pgTable("roles", {
     isSystem: boolean("is_system").default(false).notNull(),
     departmentId: uuid("department_id").references(() => departments.id),
     color: text("color"), // Roles can override department colors
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
@@ -146,6 +149,7 @@ export const departments = pgTable("departments", {
     color: text("color").default("indigo"),
     isActive: boolean("is_active").default(true).notNull(),
     isSystem: boolean("is_system").default(false).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -225,6 +229,8 @@ export const inventoryCategories = pgTable("inventory_categories", {
     pluralName: text("plural_name"),
     showInSku: boolean("show_in_sku").default(true).notNull(),
     showInName: boolean("show_in_name").default(true).notNull(),
+    level: integer("level").default(0).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
@@ -240,7 +246,7 @@ export const inventoryItems = pgTable("inventory_items", {
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
     itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
-    unit: measurementUnitEnum("unit").default("pcs").notNull(),
+    unit: measurementUnitEnum("unit").default("шт.").notNull(),
     lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
     criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
@@ -271,6 +277,21 @@ export const inventoryItems = pgTable("inventory_items", {
         categoryIdx: index("inv_items_category_idx").on(table.categoryId),
         skuIdx: index("inv_items_sku_idx").on(table.sku),
         archivedIdx: index("inv_items_archived_idx").on(table.isArchived),
+
+    }
+});
+
+// Inventory Item Attributes (Normalized)
+export const inventoryItemAttributes = pgTable("inventory_item_attributes", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    inventoryItemId: uuid("inventory_item_id").references(() => inventoryItems.id, { onDelete: "cascade" }).notNull(),
+    attributeId: uuid("attribute_id").references(() => inventoryAttributes.id, { onDelete: "restrict" }).notNull(),
+    value: text("value").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        itemAttrUnique: index("inv_item_attr_unique").on(table.inventoryItemId, table.attributeId),
+        attributeIdx: index("inv_item_attr_attribute_idx").on(table.attributeId),
     }
 });
 
@@ -332,12 +353,13 @@ export const orderItems = pgTable("order_items", {
 });
 
 // Inventory Transactions
-export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change", "archive", "restore"]);
+export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change", "archive", "restore", "stock_in", "stock_out", "adjustment"]);
 
 export const inventoryTransactions = pgTable("inventory_transactions", {
-    id: uuid("id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().notNull(),
     itemId: uuid("item_id")
         .references(() => inventoryItems.id),
+    orderId: uuid("order_id").references(() => orders.id),
     changeAmount: integer("change_amount").notNull().default(0),
     type: transactionTypeEnum("type").notNull(),
     reason: text("reason"),
@@ -348,6 +370,7 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
+        pk: primaryKey({ columns: [table.id, table.createdAt] }),
         itemIdx: index("inv_tx_item_idx").on(table.itemId),
         storageIdx: index("inv_tx_storage_idx").on(table.storageLocationId),
         fromStorageIdx: index("inv_tx_from_storage_idx").on(table.fromStorageLocationId),
@@ -430,6 +453,7 @@ export const notifications = pgTable("notifications", {
     title: text("title").notNull(),
     message: text("message").notNull(),
     type: notificationTypeEnum("type").default("info").notNull(),
+    priority: text("priority").default("normal").notNull(), // normal, high, urgent
     isRead: boolean("is_read").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
@@ -462,18 +486,21 @@ export const storageLocations = pgTable("storage_locations", {
 
 // Audit Logs
 export const auditLogs = pgTable("audit_logs", {
-    id: uuid("id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().notNull(),
     userId: uuid("user_id").references(() => users.id),
     action: text("action").notNull(),
+    actionCategory: text("action_category"), // auth, inventory, storage, etc.
     entityType: text("entity_type").notNull(),
     entityId: uuid("entity_id").notNull(),
     details: jsonb("details"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
+        pk: primaryKey({ columns: [table.id, table.createdAt] }),
         userIdx: index("audit_logs_user_idx").on(table.userId),
         entityIdx: index("audit_logs_entity_idx").on(table.entityType, table.entityId),
         actionIdx: index("audit_logs_action_idx").on(table.action),
+        actionCategoryIdx: index("audit_logs_category_idx").on(table.actionCategory),
         createdIdx: index("audit_logs_created_idx").on(table.createdAt),
     }
 });
@@ -487,7 +514,7 @@ export const systemSettings = pgTable("system_settings", {
 
 // Security Events
 export const securityEvents = pgTable("security_events", {
-    id: uuid("id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().notNull(),
     userId: uuid("user_id").references(() => users.id),
     eventType: securityEventTypeEnum("event_type").notNull(),
     severity: text("severity").default("info").notNull(), // info, warning, critical
@@ -499,6 +526,7 @@ export const securityEvents = pgTable("security_events", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
+        pk: primaryKey({ columns: [table.id, table.createdAt] }),
         userIdx: index("security_events_user_idx").on(table.userId),
         typeIdx: index("security_events_type_idx").on(table.eventType),
         entityIdx: index("security_events_entity_idx").on(table.entityType, table.entityId),
@@ -509,7 +537,7 @@ export const securityEvents = pgTable("security_events", {
 
 // System Errors
 export const systemErrors = pgTable("system_errors", {
-    id: uuid("id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().notNull(),
     userId: uuid("user_id").references(() => users.id),
     message: text("message").notNull(),
     stack: text("stack"),
@@ -522,6 +550,7 @@ export const systemErrors = pgTable("system_errors", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => {
     return {
+        pk: primaryKey({ columns: [table.id, table.createdAt] }),
         userIdx: index("system_errors_user_idx").on(table.userId),
         createdIdx: index("system_errors_created_idx").on(table.createdAt),
     }
@@ -669,6 +698,7 @@ export const inventoryStocks = pgTable("inventory_stocks", {
         itemIdx: index("inv_stocks_item_idx").on(table.itemId),
         storageIdx: index("inv_stocks_storage_idx").on(table.storageLocationId),
         itemStorageIdx: index("inv_stocks_item_storage_idx").on(table.itemId, table.storageLocationId),
+        positiveQtyIdx: index("inv_stocks_qty_positive_idx").on(table.quantity).where(sql`${table.quantity} > 0`),
     }
 });
 

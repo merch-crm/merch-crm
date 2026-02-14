@@ -46,7 +46,7 @@ export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
         return { success: true, data };
     } catch (error) {
         console.error("Error fetching promocodes:", error);
-        return { success: false, error: "Failed to fetch promocodes" };
+        return { success: false, error: "Не удалось загрузить promocodes" };
     }
 }
 
@@ -80,7 +80,7 @@ export async function createPromocode(values: PromocodeValues): Promise<ActionRe
         return { success: true };
     } catch (error) {
         console.error("Error creating promocode:", error);
-        return { success: false, error: "Failed to create promocode" };
+        return { success: false, error: "Не удалось создать promocode" };
     }
 }
 
@@ -103,7 +103,7 @@ export async function updatePromocode(id: string, values: PromocodeValues): Prom
         return { success: true };
     } catch (error) {
         console.error("Error updating promocode:", error);
-        return { success: false, error: "Failed to update promocode" };
+        return { success: false, error: "Не удалось обновить promocode" };
     }
 }
 
@@ -116,7 +116,7 @@ export async function togglePromocodeActive(id: string, isActive: boolean): Prom
         return { success: true };
     } catch (error) {
         console.error("Error toggling promocode:", error);
-        return { success: false, error: "Failed to update promocode" };
+        return { success: false, error: "Не удалось обновить promocode" };
     }
 }
 
@@ -151,7 +151,7 @@ export async function bulkCreatePromocodes(count: number, prefix: string, values
         return { success: true, data: { count: newCodes.length } };
     } catch (error) {
         console.error("Error bulk creating promocodes:", error);
-        return { success: false, error: "Failed to bulk create promocodes" };
+        return { success: false, error: "Не удалось bulk create promocodes" };
     }
 }
 
@@ -163,6 +163,6 @@ export async function deletePromocode(id: string): Promise<ActionResult> {
         return { success: true };
     } catch (error) {
         console.error("Error deleting promocode:", error);
-        return { success: false, error: "Failed to delete promocode" };
+        return { success: false, error: "Не удалось удалить promocode" };
     }
 }

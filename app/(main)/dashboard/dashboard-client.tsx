@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import {
     Users,
@@ -57,10 +57,20 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     const { currencySymbol } = useBranding();
     const [statsData, setStatsData] = useState<DashboardStats>(initialStats);
     const [notifications, setNotifications] = useState<Notification[]>([]);
+
+    // ✅ FIX: Hydration mismatch protection
+    const [mounted, setMounted] = useState(false);
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        setTimeout(() => setTime(new Date()), 0);
+        const timer = setTimeout(() => {
+            setMounted(true);
+            setTime(new Date());
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const [stats, notifs] = await Promise.all([
@@ -79,11 +89,23 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
         const interval = setInterval(fetchData, 15000);
         const clockInterval = setInterval(() => setTime(new Date()), 60000);
+
         return () => {
             clearInterval(interval);
             clearInterval(clockInterval);
         };
     }, [period]);
+
+    // ✅ FIX: Memoized time formatting to prevent hydration issues
+    const formattedTime = useMemo(() => {
+        if (!mounted || !time) return "--:--";
+        return time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }, [mounted, time]);
+
+    const formattedDate = useMemo(() => {
+        if (!mounted || !time) return "...";
+        return time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+    }, [mounted, time]);
 
     const primaryAction = {
         name: "Новый заказ",
@@ -122,17 +144,18 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         <LayoutGrid className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-xl font-bold text-slate-900 leading-tight">Общий обзор</h1>
+                        <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight">Главная</h1>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl border border-slate-200 shadow-sm text-xs font-bold text-slate-600">
-                        <Timer className="w-3.5 h-3.5 text-primary" />
-                        {time ? time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : "--:--"}
+                <div className="flex items-center gap-1.5 p-1 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 shadow-sm group hover:bg-white/60 transition-all duration-300 hover:scale-[1.02]">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700">
+                        <Timer className="w-3.5 h-3.5 text-primary animate-pulse" />
+                        {formattedTime}
                     </div>
-                    <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-900 rounded-2xl text-xs font-bold text-white shadow-lg shadow-primary/10">
+                    <div className="h-4 w-px bg-slate-200/50" />
+                    <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600">
                         <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
-                        {time ? time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : "..."}
+                        {formattedDate}
                     </div>
                 </div>
             </div>
@@ -287,7 +310,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 <div className="crm-card col-span-12 lg:col-span-4 !bg-primary !border-primary text-white relative group !shadow-lg !shadow-primary/10">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
                     <div className="relative z-10">
-                        < Zap className="w-8 h-8 text-primary-foreground/20 mb-4" />
+                        <Zap className="w-8 h-8 text-primary-foreground/20 mb-4" />
                         <h4 className="text-xl font-bold mb-2">Обновите запасы</h4>
                         <p className="text-white/70 text-sm font-medium leading-relaxed mb-6">
                             Мы заметили, что на складе осталось менее 10 футболок черного цвета (L).
@@ -340,3 +363,4 @@ export function DashboardClient({ initialStats, period, userName, branding: init
         </div>
     );
 }
+

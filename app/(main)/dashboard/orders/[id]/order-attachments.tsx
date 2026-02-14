@@ -12,6 +12,7 @@ import {
 import { useTransition, useRef } from "react";
 import { uploadOrderFile } from "../actions";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 interface Attachment {
     id: string;
@@ -29,6 +30,7 @@ interface OrderAttachmentsProps {
 export default function OrderAttachments({ orderId, attachments = [] }: OrderAttachmentsProps) {
     const [isPending, startTransition] = useTransition();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { toast } = useToast();
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -39,7 +41,11 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
 
         startTransition(async () => {
             const res = await uploadOrderFile(orderId, formData);
-            if (res.error) alert(res.error);
+            if (res.error) {
+                toast(res.error, "error");
+            } else {
+                toast("Файл успешно загружен", "success");
+            }
         });
     };
 

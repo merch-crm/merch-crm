@@ -19,7 +19,7 @@ export async function updateProductionStageAction(
     status: 'pending' | 'in_progress' | 'done' | 'failed'
 ): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await updateItemStage(orderItemId, stage, status);
@@ -77,7 +77,7 @@ export async function getProductionStats(): Promise<ActionResult<{ active: numbe
         };
     } catch (error) {
         console.error("Error fetching production stats:", error);
-        return { success: false, error: "Failed to fetch production stats" };
+        return { success: false, error: "Не удалось загрузить production stats" };
     }
 }
 
@@ -122,14 +122,14 @@ export async function getProductionItems(): Promise<ActionResult<ProductionItem[
         return { success: true, data: items };
     } catch (error) {
         console.error("Error fetching production items:", error);
-        return { success: false, error: "Failed to fetch production items" };
+        return { success: false, error: "Не удалось загрузить production товары" };
     }
 }
 
 
 export async function reportProductionDefect(orderItemId: string, quantity: number, reason: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.transaction(async (tx) => {

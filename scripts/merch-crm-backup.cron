@@ -1,0 +1,13 @@
+# =============================================================================
+# MerchCRM — Cron расписание для бэкапов
+# Установка: cp merch-crm-backup.cron /etc/cron.d/merch-crm-backup
+# =============================================================================
+
+# Ежедневный полный pg_dump бэкап в 3:00
+0 3 * * * root /root/scripts/backup-db.sh >> /var/log/merch-backup.log 2>&1
+
+# JSON-бэкап через API приложения в 4:00
+0 4 * * * root curl -sf "http://localhost:3000/api/cron/backup?secret=$(cat /root/.merch-cron-secret)" >> /var/log/merch-backup-api.log 2>&1
+
+# Очистка WAL-архивов старше 7 дней (воскресенье 5:00)
+0 5 * * 0 root find /root/wal_archive -type f -mtime +7 -delete >> /var/log/merch-backup.log 2>&1

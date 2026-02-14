@@ -29,7 +29,7 @@ import { ActionResult } from "@/lib/types";
 
 export async function getTasks(): Promise<ActionResult<(typeof tasks.$inferSelect)[]>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const allTasks = await db.query.tasks.findMany({
@@ -70,13 +70,13 @@ export async function getTasks(): Promise<ActionResult<(typeof tasks.$inferSelec
             method: "getTasks"
         });
         console.error("Error fetching tasks:", error);
-        return { success: false, error: "Failed to fetch tasks" };
+        return { success: false, error: "Не удалось загрузить tasks" };
     }
 }
 
 export async function createTask(formData: FormData): Promise<ActionResult<typeof tasks.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = CreateTaskSchema.safeParse(Object.fromEntries(formData));
 
@@ -121,13 +121,13 @@ export async function createTask(formData: FormData): Promise<ActionResult<typeo
             details: { title, priority }
         });
         console.error("Error creating task:", error);
-        return { success: false, error: "Failed to create task" };
+        return { success: false, error: "Не удалось создать task" };
     }
 }
 
 export async function updateTask(taskId: string, data: Partial<typeof tasks.$inferInsert>): Promise<ActionResult<typeof tasks.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const oldTask = await db.query.tasks.findFirst({
@@ -148,13 +148,13 @@ export async function updateTask(taskId: string, data: Partial<typeof tasks.$inf
     } catch (error) {
         console.error("Error updating task:", error);
         await logError({ error, path: "/dashboard/tasks", method: "updateTask", details: { taskId, data } });
-        return { success: false, error: "Failed to update task" };
+        return { success: false, error: "Не удалось обновить task" };
     }
 }
 
 export async function toggleTaskStatus(taskId: string, currentStatus: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const newStatus = currentStatus === "done" ? "new" : "done";
 
@@ -169,13 +169,13 @@ export async function toggleTaskStatus(taskId: string, currentStatus: string): P
         return { success: true };
     } catch (error) {
         console.error("Error toggling task status:", error);
-        return { success: false, error: "Failed to update status" };
+        return { success: false, error: "Не удалось обновить status" };
     }
 }
 
 export async function deleteTask(taskId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.delete(tasks).where(eq(tasks.id, taskId));
@@ -189,16 +189,16 @@ export async function deleteTask(taskId: string): Promise<ActionResult> {
             details: { taskId }
         });
         console.error("Error deleting task:", error);
-        return { success: false, error: "Failed to delete task" };
+        return { success: false, error: "Не удалось удалить task" };
     }
 }
 
 export async function uploadTaskFile(taskId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const file = formData.get("file") as File;
-    if (!file) return { success: false, error: "No file provided" };
+    if (!file) return { success: false, error: "Файл не предоставлен" };
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -233,13 +233,13 @@ export async function uploadTaskFile(taskId: string, formData: FormData): Promis
             details: { taskId, fileName: file.name }
         });
         console.error("Error uploading task file:", error);
-        return { success: false, error: "Failed to upload file" };
+        return { success: false, error: "Не удалось upload file" };
     }
 }
 
 export async function addTaskComment(taskId: string, content: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const { taskComments } = await import("@/lib/schema");
@@ -253,13 +253,13 @@ export async function addTaskComment(taskId: string, content: string): Promise<A
         return { success: true };
     } catch (error) {
         console.error("Error adding task comment:", error);
-        return { success: false, error: "Failed to add comment" };
+        return { success: false, error: "Не удалось добавить comment" };
     }
 }
 
 export async function addTaskChecklistItem(taskId: string, content: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const { taskChecklists } = await import("@/lib/schema");
@@ -273,13 +273,13 @@ export async function addTaskChecklistItem(taskId: string, content: string): Pro
         return { success: true };
     } catch (error) {
         console.error("Error adding checklist item:", error);
-        return { success: false, error: "Failed to add item" };
+        return { success: false, error: "Не удалось добавить товар" };
     }
 }
 
 export async function toggleChecklistItem(itemId: string, isCompleted: boolean): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const { taskChecklists } = await import("@/lib/schema");
@@ -291,13 +291,13 @@ export async function toggleChecklistItem(itemId: string, isCompleted: boolean):
         return { success: true };
     } catch (error) {
         console.error("Error toggling checklist item:", error);
-        return { success: false, error: "Failed to update item" };
+        return { success: false, error: "Не удалось обновить товар" };
     }
 }
 
 export async function deleteChecklistItem(itemId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const { taskChecklists } = await import("@/lib/schema");
@@ -307,6 +307,6 @@ export async function deleteChecklistItem(itemId: string): Promise<ActionResult>
         return { success: true };
     } catch (error) {
         console.error("Error deleting checklist item:", error);
-        return { success: false, error: "Failed to delete item" };
+        return { success: false, error: "Не удалось удалить товар" };
     }
 }

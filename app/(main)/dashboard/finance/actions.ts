@@ -69,7 +69,7 @@ export interface FundStats {
 
 export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionResult<FinancialStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     if (!["Администратор", "Руководство"].includes(session.roleName)) {
         return { success: false, error: "Доступ запрещен" };
@@ -164,13 +164,13 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
             path: "/dashboard/finance",
             method: "getFinancialStats"
         });
-        return { success: false, error: "Failed to fetch financial statistics" };
+        return { success: false, error: "Не удалось загрузить financial статистика" };
     }
 }
 
 export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResult<SalaryStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const whereClause = [];
@@ -227,13 +227,13 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
             path: "/dashboard/finance/salary",
             method: "getSalaryStats"
         });
-        return { success: false, error: "Failed to fetch salary statistics" };
+        return { success: false, error: "Не удалось загрузить salary статистика" };
     }
 }
 
 export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResult<FundStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const whereClause = [];
@@ -276,13 +276,13 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
             path: "/dashboard/finance/funds",
             method: "getFundsStats"
         });
-        return { success: false, error: "Failed to fetch funds statistics" };
+        return { success: false, error: "Не удалось загрузить funds статистика" };
     }
 }
 
 export async function validatePromocode(code: string, totalAmount: number = 0, cartItems: Array<{ inventoryId?: string; price: number; quantity: number; category?: string }> = []) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const result = await validatePromoLib(code, totalAmount, cartItems);
@@ -306,7 +306,7 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
 
 export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date): Promise<ActionResult<(typeof payments.$inferSelect | typeof expenses.$inferSelect)[]>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         if (type === 'payment') {
@@ -338,7 +338,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
 
 export async function createExpense(data: unknown): Promise<ActionResult<typeof expenses.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = CreateExpenseSchema.safeParse(data);
     if (!validation.success) {
@@ -373,7 +373,7 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
     margin: number;
 }>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const fromDate = from || subDays(new Date(), 30);

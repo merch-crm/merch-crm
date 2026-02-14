@@ -124,7 +124,7 @@ export async function POST(request: Request) {
         // Успешный логин — сбросить счётчик
         await resetRateLimit(rateLimitKey);
 
-        console.log(`[API Login] Cookie set, returning success`);
+
         return response;
 
     } catch (error) {

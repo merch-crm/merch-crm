@@ -23,7 +23,7 @@ export async function getManagers(): Promise<ActionResult<{ id: string; name: st
         return { success: true, data };
     } catch (error) {
         console.error("Error fetching managers:", error);
-        return { success: false, error: "Failed to fetch managers" };
+        return { success: false, error: "Не удалось загрузить managers" };
     }
 }
 
@@ -82,7 +82,7 @@ export async function getClients(showArchived = false): Promise<ActionResult<Cli
             path: "/dashboard/clients",
             method: "getClients"
         });
-        return { success: false, error: "Failed to fetch clients" };
+        return { success: false, error: "Не удалось загрузить клиенты" };
     }
 }
 
@@ -123,7 +123,7 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: (typeof clients.$inferSelect)[] } | void>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = ClientSchema.safeParse(Object.fromEntries(formData));
 
@@ -188,13 +188,13 @@ export async function addClient(formData: FormData): Promise<ActionResult<{ dupl
             method: "addClient",
             details: { lastName, firstName, phone, email }
         });
-        return { success: false, error: "Failed to add client" };
+        return { success: false, error: "Не удалось добавить клиент" };
     }
 }
 
 export async function updateClient(clientId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = ClientUpdateSchema.safeParse(Object.fromEntries(formData));
 
@@ -214,7 +214,7 @@ export async function updateClient(clientId: string, formData: FormData): Promis
             with: { role: true }
         });
 
-        if (!user || !user.role) return { success: false, error: "User role not found" };
+        if (!user || !user.role) return { success: false, error: "пользователь роль not found" };
 
         const fullName = [lastName, firstName, patronymic].filter(Boolean).join(" ");
 
@@ -250,13 +250,13 @@ export async function updateClient(clientId: string, formData: FormData): Promis
             details: { clientId, lastName, firstName, phone }
         });
         console.error("Error updating client:", error);
-        return { success: false, error: "Failed to update client" };
+        return { success: false, error: "Не удалось обновить клиент" };
     }
 }
 
 export async function updateClientComments(clientId: string, comments: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(clients)
@@ -267,7 +267,7 @@ export async function updateClientComments(clientId: string, comments: string): 
         return { success: true };
     } catch (error) {
         console.error("Error updating comments:", error);
-        return { success: false, error: "Failed to update comments" };
+        return { success: false, error: "Не удалось обновить comments" };
     }
 }
 
@@ -305,7 +305,7 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
             where: eq(clients.id, clientId),
         });
 
-        if (!client) return { success: false, error: "Client not found" };
+        if (!client) return { success: false, error: "клиент not found" };
 
         const session = await getSession();
         const userRole = session?.roleName;
@@ -355,7 +355,7 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
         };
     } catch (error) {
         console.error("Error fetching client details:", error);
-        return { success: false, error: "Failed to fetch client details" };
+        return { success: false, error: "Не удалось загрузить клиент details" };
     }
 }
 
@@ -408,12 +408,12 @@ export async function getClientStats(): Promise<ActionResult<ClientStats>> {
         };
     } catch (error) {
         console.error("Error getting client stats:", error);
-        return { success: false, error: "Failed to get client stats" };
+        return { success: false, error: "Не удалось get клиент stats" };
     }
 }
 export async function deleteClient(clientId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -453,13 +453,13 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
             details: { clientId }
         });
         console.error("Error deleting client:", error);
-        return { success: false, error: "Failed to delete client" };
+        return { success: false, error: "Не удалось удалить клиент" };
     }
 }
 
 export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -491,7 +491,7 @@ export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResu
         return { success: true };
     } catch (error) {
         console.error("Error in bulk delete:", error);
-        return { success: false, error: "Failed to delete clients" };
+        return { success: false, error: "Не удалось удалить клиенты" };
     }
 }
 
@@ -531,7 +531,7 @@ async function releaseReservationsForOrders(orderIds: string[], tx: Transaction)
 
 export async function bulkUpdateClientManager(clientIds: string[], managerId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(clients)
@@ -543,13 +543,13 @@ export async function bulkUpdateClientManager(clientIds: string[], managerId: st
         return { success: true };
     } catch (error) {
         console.error("Error in bulk manager update:", error);
-        return { success: false, error: "Failed to update clients" };
+        return { success: false, error: "Не удалось обновить клиенты" };
     }
 }
 
 export async function toggleClientArchived(clientId: string, isArchived: boolean): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(clients)
@@ -561,17 +561,17 @@ export async function toggleClientArchived(clientId: string, isArchived: boolean
         return { success: true };
     } catch (error) {
         console.error("Error toggling client archive:", error);
-        return { success: false, error: "Failed to archive client" };
+        return { success: false, error: "Не удалось archive клиент" };
     }
 }
 
 export async function updateClientField(clientId: string, field: string, value: string | number | boolean | null): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const allowedFields = ["managerId", "clientType", "city", "lastName", "firstName", "company"];
-        if (!allowedFields.includes(field)) return { success: false, error: "Invalid field" };
+        if (!allowedFields.includes(field)) return { success: false, error: "Некорректное поле" };
 
         await db.update(clients)
             .set({ [field]: value || null, updatedAt: new Date() })
@@ -581,13 +581,13 @@ export async function updateClientField(clientId: string, field: string, value: 
         return { success: true };
     } catch (error) {
         console.error("Error updating client field:", error);
-        return { success: false, error: "Failed to update client field" };
+        return { success: false, error: "Не удалось обновить клиент field" };
     }
 }
 
 export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Unauthorized" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await db.update(clients)
@@ -599,6 +599,6 @@ export async function bulkArchiveClients(clientIds: string[], isArchived: boolea
         return { success: true };
     } catch (error) {
         console.error("Error in bulk archive:", error);
-        return { success: false, error: "Failed to archive clients" };
+        return { success: false, error: "Не удалось archive клиенты" };
     }
 }

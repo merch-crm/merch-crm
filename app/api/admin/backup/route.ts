@@ -8,7 +8,7 @@ export async function GET() {
     try {
         const session = await getSession();
         if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
         }
 
         const user = await db.query.users.findFirst({
@@ -95,6 +95,6 @@ export async function GET() {
         });
     } catch (error) {
         console.error("Backup error:", error);
-        return NextResponse.json({ error: "Backup failed" }, { status: 500 });
+        return NextResponse.json({ error: "Ошибка резервного копирования" }, { status: 500 });
     }
 }

@@ -22,7 +22,7 @@ export async function getWikiFolders() {
 
 export async function createWikiFolder(name: string, parentId: string | null = null) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
         const [newFolder] = await db.insert(wikiFolders).values({
@@ -75,7 +75,7 @@ export async function getWikiPageDetail(id: string) {
 
 export async function createWikiPage(data: { title: string, content: string, folderId: string | null }) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
         const [newPage] = await db.insert(wikiPages).values({
@@ -93,7 +93,7 @@ export async function createWikiPage(data: { title: string, content: string, fol
 
 export async function updateWikiPage(id: string, data: { title?: string, content?: string, folderId?: string | null }) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
         await db.update(wikiPages)
@@ -115,7 +115,7 @@ export async function updateWikiPage(id: string, data: { title?: string, content
 
 export async function deleteWikiPage(id: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
         await db.delete(wikiPages).where(eq(wikiPages.id, id));

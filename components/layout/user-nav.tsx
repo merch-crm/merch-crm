@@ -123,7 +123,7 @@ export function UserNav({ user, branding }: {
                                     <div className="flex flex-col gap-1 min-w-0 flex-1">
                                         <span className="text-xl md:text-base font-black md:font-bold text-slate-900 leading-tight truncate">{user.name}</span>
                                         <span className="text-sm md:text-[12px] text-slate-400 font-medium truncate">{user.email}</span>
-                                        <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit" />
+                                        <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit text-[10px] px-2 py-0" />
                                     </div>
                                     <Button
                                         variant="ghost"
