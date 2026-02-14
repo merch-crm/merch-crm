@@ -77,6 +77,7 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
                                     alt="Logo"
                                     fill
                                     className="object-contain"
+                                    unoptimized
                                 />
                             </div>
                         ) : (

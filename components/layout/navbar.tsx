@@ -69,7 +69,7 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
                             <div className="bg-primary rounded-[18px] w-11 h-11 p-1.5 flex items-center justify-center shadow-sm transition-all duration-500">
                                 {branding.logoUrl ? (
                                     <div className="relative h-8 w-8">
-                                        <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" />
+                                        <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
                                     </div>
                                 ) : (
                                     <Printer className="h-8 w-8 text-white" />
