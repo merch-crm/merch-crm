@@ -40,9 +40,9 @@
 ---
 
 ## 🛠 5. База данных (PostgreSQL)
-*   **URL:** `postgresql://postgres:postgres@db:5432/merch_crm`
+*   **URL:** `postgresql://postgres:5738870192e24949b02a700547743048@db:5432/merch_crm`
 *   **User:** `postgres`
-*   **Password:** `postgres`
+*   **Password:** `5738870192e24949b02a700547743048`
 *   **Database:** `merch_crm`
 
 ---

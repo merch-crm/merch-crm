@@ -46,7 +46,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: "5738870192e24949b02a700547743048"
       POSTGRES_DB: merch_crm
     volumes:
       - postgres_data:/var/lib/postgresql/data

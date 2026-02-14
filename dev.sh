@@ -28,7 +28,7 @@ fi
 
 # 3. Синхронизация пароля БД (на случай, если он сбросился)
 echo -e "${YELLOW}📌 Шаг 3: Синхронизация пароля БД...${NC}"
-ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD 'da1c8fe9f308039384edeecbe252fdda51f305d59cae0c94';\"" > /dev/null 2>&1
+ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD '5738870192e24949b02a700547743048';\"" > /dev/null 2>&1
 echo -e "${GREEN}✅ Пароль синхронизирован${NC}"
 
 # 4. Проверка подключения
