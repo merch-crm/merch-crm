@@ -49,31 +49,33 @@ export function WikiClient({ initialFolders, initialPages, userRole }: WikiClien
 
     const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
 
-    const fetchPageDetail = useCallback(async (id: string) => {
-        const page = await getWikiPageDetail(id);
-        setPageContent(page as unknown as WikiPage);
-        setEditData({ title: page?.title || "", content: page?.content || "" });
-        setLoading(false);
-    }, []);
-
     useEffect(() => {
-        let isMounted = true;
-        const loadPage = async () => {
-            if (selectedPageId) {
-                await fetchPageDetail(selectedPageId);
-                if (!isMounted) return;
-            }
+        let isCancelled = false;
+        if (selectedPageId) {
+            const load = async () => {
+                const page = await getWikiPageDetail(selectedPageId);
+                if (!isCancelled) {
+                    setPageContent(page as unknown as WikiPage);
+                    setEditData({ title: page?.title || "", content: page?.content || "" });
+                    setLoading(false);
+                }
+            };
+            load();
+        }
+        return () => {
+            isCancelled = true;
         };
-        loadPage();
-        return () => { isMounted = false; };
-    }, [selectedPageId, fetchPageDetail]);
+    }, [selectedPageId]);
 
     const handleSave = async () => {
         if (!selectedPageId) return;
         setLoading(true);
         await updateWikiPage(selectedPageId, editData);
         setIsEditing(false);
-        await fetchPageDetail(selectedPageId);
+        const page = await getWikiPageDetail(selectedPageId);
+        setPageContent(page as unknown as WikiPage);
+        setEditData({ title: page?.title || "", content: page?.content || "" });
+        setLoading(false);
         router.refresh();
     };
 

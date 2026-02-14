@@ -95,8 +95,8 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
 
         startTransition(async () => {
             const res = await uploadTaskFile(task.id, formData);
-            if (res.error) {
-                toast(res.error, "error");
+            if (!res.success) {
+                toast(res.error || "Ошибка загрузки", "error");
                 playSound("notification_error");
             } else {
                 toast("Файл загружен", "success");

@@ -14,7 +14,7 @@ interface UserProfile {
     name: string;
     email: string;
     phone?: string | null;
-    department?: { name: string } | string | null;
+    department?: { name: string } | null;
     role?: { name: string } | null;
     avatar?: string | null;
     telegram?: string | null;
@@ -104,7 +104,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
         setLoading(false);
     }
 
-    const deptName = typeof user.department === 'object' && user.department !== null ? user.department.name : (user.department || "Общий отдел");
+    const deptName = user.department?.name || "Общий отдел";
 
     return (
         <form action={handleSubmit} className="space-y-10">

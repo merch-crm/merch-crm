@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive } from "lucide-react";
+import { Package, ArrowLeft, Plus, Trash2, Edit, X, PlusSquare, Search, SearchX, MapPin, ChevronRight, Download, Tag, GripVertical, Archive, Layers, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 import { Button } from "@/components/ui/button";
@@ -544,19 +544,20 @@ export function CategoryDetailClient({
                     "flex items-center gap-1.5 p-1 lg:p-0 rounded-2xl w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
                 )}>
                     {[
-                        { id: "all", label: "Все" },
-                        { id: "in", label: "В наличии", color: "emerald" },
-                        { id: "low", label: "Скоро закончится", color: "amber" },
-                        { id: "out", label: "Нет", color: "rose" }
+                        { id: "all", label: "Все", icon: Layers },
+                        { id: "in", label: "В наличии", icon: CheckCircle2, color: "emerald" },
+                        { id: "low", label: "Скоро закончится", icon: AlertTriangle, color: "amber" },
+                        { id: "out", label: "Нет", icon: XCircle, color: "rose" }
                     ].map((f) => {
                         const isActive = filterStatus === f.id;
+                        const StatusIcon = f.icon;
                         return (
                             <Button
                                 key={f.id}
                                 variant="ghost"
                                 onClick={() => setFilterStatus(f.id as "all" | "in" | "low" | "out")}
                                 className={cn(
-                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-colors duration-200 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] h-9 min-h-0 border-none hover:bg-transparent",
+                                    "crm-filter-tray-tab flex-1 lg:flex-none transition-all duration-300 text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 rounded-[16px] h-9 min-h-0 border-none hover:bg-transparent relative",
                                     isActive && "active"
                                 )}
                             >
@@ -567,7 +568,13 @@ export function CategoryDetailClient({
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
-                                <span className="relative z-10 whitespace-nowrap">{f.label}</span>
+                                <div className="relative z-10 flex items-center justify-center gap-2">
+                                    <StatusIcon className={cn(
+                                        "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
+                                        isActive ? "text-white" : (f.color ? `text-${f.color}-500` : "text-slate-400")
+                                    )} />
+                                    <span className="hidden sm:inline whitespace-nowrap">{f.label}</span>
+                                </div>
                             </Button>
                         );
                     })}
@@ -771,7 +778,7 @@ export function CategoryDetailClient({
                                                                             isLowStock ? "bg-amber-500" :
                                                                                 "bg-emerald-500"
                                                                     )} />
-                                                                    <span className="tabular-nums">{available} {item.unit}</span>
+                                                                    <span className="tabular-nums">{available} {formatUnit(item.unit)}</span>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -864,7 +871,7 @@ export function CategoryDetailClient({
                                                                 isLowStock ? "bg-amber-50 text-amber-600 border border-amber-100" :
                                                                     "bg-emerald-50 text-emerald-600 border border-emerald-100"
                                                         )}>
-                                                            {available} {item.unit}
+                                                            {available} {formatUnit(item.unit)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1332,7 +1339,7 @@ function BulkMoveDialog({ isOpen, selectedIds, storageLocations, onClose, onSucc
                             value={targetLocationId}
                             onChange={setTargetLocationId}
                             options={storageLocations}
-                            placeholder="Выберите склад..."
+                            placeholder="Выберите склад…"
                         />
                     </div>
 
@@ -1342,7 +1349,7 @@ function BulkMoveDialog({ isOpen, selectedIds, storageLocations, onClose, onSucc
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             className="w-full h-24 p-4 rounded-[var(--radius)] border border-slate-200 bg-slate-50 text-sm font-medium outline-none focus:bg-white focus:border-primary transition-all resize-none"
-                            placeholder="Причина перемещения..."
+                            placeholder="Причина перемещения…"
                         />
                     </div>
 
@@ -1351,7 +1358,7 @@ function BulkMoveDialog({ isOpen, selectedIds, storageLocations, onClose, onSucc
                         disabled={!targetLocationId || isLoading}
                         className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all"
                     >
-                        {isLoading ? "Перемещение..." : "Подтвердить перемещение"}
+                        {isLoading ? "Перемещение…" : "Подтвердить перемещение"}
                     </Button>
                 </div>
             </div>

@@ -39,7 +39,7 @@ const DEFAULT_FORM_DATA: ItemFormData = {
     sizeCode: "",
     itemName: "",
     sku: "",
-    unit: "шт",
+    unit: "pcs",
     description: "",
     width: "",
     height: "",
@@ -145,7 +145,7 @@ export function NewItemPageClient({
                 initialForm = {
                     ...initialForm,
                     subcategoryId: resolvedSubId,
-                    unit: isClothing ? "шт" : initialForm.unit
+                    unit: isClothing ? "pcs" : initialForm.unit
                 };
             }
         } else {
@@ -260,7 +260,7 @@ export function NewItemPageClient({
             attributeCode: "",
             sizeCode: "",
             itemName: "",
-            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ? "шт" : prev.unit || "шт"
+            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ? "pcs" : prev.unit || "pcs"
         }));
     };
 
@@ -382,7 +382,7 @@ export function NewItemPageClient({
             submitFormData.append("name", formData.itemName || "");
             submitFormData.append("categoryId", formData.subcategoryId || selectedCategory?.id || "");
             submitFormData.append("sku", formData.sku || "");
-            submitFormData.append("unit", formData.unit || "шт");
+            submitFormData.append("unit", formData.unit || "pcs");
             submitFormData.append("description", formData.description || "");
             submitFormData.append("quantity", formData.quantity || "0");
             submitFormData.append("criticalStockThreshold", formData.criticalStockThreshold || "0");

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 
-import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Search, X, FileDown, Book, LayoutGrid, Tag, Archive, ChevronDown } from "lucide-react";
+import { Package, ArrowUpRight, ArrowDownLeft, Clock, Building2, ArrowRight, ArrowLeftRight, Trash2, Search, X, FileDown, Book, LayoutGrid, Tag, Archive, ChevronDown, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -14,7 +14,7 @@ import { deleteInventoryTransactions } from "./actions";
 
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
@@ -275,12 +275,12 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                     <div className="w-px h-6 bg-slate-500/40 mx-2 shrink-0" />
                     <div className="flex items-center gap-[4px]">
                         {[
-                            { id: "all", label: "Все" },
-                            { id: "in", label: "Приход" },
-                            { id: "out", label: "Расход" },
-                            { id: "transfer", label: "Перемещение" },
-                            { id: "attribute_change", label: "Изменения" },
-                            { id: "archive", label: "Архив" },
+                            { id: "all", label: "Все", icon: Layers },
+                            { id: "in", label: "Приход", icon: ArrowDownLeft },
+                            { id: "out", label: "Расход", icon: ArrowUpRight },
+                            { id: "transfer", label: "Перемещение", icon: ArrowLeftRight },
+                            { id: "attribute_change", label: "Изменения", icon: Tag },
+                            { id: "archive", label: "Архив", icon: Archive },
                         ].map(f => {
                             const isActive = activeFilter === f.id;
                             return (
@@ -303,7 +303,10 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
-                                    <span className="relative z-10">{f.label}</span>
+                                    <div className="relative z-10 flex items-center justify-center gap-2">
+                                        <f.icon className={cn("w-3.5 h-3.5", isActive ? "text-white" : "text-slate-400")} />
+                                        <span className="hidden sm:inline">{f.label}</span>
+                                    </div>
                                 </Button>
                             );
                         })}
@@ -615,7 +618,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                                                         ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-50"
                                                         : "bg-rose-50 text-rose-600 hover:bg-rose-50"
                                             )}>
-                                                {t.type === "transfer" ? "" : isIn ? "+" : "-"}{amount} {t.item?.unit || ""}
+                                                {t.type === "transfer" ? "" : isIn ? "+" : "-"}{amount} {formatUnit(t.item?.unit)}
                                             </Badge>
                                         )}
                                     </td>

@@ -31,8 +31,8 @@ export default async function TasksPage() {
 
     return (
         <TasksClient
-            initialTasks={tasksRes.data || []}
-            users={usersRes.data || []}
+            initialTasks={(tasksRes.success && tasksRes.data) ? tasksRes.data : []}
+            users={usersRes.success && usersRes.data ? usersRes.data.users : []}
             departments={departmentsRes || []}
             orders={ordersRes || []}
             currentUserId={userData.id}

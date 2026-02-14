@@ -219,9 +219,9 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
 
             {/* Панель фильтров */}
             <div className="flex flex-wrap items-center gap-4 bg-slate-50/50 p-4 rounded-[20px] border border-slate-100">
-                <div className="flex items-center gap-2 text-slate-400 mr-2">
+                <div className="flex items-center gap-2 text-slate-400 mr-2 shrink-0">
                     <Filter className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Фильтры:</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">Фильтры:</span>
                 </div>
 
                 <div className="w-[180px]">

@@ -48,8 +48,7 @@ export async function checkAndRunNotifications() {
         const birthdayUsers = await db.select()
             .from(users)
             .where(
-                sql`EXTRACT(MONTH FROM ${users.birthday}) = EXTRACT(MONTH FROM CURRENT_DATE) 
-                AND EXTRACT(DAY FROM ${users.birthday}) = EXTRACT(DAY FROM CURRENT_DATE)`
+                sql`TO_CHAR(${users.birthday}, 'MM-DD') = TO_CHAR(CURRENT_DATE, 'MM-DD')`
             );
 
         if (birthdayUsers.length > 0) {

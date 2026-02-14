@@ -99,7 +99,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                                     id="reason"
                                     value={reason}
                                     onChange={(e) => setReason(e.target.value)}
-                                    placeholder="Напр: Ошибка печати, дырка..."
+                                    placeholder="Напр: Ошибка печати, дырка…"
                                     className="h-12 bg-slate-50 border-slate-200 font-bold rounded-2xl"
                                 />
                             </div>

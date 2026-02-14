@@ -6,7 +6,13 @@ import {
     Filter,
     Calendar,
     ListTodo,
-    BarChart3
+    BarChart3,
+    User,
+    Users,
+    Shield,
+    Layout,
+    List,
+    Layers
 } from "lucide-react";
 import { CreateTaskDialog } from "./create-task-dialog";
 import { KanbanBoard } from "./kanban-board";
@@ -99,14 +105,14 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     });
 
     const tabs = [
-        { id: "all", label: "Все потоки", icon: ListTodo },
-        { id: "my", label: "Моя работа", icon: Filter },
-        { id: "role", label: "Отдел", icon: Filter },
+        { id: "all", label: "Все потоки", icon: Layers },
+        { id: "my", label: "Моя работа", icon: User },
+        { id: "role", label: "Отдел", icon: Users },
     ];
 
     const viewTabs = [
-        { id: 'kanban' as const, label: 'Доска', icon: ListTodo },
-        { id: 'list' as const, label: 'Список', icon: ListTodo },
+        { id: 'kanban' as const, label: 'Доска', icon: Layout },
+        { id: 'list' as const, label: 'Список', icon: List },
         { id: 'calendar' as const, label: 'Календарь', icon: Calendar },
         { id: 'analytics' as const, label: 'Аналитика', icon: BarChart3 },
     ];
@@ -159,7 +165,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl",
+                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl relative",
                                             isActive && "active"
                                         )}
                                     >
@@ -170,13 +176,15 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
-                                        <tab.icon className="w-3.5 h-3.5 relative z-10" />
-                                        <span className="relative z-10">{tab.label}</span>
-                                        {isActive && (
-                                            <span className="relative z-10 ml-1.5 px-1.5 py-0.5 bg-white/20 rounded-full text-[10px] text-white">
-                                                {filteredTasks.length}
-                                            </span>
-                                        )}
+                                        <div className="relative z-10 flex items-center justify-center gap-2">
+                                            <tab.icon className="w-3.5 h-3.5" />
+                                            <span className="hidden sm:inline">{tab.label}</span>
+                                            {isActive && (
+                                                <span className="ml-1.5 px-1.5 py-0.5 bg-white/20 rounded-full text-[10px] text-white">
+                                                    {filteredTasks.length}
+                                                </span>
+                                            )}
+                                        </div>
                                     </button>
                                 );
                             })}
@@ -192,7 +200,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                         key={tab.id}
                                         onClick={() => setView(tab.id)}
                                         className={cn(
-                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl",
+                                            "crm-filter-tray-tab flex-1 sm:flex-none shrink-0 rounded-2xl relative",
                                             isActive && "active"
                                         )}
                                     >
@@ -203,8 +211,10 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
-                                        <tab.icon className="w-3.5 h-3.5 relative z-10" />
-                                        <span className="relative z-10">{tab.label}</span>
+                                        <div className="relative z-10 flex items-center justify-center gap-2">
+                                            <tab.icon className="w-3.5 h-3.5" />
+                                            <span className="hidden sm:inline">{tab.label}</span>
+                                        </div>
                                     </button>
                                 );
                             })}

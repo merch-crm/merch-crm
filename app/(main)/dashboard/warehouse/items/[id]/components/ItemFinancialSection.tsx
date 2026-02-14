@@ -348,7 +348,32 @@ export function ItemFinancialSection({
                                     />
                                 )}
                                 <span className="relative z-10">
-                                    {tf === '1m' ? 'Месяц' : tf === '3m' ? '3 месяца' : tf === '6m' ? 'Полгода' : tf === '1y' ? 'Год' : 'Все время'}
+                                    {tf === '1m' ? (
+                                        <>
+                                            <span className="hidden sm:inline">Месяц</span>
+                                            <span className="sm:hidden">1М</span>
+                                        </>
+                                    ) : tf === '3m' ? (
+                                        <>
+                                            <span className="hidden sm:inline">3 месяца</span>
+                                            <span className="sm:hidden">3М</span>
+                                        </>
+                                    ) : tf === '6m' ? (
+                                        <>
+                                            <span className="hidden sm:inline">Полгода</span>
+                                            <span className="sm:hidden">6М</span>
+                                        </>
+                                    ) : tf === '1y' ? (
+                                        <>
+                                            <span className="hidden sm:inline">Год</span>
+                                            <span className="sm:hidden">1Г</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="hidden sm:inline">Все время</span>
+                                            <span className="sm:hidden">Все</span>
+                                        </>
+                                    )}
                                 </span>
                             </Button>
                         ))}

@@ -19,7 +19,7 @@ interface OrderItem {
     order: {
         id: string;
         orderNumber: string;
-        client: { name: string | null };
+        client: { name: string | null } | null;
         priority: string | null;
         attachments?: { id: string; fileUrl: string; fileName: string }[];
     };
@@ -60,7 +60,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
         const result = await updateProductionStageAction(itemId, stage, newStatus);
         setLoading(null);
 
-        if (result.error) {
+        if (!result.success) {
             alert(result.error);
         } else {
             router.refresh();
@@ -113,7 +113,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                         {item.order.orderNumber}
                                                     </div>
                                                     <div className="text-sm md:text-lg font-bold text-slate-900 truncate leading-tight">
-                                                        {item.order.client.name || "Без имени"}
+                                                        {item.order.client?.name || "Без имени"}
                                                     </div>
                                                 </div>
                                                 {isUrgent && (

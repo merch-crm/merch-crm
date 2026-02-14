@@ -7,7 +7,8 @@ import {
     ArrowUpRight,
     Search,
     Plus,
-    X
+    X,
+    Layers
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -134,18 +135,19 @@ export function TransactionsClient({
                 <div className="flex-1 min-w-0 flex items-center">
                     <div className="flex items-center p-1 gap-1 overflow-x-auto no-scrollbar flex-nowrap w-full">
                         {[
-                            { id: 'all', label: 'Все' },
-                            { id: 'payments', label: 'Доходы', activeColor: 'bg-emerald-500', shadowColor: 'shadow-emerald-500/20' },
-                            { id: 'expenses', label: 'Расходы', activeColor: 'bg-rose-500', shadowColor: 'shadow-rose-500/20' }
+                            { id: 'all', label: 'Все', icon: Layers },
+                            { id: 'payments', label: 'Доходы', icon: ArrowUpRight, activeColor: 'bg-emerald-500', shadowColor: 'shadow-emerald-500/20' },
+                            { id: 'expenses', label: 'Расходы', icon: ArrowDownRight, activeColor: 'bg-rose-500', shadowColor: 'shadow-rose-500/20' }
                         ].map((t) => {
                             const isActive = view === t.id;
+                            const TabIcon = t.icon;
                             return (
                                 <Button
                                     key={t.id}
                                     variant="ghost"
                                     onClick={() => setView(t.id as "all" | "payments" | "expenses")}
                                     className={cn(
-                                        "crm-filter-tray-tab shrink-0 relative",
+                                        "crm-filter-tray-tab shrink-0 relative px-3 sm:px-6",
                                         isActive && "active"
                                     )}
                                 >
@@ -160,7 +162,13 @@ export function TransactionsClient({
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
-                                    <span className="relative z-10">{t.label}</span>
+                                    <div className="relative z-10 flex items-center justify-center gap-2">
+                                        <TabIcon className={cn(
+                                            "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
+                                            isActive ? "text-white" : (t.id === 'payments' ? "text-emerald-500" : (t.id === 'expenses' ? "text-rose-500" : "text-slate-400"))
+                                        )} />
+                                        <span className="hidden sm:inline relative z-10">{t.label}</span>
+                                    </div>
                                 </Button>
                             );
                         })}

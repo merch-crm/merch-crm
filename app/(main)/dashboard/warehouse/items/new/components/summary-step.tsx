@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Pencil, Ruler, AlertCircle, Package, Warehouse, Banknote, Sparkles, X, LayoutGrid, Tag, Shirt, Scale, ExternalLink, Box } from "lucide-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from "../../../types";
 import { StepFooter } from "./step-footer";
 import { getCategoryIcon, getColorStyles, CLOTHING_COLORS } from "../../../category-utils";
@@ -226,7 +226,7 @@ export function SummaryStep({
                                             { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
                                             { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
                                             { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
-                                            { label: "Ед. изм.", value: formData.unit, icon: Scale },
+                                            { label: "Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
                                             // Packaging specific
                                             {
                                                 label: "Габариты",
@@ -383,7 +383,7 @@ export function SummaryStep({
                                         </div>
                                         <div className="text-right">
                                             <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Остаток</div>
-                                            <div className="text-3xl font-black leading-none">{formData.quantity} <span className="text-sm text-white/50">{formData.unit}</span></div>
+                                            <div className="text-3xl font-black leading-none">{formData.quantity} <span className="text-sm text-white/50">{formatUnit(formData.unit)}</span></div>
                                         </div>
                                     </div>
 

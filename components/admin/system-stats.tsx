@@ -249,11 +249,11 @@ export function SystemStats() {
       const monRes = await getMonitoringStats();
       const end = performance.now();
 
-      if (!monRes.error) {
+      if (monRes.success && monRes.data) {
         setMonitoringData({
-          activeUsers: monRes.activeUsers || [],
-          activityStats: monRes.activityStats || [],
-          entityStats: monRes.entityStats || [],
+          activeUsers: monRes.data.activeUsers || [],
+          activityStats: monRes.data.activityStats || [],
+          entityStats: monRes.data.entityStats || [],
           performance: Math.round(end - start),
         });
       }
@@ -265,8 +265,8 @@ export function SystemStats() {
   const fetchSecurityData = useCallback(async () => {
     try {
       const res = await getSecurityStats();
-      if (res.failedLogins) {
-        setSecurityData(res as SecurityData);
+      if (res.success && res.data) {
+        setSecurityData(res.data as SecurityData);
       }
     } catch {
       console.error("Fetch security error");

@@ -12,6 +12,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { saveAvatarFile } from "@/lib/avatar-storage";
+import { ActionResult } from "@/lib/types";
 
 export async function logout() {
     (await cookies()).delete("session");
@@ -19,7 +20,7 @@ export async function logout() {
 
 export async function getUserProfile() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -30,11 +31,11 @@ export async function getUserProfile() {
             }
         });
 
-        if (!user) return { error: "User not found" };
+        if (!user) return { success: false, error: "User not found" };
 
 
 
-        return { data: user };
+        return { success: true, data: user };
     } catch (error) {
         await logError({
             error,
@@ -42,7 +43,7 @@ export async function getUserProfile() {
             method: "getUserProfile"
         });
         console.error("Error fetching profile:", error);
-        return { error: "Failed to fetch profile" };
+        return { success: false, error: "Failed to fetch profile" };
     }
 }
 
@@ -50,11 +51,10 @@ export async function getUserProfile() {
 
 export async function updateProfile(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
-    const department = formData.get("department") as string;
     const avatarFile = formData.get("avatar") as File;
 
     const telegram = formData.get("telegram") as string;
@@ -62,11 +62,11 @@ export async function updateProfile(formData: FormData) {
     const socialMax = formData.get("socialMax") as string;
     const birthday = formData.get("birthday") as string;
 
-    if (!name) return { error: "Имя обязательно" };
+    if (!name) return { success: false, error: "Имя обязательно" };
 
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: Record<string, any> = { name, phone, department, telegram, instagram, socialMax, birthday: birthday || null };
+        const updateData: Record<string, any> = { name, phone, telegram, instagram, socialMax, birthday: birthday || null };
 
         if (avatarFile && avatarFile.size > 0) {
             // Get current user to check for existing avatar
@@ -104,28 +104,28 @@ export async function updateProfile(formData: FormData) {
             details: { name, phone }
         });
         console.error("Error updating profile:", error);
-        return { error: `Ошибка обновления профиля: ${(error as Error).message || String(error)}` };
+        return { success: false, error: `Ошибка обновления профиля: ${(error as Error).message || String(error)}` };
     }
 }
 
 export async function updatePassword(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentPassword = formData.get("currentPassword") as string;
     const newPassword = formData.get("newPassword") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-        return { error: "Заполните все поля" };
+        return { success: false, error: "Заполните все поля" };
     }
 
     if (newPassword !== confirmPassword) {
-        return { error: "Пароли не совпадают" };
+        return { success: false, error: "Пароли не совпадают" };
     }
 
     if (newPassword.length < 6) {
-        return { error: "Новый пароль должен быть не менее 6 символов" };
+        return { success: false, error: "Новый пароль должен быть не менее 6 символов" };
     }
 
     try {
@@ -133,10 +133,10 @@ export async function updatePassword(formData: FormData) {
             where: eq(users.id, session.id)
         });
 
-        if (!user) return { error: "Пользователь не найден" };
+        if (!user) return { success: false, error: "Пользователь не найден" };
 
         const isMatch = await comparePassword(currentPassword, user.passwordHash);
-        if (!isMatch) return { error: "Текущий пароль указан неверно" };
+        if (!isMatch) return { success: false, error: "Текущий пароль указан неверно" };
 
         const newHash = await hashPassword(newPassword);
         await db.update(users)
@@ -153,13 +153,13 @@ export async function updatePassword(formData: FormData) {
             method: "updatePassword"
         });
         console.error("Error updating password:", error);
-        return { error: "Failed to update password" };
+        return { success: false, error: "Failed to update password" };
     }
 }
 
 export async function getUserStatistics() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const now = new Date();
@@ -221,7 +221,7 @@ export async function getUserStatistics() {
             method: "getUserStatistics"
         });
         console.error("Error fetching user statistics:", error);
-        return { error: "Failed to fetch statistics" };
+        return { success: false, error: "Failed to fetch statistics" };
     }
 }
 
@@ -235,14 +235,16 @@ export async function getUpcomingBirthdays() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        return allUsers.filter(user => {
-            if (!user.birthday) return false;
-            const bday = new Date(user.birthday);
-            return bday.getUTCMonth() === today.getUTCMonth() && bday.getUTCDate() === today.getUTCDate();
-        });
+        return {
+            success: true, data: allUsers.filter(user => {
+                if (!user.birthday) return false;
+                const bday = new Date(user.birthday);
+                return bday.getUTCMonth() === today.getUTCMonth() && bday.getUTCDate() === today.getUTCDate();
+            })
+        };
     } catch (error) {
         console.error("Error fetching birthdays:", error);
-        return [];
+        return { success: false, error: "Failed to fetch birthdays", data: [] };
     }
 }
 
@@ -260,16 +262,16 @@ export async function getLostClientsCount() {
             .groupBy(clients.id)
             .having(sql`max(${orders.createdAt}) < ${threeMonthsAgo} OR max(${orders.createdAt}) IS NULL`);
 
-        return lostClients.length;
+        return { success: true, data: lostClients.length };
     } catch (error) {
         console.error("Error fetching lost clients:", error);
-        return 0;
+        return { success: false, error: "Failed to fetch lost clients", data: 0 };
     }
 }
 
 export async function getUserSchedule() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const userTasks = await db.query.tasks.findMany({
@@ -277,7 +279,7 @@ export async function getUserSchedule() {
             orderBy: [desc(tasks.dueDate)]
         });
 
-        return { data: userTasks };
+        return { success: true, data: userTasks };
     } catch (error) {
         await logError({
             error,
@@ -285,7 +287,7 @@ export async function getUserSchedule() {
             method: "getUserSchedule"
         });
         console.error("Error fetching user schedule:", error);
-        return { error: "Failed to fetch schedule" };
+        return { success: false, error: "Failed to fetch schedule" };
     }
 }
 
@@ -293,7 +295,7 @@ export async function getUserSchedule() {
 
 export async function getUserActivities() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const logs = await db.select()
@@ -302,7 +304,7 @@ export async function getUserActivities() {
             .orderBy(desc(auditLogs.createdAt))
             .limit(50);
 
-        return { data: logs };
+        return { success: true, data: logs };
     } catch (error) {
         await logError({
             error,
@@ -310,6 +312,6 @@ export async function getUserActivities() {
             method: "getUserActivities"
         });
         console.error("Error fetching user activities:", error);
-        return { error: "Failed to fetch activities" };
+        return { success: false, error: "Failed to fetch activities" };
     }
 }

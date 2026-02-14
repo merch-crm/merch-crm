@@ -33,11 +33,15 @@ interface OrderPayment {
 
 export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
-    const { data: order, error } = await getOrderById(resolvedParams.id);
-
-    if (error || !order) {
+    const res = await getOrderById(resolvedParams.id);
+    if (!res.success || !res.data) {
         notFound();
     }
+    const order = res.data;
+    if (!order.client) {
+        notFound();
+    }
+    const client = order.client;
 
     const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
@@ -134,15 +138,15 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 Клиент
                             </h3>
                             <Button variant="ghost" size="sm" asChild className="text-xs font-bold text-primary hover:text-primary/80 h-auto p-0 hover:bg-transparent">
-                                <Link href={`/dashboard/clients?id=${order.client.id}`}>Профиль</Link>
+                                <Link href={`/dashboard/clients?id=${client.id}`}>Профиль</Link>
                             </Button>
                         </div>
 
                         <div className="space-y-6">
                             <div>
-                                <div className="text-xl font-bold text-slate-900 mb-1">{order.client.name}</div>
-                                {order.client.company && (
-                                    <div className="text-sm font-bold text-primary  tracking-wider">{order.client.company}</div>
+                                <div className="text-xl font-bold text-slate-900 mb-1">{client.name}</div>
+                                {client.company && (
+                                    <div className="text-sm font-bold text-primary  tracking-wider">{client.company}</div>
                                 )}
                             </div>
 
@@ -153,24 +157,24 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                         HIDDEN
                                     </div>
                                 ) : (
-                                    <a href={`tel:${order.client.phone}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors">
+                                    <a href={`tel:${client.phone}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors">
                                         <Phone className="w-4 h-4 mr-3 text-primary" />
-                                        {order.client.phone}
+                                        {client.phone}
                                     </a>
                                 )}
-                                {order.client.email && (
-                                    <a href={`mailto:${order.client.email}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors">
+                                {client.email && (
+                                    <a href={`mailto:${client.email}`} className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors">
                                         <Mail className="w-4 h-4 mr-3 text-primary" />
-                                        {order.client.email}
+                                        {client.email}
                                     </a>
                                 )}
                                 <div className="flex gap-4 pt-1">
-                                    {order.client.telegram && (
+                                    {client.telegram && (
                                         <div className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-2xl">
                                             <Send className="w-3 h-3 mr-1.5" /> Telegram
                                         </div>
                                     )}
-                                    {order.client.instagram && (
+                                    {client.instagram && (
                                         <div className="flex items-center text-xs font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-2xl">
                                             <Instagram className="w-3 h-3 mr-1.5" /> Instagram
                                         </div>
@@ -182,7 +186,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <div className="text-sm font-bold text-slate-700 ml-1">Адрес доставки</div>
                                 <div className="flex items-start text-sm text-slate-600">
                                     <MapPin className="w-4 h-4 mr-3 text-slate-300 shrink-0" />
-                                    {order.client.address || "Адрес не указан"}
+                                    {client.address || "Адрес не указан"}
                                 </div>
                             </div>
                         </div>

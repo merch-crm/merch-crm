@@ -12,6 +12,7 @@ import {
     Book,
     Clock,
     Package,
+    Layers
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemHistoryTransaction } from "../../../types";
@@ -210,10 +211,10 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                 <div className="flex items-center gap-[6px] shrink-0">
                     <div className="w-px h-6 bg-border mx-1" />
                     {[
-                        { id: null, label: 'Все' },
-                        { id: 'in', label: 'Приход' },
-                        { id: 'out', label: 'Расход' },
-                        { id: 'transfer', label: 'Перемещение' }
+                        { id: null, label: 'Все', icon: Layers },
+                        { id: 'in', label: 'Приход', icon: ArrowDownCircle },
+                        { id: 'out', label: 'Расход', icon: ArrowUpCircle },
+                        { id: 'transfer', label: 'Перемещение', icon: ArrowRightLeft }
                     ].map((btn) => {
                         const isActive = filterType === btn.id;
                         return (
@@ -236,7 +237,10 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
-                                <span className="relative z-10">{btn.label}</span>
+                                <div className="relative z-10 flex items-center justify-center gap-2">
+                                    <btn.icon className={cn("w-3.5 h-3.5", isActive ? "text-white" : "text-muted-foreground")} />
+                                    <span className="hidden sm:inline">{btn.label}</span>
+                                </div>
                             </Button>
                         );
                     })}

@@ -44,8 +44,10 @@ export default async function OrdersPage({
         to = endOfDay(now);
     }
 
-    const { data: allOrdersResponse = [], total = 0, error } = await getOrders(from, to, page, 10, showArchived, search) as { data: Order[], total?: number, error?: string };
-    const allOrders = allOrdersResponse;
+    const ordersRes = await getOrders(from, to, page, 10, showArchived, search);
+    const allOrders = ordersRes.success && ordersRes.data ? ordersRes.data.orders : [];
+    const total = ordersRes.success && ordersRes.data ? ordersRes.data.total : 0;
+    const error = ordersRes.success ? undefined : ordersRes.error;
 
     const session = await getSession();
     const user = session ? await db.query.users.findFirst({
@@ -57,7 +59,8 @@ export default async function OrdersPage({
         user?.role?.name === "Администратор" ||
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
-    const stats = await getOrderStats(from, to);
+    const statsRes = await getOrderStats(from, to);
+    const stats = statsRes.success && statsRes.data ? statsRes.data : { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
 
     return (
         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">

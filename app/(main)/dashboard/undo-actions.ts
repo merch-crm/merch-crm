@@ -11,9 +11,11 @@ interface LogDetails {
     [key: string]: unknown;
 }
 
-export async function undoLastAction() {
+import { ActionResult } from "@/lib/types";
+
+export async function undoLastAction(): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         // Find last reversible action for this user
@@ -22,11 +24,11 @@ export async function undoLastAction() {
             orderBy: [desc(auditLogs.createdAt)],
         });
 
-        if (!lastLog) return { error: "Нет действий для отмены" };
+        if (!lastLog) return { success: false, error: "Нет действий для отмены" };
 
         const details = lastLog.details as LogDetails;
         if (!details || !details.previousState) {
-            return { error: "Это действие нельзя отменить автоматически" };
+            return { success: false, error: "Это действие нельзя отменить автоматически" };
         }
 
         const { entityType, entityId } = lastLog;
@@ -51,7 +53,7 @@ export async function undoLastAction() {
                 })
                 .where(eq(orders.id, entityId));
         } else {
-            return { error: "Тип данных не поддерживает авто-отмену" };
+            return { success: false, error: "Тип данных не поддерживает авто-отмену" };
         }
 
         // Delete the audit log entry for the action we just undid to prevent double-undo
@@ -68,6 +70,6 @@ export async function undoLastAction() {
         return { success: true };
     } catch (error) {
         console.error("Undo failed:", error);
-        return { error: "Ошибка при отмене действия" };
+        return { success: false, error: "Ошибка при отмене действия" };
     }
 }

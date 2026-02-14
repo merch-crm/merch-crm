@@ -22,7 +22,7 @@ export default async function ClientsPage() {
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
     const statsRes = await getClientStats();
-    const stats = statsRes.data || {
+    const stats = (statsRes.success && statsRes.data) ? statsRes.data : {
         totalClients: 0,
         newThisMonth: 0,
         avgCheck: 0,

@@ -51,7 +51,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
     useEffect(() => {
         if (isOpen) {
             getManagers().then(res => {
-                if (res.data) setManagers(res.data);
+                if (res.success && res.data) setManagers(res.data);
             });
         }
     }, [isOpen]);
@@ -62,7 +62,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         setLoading(true);
         const res = await updateClient(client.id, formData);
         setLoading(false);
-        if (res?.error) {
+        if (!res.success) {
             toast(res.error, "error");
             playSound("notification_error");
         } else {

@@ -18,7 +18,7 @@ interface UnitSelectProps {
 }
 
 const DEFAULT_OPTIONS: UnitOption[] = [
-    { id: "шт.", name: "шт." },
+    { id: "pcs", name: "шт." },
     { id: "kg", name: "кг" },
     { id: "m", name: "м" },
     { id: "l", name: "л" },

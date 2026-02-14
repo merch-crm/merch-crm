@@ -14,7 +14,10 @@ export default async function AdminUsersPage({
     const search = searchParams.search || "";
     const limit = 10;
 
-    const { data: users = [], total = 0, error } = await getUsers(page, limit, search);
+    const res = await getUsers(page, limit, search);
+    const users = res.success && res.data ? res.data.users : [];
+    const total = res.success && res.data ? res.data.total : 0;
+    const error = res.success ? undefined : res.error;
 
     return (
         <div className="space-y-6">

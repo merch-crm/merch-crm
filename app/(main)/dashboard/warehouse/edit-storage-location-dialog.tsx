@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { updateStorageLocation, moveInventoryItem } from "./actions";
 import { useFormStatus } from "react-dom";
 import { useToast } from "@/components/ui/toast";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { PremiumSelect } from "@/components/ui/premium-select";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -255,7 +255,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="text-[11px] font-bold text-primary tabular-nums">
-                                    {item.quantity} {item.unit || "шт"}
+                                    {item.quantity} {formatUnit(item.unit)}
                                 </div>
                                 <Button
                                     variant="ghost"
@@ -498,7 +498,7 @@ function QuickTransferModal({ item, currentLocationId, locations, onClose, onSuc
                     <div className="text-[9px] font-bold text-slate-400 mb-1 group-hover:text-primary transition-colors uppercase tracking-wider">Объект перемещения</div>
                     <div className="text-sm font-bold text-slate-900 truncate">{item.name}</div>
                     <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 bg-white rounded-[var(--radius-inner)] border border-slate-200 text-[10px] font-bold text-primary shadow-sm tabular-nums">
-                        Доступно: {item.quantity} {item.unit}
+                        Доступно: {item.quantity} {formatUnit(item.unit)}
                     </div>
                 </div>
 

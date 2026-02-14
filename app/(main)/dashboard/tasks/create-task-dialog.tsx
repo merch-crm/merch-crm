@@ -54,7 +54,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
         startTransition(async () => {
             const res = await createTask(formData);
 
-            if (res.error) {
+            if (!res.success) {
                 setError(res.error);
                 playSound("notification_error");
                 setLoading(false);

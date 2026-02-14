@@ -146,7 +146,10 @@ export default async function CategoryPage({ params }: PageParams) {
         db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories)
     ]);
 
-    const allItems = itemsRes.data || [];
+    const allItems = (itemsRes.success && 'data' in itemsRes && itemsRes.data) ? itemsRes.data : [];
+    const locationsData = (locationsRes.success && 'data' in locationsRes && locationsRes.data) ? locationsRes.data : [];
+    const typesData = (typesRes.success && 'data' in typesRes && typesRes.data) ? typesRes.data : [];
+    const attrsData = (attrsRes.success && 'data' in attrsRes && attrsRes.data) ? attrsRes.data : [];
 
     // Aggregate IDs of this category and all its descendants
     const getAllDescendantIds = (catId: string, allCats: { id: string; parentId: string | null }[]): string[] => {
@@ -171,9 +174,9 @@ export default async function CategoryPage({ params }: PageParams) {
     // Унифицированная сериализация всех данных
     const subCategories = serializeForClient(subCategoriesRaw) as Serialized<Category[]>;
     const items = serializeForClient(categoryItems) as Serialized<InventoryItem[]>;
-    const locations = serializeForClient(locationsRes.data || []) as Serialized<StorageLocation[]>;
-    const attributeTypes = serializeForClient(typesRes.data || []) as Serialized<AttributeType[]>;
-    const allAttributes = serializeForClient(attrsRes.data || []) as Serialized<InventoryAttribute[]>;
+    const locations = serializeForClient(locationsData) as Serialized<StorageLocation[]>;
+    const attributeTypes = serializeForClient(typesData) as Serialized<AttributeType[]>;
+    const allAttributes = serializeForClient(attrsData) as Serialized<InventoryAttribute[]>;
 
     // Fallback object for UI if orphaned
     const finalCategory = category ? serializeForClient(category) as Serialized<Category> : {

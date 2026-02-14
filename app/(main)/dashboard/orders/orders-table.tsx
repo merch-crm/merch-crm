@@ -21,10 +21,10 @@ import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
 export interface Order {
     id: string;
     createdAt: string | Date;
-    totalAmount: string;
-    status: string;
-    priority: string;
-    client: { name: string };
+    totalAmount: string | null;
+    status: string | null;
+    priority: string | null;
+    client: { name: string | null };
     creator?: {
         name: string;
         role?: { name: string } | null;
@@ -76,7 +76,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
             { header: "Приоритет", key: "priority" },
             { header: "Срочно", key: (o: Order) => o.isUrgent ? "Да" : "Нет" },
             { header: "Создал", key: (o: Order) => o.creator?.name || "Система" },
-            { header: "Роль", key: (o: Order) => (o.creator as { role?: { name: string } | null })?.role?.name || (o.creator ? "Оператор" : "Система") }
+            { header: "Роль", key: (o: Order) => o.creator?.role?.name || (o.creator ? "Оператор" : "Система") }
         ]);
         toast("Экспорт завершен", "success");
         playSound("notification_success");
@@ -166,12 +166,12 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                 >
                                                     <Zap className={cn("w-4 h-4", order.isUrgent && "fill-rose-600")} />
                                                 </Button>
-                                                <StatusBadgeInteractive orderId={order.id} status={order.status} />
+                                                <StatusBadgeInteractive orderId={order.id} status={order.status ?? "new"} />
                                             </div>
                                         </td>
                                         <td className="crm-td">
                                             <div className="flex items-center gap-1">
-                                                <PriorityBadgeInteractive orderId={order.id} priority={order.priority} />
+                                                <PriorityBadgeInteractive orderId={order.id} priority={order.priority ?? "medium"} />
                                                 {isAdmin && (
                                                     <Button
                                                         variant="ghost"
@@ -262,7 +262,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">
-                                    <StatusBadgeInteractive orderId={order.id} status={order.status} />
+                                    <StatusBadgeInteractive orderId={order.id} status={order.status ?? "new"} />
                                     <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                                 </div>
                             </div>

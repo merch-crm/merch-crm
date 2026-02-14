@@ -26,7 +26,7 @@ async function addTestItems() {
             name: `Тестовый товар №${i}`,
             sku: `TEST-${i.toString().padStart(3, "0")}`,
             categoryId: leonidWarehouse[0].categoryId || null,
-            unit: "шт",
+            unit: "pcs",
             minStockLevel: 5,
             description: `Тестовая позиция для проверки пагинации ${i}`,
         });

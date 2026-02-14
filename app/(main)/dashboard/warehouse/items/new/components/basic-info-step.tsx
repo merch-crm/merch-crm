@@ -490,7 +490,7 @@ export function BasicInfoStep({
                                                 </label>
                                                 <UnitSelect
                                                     name="unit"
-                                                    value={isClothing || isPackaging ? "шт." : (formData.unit || "шт.")}
+                                                    value={isClothing || isPackaging ? "pcs" : (formData.unit || "pcs")}
                                                     onChange={(val) => updateFormData({ unit: val })}
                                                     options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
                                                     disabled={isClothing || isPackaging}

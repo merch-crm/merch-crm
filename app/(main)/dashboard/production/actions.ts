@@ -1,12 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orderItems, orders, inventoryItems, inventoryTransactions } from "@/lib/schema";
+import { orderItems, orders, inventoryItems, inventoryTransactions, clients, orderAttachments } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { updateItemStage } from "@/lib/production";
+import { ActionResult } from "@/lib/types";
 
 /**
  * Action для обновления этапа производства конкретной позиции.
@@ -16,9 +17,9 @@ export async function updateProductionStageAction(
     orderItemId: string,
     stage: 'prep' | 'print' | 'application' | 'packaging',
     status: 'pending' | 'in_progress' | 'done' | 'failed'
-) {
+): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await updateItemStage(orderItemId, stage, status);
@@ -32,7 +33,8 @@ export async function updateProductionStageAction(
             await logAction("Обновлен этап производства", "order_item", orderItemId, {
                 orderNumber: item.order.orderNumber,
                 stage,
-                status
+                status,
+                updatedAt: new Date()
             });
         }
 
@@ -43,13 +45,13 @@ export async function updateProductionStageAction(
         return { success: true };
     } catch (error) {
         console.error("Error updating production stage:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка при обновлении этапа" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка при обновлении этапа" };
     }
 }
 
-export async function getProductionStats() {
+export async function getProductionStats(): Promise<ActionResult<{ active: number; urgent: number; efficiency: number; completedToday: number }>> {
     const session = await getSession();
-    if (!session) return { active: 0, urgent: 0, efficiency: 98, completedToday: 0 };
+    if (!session) return { success: true, data: { active: 0, urgent: 0, efficiency: 98, completedToday: 0 } };
 
     try {
         const activeOrders = await db.query.orders.findMany({
@@ -65,20 +67,33 @@ export async function getProductionStats() {
         const efficiency = 98;
 
         return {
-            active: activeCount,
-            urgent: urgentCount,
-            efficiency,
-            completedToday
+            success: true,
+            data: {
+                active: activeCount,
+                urgent: urgentCount,
+                efficiency,
+                completedToday
+            }
         };
     } catch (error) {
         console.error("Error fetching production stats:", error);
-        return { active: 0, urgent: 0, efficiency: 0, completedToday: 0 };
+        return { success: false, error: "Failed to fetch production stats" };
     }
 }
 
-export async function getProductionItems() {
+export type ProductionItem = typeof orderItems.$inferSelect & {
+    order: {
+        id: string;
+        orderNumber: string;
+        client: typeof clients.$inferSelect | null;
+        priority: string | null;
+        attachments: (typeof orderAttachments.$inferSelect)[];
+    };
+};
+
+export async function getProductionItems(): Promise<ActionResult<ProductionItem[]>> {
     const session = await getSession();
-    if (!session) return [];
+    if (!session) return { success: true, data: [] };
 
     try {
         const productionOrders = await db.query.orders.findMany({
@@ -104,17 +119,17 @@ export async function getProductionItems() {
             }))
         );
 
-        return items;
+        return { success: true, data: items };
     } catch (error) {
         console.error("Error fetching production items:", error);
-        return [];
+        return { success: false, error: "Failed to fetch production items" };
     }
 }
 
 
-export async function reportProductionDefect(orderItemId: string, quantity: number, reason: string) {
+export async function reportProductionDefect(orderItemId: string, quantity: number, reason: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
@@ -146,7 +161,8 @@ export async function reportProductionDefect(orderItemId: string, quantity: numb
             await logAction("Зафиксирован брак", "order_item", orderItemId, {
                 orderNumber: item.order.orderNumber,
                 quantity,
-                reason
+                reason,
+                updatedAt: new Date()
             });
         });
 
@@ -155,6 +171,6 @@ export async function reportProductionDefect(orderItemId: string, quantity: numb
         return { success: true };
     } catch (error) {
         console.error("Error reporting defect:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка при списании брака" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка при списании брака" };
     }
 }

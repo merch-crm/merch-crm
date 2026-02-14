@@ -29,7 +29,7 @@ import {
 
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { pluralize } from "@/lib/pluralize";
 
@@ -377,7 +377,7 @@ export function ItemDetailClient({
     }, [activeOrders]);
 
     const displayUnit = useMemo(() => {
-        return (!item.unit || item.unit.toLowerCase() === 'pcs' || item.unit === 'шт') ? "шт." : item.unit;
+        return formatUnit(item.unit);
     }, [item.unit]);
 
 
@@ -760,7 +760,7 @@ export function ItemDetailClient({
 
         // Initial status check for notifications (Stage 7)
         if (item.quantity <= item.criticalStockThreshold && !item.isArchived) {
-            toast(`Критический остаток: на складе всего ${item.quantity} ${item.unit}`, "error");
+            toast(`Критический остаток: на складе всего ${item.quantity} ${formatUnit(item.unit)}`, "error");
             playSound("stock_low");
         } else if (item.quantity <= item.lowStockThreshold && !item.isArchived) {
             toast(`Низкий остаток: рекомендуется пополнение`, "info");
@@ -787,7 +787,7 @@ export function ItemDetailClient({
             formData.append("name", editData.name || "");
             formData.append("sku", editData.sku || "");
             formData.append("description", editData.description || "");
-            formData.append("unit", editData.unit || "шт");
+            formData.append("unit", editData.unit || "pcs");
             formData.append("categoryId", editData.categoryId || "");
             formData.append("lowStockThreshold", String(editData.lowStockThreshold || 10));
             formData.append("criticalStockThreshold", String(editData.criticalStockThreshold || 0));
@@ -1414,8 +1414,10 @@ export function ItemDetailClient({
                                                     }}
                                                 />
                                             )}
-                                            <tab.icon className={cn("relative z-10 w-3 h-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
-                                            <span className="relative z-10">{tab.label}</span>
+                                            <div className="relative z-10 flex items-center justify-center gap-1.5">
+                                                <tab.icon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                                                <span className="hidden sm:inline">{tab.label}</span>
+                                            </div>
                                         </Button>
                                     );
                                 })}
@@ -1971,7 +1973,7 @@ export function ItemDetailClient({
                                                 {isSaving ? (
                                                     <>
                                                         <Loader2 className="w-4 h-4 animate-spin" />
-                                                        <span>Сохранение...</span>
+                                                        <span>Сохранение…</span>
                                                     </>
                                                 ) : (
                                                     <>

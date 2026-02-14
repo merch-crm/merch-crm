@@ -81,7 +81,7 @@ export function ItemHeader({
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
                                     className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden tracking-tight"
-                                    placeholder="Название..."
+                                    placeholder="Название…"
                                     rows={1}
                                 />
                             </div>
@@ -175,7 +175,7 @@ export function ItemHeader({
                                 ) : (
                                     <div className="flex items-center justify-center gap-2">
                                         <Save className="w-4 h-4" />
-                                        <span className="hidden sm:inline">{isAnyUploading ? "Загрузка..." : "Сохранить"}</span>
+                                        <span className="hidden sm:inline">{isAnyUploading ? "Загрузка…" : "Сохранить"}</span>
                                     </div>
                                 )}
                             </Button>

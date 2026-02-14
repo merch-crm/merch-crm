@@ -10,7 +10,8 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NewOrderPage() {
-    const inventory = await getInventoryForSelect();
+    const inventoryRes = await getInventoryForSelect();
+    const inventory = inventoryRes.success && inventoryRes.data ? inventoryRes.data : [];
     const session = await getSession();
 
     return (

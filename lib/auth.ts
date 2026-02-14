@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { env } from "./env";
 import redis from "./redis";
@@ -7,8 +7,6 @@ const SECRET_KEY = env.JWT_SECRET_KEY;
 if (!SECRET_KEY) throw new Error("JWT_SECRET_KEY is required");
 
 const key = new TextEncoder().encode(SECRET_KEY);
-
-import { JWTPayload } from "jose";
 
 export interface Session extends JWTPayload {
     id: string;
@@ -20,6 +18,17 @@ export interface Session extends JWTPayload {
     impersonatorId?: string; // ID of the admin who is impersonating
     impersonatorName?: string; // Name of the admin who is impersonating
     expires?: Date;
+}
+
+/** Cookie options for the session cookie — single source of truth */
+function getSessionCookieOptions(expires: Date) {
+    return {
+        expires,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const,
+        path: "/",
+    };
 }
 
 export async function encrypt(payload: Session) {
@@ -34,7 +43,25 @@ export async function decrypt(input: string): Promise<Session> {
     const { payload } = await jwtVerify(input, key, {
         algorithms: ["HS256"],
     });
-    return payload as unknown as Session;
+
+    // Validate required fields from JWT payload
+    const session = payload as JWTPayload & Partial<Session>;
+    if (!session.id || !session.email) {
+        throw new Error("Invalid session payload: missing required fields");
+    }
+
+    return {
+        ...payload,
+        id: session.id,
+        email: session.email,
+        name: session.name || "",
+        roleName: session.roleName || "",
+        roleId: session.roleId || "",
+        departmentName: session.departmentName || "",
+        impersonatorId: session.impersonatorId,
+        impersonatorName: session.impersonatorName,
+        expires: session.expires,
+    };
 }
 
 export async function getSession(): Promise<Session | null> {
@@ -56,19 +83,22 @@ export async function getSession(): Promise<Session | null> {
 
 export async function updateSession() {
     const cookieStore = await cookies();
-    const session = cookieStore.get("session")?.value;
-    if (!session) return;
+    const sessionValue = cookieStore.get("session")?.value;
+    if (!sessionValue) return;
 
-    // Refresh implementation if needed
-    // For now just basic session
-    const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // extends by 1 day
-    const res = new Response();
-    res.headers.set(
-        "Set-Cookie",
-        `session=${session}; HttpOnly; SameSite=Lax; Expires=${parsed.expires.toUTCString()}`
-    );
-    return res;
+    try {
+        const parsed = await decrypt(sessionValue);
+        const newExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        parsed.expires = newExpires;
+
+        // Re-encrypt with new expiration instead of reusing old token
+        const newToken = await encrypt(parsed);
+
+        cookieStore.set("session", newToken, getSessionCookieOptions(newExpires));
+    } catch {
+        // Invalid session — clear it
+        cookieStore.delete("session");
+    }
 }
 
 export async function logout() {
@@ -81,4 +111,4 @@ export async function logout() {
     cookieStore.delete("session");
 }
 
-
+export { getSessionCookieOptions };

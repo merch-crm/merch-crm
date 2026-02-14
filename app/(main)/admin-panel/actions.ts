@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
+import { ActionResult } from "@/lib/types";
 import { PgTable } from "drizzle-orm/pg-core";
 import { hashPassword, comparePassword } from "@/lib/password";
 import { eq, asc, desc, sql, and, or, inArray, count, gte } from "drizzle-orm";
@@ -15,6 +16,14 @@ import { logSecurityEvent } from "@/lib/security-logger";
 import os from "os";
 import fs from "fs";
 import path from "path";
+import {
+    CreateUserSchema,
+    UpdateUserSchema,
+    CreateRoleSchema,
+    UpdateRoleSchema,
+    CreateDepartmentSchema,
+    UpdateDepartmentSchema
+} from "./validation";
 
 const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
     return Promise.race([
@@ -31,7 +40,7 @@ export interface BackupFile {
 
 export async function getCurrentUserAction() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -41,12 +50,12 @@ export async function getCurrentUserAction() {
         }
     });
 
-    return { data: currentUser };
+    return { success: true, data: currentUser };
 }
 
 export async function getUsers(page = 1, limit = 20, search = "") {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -54,7 +63,7 @@ export async function getUsers(page = 1, limit = 20, search = "") {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -95,10 +104,13 @@ export async function getUsers(page = 1, limit = 20, search = "") {
         }));
 
         return {
-            data,
-            total,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
+            success: true,
+            data: {
+                users: data,
+                total,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page
+            }
         };
     } catch (error) {
         await logError({
@@ -108,7 +120,7 @@ export async function getUsers(page = 1, limit = 20, search = "") {
             details: { page, limit, search }
         });
         console.error("Error fetching users:");
-        return { error: "Failed to fetch users" };
+        return { success: false, error: "Failed to fetch users" };
     }
 }
 
@@ -160,37 +172,29 @@ export async function getRoles() {
             return a.name.localeCompare(b.name);
         });
 
-        return { data: sortedRoles };
+        return { success: true, data: sortedRoles };
     } catch {
         console.error("Error fetching roles:");
-        return { error: "Failed to fetch roles" };
+        return { success: false, error: "Failed to fetch roles" };
     }
 }
 
 export async function createUser(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const currentUser = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: { role: true }
-    });
-
-    if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может создавать сотрудников" };
+    if (session.roleName !== "Администратор") {
+        return { success: false, error: "Только администратор может создавать сотрудников" };
     }
 
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const roleId = formData.get("roleId") as string;
-    const departmentId = formData.get("departmentId") as string;
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = CreateUserSchema.safeParse(rawData);
 
-    const finalDeptId = departmentId || null;
-
-    if (!name || !email || !password || !roleId) {
-        return { error: "Заполните все обязательные поля" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
+
+    const { name, email, password, roleId, departmentId } = validation.data;
 
     try {
         const hashedPassword = await hashPassword(password);
@@ -199,20 +203,20 @@ export async function createUser(formData: FormData) {
             email,
             passwordHash: hashedPassword,
             roleId,
-            departmentId: finalDeptId
+            departmentId: departmentId || null
         });
 
         revalidatePath("/admin-panel");
         return { success: true };
     } catch {
         console.error("Error creating user:");
-        return { error: "Пользователь с таким email уже существует" };
+        return { success: false, error: "Пользователь с таким email уже существует" };
     }
 }
 
 export async function updateUserRole(userId: string, roleId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -220,7 +224,7 @@ export async function updateUserRole(userId: string, roleId: string) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может менять роли сотрудников" };
+        return { success: false, error: "Только администратор может менять роли сотрудников" };
     }
 
     try {
@@ -238,13 +242,13 @@ export async function updateUserRole(userId: string, roleId: string) {
             details: { userId, roleId }
         });
         console.error("Error updating user role:");
-        return { error: "Failed to update user role" };
+        return { success: false, error: "Failed to update user role" };
     }
 }
 
 export async function deleteUser(userId: string, password?: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -252,11 +256,11 @@ export async function deleteUser(userId: string, password?: string) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может удалять сотрудников" };
+        return { success: false, error: "Только администратор может удалять сотрудников" };
     }
 
     if (userId === session.id) {
-        return { error: "Вы не можете удалить самого себя" };
+        return { success: false, error: "Вы не можете удалить самого себя" };
     }
 
     const userToDelete = await db.query.users.findFirst({
@@ -265,12 +269,12 @@ export async function deleteUser(userId: string, password?: string) {
 
     if (userToDelete?.isSystem) {
         if (!password) {
-            return { error: "Для удаления системного пользователя требуется пароль от вашей учетной записи" };
+            return { success: false, error: "Для удаления системного пользователя требуется пароль от вашей учетной записи" };
         }
 
         const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
         if (!user || !(await comparePassword(password, user.passwordHash))) {
-            return { error: "Неверный пароль" };
+            return { success: false, error: "Неверный пароль" };
         }
     }
 
@@ -289,6 +293,7 @@ export async function deleteUser(userId: string, password?: string) {
 
         if (managedClients || createdOrders || userTasks) {
             return {
+                success: false,
                 error: "Нельзя удалить сотрудника, у которого есть история действий (заказы, клиенты или задачи). Пожалуйста, сначала передайте его дела другому сотруднику."
             };
         }
@@ -313,7 +318,7 @@ export async function deleteUser(userId: string, password?: string) {
             details: { userId }
         });
         console.error("Error deleting user:", error);
-        return { error: "Ошибка при удалении пользователя. Возможно, он связан с другими записями." };
+        return { success: false, error: "Ошибка при удалении пользователя. Возможно, он связан с другими записями." };
     }
 }
 
@@ -327,7 +332,7 @@ export async function getAuditLogs(
     endDate?: string | null
 ) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -335,7 +340,7 @@ export async function getAuditLogs(
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может просматривать логи" };
+        return { success: false, error: "Только администратор может просматривать логи" };
     }
 
     try {
@@ -410,10 +415,13 @@ export async function getAuditLogs(
         }));
 
         return {
-            data: enrichedLogs,
-            total,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
+            success: true,
+            data: {
+                logs: enrichedLogs,
+                total,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page
+            }
         };
     } catch (error) {
         await logError({
@@ -423,13 +431,13 @@ export async function getAuditLogs(
             details: { page, limit, search, userId, entityType, startDate, endDate }
         });
         console.error("Error fetching audit logs:");
-        return { error: "Failed to fetch audit logs" };
+        return { success: false, error: "Failed to fetch audit logs" };
     }
 }
 
 export async function updateRolePermissions(roleId: string, permissions: Record<string, unknown>) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // Verify current user is admin to perform this action (double check)
     const currentUser = await db.query.users.findFirst({
@@ -438,7 +446,7 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может менять права ролей" };
+        return { success: false, error: "Только администратор может менять права ролей" };
     }
 
     try {
@@ -466,30 +474,26 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
             details: { roleId }
         });
         console.error("Error updating role permissions:");
-        return { error: "Failed to update permissions" };
+        return { success: false, error: "Failed to update permissions" };
     }
 }
 
 export async function updateRole(roleId: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const currentUser = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: { role: true }
-    });
-
-    if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может редактировать роли" };
+    if (session.roleName !== "Администратор") {
+        return { success: false, error: "Только администратор может редактировать роли" };
     }
 
-    const name = formData.get("name") as string;
-    const departmentId = formData.get("departmentId") as string;
-    const color = formData.get("color") as string || null;
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = UpdateRoleSchema.safeParse(rawData);
 
-    if (!name) {
-        return { error: "Название роли обязательно" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
+
+    const { name, departmentId, color } = validation.data;
 
     try {
         const role = await db.query.roles.findFirst({
@@ -497,7 +501,7 @@ export async function updateRole(roleId: string, formData: FormData) {
         });
 
         if (role?.isSystem && name !== role.name) {
-            return { error: "Нельзя переименовать системную роль, так как на её название завязаны проверки в коде" };
+            return { success: false, error: "Нельзя переименовать системную роль, так как на её название завязаны проверки в коде" };
         }
 
         await db.update(roles)
@@ -528,43 +532,38 @@ export async function updateRole(roleId: string, formData: FormData) {
             details: { roleId, name }
         });
         console.error("Error updating role:");
-        return { error: "Роль с таким названием уже существует" };
+        return { success: false, error: "Роль с таким названием уже существует" };
     }
 }
 
 export async function updateUser(userId: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // Verify current user is admin
-    const currentUser = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: { role: true }
-    });
-
-    if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может редактировать сотрудников" };
+    if (session.roleName !== "Администратор") {
+        return { success: false, error: "Только администратор может редактировать сотрудников" };
     }
 
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const roleId = formData.get("roleId") as string;
-    const departmentId = formData.get("departmentId") as string;
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = UpdateUserSchema.safeParse(rawData);
+
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
+
+    const { name, email, roleId, departmentId } = validation.data;
     const password = formData.get("password") as string;
-
-    const finalDeptId = departmentId || null;
-
-    if (!name || !email || !roleId) {
-        return { error: "ФИО, Email и Роль обязательны для заполнения" };
-    }
 
     try {
         const updateData: Partial<typeof users.$inferInsert> & { updatedAt?: Date } = {
-            name,
-            email,
-            roleId,
-            departmentId: finalDeptId,
+            updatedAt: new Date()
         };
+
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (roleId) updateData.roleId = roleId;
+        updateData.departmentId = departmentId || null;
 
         if (password) {
             updateData.passwordHash = await hashPassword(password);
@@ -584,26 +583,27 @@ export async function updateUser(userId: string, formData: FormData) {
             details: { userId, name, email, roleId }
         });
         console.error("Error updating user:");
-        return { error: "Ошибка при обновлении данных пользователя. Возможно, такой email уже занят." };
+        return { success: false, error: "Ошибка при обновлении данных пользователя. Возможно, такой email уже занят." };
     }
 }
 
 export async function createRole(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // Verify current user is admin
-    const currentUser = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: { role: true }
-    });
-
-    if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может создавать роли" };
+    if (session.roleName !== "Администратор") {
+        return { success: false, error: "Только администратор может создавать роли" };
     }
 
-    const name = formData.get("name") as string;
-    const departmentId = formData.get("departmentId") as string;
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = CreateRoleSchema.safeParse(rawData);
+
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
+
+    const { name, departmentId } = validation.data;
     const color = formData.get("color") as string || null;
 
     const permissionsJson = formData.get("permissions") as string;
@@ -614,10 +614,6 @@ export async function createRole(formData: FormData) {
         }
     } catch (e) {
         console.error("Error parsing permissions:", e);
-    }
-
-    if (!name) {
-        return { error: "Название роли обязательно" };
     }
 
     try {
@@ -651,13 +647,13 @@ export async function createRole(formData: FormData) {
             details: { name, departmentId }
         });
         console.error("Error creating role:");
-        return { error: "Роль с таким названием уже существует" };
+        return { success: false, error: "Роль с таким названием уже существует" };
     }
 }
 
 export async function deleteRole(roleId: string, password?: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -665,7 +661,7 @@ export async function deleteRole(roleId: string, password?: string) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может удалять роли" };
+        return { success: false, error: "Только администратор может удалять роли" };
     }
 
     try {
@@ -676,7 +672,7 @@ export async function deleteRole(roleId: string, password?: string) {
         });
 
         if (assignedUsers.length > 0) {
-            return { error: "Нельзя удалить роль, которая назначена сотрудникам" };
+            return { success: false, error: "Нельзя удалить роль, которая назначена сотрудникам" };
         }
 
         const role = await db.query.roles.findFirst({
@@ -685,12 +681,12 @@ export async function deleteRole(roleId: string, password?: string) {
 
         if (role?.isSystem) {
             if (!password) {
-                return { error: "Для удаления системной роли требуется пароль от вашей учетной записи" };
+                return { success: false, error: "Для удаления системной роли требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль" };
+                return { success: false, error: "Неверный пароль" };
             }
         }
 
@@ -716,7 +712,7 @@ export async function deleteRole(roleId: string, password?: string) {
             details: { roleId }
         });
         console.error("Error deleting role:");
-        return { error: "Failed to delete role" };
+        return { success: false, error: "Failed to delete role" };
     }
 }
 
@@ -749,7 +745,7 @@ export async function getDepartments() {
             userCount: dept.users?.length || 0
         }));
 
-        return { data: dataWithCounts };
+        return { success: true, data: dataWithCounts };
     } catch (error) {
         await logError({
             error,
@@ -757,19 +753,22 @@ export async function getDepartments() {
             method: "getDepartments"
         });
         console.error("Error fetching departments:");
-        return { error: "Failed to fetch departments" };
+        return { success: false, error: "Failed to fetch departments" };
     }
 }
 
 export async function createDepartment(formData: FormData, roleIds?: string[]) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const color = formData.get("color") as string || "primary";
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = CreateDepartmentSchema.safeParse(rawData);
 
-    if (!name) return { error: "Название отдела обязательно" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
+
+    const { name, description, color } = validation.data;
 
     try {
         const result = await db.insert(departments).values({
@@ -808,13 +807,13 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
             details: { name }
         });
         console.error("Error creating department:");
-        return { error: "Отдел с таким названием уже существует" };
+        return { success: false, error: "Отдел с таким названием уже существует" };
     }
 }
 
 export async function impersonateUser(userId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -822,7 +821,7 @@ export async function impersonateUser(userId: string) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может использовать имперсонацию" };
+        return { success: false, error: "Только администратор может использовать имперсонацию" };
     }
 
     const targetUser = await db.query.users.findFirst({
@@ -830,7 +829,7 @@ export async function impersonateUser(userId: string) {
         with: { role: true, department: true }
     });
 
-    if (!targetUser) return { error: "Пользователь не найден" };
+    if (!targetUser) return { success: false, error: "Пользователь не найден" };
 
     try {
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -852,8 +851,9 @@ export async function impersonateUser(userId: string) {
         (await cookies()).set("session", encryptedSession, {
             expires,
             httpOnly: true,
-            secure: false, // process.env.NODE_ENV === "production",
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
+            path: "/",
         });
 
         await logSecurityEvent({
@@ -873,14 +873,14 @@ export async function impersonateUser(userId: string) {
         return { success: true };
     } catch (error) {
         console.error("Error starting impersonation:", error);
-        return { error: "Failed to start impersonation" };
+        return { success: false, error: "Failed to start impersonation" };
     }
 }
 
 export async function stopImpersonating() {
     const session = await getSession();
     if (!session || !session.impersonatorId) {
-        return { error: "Вы не находитесь в режиме имперсонации" };
+        return { success: false, error: "Вы не находитесь в режиме имперсонации" };
     }
 
     const originalAdminId = session.impersonatorId;
@@ -890,7 +890,7 @@ export async function stopImpersonating() {
         with: { role: true, department: true }
     });
 
-    if (!adminUser) return { error: "Оригинальный администратор не найден" };
+    if (!adminUser) return { success: false, error: "Оригинальный администратор не найден" };
 
     try {
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -910,8 +910,9 @@ export async function stopImpersonating() {
         (await cookies()).set("session", encryptedSession, {
             expires,
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
+            path: "/",
         });
 
         await logSecurityEvent({
@@ -929,19 +930,22 @@ export async function stopImpersonating() {
         return { success: true };
     } catch (error) {
         console.error("Error stopping impersonation:", error);
-        return { error: "Failed to return to admin mode" };
+        return { success: false, error: "Failed to return to admin mode" };
     }
 }
 
 export async function updateDepartment(deptId: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const color = formData.get("color") as string;
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = UpdateDepartmentSchema.safeParse(rawData);
 
-    if (!name) return { error: "Название отдела обязательно" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
+
+    const { name, description, color } = validation.data;
 
     try {
         await db.update(departments)
@@ -967,13 +971,13 @@ export async function updateDepartment(deptId: string, formData: FormData) {
             details: { deptId, name }
         });
         console.error("Error updating department:");
-        return { error: "Failed to update department" };
+        return { success: false, error: "Failed to update department" };
     }
 }
 
 export async function deleteDepartment(deptId: string, password?: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         // Check if users are assigned to this department
@@ -983,7 +987,7 @@ export async function deleteDepartment(deptId: string, password?: string) {
         });
 
         if (assignedUsers.length > 0) {
-            return { error: "Нельзя удалить отдел, в котором есть сотрудники" };
+            return { success: false, error: "Нельзя удалить отдел, в котором есть сотрудники" };
         }
 
         const dept = await db.query.departments.findFirst({
@@ -992,12 +996,12 @@ export async function deleteDepartment(deptId: string, password?: string) {
 
         if (dept?.isSystem) {
             if (!password) {
-                return { error: "Для удаления системного отдела требуется пароль от вашей учетной записи" };
+                return { success: false, error: "Для удаления системного отдела требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль" };
+                return { success: false, error: "Неверный пароль" };
             }
         }
 
@@ -1022,19 +1026,19 @@ export async function deleteDepartment(deptId: string, password?: string) {
             details: { deptId }
         });
         console.error("Error deleting department:");
-        return { error: "Failed to delete department" };
+        return { success: false, error: "Failed to delete department" };
     }
 }
 export async function getRolesByDepartment(departmentId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const departmentRoles = await db.query.roles.findMany({
             where: eq(roles.departmentId, departmentId),
             orderBy: [asc(roles.name)]
         });
-        return { data: departmentRoles };
+        return { success: true, data: departmentRoles };
     } catch (error) {
         await logError({
             error,
@@ -1043,13 +1047,13 @@ export async function getRolesByDepartment(departmentId: string) {
             details: { departmentId }
         });
         console.error("Error fetching department roles:");
-        return { error: "Failed to fetch department roles" };
+        return { success: false, error: "Failed to fetch department roles" };
     }
 }
 
 export async function updateRoleDepartment(roleId: string, departmentId: string | null) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1057,7 +1061,7 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может изменять отдел роли" };
+        return { success: false, error: "Только администратор может изменять отдел роли" };
     }
 
     try {
@@ -1091,13 +1095,13 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
             details: { roleId, departmentId }
         });
         console.error("Error updating role department:");
-        return { error: "Failed to update role department" };
+        return { success: false, error: "Failed to update role department" };
     }
 }
 
 export async function getSystemStats() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1105,7 +1109,7 @@ export async function getSystemStats() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1217,6 +1221,7 @@ export async function getSystemStats() {
         }
 
         return {
+            success: true,
             data: {
                 server: {
                     // Normalize loadavg by the number of cores for better UI representation
@@ -1245,13 +1250,13 @@ export async function getSystemStats() {
             method: "getSystemStats"
         });
         console.error("Error fetching system stats:");
-        return { error: "Не удалось получить системные показатели" };
+        return { success: false, error: "Не удалось получить системные показатели" };
     }
 }
 
 export async function clearAuditLogs() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1259,7 +1264,7 @@ export async function clearAuditLogs() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может очищать логи" };
+        return { success: false, error: "Только администратор может очищать логи" };
     }
 
     try {
@@ -1283,13 +1288,13 @@ export async function clearAuditLogs() {
             method: "clearAuditLogs"
         });
         console.error("Error clearing audit logs:");
-        return { error: "Failed to clear audit logs" };
+        return { success: false, error: "Failed to clear audit logs" };
     }
 }
 
 export async function checkSystemHealth() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
 
     interface HealthStatus {
@@ -1396,7 +1401,7 @@ export async function checkSystemHealth() {
             health.jwt.status = "error";
         }
 
-        return { data: health };
+        return { success: true, data: health };
     } catch (error) {
         await logError({
             error,
@@ -1404,40 +1409,15 @@ export async function checkSystemHealth() {
             method: "checkSystemHealth"
         });
         console.error("Health check error:");
-        return { error: "Ошибка при выполнении диагностики" };
+        return { success: false, error: "Ошибка при выполнении диагностики" };
     }
 }
 
 export async function createDatabaseBackup() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
-
-    const currentUser = await db.query.users.findFirst({
-        where: eq(users.id, session.id),
-        with: { role: true }
-    });
-
-    if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
-    }
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
-        const backupData = {
-            version: "1.0",
-            timestamp: new Date().toISOString(),
-            data: {
-                users: await db.select().from(users),
-                roles: await db.select().from(roles),
-                departments: await db.select().from(departments),
-                clients: await db.select().from(clients),
-                orders: await db.select().from(orders),
-                inventoryCategories: await db.select().from(inventoryCategories),
-                inventoryItems: await db.select().from(inventoryItems),
-                storageLocations: await db.select().from(storageLocations),
-                tasks: await db.select().from(tasks),
-            }
-        };
-
         const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
         if (!fs.existsSync(backupDir)) {
             fs.mkdirSync(backupDir, { recursive: true });
@@ -1446,14 +1426,76 @@ export async function createDatabaseBackup() {
         const fileName = `backup_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
         const filePath = path.join(backupDir, fileName);
 
-        fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
+        // M-06: Use streaming and chunking to avoid OOM
+        const writeStream = fs.createWriteStream(filePath);
+
+        const write = (str: string) => new Promise<void>((resolve, reject) => {
+            if (!writeStream.write(str)) {
+                writeStream.once('drain', resolve);
+            } else {
+                // Use process.nextTick to avoid deep recursion if needed, 
+                // but for moderate string chunks simple resolve is fine.
+                process.nextTick(resolve);
+            }
+        });
+
+        await write('{\n  "version": "1.1",\n  "timestamp": "' + new Date().toISOString() + '",\n  "data": {\n');
+
+        const tablesToBackup = [
+            { name: "users", table: users },
+            { name: "roles", table: roles },
+            { name: "departments", table: departments },
+            { name: "clients", table: clients },
+            { name: "orders", table: orders },
+            { name: "inventoryCategories", table: inventoryCategories },
+            { name: "inventoryItems", table: inventoryItems },
+            { name: "storageLocations", table: storageLocations },
+            { name: "tasks", table: tasks }
+        ];
+
+        for (let i = 0; i < tablesToBackup.length; i++) {
+            const { name, table } = tablesToBackup[i];
+            await write(`    "${name}": [\n`);
+
+            let offset = 0;
+            const limit = 500;
+            let firstRow = true;
+
+            while (true) {
+                const chunk = await db.select().from(table as PgTable).limit(limit).offset(offset);
+                if (chunk.length === 0) break;
+
+                for (const row of chunk) {
+                    if (!firstRow) await write(',\n');
+                    await write('      ' + JSON.stringify(row));
+                    firstRow = false;
+                }
+
+                if (chunk.length < limit) break;
+                offset += limit;
+            }
+
+            await write('\n    ]');
+
+            if (i < tablesToBackup.length - 1) {
+                await write(',\n');
+            } else {
+                await write('\n');
+            }
+        }
+
+        await write('  }\n}');
+        writeStream.end();
+
+        // Wait for file to finish
+        await new Promise<void>((resolve) => writeStream.on('finish', () => resolve()));
 
         await db.insert(auditLogs).values({
             userId: session.id,
             action: `Создана резервная копия БД: ${fileName}`,
             entityType: "system",
             entityId: session.id,
-            createdAt: new Date()
+            details: { fileName, streaming: true }
         });
 
         return { success: true, fileName };
@@ -1464,17 +1506,17 @@ export async function createDatabaseBackup() {
             method: "createDatabaseBackup"
         });
         console.error("Backup creation error:");
-        return { error: "Не удалось создать резервную копию" };
+        return { success: false, error: "Не удалось создать резервную копию" };
     }
 }
 
 export async function getBackupsList() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
-        if (!fs.existsSync(backupDir)) return { data: [] };
+        if (!fs.existsSync(backupDir)) return { success: true, data: [] };
 
         const files = await fs.promises.readdir(backupDir);
         const backupPromises = files
@@ -1491,20 +1533,20 @@ export async function getBackupsList() {
         const backups = (await Promise.all(backupPromises))
             .sort((a: BackupFile, b: BackupFile) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-        return { data: backups as BackupFile[] };
+        return { success: true, data: backups as BackupFile[] };
     } catch (error) {
         await logError({
             error,
             path: "/admin-panel/system/backups",
             method: "getBackupsList"
         });
-        return { error: "Не удалось получить список копий" };
+        return { success: false, error: "Не удалось получить список копий" };
     }
 }
 
 export async function deleteBackupAction(fileName: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1512,7 +1554,7 @@ export async function deleteBackupAction(fileName: string) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1532,7 +1574,7 @@ export async function deleteBackupAction(fileName: string) {
 
             return { success: true };
         }
-        return { error: "Файл не найден" };
+        return { success: false, error: "Файл не найден" };
     } catch (error) {
         await logError({
             error,
@@ -1540,7 +1582,7 @@ export async function deleteBackupAction(fileName: string) {
             method: "deleteBackupAction",
             details: { fileName }
         });
-        return { error: "Ошибка при удалении" };
+        return { success: false, error: "Ошибка при удалении" };
     }
 }
 
@@ -1556,9 +1598,10 @@ export async function getSystemSettings() {
         settings.forEach(s => {
             settingsMap[s.key] = s.value as string | number | boolean | null;
         });
-        return { data: settingsMap };
+        return { success: true, data: settingsMap };
     } catch {
         return {
+            success: false,
             error: "Failed to fetch settings"
         };
     }
@@ -1595,7 +1638,7 @@ export async function updateSystemSetting(key: string, value: string | number | 
         return { success: true };
     } catch (error) {
         console.error("Error updating system setting:", error);
-        return { error: "Failed to update setting" };
+        return { success: false, error: "Failed to update setting" };
     }
 }
 
@@ -1615,11 +1658,12 @@ export async function getBrandingAction() {
             currencySymbol: "₽"
         };
 
-        if (!setting) return { data: defaultBranding };
+        if (!setting) return { success: true, data: defaultBranding };
 
         // Handle both camelCase and snake_case for compatibility
         const val = setting.value as Record<string, unknown>;
         return {
+            success: true,
             data: {
                 ...defaultBranding,
                 ...val,
@@ -1630,13 +1674,13 @@ export async function getBrandingAction() {
         };
     } catch (error) {
         console.error("Error fetching branding:", error);
-        return { data: { primary_color: "#5d00ff" } };
+        return { success: true, data: { primary_color: "#5d00ff" } };
     }
 }
 
 export async function updateBrandingAction(data: Record<string, unknown>) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1644,7 +1688,7 @@ export async function updateBrandingAction(data: Record<string, unknown>) {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1666,12 +1710,12 @@ export async function updateBrandingAction(data: Record<string, unknown>) {
         return { success: true };
     } catch (error) {
         console.error("Error updating branding:", error);
-        return { error: "Failed to update branding" };
+        return { success: false, error: "Failed to update branding" };
     }
 }
 export async function clearRamAction() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1679,7 +1723,7 @@ export async function clearRamAction() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1698,13 +1742,13 @@ export async function clearRamAction() {
             path: "/admin-panel/system/ram",
             method: "clearRamAction"
         });
-        return { error: "Ошибка при очистке памяти" };
+        return { success: false, error: "Ошибка при очистке памяти" };
     }
 }
 
 export async function restartServerAction() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1712,7 +1756,7 @@ export async function restartServerAction() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1739,7 +1783,7 @@ export async function restartServerAction() {
             path: "/admin-panel/system/restart",
             method: "restartServerAction"
         });
-        return { error: "Ошибка при инициализации перезапуска" };
+        return { success: false, error: "Ошибка при инициализации перезапуска" };
     }
 }
 
@@ -1757,9 +1801,58 @@ export async function trackActivity() {
     }
 }
 
-export async function getMonitoringStats() {
+export interface MonitoringStats {
+    activeUsers: Array<{
+        id: string;
+        name: string;
+        email: string;
+        avatar: string | null;
+        role?: string;
+        department?: string;
+        lastActiveAt: Date | null;
+    }>;
+    activityStats: Array<{
+        hour: number;
+        type: string;
+        count: number;
+    }>;
+    entityStats: Array<{
+        type: string;
+        count: number;
+    }>;
+}
+
+export interface SecurityStats {
+    failedLogins: Array<{
+        id: string;
+        email: string;
+        reason: string;
+        ipAddress: string | null;
+        userAgent: string | null;
+        createdAt: Date;
+    }>;
+    sensitiveActions: Array<{
+        id: string;
+        user: string;
+        action: string;
+        details: unknown;
+        createdAt: Date;
+    }>;
+    systemErrors: Array<{
+        id: string;
+        message: string;
+        path: string | null;
+        method: string | null;
+        severity: string;
+        ipAddress: string | null;
+        createdAt: Date;
+    }>;
+    maintenanceMode: boolean;
+}
+
+export async function getMonitoringStats(): Promise<ActionResult<MonitoringStats>> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1767,7 +1860,7 @@ export async function getMonitoringStats() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -1809,24 +1902,27 @@ export async function getMonitoringStats() {
         ]);
 
         return {
-            activeUsers: activeUsers.map(u => ({
-                id: u.id,
-                name: u.name,
-                email: u.email,
-                avatar: u.avatar,
-                role: u.role?.name,
-                department: u.department?.name,
-                lastActiveAt: u.lastActiveAt
-            })),
-            activityStats: (activityStatsResult.rows as unknown as Array<{ hour: number; type: string; count: number }> || []).map((s) => ({
-                hour: Number(s.hour),
-                type: s.type || 'system',
-                count: Number(s.count)
-            })),
-            entityStats: (entityStatsResult.rows as unknown as Array<{ type: string; count: number }> || []).map((s) => ({
-                type: s.type || 'system',
-                count: Number(s.count)
-            }))
+            success: true,
+            data: {
+                activeUsers: activeUsers.map(u => ({
+                    id: u.id,
+                    name: u.name,
+                    email: u.email,
+                    avatar: u.avatar,
+                    role: u.role?.name,
+                    department: u.department?.name,
+                    lastActiveAt: u.lastActiveAt
+                })),
+                activityStats: (activityStatsResult.rows as unknown as Array<{ hour: number; type: string; count: number }> || []).map((s) => ({
+                    hour: Number(s.hour),
+                    type: s.type || 'system',
+                    count: Number(s.count)
+                })),
+                entityStats: (entityStatsResult.rows as unknown as Array<{ type: string; count: number }> || []).map((s) => ({
+                    type: s.type || 'system',
+                    count: Number(s.count)
+                }))
+            }
         };
     } catch (error) {
         await logError({
@@ -1835,13 +1931,13 @@ export async function getMonitoringStats() {
             method: "getMonitoringStats"
         });
         console.error("Monitoring stats error:");
-        return { error: "Ошибка получения данных мониторинга" };
+        return { success: false, error: "Ошибка получения данных мониторинга" };
     }
 }
 
-export async function getSecurityStats() {
+export async function getSecurityStats(): Promise<ActionResult<SecurityStats>> {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -1881,31 +1977,34 @@ export async function getSecurityStats() {
         ]);
 
         return {
-            failedLogins: failedLogins.map(l => ({
-                id: l.id,
-                email: (l.details as Record<string, unknown>)?.email as string || 'Unknown',
-                reason: (l.details as Record<string, unknown>)?.reason as string || 'Unknown',
-                ipAddress: l.ipAddress,
-                userAgent: l.userAgent,
-                createdAt: l.createdAt
-            })),
-            sensitiveActions: sensitiveActions.map(l => ({
-                id: l.id,
-                user: l.user?.name || 'Unknown',
-                action: l.action,
-                details: l.details,
-                createdAt: l.createdAt
-            })),
-            systemErrors: errors.map(e => ({
-                id: e.id,
-                message: e.message,
-                path: e.path,
-                method: e.method,
-                severity: e.severity,
-                ipAddress: e.ipAddress,
-                createdAt: e.createdAt
-            })),
-            maintenanceMode: maintenanceSetting?.value === true
+            success: true,
+            data: {
+                failedLogins: failedLogins.map(l => ({
+                    id: l.id,
+                    email: (l.details as Record<string, unknown>)?.email as string || 'Unknown',
+                    reason: (l.details as Record<string, unknown>)?.reason as string || 'Unknown',
+                    ipAddress: l.ipAddress,
+                    userAgent: l.userAgent,
+                    createdAt: l.createdAt
+                })),
+                sensitiveActions: sensitiveActions.map(l => ({
+                    id: l.id,
+                    user: l.user?.name || 'Unknown',
+                    action: l.action,
+                    details: l.details,
+                    createdAt: l.createdAt
+                })),
+                systemErrors: errors.map(e => ({
+                    id: e.id,
+                    message: e.message,
+                    path: e.path,
+                    method: e.method,
+                    severity: e.severity,
+                    ipAddress: e.ipAddress,
+                    createdAt: e.createdAt
+                })),
+                maintenanceMode: maintenanceSetting?.value === true
+            }
         };
     } catch (error) {
         await logError({
@@ -1914,13 +2013,13 @@ export async function getSecurityStats() {
             method: "getSecurityStats"
         });
         console.error("Security stats error:", error);
-        return { error: "Ошибка получения данных безопасности" };
+        return { success: false, error: "Ошибка получения данных безопасности" };
     }
 }
 
 export async function clearSecurityErrors() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -1928,7 +2027,7 @@ export async function clearSecurityErrors() {
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Только администратор может очищать логи ошибок" };
+        return { success: false, error: "Только администратор может очищать логи ошибок" };
     }
 
     try {
@@ -1945,13 +2044,13 @@ export async function clearSecurityErrors() {
             method: "clearSecurityErrors"
         });
         console.error(error);
-        return { error: "Failed to clear errors" };
+        return { success: false, error: "Failed to clear errors" };
     }
 }
 
 export async function clearFailedLogins() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         await db.delete(securityEvents).where(eq(securityEvents.eventType, 'login_failed'));
@@ -1964,13 +2063,13 @@ export async function clearFailedLogins() {
             method: "clearFailedLogins"
         });
         console.error("Clear failed logins error:", error);
-        return { error: "Ошибка при очистке попыток входа" };
+        return { success: false, error: "Ошибка при очистке попыток входа" };
     }
 }
 
 export async function toggleMaintenanceMode(enabled: boolean) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         await db.insert(systemSettings)
@@ -2000,7 +2099,7 @@ export async function toggleMaintenanceMode(enabled: boolean) {
             details: { enabled }
         });
         console.error("Maintenance mode error:", error);
-        return { error: "Ошибка переключения режима" };
+        return { success: false, error: "Ошибка переключения режима" };
     }
 }
 
@@ -2026,7 +2125,7 @@ export async function getSecurityEvents({
 } = {}) {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -2082,27 +2181,30 @@ export async function getSecurityEvents({
         });
 
         return {
-            events: events.map(e => ({
-                id: e.id,
-                eventType: e.eventType,
-                severity: e.severity,
-                ipAddress: e.ipAddress,
-                userAgent: e.userAgent,
-                entityType: e.entityType,
-                entityId: e.entityId,
-                details: e.details,
-                createdAt: e.createdAt,
-                user: e.user ? {
-                    id: e.user.id,
-                    name: e.user.name,
-                    email: e.user.email
-                } : null
-            })),
-            pagination: {
-                page,
-                limit,
-                total,
-                totalPages: Math.ceil(total / limit)
+            success: true,
+            data: {
+                events: events.map(e => ({
+                    id: e.id,
+                    eventType: e.eventType,
+                    severity: e.severity,
+                    ipAddress: e.ipAddress,
+                    userAgent: e.userAgent,
+                    entityType: e.entityType,
+                    entityId: e.entityId,
+                    details: e.details,
+                    createdAt: e.createdAt,
+                    user: e.user ? {
+                        id: e.user.id,
+                        name: e.user.name,
+                        email: e.user.email
+                    } : null
+                })),
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    totalPages: Math.ceil(total / limit)
+                }
             }
         };
     } catch (error) {
@@ -2113,7 +2215,7 @@ export async function getSecurityEvents({
             details: { page, limit, eventType, severity }
         });
         console.error("Security events error:", error);
-        return { error: "Ошибка получения событий безопасности" };
+        return { success: false, error: "Ошибка получения событий безопасности" };
     }
 }
 
@@ -2123,7 +2225,7 @@ export async function getSecurityEvents({
 export async function getSecurityEventsSummary() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -2180,21 +2282,24 @@ export async function getSecurityEventsSummary() {
         });
 
         return {
-            summary: {
-                loginAttempts,
-                successfulLogins,
-                failedLogins: loginAttempts - successfulLogins,
-                permissionChanges,
-                dataExports,
-                criticalEvents
-            },
-            recentCritical: recentCritical.map(e => ({
-                id: e.id,
-                eventType: e.eventType,
-                userName: e.user?.name || 'Unknown',
-                details: e.details,
-                createdAt: e.createdAt
-            }))
+            success: true,
+            data: {
+                summary: {
+                    loginAttempts,
+                    successfulLogins,
+                    failedLogins: loginAttempts - successfulLogins,
+                    permissionChanges,
+                    dataExports,
+                    criticalEvents
+                },
+                recentCritical: recentCritical.map(e => ({
+                    id: e.id,
+                    eventType: e.eventType,
+                    userName: e.user?.name || 'Unknown',
+                    details: e.details,
+                    createdAt: e.createdAt
+                }))
+            }
         };
     } catch (error) {
         await logError({
@@ -2203,14 +2308,14 @@ export async function getSecurityEventsSummary() {
             method: "getSecurityEventsSummary"
         });
         console.error("Security events summary error:", error);
-        return { error: "Ошибка получения сводки безопасности" };
+        return { success: false, error: "Ошибка получения сводки безопасности" };
     }
 }
 
 // Storage Management Actions
 export async function getStorageDetails(prefix?: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { listFiles, getStorageStats } = await import("@/lib/storage");
@@ -2226,12 +2331,15 @@ export async function getStorageDetails(prefix?: string) {
         };
 
         return {
-            s3: {
-                ...s3Stats,
-                folders: s3Content.folders,
-                files: s3Content.files
-            },
-            local: localStats
+            success: true,
+            data: {
+                s3: {
+                    ...s3Stats,
+                    folders: s3Content.folders,
+                    files: s3Content.files
+                },
+                local: localStats
+            }
         };
     } catch (error) {
         await logError({
@@ -2241,13 +2349,13 @@ export async function getStorageDetails(prefix?: string) {
             details: { prefix }
         });
         console.error("Storage details error:", error);
-        return { error: "Ошибка при получении данных хранилища" };
+        return { success: false, error: "Ошибка при получении данных хранилища" };
     }
 }
 
 export async function deleteS3FileAction(key: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { deleteFile } = await import("@/lib/storage");
@@ -2270,7 +2378,7 @@ export async function deleteS3FileAction(key: string) {
 }
 export async function createS3FolderAction(path: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { createFolder } = await import("@/lib/storage");
@@ -2295,7 +2403,7 @@ export async function createS3FolderAction(path: string) {
 // Local Storage Management Actions
 export async function getLocalStorageDetails(prefix?: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { listLocalFiles, getLocalStorageStats } = await import("@/lib/local-storage");
@@ -2315,13 +2423,13 @@ export async function getLocalStorageDetails(prefix?: string) {
             details: { prefix }
         });
         console.error("Local storage details error:", error);
-        return { error: "Ошибка при получении данных локального хранилища" };
+        return { success: false, error: "Ошибка при получении данных локального хранилища" };
     }
 }
 
 export async function createLocalFolderAction(folderPath: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { createLocalFolder } = await import("@/lib/local-storage");
@@ -2345,7 +2453,7 @@ export async function createLocalFolderAction(folderPath: string) {
 
 export async function deleteLocalFileAction(filePath: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { deleteLocalFile } = await import("@/lib/local-storage");
@@ -2369,7 +2477,7 @@ export async function deleteLocalFileAction(filePath: string) {
 
 export async function renameS3FileAction(oldKey: string, newKey: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { renameFile } = await import("@/lib/storage");
@@ -2393,7 +2501,7 @@ export async function renameS3FileAction(oldKey: string, newKey: string) {
 
 export async function deleteMultipleS3FilesAction(keys: string[]) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { deleteMultipleFiles } = await import("@/lib/storage");
@@ -2417,7 +2525,7 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
 
 export async function renameLocalFileAction(oldPath: string, newPath: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { renameLocalFile } = await import("@/lib/local-storage");
@@ -2441,7 +2549,7 @@ export async function renameLocalFileAction(oldPath: string, newPath: string) {
 
 export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { deleteMultipleLocalFiles } = await import("@/lib/local-storage");
@@ -2465,12 +2573,12 @@ export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
 
 export async function getS3FileUrlAction(key: string) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { getFileUrl } = await import("@/lib/storage");
         const url = await getFileUrl(key);
-        return { success: true, url };
+        return { success: true, data: url };
     } catch (error) {
         await logError({
             error,
@@ -2539,17 +2647,17 @@ export async function getNotificationSettingsAction() {
             }
         };
 
-        if (!setting) return { data: defaultSettings };
-        return { data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
+        if (!setting) return { success: true, data: defaultSettings };
+        return { success: true, data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
     } catch (error) {
         console.error("Error fetching notification settings:", error);
-        return { data: null, error: "Failed to fetch settings" };
+        return { success: true, data: null, error: "Failed to fetch settings" };
     }
 }
 
 export async function updateNotificationSettingsAction(data: NotificationSettings) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const currentUser = await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -2557,7 +2665,7 @@ export async function updateNotificationSettingsAction(data: NotificationSetting
     });
 
     if (currentUser?.role?.name !== "Администратор") {
-        return { error: "Доступ запрещен" };
+        return { success: false, error: "Доступ запрещен" };
     }
 
     try {
@@ -2573,6 +2681,6 @@ export async function updateNotificationSettingsAction(data: NotificationSetting
         return { success: true };
     } catch (error) {
         console.error("Error updating notification settings:", error);
-        return { error: "Failed to update settings" };
+        return { success: false, error: "Failed to update settings" };
     }
 }

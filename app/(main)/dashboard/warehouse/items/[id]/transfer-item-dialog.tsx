@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle, RefreshCw, Check } from "lucide-react";
 import { transferInventoryStock } from "../../actions";
 import { StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { LocationSelect } from "../../location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,39 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
     const stockMap = useMemo(() => new Map(itemStocks.map(s => [s.storageLocationId, s.quantity])), [itemStocks]);
 
     // Only allow "From" locations where item exists
+    // Only allow "From" locations where item exists
     const availableFromLocations = useMemo(() => locations.filter(loc => (stockMap.get(loc.id) || 0) > 0), [locations, stockMap]);
+
+    // Auto-cap amount if source location changes or availability updates
+    useEffect(() => {
+        if (fromLocationId) {
+            const available = stockMap.get(fromLocationId) || 0;
+            if (amount > available) {
+                setAmount(available);
+                if (available > 0) {
+                    toast(`Количество скорректировано: макс. ${available}`, "info");
+                }
+            } else if (amount <= 0 && available > 0) {
+                setAmount(1);
+            }
+        }
+    }, [fromLocationId, stockMap, amount, toast]);
+
+    const handleIncrement = () => {
+        if (!fromLocationId) {
+            toast("Выберите склад-источник", "info");
+            return;
+        }
+        if (amount >= fromStock) {
+            toast(`На складе всего ${fromStock} ${formatUnit(item.unit)}`, "warning");
+            return;
+        }
+        setAmount(prev => prev + 1);
+    };
+
+    const handleDecrement = () => {
+        setAmount(prev => Math.max(1, prev - 1));
+    };
 
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
@@ -54,8 +86,9 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
         if (fromLocationId === toLocationId) return setError("Склады должны отличаться");
 
         const availableAmount = stockMap.get(fromLocationId) || 0;
-        if (amount <= 0) return setError("Неверное количество");
-        if (amount > availableAmount) return setError(`Недостаточно товара на складе (в наличии: ${availableAmount})`);
+        if (amount <= 0) return setError("Количество должно быть больше 0");
+        if (amount > availableAmount) return setError(`Недостаточно товара (в наличии: ${availableAmount} ${formatUnit(item.unit)})`);
+        if (!reason.trim()) return setError("Укажите причину перемещения");
 
         setIsSubmitting(true);
 
@@ -70,7 +103,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                 playSound("notification_error");
             }
         } catch {
-            setError("Произошла ошибка");
+            setError("Произошла ошибка при выполнении операции");
             playSound("notification_error");
         } finally {
             setIsSubmitting(false);
@@ -95,7 +128,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h2>
                             <p className="text-[11px] font-bold text-slate-700 mt-0.5">
-                                Объект: <span className="text-slate-900 font-bold">{item.name}</span>
+                                Объект: <span className="text-slate-900 font-bold tracking-tight">{item.name}</span>
                             </p>
                         </div>
                     </div>
@@ -112,7 +145,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                     value={fromLocationId}
                                     onChange={setFromLocationId}
                                     excludeId={toLocationId}
-                                    placeholder="Выберите склад..."
+                                    placeholder="Выберите склад…"
                                     stocks={stockMap}
                                 />
                             </div>
@@ -124,7 +157,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                     value={toLocationId}
                                     onChange={setToLocationId}
                                     excludeId={fromLocationId}
-                                    placeholder="Выберите склад..."
+                                    placeholder="Выберите склад…"
                                     stocks={stockMap}
                                 />
                             </div>
@@ -155,7 +188,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                     </div>
                                     <div className="flex items-baseline gap-2 pl-1">
                                         <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">{fromStock}</span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
 
@@ -178,7 +211,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         <span className="text-5xl font-black text-primary tabular-nums tracking-tight drop-shadow-sm">
                                             {toStock + amount}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +226,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         type="button"
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => setAmount((prev: number) => Math.max(0, prev - 1))}
+                                        onClick={handleDecrement}
                                         className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
                                     >
                                         <Minus className="w-5 h-5 stroke-[3]" />
@@ -206,11 +239,19 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                             required
                                             min={0}
                                             value={amount}
-                                            onChange={(e) => setAmount(Number(e.target.value))}
+                                            onChange={(e) => {
+                                                const val = Number(e.target.value);
+                                                if (val > fromStock) {
+                                                    setAmount(fromStock);
+                                                    toast(`Максимально доступно: ${fromStock}`, "warning");
+                                                } else {
+                                                    setAmount(val);
+                                                }
+                                            }}
                                             className="w-20 bg-transparent border-none shadow-none text-center text-3xl font-black text-slate-900 outline-none tabular-nums p-0 leading-none h-auto focus-visible:ring-0"
                                         />
                                         <span className="text-sm font-bold text-slate-400 mt-1">
-                                            {(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}
+                                            {formatUnit(item.unit)}
                                         </span>
                                     </div>
 
@@ -218,7 +259,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         type="button"
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => setAmount((prev: number) => prev + 1)}
+                                        onClick={handleIncrement}
                                         className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90"
                                     >
                                         <Plus className="w-5 h-5 stroke-[3]" />
@@ -234,7 +275,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         variant="ghost"
                                         onClick={() => {
                                             setAmount(fromStock);
-                                            toast(`Максимальное кол-во: ${fromStock} ${item.unit}`, "info");
+                                            toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`, "info");
                                         }}
                                         className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                                     >
@@ -255,7 +296,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 value={reason}
                                 required
                                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReason(e.target.value)}
-                                placeholder="Напр: Смена места хранения..."
+                                placeholder="Напр: Смена места хранения…"
                                 className="w-full min-h-[80px] p-3 rounded-2xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300 leading-snug shadow-sm"
                             />
                         </div>

@@ -66,7 +66,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
 
         try {
             const res = await updateOrderStatus(orderId, newStatusId, reason);
-            if (res.error) {
+            if (!res.success) {
                 toast(res.error, "error");
                 playSound("notification_error");
                 setStatusId(currentStatus); // Rollback local state

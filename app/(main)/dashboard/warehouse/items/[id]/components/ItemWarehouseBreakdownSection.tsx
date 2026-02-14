@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { cn, formatUnit } from "@/lib/utils";
 import { Store } from "lucide-react";
 import { ItemStock } from "../../../types";
 
@@ -34,7 +35,7 @@ export function ItemWarehouseBreakdownSection({
                     <div className="flex items-center gap-2"> {/* Added gap-2 */}
                         <div className="px-3 py-1.5 rounded-lg bg-background border border-border shadow-sm"> {/* New div for quantity display */}
                             <span className="text-base font-black text-foreground tabular-nums">{stock.quantity}</span> {/* Replaced text-xl font-bold text-slate-900 */}
-                            <span className="ml-1 text-[10px] font-bold text-muted-foreground">{unit}</span> {/* Replaced text-[10px] font-bold text-slate-400 */}
+                            <span className="ml-1 text-[10px] font-bold text-muted-foreground">{formatUnit(unit)}</span> {/* Replaced text-[10px] font-bold text-slate-400 */}
                         </div>
                     </div>
                 </div>

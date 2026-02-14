@@ -3,7 +3,7 @@
 import { AlertTriangle, TrendingUp, Package, Layers, ArrowUpRight, ArrowDownRight, Activity, Clock, ArrowLeftRight, Trash2 } from "lucide-react";
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
 
 interface WarehouseWidgetsProps {
@@ -134,7 +134,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                                                 <div className="text-[13px] font-bold text-slate-900 truncate group-hover:text-rose-600 transition-colors">{item.name}</div>
                                                 <div className="flex items-center gap-1.5 mt-0.5">
                                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 px-1.5 rounded-md border border-slate-100">Остаток</span>
-                                                    <span className="text-[11px] font-black text-rose-500 tabular-nums">{item.quantity} {item.unit}</span>
+                                                    <span className="text-[11px] font-black text-rose-500 tabular-nums">{item.quantity} {formatUnit(item.unit)}</span>
                                                 </div>
                                             </div>
                                         </div>

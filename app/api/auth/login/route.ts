@@ -42,16 +42,19 @@ export async function POST(request: Request) {
 
         // console.log(`[API Login] Attempting login for email: '${email}'`);
 
-        const { pool } = await import('@/lib/db');
+        const { db } = await import('@/lib/db');
+        const { users } = await import('@/lib/schema');
+        const { eq } = await import('drizzle-orm');
 
-        const result = await pool.query(
-            'SELECT * FROM users WHERE email = $1 LIMIT 1',
-            [email]
-        );
+        const user = await db.query.users.findFirst({
+            where: eq(users.email, email),
+            with: {
+                role: true,
+                department: true
+            }
+        });
 
-        const user = result.rows;
-
-        if (user.length === 0) {
+        if (!user) {
             await logSecurityEvent({
                 eventType: "login_failed",
                 severity: "warning",
@@ -63,16 +66,16 @@ export async function POST(request: Request) {
 
         const passwordsMatch = await comparePassword(
             password,
-            user[0].password_hash
+            user.passwordHash
         );
 
         if (!passwordsMatch) {
             await logSecurityEvent({
                 eventType: "login_failed",
-                userId: user[0].id,
+                userId: user.id,
                 severity: "warning",
                 entityType: "auth",
-                entityId: user[0].id,
+                entityId: user.id,
                 details: { email, reason: 'password_mismatch' }
             });
             return NextResponse.json({ error: "Неверный email или пароль" }, { status: 401 });
@@ -80,31 +83,13 @@ export async function POST(request: Request) {
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-        let role = null;
-        if (user[0].role_id) {
-            const roleResult = await pool.query(
-                'SELECT * FROM roles WHERE id = $1 LIMIT 1',
-                [user[0].role_id]
-            );
-            role = roleResult.rows[0] || null;
-        }
-
-        let department = null;
-        if (user[0].department_id) {
-            const deptResult = await pool.query(
-                'SELECT * FROM departments WHERE id = $1 LIMIT 1',
-                [user[0].department_id]
-            );
-            department = deptResult.rows[0] || null;
-        }
-
         const sessionData = {
-            id: user[0].id,
-            email: user[0].email,
-            roleId: user[0].role_id || "",
-            roleName: role?.name || "User",
-            departmentName: department?.name || user[0].department || "",
-            name: user[0].name || "",
+            id: user.id,
+            email: user.email,
+            roleId: user.roleId || "",
+            roleName: user.role?.name || "User",
+            departmentName: user.department?.name || "",
+            name: user.name || "",
             expires,
         };
 
@@ -125,14 +110,14 @@ export async function POST(request: Request) {
         // Log success
         await logSecurityEvent({
             eventType: "login_success",
-            userId: user[0].id,
+            userId: user.id,
             severity: "info",
             entityType: "auth",
-            entityId: user[0].id,
+            entityId: user.id,
             details: {
-                email: user[0].email,
-                name: user[0].name,
-                role: role?.name
+                email: user.email,
+                name: user.name,
+                role: user.role?.name
             }
         });
 
@@ -150,6 +135,6 @@ export async function POST(request: Request) {
             details: {}
         });
         console.error("[API Login] Execution error:", error);
-        return NextResponse.json({ error: `Ошибка сервера: ${(error as Error).message}` }, { status: 500 });
+        return NextResponse.json({ error: "Внутренняя ошибка сервера. Попробуйте позже." }, { status: 500 });
     }
 }

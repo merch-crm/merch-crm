@@ -43,8 +43,8 @@ export default async function TransactionsPage({
 
     return (
         <TransactionsClient
-            initialPayments={(paymentsRes.data || []) as PaymentData[]}
-            initialExpenses={(expensesRes.data || []) as ExpenseData[]}
+            initialPayments={(paymentsRes.success && paymentsRes.data ? paymentsRes.data : []) as PaymentData[]}
+            initialExpenses={(expensesRes.success && expensesRes.data ? expensesRes.data : []) as ExpenseData[]}
         />
     );
 }

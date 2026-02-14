@@ -24,7 +24,11 @@ export function MobileSearchSheet() {
         }
         setLoading(true);
         const res = await globalSearch(val);
-        setResults(res.data);
+        if (res.success && res.data) {
+            setResults(res.data);
+        } else {
+            setResults([]);
+        }
         setLoading(false);
     }, []);
 

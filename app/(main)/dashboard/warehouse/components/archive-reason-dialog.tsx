@@ -96,7 +96,7 @@ export function ArchiveReasonDialog({
                                     setReason(e.target.value);
                                     if (error) setError(false);
                                 }}
-                                placeholder="..."
+                                placeholder="…"
                                 className={cn(
                                     "w-full min-h-[140px] p-4 rounded-[var(--radius-inner)] border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-300",
                                     error

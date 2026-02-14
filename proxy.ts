@@ -5,15 +5,14 @@ import { decrypt } from "@/lib/auth";
 export async function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
-    // 1. Exclude static assets and API routes
+    // 1. Exclude static assets and system paths
     if (
         path.startsWith("/_next") ||
-        path.startsWith("/api") ||
+        path.startsWith("/api/auth") ||
         path.startsWith("/static") ||
-        path.includes(".") // Likely a file (image, css, etc.)
+        path === '/favicon.ico' ||
+        path.includes(".") // Likely a file
     ) {
-        // NOTE: Глобальный Rate Limit для API лучше делать в самих роутах 
-        // через lib/api-middleware, так как Redis (ioredis) не работает в Edge Runtime.
         return NextResponse.next();
     }
 
@@ -29,15 +28,24 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // 3. Redirect Logic
+    // 3. Protection Logic
+    const isProtectedPath = path.startsWith('/dashboard') || path.startsWith('/admin-panel');
+    const isApiPath = path.startsWith('/api/') && !path.startsWith('/api/auth');
+
+    if (!session && (isProtectedPath || isApiPath)) {
+        if (isApiPath) {
+            const response = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            response.cookies.delete('session');
+            return response;
+        }
+        const response = NextResponse.redirect(new URL('/login', request.url));
+        response.cookies.delete('session');
+        return response;
+    }
 
     // If user is logged in -> redirect away from login page
     if (session && path === "/login") {
         return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-
-    if (!session && path.startsWith("/dashboard")) {
-        return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // RBAC: Protect Admin Routes
@@ -60,11 +68,12 @@ export const config = {
     matcher: [
         /*
          * Match all request paths except for the ones starting with:
-         * - api (API routes)
+         * - api/auth (API auth routes)
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
+        '/api/:path*'
     ],
 };

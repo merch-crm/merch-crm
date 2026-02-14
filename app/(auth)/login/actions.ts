@@ -2,10 +2,12 @@
 
 import { encrypt } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { logSecurityEvent } from "@/lib/security-logger";
 import { logError } from "@/lib/error-logger";
+import { rateLimit, resetRateLimit } from "@/lib/rate-limit";
+import { RATE_LIMITS } from "@/lib/rate-limit-config";
 
 export async function loginAction(prevState: unknown, formData: FormData) {
     const email = formData.get("email") as string;
@@ -15,9 +17,24 @@ export async function loginAction(prevState: unknown, formData: FormData) {
         return { error: "Заполните все поля" };
     }
 
-    try {
-        console.log(`[Login] Attempting login for email: ${email}`);
+    // Rate limiting — prevent brute-force via server action
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim()
+        || headersList.get("x-real-ip")
+        || "unknown";
+    const rateLimitKey = `login:${ip}`;
 
+    const limit = await rateLimit(
+        rateLimitKey,
+        RATE_LIMITS.login.limit,
+        RATE_LIMITS.login.windowSec
+    );
+
+    if (!limit.success) {
+        return { error: RATE_LIMITS.login.message };
+    }
+
+    try {
         // Use direct SQL query to avoid prepared statement issues with Drizzle
         const { pool } = await import('@/lib/db');
 
@@ -29,28 +46,23 @@ export async function loginAction(prevState: unknown, formData: FormData) {
         const user = result.rows;
 
         if (user.length === 0) {
-            console.log(`[Login] User not found: ${email}`);
-
             // Log to security events
             await logSecurityEvent({
                 eventType: "login_failed",
                 severity: "warning",
                 entityType: "auth",
-                details: { email, reason: 'user_not_found' }
+                details: { reason: 'user_not_found' }
             });
 
             return { error: "Неверный email или пароль" };
         }
 
-        console.log(`[Login] User found, comparing passwords...`);
         const passwordsMatch = await comparePassword(
             password,
             user[0].password_hash
         );
 
         if (!passwordsMatch) {
-            console.log(`[Login] Password mismatch for user: ${email}`);
-
             // Log to security events
             await logSecurityEvent({
                 eventType: "login_failed",
@@ -58,19 +70,16 @@ export async function loginAction(prevState: unknown, formData: FormData) {
                 severity: "warning",
                 entityType: "auth",
                 entityId: user[0].id,
-                details: { email, reason: 'password_mismatch' }
+                details: { reason: 'password_mismatch' }
             });
 
             return { error: "Неверный email или пароль" };
         }
 
-
-        console.log(`[Login] Password matched, creating session...`);
         // Create session
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-        // Fetch role name for session using direct SQL (pool already imported above)
-
+        // Fetch role name for session using direct SQL
         let role = null;
         if (user[0].role_id) {
             const roleResult = await pool.query(
@@ -94,26 +103,17 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             email: user[0].email,
             roleId: user[0].role_id || "",
             roleName: role?.name || "User",
-            departmentName: department?.name || user[0].department || "",
+            departmentName: department?.name || "",
             name: user[0].name || "",
             expires,
         };
 
         const session = await encrypt(sessionData);
 
-        console.log(`[Login] Session encrypted, setting cookie...`);
         const cookieStore = await cookies();
 
-        // Debug cookie
-        cookieStore.set("test_cookie", "ok", { path: "/" });
-
-        cookieStore.set("session", session, {
-            expires,
-            httpOnly: false, // TEMPORARY DEBUG: Allow JS access to check if cookie exists
-            secure: false,
-            sameSite: "lax",
-            path: "/",
-        });
+        const { getSessionCookieOptions } = await import("@/lib/auth");
+        cookieStore.set("session", session, getSessionCookieOptions(expires));
 
         // Log successful login to security events
         await logSecurityEvent({
@@ -123,7 +123,6 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             entityType: "auth",
             entityId: user[0].id,
             details: {
-                email: user[0].email,
                 name: user[0].name,
                 role: role?.name
             }
@@ -136,22 +135,23 @@ export async function loginAction(prevState: unknown, formData: FormData) {
                 "Вход в систему",
                 "auth",
                 user[0].id,
-                { email: user[0].email, name: user[0].name }
+                { name: user[0].name }
             );
-        } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+        } catch {
+            // Audit logging is non-critical
         }
 
-        console.log(`[Login] Cookie set, redirecting...`);
+        // Reset rate limit on successful login
+        await resetRateLimit(rateLimitKey);
     } catch (error) {
         await logError({
             error,
             path: "/login",
             method: "loginAction",
-            details: { email }
+            details: {}
         });
         console.error("[Login] Execution error:", error);
-        return { error: `Ошибка сервера: ${(error as Error).message}` };
+        return { error: "Внутренняя ошибка сервера. Попробуйте позже." };
     }
 
     // Redirect after successful login

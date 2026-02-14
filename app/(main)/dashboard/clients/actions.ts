@@ -7,9 +7,11 @@ import { asc, desc, eq, sql, or, and, ilike, inArray } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
+import { ClientSchema, ClientUpdateSchema } from "./validation";
+import { ActionResult } from "@/lib/types";
 
 
-export async function getManagers() {
+export async function getManagers(): Promise<ActionResult<{ id: string; name: string }[]>> {
     try {
         const data = await db.query.users.findMany({
             columns: {
@@ -18,15 +20,21 @@ export async function getManagers() {
             },
             orderBy: (users, { asc }) => [asc(users.name)],
         });
-        return { data };
+        return { success: true, data };
     } catch (error) {
         console.error("Error fetching managers:", error);
-        return { error: "Failed to fetch managers" };
+        return { success: false, error: "Failed to fetch managers" };
     }
 }
 
 
-export async function getClients(showArchived = false) {
+export interface ClientListItem extends Omit<typeof clients.$inferSelect, 'updatedAt'> {
+    totalOrders: number;
+    totalSpent: number;
+    lastOrderDate: string | null;
+}
+
+export async function getClients(showArchived = false): Promise<ActionResult<ClientListItem[]>> {
     try {
         const data = await db.select({
             id: clients.id,
@@ -67,19 +75,18 @@ export async function getClients(showArchived = false) {
             phone: shouldHidePhone ? "HIDDEN" : client.phone
         }));
 
-        return { data: safeData };
+        return { success: true, data: safeData };
     } catch (error) {
         await logError({
             error,
             path: "/dashboard/clients",
             method: "getClients"
         });
-        console.error("Error fetching clients:", error);
-        return { error: "Failed to fetch clients" };
+        return { success: false, error: "Failed to fetch clients" };
     }
 }
 
-export async function checkClientDuplicates(data: { phone?: string, email?: string, lastName?: string, firstName?: string }) {
+export async function checkClientDuplicates(data: { phone?: string, email?: string, lastName?: string, firstName?: string }): Promise<ActionResult<(typeof clients.$inferSelect)[]>> {
     try {
         const conditions = [];
 
@@ -101,52 +108,49 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
             ));
         }
 
-        if (conditions.length === 0) return { data: [] };
+        if (conditions.length === 0) return { success: true, data: [] };
 
         const duplicates = await db.select().from(clients)
             .where(and(or(...conditions), eq(clients.isArchived, false)))
             .limit(5);
 
-        return { data: duplicates };
+        return { success: true, data: duplicates };
     } catch (error) {
         console.error("Error checking duplicates:", error);
-        return { error: "Ошибка при проверке дубликатов" };
+        return { success: false, error: "Ошибка при проверке дубликатов" };
     }
 }
 
-export async function addClient(formData: FormData) {
+export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: (typeof clients.$inferSelect)[] } | void>> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const lastName = formData.get("lastName") as string;
-    const firstName = formData.get("firstName") as string;
-    const patronymic = formData.get("patronymic") as string;
-    const company = formData.get("company") as string;
-    const phone = formData.get("phone") as string;
-    const telegram = formData.get("telegram") as string;
-    const instagram = formData.get("instagram") as string;
-    const email = formData.get("email") as string;
-    const city = formData.get("city") as string;
-    const address = formData.get("address") as string;
-    const comments = formData.get("comments") as string;
-    const socialLink = formData.get("socialLink") as string;
-    const acquisitionSource = formData.get("acquisitionSource") as string;
-    const managerId = formData.get("managerId") as string;
-    const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
-    const ignoreDuplicates = formData.get("ignoreDuplicates") === "true";
+    const validation = ClientSchema.safeParse(Object.fromEntries(formData));
 
-    if (!lastName || !firstName || !phone) {
-        return { error: "Фамилия, Имя и Телефон обязательны" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
+
+    const {
+        lastName, firstName, patronymic, company, phone,
+        telegram, instagram, email, city, address, comments,
+        socialLink, acquisitionSource, managerId, clientType,
+        ignoreDuplicates
+    } = validation.data;
 
     try {
         // Final duplicate check before insert
         if (!ignoreDuplicates) {
-            const dupRes = await checkClientDuplicates({ phone, email, lastName, firstName });
-            if (dupRes.data && dupRes.data.length > 0) {
+            const dupRes = await checkClientDuplicates({
+                phone,
+                email: email || undefined,
+                lastName,
+                firstName
+            });
+            if (dupRes.success && dupRes.data && dupRes.data.length > 0) {
                 return {
-                    error: "Похожий клиент уже существует",
-                    duplicates: dupRes.data
+                    success: true,
+                    data: { duplicates: dupRes.data }
                 };
             }
         }
@@ -184,34 +188,25 @@ export async function addClient(formData: FormData) {
             method: "addClient",
             details: { lastName, firstName, phone, email }
         });
-        console.error("Error adding client:", error);
-        return { error: "Failed to add client" };
+        return { success: false, error: "Failed to add client" };
     }
 }
 
-export async function updateClient(clientId: string, formData: FormData) {
+export async function updateClient(clientId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    const lastName = formData.get("lastName") as string;
-    const firstName = formData.get("firstName") as string;
-    const patronymic = formData.get("patronymic") as string;
-    const company = formData.get("company") as string;
-    const phone = formData.get("phone") as string;
-    const telegram = formData.get("telegram") as string;
-    const instagram = formData.get("instagram") as string;
-    const email = formData.get("email") as string;
-    const city = formData.get("city") as string;
-    const address = formData.get("address") as string;
-    const comments = formData.get("comments") as string;
-    const socialLink = formData.get("socialLink") as string;
-    const acquisitionSource = formData.get("acquisitionSource") as string;
-    const managerId = formData.get("managerId") as string;
-    const clientType = (formData.get("clientType") as "b2c" | "b2b") || "b2c";
+    const validation = ClientUpdateSchema.safeParse(Object.fromEntries(formData));
 
-    if (!lastName || !firstName || !phone) {
-        return { error: "Фамилия, Имя и Телефон обязательны" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
+
+    const {
+        lastName, firstName, patronymic, company, phone,
+        telegram, instagram, email, city, address, comments,
+        socialLink, acquisitionSource, managerId, clientType
+    } = validation.data;
 
     try {
         const user = await db.query.users.findFirst({
@@ -219,7 +214,7 @@ export async function updateClient(clientId: string, formData: FormData) {
             with: { role: true }
         });
 
-        if (!user || !user.role) return { error: "User role not found" };
+        if (!user || !user.role) return { success: false, error: "User role not found" };
 
         const fullName = [lastName, firstName, patronymic].filter(Boolean).join(" ");
 
@@ -241,6 +236,7 @@ export async function updateClient(clientId: string, formData: FormData) {
                 socialLink,
                 acquisitionSource,
                 managerId: managerId || null,
+                updatedAt: new Date(),
             })
             .where(eq(clients.id, clientId));
 
@@ -254,34 +250,62 @@ export async function updateClient(clientId: string, formData: FormData) {
             details: { clientId, lastName, firstName, phone }
         });
         console.error("Error updating client:", error);
-        return { error: "Failed to update client" };
+        return { success: false, error: "Failed to update client" };
     }
 }
 
-export async function updateClientComments(clientId: string, comments: string) {
+export async function updateClientComments(clientId: string, comments: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(clients)
-            .set({ comments })
+            .set({ comments, updatedAt: new Date() })
             .where(eq(clients.id, clientId));
 
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
         console.error("Error updating comments:", error);
-        return { error: "Failed to update comments" };
+        return { success: false, error: "Failed to update comments" };
     }
 }
 
-export async function getClientDetails(clientId: string) {
+export interface ClientDetails {
+    id: string;
+    name: string | null;
+    firstName: string;
+    lastName: string;
+    patronymic: string | null;
+    company: string | null;
+    phone: string;
+    telegram: string | null;
+    instagram: string | null;
+    email: string | null;
+    city: string | null;
+    address: string | null;
+    comments: string | null;
+    socialLink: string | null;
+    acquisitionSource: string | null;
+    managerId: string | null;
+    clientType: "b2c" | "b2b";
+    isArchived: boolean;
+    createdAt: Date;
+    orders: (typeof orders.$inferSelect & { items: (typeof orderItems.$inferSelect)[] })[];
+    stats: {
+        count: number;
+        total: string;
+        balance: number;
+    };
+}
+
+export async function getClientDetails(clientId: string): Promise<ActionResult<ClientDetails>> {
     try {
         const client = await db.query.clients.findFirst({
             where: eq(clients.id, clientId),
         });
 
-        if (!client) return { error: "Client not found" };
+        if (!client) return { success: false, error: "Client not found" };
 
         const session = await getSession();
         const userRole = session?.roleName;
@@ -319,6 +343,7 @@ export async function getClientDetails(clientId: string) {
         const balance = totalPaid - totalOrders;
 
         return {
+            success: true,
             data: {
                 ...client,
                 orders: clientOrders,
@@ -330,11 +355,20 @@ export async function getClientDetails(clientId: string) {
         };
     } catch (error) {
         console.error("Error fetching client details:", error);
-        return { error: "Failed to fetch client details" };
+        return { success: false, error: "Failed to fetch client details" };
     }
 }
 
-export async function getClientStats() {
+export interface ClientStats {
+    totalClients: number;
+    newThisMonth: number;
+    avgCheck: number;
+    totalRevenue: number;
+    totalOrders: number;
+    avgRevenue: number;
+}
+
+export async function getClientStats(): Promise<ActionResult<ClientStats>> {
     try {
         const totalClients = await db.select({ count: sql<number>`count(*)` }).from(clients);
 
@@ -362,6 +396,7 @@ export async function getClientStats() {
             : 0;
 
         return {
+            success: true,
             data: {
                 totalClients: totalClients[0].count,
                 newThisMonth: newThisMonth[0].count,
@@ -373,67 +408,40 @@ export async function getClientStats() {
         };
     } catch (error) {
         console.error("Error getting client stats:", error);
-        return { error: "Failed to get client stats" };
+        return { success: false, error: "Failed to get client stats" };
     }
 }
-export async function deleteClient(clientId: string) {
+export async function deleteClient(clientId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
-        // Get user role with permissions
         const user = await db.query.users.findFirst({
             where: eq(users.id, session.id),
             with: { role: true }
         });
 
-        if (!user || !user.role) return { error: "User role not found" };
-
-        // Strict role check: Only Administrator can delete clients
-        if (user.role.name !== "Администратор") {
-            return { error: "Только администратор может удалять клиентов" };
+        if (!user || user.role?.name !== "Администратор") {
+            return { success: false, error: "Только администратор может удалять клиентов" };
         }
 
-        // Cascade delete: first delete all orders (orderItems will trigger cascade if set in DB, but safe to assume we just delete orders first)
-        // Note: orderItems has onDelete: "cascade" in schema, so deleting orders matches.
+        await db.transaction(async (tx) => {
+            const clientToDelete = await tx.query.clients.findFirst({
+                where: eq(clients.id, clientId),
+                with: { orders: true }
+            });
 
-        const clientToDelete = await db.query.clients.findFirst({
-            where: eq(clients.id, clientId),
-            with: { orders: true } // Fetch orders to process them
-        });
+            if (clientToDelete && clientToDelete.orders.length > 0) {
+                const orderIds = clientToDelete.orders.map(o => o.id);
+                await releaseReservationsForOrders(orderIds, tx);
 
-        if (clientToDelete && clientToDelete.orders.length > 0) {
-            const reservationStatuses = ["new", "design", "production"];
-
-            for (const order of clientToDelete.orders) {
-                // If the order has items reserved, release them
-                if (reservationStatuses.includes(order.status)) {
-                    // We need to fetch items for this order locally or import the logic
-                    // Since we can"t easily import releaseOrderReservation from another server action file without circular deps often,
-                    // we will inline the logic or use a shared helper if possible.
-                    // For now, inline the logic:
-                    const items = await db.query.orderItems.findMany({
-                        where: eq(orderItems.orderId, order.id),
-                        with: { inventoryItem: true }
-                    });
-
-                    for (const item of items) {
-                        if (item.inventoryId && item.inventoryItem) {
-                            await db.update(inventoryItems)
-                                .set({
-                                    reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - item.quantity)
-                                })
-                                .where(eq(inventoryItems.id, item.inventoryId));
-                        }
-                    }
+                for (const orderId of orderIds) {
+                    await logAction("Удален заказ (из удаления клиента)", "order", orderId);
                 }
-                // Log order deletion
-                await logAction("Удален заказ (из удаления клиента)", "order", order.id);
+                await tx.delete(orders).where(eq(orders.clientId, clientId));
             }
-            // Now delete orders
-            await db.delete(orders).where(eq(orders.clientId, clientId));
-        }
-        await db.delete(clients).where(eq(clients.id, clientId));
+            await tx.delete(clients).where(eq(clients.id, clientId));
+        });
 
         revalidatePath("/dashboard/clients");
         return { success: true };
@@ -445,13 +453,13 @@ export async function deleteClient(clientId: string) {
             details: { clientId }
         });
         console.error("Error deleting client:", error);
-        return { error: "Failed to delete client" };
+        return { success: false, error: "Failed to delete client" };
     }
 }
 
-export async function bulkDeleteClients(clientIds: string[]) {
+export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -460,33 +468,74 @@ export async function bulkDeleteClients(clientIds: string[]) {
         });
 
         if (!user || user.role?.name !== "Администратор") {
-            return { error: "Только администратор может удалять базу" };
+            return { success: false, error: "Только администратор может удалять базу" };
         }
 
-        // We should release reservations here too if we want to be thorough.
-        // For simplicity in bulk, we'll delete the clients and let cascading handle orders/items if set.
-        // However, the deleteClient logic has explicit reservation release. 
-        // Let's at least delete orders first to trigger schema cascades correctly if they exist.
+        await db.transaction(async (tx) => {
+            const clientOrders = await tx.query.orders.findMany({
+                where: inArray(orders.clientId, clientIds)
+            });
 
-        await db.delete(orders).where(inArray(orders.clientId, clientIds));
-        await db.delete(clients).where(inArray(clients.id, clientIds));
+            if (clientOrders.length > 0) {
+                const orderIds = clientOrders.map(o => o.id);
+                await releaseReservationsForOrders(orderIds, tx);
+
+                await tx.delete(orders).where(inArray(orders.clientId, clientIds));
+            }
+
+            await tx.delete(clients).where(inArray(clients.id, clientIds));
+        });
 
         revalidatePath("/dashboard/clients");
         await logAction("Групповое удаление клиентов", "client", "bulk", { count: clientIds.length });
         return { success: true };
     } catch (error) {
         console.error("Error in bulk delete:", error);
-        return { error: "Failed to delete clients" };
+        return { success: false, error: "Failed to delete clients" };
     }
 }
 
-export async function bulkUpdateClientManager(clientIds: string[], managerId: string) {
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import * as schema from "@/lib/schema";
+
+type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
+
+/** Helper to release inventory reservations for multiple orders atomically */
+async function releaseReservationsForOrders(orderIds: string[], tx: Transaction) {
+    const reservationStatuses = ["new", "design", "production"] as const;
+
+    // Find all orders that have reserved status
+    const targetOrders = await tx.query.orders.findMany({
+        where: and(inArray(orders.id, orderIds), inArray(orders.status, reservationStatuses))
+    });
+
+    if (targetOrders.length === 0) return;
+
+    const actualOrderIds = targetOrders.map(o => o.id);
+
+    // Find all items for these orders
+    const items = await tx.query.orderItems.findMany({
+        where: inArray(orderItems.orderId, actualOrderIds)
+    });
+
+    for (const item of items) {
+        if (item.inventoryId) {
+            await tx.update(inventoryItems)
+                .set({
+                    reservedQuantity: sql`GREATEST(0, ${inventoryItems.reservedQuantity} - ${item.quantity})`
+                })
+                .where(eq(inventoryItems.id, item.inventoryId));
+        }
+    }
+}
+
+export async function bulkUpdateClientManager(clientIds: string[], managerId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(clients)
-            .set({ managerId: managerId || null })
+            .set({ managerId: managerId || null, updatedAt: new Date() })
             .where(inArray(clients.id, clientIds));
 
         revalidatePath("/dashboard/clients");
@@ -494,17 +543,17 @@ export async function bulkUpdateClientManager(clientIds: string[], managerId: st
         return { success: true };
     } catch (error) {
         console.error("Error in bulk manager update:", error);
-        return { error: "Failed to update clients" };
+        return { success: false, error: "Failed to update clients" };
     }
 }
 
-export async function toggleClientArchived(clientId: string, isArchived: boolean) {
+export async function toggleClientArchived(clientId: string, isArchived: boolean): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(clients)
-            .set({ isArchived })
+            .set({ isArchived, updatedAt: new Date() })
             .where(eq(clients.id, clientId));
 
         await logAction(isArchived ? "Архивация клиента" : "Разархивация клиента", "client", clientId, { isArchived });
@@ -512,36 +561,37 @@ export async function toggleClientArchived(clientId: string, isArchived: boolean
         return { success: true };
     } catch (error) {
         console.error("Error toggling client archive:", error);
-        return { error: "Failed to archive client" };
+        return { success: false, error: "Failed to archive client" };
     }
 }
 
-export async function updateClientField(clientId: string, field: string, value: string | number | boolean | null) {
+export async function updateClientField(clientId: string, field: string, value: string | number | boolean | null): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         const allowedFields = ["managerId", "clientType", "city", "lastName", "firstName", "company"];
-        if (!allowedFields.includes(field)) return { error: "Invalid field" };
+        if (!allowedFields.includes(field)) return { success: false, error: "Invalid field" };
 
         await db.update(clients)
-            .set({ [field]: value || null })
+            .set({ [field]: value || null, updatedAt: new Date() })
             .where(eq(clients.id, clientId));
 
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
         console.error("Error updating client field:", error);
+        return { success: false, error: "Failed to update client field" };
     }
 }
 
-export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true) {
+export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(clients)
-            .set({ isArchived })
+            .set({ isArchived, updatedAt: new Date() })
             .where(inArray(clients.id, clientIds));
 
         await logAction(isArchived ? "Групповая архивация клиентов" : "Групповая разархивация клиентов", "client", "bulk", { count: clientIds.length, isArchived });
@@ -549,6 +599,6 @@ export async function bulkArchiveClients(clientIds: string[], isArchived: boolea
         return { success: true };
     } catch (error) {
         console.error("Error in bulk archive:", error);
-        return { error: "Failed to archive clients" };
+        return { success: false, error: "Failed to archive clients" };
     }
 }

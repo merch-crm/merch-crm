@@ -3,8 +3,11 @@ import { ProductionBoard } from "./production-board";
 import { getProductionStats, getProductionItems } from "./actions";
 
 export default async function ProductionPage() {
-    const stats = await getProductionStats();
-    const items = await getProductionItems();
+    const statsRes = await getProductionStats();
+    const stats = (statsRes.success && statsRes.data) ? statsRes.data : { active: 0, urgent: 0, efficiency: 0, completedToday: 0 };
+
+    const itemsRes = await getProductionItems();
+    const items = (itemsRes.success && itemsRes.data) ? itemsRes.data : [];
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">

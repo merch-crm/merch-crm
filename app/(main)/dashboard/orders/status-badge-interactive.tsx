@@ -54,7 +54,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
         setIsOpen(false);
 
         const res = await updateOrderStatus(orderId, newId);
-        if (res.error) {
+        if (!res.success) {
             setCurrentStatus(prevStatus);
         }
         setLoading(false);

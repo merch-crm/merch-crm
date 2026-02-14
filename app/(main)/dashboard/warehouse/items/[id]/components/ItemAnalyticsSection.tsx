@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ItemHistoryTransaction } from "../../../types";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { format, subDays, addDays, isAfter, differenceInCalendarDays } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -530,7 +530,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
                                 </span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-lg font-black text-background">{hoveredData.value}</span>
-                                    <span className="text-[8px] font-black text-background/50">{unit}</span>
+                                    <span className="text-[10px] font-bold text-white/50">{formatUnit(unit)}</span>
                                 </div>
 
                                 {/* Little arrow pointer */}

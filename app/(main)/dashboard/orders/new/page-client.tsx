@@ -17,9 +17,10 @@ import {
     CreditCard,
     AlertCircle
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { createOrder, searchClients, ActionResponse } from "../actions";
+import { createOrder, searchClients } from "../actions";
+import { ActionResult } from "@/lib/types";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -31,7 +32,7 @@ import { Switch } from "@/components/ui/switch";
 
 interface Client {
     id: string;
-    name: string;
+    name: string | null;
     company?: string | null;
     phone?: string | null;
     email?: string | null;
@@ -42,9 +43,9 @@ interface Client {
 
 interface OrderInventoryItem {
     id: string;
-    name: string;
+    name: string | null;
     quantity: number;
-    unit: string;
+    unit: string | null;
     sellingPrice?: number | string | null;
     price?: number;
     orderQuantity?: number;
@@ -68,19 +69,18 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     const [searchResults, setSearchResults] = useState<Client[]>([]);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [isSearching, setIsSearching] = useState(false);
-    const [searchHistory, setSearchHistory] = useState<string[]>([]);
-
-    useEffect(() => {
-        const history = localStorage.getItem("client_search_history");
-        if (history) {
+    const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+        if (typeof window !== "undefined") {
             try {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setSearchHistory(JSON.parse(history));
+                const history = localStorage.getItem("client_search_history");
+                return history ? JSON.parse(history) : [];
             } catch (e) {
                 console.error("Failed to parse search history", e);
+                return [];
             }
         }
-    }, []);
+        return [];
+    });
     const [showHistory, setShowHistory] = useState(false);
 
     const addToHistory = (query: string) => {
@@ -124,18 +124,18 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             quantity: i.orderQuantity || 0
         })));
         setIsApplyingPromo(false);
-        if (res.error || !res.data) {
+        if (!res.success || !res.data) {
             toast(res.error || "Промокод не найден", "error");
         } else {
             setDetails({
                 ...details,
-                appliedPromo: res.data ? {
+                appliedPromo: {
                     ...res.data,
                     id: res.data.id || "",
                     code: res.data.code || "",
                     discountType: res.data.discountType || "percentage",
                     value: String(res.data.value || "0")
-                } : null,
+                },
                 promocodeId: res.data.id || ""
             });
             const message = res.data.message || `Промокод ${promoInput} применен!`;
@@ -148,7 +148,20 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             if (searchQuery.length >= 2) {
                 setIsSearching(true);
                 const res = await searchClients(searchQuery);
-                setSearchResults(res.data || []);
+                if (res.success && res.data) {
+                    setSearchResults(res.data.map(c => ({
+                        id: c.id,
+                        name: c.name,
+                        company: c.company,
+                        phone: c.phone,
+                        email: c.email,
+                        address: c.address,
+                        telegram: c.telegram,
+                        instagram: c.instagram
+                    })));
+                } else {
+                    setSearchResults([]);
+                }
                 setIsSearching(false);
             } else {
                 setSearchResults([]);
@@ -200,10 +213,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             inventoryId: item.id,
             quantity: item.orderQuantity || 0,
             price: item.price || 0,
-            description: item.name
+            description: item.name || ""
         }))));
 
-        const res: ActionResponse = await createOrder(formData);
+        const res: ActionResult = await createOrder(formData);
         setLoading(false);
 
         if (!res.success) {
@@ -399,9 +412,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     {selectedClient && (
                                         <div className="p-6 rounded-2xl bg-primary text-primary-foreground flex items-center justify-between shadow-lg shadow-primary/20">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name[0]}</div>
+                                                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl ">{selectedClient.name?.[0] || "?"}</div>
                                                 <div>
-                                                    <p className="font-bold">{selectedClient.name}</p>
+                                                    <p className="font-bold">{selectedClient.name || "Unnamed Client"}</p>
                                                     <p className="text-xs text-primary-foreground/60 tracking-normal">{selectedClient.company || "Личный заказ"}</p>
                                                 </div>
                                             </div>
@@ -442,7 +455,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                                                 <div className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground font-bold"><Package className="w-5 h-5" /></div>
                                                                 <div>
                                                                     <p className="text-sm font-bold text-foreground">{item.name}</p>
-                                                                    <p className="text-[10px] text-muted-foreground font-bold tracking-wider">Остаток: {item.quantity} {item.unit}</p>
+                                                                    <p className="text-[10px] text-muted-foreground font-bold tracking-wider">Остаток: {item.quantity} {formatUnit(item.unit)}</p>
                                                                 </div>
                                                             </div>
                                                             <Plus className="w-4 h-4 text-muted-foreground" />

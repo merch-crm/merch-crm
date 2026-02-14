@@ -45,6 +45,7 @@ export default async function SalaryPage({
     }
 
     const res = await getSalaryStats(fromDate, toDate);
+    const data = res.success ? (res.data || { totalBudget: 0, employeePayments: [] }) : { totalBudget: 0, employeePayments: [] };
 
-    return <SalaryClient salaryData={res.data || { totalBudget: 0, employeePayments: [] }} />;
+    return <SalaryClient salaryData={data} />;
 }

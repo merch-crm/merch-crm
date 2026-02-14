@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { playSound } from "@/lib/sounds";
 
@@ -26,7 +26,7 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
         }
     }, [pathname]);
 
-    const updateFavicon = (count: number, showOrderDot: boolean) => {
+    const updateFavicon = useCallback((count: number, showOrderDot: boolean) => {
         if (typeof window === "undefined") return;
 
         const faviconElements = Array.from(document.querySelectorAll('link[rel*="icon"]')) as HTMLLinkElement[];
@@ -151,7 +151,7 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
         img.onerror = () => {
             console.warn("Failed to update favicon badge: could not load", originalHref);
         };
-    };
+    }, []);
 
     useEffect(() => {
         if (unreadCount > prevCount.current) {
@@ -159,7 +159,7 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
         }
         prevCount.current = unreadCount;
         updateFavicon(unreadCount, hasNewOrders);
-    }, [unreadCount, hasNewOrders, customSoundUrl]);
+    }, [unreadCount, hasNewOrders, customSoundUrl, updateFavicon]);
 
     useEffect(() => {
         if (orderCount !== null && prevOrderCount.current !== null && orderCount > prevOrderCount.current) {

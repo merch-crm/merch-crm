@@ -26,10 +26,10 @@ async function AdminOverview() {
 
     return (
         <AdminOverviewClient
-            stats={statsRes.data}
-            monitoring={monitoringRes}
-            security={securityRes}
-            backups={backupsRes.data}
+            stats={statsRes.success ? statsRes.data : undefined}
+            monitoring={monitoringRes.success ? monitoringRes.data : undefined}
+            security={securityRes.success ? securityRes.data : undefined}
+            backups={backupsRes.success ? backupsRes.data : []}
         />
     );
 }

@@ -1,20 +1,29 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments, inventoryStocks, promocodes, payments } from "@/lib/schema";
+import { orders, orderItems, clients, users, inventoryItems, inventoryTransactions, orderAttachments, inventoryStocks, promocodes, payments, roles } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { desc, eq, inArray, and, gte, lte, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 
-
 import { notifyWarehouseManagers } from "@/lib/notifications";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { CreateOrderSchema, UpdateOrderPrioritySchema } from "./validation";
+import { ActionResult } from "@/lib/types";
 
-export type ActionResponse<T = unknown> = { success: true; data?: T } | { success: false; error: string; data?: never };
-
-export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string) {
+export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string): Promise<ActionResult<{
+    orders: (typeof orders.$inferSelect & {
+        client: typeof clients.$inferSelect;
+        items: (typeof orderItems.$inferSelect)[];
+        creator: (typeof users.$inferSelect & { role: typeof roles.$inferSelect | null }) | null;
+        attachments: (typeof orderAttachments.$inferSelect)[];
+    })[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+}>> {
     try {
         const offset = (page - 1) * limit;
 
@@ -90,10 +99,13 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
         }
 
         return {
-            data,
-            total,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
+            success: true,
+            data: {
+                orders: data,
+                total,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page
+            }
         };
     } catch (error) {
         await logError({
@@ -103,30 +115,42 @@ export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, sh
             details: { from, to, page, limit }
         });
         console.error("Error fetching orders:", error);
-        return { error: "Failed to fetch orders" };
+        return { success: false, error: "Failed to fetch orders" };
     }
 }
 
 // Helper to get clients for the dropdown
-export async function getClientsForSelect() {
-    return db.select({ id: clients.id, name: clients.name })
-        .from(clients)
-        .where(eq(clients.isArchived, false));
+export async function getClientsForSelect(): Promise<ActionResult<{ id: string; name: string | null }[]>> {
+    try {
+        const data = await db.select({ id: clients.id, name: clients.name })
+            .from(clients)
+            .where(eq(clients.isArchived, false));
+        return { success: true, data };
+    } catch (error) {
+        console.error("Error fetching clients for select:", error);
+        return { success: false, error: "Failed to fetch clients" };
+    }
 }
 
 // Helper to get inventory for the dropdown
-export async function getInventoryForSelect() {
-    return db.select({
-        id: inventoryItems.id,
-        name: inventoryItems.name,
-        quantity: inventoryItems.quantity,
-        unit: inventoryItems.unit,
-        sellingPrice: inventoryItems.sellingPrice
-    }).from(inventoryItems);
+export async function getInventoryForSelect(): Promise<ActionResult<{ id: string; name: string; quantity: number; unit: string | null; sellingPrice: string | null }[]>> {
+    try {
+        const data = await db.select({
+            id: inventoryItems.id,
+            name: inventoryItems.name,
+            quantity: inventoryItems.quantity,
+            unit: inventoryItems.unit,
+            sellingPrice: inventoryItems.sellingPrice
+        }).from(inventoryItems);
+        return { success: true, data };
+    } catch (error) {
+        console.error("Error fetching inventory for select:", error);
+        return { success: false, error: "Failed to fetch inventory" };
+    }
 }
 
-export async function searchClients(query: string) {
-    if (!query || query.length < 2) return { data: [] };
+export async function searchClients(query: string): Promise<ActionResult<(typeof clients.$inferSelect)[]>> {
+    if (!query || query.length < 2) return { success: true, data: [] };
 
     try {
         const results = await db.query.clients.findMany({
@@ -146,49 +170,65 @@ export async function searchClients(query: string) {
             name: client.name || [client.lastName, client.firstName].filter(Boolean).join(' ') || 'Unnamed Client'
         }));
 
-        return { data: mappedResults };
+        return { success: true, data: mappedResults };
     } catch (error) {
         console.error("Error searching clients:", error);
         return { success: false, error: "Search failed" };
     }
 }
 
-export async function createOrder(formData: FormData): Promise<ActionResponse> {
+export async function createOrder(formData: FormData): Promise<ActionResult> {
     const session = await getSession();
     if (!session) return { success: false, error: "Unauthorized" };
 
-    const clientId = formData.get("clientId") as string;
-    const priority = formData.get("priority") as string;
-    const isUrgent = formData.get("isUrgent") === "true";
-    const advanceAmount = formData.get("advanceAmount") as string || "0";
-    const promocodeId = formData.get("promocodeId") as string || null;
-    const paymentMethod = formData.get("paymentMethod") as string || "cash";
-    const deadline = formData.get("deadline") ? new Date(formData.get("deadline") as string) : null;
+    const validation = CreateOrderSchema.safeParse({
+        clientId: formData.get("clientId"),
+        priority: formData.get("priority"),
+        isUrgent: formData.get("isUrgent"),
+        advanceAmount: formData.get("advanceAmount"),
+        promocodeId: formData.get("promocodeId"),
+        paymentMethod: formData.get("paymentMethod"),
+        deadline: formData.get("deadline"),
+        items: formData.get("items"),
+    });
 
-    // Parse items from hidden JSON field (simplified for this demo)
-    const itemsJson = formData.get("items") as string;
-    let items: Array<{
-        inventoryId?: string;
-        quantity: number;
-        price: number;
-        description: string;
-    }> = [];
-    try {
-        items = JSON.parse(itemsJson);
-    } catch {
-        return { success: false, error: "Invalid items data" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
 
-    if (!clientId || items.length === 0) {
-        return { success: false, error: "Клиент и товары обязательны" };
-    }
+    const {
+        clientId,
+        priority,
+        isUrgent,
+        advanceAmount,
+        promocodeId,
+        paymentMethod,
+        deadline,
+        items
+    } = validation.data;
 
     try {
         await db.transaction(async (tx) => {
             // 1. Create Order
             const year = new Date().getFullYear().toString().slice(-2);
-            const random = Math.floor(Math.random() * 9000 + 1000);
-            const orderNumber = `ORD-${year}-${random}`;
+
+            // Sequential order number generation to avoid collisions
+            const [lastOrder] = await tx
+                .select({ orderNumber: orders.orderNumber })
+                .from(orders)
+                .orderBy(desc(orders.id))
+                .limit(1);
+
+            let nextNum = 1000;
+            if (lastOrder && lastOrder.orderNumber.includes('-')) {
+                const parts = lastOrder.orderNumber.split('-');
+                const lastNum = parseInt(parts[parts.length - 1]);
+                if (!isNaN(lastNum)) {
+                    nextNum = lastNum + 1;
+                }
+            }
+
+            const orderNumber = `ORD-${year}-${nextNum}`;
 
             const [newOrder] = await tx.insert(orders).values({
                 orderNumber,
@@ -230,26 +270,32 @@ export async function createOrder(formData: FormData): Promise<ActionResponse> {
                 // Reserve in inventory if it's linked
                 if (item.inventoryId) {
                     try {
-                        // Using our library (tx-safe variant would be better, but library uses global db. 
-                        // For simplicity in this demo we'll use manual tx increment or call library if it supports tx context.
-                        // Since library uses 'db', it won't be part of this transaction unless modified.
-                        // I will do it manually within transaction for atomic safety.
-                        const [invItem] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, item.inventoryId));
-                        if (invItem) {
-                            const available = invItem.quantity - invItem.reservedQuantity;
-                            if (available < item.quantity) {
-                                throw new Error(`Недостаточно товара ${invItem.name}. Доступно: ${available}`);
+                        // Atomic update to avoid race conditions (M-07)
+                        const result = await tx.update(inventoryItems)
+                            .set({
+                                reservedQuantity: sql`${inventoryItems.reservedQuantity} + ${item.quantity}`
+                            })
+                            .where(and(
+                                eq(inventoryItems.id, item.inventoryId),
+                                // Verification check: reserved + new <= total
+                                sql`${inventoryItems.reservedQuantity} + ${item.quantity} <= ${inventoryItems.quantity}`
+                            ))
+                            .returning();
+
+                        if (result.length === 0) {
+                            // Either item not found or not enough stock (check failed in where clause)
+                            const [checkItem] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, item.inventoryId));
+                            if (!checkItem) {
+                                throw new Error(`Товар не найден`);
                             }
-
-                            await tx.update(inventoryItems)
-                                .set({ reservedQuantity: (invItem.reservedQuantity || 0) + item.quantity })
-                                .where(eq(inventoryItems.id, item.inventoryId));
-
-                            await logAction("Резерв", "inventory_item", item.inventoryId, {
-                                reason: `Заказ ${orderNumber}`,
-                                quantity: item.quantity
-                            });
+                            const available = checkItem.quantity - checkItem.reservedQuantity;
+                            throw new Error(`Недостаточно товара ${checkItem.name}. Доступно для резерва: ${available}`);
                         }
+
+                        await logAction("Резерв", "inventory_item", item.inventoryId, {
+                            reason: `Заказ ${orderNumber}`,
+                            quantity: item.quantity
+                        });
                     } catch (e) {
                         throw new Error(e instanceof Error ? e.message : "Ошибка резервирования");
                     }
@@ -363,7 +409,7 @@ export async function createOrder(formData: FormData): Promise<ActionResponse> {
 }
 
 
-export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string) {
+export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const session = await getSession();
     if (!session) return { success: false, error: "Unauthorized" };
 
@@ -378,6 +424,21 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             const oldStatus = order.status;
 
             if (oldStatus === newStatus) return;
+
+            // M-09: Validate status transitions
+            const allowedTransitions: Record<string, string[]> = {
+                "new": ["design", "production", "cancelled"],
+                "design": ["new", "production", "cancelled"],
+                "production": ["done", "cancelled"],
+                "done": ["shipped", "cancelled"],
+                "shipped": ["cancelled"], // Once shipped, can only be cancelled/returned
+                "cancelled": ["new", "design", "production"] // Reactivation
+            };
+
+            const allowed = allowedTransitions[oldStatus as string] || [];
+            if (!allowed.includes(newStatus as string)) {
+                throw new Error(`Переход из ${oldStatus} в ${newStatus} не разрешен`);
+            }
 
             // Stock Adjustment Logic
             const deductionStatuses: string[] = ["shipped", "done"];
@@ -469,9 +530,15 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
     }
 }
 
-export async function updateOrderPriority(orderId: string, newPriority: string) {
+export async function updateOrderPriority(orderId: string, newPriority: string): Promise<ActionResult> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Unauthorized" };
+
+    const validation = UpdateOrderPrioritySchema.safeParse({ priority: newPriority });
+    if (!validation.success) return { success: false, error: "Invalid priority" };
+
     try {
-        await db.update(orders).set({ priority: newPriority }).where(eq(orders.id, orderId));
+        await db.update(orders).set({ priority: validation.data.priority, updatedAt: new Date() }).where(eq(orders.id, orderId));
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
@@ -487,7 +554,7 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
     try {
         for (const orderId of orderIds) {
             const res = await updateOrderStatus(orderId, newStatus as "new" | "design" | "production" | "done" | "shipped" | "cancelled");
-            if (res.error) {
+            if (!res.success) {
                 console.error(`Failed to update order ${orderId}: ${res.error}`);
             }
         }
@@ -505,7 +572,7 @@ export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: s
     if (!session) return { success: false, error: "Unauthorized" };
 
     try {
-        await db.update(orders).set({ priority: newPriority }).where(inArray(orders.id, orderIds));
+        await db.update(orders).set({ priority: newPriority, updatedAt: new Date() }).where(inArray(orders.id, orderIds));
 
         for (const orderId of orderIds) {
             await logAction("Обновлен приоритет (массово)", "order", orderId, {
@@ -541,7 +608,7 @@ export async function archiveOrder(orderId: string, archive: boolean = true) {
 
     try {
         await db.update(orders)
-            .set({ isArchived: archive })
+            .set({ isArchived: archive, updatedAt: new Date() })
             .where(eq(orders.id, orderId));
 
         await logAction(archive ? "Архивирован заказ" : "Восстановлен заказ", "order", orderId);
@@ -573,7 +640,7 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
 
     try {
         await db.update(orders)
-            .set({ isArchived: archive })
+            .set({ isArchived: archive, updatedAt: new Date() })
             .where(inArray(orders.id, orderIds));
 
         for (const orderId of orderIds) {
@@ -606,20 +673,23 @@ export async function bulkDeleteOrders(orderIds: string[]) {
     }
 
     try {
-        const ordersToDelete = await db.query.orders.findMany({
-            where: inArray(orders.id, orderIds)
+        await db.transaction(async (tx) => { // M-05: Wrap in transaction
+            const ordersToDelete = await tx.query.orders.findMany({ // Use tx for query
+                where: inArray(orders.id, orderIds)
+            });
+
+            const reservationStatuses = ["new", "design", "production"];
+
+            for (const order of ordersToDelete) {
+                if (reservationStatuses.includes(order.status)) {
+                    await releaseOrderReservation(order.id, tx); // M-06: Pass tx to release reservation
+                }
+                await logAction("Удален заказ (массово)", "order", order.id);
+            }
+
+            await tx.delete(orders).where(inArray(orders.id, orderIds)); // Use tx for delete
         });
 
-        const reservationStatuses = ["new", "design", "production"];
-
-        for (const order of ordersToDelete) {
-            if (reservationStatuses.includes(order.status)) {
-                await releaseOrderReservation(order.id);
-            }
-            await logAction("Удален заказ (массово)", "order", order.id);
-        }
-
-        await db.delete(orders).where(inArray(orders.id, orderIds));
         revalidatePath("/dashboard/orders");
         return { success: true };
     } catch (error) {
@@ -628,7 +698,14 @@ export async function bulkDeleteOrders(orderIds: string[]) {
     }
 }
 
-export async function getOrderById(id: string) {
+export async function getOrderById(id: string): Promise<ActionResult<typeof orders.$inferSelect & {
+    client: typeof clients.$inferSelect | null;
+    items: (typeof orderItems.$inferSelect)[];
+    attachments: (typeof orderAttachments.$inferSelect)[];
+    payments: (typeof payments.$inferSelect)[];
+    promocode: typeof promocodes.$inferSelect | null;
+    creator: (typeof users.$inferSelect & { role: typeof roles.$inferSelect | null }) | null;
+}>> {
     try {
         const order = await db.query.orders.findFirst({
             where: eq(orders.id, id),
@@ -646,6 +723,8 @@ export async function getOrderById(id: string) {
             }
         });
 
+        if (!order) return { success: false, error: "Order not found" };
+
         if (order && order.client) {
             const client = order.client;
             if (!client.name && (client.firstName || client.lastName)) {
@@ -662,10 +741,10 @@ export async function getOrderById(id: string) {
             }
         }
 
-        return { data: order };
-    } catch (e) {
-        console.error(e);
-        return { error: "Failed to fetch order" };
+        return { success: true, data: order };
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        return { success: false, error: "Failed to fetch order" };
     }
 }
 
@@ -686,23 +765,26 @@ export async function deleteOrder(orderId: string) {
     }
 
     try {
-        const orderToDelete = await db.query.orders.findFirst({
-            where: eq(orders.id, orderId),
-            with: { client: true }
+        await db.transaction(async (tx) => {
+            const orderToDelete = await tx.query.orders.findFirst({
+                where: eq(orders.id, orderId),
+                with: { client: true }
+            });
+
+            if (orderToDelete) {
+                // If order is in a state where items are reserved, release them
+                const reservationStatuses = ["new", "design", "production"];
+                if (reservationStatuses.includes(orderToDelete.status)) {
+                    await releaseOrderReservation(orderId, tx);
+                }
+
+                await logAction("Удален заказ", "order", orderId, {
+                    name: `Заказ #${orderId.slice(0, 8)} (${orderToDelete?.client?.name || "неизвестного клиента"})`
+                });
+                await tx.delete(orders).where(eq(orders.id, orderId));
+            }
         });
 
-        if (orderToDelete) {
-            // If order is in a state where items are reserved, release them
-            const reservationStatuses = ["new", "design", "production"];
-            if (reservationStatuses.includes(orderToDelete.status)) {
-                await releaseOrderReservation(orderId);
-            }
-
-            await logAction("Удален заказ", "order", orderId, {
-                name: `Заказ #${orderId.slice(0, 8)} (${orderToDelete?.client?.name || "неизвестного клиента"})`
-            });
-            await db.delete(orders).where(eq(orders.id, orderId));
-        }
         revalidatePath("/dashboard/orders");
         return { success: true };
     } catch (error) {
@@ -717,17 +799,26 @@ export async function deleteOrder(orderId: string) {
     }
 }
 
-async function releaseOrderReservation(orderId: string) {
-    const items = await db.query.orderItems.findMany({
+import { ExtractTablesWithRelations } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import * as schema from "@/lib/schema";
+
+type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
+
+async function releaseOrderReservation(orderId: string, tx?: Transaction) {
+    const d = tx || db;
+
+    const items = await d.query.orderItems.findMany({
         where: eq(orderItems.orderId, orderId),
         with: { inventoryItem: true }
     });
 
     for (const item of items) {
-        if (item.inventoryId && item.inventoryItem) {
-            await db.update(inventoryItems)
+        if (item.inventoryId) {
+            // Atomic decrement to avoid race conditions
+            await d.update(inventoryItems)
                 .set({
-                    reservedQuantity: Math.max(0, (item.inventoryItem.reservedQuantity || 0) - item.quantity)
+                    reservedQuantity: sql`GREATEST(0, ${inventoryItems.reservedQuantity} - ${item.quantity})`
                 })
                 .where(eq(inventoryItems.id, item.inventoryId));
         }
@@ -772,7 +863,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData) {
 }
 
 // Separate stats fetcher to avoid fetching all orders for pagination
-export async function getOrderStats(from?: Date, to?: Date) {
+export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResult<{ total: number; new: number; inProduction: number; completed: number; revenue: number }>> {
     try {
         const whereClause = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
@@ -786,21 +877,24 @@ export async function getOrderStats(from?: Date, to?: Date) {
         }).from(orders).where(finalWhere);
 
         return {
-            total: allOrders.length,
-            new: allOrders.filter(o => o.status === "new").length,
-            inProduction: allOrders.filter(o => ["design", "production"].includes(o.status)).length,
-            completed: allOrders.filter(o => ["done", "shipped"].includes(o.status)).length,
-            revenue: allOrders.reduce((acc, o) => acc + Number(o.totalAmount || 0), 0)
+            success: true,
+            data: {
+                total: allOrders.length,
+                new: allOrders.filter(o => o.status === "new").length,
+                inProduction: allOrders.filter(o => ["design", "production"].includes(o.status)).length,
+                completed: allOrders.filter(o => ["done", "shipped"].includes(o.status)).length,
+                revenue: allOrders.reduce((acc, o) => acc + Number(o.totalAmount || 0), 0)
+            }
         };
     } catch (error) {
         console.error("Error fetching order stats:", error);
-        return { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
+        return { success: false, error: "Failed to fetch order statistics" };
     }
 }
 
 export async function updateOrderField(orderId: string, field: string, value: string | number | boolean | null | Date) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
@@ -818,7 +912,7 @@ export async function updateOrderField(orderId: string, field: string, value: st
                 throw new Error("У вас нет прав для редактирования этого заказа");
             }
 
-            const updateData: Record<string, unknown> = {};
+            const updateData: Record<string, unknown> = { updatedAt: new Date() };
 
             if (field === "isUrgent") {
                 updateData.isUrgent = Boolean(value);
@@ -852,17 +946,17 @@ export async function updateOrderField(orderId: string, field: string, value: st
             method: "updateOrderField",
             details: { orderId, field, value }
         });
-        return { error: error instanceof Error ? error.message : "Failed to update order field" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update order field" };
     }
 }
 
 export async function toggleOrderArchived(orderId: string, isArchived: boolean) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.update(orders)
-            .set({ isArchived })
+            .set({ isArchived, updatedAt: new Date() })
             .where(eq(orders.id, orderId));
 
         await logAction(isArchived ? "Архивация заказа" : "Разархивация заказа", "order", orderId, { isArchived });
@@ -870,13 +964,13 @@ export async function toggleOrderArchived(orderId: string, isArchived: boolean) 
         return { success: true };
     } catch (error) {
         console.error("Error toggling order archive:", error);
-        return { error: "Failed to archive order" };
+        return { success: false, error: "Failed to archive order" };
     }
 }
 
 export async function refundOrder(orderId: string, amount: number, reason: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
@@ -906,13 +1000,13 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
         return { success: true };
     } catch (error) {
         console.error("Error refunding order:", error);
-        return { error: "Failed to process refund" };
+        return { success: false, error: "Failed to process refund" };
     }
 }
 
 export async function addPayment(orderId: string, amount: number, method: string, isAdvance: boolean, comment?: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.insert(payments).values({
@@ -934,6 +1028,6 @@ export async function addPayment(orderId: string, amount: number, method: string
         return { success: true };
     } catch (error) {
         console.error("Error adding payment:", error);
-        return { error: "Failed to add payment" };
+        return { success: false, error: "Failed to add payment" };
     }
 }

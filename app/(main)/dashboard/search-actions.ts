@@ -6,6 +6,8 @@ import { getSession } from "@/lib/auth";
 import { ilike, or, desc } from "drizzle-orm";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
+import { ActionResult } from "@/lib/types";
+
 export interface SearchResult {
     id: string;
     type: "order" | "client" | "item" | "user" | "task" | "promocode" | "wiki" | "page" | "location" | "expense" | "category";
@@ -15,11 +17,11 @@ export interface SearchResult {
     status?: string;
 }
 
-export async function globalSearch(query: string): Promise<{ data: SearchResult[] }> {
-    if (!query || query.length < 2) return { data: [] };
+export async function globalSearch(query: string): Promise<ActionResult<SearchResult[]>> {
+    if (!query || query.length < 2) return { success: true, data: [] };
 
     const session = await getSession();
-    if (!session) return { data: [] };
+    if (!session) return { success: true, data: [] };
 
     const dep = session.departmentName;
     const isAdmin = dep === "Руководство";
@@ -244,9 +246,9 @@ export async function globalSearch(query: string): Promise<{ data: SearchResult[
             }))
         ];
 
-        return { data: results.slice(0, 15) }; // Limit total results
+        return { success: true, data: results.slice(0, 15) }; // Limit total results
     } catch (error) {
         console.error("Global search error:", error);
-        return { data: [] };
+        return { success: false, error: "Ошибка поиска" };
     }
 }

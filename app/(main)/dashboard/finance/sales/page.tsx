@@ -59,7 +59,7 @@ export default async function FinanceSalesPage({
 
     const salesRes = await getFinancialStats(fromDate, toDate);
 
-    if (salesRes.error) {
+    if (!salesRes.success) {
         return <div className="p-10 text-center text-rose-500">{salesRes.error}</div>;
     }
 

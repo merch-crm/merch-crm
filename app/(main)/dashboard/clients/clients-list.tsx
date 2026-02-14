@@ -106,7 +106,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
     const fetchClients = useCallback(() => {
         getClients(showArchived).then(res => {
-            if (res.data) setClients(res.data as Client[]);
+            if (res.success && res.data) setClients(res.data as Client[]);
             setLoading(false);
         });
     }, [showArchived]);
@@ -117,7 +117,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
     useEffect(() => {
         getManagers().then(res => {
-            if (res.data) setManagers(res.data);
+            if (res.success && res.data) setManagers(res.data);
         });
     }, []);
 
@@ -353,7 +353,6 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         )}
                         <SlidersHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4 relative z-10" />
                         <span className="relative z-10 hidden sm:inline">Параметры</span>
-                        <span className="relative z-10 sm:hidden">Фильтры</span>
                         <ChevronDown className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4 relative z-10 transition-all duration-300", showFilters && "rotate-180")} />
                     </Button>
                     <Button
@@ -374,7 +373,6 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <span className={cn("flex items-center gap-2 relative z-10", showArchived && "text-amber-700")}>
                             {showArchived ? <ArchiveRestore className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Archive className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                             <span className="hidden sm:inline">{showArchived ? "Архив" : "База"}</span>
-                            <span className="sm:hidden">{showArchived ? "Архив" : "База"}</span>
                         </span>
                     </Button>
                 </div>

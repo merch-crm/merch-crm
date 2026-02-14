@@ -25,12 +25,12 @@ export default async function NewItemPage({
         import("../../actions").then(m => m.getAllUsers())
     ]);
 
-    const categories = 'data' in categoriesRes && categoriesRes.data ? categoriesRes.data : [];
-    const storageLocations = 'data' in locationsRes && locationsRes.data ? locationsRes.data : [];
-    const measurementUnits = 'data' in unitsRes && unitsRes.data ? unitsRes.data : [];
-    const dynamicAttributes = 'data' in attributesRes && attributesRes.data ? attributesRes.data : [];
-    const attributeTypes = 'data' in typesRes && typesRes.data ? typesRes.data : [];
-    const users = 'data' in usersRes && usersRes.data ? usersRes.data : [];
+    const categories = (categoriesRes.success && 'data' in categoriesRes && categoriesRes.data) ? categoriesRes.data : [];
+    const storageLocations = (locationsRes.success && 'data' in locationsRes && locationsRes.data) ? locationsRes.data : [];
+    const measurementUnits = (unitsRes.success && 'data' in unitsRes && unitsRes.data) ? unitsRes.data : [];
+    const dynamicAttributes = (attributesRes.success && 'data' in attributesRes && attributesRes.data) ? attributesRes.data : [];
+    const attributeTypes = (typesRes.success && 'data' in typesRes && typesRes.data) ? typesRes.data : [];
+    const users = (usersRes.success && 'data' in usersRes && usersRes.data) ? usersRes.data : [];
 
     return (
         <NewItemPageClient

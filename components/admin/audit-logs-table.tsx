@@ -138,9 +138,9 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 startDate || null,
                 endDate || null
             );
-            if (res.data) {
-                setLogs(res.data as AuditLog[]);
-                setTotalLogs(res.total || 0);
+            if (res.success && res.data) {
+                setLogs(res.data.logs as AuditLog[]);
+                setTotalLogs(res.data.total || 0);
             }
         } catch (error) {
             console.error(error);
@@ -153,7 +153,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
         const fetchUsers = async () => {
             try {
                 const res = await getUsers(1, 100);
-                if (res.data) setAllUsers(res.data);
+                if (res.success && res.data) setAllUsers(res.data.users);
             } catch (error) {
                 console.error("Failed to fetch users:", error);
                 toast("Не удалось загрузить список пользователей", "destructive");

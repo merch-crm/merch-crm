@@ -6,7 +6,7 @@ import { Plus, Minus, AlertCircle, Package, RefreshCw, Check } from "lucide-reac
 import { adjustInventoryStock } from "./actions";
 import { playSound } from "@/lib/sounds";
 
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -205,7 +205,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                         <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">
                                             {selectedLocationId ? currentStockOnLocation : item.quantity}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
 
@@ -261,7 +261,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 type === 'out' ? currentStockOnLocation - amount :
                                                     amount}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -296,7 +296,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                             className="w-20 bg-transparent border-none text-center text-3xl font-black text-slate-900 outline-none tabular-nums p-0 leading-none"
                                         />
                                         <span className="text-sm font-bold text-slate-400 mt-1">
-                                            {(item.unit === 'pcs' || item.unit === 'шт') ? 'шт.' : item.unit}
+                                            {formatUnit(item.unit)}
                                         </span>
                                     </div>
 

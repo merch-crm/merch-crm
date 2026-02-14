@@ -88,7 +88,7 @@ export const inventoryItemTypeEnum = pgEnum("inventory_item_type", [
 
 export const clientTypeEnum = pgEnum("client_type", ["b2c", "b2b"]);
 
-export const measurementUnitEnum = pgEnum("measurement_unit_v2", ["pcs", "liters", "meters", "kg", "шт", "шт."]);
+export const measurementUnitEnum = pgEnum("measurement_unit_v2", ["pcs", "liters", "meters", "kg"]);
 
 export const paymentMethodEnum = pgEnum("payment_method", ["cash", "bank", "online", "account"]);
 
@@ -162,11 +162,11 @@ export const users = pgTable("users", {
     telegram: text("telegram"),
     instagram: text("instagram"),
     socialMax: text("social_max"),
-    department: text("department"),
     departmentId: uuid("department_id").references(() => departments.id),
     lastActiveAt: timestamp("last_active_at"),
     isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
     return {
         roleIdx: index("users_role_idx").on(table.roleId),
@@ -195,6 +195,7 @@ export const clients = pgTable("clients", {
     managerId: uuid("manager_id").references(() => users.id),
     isArchived: boolean("is_archived").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
     return {
         managerIdx: index("clients_manager_idx").on(table.managerId),
@@ -239,7 +240,7 @@ export const inventoryItems = pgTable("inventory_items", {
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
     itemType: inventoryItemTypeEnum("item_type").default("clothing").notNull(),
     quantity: integer("quantity").default(0).notNull(),
-    unit: measurementUnitEnum("unit").default("шт.").notNull(),
+    unit: measurementUnitEnum("unit").default("pcs").notNull(),
     lowStockThreshold: integer("low_stock_threshold").default(10).notNull(),
     criticalStockThreshold: integer("critical_stock_threshold").default(0).notNull(),
     description: text("description"),
@@ -295,6 +296,7 @@ export const orders = pgTable("orders", {
     isArchived: boolean("is_archived").default(false).notNull(),
     cancelReason: text("cancel_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
     return {
         clientIdx: index("orders_client_idx").on(table.clientId),
@@ -303,6 +305,7 @@ export const orders = pgTable("orders", {
         promoIdx: index("orders_promo_idx").on(table.promocodeId),
         archivedIdx: index("orders_archived_idx").on(table.isArchived),
         dateIdx: index("orders_date_idx").on(table.createdAt),
+        statusDateIdx: index("orders_status_date_idx").on(table.status, table.createdAt),
     }
 });
 
@@ -369,6 +372,7 @@ export const tasks = pgTable("tasks", {
     createdBy: uuid("created_by").references(() => users.id).notNull(),
     dueDate: timestamp("due_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
     return {
         assignedUserIdx: index("tasks_assigned_user_idx").on(table.assignedToUserId),

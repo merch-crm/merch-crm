@@ -30,7 +30,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
 
         try {
             const result = await deleteClient(client.id);
-            if (result.error) {
+            if (!result.success) {
                 setError(result.error);
                 playSound("notification_error");
             } else {

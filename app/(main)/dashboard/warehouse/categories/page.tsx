@@ -69,8 +69,8 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
         getOrphanedItemCount()
     ]);
 
-    const categoriesRes = 'data' in categoriesResult && categoriesResult.data ? categoriesResult.data : [];
-    const orphanedCount = 'count' in orphanedResult && typeof orphanedResult.count === 'number' ? orphanedResult.count : 0;
+    const categoriesRes = (categoriesResult.success && 'data' in categoriesResult) ? categoriesResult.data : [];
+    const orphanedCount = (orphanedResult.success && 'data' in orphanedResult) ? orphanedResult.data : 0;
 
     const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
     const categories: Category[] = [...categoriesRes];

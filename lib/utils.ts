@@ -28,3 +28,21 @@ export function escapeHtml(str: string): string {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+const UNIT_LABELS: Record<string, string> = {
+    pcs: "шт.",
+    liters: "л",
+    meters: "м",
+    kg: "кг",
+    "шт": "шт.",
+    "шт.": "шт.",
+};
+
+/**
+ * Converts an internal unit enum value (e.g. "pcs") to a user-facing Russian label (e.g. "шт.").
+ * Falls back to the raw value if no mapping exists.
+ */
+export function formatUnit(unit: string | null | undefined): string {
+    if (!unit) return "шт.";
+    return UNIT_LABELS[unit] ?? unit;
+}

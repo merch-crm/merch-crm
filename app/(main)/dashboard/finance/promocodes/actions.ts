@@ -5,8 +5,25 @@ import { promocodes } from "@/lib/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { orders } from "@/lib/schema";
+import { ActionResult } from "@/lib/types";
 
-export async function getPromocodes() {
+export interface Promocode {
+    id: string;
+    name: string | null;
+    code: string;
+    discountType: string;
+    value: string;
+    isActive: boolean;
+    usageLimit: number | null;
+    usageCount: number;
+    expiresAt: Date | null;
+    adminComment: string | null;
+    minOrderAmount: string | null;
+    createdAt: Date;
+    totalSaved: number;
+}
+
+export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
     try {
         const data = await db.select({
             id: promocodes.id,
@@ -26,10 +43,10 @@ export async function getPromocodes() {
             .from(promocodes)
             .orderBy(desc(promocodes.createdAt));
 
-        return { data };
+        return { success: true, data };
     } catch (error) {
         console.error("Error fetching promocodes:", error);
-        return { error: "Failed to fetch promocodes" };
+        return { success: false, error: "Failed to fetch promocodes" };
     }
 }
 
@@ -45,7 +62,7 @@ interface PromocodeValues {
     adminComment?: string;
 }
 
-export async function createPromocode(values: PromocodeValues) {
+export async function createPromocode(values: PromocodeValues): Promise<ActionResult> {
     try {
         await db.insert(promocodes).values({
             name: values.name || null,
@@ -63,11 +80,11 @@ export async function createPromocode(values: PromocodeValues) {
         return { success: true };
     } catch (error) {
         console.error("Error creating promocode:", error);
-        return { error: "Failed to create promocode" };
+        return { success: false, error: "Failed to create promocode" };
     }
 }
 
-export async function updatePromocode(id: string, values: PromocodeValues) {
+export async function updatePromocode(id: string, values: PromocodeValues): Promise<ActionResult> {
     try {
         await db.update(promocodes)
             .set({
@@ -86,11 +103,11 @@ export async function updatePromocode(id: string, values: PromocodeValues) {
         return { success: true };
     } catch (error) {
         console.error("Error updating promocode:", error);
-        return { error: "Failed to update promocode" };
+        return { success: false, error: "Failed to update promocode" };
     }
 }
 
-export async function togglePromocodeActive(id: string, isActive: boolean) {
+export async function togglePromocodeActive(id: string, isActive: boolean): Promise<ActionResult> {
     try {
         await db.update(promocodes)
             .set({ isActive })
@@ -99,11 +116,11 @@ export async function togglePromocodeActive(id: string, isActive: boolean) {
         return { success: true };
     } catch (error) {
         console.error("Error toggling promocode:", error);
-        return { error: "Failed to update promocode" };
+        return { success: false, error: "Failed to update promocode" };
     }
 }
 
-export async function bulkCreatePromocodes(count: number, prefix: string, values: PromocodeValues) {
+export async function bulkCreatePromocodes(count: number, prefix: string, values: PromocodeValues): Promise<ActionResult<{ count: number }>> {
     try {
         const newCodes = [];
         for (let i = 0; i < count; i++) {
@@ -131,14 +148,14 @@ export async function bulkCreatePromocodes(count: number, prefix: string, values
 
         await db.insert(promocodes).values(newCodes);
         revalidatePath("/dashboard/finance");
-        return { success: true, count: newCodes.length };
+        return { success: true, data: { count: newCodes.length } };
     } catch (error) {
         console.error("Error bulk creating promocodes:", error);
-        return { error: "Failed to bulk create promocodes" };
+        return { success: false, error: "Failed to bulk create promocodes" };
     }
 }
 
-export async function deletePromocode(id: string) {
+export async function deletePromocode(id: string): Promise<ActionResult> {
     try {
         await db.delete(promocodes)
             .where(eq(promocodes.id, id));
@@ -146,6 +163,6 @@ export async function deletePromocode(id: string) {
         return { success: true };
     } catch (error) {
         console.error("Error deleting promocode:", error);
-        return { error: "Failed to delete promocode" };
+        return { success: false, error: "Failed to delete promocode" };
     }
 }

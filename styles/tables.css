@@ -77,19 +77,16 @@
 /* ----------------------------------------
    Тело таблицы
    ---------------------------------------- */
-@utility crm-tbody {
-    & tr {
-        border-bottom: 1px solid var(--border);
-        transition: all 0.2s ease;
+@utility crm-tr {
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s ease;
 
-        &:last-child {
-            border-bottom: none;
-        }
+    &:last-child {
+        border-bottom: none;
+    }
 
-        &:hover {
-            background: rgba(241, 245, 249, 0.5);
-            /* Very light hover */
-        }
+    &:hover {
+        background: rgba(241, 245, 249, 0.5);
     }
 }
 
@@ -185,10 +182,6 @@
    ---------------------------------------- */
 @utility crm-tr-selected {
     background: var(--muted) !important;
-
-    &:hover {
-        background: var(--border) !important;
-    }
 }
 
 /* ----------------------------------------

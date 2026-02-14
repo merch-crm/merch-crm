@@ -209,7 +209,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 onConfirm={handleConfirmDelete}
                 isLoading={isDeleting}
                 title="Удалить локацию?"
-                description={`Локация "${deleteName}" будет удалена. Данное действие необратимо.`}
+                description={`Локация «${deleteName}» будет удалена. Данное действие необратимо.`}
                 confirmText="Удалить"
                 variant="destructive"
             >

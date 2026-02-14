@@ -10,6 +10,7 @@ export default async function PromocodesPage() {
     if (!session) redirect("/login");
 
     const res = await getPromocodes();
+    const data = res.success ? (res.data || []) : [];
 
-    return <PromocodesClient initialData={(res.data as unknown as Promocode[]) || []} />;
+    return <PromocodesClient initialData={data as unknown as Promocode[]} />;
 }

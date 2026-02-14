@@ -381,8 +381,8 @@ export function PackagingBasicInfoStep({
                                 <PremiumSelect
                                     label=""
                                     placeholder=""
-                                    options={measurementUnits.map(u => ({ id: u.name, title: u.name }))} // assuming name is enough
-                                    value={formData.unit || ""}
+                                    options={measurementUnits.map(u => ({ id: u.id, title: u.name }))}
+                                    value={formData.unit || "pcs"}
                                     onChange={(val) => updateFormData({ unit: val })}
                                 />
                             </div>

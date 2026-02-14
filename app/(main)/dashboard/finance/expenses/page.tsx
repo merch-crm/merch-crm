@@ -34,6 +34,7 @@ export default async function ExpensesPage({
     }
 
     const res = await getFinanceTransactions('expense', fromDate, toDate);
+    const data = res.success ? (res.data || []) : [];
 
-    return <ExpensesClient initialData={(res.data || []) as unknown as Expense[]} />;
+    return <ExpensesClient initialData={data as unknown as Expense[]} />;
 }

@@ -33,24 +33,24 @@ export interface StorageQuotaUsage {
 
 export async function getStorageQuotaSettings() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const record = await db.query.systemSettings.findFirst({
             where: eq(systemSettings.key, "storage_config")
         });
 
-        if (!record) return { data: DEFAULT_SETTINGS };
-        return { data: record.value as unknown as StorageQuotaSettings };
+        if (!record) return { success: true, data: DEFAULT_SETTINGS };
+        return { success: true, data: record.value as unknown as StorageQuotaSettings };
     } catch (e) {
         console.error("Error fetching storage settings:", e);
-        return { error: "Ошибка получения настроек" };
+        return { success: false, error: "Ошибка получения настроек" };
     }
 }
 
 export async function updateStorageQuotaSettings(settings: StorageQuotaSettings) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         await db.insert(systemSettings).values({
@@ -66,13 +66,13 @@ export async function updateStorageQuotaSettings(settings: StorageQuotaSettings)
         return { success: true };
     } catch (e) {
         console.error("Error updating storage settings:", e);
-        return { error: "Ошибка сохранения настроек" };
+        return { success: false, error: "Ошибка сохранения настроек" };
     }
 }
 
 export async function checkStorageQuotas() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { error: "Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { data: settings = DEFAULT_SETTINGS } = await getStorageQuotaSettings();
@@ -126,9 +126,9 @@ export async function checkStorageQuotas() {
             }
         };
 
-        return { data: result };
+        return { success: true, data: result };
     } catch (e) {
         console.error("Storage quota check error:", e);
-        return { error: "Ошибка проверки квот" };
+        return { success: false, error: "Ошибка проверки квот" };
     }
 }

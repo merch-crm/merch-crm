@@ -10,13 +10,15 @@ import { OrderHistoryTable } from "./order-history-table";
 
 export default async function ClientPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
-    const { data: client, error } = await getClientDetails(resolvedParams.id);
+    const result = await getClientDetails(resolvedParams.id);
     const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
 
-    if (error || !client) {
+    if (!result.success || !result.data) {
         notFound();
     }
+
+    const client = result.data;
 
     return (
         <div className="space-y-6">

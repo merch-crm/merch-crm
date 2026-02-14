@@ -335,14 +335,10 @@ export function S3StorageManager() {
         if (manual) setLoading(true);
         try {
             const res = await getStorageDetails(prefix);
-            if ("error" in res) {
-                toast(res.error as string, "error");
-            } else if (isStorageData(res)) {
-                setData(res);
-            } else {
-                // Fallback if type guard fails but no explicit error
-                console.error("Invalid data format received", res);
-                toast("Ошибка формата данных с сервера", "error");
+            if (res.success && res.data) {
+                setData(res.data);
+            } else if (!res.success) {
+                toast(res.error || "Не удалось загрузить данные", "error");
             }
         } catch (e) {
             console.error(e);
@@ -487,11 +483,11 @@ export function S3StorageManager() {
         setIsPreviewLoading(true);
         try {
             const res = await getS3FileUrlAction(file.key);
-            if (res.success && res.url) {
+            if (res.success && res.data) {
                 if (isImage) {
-                    setPreviewFile({ name, url: res.url, type: 'image' });
+                    setPreviewFile({ name, url: res.data, type: 'image' });
                 } else {
-                    openInNewTab(res.url);
+                    openInNewTab(res.data);
                 }
             } else {
                 toast(res.error || "Ошибка при получении ссылки на файл", "error");

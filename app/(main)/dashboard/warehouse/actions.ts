@@ -1,5 +1,13 @@
 "use server";
 
+import fs from "fs";
+import path from "path";
+import sharp from "sharp";
+import { revalidatePath } from "next/cache";
+import { desc, eq, sql, inArray, and, asc, isNotNull, isNull, lte, lt, gte, ne, type InferInsertModel } from "drizzle-orm";
+import { AnyPgColumn } from "drizzle-orm/pg-core";
+import Fuse from "fuse.js";
+
 import { db } from "@/lib/db";
 import {
     inventoryItems,
@@ -13,13 +21,18 @@ import {
     inventoryAttributes,
     inventoryAttributeTypes
 } from "@/lib/schema";
-import { revalidatePath } from "next/cache";
 import { getOrSetCache, invalidateCache } from "@/lib/redis";
-import { desc, eq, sql, inArray, and, asc, isNotNull, isNull, lte, lt, gte, ne, type InferInsertModel } from "drizzle-orm";
-import { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getSession as getAuthSession } from "@/lib/auth";
 import { comparePassword } from "@/lib/password";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { slugify } from "@/lib/utils";
+import { checkItemStockAlerts } from "@/lib/notifications";
+import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
 import { InventoryItem } from "./types";
+import { InventoryCategorySchema, InventoryItemSchema, AdjustStockSchema } from "./validation";
+
+import { ActionResult } from "@/lib/types";
 
 export async function getSession() {
     return await getAuthSession();
@@ -77,6 +90,7 @@ export async function getWarehouseStats() {
         });
 
         return {
+            success: true,
             data: {
                 totalStock: Number(stock?.totalStock || 0),
                 totalReserved: Number(stock?.totalReserved || 0),
@@ -87,12 +101,9 @@ export async function getWarehouseStats() {
         };
     } catch (error) {
         console.error("DEBUG: getWarehouseStats error", error);
-        return { error: "Failed to fetch warehouse statistics" };
+        return { success: false, error: "Failed to fetch warehouse statistics" };
     }
 }
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { slugify } from "@/lib/utils";
 
 export async function findItemBySKU(sku: string) {
     const item = await db.query.inventoryItems.findFirst({
@@ -101,11 +112,6 @@ export async function findItemBySKU(sku: string) {
     });
     return item?.id || null;
 }
-import fs from "fs";
-import path from "path";
-import sharp from "sharp";
-import { checkItemStockAlerts } from "@/lib/notifications";
-import Fuse from "fuse.js";
 
 // Helper to sanitize folder/file names
 function sanitizeFileName(name: string): string {
@@ -209,7 +215,6 @@ async function updateChildrenPaths(parentId: string) {
     }
 }
 
-import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
 
 async function saveFile(file: File | null, directoryPath: string): Promise<string | null> {
     if (!file || file.size === 0) return null;
@@ -279,18 +284,18 @@ export async function getInventoryCategories() {
                     desc(inventoryCategories.createdAt)
                 );
 
-            return { data: categories };
+            return { success: true, data: categories };
         }, 3600); // 1 hour cache
     } catch (error) {
         console.error(error);
-        return { error: "Failed to fetch inventory categories" };
+        return { success: false, error: "Failed to fetch inventory categories" };
     }
 }
 
 export async function addInventoryCategory(formData: FormData) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для добавления категории" };
+        return { success: false, error: "Недостаточно прав для добавления категории" };
     }
 
     const name = formData.get("name") as string;
@@ -310,7 +315,7 @@ export async function addInventoryCategory(formData: FormData) {
     const showInName = formData.get("showInName") === "on" || formData.get("showInName") === "true";
 
     if (!name) {
-        return { error: "Name is required" };
+        return { success: false, error: "Name is required" };
     }
 
     try {
@@ -364,14 +369,14 @@ export async function addInventoryCategory(formData: FormData) {
         refreshWarehouse();
         return { success: true };
     } catch {
-        return { error: "Failed to add category" };
+        return { success: false, error: "Failed to add category" };
     }
 }
 
 export async function deleteInventoryCategory(id: string, password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для удаления категории" };
+        return { success: false, error: "Недостаточно прав для удаления категории" };
     }
 
     try {
@@ -379,19 +384,19 @@ export async function deleteInventoryCategory(id: string, password?: string) {
             where: eq(inventoryCategories.id, id)
         });
 
-        if (!category) return { error: "Категория не найдена" };
+        if (!category) return { success: false, error: "Категория не найдена" };
 
         if (category.isSystem) {
             if (session.roleName !== "Администратор") {
-                return { error: "Только администратор может удалять системные данные" };
+                return { success: false, error: "Только администратор может удалять системные данные" };
             }
             if (!password) {
-                return { error: "Для удаления системной категории требуется пароль от вашей учетной записи" };
+                return { success: false, error: "Для удаления системной категории требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль" };
+                return { success: false, error: "Неверный пароль" };
             }
         }
 
@@ -402,7 +407,7 @@ export async function deleteInventoryCategory(id: string, password?: string) {
         });
 
         if (subcategories.length > 0) {
-            return { error: "Нельзя удалить категорию, у которой есть подкатегории. Сначала удалите или переместите их." };
+            return { success: false, error: "Нельзя удалить категорию, у которой есть подкатегории. Сначала удалите или переместите их." };
         }
 
         // First, unlink all items from this category (set categoryId to null)
@@ -428,14 +433,14 @@ export async function deleteInventoryCategory(id: string, password?: string) {
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to delete category" };
+        return { success: false, error: "Failed to delete category" };
     }
 }
 
 export async function updateStorageLocationsOrder(items: { id: string; sortOrder: number }[]) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для изменения порядка складов" };
+        return { success: false, error: "Недостаточно прав для изменения порядка складов" };
     }
 
     try {
@@ -457,7 +462,7 @@ export async function updateStorageLocationsOrder(items: { id: string; sortOrder
         return { success: true };
     } catch (error) {
         console.error("Order update error:", error);
-        return { error: "Не удалось сохранить порядок складов" };
+        return { success: false, error: "Не удалось сохранить порядок складов" };
     }
 }
 
@@ -465,32 +470,34 @@ export async function updateStorageLocationsOrder(items: { id: string; sortOrder
 export async function updateInventoryCategory(id: string, formData: FormData) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для изменения категории" };
+        return { success: false, error: "Недостаточно прав для изменения категории" };
     }
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+    const validation = InventoryCategorySchema.safeParse(Object.fromEntries(formData));
 
-    const icon = formData.get("icon") as string;
-    const color = formData.get("color") as string;
-    const prefix = formData.get("prefix") as string;
-
-    const parentId = formData.get("parentId") as string;
-    const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
-    const isActive = formData.get("isActive") === "on" || formData.get("isActive") === "true";
-
-    const gender = formData.get("gender") as string || "masculine";
-    const singularName = formData.get("singularName") as string;
-    const pluralName = formData.get("pluralName") as string;
-    const showInSku = formData.get("showInSku") === "on" || formData.get("showInSku") === "true";
-    const showInName = formData.get("showInName") === "on" || formData.get("showInName") === "true";
-
-    if (!name) {
-        return { error: "Name is required" };
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
     }
+
+    const {
+        name,
+        description,
+        parentId,
+        color,
+        singularName,
+        pluralName,
+        gender,
+        sortOrder,
+        isActive,
+        defaultUnit,
+        showInSku,
+        showInName,
+        prefix,
+        icon
+    } = validation.data;
 
     if (parentId === id) {
-        return { error: "Категория не может быть своим собственным родителем" };
+        return { success: false, error: "Категория не может быть своим собственным родителем" };
     }
 
     // Check for cyclic reference
@@ -502,13 +509,13 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         // If parentId (B) is a descendant of id (A), then making B parent of A creates cycle.
 
         if (isCycle) {
-            return { error: "Невозможно переместить категорию в её собственную подкатегорию" };
+            return { success: false, error: "Невозможно переместить категорию в её собственную подкатегорию" };
         }
     }
 
     try {
         const slug = slugify(name);
-        const fullPathText = await getCategoryFullPath(parentId);
+        const fullPathText = await getCategoryFullPath(parentId || null);
         const finalFullPath = fullPathText ? `${fullPathText} > ${name}` : name;
 
         await db.update(inventoryCategories)
@@ -546,14 +553,14 @@ export async function updateInventoryCategory(id: string, formData: FormData) {
         refreshWarehouse();
         return { success: true };
     } catch {
-        return { error: "Failed to update category" };
+        return { success: false, error: "Failed to update category" };
     }
 }
 
 export async function updateInventoryCategoriesOrder(items: { id: string; sortOrder: number }[]) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для изменения порядка категорий" };
+        return { success: false, error: "Недостаточно прав для изменения порядка категорий" };
     }
 
     try {
@@ -578,14 +585,14 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
         return { success: true };
     } catch (error) {
         console.error("Order update error:", error);
-        return { error: "Не удалось сохранить порядок категорий" };
+        return { success: false, error: "Не удалось сохранить порядок категорий" };
     }
 }
 
 export async function migrateCategories() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Access denied" };
+        return { success: false, error: "Access denied" };
     }
 
     try {
@@ -633,7 +640,7 @@ export async function migrateCategories() {
         return { success: true, message: `Миграция завершена. Обновлено категорий: ${updatedCount}` };
     } catch (error) {
         console.error(error);
-        return { error: `Migration failed: ${error instanceof Error ? error.message : "Unknown error"}` };
+        return { success: false, error: `Migration failed: ${error instanceof Error ? error.message : "Unknown error"}` };
     }
 }
 
@@ -651,10 +658,10 @@ export async function getInventoryItems() {
             },
             orderBy: desc(inventoryItems.createdAt)
         });
-        return { data: items as unknown as InventoryItem[] };
+        return { success: true, data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getInventoryItems error", error);
-        return { error: "Failed to fetch inventory items" };
+        return { success: false, error: "Failed to fetch inventory items" };
     }
 }
 
@@ -667,10 +674,10 @@ export async function getArchivedItems() {
             },
             orderBy: desc(inventoryItems.archivedAt)
         });
-        return { data: items as unknown as InventoryItem[] };
+        return { success: true, data: items as unknown as InventoryItem[] };
     } catch (error) {
         console.error("DEBUG: getArchivedItems error", error);
-        return { error: "Failed to fetch archived items" };
+        return { success: false, error: "Failed to fetch archived items" };
     }
 }
 
@@ -687,9 +694,10 @@ export async function getInventoryItem(id: string) {
                 stocks: true
             }
         });
-        return { data: item };
-    } catch {
-        return { error: "Failed to fetch item" };
+        return { success: true, data: item };
+    } catch (error) {
+        console.error("DEBUG: getInventoryItem error", error);
+        return { success: false, error: "Failed to fetch item" };
     }
 }
 
@@ -764,95 +772,48 @@ export async function autoArchiveStaleItems() {
         };
     } catch (error) {
         console.error("Auto-archive error:", error);
-        return { error: "Failed to run auto-archive" };
+        return { success: false, error: "Failed to run auto-archive" };
     }
 }
 
 export async function addInventoryItem(formData: FormData) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для добавления товаров" };
+        return { success: false, error: "Недостаточно прав для добавления товаров" };
     }
 
-    const itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables" || "clothing";
-    const name = formData.get("name") as string;
-    const sku = formData.get("sku") as string;
-    const quantity = parseInt(formData.get("quantity") as string);
-    const unit = formData.get("unit") as string;
-    const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
-    const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
-    const categoryIdRaw = formData.get("categoryId") as string;
-    const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
-    const description = formData.get("description") as string;
-    const storageLocationId = (formData.get("storageLocationId") as string) || null;
+    const validation = InventoryItemSchema.safeParse(Object.fromEntries(formData));
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
 
-    const qualityCodeRaw = formData.get("qualityCode") as string;
-    const qualityCode = qualityCodeRaw || null;
+    const {
+        itemType, name, sku, quantity, unit, lowStockThreshold, criticalStockThreshold,
+        categoryId, description, storageLocationId,
+        qualityCode, materialCode, attributeCode, sizeCode, brandCode,
+        costPrice, sellingPrice,
+        attributes: baseAttributes, thumbnailSettings,
+        width, height, depth, weight, packagingType: pkgType, supplierName, supplierLink, minBatch, features,
+        department
+    } = validation.data;
 
-    const materialCodeRaw = formData.get("materialCode") as string;
-    const materialCode = materialCodeRaw || null;
+    const attributes: Record<string, unknown> = { ...baseAttributes };
 
-    const attributeCodeRaw = formData.get("attributeCode") as string;
-    const attributeCode = attributeCodeRaw || null;
-
-    const sizeCodeRaw = formData.get("sizeCode") as string;
-    const sizeCode = sizeCodeRaw || null;
-
-    const brandCodeRaw = formData.get("brandCode") as string;
-    const brandCode = brandCodeRaw || null;
-
-    const costPriceRaw = formData.get("costPrice") as string;
-    const costPrice = costPriceRaw ? Number(costPriceRaw).toFixed(2) : null;
-
-    const sellingPriceRaw = formData.get("sellingPrice") as string;
-    const sellingPrice = sellingPriceRaw ? Number(sellingPriceRaw).toFixed(2) : null;
+    if (itemType === "packaging") {
+        Object.assign(attributes, {
+            width, height, depth, weight,
+            packagingType: pkgType,
+            supplierName, supplierLink, minBatch,
+            features
+        });
+    } else if (itemType === "consumables") {
+        Object.assign(attributes, { department });
+    }
 
     const imageFile = formData.get("image") as File;
-    const attributesStr = formData.get("attributes") as string;
-    const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
-    let attributes: Record<string, unknown> = {};
-    let thumbnailSettings = null;
-    if (attributesStr) {
-        try {
-            attributes = JSON.parse(attributesStr);
-        } catch (e) {
-            console.error("Failed to parse attributes JSON", e);
-        }
-    }
-    if (thumbnailSettingsStr) {
-        try {
-            thumbnailSettings = JSON.parse(thumbnailSettingsStr);
-        } catch (e) {
-            console.error("Failed to parse thumbnailSettings JSON", e);
-        }
-    }
-
-    // Merge type-specific attributes
-    if (itemType === "packaging") {
-        attributes.width = formData.get("width");
-        attributes.height = formData.get("height");
-        attributes.depth = formData.get("depth");
-        attributes.weight = formData.get("weight");
-        attributes.packagingType = formData.get("packagingType");
-        attributes.supplierName = formData.get("supplierName");
-        attributes.supplierLink = formData.get("supplierLink");
-        attributes.minBatch = formData.get("minBatch");
-
-        const featuresStr = formData.get("features") as string;
-        if (featuresStr) {
-            try {
-                attributes.features = JSON.parse(featuresStr);
-            } catch (e) {
-                console.error("Failed to parse features JSON", e);
-            }
-        }
-    } else if (itemType === "consumables") {
-        attributes.department = formData.get("department");
-    }
-
-    if (!name || isNaN(quantity)) {
-        return { error: "Invalid data" };
-    }
+    const imageBackFile = formData.get("imageBack") as File;
+    const imageSideFile = formData.get("imageSide") as File;
+    const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
     try {
         console.log("Starting transaction for new item:", { name, finalSku: sku });
@@ -869,7 +830,7 @@ export async function addInventoryItem(formData: FormData) {
             }
 
             // Prepare folder path: CategoryPath / ItemName
-            const categoryPath = await getCategoryPath(categoryId);
+            const categoryPath = await getCategoryPath(categoryId || null);
             const itemFolderPath = path.join(categoryPath, sanitizeFileName(name || "unnamed"));
             console.log("Item folder path:", itemFolderPath);
 
@@ -894,14 +855,14 @@ export async function addInventoryItem(formData: FormData) {
             // Task 2.1: Enforce units for specific types
             let finalUnit = unit;
             if (itemType === "clothing") {
-                finalUnit = "шт.";
+                finalUnit = "pcs";
             }
 
             const [insertedItem] = await tx.insert(inventoryItems).values({
                 name,
                 sku: finalSku || null,
                 quantity,
-                unit: finalUnit as "pcs" | "liters" | "meters" | "kg" | "шт" | "шт.",
+                unit: finalUnit as "pcs" | "liters" | "meters" | "kg",
                 itemType: itemType || "clothing",
                 lowStockThreshold,
                 criticalStockThreshold,
@@ -918,8 +879,8 @@ export async function addInventoryItem(formData: FormData) {
                 imageBack: imageBackUrl,
                 imageSide: imageSideUrl,
                 imageDetails: imageDetailsUrls,
-                costPrice: costPrice,
-                sellingPrice: sellingPrice,
+                costPrice: costPrice?.toString() || null,
+                sellingPrice: sellingPrice?.toString() || null,
                 materialComposition: attributes.materialComposition || {},
                 reservedQuantity: 0
             }).returning();
@@ -943,7 +904,7 @@ export async function addInventoryItem(formData: FormData) {
                 type: "in",
                 reason: "Начальный остаток",
                 storageLocationId: storageLocationId || null,
-                costPrice: costPrice,
+                costPrice: costPrice?.toString() || null,
                 createdBy: session?.id,
             });
 
@@ -979,14 +940,14 @@ export async function addInventoryItem(formData: FormData) {
             method: "addInventoryItem",
             details: { name, sku, quantity, storageLocationId, categoryId }
         });
-        return { error: error instanceof Error ? error.message : "Failed to add item" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to add item" };
     }
 }
 
 export async function archiveInventoryItems(ids: string[], reason: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для архивации" };
+        return { success: false, error: "Недостаточно прав для архивации" };
     }
 
     try {
@@ -1041,14 +1002,14 @@ export async function archiveInventoryItems(ids: string[], reason: string) {
         return { success: true };
     } catch (error) {
         console.error("Archive error:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка при архивации" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка при архивации" };
     }
 }
 
 export async function restoreInventoryItems(ids: string[], reason: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для восстановления" };
+        return { success: false, error: "Недостаточно прав для восстановления" };
     }
 
     try {
@@ -1078,14 +1039,14 @@ export async function restoreInventoryItems(ids: string[], reason: string) {
         return { success: true };
     } catch (error) {
         console.error("Restore error:", error);
-        return { error: error instanceof Error ? error.message : "Ошибка при восстановлении" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка при восстановлении" };
     }
 }
 
 export async function deleteInventoryItems(ids: string[], password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для удаления позиций" };
+        return { success: false, error: "Недостаточно прав для удаления позиций" };
     }
 
     try {
@@ -1096,7 +1057,7 @@ export async function deleteInventoryItems(ids: string[], password?: string) {
         });
 
         if (itemsInOrders.length > 0) {
-            return { error: "Нельзя удалить товары, которые используются в заказах" };
+            return { success: false, error: "Нельзя удалить товары, которые используются в заказах" };
         }
 
         // 2. Check transactions history
@@ -1113,16 +1074,16 @@ export async function deleteInventoryItems(ids: string[], password?: string) {
             });
 
             if (archivedItems.length !== ids.length) {
-                return { error: "Нельзя удалить активные товары, по которым были движения. Сначала перенесите их в архив." };
+                return { success: false, error: "Нельзя удалить активные товары, по которым были движения. Сначала перенесите их в архив." };
             }
 
             if (!password) {
-                return { error: "Для удаления архивных позиций с историей требуется пароль" };
+                return { success: false, error: "Для удаления архивных позиций с историей требуется пароль" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль подтверждения" };
+                return { success: false, error: "Неверный пароль подтверждения" };
             }
         }
 
@@ -1145,7 +1106,7 @@ export async function deleteInventoryItems(ids: string[], password?: string) {
             details: { ids }
         });
         console.error(error);
-        return { error: "Не удалось удалить выбранные позиции" };
+        return { success: false, error: "Не удалось удалить выбранные позиции" };
     }
 }
 
@@ -1153,21 +1114,55 @@ export async function updateInventoryItem(id: string, formData: FormData) {
     try {
         const session = await getSession();
         if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-            return { error: "Недостаточно прав для изменения товаров" };
+            return { success: false, error: "Недостаточно прав для изменения товаров" };
         }
 
-        let itemType = formData.get("itemType") as "clothing" | "packaging" | "consumables";
-        if (!["clothing", "packaging", "consumables"].includes(itemType)) {
-            itemType = "clothing";
-        }
         const sanitize = (str: string) => (str || "").replace(/<[^>]*>/g, '').trim();
-        const name = sanitize(formData.get("name") as string);
-        const sku = formData.get("sku") as string;
-        let unit = formData.get("unit") as string;
-        const quantity = parseInt(formData.get("quantity") as string);
-        const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string) || 10;
-        const criticalStockThreshold = parseInt(formData.get("criticalStockThreshold") as string) || 0;
-        const reservedQuantity = parseInt(formData.get("reservedQuantity") as string) || 0;
+
+        const validation = InventoryItemSchema.safeParse(Object.fromEntries(formData));
+        if (!validation.success) {
+            return { success: false, error: validation.error.issues[0].message };
+        }
+
+        const {
+            itemType,
+            sku,
+            quantity,
+            lowStockThreshold,
+            criticalStockThreshold,
+            reservedQuantity,
+            categoryId,
+            storageLocationId,
+            qualityCode,
+            materialCode,
+            attributeCode,
+            sizeCode,
+            brandCode,
+            attributes: baseAttributes,
+            thumbnailSettings,
+            width, height, depth, weight, packagingType: pkgType, supplierName, supplierLink, minBatch, features,
+            department,
+            costPrice,
+            sellingPrice,
+            materialComposition
+        } = validation.data;
+
+        const name = sanitize(validation.data.name);
+        const description = validation.data.description ? sanitize(validation.data.description) : "";
+        let unit = validation.data.unit;
+
+        const attributes: Record<string, unknown> = { ...baseAttributes };
+
+        if (itemType === "packaging") {
+            Object.assign(attributes, {
+                width, height, depth, weight,
+                packagingType: pkgType,
+                supplierName, supplierLink, minBatch,
+                features
+            });
+        } else if (itemType === "consumables") {
+            Object.assign(attributes, { department });
+        }
 
         const [existingItem] = await db.select({
             itemType: inventoryItems.itemType,
@@ -1181,50 +1176,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
 
         if (existingItem) {
             if (existingItem.itemType === "clothing") {
-                unit = "шт.";
-            }
-        }
-
-        const categoryIdRaw = formData.get("categoryId") as string;
-        const categoryId = (categoryIdRaw && categoryIdRaw !== "") ? categoryIdRaw : null;
-
-        const storageLocationIdRaw = formData.get("storageLocationId") as string;
-        const storageLocationId = (storageLocationIdRaw && storageLocationIdRaw !== "") ? storageLocationIdRaw : null;
-
-        const qualityCodeRaw = formData.get("qualityCode") as string;
-        const qualityCode = qualityCodeRaw || null;
-
-        const materialCodeRaw = formData.get("materialCode") as string;
-        const materialCode = materialCodeRaw || null;
-
-        const attributeCodeRaw = formData.get("attributeCode") as string;
-        const attributeCode = attributeCodeRaw || null;
-
-        const sizeCodeRaw = formData.get("sizeCode") as string;
-        const sizeCode = sizeCodeRaw || null;
-
-        const brandCodeRaw = formData.get("brandCode") as string;
-        const brandCode = brandCodeRaw || null;
-
-        const description = sanitize(formData.get("description") as string);
-
-        const attributesStr = formData.get("attributes") as string;
-        let attributes: Record<string, unknown> = {};
-        if (attributesStr) {
-            try {
-                attributes = JSON.parse(attributesStr);
-            } catch (e) {
-                console.error("Failed to parse attributes JSON", e);
-            }
-        }
-
-        const thumbnailSettingsStr = formData.get("thumbnailSettings") as string;
-        let thumbnailSettings = null;
-        if (thumbnailSettingsStr) {
-            try {
-                thumbnailSettings = JSON.parse(thumbnailSettingsStr);
-            } catch (e) {
-                console.error("Failed to parse thumbnailSettings JSON", e);
+                unit = "pcs";
             }
         }
 
@@ -1242,7 +1194,8 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             }
         }
 
-        const categoryPath = await getCategoryPath(categoryId);
+
+        const categoryPath = await getCategoryPath(categoryId || null);
         const itemFolderPath = path.join(categoryPath, sanitizeFileName(name || "unnamed"));
 
         const imageBackFile = formData.get("imageBack") as File;
@@ -1285,16 +1238,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
         const newImageUrl = await saveFile(imageFile, itemFolderPath);
         if (newImageUrl) imageUrl = newImageUrl;
 
-        const costPriceRaw = formData.get("costPrice");
-        const sellingPriceRaw = formData.get("sellingPrice");
-        const costPrice = costPriceRaw && costPriceRaw !== "" ? String(costPriceRaw) : null;
-        const sellingPrice = sellingPriceRaw && sellingPriceRaw !== "" ? String(sellingPriceRaw) : null;
 
-        const materialCompositionStr = formData.get("materialComposition") as string;
-        let materialComposition = {};
-        try {
-            if (materialCompositionStr) materialComposition = JSON.parse(materialCompositionStr);
-        } catch { }
 
         const isArchived = formData.get("isArchived") === "true";
 
@@ -1306,7 +1250,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             quantity,
             lowStockThreshold,
             criticalStockThreshold,
-            categoryId,
+            categoryId: categoryId || null,
             description,
             qualityCode,
             materialCode,
@@ -1319,11 +1263,11 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             imageBack: imageBackUrl,
             imageSide: imageSideUrl,
             imageDetails: imageDetailsUrls,
-            reservedQuantity,
-            unit: unit as "pcs" | "liters" | "meters" | "kg" | "шт" | "шт.",
-            costPrice,
-            sellingPrice,
-            materialComposition,
+            reservedQuantity: reservedQuantity ?? 0,
+            unit: unit as "pcs" | "liters" | "meters" | "kg",
+            costPrice: costPrice?.toString() || null,
+            sellingPrice: sellingPrice?.toString() || null,
+            materialComposition: materialComposition || {},
             isArchived,
             updatedAt: new Date()
         }).where(eq(inventoryItems.id, id));
@@ -1347,7 +1291,7 @@ export async function updateInventoryItem(id: string, formData: FormData) {
                 type: "in",
                 reason: "Корректировка цены (редактирование)",
                 storageLocationId: storageLocationId || null,
-                costPrice: costPrice,
+                costPrice: costPrice?.toString() || null,
                 createdBy: session?.id,
             });
         }
@@ -1365,14 +1309,14 @@ export async function updateInventoryItem(id: string, formData: FormData) {
             method: "updateInventoryItem",
             details: { id }
         });
-        return { error: `Ошибка при обновлении: ${error instanceof Error ? error.message : "Неизвестная ошибка"}` };
+        return { success: false, error: `Ошибка при обновлении: ${error instanceof Error ? error.message : "Неизвестная ошибка"}` };
     }
 }
 
 export async function deleteInventoryItemImage(itemId: string, type: "front" | "back" | "side" | "details", index?: number) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для удаления изображений" };
+        return { success: false, error: "Недостаточно прав для удаления изображений" };
     }
 
     try {
@@ -1380,7 +1324,7 @@ export async function deleteInventoryItemImage(itemId: string, type: "front" | "
             where: eq(inventoryItems.id, itemId)
         });
 
-        if (!item) return { error: "Товар не найден" };
+        if (!item) return { success: false, error: "Товар не найден" };
 
         const updateData: {
             image?: string | null;
@@ -1406,7 +1350,7 @@ export async function deleteInventoryItemImage(itemId: string, type: "front" | "
         return { success: true };
     } catch (error) {
         console.error("DEBUG: deleteInventoryItemImage error", error);
-        return { error: "Ошибка при удалении изображения" };
+        return { success: false, error: "Ошибка при удалении изображения" };
     }
 }
 
@@ -1430,10 +1374,10 @@ export async function getInventoryHistory() {
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 50
         });
-        return { data: history };
+        return { success: true, data: history };
     } catch (error) {
         console.error("DEBUG: getInventoryHistory error", error);
-        return { error: "Failed to fetch inventory history" };
+        return { success: false, error: "Failed to fetch inventory history" };
     }
 }
 
@@ -1445,8 +1389,16 @@ export async function adjustInventoryStock(
     storageLocationId?: string,
     costPrice?: number
 ) {
+    const validation = AdjustStockSchema.safeParse({
+        itemId, amount, type, reason, storageLocationId, costPrice
+    });
+
+    if (!validation.success) {
+        return { success: false, error: validation.error.issues[0].message };
+    }
+
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         await db.transaction(async (tx) => {
@@ -1595,16 +1547,16 @@ export async function adjustInventoryStock(
             method: "adjustInventoryStock",
             details: { itemId, amount, type, reason, storageLocationId }
         });
-        return { error: (error as Error).message || "Failed to adjust stock" };
+        return { success: false, error: (error as Error).message || "Failed to adjust stock" };
     }
 }
 
 export async function transferInventoryStock(itemId: string, fromLocationId: string, toLocationId: string, amount: number, reason: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
-    if (amount <= 0) return { error: "Invalid amount" };
-    if (fromLocationId === toLocationId) return { error: "Source and destination must be different" };
+    if (amount <= 0) return { success: false, error: "Invalid amount" };
+    if (fromLocationId === toLocationId) return { success: false, error: "Source and destination must be different" };
 
     try {
         await db.transaction(async (tx) => {
@@ -1703,7 +1655,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
         return { success: true };
     } catch (error: unknown) {
-        return { error: (error as Error).message || "Failed to adjust stock" };
+        return { success: false, error: (error as Error).message || "Failed to adjust stock" };
     }
 }
 
@@ -1711,7 +1663,7 @@ export async function autoArchiveItems() {
     const session = await getSession();
     // System action, but let's restrict to Admin/Management for manual trigger
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -1737,7 +1689,7 @@ export async function autoArchiveItems() {
         return res;
     } catch (error) {
         console.error("Auto-archive error:", error);
-        return { error: "Ошибка при автоматической архивации" };
+        return { success: false, error: "Ошибка при автоматической архивации" };
     }
 }
 
@@ -1757,22 +1709,22 @@ export async function getInventoryAttributes() {
         }
         console.log("============================");
 
-        return { data: attrs };
+        return { success: true, data: attrs };
     } catch {
-        return { error: "Failed to fetch inventory attributes" };
+        return { success: false, error: "Failed to fetch inventory attributes" };
     }
 }
 
 export async function deleteInventoryAttribute(id: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
         // 1. Get the attribute info first
         const [attr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id));
-        if (!attr) return { error: "Атрибут не найден" };
+        if (!attr) return { success: false, error: "Атрибут не найден" };
 
         // 2. Check if it's used in any inventory items
         // Map attribute types to column names
@@ -1795,7 +1747,7 @@ export async function deleteInventoryAttribute(id: string) {
                 .limit(1);
 
             if (usage) {
-                return { error: "Этот атрибут используется в товарах и не может быть удален" };
+                return { success: false, error: "Этот атрибут используется в товарах и не может быть удален" };
             }
         }
 
@@ -1812,13 +1764,13 @@ export async function deleteInventoryAttribute(id: string) {
         return { success: true };
     } catch (error) {
         console.error("Delete attribute error:", error);
-        return { error: "Не удалось удалить атрибут" };
+        return { success: false, error: "Не удалось удалить атрибут" };
     }
 }
 
 export async function createInventoryAttribute(type: string, name: string, value: string, meta?: Record<string, unknown>) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     try {
         console.log("=== CREATE ATTRIBUTE DEBUG ===");
@@ -1848,20 +1800,20 @@ export async function createInventoryAttribute(type: string, name: string, value
         return { success: true, data: newAttr };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to create attribute" };
+        return { success: false, error: "Failed to create attribute" };
     }
 }
 
 export async function updateInventoryAttribute(id: string, name: string, value: string, meta?: Record<string, unknown>) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
         // 1. Get the old attribute data
         const [oldAttr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id));
-        if (!oldAttr) return { error: "Атрибут не найден" };
+        if (!oldAttr) return { success: false, error: "Атрибут не найден" };
 
         console.log("=== UPDATE ATTRIBUTE DEBUG ===");
         console.log("Attribute ID:", id);
@@ -1970,14 +1922,14 @@ export async function updateInventoryAttribute(id: string, name: string, value: 
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to update attribute" };
+        return { success: false, error: "Failed to update attribute" };
     }
 }
 
 export async function regenerateAllItemSKUs() {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2094,7 +2046,7 @@ export async function regenerateAllItemSKUs() {
         return { success: true, updatedCount, totalItems: items.length };
     } catch (e) {
         console.error(e);
-        return { error: "Не удалось обновить данные" };
+        return { success: false, error: "Не удалось обновить данные" };
     }
 }
 
@@ -2106,9 +2058,9 @@ export async function getItemStocks(itemId: string) {
                 storageLocation: true
             }
         });
-        return { data: stocks };
+        return { success: true, data: stocks };
     } catch {
-        return { error: "Failed to fetch item stocks" };
+        return { success: false, error: "Failed to fetch item stocks" };
     }
 }
 
@@ -2127,9 +2079,9 @@ export async function getItemHistory(itemId: string) {
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 1000
         });
-        return { data: history };
+        return { success: true, data: history };
     } catch {
-        return { error: "Failed to fetch item history" };
+        return { success: false, error: "Failed to fetch item history" };
     }
 }
 
@@ -2219,15 +2171,15 @@ export async function getStorageLocations() {
             };
         });
 
-        return { data: locationsWithItems };
+        return { success: true, data: locationsWithItems };
     } catch {
-        return { error: "Failed to fetch storage locations" };
+        return { success: false, error: "Failed to fetch storage locations" };
     }
 }
 
 export async function addStorageLocation(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const name = formData.get("name") as string;
     const address = formData.get("address") as string;
@@ -2238,7 +2190,7 @@ export async function addStorageLocation(formData: FormData) {
     const isDefault = formData.get("isDefault") === "on";
 
     if (!name || !address) {
-        return { error: "Name and address are required" };
+        return { success: false, error: "Name and address are required" };
     }
 
     try {
@@ -2262,14 +2214,14 @@ export async function addStorageLocation(formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch {
-        return { error: "Failed to add storage location" };
+        return { success: false, error: "Failed to add storage location" };
     }
 }
 
 export async function deleteStorageLocation(id: string, password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { error: "Недостаточно прав для удаления места хранения" };
+        return { success: false, error: "Недостаточно прав для удаления места хранения" };
     }
 
     try {
@@ -2277,19 +2229,19 @@ export async function deleteStorageLocation(id: string, password?: string) {
             where: eq(storageLocations.id, id)
         });
 
-        if (!location) return { error: "Место хранения не найдено" };
+        if (!location) return { success: false, error: "Место хранения не найдено" };
 
         if (location.isSystem) {
             if (session.roleName !== "Администратор") {
-                return { error: "Только администратор может удалять системные места хранения" };
+                return { success: false, error: "Только администратор может удалять системные места хранения" };
             }
             if (!password) {
-                return { error: "Для удаления системного места хранения требуется пароль от вашей учетной записи" };
+                return { success: false, error: "Для удаления системного места хранения требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль" };
+                return { success: false, error: "Неверный пароль" };
             }
         }
 
@@ -2303,7 +2255,7 @@ export async function deleteStorageLocation(id: string, password?: string) {
         });
 
         if (activeStocks.length > 0) {
-            return { error: "Нельзя удалить склад, на котором числятся товары" };
+            return { success: false, error: "Нельзя удалить склад, на котором числятся товары" };
         }
 
         await db.transaction(async (tx) => {
@@ -2338,13 +2290,13 @@ export async function deleteStorageLocation(id: string, password?: string) {
         return { success: true };
     } catch (e) {
         console.error(e);
-        return { error: "Failed to delete storage location. Ensure it is empty." };
+        return { success: false, error: "Failed to delete storage location. Ensure it is empty." };
     }
 }
 
 export async function updateStorageLocation(id: string, formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const name = formData.get("name") as string;
     const address = formData.get("address") as string;
@@ -2376,7 +2328,7 @@ export async function updateStorageLocation(id: string, formData: FormData) {
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch {
-        return { error: "Failed to update storage location" };
+        return { success: false, error: "Failed to update storage location" };
     }
 }
 
@@ -2385,10 +2337,10 @@ export async function getAllUsers() {
         const allUsers = await db.query.users.findMany({
             orderBy: (u, { asc }) => [asc(u.name)]
         });
-        return { data: allUsers };
+        return { success: true, data: allUsers };
     } catch (error) {
         console.error("DEBUG: getAllUsers error", error);
-        return { error: "Failed to fetch users" };
+        return { success: false, error: "Failed to fetch users" };
     }
 }
 
@@ -2413,13 +2365,13 @@ export async function seedStorageLocations() {
         // Removed revalidatePath - this function is called during render
         return { success: true };
     } catch {
-        return { error: "Failed to seed" };
+        return { success: false, error: "Failed to seed" };
     }
 }
 
 export async function moveInventoryItem(formData: FormData) {
     const session = await getSession();
-    if (!session) return { error: "Not authorized" };
+    if (!session) return { success: false, error: "Not authorized" };
 
     const itemId = formData.get("itemId") as string;
     const fromLocationId = formData.get("fromLocationId") as string;
@@ -2428,11 +2380,11 @@ export async function moveInventoryItem(formData: FormData) {
     const comment = formData.get("comment") as string;
 
     if (!itemId || !fromLocationId || !toLocationId || !quantity) {
-        return { error: "Missing required fields" };
+        return { success: false, error: "Missing required fields" };
     }
 
     if (fromLocationId === toLocationId) {
-        return { error: "Source and destination cannot be the same" };
+        return { success: false, error: "Source and destination cannot be the same" };
     }
 
     try {
@@ -2542,14 +2494,14 @@ export async function moveInventoryItem(formData: FormData) {
             method: "moveInventoryItem",
             details: { itemId, fromLocationId, toLocationId, quantity }
         });
-        return { error: (error as Error).message || "Failed to move inventory" };
+        return { success: false, error: (error as Error).message || "Failed to move inventory" };
     }
 }
 
 export async function deleteInventoryTransactions(ids: string[]) {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2566,14 +2518,14 @@ export async function deleteInventoryTransactions(ids: string[]) {
             method: "deleteInventoryTransactions",
             details: { ids }
         });
-        return { error: "Ошибка при удалении записей" };
+        return { success: false, error: "Ошибка при удалении записей" };
     }
 }
 
 export async function clearInventoryHistory() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2587,14 +2539,14 @@ export async function clearInventoryHistory() {
             path: "/dashboard/warehouse/history",
             method: "clearInventoryHistory"
         });
-        return { error: "Ошибка при очистке истории" };
+        return { success: false, error: "Ошибка при очистке истории" };
     }
 }
 
 export async function bulkMoveInventoryItems(ids: string[], toLocationId: string, comment?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2647,14 +2599,14 @@ export async function bulkMoveInventoryItems(ids: string[], toLocationId: string
             method: "bulkMoveInventoryItems",
             details: { count: ids.length, toLocationId }
         });
-        return { error: "Ошибка при массовом перемещении" };
+        return { success: false, error: "Ошибка при массовом перемещении" };
     }
 }
 
 export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2673,15 +2625,16 @@ export async function bulkUpdateInventoryCategory(ids: string[], toCategoryId: s
             method: "bulkUpdateInventoryCategory",
             details: { count: ids.length, toCategoryId }
         });
-        return { error: "Ошибка при массовой смене категории" };
+        return { success: false, error: "Ошибка при массовой смене категории" };
     }
 }
 
 // Measurement Units are now a static list based on measurementUnitEnum
 export async function getMeasurementUnits() {
     return {
+        success: true,
         data: [
-            { id: "шт.", name: "шт." },
+            { id: "pcs", name: "шт." },
             { id: "liters", name: "л" },
             { id: "meters", name: "м" },
             { id: "kg", name: "кг" }
@@ -2698,7 +2651,7 @@ export async function seedMeasurementUnits() {
 export async function seedSystemCategories() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2800,14 +2753,14 @@ export async function seedSystemCategories() {
         };
     } catch (error) {
         console.error("Seed error:", error);
-        return { error: "Failed to seed categories" };
+        return { success: false, error: "Failed to seed categories" };
     }
 }
 
 export async function seedSystemAttributes() {
     const session = await getSession();
     if (!session || session.roleName !== "Администратор") {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     const systemAttrs = [
@@ -2854,18 +2807,19 @@ export async function seedSystemAttributes() {
         return { success: true };
     } catch (error) {
         console.error("Seed attributes error:", error);
-        return { error: "Failed to seed attributes" };
+        return { success: false, error: "Failed to seed attributes" };
     }
 }
+
 
 // Attribute Types Management
 export async function getInventoryAttributeTypes() {
     try {
         const types = await db.select().from(inventoryAttributeTypes)
             .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt));
-        return { data: types };
+        return { success: true, data: types };
     } catch {
-        return { error: "Failed to fetch attribute types" };
+        return { success: false, error: "Failed to fetch attribute types" };
     }
 }
 
@@ -2879,7 +2833,7 @@ export async function createInventoryAttributeType(
 ) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -2904,39 +2858,39 @@ export async function createInventoryAttributeType(
 
         return { success: true };
     } catch {
-        return { error: "Не удалось создать раздел (возможно, такой код уже существует)" };
+        return { success: false, error: "Не удалось создать раздел (возможно, такой код уже существует)" };
     }
 }
 
 export async function deleteInventoryAttributeType(id: string, password?: string) {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
         const [type] = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
-        if (!type) return { error: "Тип не найден" };
+        if (!type) return { success: false, error: "Тип не найден" };
 
         const isAdmin = session.roleName === "Администратор";
 
         if (type.isSystem) {
             if (!isAdmin) {
-                return { error: "Системные разделы может удалять только Администратор" };
+                return { success: false, error: "Системные разделы может удалять только Администратор" };
             }
             if (!password) {
-                return { error: "Для удаления системного раздела требуется пароль от вашей учетной записи" };
+                return { success: false, error: "Для удаления системного раздела требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { error: "Неверный пароль" };
+                return { success: false, error: "Неверный пароль" };
             }
         }
 
         // Check availability
         const [hasAttrs] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.type, type.slug)).limit(1);
-        if (hasAttrs) return { error: "В этом разделе есть записи. Сначала удалите их." };
+        if (hasAttrs) return { success: false, error: "В этом разделе есть записи. Сначала удалите их." };
 
         await db.delete(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
 
@@ -2949,7 +2903,7 @@ export async function deleteInventoryAttributeType(id: string, password?: string
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch {
-        return { error: "Не удалось удалить раздел" };
+        return { success: false, error: "Не удалось удалить раздел" };
     }
 }
 
@@ -2978,7 +2932,7 @@ export async function updateInventoryAttributeType(
         return { success: true };
     } catch (e) {
         console.error("Update Type Error", e);
-        return { error: "Не удалось обновить раздел" };
+        return { success: false, error: "Не удалось обновить раздел" };
     }
 }
 
@@ -3002,10 +2956,10 @@ export async function getItemActiveOrders(itemId: string) {
             !["cancelled", "shipped"].includes(oi.order.status)
         );
 
-        return { data: filtered };
+        return { success: true, data: filtered };
     } catch (error) {
         console.error("DEBUG: getItemActiveOrders error", error);
-        return { error: "Failed to fetch item orders" };
+        return { success: false, error: "Failed to fetch item orders" };
     }
 }
 
@@ -3013,7 +2967,7 @@ export async function getItemActiveOrders(itemId: string) {
 export async function syncAllInventoryQuantities() {
     const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { error: "Недостаточно прав" };
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -3048,7 +3002,7 @@ export async function syncAllInventoryQuantities() {
         return { success: true };
     } catch (error) {
         console.error("Sync error:", error);
-        return { error: "Ошибка при синхронизации остатков" };
+        return { success: false, error: "Ошибка при синхронизации остатков" };
     }
 }
 
@@ -3060,9 +3014,9 @@ export async function getOrphanedItemCount() {
                 isNull(inventoryItems.categoryId),
                 eq(inventoryItems.isArchived, false)
             ));
-        return { count: Number(result[0]?.count || 0) };
+        return { success: true, data: Number(result[0]?.count || 0) };
     } catch (error) {
         console.error("Error getting orphaned item count:", error);
-        return { count: 0 };
+        return { success: false, error: "Error getting orphaned count", data: 0 };
     }
 }

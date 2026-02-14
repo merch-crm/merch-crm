@@ -80,7 +80,7 @@ export function OrdersToolbar() {
                                 asChild
                                 onClick={() => handleTabChange(tab.id === "archived")}
                                 className={cn(
-                                    "crm-filter-tray-tab shrink-0 h-auto p-0 hover:bg-transparent",
+                                    "crm-filter-tray-tab shrink-0 h-auto p-0 hover:bg-transparent relative",
                                     tab.active && "active"
                                 )}
                             >
@@ -95,8 +95,10 @@ export function OrdersToolbar() {
                                             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
-                                    <tab.icon className="w-3.5 h-3.5 relative z-10" />
-                                    <span className="relative z-10">{tab.label}</span>
+                                    <div className="relative z-10 flex items-center justify-center gap-2 px-4 sm:px-6 h-9">
+                                        <tab.icon className="w-3.5 h-3.5" />
+                                        <span className="hidden sm:inline">{tab.label}</span>
+                                    </div>
                                 </button>
                             </Button>
                         ))}

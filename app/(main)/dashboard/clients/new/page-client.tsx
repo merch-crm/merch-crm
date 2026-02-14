@@ -139,15 +139,13 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
         const res = await addClient(data);
         setLoading(false);
 
-        if (res?.error) {
-            if (res.duplicates) {
-                setDuplicates(res.duplicates);
-                toast("Найдены похожие клиенты", "warning");
-                playSound("notification_warning");
-            } else {
-                toast(res.error, "error");
-                playSound("notification_error");
-            }
+        if (!res.success) {
+            toast(res.error, "error");
+            playSound("notification_error");
+        } else if (res.data?.duplicates) {
+            setDuplicates(res.data.duplicates);
+            toast("Найдены похожие клиенты", "warning");
+            playSound("notification_warning");
         } else {
             toast("Клиент успешно добавлен", "success");
             playSound("client_created");

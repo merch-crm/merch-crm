@@ -9,7 +9,7 @@ import {
     Map,
     Box
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatUnit } from "@/lib/utils";
 import { InventoryItem, ItemStock } from "../../../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,7 +69,7 @@ export function ItemInventorySection({
                                 <span className={cn("text-5xl font-bold tabular-nums leading-none", isLowStock || isCriticalStock ? "text-slate-900" : "text-white")}>
                                     {item.quantity}
                                 </span>
-                                <span className={cn("text-xl font-bold", isLowStock || isCriticalStock ? "text-slate-400" : "text-white/30")}>{item.unit || "шт"}</span>
+                                <span className={cn("text-xl font-bold", isLowStock || isCriticalStock ? "text-slate-400" : "text-white/30")}>{formatUnit(item.unit)}</span>
                             </div>
                         </div>
 
@@ -101,11 +101,11 @@ export function ItemInventorySection({
                         <div className="space-y-6">
                             <div className="space-y-1">
                                 <p className="text-[11px] font-bold text-primary/60">Лимит предупреждения</p>
-                                <p className="text-2xl font-bold">{item.lowStockThreshold} {item.unit || "шт"}</p>
+                                <p className="text-2xl font-bold">{item.lowStockThreshold} {formatUnit(item.unit)}</p>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[11px] font-bold text-rose-500/60">Критический лимит</p>
-                                <p className="text-2xl font-bold">{item.criticalStockThreshold} {item.unit || "шт"}</p>
+                                <p className="text-2xl font-bold">{item.criticalStockThreshold} {formatUnit(item.unit)}</p>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ export function ItemInventorySection({
                                             )}>
                                                 {stock.quantity}
                                             </span>
-                                            <span className="text-sm font-bold text-muted-foreground">{item.unit || 'шт'}</span>
+                                            <span className="text-sm font-bold text-muted-foreground">{formatUnit(item.unit)}</span>
                                         </div>
                                     </div>
 

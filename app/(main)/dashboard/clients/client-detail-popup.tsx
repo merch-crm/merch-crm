@@ -62,7 +62,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
             setDeleteError("");
             setConfirmDelete(false);
             getClientDetails(clientId).then(res => {
-                if (res.data) {
+                if (res.success && res.data) {
                     setClient(res.data);
                     setTempComments(res.data.comments || "");
                 }
@@ -84,7 +84,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
     const handleSaveComments = async () => {
         setIsSavingComments(true);
         const res = await updateClientComments(clientId, tempComments);
-        if (!res.error && client) {
+        if (res.success && client) {
             setIsEditingComments(false);
             setClient({ ...client, comments: tempComments });
         }
@@ -95,7 +95,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }:
         setIsDeleting(true);
         setDeleteError("");
         const res = await deleteClient(clientId);
-        if (res.error) {
+        if (!res.success) {
             setDeleteError(res.error);
             setIsDeleting(false);
             setConfirmDelete(false);

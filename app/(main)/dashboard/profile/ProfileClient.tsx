@@ -43,7 +43,7 @@ interface UserProfile {
     telegram?: string | null;
     instagram?: string | null;
     socialMax?: string | null;
-    department?: { name: string } | string | null;
+    department?: { name: string } | null;
     role?: { name: string } | null;
     birthday?: string | null;
     createdAt: string | Date;
@@ -152,7 +152,6 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
     // Helper for safe strings
     const getDepartmentName = () => {
         if (!user.department) return "Общий отдел";
-        if (typeof user.department === 'string') return user.department;
         return user.department.name;
     };
 
