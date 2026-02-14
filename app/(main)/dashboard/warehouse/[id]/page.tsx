@@ -114,13 +114,15 @@ export default async function CategoryPage({ params }: PageParams) {
     // Fetch all categories to calculate recursive counts
     const { getInventoryCategories } = await import("../actions");
     const allCatsRes = await getInventoryCategories();
-    const allCats = (allCatsRes.success && allCatsRes.data) ? allCatsRes.data : [];
+    // Assuming getInventoryCategories returns { success: boolean, data?: Category[], error?: string }
+    // We need to verify success and data existence.
+    const allCats = (allCatsRes.success && (allCatsRes as any).data) ? (allCatsRes as any).data as Category[] : [];
 
     const countRecursiveTotalQty = (catId: string): number => {
-        const cat = allCats.find(c => c.id === catId);
+        const cat = allCats.find((c: Category) => c.id === catId);
         if (!cat) return 0;
         let sum = cat.totalQuantity || 0;
-        const children = allCats.filter(c => c.parentId === catId);
+        const children = allCats.filter((c: Category) => c.parentId === catId);
         for (const child of children) {
             sum += countRecursiveTotalQty(child.id);
         }
@@ -129,12 +131,12 @@ export default async function CategoryPage({ params }: PageParams) {
 
     const subCategoriesRaw = resolvedCategoryId
         ? allCats
-            .filter(c => c.parentId === resolvedCategoryId)
-            .map(c => ({
+            .filter((c: Category) => c.parentId === resolvedCategoryId)
+            .map((c: Category) => ({
                 ...c,
                 totalQuantity: countRecursiveTotalQty(c.id)
             }))
-            .sort((a, b) => (b.totalQuantity || 0) - (a.totalQuantity || 0)) // Sort by qty desc
+            .sort((a: Category, b: Category) => (b.totalQuantity || 0) - (a.totalQuantity || 0)) // Sort by qty desc
         : [];
 
     // Fetch items
@@ -148,10 +150,10 @@ export default async function CategoryPage({ params }: PageParams) {
         db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories)
     ]);
 
-    const allItems = (itemsRes.success && 'data' in itemsRes && itemsRes.data) ? itemsRes.data : [];
-    const locationsData = (locationsRes.success && 'data' in locationsRes && locationsRes.data) ? locationsRes.data : [];
-    const typesData = (typesRes.success && 'data' in typesRes && typesRes.data) ? typesRes.data : [];
-    const attrsData = (attrsRes.success && 'data' in attrsRes && attrsRes.data) ? attrsRes.data : [];
+    const allItems = (itemsRes.success && (itemsRes as any).data) ? (itemsRes as any).data as InventoryItem[] : [];
+    const locationsData = (locationsRes.success && (locationsRes as any).data) ? (locationsRes as any).data as StorageLocation[] : [];
+    const typesData = (typesRes.success && (typesRes as any).data) ? (typesRes as any).data as AttributeType[] : [];
+    const attrsData = (attrsRes.success && (attrsRes as any).data) ? (attrsRes as any).data as InventoryAttribute[] : [];
 
     // Aggregate IDs of this category and all its descendants
     const getAllDescendantIds = (catId: string, allCats: { id: string; parentId: string | null }[]): string[] => {
