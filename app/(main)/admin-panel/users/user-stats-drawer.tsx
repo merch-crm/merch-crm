@@ -66,10 +66,9 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
 
     return (
         <div className="fixed inset-0 z-[100] flex items-end justify-end" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div
+            <div role="button" tabIndex={0}
                 className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-                onClick={onClose}
-            />
+                onClick={onClose} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} />
             <div className="relative w-full max-w-lg h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-200">
                 {/* Header */}
                 <div className="p-8 border-b border-slate-200 bg-white">
@@ -105,18 +104,18 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                             {error}
                         </div>
                     ) : stats ? (
-                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                             {/* Orders Section */}
                             <section>
                                 <div className="flex items-center gap-2 mb-4 px-1">
                                     <TrendingUp className="w-4 h-4 text-slate-400" />
-                                    <h3 className="text-xs font-bold  tracking-wider text-slate-400">Продажи и Заказы</h3>
+                                    <h3 className="text-xs font-bold  text-slate-400">Продажи и Заказы</h3>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
-                                        <div className="text-3xl font-bold text-slate-900 tracking-normal">
+                                        <div className="text-3xl font-bold text-slate-900">
                                             {stats.orders.monthRevenue.toLocaleString()} {currencySymbol}
                                         </div>
                                         <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-[18px]">
@@ -143,12 +142,12 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                             <section>
                                 <div className="flex items-center gap-2 mb-4 px-1">
                                     <PieChart className="w-4 h-4 text-slate-400" />
-                                    <h3 className="text-xs font-bold  tracking-wider text-slate-400">Задачи и Эффективность</h3>
+                                    <h3 className="text-xs font-bold  text-slate-400">Задачи и Эффективность</h3>
                                 </div>
                                 <div className="p-6 bg-primary rounded-[2rem] text-white shadow-lg shadow-primary/20">
                                     <div className="flex items-center justify-between mb-6">
                                         <div>
-                                            <p className="text-white/70 text-xs font-bold  tracking-wider">Эффективность</p>
+                                            <p className="text-white/70 text-xs font-bold ">Эффективность</p>
                                             <div className="text-4xl font-bold mt-1">{stats.tasks.efficiency}%</div>
                                         </div>
                                         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">

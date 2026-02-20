@@ -11,8 +11,12 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBrandingSettings();
+  const favicon = (branding as { faviconUrl?: string })?.faviconUrl || "/icon.png";
+
   return {
     title: (branding as { companyName?: string })?.companyName || "MerchCRM",
     description: "CRM система для типографий и производителей одежды",
@@ -21,7 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: false,
     },
     icons: {
-      icon: (branding as { faviconUrl?: string })?.faviconUrl || "/icon.png",
+      icon: [
+        { url: favicon },
+        { url: "/icon.png" },
+        { url: "/favicon.ico" }
+      ],
       apple: "/apple-icon.png",
     },
   };

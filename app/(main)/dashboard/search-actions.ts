@@ -4,7 +4,11 @@ import { db } from "@/lib/db";
 import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { ilike, or, desc } from "drizzle-orm";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+
+const SearchQuerySchema = z.string().min(2, "Минимум 2 символа для поиска").max(100);
 
 import { ActionResult } from "@/lib/types";
 
@@ -18,7 +22,8 @@ export interface SearchResult {
 }
 
 export async function globalSearch(query: string): Promise<ActionResult<SearchResult[]>> {
-    if (!query || query.length < 2) return { success: true, data: [] };
+    const validated = SearchQuerySchema.safeParse(query);
+    if (!validated.success) return { success: true, data: [] };
 
     const session = await getSession();
     if (!session) return { success: true, data: [] };
@@ -220,7 +225,7 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
                 id: l.id,
                 type: "location" as const,
                 title: l.name,
-                subtitle: l.address,
+                subtitle: l.address || undefined,
                 href: `/dashboard/warehouse?tab=locations&id=${l.id}`
             })),
             ...foundExpenses.map(e => ({
@@ -246,9 +251,14 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
             }))
         ];
 
-        return { success: true, data: results.slice(0, 15) }; // Limit total results
+        return { success: true, data: results.slice(0, 15) };
     } catch (error) {
-        console.error("Global search error:", error);
-        return { success: false, error: "Ошибка поиска" };
+        await logError({
+            error,
+            path: "/dashboard/search",
+            method: "globalSearch",
+            details: { query }
+        });
+        return { success: false, error: "Не удалось выполнить поиск" };
     }
 }

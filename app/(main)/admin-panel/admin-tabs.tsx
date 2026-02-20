@@ -58,6 +58,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                 return (
                     <Button
                         key={item.name}
+                        type="button"
                         variant="ghost"
                         onClick={() => router.push(item.href)}
                         className={cn(
@@ -89,7 +90,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                             isActive ? "text-primary scale-110" : "text-slate-500 group-hover:text-slate-300"
                         )} />
 
-                        <span className="relative z-10 tracking-normal transition-transform duration-300 group-hover:translate-x-1">
+                        <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
                             {item.name}
                         </span>
 
@@ -112,6 +113,7 @@ export function AdminUserCard({ user }: AdminSidebarProps) {
         <div className="mt-auto space-y-4">
             <div className="pt-4 border-t border-slate-800">
                 <Button
+                    type="button"
                     variant="ghost"
                     onClick={() => router.push('/dashboard')}
                     className="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group h-auto border-none"
@@ -122,8 +124,17 @@ export function AdminUserCard({ user }: AdminSidebarProps) {
             </div>
 
             <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        router.push('/dashboard/profile');
+                    }
+                }}
                 onClick={() => router.push('/dashboard/profile')}
-                className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer group"
+                className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                aria-label="Перейти в профиль"
             >
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 overflow-hidden shrink-0 relative">
@@ -137,7 +148,7 @@ export function AdminUserCard({ user }: AdminSidebarProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold truncate group-hover:text-primary transition-colors">{user?.name || "Администратор"}</p>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{user?.role?.name || "Администратор"}</p>
+                        <p className="text-xs font-bold text-slate-500">{user?.role?.name || "Администратор"}</p>
                     </div>
                     <ChevronUp className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
                 </div>

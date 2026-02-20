@@ -1,5 +1,6 @@
 import { getBrandingSettings, getIconGroups } from "./actions";
 import { BrandingForm } from "./branding-form";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default async function BrandingPage() {
     const [settings, iconGroups] = await Promise.all([
@@ -8,9 +9,9 @@ export default async function BrandingPage() {
     ]);
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <PageContainer>
             {/* Form */}
             <BrandingForm initialSettings={settings} initialIconGroups={iconGroups} />
-        </div>
+        </PageContainer>
     );
 }

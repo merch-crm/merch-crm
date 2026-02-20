@@ -100,7 +100,7 @@ export function reviveDatesInObject<T>(data: T): T {
     }
 
     if (Array.isArray(data)) {
-        return data.map(reviveDatesInObject) as T;
+        return (data || []).map(reviveDatesInObject) as T;
     }
 
     if (typeof data === 'object') {

@@ -107,3 +107,80 @@ export const AdjustStockSchema = z.object({
     storageLocationId: z.string().uuid().optional().nullable(),
     costPrice: z.number().min(0).optional()
 });
+
+export const StorageLocationSchema = z.object({
+    name: z.string().min(1, "Название обязательно"),
+    address: z.string().min(1, "Адрес обязателен"),
+    description: z.string().optional().or(z.literal("")),
+    responsibleUserId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v === "" ? null : v),
+    type: z.enum(["warehouse", "production", "office"]).default("warehouse"),
+    isDefault: z.coerce.boolean().default(false),
+    isActive: z.coerce.boolean().default(true),
+});
+
+export const AttributeTypeSchema = z.object({
+    name: z.string().min(1, "Название обязательно"),
+    slug: z.string().min(1, "Slug обязателен"),
+    category: z.string().optional().nullable(),
+    isSystem: z.coerce.boolean().default(false),
+    showInSku: z.coerce.boolean().default(true),
+    showInName: z.coerce.boolean().default(true),
+});
+
+export const AttributeSchema = z.object({
+    type: z.string().min(1, "Тип обязателен"),
+    name: z.string().min(1, "Название обязательно"),
+    value: z.string().min(1, "Значение обязательно"),
+    meta: z.record(z.string(), z.unknown()).optional().nullable(),
+});
+
+export const BulkMoveSchema = z.object({
+    itemIds: z.array(z.string().uuid()),
+    targetLocationId: z.string().uuid(),
+    reason: z.string().optional(),
+});
+
+export const BulkActionSchema = z.object({
+    ids: z.array(z.string().uuid()),
+    reason: z.string().optional().or(z.literal("")),
+});
+
+
+export const TransferStockSchema = z.object({
+    itemId: z.string().uuid("Invalid Item ID"),
+    fromLocationId: z.string().uuid("Invalid Source Location ID"),
+    toLocationId: z.string().uuid("Invalid Target Location ID"),
+    amount: z.number().positive("Количество должно быть больше 0"),
+    reason: z.string().optional().or(z.literal("")),
+});
+
+export const MoveItemSchema = z.object({
+    itemId: z.string().uuid("Invalid Item ID"),
+    fromLocationId: z.string().uuid("Invalid Source Location ID"),
+    toLocationId: z.string().uuid("Invalid Target Location ID"),
+    quantity: z.coerce.number().positive("Количество должно быть больше 0"),
+    comment: z.string().optional().or(z.literal("")),
+});
+
+export const InventoryFiltersSchema = z.object({
+    page: z.coerce.number().int().min(1).optional().default(1),
+    limit: z.coerce.number().int().min(0).optional().default(0),
+    search: z.string().optional().or(z.literal("")),
+    categoryIds: z.array(z.string().uuid()).optional().default([]),
+    status: z.enum(["all", "in", "low", "out"]).optional().default("all"),
+    storageLocationId: z.string().uuid().optional().or(z.literal("all")).default("all"),
+    sortBy: z.string().optional().default("createdAt"),
+    showArchived: z.coerce.boolean().optional().default(false),
+    onlyOrphaned: z.coerce.boolean().optional().default(false),
+});
+
+export const BulkUpdateCategorySchema = z.object({
+    ids: z.array(z.string().uuid()),
+    categoryId: z.string().uuid("Invalid Category ID"),
+});
+
+export const CheckDuplicateItemSchema = z.object({
+    name: z.string().min(1),
+    sku: z.string().optional(),
+    currentItemId: z.string().uuid().optional(),
+});

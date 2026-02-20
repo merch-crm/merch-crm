@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
 import { Edit3, Save, Trash2, X, RefreshCcw, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { InventoryItem } from "../../../types";
+import { useRouter }
+    from "next/navigation";
+import { InventoryItem, Category } from "@/app/(main)/dashboard/warehouse/types";
 import { cn } from "@/lib/utils";
 
 interface ItemHeaderProps {
@@ -21,9 +22,7 @@ interface ItemHeaderProps {
     onUnarchive: () => void;
 }
 
-
-
-export function ItemHeader({
+export const ItemHeader = React.memo(({
     item,
     isEditing,
     isSaving,
@@ -34,7 +33,7 @@ export function ItemHeader({
     onSave,
     onEdit,
     onUnarchive,
-}: ItemHeaderProps) {
+}: ItemHeaderProps) => {
     const router = useRouter();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -47,18 +46,18 @@ export function ItemHeader({
 
     return (
         <div className={cn(
-            "space-y-6 animate-in fade-in duration-700 w-full",
+            "space-y-1 w-full",
             item.isArchived && "opacity-80"
         )}>
             {/* Status Banner for Archive */}
             {item.isArchived && (
-                <div className="w-full bg-destructive/10 border border-destructive/20 p-4 rounded-3xl flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
+                <div className="w-full bg-destructive/10 border border-destructive/20 p-4 rounded-3xl flex items-center justify-between gap-3 animate-in slide-in-from-top-4 duration-500">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-destructive text-destructive-foreground flex items-center justify-center">
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-destructive leading-none mb-1 uppercase tracking-wide">Архив товара</p>
+                            <p className="text-sm font-bold text-destructive leading-none mb-1 tracking-wide">Архив товара</p>
                             <p className="text-[11px] font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
@@ -73,36 +72,44 @@ export function ItemHeader({
             )}
 
             {/* Main Header Content */}
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 w-full">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
                 <div className="flex-1 min-w-0 overflow-hidden w-full">
-                    <div className="flex items-center gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         {isEditing ? (
                             <div className="relative group w-full">
                                 <textarea
                                     ref={textareaRef}
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
+                                    aria-label="Название товара"
                                     className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden tracking-tight"
                                     placeholder="Название…"
                                     rows={1}
                                 />
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 sm:gap-4 max-w-full">
+                            <div className="flex items-center gap-2 sm:gap-3 max-w-full">
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => router.push('/dashboard/warehouse')}
-                                    className="flex w-10 h-10 sm:w-11 sm:h-11 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all items-center justify-center shrink-0 group"
+                                    className="flex w-10 h-10 sm:w-11 sm:h-11 rounded-element text-muted-foreground hover:text-foreground hover:bg-muted transition-all items-center justify-center shrink-0 group"
                                 >
                                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                                 </Button>
                                 <h1
-                                    className="text-2xl md:text-4xl font-bold text-foreground leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer tracking-tight"
+                                    className="text-2xl md:text-4xl font-bold text-foreground leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer tracking-tight outline-none focus-visible:text-primary"
                                     onDoubleClick={onEdit}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            onEdit();
+                                        }
+                                    }}
                                 >
                                     {(() => {
-                                        const cat = item.category as { name?: string; singularName?: string | null; pluralName?: string | null; parent?: { name?: string; singularName?: string | null } | null } | null;
+                                        const cat = item.category as Category | null;
 
                                         const forceSingular = (name: string, metadataSingular?: string | null) => {
                                             if (metadataSingular && metadataSingular.toLowerCase() !== name.toLowerCase()) return metadataSingular;
@@ -148,7 +155,7 @@ export function ItemHeader({
                                 {item.isArchived && (
                                     <div className="h-8 px-4 rounded-full bg-foreground text-background flex items-center gap-2">
                                         <Trash2 className="w-3.5 h-3.5" />
-                                        <span className="text-[10px] font-bold uppercase tracking-wider">Архив</span>
+                                        <span className="text-xs font-bold">Архив</span>
                                     </div>
                                 )}
                             </div>
@@ -156,7 +163,7 @@ export function ItemHeader({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-4 shrink-0 w-full lg:w-auto">
+                <div className="flex items-center justify-end gap-2 shrink-0 w-full lg:w-auto">
 
 
                     <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
@@ -165,7 +172,8 @@ export function ItemHeader({
                                 <Button
                                     variant="ghost"
                                     onClick={onCancel}
-                                    className="h-10 px-4 sm:h-11 md:px-8 rounded-2xl sm:rounded-2xl font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
+                                    aria-label="Отменить изменения"
+                                    className="h-10 px-4 sm:h-11 md:px-8 rounded-element font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
                                 >
                                     <X className="w-4 h-4" />
                                     <span className="hidden md:inline">Отмена</span>
@@ -173,7 +181,8 @@ export function ItemHeader({
                                 <Button
                                     onClick={onSave}
                                     disabled={isSaving || isAnyUploading}
-                                    className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
+                                    aria-label="Сохранить изменения"
+                                    className="h-10 px-5 sm:h-11 md:px-10 rounded-element bg-primary text-white font-bold text-[13px] border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
                                 >
                                     {isSaving ? (
                                         <RefreshCcw className="w-4 h-4 animate-spin" />
@@ -190,7 +199,8 @@ export function ItemHeader({
                                 {!item.isArchived && (
                                     <Button
                                         onClick={onEdit}
-                                        className="h-10 px-5 sm:h-11 md:px-10 rounded-2xl sm:rounded-2xl bg-primary text-white font-bold text-[13px] group border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center"
+                                        aria-label="Редактировать товар"
+                                        className="h-10 px-5 sm:h-11 md:px-10 rounded-element bg-primary text-white font-bold text-[13px] group border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center"
                                     >
                                         <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 transition-transform sm:mr-3" />
                                         <span className="hidden sm:inline">Редактировать</span>
@@ -203,5 +213,6 @@ export function ItemHeader({
             </div>
         </div>
     );
-}
+});
 
+ItemHeader.displayName = "ItemHeader";

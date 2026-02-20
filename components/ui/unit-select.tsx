@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { PremiumSelect, PremiumSelectOption } from "./premium-select";
+import { Select, SelectOption } from "./select";
 
 interface UnitOption {
     id: string;
@@ -29,13 +29,13 @@ export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, classNa
         options.map(opt => ({
             id: opt.name, // id is actually the value we want to store/display
             title: opt.name,
-        } as PremiumSelectOption))
+        } as SelectOption))
         , [options]);
 
     return (
         <div className={className}>
             {name && <input type="hidden" name={name} value={value} />}
-            <PremiumSelect
+            <Select
                 options={premiumOptions}
                 value={value}
                 onChange={onChange}

@@ -18,12 +18,13 @@ import {
 } from "lucide-react";
 import { Rouble } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+
 import { useBranding } from "@/components/branding-provider";
 import { Button } from "@/components/ui/button";
+import { ModernStatCard } from "@/components/ui/stat-card";
 
-type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 import { getDashboardStatsByPeriod, getDashboardNotifications } from "./actions";
+import type { Notification, BrandingSettings } from "@/lib/types";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -44,14 +45,7 @@ interface DashboardClientProps {
     branding?: BrandingSettings | null;
 }
 
-interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: "info" | "warning" | "success" | "error" | "transfer";
-    createdAt: Date;
-    isRead: boolean;
-}
+// Local Notification interface was here
 
 
 
@@ -62,12 +56,12 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     // ✅ Hydration mismatch protection
-    const [mounted, setMounted] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setMounted(true);
+            setIsMounted(true);
             setTime(new Date());
         }, 0);
         return () => clearTimeout(timer);
@@ -98,14 +92,14 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     }, [period]);
 
     const formattedTime = useMemo(() => {
-        if (!mounted || !time) return "--:--";
+        if (!isMounted || !time) return "--:--";
         return time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-    }, [mounted, time]);
+    }, [isMounted, time]);
 
     const formattedDate = useMemo(() => {
-        if (!mounted || !time) return "...";
+        if (!isMounted || !time) return "...";
         return time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-    }, [mounted, time]);
+    }, [isMounted, time]);
 
     const primaryAction = {
         name: "Новый заказ",
@@ -138,9 +132,9 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
             {/* Top Navigation / Breadcrumbs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 px-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                         <LayoutGrid className="h-4 w-4" />
@@ -170,7 +164,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
 
             {/* MAIN BENTO GRID */}
-            <div className="grid grid-cols-12 gap-5">
+            <div className="grid grid-cols-12 gap-4">
 
                 {/* Hero / Welcome Card - Spans 8 cols */}
                 <div className="crm-card col-span-12 md:col-span-8 lg:col-span-8 relative group !p-8 md:!p-10">
@@ -179,7 +173,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
                     <div className="relative z-10 h-full flex flex-col justify-between">
                         <div>
-                            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-normal mb-6">
+                            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
                                 {initialBranding?.dashboardWelcome?.includes('%name%')
                                     ? initialBranding.dashboardWelcome.replace('%name%', userName.split(' ')[0])
                                     : (initialBranding?.dashboardWelcome || "Привет") + `, `} <span className="text-primary">{userName.split(' ')[0]}</span>
@@ -210,12 +204,12 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                     </div>
 
                     <div>
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-bold tracking-normal mb-2 border border-emerald-100">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-2xl text-xs font-bold mb-2 border border-emerald-100">
                             +18.4% рост
                         </div>
                         <h3 className="text-slate-500 text-sm font-semibold mb-1">Выручка за период</h3>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-normal">
+                            <span className="text-4xl sm:text-5xl font-bold text-slate-900">
                                 {statsData?.revenue.replace(' ' + currencySymbol, '')}
                             </span>
                             <span className="text-2xl font-bold text-slate-400">{currencySymbol}</span>
@@ -232,55 +226,33 @@ export function DashboardClient({ initialStats, period, userName, branding: init
 
                 {/* Secondary Metrics Row */}
                 <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Metric 1 */}
-                    <div className="crm-card group">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
-                                <Users className="h-5 w-5" />
-                            </div>
-                            <div className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-2xl text-[10px] font-bold">
-                                +12%
-                            </div>
-                        </div>
-                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Всего клиентов</p>
-                        <p className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.totalClients ?? 0}</p>
-                    </div>
+                    <ModernStatCard
+                        icon={Users}
+                        value={statsData?.totalClients ?? 0}
+                        label="Всего клиентов"
+                        badge={{ text: "+12%", variant: "success" }}
+                    />
 
-                    {/* Metric 2 */}
-                    <div className="crm-card group">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
-                                <ShoppingBag className="h-5 w-5" />
-                            </div>
-                            <div className="bg-violet-50 text-primary px-2 py-1 rounded-2xl text-[10px] font-bold">
-                                {statsData?.inProduction ?? 0} в работе
-                            </div>
-                        </div>
-                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Заказов в работе</p>
-                        <p className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.totalOrders ?? 0}</p>
-                    </div>
+                    <ModernStatCard
+                        icon={ShoppingBag}
+                        value={statsData?.totalOrders ?? 0}
+                        label="Заказов в работе"
+                        badge={{ text: `${statsData?.inProduction ?? 0} в работе`, variant: "primary" }}
+                    />
 
-                    {/* Metric 3 */}
-                    <div className="crm-card group">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="w-10 h-10 rounded-2xl bg-slate-50 text-primary flex items-center justify-center border border-slate-200 transition-all">
-                                <Rouble className="h-5 w-5" />
-                            </div>
-                            <div className="bg-rose-50 text-rose-600 px-2 py-1 rounded-2xl text-[10px] font-bold">
-                                -2.4%
-                            </div>
-                        </div>
-                        <p className="text-slate-400 text-[11px] font-bold tracking-normal mb-1">Средний чек</p>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-bold text-slate-900 tracking-normal">{statsData?.averageCheck.replace(' ' + currencySymbol, '')}</span>
-                            <span className="text-lg font-bold text-slate-400">{currencySymbol}</span>
-                        </div>
-                    </div>
+                    <ModernStatCard
+                        icon={Rouble}
+                        value={statsData?.averageCheck.replace(' ' + currencySymbol, '')}
+                        suffix={currencySymbol}
+                        label="Средний чек"
+                        badge={{ text: "-2.4%", variant: "error" }}
+                        colorScheme="rose"
+                    />
                 </div>
 
                 {/* Quick Actions Header */}
                 <div className="col-span-12 mt-6 mb-2 flex items-center gap-4">
-                    <h2 className="text-sm font-bold text-slate-900 tracking-normal whitespace-nowrap">Управление системой</h2>
+                    <h2 className="text-sm font-bold text-slate-900 whitespace-nowrap">Управление системой</h2>
                     <div className="h-px bg-slate-200 flex-1" />
                 </div>
 
@@ -291,7 +263,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20 transition-all">
                                 <Plus className="h-8 w-8 text-white" />
                             </div>
-                            <span className="font-bold text-lg tracking-normal">{primaryAction.name}</span>
+                            <span className="font-bold text-lg">{primaryAction.name}</span>
                         </div>
                     </Link>
 
@@ -325,7 +297,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 <div className="crm-card col-span-12 lg:col-span-8 relative group">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h4 className="text-xl font-bold text-slate-900 tracking-normal">Последние уведомления</h4>
+                            <h4 className="text-xl font-bold text-slate-900">Последние уведомления</h4>
                             <p className="text-slate-400 text-xs font-medium">Обновлено только что</p>
                         </div>
                         <Button variant="ghost" size="sm" className="text-primary text-xs font-bold hover:underline">Прочитать все</Button>
@@ -352,7 +324,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                                             <span className="text-xs text-slate-500 line-clamp-1">{note.message}</span>
                                         </div>
                                     </div>
-                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal shrink-0 ml-4">
+                                    <span className="text-xs font-bold text-slate-400 shrink-0 ml-4">
                                         {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true, locale: ru })}
                                     </span>
                                 </div>

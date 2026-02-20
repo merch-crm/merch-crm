@@ -20,3 +20,29 @@ export const ClientSchema = z.object({
 });
 
 export const ClientUpdateSchema = ClientSchema.omit({ ignoreDuplicates: true });
+
+export const ClientFiltersSchema = z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(50),
+    search: z.string().optional(),
+    sortBy: z.enum(["alphabet", "last_order", "order_count", "revenue"]).default("alphabet"),
+    period: z.enum(["all", "month", "quarter", "year"]).default("all"),
+    orderCount: z.enum(["any", "0", "1-5", "5+"]).default("any"),
+    region: z.string().optional(),
+    status: z.enum(["all", "lost"]).default("all"),
+    showArchived: z.coerce.boolean().default(false),
+});
+
+export const ClientIdSchema = z.object({
+    clientId: z.string().uuid("Некорректный ID клиента"),
+});
+
+export const BulkClientsSchema = z.object({
+    clientIds: z.array(z.string().uuid("Некорректный ID клиента")).min(1, "Выберите хотя бы одного клиента"),
+});
+
+export const UpdateClientFieldSchema = z.object({
+    clientId: z.string().uuid("Некорректный ID клиента"),
+    field: z.enum(["managerId", "clientType", "city", "lastName", "firstName", "company"]),
+    value: z.unknown(),
+});

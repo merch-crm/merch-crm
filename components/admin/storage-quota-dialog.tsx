@@ -75,7 +75,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
             {loading ? (
                 <div className="py-10 text-center text-slate-400 font-bold">Загрузка...</div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <div className="space-y-2">
                         <label className="font-bold text-slate-700 text-sm block mb-2">Лимит S3 (GB)</label>
                         <Input
@@ -117,7 +117,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                         <Button
                             onClick={handleSave}
                             disabled={saving || loading}
-                            className="w-full bg-#5d00ff hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold tracking-normal text-xs shadow-lg shadow-indigo-200"
+                            className="w-full bg-#5d00ff hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold text-xs shadow-lg shadow-indigo-200"
                         >
                             {saving ? "Сохранение..." : "Сохранить настройки"}
                         </Button>

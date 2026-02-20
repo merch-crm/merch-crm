@@ -1,8 +1,7 @@
 import { db } from "@/lib/db";
 import { promocodes } from "@/lib/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, type InferSelectModel } from "drizzle-orm";
 
-import { type InferSelectModel } from "drizzle-orm";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
 
 export interface ValidationResult {

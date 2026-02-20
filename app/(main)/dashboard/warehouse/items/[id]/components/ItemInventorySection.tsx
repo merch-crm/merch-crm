@@ -10,7 +10,7 @@ import {
     Box
 } from "lucide-react";
 import { cn, formatUnit } from "@/lib/utils";
-import { InventoryItem, ItemStock } from "../../../types";
+import { InventoryItem, ItemStock } from "@/app/(main)/dashboard/warehouse/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,7 @@ export function ItemInventorySection({
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 
             {/* Stock Performance Summary */}
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-3">
                 <div className={cn(
                     "flex-1 p-6 sm:p-8 rounded-2xl border relative overflow-hidden group transition-all duration-700",
                     isCriticalStock ? "bg-destructive/5 border-destructive/20" :
@@ -54,13 +54,13 @@ export function ItemInventorySection({
                     {/* Decorative element */}
                     <div className="absolute -right-6 -top-6 w-32 h-32 bg-black/5 rounded-full blur-3xl group-hover:bg-black/10 transition-colors" />
 
-                    <div className="relative space-y-6">
+                    <div className="relative space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-primary shadow-sm border border-primary/20">
                                 <Package className="w-6 h-6" />
                             </div>
-                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-2xl font-bold text-[10px] px-4">Критический остаток</Badge>}
-                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-2xl font-bold text-[10px] px-4">Низкий запас</Badge>}
+                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-2xl font-bold text-xs px-4">Критический остаток</Badge>}
+                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-2xl font-bold text-xs px-4">Низкий запас</Badge>}
                         </div>
 
                         <div>
@@ -90,7 +90,7 @@ export function ItemInventorySection({
                     {/* Decorative flow */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
-                    <div className="relative space-y-8">
+                    <div className="relative space-y-4">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                                 <TrendingDown className="w-5 h-5 text-rose-400" />
@@ -98,7 +98,7 @@ export function ItemInventorySection({
                             <span className="text-[11px] font-bold text-slate-500">Система оповещений</span>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <div className="space-y-1">
                                 <p className="text-[11px] font-bold text-primary/60">Лимит предупреждения</p>
                                 <p className="text-2xl font-bold">{item.lowStockThreshold} {formatUnit(item.unit)}</p>
@@ -147,13 +147,13 @@ export function ItemInventorySection({
             )}
 
             {/* Warehouse Breakdown */}
-            <div className="space-y-6">
+            <div className="space-y-4">
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-2">
                         <Map className="w-4 h-4 text-primary" />
                         <h4 className="text-[11px] font-bold text-slate-400">Геолокация запасов</h4>
                     </div>
-                    <Badge className="bg-slate-900 text-white rounded-2xl font-bold text-[10px] px-3">
+                    <Badge className="bg-slate-900 text-white rounded-2xl font-bold text-xs px-3">
                         {stocks.length} локаций
                     </Badge>
                 </div>
@@ -183,13 +183,13 @@ export function ItemInventorySection({
                                     </div>
                                 </div>
 
-                                <div className="space-y-6">
+                                <div className="space-y-4">
                                     {/* Current Stock */}
                                     <div className="p-4 rounded-2xl bg-muted/30 border border-border/50">
                                         <div className="flex justify-between items-start mb-2">
-                                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Текущий остаток</span>
+                                            <span className="text-[11px] font-bold text-muted-foreground">Текущий остаток</span>
                                             <span className={cn(
-                                                "px-2 py-1 rounded-lg text-[10px] font-bold border",
+                                                "px-2 py-1 rounded-lg text-xs font-bold border",
                                                 stockStatus === 'critical' ? "bg-rose-500/10 text-rose-600 border-rose-200" :
                                                     stockStatus === 'low' ? "bg-amber-500/10 text-amber-600 border-amber-200" :
                                                         "bg-emerald-500/10 text-emerald-600 border-emerald-200"

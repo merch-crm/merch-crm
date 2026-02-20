@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, MapPin, Building, RefreshCw, AlertCircle, Check } from "lucide-react";
+import { Plus, MapPin, Building, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { addStorageLocation } from "./actions";
-import { useFormStatus } from "react-dom";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { addStorageLocation } from "./storage-actions";;
 import { cn } from "@/lib/utils";
-import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
+import { Select, SelectOption } from "@/components/ui/select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Input } from "@/components/ui/input";
 
@@ -30,6 +30,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [responsibleUserId, setResponsibleUserId] = useState("");
     const [type, setType] = useState<"warehouse" | "production" | "office">("warehouse");
+    const [isPending, setIsPending] = useState(false);
 
     async function handleSubmit(formData: FormData) {
         const name = formData.get("name") as string;
@@ -44,9 +45,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
             return;
         }
 
+        setIsPending(true);
         setFieldErrors({});
         const res = await addStorageLocation(formData);
-        if (res?.error) {
+        if (!res?.success) {
             setError(res.error);
         } else {
             setIsOpen(false);
@@ -55,9 +57,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
             setResponsibleUserId("");
             setType("warehouse");
         }
+        setIsPending(false);
     }
 
-    const userOptions: PremiumSelectOption[] = users.map((u: { id: string; name: string }) => ({
+    const userOptions: SelectOption[] = (users || []).map((u: { id: string; name: string }) => ({
         id: u.id,
         title: u.name,
         description: "Сотрудник компании"
@@ -66,11 +69,23 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
     return (
         <>
             {trigger ? (
-                <div onClick={() => setIsOpen(true)} className="cursor-pointer">
+                <div
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setIsOpen(true);
+                        }
+                    }}
+                    onClick={() => setIsOpen(true)}
+                    className="cursor-pointer"
+                >
                     {trigger}
                 </div>
             ) : (
                 <Button
+                    type="button"
                     onClick={() => setIsOpen(true)}
                     className={cn(
                         "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
@@ -85,7 +100,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
             <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Новый склад" showVisualTitle={false}>
                 <div className="flex flex-col h-full overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-orange-100 flex items-center justify-center shrink-0 shadow-sm border border-orange-200/50">
                                 <MapPin className="w-6 h-6 text-orange-600" />
                             </div>
@@ -96,13 +111,21 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                         </div>
                     </div>
 
-                    <form id="add-location-form" action={handleSubmit} noValidate className="px-6 pb-4 pt-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar flex-1 overflow-visible">
+                    <form
+                        id="add-location-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSubmit(new FormData(e.currentTarget));
+                        }}
+                        noValidate
+                        className="px-6 pb-4 pt-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1 overflow-visible"
+                    >
                         <input type="hidden" name="responsibleUserId" value={responsibleUserId} />
                         <input type="hidden" name="type" value={type} />
 
 
 
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                             <div className="space-y-1.5 flex-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">
                                     Название склада <span className="text-rose-500 font-bold">*</span>
@@ -110,29 +133,32 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                 <Input
                                     name="name"
                                     placeholder="Центральный склад"
+                                    disabled={isPending}
                                     className={cn(
-                                        "w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all placeholder:text-slate-300 shadow-sm",
+                                        "crm-dialog-field px-4",
                                         fieldErrors.name
                                             ? "border-rose-300 bg-rose-50 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/5 text-rose-900"
-                                            : "border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900"
+                                            : ""
                                     )}
                                     onChange={() => setFieldErrors(prev => ({ ...prev, name: "" }))}
+                                    required
                                 />
                                 {fieldErrors.name && (
-                                    <p className="text-[9px] font-bold text-rose-500 ml-1">
+                                    <p className="text-xs font-bold text-rose-500 ml-1">
                                         {fieldErrors.name}
                                     </p>
                                 )}
                             </div>
                             <div className="space-y-1.5 w-32 shrink-0">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Тип</label>
-                                <PremiumSelect
+                                <Select
                                     options={[
                                         { id: "warehouse", title: "Склад", icon: <Building className="w-4 h-4" /> },
                                         { id: "production", title: "Производство", icon: <RefreshCw className="w-4 h-4" /> },
                                         { id: "office", title: "Офис", icon: <Building className="w-4 h-4" /> }
                                     ]}
                                     value={type}
+                                    disabled={isPending}
                                     onChange={(val) => setType(val as "warehouse" | "production" | "office")}
                                     variant="default"
                                     align="end"
@@ -149,17 +175,19 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                 <Input
                                     name="address"
                                     placeholder="Ул. Промышленная, д. 15..."
+                                    disabled={isPending}
                                     className={cn(
-                                        "w-full h-11 pl-11 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all placeholder:text-slate-300 shadow-sm",
+                                        "crm-dialog-field pl-11 pr-4",
                                         fieldErrors.address
                                             ? "border-rose-300 bg-rose-50 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/5 text-rose-900"
-                                            : "border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900"
+                                            : ""
                                     )}
                                     onChange={() => setFieldErrors(prev => ({ ...prev, address: "" }))}
+                                    required
                                 />
                             </div>
                             {fieldErrors.address && (
-                                <p className="text-[9px] font-bold text-rose-500 ml-1">
+                                <p className="text-xs font-bold text-rose-500 ml-1">
                                     {fieldErrors.address}
                                 </p>
                             )}
@@ -167,16 +195,20 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
 
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-slate-700 ml-1">Ответственный сотрудник</label>
-                            <PremiumSelect
+                            <Select
                                 options={userOptions}
                                 value={responsibleUserId}
+                                disabled={isPending}
                                 onChange={setResponsibleUserId}
                                 placeholder="Кто будет отвечать за склад?"
                                 showSearch
                             />
                         </div>
 
-                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 transition-all cursor-pointer group relative hover:bg-white hover:border-primary/20 hover:shadow-md hover:shadow-slate-100 shadow-sm">
+                        <div className={cn(
+                            "flex items-center gap-3 p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 transition-all cursor-pointer group relative hover:bg-white hover:border-primary/20 hover:shadow-md hover:shadow-slate-100 shadow-sm",
+                            isPending && "opacity-50 pointer-events-none"
+                        )}>
                             <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-white text-slate-400 border border-slate-200 group-hover:border-primary/20 group-hover:text-primary flex items-center justify-center transition-all shadow-sm">
                                 <Plus className="w-5 h-5 rotate-45 stroke-[2.5]" />
                             </div>
@@ -187,6 +219,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                             <input
                                 type="checkbox"
                                 name="isDefault"
+                                disabled={isPending}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer peer z-20"
                             />
                             <div className="w-6 h-6 rounded-full border-2 border-slate-200 transition-all flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary shadow-inner">
@@ -195,7 +228,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                         </div>
 
                         {error && (
-                            <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold flex items-center gap-2 animate-in slide-in-from-top-2">
+                            <div className="crm-error-box">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
                                 {error}
                             </div>
@@ -203,15 +236,24 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
 
                     </form>
 
-                    <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 flex items-center justify-end lg:justify-between gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto">
+                    <div className="crm-dialog-footer">
                         <Button
                             variant="ghost"
+                            type="button"
                             onClick={() => setIsOpen(false)}
+                            disabled={isPending}
                             className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
                         >
                             Отмена
                         </Button>
-                        <SubmitButton />
+                        <SubmitButton
+                            form="add-location-form"
+                            isLoading={isPending}
+                            disabled={isPending}
+                            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
+                            text="Сохранить"
+                            loadingText="Сохранение..."
+                        />
                     </div>
                 </div>
             </ResponsiveModal >
@@ -219,27 +261,4 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
     );
 }
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
-    return (
-        <Button
-            variant="btn-dark"
-            type="submit"
-            form="add-location-form"
-            disabled={pending}
-            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3"
-        >
-            {pending ? (
-                <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    Сохранение...
-                </>
-            ) : (
-                <>
-                    <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    Сохранить
-                </>
-            )}
-        </Button>
-    );
-}
+

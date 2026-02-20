@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface CategorySelectProps {
+    id?: string;
     categories: Category[];
     value: string;
     onChange: (value: string) => void;
@@ -55,6 +56,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
     return (
         <div className="relative" ref={containerRef}>
             <Button
+                type="button"
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 variant="ghost"
@@ -109,6 +111,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                                 return (
                                     <Button
                                         key={cat.id}
+                                        type="button"
                                         onClick={() => handleSelect(cat.id)}
                                         variant="ghost"
                                         className={cn(

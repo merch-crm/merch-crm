@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { MapPin } from "lucide-react";
 import { StorageLocation } from "./storage-locations-tab";
-import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
+import { Select, SelectOption } from "@/components/ui/select";
 
 interface LocationSelectProps {
     locations: StorageLocation[];
@@ -38,7 +38,7 @@ export function LocationSelect({
                     title: loc.name,
                     icon: <MapPin className="w-4 h-4 opacity-50" />,
                     badge: qty !== undefined ? `${qty} шт` : undefined,
-                } as PremiumSelectOption;
+                } as SelectOption;
             });
     }, [locations, excludeId, stocks]);
 
@@ -49,7 +49,7 @@ export function LocationSelect({
                     {label}
                 </label>
             )}
-            <PremiumSelect
+            <Select
                 options={safeOptions}
                 value={value}
                 onChange={onChange}

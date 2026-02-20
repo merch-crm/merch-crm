@@ -1,17 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { Metadata } from "next";
-import {
-    getInventoryItem,
-    getStorageLocations,
-    getInventoryCategories,
-    getInventoryAttributeTypes,
-    getInventoryAttributes
-} from "../../actions";
+import { getInventoryItem } from "../../item-actions";
+import { getStorageLocations } from "../../storage-actions";
+import { getInventoryCategories } from "../../category-actions";
+import { getInventoryAttributeTypes, getInventoryAttributes } from "../../attribute-actions";;
 import { ItemDetailClient } from "./item-detail-client";
 import { getSession } from "@/lib/auth";
-import { serializeForClient } from "@/lib/serialize";
-import type { Serialized } from "@/lib/serialize";
+import { serializeForClient, type Serialized } from "@/lib/serialize";
 import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
 
 type PageParams = {
@@ -70,7 +66,7 @@ export default async function ItemPage({ params }: PageParams) {
     const attributes = serializeForClient('data' in attrsRes && attrsRes.data ? attrsRes.data : []) as Serialized<InventoryAttribute[]>;
 
     return (
-        <div className="p-4">
+        <div className="p-1">
             <ItemDetailClient
                 item={item as InventoryItem}
                 storageLocations={locations as StorageLocation[]}

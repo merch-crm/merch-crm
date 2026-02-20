@@ -4,10 +4,19 @@ import { db } from "@/lib/db";
 import { orders, tasks, users } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+
+const UserIdSchema = z.string().uuid("Некорректный ID пользователя");
 
 export async function getUserStats(userId: string) {
     const session = await getSession();
     if (!session) return { error: "Не авторизован" };
+
+    const validated = UserIdSchema.safeParse(userId);
+    if (!validated.success) {
+        return { error: validated.error.issues[0].message };
+    }
 
     try {
         // Basic user info
@@ -31,7 +40,8 @@ export async function getUserStats(userId: string) {
             monthRevenue: sql<string>`coalesce(sum(${orders.totalAmount}) filter (where ${orders.createdAt} >= ${startOfMonth}), 0)`
         })
             .from(orders)
-            .where(eq(orders.createdBy, userId));
+            .where(eq(orders.createdBy, userId))
+            .limit(1);
 
         // 2. Tasks Stats (Assigned to user)
         const tasksStats = await db.select({
@@ -40,7 +50,8 @@ export async function getUserStats(userId: string) {
             monthCompleted: sql<number>`count(*) filter (where ${tasks.status} = 'done' and ${tasks.createdAt} >= ${startOfMonth})` // Using createdAt as proxy
         })
             .from(tasks)
-            .where(eq(tasks.assignedToUserId, userId));
+            .where(eq(tasks.assignedToUserId, userId))
+            .limit(1);
 
         // 3. Efficiency (Placeholder logic)
         // E.g. completed tasks / total tasks (if total > 0)
@@ -70,7 +81,12 @@ export async function getUserStats(userId: string) {
             }
         };
     } catch (error) {
-        console.error("Error fetching user stats:", error);
-        return { error: "Не удалось загрузить stats" };
+        await logError({
+            error,
+            path: "/admin-panel/users/stats",
+            method: "getUserStats",
+            details: { userId }
+        });
+        return { error: "Не удалось загрузить статистику" };
     }
 }

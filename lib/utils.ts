@@ -76,3 +76,59 @@ export function generateId(): string {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+/**
+ * Handle a11y keyboard events for custom interactive elements (role="button")
+ * Supports Enter and Space key presses to trigger the onClick equivalent
+ */
+export function handleA11yKeyDown(e: React.KeyboardEvent, callback: () => void) {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        callback();
+    }
+}
+
+/**
+ * Safely opens an external URL, catching pop-up blocker issues
+ * @param url The URL to open
+ * @param externalName Name of the service (e.g. "Telegram", "Телефон") for the error message
+ * @param toastFn The toast function from useToast() to display errors
+ * @param isMobileOverride Optional: forces a mobile link behavior without blank target
+ */
+export function safeExternalOpen(
+    url: string,
+    externalName: string,
+    toastFn: (msg: string, type?: "error" | "success" | "warning" | "info") => void,
+    isMobileOverride: boolean = false
+) {
+    try {
+        const target = isMobileOverride ? '_self' : '_blank';
+        const win = window.open(url, target);
+
+        // Check if browser blocked the popup (returns null)
+        // Exceptions: if we forced _self or if it's a mailto/tel link on mobile
+        if (!win && target === '_blank') {
+            const isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (!isMobileBrowser || !url.startsWith('tel:')) {
+                toastFn(`Браузер заблокировал переход (${externalName}). Разрешите всплывающие окна.`, "error");
+            }
+        }
+    } catch {
+        toastFn(`Не удалось открыть ссылку (${externalName}).`, "error");
+    }
+}
+/**
+ * Возвращает правильную форму слова (склонение) в зависимости от числа.
+ * Пример: formatPlural(count, ['запись', 'записи', 'записей'])
+ */
+export function formatPlural(count: number, forms: [string, string, string]): string {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+
+    if (mod10 === 1 && mod100 !== 11) {
+        return forms[0];
+    }
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) {
+        return forms[1];
+    }
+    return forms[2];
+}

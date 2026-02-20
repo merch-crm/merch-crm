@@ -1,5 +1,6 @@
-import { getInventoryHistory } from "../actions";
-import { HistoryTable, Transaction } from "../history-table";
+import { getInventoryHistory } from "../history-actions";
+import { HistoryTable } from "../history-table";
+import { type Transaction } from "../history-types";
 import { getSession } from "@/lib/auth";
 
 export const metadata = {
@@ -9,7 +10,8 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {
-    const { data: history = [] } = await getInventoryHistory();
+    const result = await getInventoryHistory();
+    const history = result.success ? (result.data || []) : [];
     const session = await getSession();
 
     return (

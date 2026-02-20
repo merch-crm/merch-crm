@@ -45,6 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     white-space: nowrap;
     cursor: pointer;
     border: none;
@@ -80,6 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     white-space: nowrap;
 }
 

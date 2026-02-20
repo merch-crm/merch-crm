@@ -17,7 +17,14 @@ interface HealthStatus {
 
 const startTime = Date.now();
 
+import { getSession } from "@/lib/auth";
+
 export async function GET() {
+    const session = await getSession();
+    if (!session) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const health: HealthStatus = {
         status: 'ok',
         timestamp: new Date().toISOString(),

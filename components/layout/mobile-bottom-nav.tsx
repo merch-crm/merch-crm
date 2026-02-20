@@ -56,7 +56,7 @@ export function MobileBottomNav({ user }: { user: UserProp }) {
                                             strokeWidth={isActive ? 2.5 : 2}
                                         />
                                     </div>
-                                    <span className="text-[10px] font-bold tracking-tight">{item.name}</span>
+                                    <span className="text-xs font-bold tracking-tight">{item.name}</span>
                                 </div>
 
                                 {isActive && (

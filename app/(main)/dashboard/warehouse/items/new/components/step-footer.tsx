@@ -35,6 +35,7 @@ export function StepFooter({
         <div className={cn("h-auto sm:h-[109px] py-4 sm:py-0 shrink-0 bg-white border-t border-slate-200 z-30 px-4 sm:px-8 flex items-center", className)}>
             <div className="max-w-6xl mx-auto flex items-center justify-between w-full gap-3 sm:gap-0">
                 <Button
+                    type="button"
                     variant="ghost"
                     onClick={onBack}
                     disabled={isSubmitting}
@@ -46,22 +47,23 @@ export function StepFooter({
                     </div>
                 </Button>
 
-                <div className="flex items-center gap-2 sm:gap-6 justify-end">
+                <div className="flex items-center gap-2 sm:gap-4 justify-end">
                     {validationError && (
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 sm:static sm:translate-x-0 sm:translate-y-0 sm:mb-0 flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100 animate-in fade-in slide-in-from-top-4 sm:slide-in-from-right-4 whitespace-nowrap z-[60]">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                            <span className="text-[10px] font-bold leading-none">{validationError}</span>
+                            <span className="text-xs font-bold leading-none">{validationError}</span>
                         </div>
                     )}
                     {!validationError && hint && (
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 sm:static sm:translate-x-0 sm:translate-y-0 sm:mb-0 flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 animate-in fade-in slide-in-from-top-4 sm:slide-in-from-right-4 whitespace-nowrap z-[60]">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                            <span className="text-[10px] font-bold leading-none">{hint}</span>
+                            <span className="text-xs font-bold leading-none">{hint}</span>
                         </div>
                     )}
 
                     {onNext && (
                         <Button
+                            type="button"
                             variant="default"
                             onClick={onNext}
                             disabled={isNextDisabled || isSubmitting}

@@ -18,7 +18,6 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        console.log("[Cron Backup] Starting scheduled backup...");
 
         // 2. Check backup frequency setting
         const frequencySetting = await db.query.systemSettings.findFirst({
@@ -40,7 +39,6 @@ export async function GET(request: NextRequest) {
         let shouldBackup = false;
         if (frequency === "none") {
             // Manual only — skip
-            console.log("[Cron Backup] Frequency set to 'none'. Skipping.");
             return NextResponse.json({
                 success: true,
                 skipped: true,
@@ -53,7 +51,6 @@ export async function GET(request: NextRequest) {
         if (frequency === "monthly" && diffMs > 30 * 24 * 60 * 60 * 1000) shouldBackup = true;
 
         if (!shouldBackup) {
-            console.log(`[Cron Backup] Last backup was ${Math.round(diffMs / 3600000)}h ago. Too recent, skipping.`);
             return NextResponse.json({
                 success: true,
                 skipped: true,
@@ -82,7 +79,6 @@ export async function GET(request: NextRequest) {
             // Service log: "Создана резервная копия БД: ..."
             // We can rely on that.
 
-            console.log(`[Cron Backup] Success: ${result.fileName}`);
             return NextResponse.json({
                 success: true,
                 fileName: result.fileName,

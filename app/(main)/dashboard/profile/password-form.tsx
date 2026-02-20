@@ -13,34 +13,20 @@ export function PasswordForm() {
     const [message, setMessage] = useState({ type: "", text: "" });
     const [showPassword, setShowPassword] = useState(false);
 
-    async function handleSubmit(formData: FormData) {
-        setLoading(true);
-        setMessage({ type: "", text: "" });
-
-        const result = await updatePassword(formData);
-
-        if (result.error) {
-            setMessage({ type: "error", text: result.error });
-        } else {
-            setMessage({ type: "success", text: "Пароль успешно обновлен!" });
-            (document.getElementById("password-form") as HTMLFormElement).reset();
-        }
-        setLoading(false);
-    }
-
-    return (
-        <form id="password-form" action={handleSubmit} className="space-y-8">
-            <div className="space-y-6">
-                <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 group-hover/input:text-primary transition-colors">Текущий пароль</Label>
-                    <div className="relative">
-                        <Input
-                            name="currentPassword"
-                            type={showPassword ? "text" : "password"}
-                            required
-                            className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold transition-all duration-300"
-                            placeholder="••••••••"
-                        />
+    // Local reusable password field
+    function PasswordField({ name, label, height = "h-12" }: { name: string; label: string; height?: string }) {
+        return (
+            <div className="space-y-2 group/input">
+                <Label className="text-xs font-black text-slate-400 ml-1 group-hover/input:text-primary transition-colors">{label}</Label>
+                <div className="relative">
+                    <Input
+                        name={name}
+                        type={showPassword ? "text" : "password"}
+                        required
+                        className={cn(height, "px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold transition-all duration-300")}
+                        placeholder="••••••••"
+                    />
+                    {name === "currentPassword" && (
                         <Button
                             type="button"
                             variant="ghost"
@@ -50,30 +36,35 @@ export function PasswordForm() {
                         >
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </Button>
-                    </div>
+                    )}
                 </div>
+            </div>
+        );
+    }
 
-                <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 group-hover/input:text-primary transition-colors">Новый пароль</Label>
-                    <Input
-                        name="newPassword"
-                        type={showPassword ? "text" : "password"}
-                        required
-                        className="h-14 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold transition-all duration-300"
-                        placeholder="••••••••"
-                    />
-                </div>
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setLoading(true);
+        setMessage({ type: "", text: "" });
 
-                <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 group-hover/input:text-primary transition-colors">Подтвердите пароль</Label>
-                    <Input
-                        name="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        required
-                        className="h-14 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold transition-all duration-300"
-                        placeholder="••••••••"
-                    />
-                </div>
+        const formData = new FormData(e.currentTarget);
+        const result = await updatePassword(formData);
+
+        if (result.error) {
+            setMessage({ type: "error", text: result.error });
+        } else {
+            setMessage({ type: "success", text: "Пароль успешно обновлен!" });
+            e.currentTarget.reset();
+        }
+        setLoading(false);
+    }
+
+    return (
+        <form id="password-form" onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
+                <PasswordField name="currentPassword" label="Текущий пароль" />
+                <PasswordField name="newPassword" label="Новый пароль" height="h-14" />
+                <PasswordField name="confirmPassword" label="Подтвердите пароль" height="h-14" />
             </div>
 
             {message.text && (
@@ -82,7 +73,7 @@ export function PasswordForm() {
                     message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-100" : "bg-rose-50 text-rose-800 border border-rose-100"
                 )}>
                     {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}
-                    <span className="text-[14px] font-black">{message.text}</span>
+                    <span className="text-sm font-black">{message.text}</span>
                 </div>
             )}
 
@@ -90,7 +81,7 @@ export function PasswordForm() {
                 <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-11 rounded-3xl bg-slate-900 hover:bg-black text-white font-black text-[16px] shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 border-none"
+                    className="w-full h-11 rounded-3xl bg-slate-900 hover:bg-black text-white font-black text-base shadow-2xl shadow-slate-200 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                 >
                     {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                     {loading ? "Обновление..." : "Обновить пароль"}

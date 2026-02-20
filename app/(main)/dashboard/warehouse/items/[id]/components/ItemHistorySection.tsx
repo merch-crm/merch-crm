@@ -18,10 +18,11 @@ import {
     Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ItemHistoryTransaction } from "../../../types";
+import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
 import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
-import { PremiumPagination } from "@/components/ui/premium-pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -44,7 +45,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
             result = result.filter(tx =>
                 tx.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 tx.reason?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                tx.creator?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                tx.creator?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 tx.type.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
@@ -183,11 +184,11 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     <td className="crm-td text-right">
                                         {(() => {
                                             const d = new Date(tx.createdAt);
-                                            if (isNaN(d.getTime())) return <span className="text-[10px] font-bold text-muted-foreground/30">—</span>;
+                                            if (isNaN(d.getTime())) return <span className="text-xs font-bold text-muted-foreground/30">—</span>;
                                             return (
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy")}</span>
-                                                    <span className="text-[10px] font-bold text-muted-foreground">{format(d, "HH:mm")}</span>
+                                                    <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy", { locale: ru })}</span>
+                                                    <span className="text-xs font-bold text-muted-foreground">{format(d, "HH:mm", { locale: ru })}</span>
                                                 </div>
                                             );
                                         })()}
@@ -284,7 +285,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
             {/* Pagination */}
             {filteredHistory.length > 0 && (
                 <div className="pt-2">
-                    <PremiumPagination
+                    <Pagination
                         currentPage={currentPage}
                         totalItems={filteredHistory.length}
                         pageSize={pageSize}
@@ -314,9 +315,9 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                 return (
                     <div key={tx.id || idx} className="bg-card">
                         {/* Main Row */}
-                        <div
+                        <div role="button" tabIndex={0}
                             className="p-3 flex items-center gap-3 cursor-pointer active:bg-muted/50 transition-colors"
-                            onClick={() => setExpandedId(isExpanded ? null : (tx.id || String(idx)))}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setExpandedId(isExpanded ? null : (tx.id || String(idx)))}
                         >
                             {/* Type Indicator */}
                             <div className={cn(
@@ -341,16 +342,16 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="text-[10px] font-bold text-muted-foreground">
+                                    <span className="text-xs font-bold text-muted-foreground">
                                         {(() => {
                                             const d = new Date(tx.createdAt);
-                                            return isNaN(d.getTime()) ? "—" : format(d, "d MMM, HH:mm");
+                                            return isNaN(d.getTime()) ? "—" : format(d, "d MMM, HH:mm", { locale: ru });
                                         })()}
                                     </span>
                                     {tx.storageLocation?.name && (
                                         <>
                                             <div className="w-0.5 h-0.5 bg-muted-foreground/50 rounded-full" />
-                                            <span className="text-[10px] font-medium text-muted-foreground truncate">
+                                            <span className="text-xs font-medium text-muted-foreground truncate">
                                                 {tx.storageLocation.name}
                                             </span>
                                         </>
@@ -373,14 +374,14 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                         <div className="bg-muted/30 rounded-lg p-3 border border-border flex flex-col gap-2">
                                             {/* Author */}
                                             <div className="flex items-center justify-between border-b border-border/60 pb-2">
-                                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Автор</span>
+                                                <span className="text-xs font-bold text-muted-foreground">Автор</span>
                                                 <span className="text-xs font-bold text-foreground">{tx.creator?.name || "Система"}</span>
                                             </div>
 
                                             {/* Reason */}
                                             {tx.reason && (
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Причина</span>
+                                                    <span className="text-xs font-bold text-muted-foreground">Причина</span>
                                                     <p className="text-xs text-foreground leading-normal">{tx.reason}</p>
                                                 </div>
                                             )}

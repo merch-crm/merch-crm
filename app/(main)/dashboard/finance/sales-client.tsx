@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
 import { useBranding } from "@/components/branding-provider";
-import { FinancialStats } from "./actions";
+import { FinancialStats } from "./actions";;
 
 interface SalesClientProps {
     salesData: FinancialStats;
@@ -100,9 +100,9 @@ export function SalesClient({ salesData }: SalesClientProps) {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-3">
                 {statsCards.map((card, i) => (
                     <div key={i} className="crm-card p-6 bg-white flex flex-col justify-between h-40 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm h-full">
                         <div className="flex justify-between items-start">
@@ -113,7 +113,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
                                 <card.icon className={cn("h-5 w-5", card.color)} />
                             </div>
                             <div className={cn(
-                                "flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold",
+                                "flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold",
                                 card.trendColor.replace('text-', 'bg-') + "/10",
                                 card.trendColor
                             )}>
@@ -122,7 +122,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
                             </div>
                         </div>
                         <div>
-                            <p className="text-slate-400 text-[10px] font-bold tracking-tight mb-2 uppercase">{card.label}</p>
+                            <p className="text-slate-400 text-xs font-bold mb-2">{card.label}</p>
                             <div className="text-2xl font-black text-slate-900 leading-none">
                                 {card.value} <span className="text-sm text-slate-400 font-bold">{card.suffix}</span>
                             </div>
@@ -132,7 +132,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
             </div>
 
             {/* Category Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-3">
                 {salesData.categories.map((cat, i) => {
                     const config = categoryLabels[cat.name] || categoryLabels.other;
                     const totalRev = Number(salesData.summary.totalRevenue || 0);
@@ -149,12 +149,12 @@ export function SalesClient({ salesData }: SalesClientProps) {
                                 </div>
                                 <div className="text-right">
                                     <div className="text-2xl font-black text-slate-900 leading-none mb-1">{Math.round(percentage)}%</div>
-                                    <div className="text-[10px] font-bold text-slate-400 uppercase leading-none">доля выручки</div>
+                                    <div className="text-xs font-bold text-slate-400 leading-none">доля выручки</div>
                                 </div>
                             </div>
 
                             <div className="mb-6">
-                                <p className="text-slate-400 text-[10px] font-bold uppercase mb-2">{config.label}</p>
+                                <p className="text-slate-400 text-xs font-bold mb-2">{config.label}</p>
                                 <div className="text-2xl font-black text-slate-900 leading-none mb-2">
                                     {cat.revenue.toLocaleString()} <span className="text-sm text-slate-400 font-bold">{currencySymbol}</span>
                                 </div>

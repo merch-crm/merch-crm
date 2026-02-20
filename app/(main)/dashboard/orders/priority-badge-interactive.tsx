@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Circle, ChevronDown } from "lucide-react";
-import { updateOrderField } from "./actions";
+import { updateOrderField } from "./actions/core.actions";;
 import { Button } from "@/components/ui/button";
 
 const priorities = [
@@ -42,19 +42,19 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
         setIsOpen(false);
 
         const res = await updateOrderField(orderId, "priority", newId);
-        if (res.error) {
+        if (!res.success) {
             setCurrentPriority(prevPriority);
         }
         setLoading(false);
     };
 
     return (
-        <div className="relative inline-block" ref={containerRef} onClick={(e) => e.stopPropagation()}>
+        <div role="button" tabIndex={0} className="relative inline-block" ref={containerRef} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}>
             <Badge
                 variant="outline"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={`
-                    rounded-md font-bold text-[10px]  tracking-wider gap-1.5 px-2 py-0.5 cursor-pointer
+                    rounded-md font-bold text-xs  gap-1.5 px-2 py-0.5 cursor-pointer
                     transition-all hover:shadow-sm active:scale-95 select-none
                     ${activeItem.lightBg} ${activeItem.color}
                     ${loading ? 'opacity-50' : 'opacity-100'}
@@ -83,7 +83,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
                             `}
                         >
                             <div className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
-                            <span className={`text-[11px] font-bold  tracking-wider ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
+                            <span className={`text-[11px] font-bold  ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
                                 {p.label}
                             </span>
                         </Button>

@@ -1,124 +1,80 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
+
+
 import { InventoryItem } from "./types";
-import { restoreInventoryItems, deleteInventoryItems } from "./actions";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { PremiumPagination } from "@/components/ui/premium-pagination";
-import { PremiumCheckbox } from "@/components/ui/premium-checkbox";
+import { Pagination } from "@/components/ui/pagination";
+import { Checkbox } from "@/components/ui/checkbox";
 import { pluralize } from "@/lib/pluralize";
+import { useDebounce } from "@/hooks/use-debounce";
+import { EmptyState } from "@/components/ui/empty-state";
+import { useArchiveActions } from "./hooks/useArchiveActions";
 
 interface ArchiveTableProps {
     items: InventoryItem[];
+    total?: number;
 }
 
-export function ArchiveTable({ items }: ArchiveTableProps) {
+export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
     const router = useRouter();
-    const { toast } = useToast();
-    const [searchQuery, setSearchQuery] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [isRestoring, setIsRestoring] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
-    const [password, setPassword] = useState("");
-    const itemsPerPage = 10;
+    const searchParams = useSearchParams();
+    const { state, actions } = useArchiveActions();
+    const { searchQuery, selectedIds, isRestoring, isDeleting, idsToDelete, password } = state;
+    const { setSearchQuery, setSelectedIds, setIdsToDelete, setPassword, updateUrl, handleRestore, handleDelete } = actions;
 
-    const filteredItems = items.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.sku?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (item.archiveReason?.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).sort((a, b) => {
-        const dateA = a.archivedAt ? new Date(a.archivedAt).getTime() : 0;
-        const dateB = b.archivedAt ? new Date(b.archivedAt).getTime() : 0;
-        return dateB - dateA;
-    });
+    const debouncedSearch = useDebounce(searchQuery, 400);
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+    const currentPage = Number(searchParams.get("page")) || 1;
+    const itemsPerPage = 20;
 
-    const handleRestore = async (ids: string[]) => {
-        setIsRestoring(true);
-        try {
-            const res = await restoreInventoryItems(ids, "Восстановление из архива");
-            if (res.success) {
-                toast(`Восстановлено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
-                playSound("notification_success");
-                setSelectedIds([]);
-                router.refresh();
-            } else {
-                toast(res.error || "Ошибка при восстановлении", "error");
-                playSound("notification_error");
-            }
-        } finally {
-            setIsRestoring(false);
+    useEffect(() => {
+        if (debouncedSearch !== (searchParams.get("search") || "")) {
+            updateUrl({ search: debouncedSearch, page: "1" });
         }
-    };
+    }, [debouncedSearch, updateUrl, searchParams]);
 
-    const handleDelete = async (ids: string[]) => {
-        if (!password) {
-            toast("Введите пароль для удаления", "error");
-            return;
-        }
-        setIsDeleting(true);
-        try {
-            const res = await deleteInventoryItems(ids, password);
-            if (res.success) {
-                toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
-                playSound("client_deleted");
-                setSelectedIds([]);
-                setIdsToDelete([]);
-                setPassword("");
-                router.refresh();
-            } else {
-                toast(res.error || "Ошибка при удалении", "error");
-                playSound("notification_error");
-            }
-        } finally {
-            setIsDeleting(false);
-        }
-    };
+    const currentItems = Array.isArray(items) ? items : [];
 
-    if (items.length === 0 && searchQuery === "") {
+    if ((items?.length || 0) === 0 && searchQuery === "") {
         return (
-            <div className="table-empty py-20">
-                <Clock />
-                <p>Архив пуст</p>
-                <span className="text-muted-foreground mt-2 max-w-[320px] font-bold leading-relaxed text-sm">Здесь будут отображаться позиции, выведенные из оборота.</span>
-            </div>
+            <EmptyState
+                icon={Clock}
+                title="Архив пуст"
+                description="Здесь будут отображаться позиции, выведенные из оборота."
+                className="py-20"
+            />
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="crm-card flex flex-col md:flex-row gap-4 items-center">
+        <div className="space-y-4">
+            <div className="crm-card flex flex-col md:flex-row gap-3 items-center">
                 <div className="relative flex-1 w-full md:w-64">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
+                    <input
                         type="text"
                         placeholder="Поиск в архиве..."
                         value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1);
-                        }}
-                        className="pl-10 h-11"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        aria-label="Поиск в архиве"
+                        className="pl-10 h-11 w-full border rounded-md"
                     />
                 </div>
                 {selectedIds.length > 0 && (
                     <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
                         <Button
+                            type="button"
                             onClick={() => handleRestore(selectedIds)}
                             disabled={isRestoring}
                             className="h-11 px-4 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2 hover:bg-emerald-100 transition-all disabled:opacity-50"
@@ -127,6 +83,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                             Восстановить ({selectedIds.length})
                         </Button>
                         <Button
+                            type="button"
                             variant="destructive"
                             onClick={() => setIdsToDelete(selectedIds)}
                             className="h-11 px-4 rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2"
@@ -144,10 +101,10 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                     <thead className="crm-thead">
                         <tr>
                             <th className="crm-th w-[50px]">
-                                <PremiumCheckbox
-                                    checked={currentItems.length > 0 && currentItems.every(i => selectedIds.includes(i.id))}
+                                <Checkbox
+                                    checked={(currentItems?.length || 0) > 0 && (currentItems || []).every(i => selectedIds.includes(i.id))}
                                     onChange={() => {
-                                        const allIds = currentItems.map(i => i.id);
+                                        const allIds = (currentItems || []).map(i => i.id);
                                         if (allIds.every(id => selectedIds.includes(id))) {
                                             setSelectedIds(prev => prev.filter(id => !allIds.includes(id)));
                                         } else {
@@ -165,7 +122,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                         </tr>
                     </thead>
                     <tbody className="crm-tbody">
-                        {currentItems.map((item) => (
+                        {(currentItems || []).map((item) => (
                             <tr
                                 key={item.id}
                                 onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
@@ -175,7 +132,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                                 )}
                             >
                                 <td className="crm-td" onClick={(e) => e.stopPropagation()}>
-                                    <PremiumCheckbox
+                                    <Checkbox
                                         checked={selectedIds.includes(item.id)}
                                         onChange={() => {
                                             setSelectedIds(prev => prev.includes(item.id) ? prev.filter(id => id !== item.id) : [...prev, item.id]);
@@ -196,7 +153,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                                         </div>
                                         <div>
                                             <div className="font-bold text-slate-900 leading-tight">{item.name}</div>
-                                            <div className="text-[10px] font-bold text-slate-400 mt-0.5">{item.category?.name || "Без категории"}</div>
+                                            <div className="text-xs font-bold text-slate-400 mt-0.5">{item.category?.name || "Без категории"}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -224,31 +181,37 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                                 <td className="crm-td text-right" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex items-center justify-end gap-2">
                                         <Button
+                                            type="button"
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
                                             className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:text-slate-900 transition-all border border-slate-200"
                                             title="Просмотреть карточку"
+                                            aria-label="Просмотреть карточку товара"
                                         >
-                                            <Eye className="w-4 h-4" />
+                                            <Eye className="w-4 h-4" aria-hidden="true" />
                                         </Button>
                                         <Button
+                                            type="button"
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => handleRestore([item.id])}
                                             className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all border border-emerald-100"
                                             title="Восстановить"
+                                            aria-label="Восстановить товар из архива"
                                         >
-                                            <RotateCcw className="w-4 h-4" />
+                                            <RotateCcw className="w-4 h-4" aria-hidden="true" />
                                         </Button>
                                         <Button
+                                            type="button"
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => setIdsToDelete([item.id])}
                                             className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-inner)] text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200"
                                             title="Удалить навсегда"
+                                            aria-label="Удалить товар навсегда"
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <Trash2 className="w-4 h-4" aria-hidden="true" />
                                         </Button>
                                     </div>
                                 </td>
@@ -260,7 +223,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
 
             {/* Mobile Compact List View */}
             <MobileArchiveList
-                items={currentItems}
+                items={currentItems || []}
                 selectedIds={selectedIds}
                 onSelect={(id) => setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])}
                 onRestore={handleRestore}
@@ -268,13 +231,13 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 router={router}
             />
 
-            {filteredItems.length > 0 && (
+            {total !== undefined && total > 0 && (
                 <div className="pt-2">
-                    <PremiumPagination
+                    <Pagination
                         currentPage={currentPage}
-                        totalItems={filteredItems.length}
+                        totalItems={total}
                         pageSize={itemsPerPage}
-                        onPageChange={setCurrentPage}
+                        onPageChange={(page) => updateUrl({ page: page.toString() })}
                         itemNames={['позиция', 'позиции', 'позиций']}
                     />
                 </div>
@@ -286,7 +249,7 @@ export function ArchiveTable({ items }: ArchiveTableProps) {
                 onConfirm={() => handleDelete(idsToDelete)}
                 isLoading={isDeleting}
                 title="Удаление из системы"
-                description={`Вы уверены, что хотите НАВСЕГДА удалить архивные ${pluralize(idsToDelete.length, 'позицию', 'позиции', 'позиций')} (${idsToDelete.length})? Это действие нельзя отменить. Введите пароль подтверждения.`}
+                description={"Вы уверены, что хотите НАВСЕГДА удалить архивные " + pluralize(idsToDelete.length, 'позицию', 'позиции', 'позиций') + " (" + idsToDelete.length + ")? Это действие нельзя отменить. Введите пароль подтверждения."}
                 confirmText="Удалить окончательно"
                 variant="destructive"
             >
@@ -325,7 +288,7 @@ function MobileArchiveList({
 
     return (
         <div className="md:hidden rounded-[var(--radius-outer)] border border-slate-200 overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
-            {items.map((item) => {
+            {(items || []).map((item) => {
                 const isSelected = selectedIds.includes(item.id);
                 const isExpanded = expandedId === item.id;
 
@@ -334,11 +297,19 @@ function MobileArchiveList({
                         {/* Main Row */}
                         <div
                             className="p-3 flex items-center gap-3 cursor-pointer active:bg-slate-50 transition-colors"
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setExpandedId(isExpanded ? null : item.id);
+                                }
+                            }}
                             onClick={() => setExpandedId(isExpanded ? null : item.id)}
                         >
                             {/* Checkbox */}
-                            <div onClick={(e) => e.stopPropagation()}>
-                                <PremiumCheckbox
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}>
+                                <Checkbox
                                     checked={isSelected}
                                     onChange={() => onSelect(item.id)}
                                     className="w-[16px] h-[16px]"
@@ -364,11 +335,11 @@ function MobileArchiveList({
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="text-[10px] font-bold text-slate-400">
+                                    <span className="text-xs font-bold text-slate-400">
                                         {item.archivedAt ? format(new Date(item.archivedAt), "d MMM, HH:mm", { locale: ru }) : "—"}
                                     </span>
                                     <div className="w-0.5 h-0.5 bg-slate-300 rounded-full" />
-                                    <span className="text-[10px] font-medium text-slate-500 truncate">
+                                    <span className="text-xs font-medium text-slate-500 truncate">
                                         {item.category?.name || "Без категории"}
                                     </span>
                                 </div>
@@ -390,7 +361,7 @@ function MobileArchiveList({
                                             {/* SKU */}
                                             {item.sku && (
                                                 <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Артикул</span>
+                                                    <span className="text-xs font-bold text-slate-400">Артикул</span>
                                                     <span className="text-xs font-mono text-slate-600">{item.sku}</span>
                                                 </div>
                                             )}
@@ -398,7 +369,7 @@ function MobileArchiveList({
                                             {/* Archive Reason */}
                                             {item.archiveReason && (
                                                 <div className="flex flex-col gap-1 border-b border-slate-200/60 pb-2">
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Причина</span>
+                                                    <span className="text-xs font-bold text-slate-400">Причина</span>
                                                     <p className="text-xs text-slate-700 leading-normal">{item.archiveReason}</p>
                                                 </div>
                                             )}
@@ -406,6 +377,7 @@ function MobileArchiveList({
                                             {/* Actions */}
                                             <div className="pt-2 mt-1 border-t border-slate-200/60 flex gap-2">
                                                 <Button
+                                                    type="button"
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={(e: React.MouseEvent) => {
@@ -418,6 +390,7 @@ function MobileArchiveList({
                                                     Карточка
                                                 </Button>
                                                 <Button
+                                                    type="button"
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={(e: React.MouseEvent) => {
@@ -430,6 +403,7 @@ function MobileArchiveList({
                                                     Восстановить
                                                 </Button>
                                                 <Button
+                                                    type="button"
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={(e: React.MouseEvent) => {

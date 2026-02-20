@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, User, Lock, Eye, EyeOff, Building2 } from "lucide-react";
+import { User, Lock, Eye, EyeOff, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -83,7 +84,7 @@ export default function LoginPage() {
             )}
 
             <Card className="w-full max-w-md p-8 shadow-2xl bg-white/80 backdrop-blur-xl border-white/20 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500 rounded-[32px]">
-                <div className="flex flex-col items-center mb-10 space-y-5">
+                <div className="flex flex-col items-center mb-10 space-y-4">
                     {!branding ? (
                         <>
                             <div className="w-20 h-20 rounded-2xl bg-slate-200 animate-pulse" />
@@ -115,7 +116,7 @@ export default function LoginPage() {
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700 pl-1" htmlFor="email">
@@ -170,19 +171,17 @@ export default function LoginPage() {
                         </div>
                     )}
 
-                    <Button
-                        type="submit"
-                        variant="default"
-                        disabled={isLoading}
+                    <SubmitButton
+                        isLoading={isLoading}
                         className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg border-none bg-[var(--primary)] text-white hover:opacity-90"
                     >
-                        {isLoading ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : "Войти в систему"}
-                    </Button>
+                        Войти в систему
+                    </SubmitButton>
                 </form>
 
                 <div className="mt-8 text-center h-4">
                     {branding ? (
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                        <p className="text-xs text-slate-400 font-bold">
                             © {new Date().getFullYear()} {companyName}. CRM System
                         </p>
                     ) : (

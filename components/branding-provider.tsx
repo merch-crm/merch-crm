@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { initSoundSettings, setGlobalSoundConfig } from "@/lib/sounds";
-import { BrandingSettings, getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import type { BrandingSettings } from "@/lib/types";
 
 const BrandingContext = createContext<BrandingSettings>({
     companyName: "MerchCRM",

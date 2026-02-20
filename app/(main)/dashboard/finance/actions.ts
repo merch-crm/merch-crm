@@ -5,6 +5,7 @@ import { orders, payments, expenses, inventoryTransactions } from "@/lib/schema"
 import { getSession } from "@/lib/auth";
 import { and, gte, lte, sql, eq, desc, type SQL } from "drizzle-orm";
 import { subDays } from "date-fns";
+import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { ActionResult } from "@/lib/types";
 import { CreateExpenseSchema } from "./validation";
@@ -93,19 +94,19 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                 totalRevenue: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
                 orderCount: sql<number>`COUNT(*)`,
                 avgOrderValue: sql<number>`COALESCE(AVG(${orders.totalAmount}), 0)`
-            }).from(orders).where(finalWhere),
+            }).from(orders).where(finalWhere).limit(1),
 
             db.select({
                 date: sql<string>`DATE(${orders.createdAt})`,
                 revenue: sql<number>`SUM(${orders.totalAmount})`,
                 count: sql<number>`COUNT(*)`
-            }).from(orders).where(finalWhere).groupBy(sql`DATE(${orders.createdAt})`),
+            }).from(orders).where(finalWhere).groupBy(sql`DATE(${orders.createdAt})`).limit(365),
 
             db.select({
                 category: orders.category,
                 revenue: sql<number>`SUM(${orders.totalAmount})`,
                 count: sql<number>`COUNT(*)`
-            }).from(orders).where(finalWhere).groupBy(orders.category),
+            }).from(orders).where(finalWhere).groupBy(orders.category).limit(50),
 
             db.query.orders.findMany({
                 where: finalWhere,
@@ -122,6 +123,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                     from ? gte(inventoryTransactions.createdAt, from) : undefined,
                     to ? lte(inventoryTransactions.createdAt, to) : undefined
                 ))
+                .limit(1)
         ]);
 
         const summaryData = summaryRes[0] || { totalRevenue: 0, orderCount: 0, avgOrderValue: 0 };
@@ -149,7 +151,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
             })),
             recentTransactions: recentOrders.map((o) => ({
                 id: o.id,
-                clientName: o.client ? `${o.client.lastName} ${o.client.firstName}` : "Unnamed",
+                clientName: o.client ? ([o.client.lastName, o.client.firstName].filter(Boolean).join(' ') || o.client.name || "Unnamed") : "Unnamed",
                 amount: Number(o.totalAmount || 0),
                 date: o.createdAt,
                 status: o.status,
@@ -182,7 +184,8 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
             with: {
                 role: true,
                 department: true
-            }
+            },
+            limit: 500
         });
 
         const ordersStats = await db.select({
@@ -191,7 +194,8 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
         })
             .from(orders)
             .where(finalWhere)
-            .groupBy(orders.createdBy);
+            .groupBy(orders.createdBy)
+            .limit(1000);
 
         const ordersMap = new Map(ordersStats.map(s => [s.userId, Number(s.count || 0)]));
 
@@ -246,7 +250,8 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
             totalRevenue: sql<number>`sum(total_amount)`,
         })
             .from(orders)
-            .where(finalWhere);
+            .where(finalWhere)
+            .limit(1);
 
         const totalRevenue = Number(stats[0]?.totalRevenue || 0);
 
@@ -300,7 +305,13 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
             }
         };
     } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : "Internal error" };
+        await logError({
+            error,
+            path: "/dashboard/finance/promocode",
+            method: "validatePromocode",
+            details: { code, totalAmount }
+        });
+        return { success: false, error: "Ошибка при валидации промокода" };
     }
 }
 
@@ -317,7 +328,8 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
             const data = await db.query.payments.findMany({
                 where: whereClause.length > 0 ? and(...whereClause) : undefined,
                 with: { order: { with: { client: true } } },
-                orderBy: [desc(payments.createdAt)]
+                orderBy: [desc(payments.createdAt)],
+                limit: 1000
             });
             return { success: true, data };
         } else {
@@ -327,12 +339,19 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
 
             const data = await db.query.expenses.findMany({
                 where: whereClause.length > 0 ? and(...whereClause) : undefined,
-                orderBy: [desc(expenses.createdAt)]
+                orderBy: [desc(expenses.createdAt)],
+                limit: 1000
             });
             return { success: true, data };
         }
     } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : "Internal error" };
+        await logError({
+            error,
+            path: "/dashboard/finance/transactions",
+            method: "getFinanceTransactions",
+            details: { type }
+        });
+        return { success: false, error: "Ошибка при получении транзакций" };
     }
 }
 
@@ -348,19 +367,36 @@ export async function createExpense(data: unknown): Promise<ActionResult<typeof 
     const { category, amount, description, date } = validation.data;
 
     try {
-        const [newExpense] = await db.insert(expenses).values({
-            category: category as "rent" | "salary" | "purchase" | "tax" | "other",
-            amount: String(amount),
-            description: description,
-            date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-            createdBy: session.id
-        }).returning();
+        const newExpense = await db.transaction(async (tx) => {
+            const [expense] = await tx.insert(expenses).values({
+                category: category as "rent" | "salary" | "purchase" | "tax" | "other",
+                amount: String(amount),
+                description: description,
+                date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                createdBy: session.id
+            }).returning();
+
+            await logAction(
+                "Создан расход",
+                "expense",
+                expense.id,
+                { category, amount, description },
+                tx
+            );
+
+            return expense;
+        });
 
         revalidatePath("/dashboard/finance");
         return { success: true, data: newExpense };
     } catch (error) {
-        console.error("[Finance] Create expense error:", error);
-        return { success: false, error: "Внутренняя ошибка сервера при создании расхода" };
+        await logError({
+            error,
+            path: "/dashboard/finance",
+            method: "createExpense",
+            details: { category, amount }
+        });
+        return { success: false, error: "Ошибка при создании расхода" };
     }
 }
 
@@ -384,7 +420,8 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
                 total: sql<number>`sum(amount)`
             })
                 .from(payments)
-                .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate))),
+                .where(and(gte(payments.createdAt, fromDate), lte(payments.createdAt, toDate)))
+                .limit(1),
 
             db.select({
                 total: sql<number>`sum(abs(change_amount) * cast(cost_price as decimal))`
@@ -394,13 +431,15 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
                     eq(inventoryTransactions.type, 'out'),
                     gte(inventoryTransactions.createdAt, fromDate),
                     lte(inventoryTransactions.createdAt, toDate)
-                )),
+                ))
+                .limit(1),
 
             db.select({
                 total: sql<number>`sum(amount)`
             })
                 .from(expenses)
                 .where(and(gte(expenses.createdAt, fromDate), lte(expenses.createdAt, toDate)))
+                .limit(1)
         ]);
 
         const totalRevenue = Number(revenueRes[0]?.total || 0);
@@ -422,7 +461,11 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
             }
         };
     } catch (error) {
-        console.error("P&L Report error:", error);
+        await logError({
+            error,
+            path: "/dashboard/finance/report",
+            method: "getPLReport"
+        });
         return { success: false, error: "Ошибка при формировании P&L отчета" };
     }
 }

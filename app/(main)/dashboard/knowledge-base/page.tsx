@@ -7,15 +7,18 @@ export default async function KnowledgeBasePage() {
     const session = await getSession();
     if (!session) redirect("/login");
 
-    const folders = await getWikiFolders();
-    const pages = await getWikiPages();
+    const foldersRes = await getWikiFolders();
+    const pagesRes = await getWikiPages();
+
+    const folders = foldersRes.success ? foldersRes.data || [] : [];
+    const pages = pagesRes.success ? pagesRes.data || [] : [];
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="space-y-4 animate-in fade-in duration-700">
             <div className="sm:flex sm:items-end sm:justify-between px-1">
                 <div>
-                    <h1 className="text-4xl font-bold text-slate-900 tracking-normal  leading-none">База знаний</h1>
-                    <p className="text-slate-400 text-xs font-bold  tracking-normal mt-3">Инструкции, процессы и ответы на вопросы</p>
+                    <h1 data-testid="kb-title" className="text-4xl font-bold text-slate-900  leading-none">База знаний</h1>
+                    <p className="text-slate-400 text-sm font-bold mt-3">Инструкции, процессы и ответы на вопросы</p>
                 </div>
             </div>
 

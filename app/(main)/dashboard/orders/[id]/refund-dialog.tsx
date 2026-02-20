@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { refundOrder } from "../actions";
+import { useRouter } from "next/navigation";
+import { refundOrder } from "../actions/financials.actions";;
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -23,6 +24,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
     const [reason, setReason] = useState("");
     const [isPending, setIsPending] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     const handleRefund = async () => {
         if (!amount || Number(amount) <= 0) {
@@ -44,7 +46,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
             toast("Возврат оформлен", "success");
             playSound("expense_added");
             setIsOpen(false);
-            window.location.reload();
+            router.refresh();
         } else {
             toast(res.error || "Ошибка при оформлении возврата", "error");
             playSound("notification_error");
@@ -78,9 +80,9 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                 className="sm:max-w-[425px]"
             >
                 <div className="flex flex-col h-full">
-                    <div className="p-6 pb-20 space-y-5 flex-1 overflow-y-auto">
+                    <div className="p-6 pb-20 space-y-4 flex-1 overflow-y-auto">
                         <div className="space-y-2">
-                            <Label htmlFor="amount" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма возврата ({currencySymbol})</Label>
+                            <Label htmlFor="amount" className="text-xs font-bold text-slate-400 ml-1">Сумма возврата ({currencySymbol})</Label>
                             <Input
                                 id="amount"
                                 type="number"
@@ -89,10 +91,10 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                                 placeholder="0.00"
                                 className="h-12 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-lg font-bold text-slate-900 focus:bg-white transition-all shadow-sm"
                             />
-                            <p className="text-[10px] font-bold text-slate-400 ml-1">Максимально доступно: <span className="text-slate-900">{maxAmount} {currencySymbol}</span></p>
+                            <p className="text-xs font-bold text-slate-400 ml-1">Максимально доступно: <span className="text-slate-900">{maxAmount} {currencySymbol}</span></p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="reason" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Причина возврата</Label>
+                            <Label htmlFor="reason" className="text-xs font-bold text-slate-400 ml-1">Причина возврата</Label>
                             <Input
                                 id="reason"
                                 value={reason}

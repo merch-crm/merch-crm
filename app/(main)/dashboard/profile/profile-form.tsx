@@ -6,23 +6,9 @@ import { Loader2, CheckCircle2, AlertCircle, Camera } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { cn } from "@/lib/utils";
-
-interface UserProfile {
-    id: string;
-    name: string;
-    email: string;
-    phone?: string | null;
-    department?: { name: string } | null;
-    role?: { name: string } | null;
-    avatar?: string | null;
-    telegram?: string | null;
-    instagram?: string | null;
-    socialMax?: string | null;
-    birthday?: string | null;
-    createdAt: string | Date;
-}
+import { UserProfile } from "./types";
 
 export function ProfileForm({ user }: { user: UserProfile }) {
     const [loading, setLoading] = useState(false);
@@ -86,7 +72,17 @@ export function ProfileForm({ user }: { user: UserProfile }) {
         reader.readAsDataURL(file);
     };
 
-    async function handleSubmit(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get("name") as string;
+
+        if (!name || name.trim().length < 2) {
+            setMessage({ type: "error", text: "ФИО должно содержать минимум 2 символа" });
+            return;
+        }
+
         setLoading(true);
         setMessage({ type: "", text: "" });
 
@@ -107,14 +103,14 @@ export function ProfileForm({ user }: { user: UserProfile }) {
     const deptName = user.department?.name || "Общий отдел";
 
     return (
-        <form action={handleSubmit} className="space-y-10">
-            <div className="flex flex-col md:flex-row items-center gap-10">
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="relative group/avatar">
                     <div className="absolute -inset-1 bg-primary rounded-full blur opacity-20 group-hover/avatar:opacity-40 transition duration-1000 group-hover/avatar:duration-200" />
                     <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-white shadow-xl ring-1 ring-slate-100">
                         <Avatar className="h-full w-full">
                             <AvatarImage src={avatarPreview || undefined} alt="Avatar" className="object-cover" />
-                            <AvatarFallback className="bg-slate-100 text-slate-400 text-3xl font-black uppercase">
+                            <AvatarFallback className="bg-slate-100 text-slate-400 text-3xl font-black">
                                 {user.name.split(" ").map((n) => n[0]).join("")}
                             </AvatarFallback>
                         </Avatar>
@@ -123,7 +119,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
                             </div>
                         )}
-                        <label className="absolute inset-x-0 bottom-0 py-2 bg-black/40 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest text-center cursor-pointer opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300">
+                        <label className="absolute inset-x-0 bottom-0 py-2 bg-black/40 backdrop-blur-md text-white text-xs font-black text-center cursor-pointer opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300">
                             <Camera className="w-4 h-4 mx-auto mb-0.5" />
                             Изменить
                             <input
@@ -137,10 +133,10 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     </div>
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-xl font-black text-slate-900 tracking-normal">{user.name}</h3>
-                    <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-1">{deptName}</p>
+                    <h3 className="text-xl font-black text-slate-900">{user.name}</h3>
+                    <p className="text-slate-400 text-sm font-bold mt-1">{deptName}</p>
                     <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
-                        <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                        <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-black text-slate-500">
                             #personal_details
                         </div>
                     </div>
@@ -149,7 +145,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 group-hover/input:text-primary transition-colors">ФИО</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1 group-hover/input:text-primary transition-colors">ФИО</Label>
                     <Input
                         name="name"
                         defaultValue={user.name}
@@ -159,7 +155,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Дата рождения</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Дата рождения</Label>
                     <Input
                         name="birthday"
                         type="date"
@@ -169,7 +165,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Телефон</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Телефон</Label>
                     <Input
                         name="phone"
                         defaultValue={user.phone || ""}
@@ -179,7 +175,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Telegram</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Telegram</Label>
                     <Input
                         name="telegram"
                         defaultValue={user.telegram || ""}
@@ -189,7 +185,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Instagram</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Instagram</Label>
                     <Input
                         name="instagram"
                         defaultValue={user.instagram || ""}
@@ -199,7 +195,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 group/input">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Social Max</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Social Max</Label>
                     <Input
                         name="socialMax"
                         defaultValue={user.socialMax || ""}
@@ -209,7 +205,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 opacity-60">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Email</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Email</Label>
                     <Input
                         value={user.email}
                         readOnly
@@ -218,7 +214,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
 
                 <div className="space-y-2 opacity-60">
-                    <Label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Отдел</Label>
+                    <Label className="text-xs font-black text-slate-400 ml-1">Отдел</Label>
                     <Input
                         value={deptName}
                         readOnly
@@ -233,19 +229,17 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-100" : "bg-rose-50 text-rose-800 border border-rose-100"
                 )}>
                     {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}
-                    <span className="text-[14px] font-black">{message.text}</span>
+                    <span className="text-sm font-black">{message.text}</span>
                 </div>
             )}
 
             <div className="pt-6 flex justify-end">
-                <Button
-                    type="submit"
-                    disabled={loading}
-                    className="h-11 px-12 rounded-[var(--radius-inner)] btn-dark text-white font-bold text-[16px] shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-3 border-none"
-                >
-                    {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                    {loading ? "Сохранение..." : "Сохранить изменения"}
-                </Button>
+                <SubmitButton
+                    isLoading={loading}
+                    className="h-11 px-12 rounded-[var(--radius-inner)] btn-dark text-white font-bold text-base shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-3 border-none"
+                    text="Сохранить изменения"
+                    loadingText="Сохранение..."
+                />
             </div>
         </form>
     );

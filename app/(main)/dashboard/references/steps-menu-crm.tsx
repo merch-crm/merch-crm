@@ -27,19 +27,19 @@ export default function StepsMenuCRM() {
             {/* Ambient backgrounds */}
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(223,255,0,0.05),transparent_40%)] pointer-events-none" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 w-full max-w-6xl relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full max-w-6xl relative z-10">
 
                 {/* Sidebar Menu (based on Photo 1) */}
                 <div className="lg:col-span-4">
                     <div className="bg-white rounded-3xl border border-slate-200 shadow-crm-xl overflow-hidden flex flex-col min-h-[500px]">
                         {/* Header part */}
                         <div className="p-8 pb-6">
-                            <button className="flex items-center gap-2 text-[10px] font-bold  tracking-normal text-slate-400 hover:text-slate-900 transition-colors mb-6 group">
+                            <button type="button" className="flex items-center gap-2 text-xs font-bold  text-slate-400 hover:text-slate-900 transition-colors mb-6 group">
                                 <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                                 Назад
                             </button>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Новая позиция</h2>
-                            <p className="text-[10px] font-bold  tracking-normal text-slate-400 mt-2">Создание карточки товара</p>
+                            <p className="text-xs font-bold  text-slate-400 mt-2">Создание карточки товара</p>
                         </div>
 
                         {/* Steps (with Photo 2 glow effect + Light Frosted Glass) */}
@@ -49,7 +49,7 @@ export default function StepsMenuCRM() {
                                 const isCompleted = activeStep > step.id;
 
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={step.id}
                                         onClick={() => setActiveStep(step.id)}
                                         className={cn(
@@ -70,7 +70,7 @@ export default function StepsMenuCRM() {
                                         )}
 
                                         <div className={cn(
-                                            "flex items-center gap-5 p-5 transition-all relative z-10",
+                                            "flex items-center gap-4 p-5 transition-all relative z-10",
                                             isActive ? "translate-x-1" : "translate-x-0"
                                         )}>
                                             {/* Step Indicator */}
@@ -88,13 +88,13 @@ export default function StepsMenuCRM() {
                                             {/* Labels */}
                                             <div className="flex flex-col">
                                                 <span className={cn(
-                                                    "text-sm font-bold  tracking-wider transition-colors",
+                                                    "text-sm font-bold  transition-colors",
                                                     isActive ? "text-slate-900" : "text-slate-900"
                                                 )}>
                                                     {step.title}
                                                 </span>
                                                 <span className={cn(
-                                                    "text-[10px] font-bold  tracking-normal mt-1",
+                                                    "text-xs font-bold  mt-1",
                                                     isActive ? "text-[#00d685]" : "text-slate-400"
                                                 )}>
                                                     {step.sub}
@@ -118,18 +118,18 @@ export default function StepsMenuCRM() {
                                 <div className="flex items-center gap-3 relative z-10">
                                     <div className="w-2.5 h-2.5 rounded-full bg-[#00d685] shadow-[0_0_8px_#00d685]" />
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold  tracking-normal text-[#a1a1aa]">Черновик</span>
+                                        <span className="text-xs font-bold  text-[#a1a1aa]">Черновик</span>
                                         <span className="text-[11px] font-extrabold text-[#18181b]">Сохранено</span>
                                     </div>
                                 </div>
-                                <button className="text-[11px] font-bold  tracking-normal text-[#5d00ff] hover:text-[#4a00cc] transition-colors relative z-10">Начать заново</button>
+                                <button type="button" className="text-[11px] font-bold  text-[#5d00ff] hover:text-[#4a00cc] transition-colors relative z-10">Начать заново</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Content Placeholder */}
-                <div className="lg:col-span-8 flex flex-col gap-6">
+                <div className="lg:col-span-8 flex flex-col gap-4">
                     <div className="crm-card h-full p-12 flex flex-col justify-center items-center text-center">
                         <div className="w-24 h-24 rounded-[32px] bg-slate-50 flex items-center justify-center text-slate-200 mb-8 border-2 border-dashed border-slate-200">
                             <MousePointer2 className="w-10 h-10" />

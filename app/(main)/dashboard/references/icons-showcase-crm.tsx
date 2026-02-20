@@ -303,7 +303,7 @@ const IconSection = ({ title, color, hoverColor, icons, packageName }: IconSecti
                         <div className={`w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 ${hoverColor} group-hover:scale-110 transition-all shadow-sm`}>
                             <Icon className="w-4 h-4" />
                         </div>
-                        <span className="text-[8px] font-medium text-slate-400 group-hover:text-slate-600 text-center leading-tight truncate w-full">
+                        <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600 text-center leading-tight truncate w-full">
                             {item.label}
                         </span>
                     </div>
@@ -315,7 +315,7 @@ const IconSection = ({ title, color, hoverColor, icons, packageName }: IconSecti
 
 export default function IconsShowcaseCRM() {
     return (
-        <section className="space-y-8">
+        <section className="space-y-4">
             <div className="glass-panel p-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Иконки</h2>
                 <p className="text-slate-500 text-sm mb-8">

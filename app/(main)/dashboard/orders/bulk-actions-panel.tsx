@@ -9,12 +9,8 @@ import {
     FileDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-    bulkUpdateOrderStatus,
-    bulkUpdateOrderPriority,
-    bulkDeleteOrders
-} from "./actions";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { bulkUpdateOrderStatus, bulkUpdateOrderPriority, bulkDeleteOrders } from "./actions/bulk.actions";;
+import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { pluralize, sentence } from "@/lib/pluralize";
@@ -30,11 +26,11 @@ interface BulkActionsPanelProps {
 export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: BulkActionsPanelProps) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [mounted, setMounted] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
-        setMounted(true);
+        setIsMounted(true);
     }, []);
 
     if (selectedIds.length === 0) return null;
@@ -43,7 +39,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
         setIsProcessing(true);
         const res = await bulkUpdateOrderStatus(selectedIds, status);
         if (res.success) {
-            toast(`Статус обновлен для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`, "success", { mutation: true });
+            toast("Статус обновлен для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'), "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -55,7 +51,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
         setIsProcessing(true);
         const res = await bulkUpdateOrderPriority(selectedIds, priority);
         if (res.success) {
-            toast(`Приоритет обновлен для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`, "success", { mutation: true });
+            toast("Приоритет обновлен для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'), "success", { mutation: true });
             onClear();
         } else {
             toast(res.error || "Ошибка при обновлении", "error");
@@ -87,7 +83,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
 
     return (
         <AnimatePresence>
-            {selectedIds.length > 0 && mounted && createPortal(
+            {selectedIds.length > 0 && isMounted && createPortal(
                 <>
                     {/* Bottom Progressive Gradient Blur Overlay */}
                     <motion.div
@@ -107,7 +103,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                         exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                        className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center crm-card !p-2 sm:!p-2.5 !px-4 sm:!px-8 gap-2 sm:gap-4 !rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] max-w-[95vw] sm:max-w-none"
+                        className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center crm-card !p-2 sm:!p-2.5 !px-4 sm:!px-8 gap-2 sm:gap-3 !rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] max-w-[95vw] sm:max-w-none"
                     >
 
                         {/* Selection Badge Section */}
@@ -115,7 +111,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg shadow-primary/20 text-white shrink-0">
                                 {selectedIds.length}
                             </div>
-                            <span className="text-[10px] sm:text-xs font-bold text-slate-500 whitespace-nowrap hidden md:inline">Заказов выбрано</span>
+                            <span className="text-xs font-bold text-slate-500 whitespace-nowrap hidden md:inline">Заказов выбрано</span>
                         </div>
 
                         <div className="w-px h-6 sm:h-8 bg-slate-200 mx-1 sm:mx-2" />
@@ -124,7 +120,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         <div className="flex items-center gap-0.5 sm:gap-1">
                             {/* Status Select */}
                             <div className="w-[100px] sm:w-[140px]">
-                                <PremiumSelect
+                                <Select
                                     value=""
                                     onChange={(val) => handleStatusUpdate(val as "new" | "design" | "production" | "done" | "shipped" | "cancelled")}
                                     options={[
@@ -144,7 +140,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
 
                             {/* Priority Select - Hidden on mobile, show on Desktop */}
                             <div className="w-[100px] sm:w-[140px] hidden sm:block">
-                                <PremiumSelect
+                                <Select
                                     value=""
                                     onChange={(val) => handlePriorityUpdate(val)}
                                     options={[
@@ -166,7 +162,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                                 size="icon"
                                 title="Печать бланков"
                                 className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all hidden xs:flex"
-                                onClick={() => toast(`Печать бланков для ${selectedIds.length} ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}...`, "info")}
+                                onClick={() => toast("Печать бланков для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов') + "...", "info")}
                             >
                                 <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </Button>
@@ -211,8 +207,8 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                             isOpen={showDeleteConfirm}
                             onClose={() => setShowDeleteConfirm(false)}
                             onConfirm={handleDelete}
-                            title={`Удаление ${pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}`}
-                            description={`Вы уверены, что хотите удалить ${pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов')} (${selectedIds.length})? Это действие необратимо.`}
+                            title={"Удаление " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}
+                            description={"Вы уверены, что хотите удалить " + pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов') + " (" + selectedIds.length + ")? Это действие необратимо."}
                             confirmText="Удалить"
                             variant="destructive"
                             isLoading={isProcessing}

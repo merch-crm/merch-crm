@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
-const key = SECRET_KEY ? new TextEncoder().encode(SECRET_KEY) : null;
+import { env } from "@/lib/env";
+
+const SECRET_KEY = env.JWT_SECRET_KEY;
+const key = new TextEncoder().encode(SECRET_KEY);
 
 const PUBLIC_PATHS = [
     "/login",
@@ -42,18 +43,19 @@ export async function middleware(req: NextRequest) {
     // 2. Check for session cookie
     const token = req.cookies.get("session")?.value;
 
+    // console.log(`[Middleware] Path: ${pathname}, Token present: ${!!token}`);
+
     let isValid = false;
-    // let payload: any = null;
 
     if (token && key) {
         try {
-            await jwtVerify(token, key);
+            await jwtVerify(token, key, { algorithms: ["HS256"] });
             isValid = true;
-            // payload = verified.payload;
-        } catch {
-            // Token invalid or expired
-            // console.warn("Invalid token:", error);
+        } catch (error) {
+            console.warn(`[Middleware] Token invalid for ${pathname}:`, error instanceof Error ? error.message : error);
         }
+    } else if (token && !key) {
+        console.error("[Middleware] SECRET_KEY is missing! Cannot verify token.");
     }
 
     // 3. Handle Public Paths

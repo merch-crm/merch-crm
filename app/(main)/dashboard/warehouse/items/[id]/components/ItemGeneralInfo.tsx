@@ -13,28 +13,34 @@ import {
     Plus,
     X,
 } from "lucide-react";
-import { CLOTHING_QUALITIES } from "../../../category-utils";
-import { PremiumSelect } from "@/components/ui/premium-select";
-import { InventoryItem, AttributeType, InventoryAttribute } from "../../../types";
+import { getColorHex, isLightColor, getParamConfig } from "./item-ui-utils";
+import { CLOTHING_QUALITIES } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { Select } from "@/components/ui/select";
+import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
 import { Session } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-interface ItemGeneralInfoProps {
+interface ItemDataProps {
     item: InventoryItem;
-    isEditing: boolean;
+    editData: InventoryItem;
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
-    editData: InventoryItem;
+    totalStock: number;
+    user: Session | null;
+}
+
+interface ItemActionProps {
+    isEditing: boolean;
     onUpdateField: (field: string, value: string | number | null | boolean | Record<string, unknown>) => void;
     onUpdateAttribute: (key: string, value: string) => void;
     onRemoveAttribute?: (key: string) => void;
-    user: Session | null;
-    totalStock: number;
     onEdit?: () => void;
 }
 
-export function ItemGeneralInfo({
+interface ItemGeneralInfoProps extends ItemDataProps, ItemActionProps { }
+
+export const ItemGeneralInfo = React.memo(({
     item,
     isEditing,
     attributeTypes,
@@ -44,96 +50,12 @@ export function ItemGeneralInfo({
     onUpdateAttribute,
     onRemoveAttribute,
     onEdit
-}: ItemGeneralInfoProps) {
+}: ItemGeneralInfoProps) => {
     // Helper to get descriptive name for a code
     const getAttrLabel = (typeSlug: string, value: string | number | null | undefined): string => {
         if (!value) return "—";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
         return attr ? attr.name : String(value);
-    };
-
-    // Color mapping for visual indicator
-    const getColorHex = (label: string) => {
-        const colors: Record<string, string> = {
-            "шоколад": "#3E2A24",
-            "черный": "#020617",
-            "белый": "#FFFFFF",
-            "красный": "#E11D48",
-            "синий": "#2563EB",
-            "зеленый": "#16A34A",
-            "желтый": "#EAB308",
-            "серый": "#64748B",
-            "розовый": "#DB2777",
-            "оранжевый": "#EA580C",
-            "фиолетовый": "#9333EA",
-            "бежевый": "#D6D3D1",
-            "хаки": "#454B1B",
-            "бордовый": "#7F1D1D",
-            "мята": "#4ADE80",
-            "голубой": "#38BDF8",
-            "песочный": "#C2B280",
-            "оливка": "#808000",
-            "горчица": "#EAB308",
-            "графит": "#334155",
-            "антрацит": "#1E293B",
-            "бирюза": "#0D9488",
-            "индиго": "#4F46E5",
-            "баблгам": "#FF69B4",
-            "молочный": "#FFFAF0",
-            "кремовый": "#FFFDD0",
-            "слоновая": "#FFFFF0",
-            "коричневый": "#8B4513",
-            "марсала": "#955251",
-            "коралл": "#FF7F50",
-            "лаванда": "#E6E6FA",
-            "сирень": "#C8A2C8",
-            "терракот": "#E2725B",
-            "пудра": "#F5E6E3",
-            "капучино": "#A67B5B",
-            "карамель": "#FFD59A",
-            "персик": "#FFCBA4",
-            "малина": "#E30B5C",
-            "вишня": "#DE3163",
-            "изумруд": "#50C878",
-            "морская волна": "#008B8B",
-            "небесный": "#87CEEB",
-            "сапфир": "#0F52BA",
-            "лимон": "#FFF44F",
-            "мокко": "#4A3728",
-        };
-        const lowerLabel = label.toLowerCase();
-        for (const [key, hex] of Object.entries(colors)) {
-            if (lowerLabel.includes(key)) return hex;
-        }
-        return null;
-    };
-
-    const isLightColor = (hex: string) => {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        return luminance > 0.65;
-    };
-
-    // Param mapping for Clean Minimal style
-    const getParamConfig = (slug: string, hexColor?: string | null): { icon: React.ElementType, customHex?: string } => {
-        const configs: Record<string, { icon: React.ElementType }> = {
-            "quality": { icon: Sparkles },
-            "brand": { icon: BadgeCheck },
-            "material": { icon: Shirt },
-            "size": { icon: Ruler },
-            "color": { icon: Droplets },
-            "composition": { icon: Layers },
-        };
-
-        const config = configs[slug] || { icon: Search };
-
-        if (slug === 'color' && hexColor) {
-            return { ...config, customHex: hexColor };
-        }
-
-        return config;
     };
 
     // Filter dynamic attributes
@@ -213,12 +135,12 @@ export function ItemGeneralInfo({
                                     )} />
                                 </div>
                                 <div className="flex flex-col min-w-0 flex-1 leading-tight">
-                                    <span className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-normal truncate">
+                                    <span className="text-xs font-black text-muted-foreground/50 truncate">
                                         {param.label}
                                     </span>
                                     <div className="text-sm font-bold text-foreground truncate">
                                         {isEditing ? (
-                                            <PremiumSelect
+                                            <Select
                                                 value={(param.code as string) || ""}
                                                 onChange={(val) => {
                                                     onUpdateAttribute(param.slug, val);
@@ -245,7 +167,17 @@ export function ItemGeneralInfo({
                                                 compact={true}
                                             />
                                         ) : (
-                                            <span onDoubleClick={onEdit} className="cursor-pointer">
+                                            <span
+                                                onDoubleClick={onEdit}
+                                                className="cursor-pointer outline-none focus-visible:text-primary"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        if (onEdit) onEdit();
+                                                    }
+                                                }}
+                                            >
                                                 {attrLabel}
                                             </span>
                                         )}
@@ -324,7 +256,7 @@ export function ItemGeneralInfo({
                                                 style={config.customHex && !isLightColor(config.customHex) ? { color: config.customHex } : undefined}
                                             />
                                         </div>
-                                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-normal">
+                                        <span className="text-xs font-black text-muted-foreground">
                                             {param.label}
                                         </span>
                                     </div>
@@ -342,6 +274,7 @@ export function ItemGeneralInfo({
                                                 }}
                                                 className="w-7 h-7 rounded-lg bg-red-50 border border-red-100 flex items-center justify-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all transform active:scale-95 shadow-sm p-0"
                                                 title="Удалить характеристику"
+                                                aria-label={`Удалить характеристику: ${param.label}`}
                                             >
                                                 <X className="w-3 h-3" />
                                             </Button>
@@ -352,6 +285,7 @@ export function ItemGeneralInfo({
                                                 size="icon"
                                                 onClick={onEdit}
                                                 className="w-7 h-7 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-foreground hover:text-background transition-all transform active:scale-95 shadow-sm p-0"
+                                                aria-label={`Редактировать характеристику: ${param.label}`}
                                             >
                                                 <Pencil className="w-3 h-3" />
                                             </Button>
@@ -369,7 +303,7 @@ export function ItemGeneralInfo({
                                 <div className="relative z-10 flex-1 flex flex-col justify-end">
                                     {isEditing ? (
                                         <div className="mt-1">
-                                            <PremiumSelect
+                                            <Select
                                                 value={(param.code as string) || ""}
                                                 onChange={(val) => {
                                                     onUpdateAttribute(param.slug, val);
@@ -399,13 +333,20 @@ export function ItemGeneralInfo({
                                     ) : (
                                         <div className="flex flex-col">
                                             <h2
-                                                className="text-xl xl:text-2xl font-black text-foreground leading-tight tracking-tight break-words cursor-pointer transition-colors group-hover:text-primary"
+                                                className="text-xl xl:text-2xl font-black text-foreground leading-tight tracking-tight break-words cursor-pointer transition-colors group-hover:text-primary outline-none focus-visible:text-primary"
                                                 onDoubleClick={onEdit}
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        if (onEdit) onEdit();
+                                                    }
+                                                }}
                                             >
                                                 {attrLabel}
                                             </h2>
                                             {/* Technical SKU Fragment */}
-                                            <span className="text-[10px] font-bold text-muted-foreground/70 mt-0.5 font-mono uppercase tracking-wider">
+                                            <span className="text-xs font-bold text-muted-foreground/70 mt-0.5 font-mono">
                                                 Арт.: {param.code || '—'}
                                             </span>
                                         </div>
@@ -426,7 +367,7 @@ export function ItemGeneralInfo({
                                 <div className="w-10 h-10 rounded-xl bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors">
                                     <Plus className="w-5 h-5" />
                                 </div>
-                                <span className="text-[10px] font-bold uppercase tracking-wide">
+                                <span className="text-xs font-bold tracking-wide">
                                     Добавить
                                     <span className="ml-1 opacity-50">
                                         ({
@@ -449,7 +390,7 @@ export function ItemGeneralInfo({
                                     </span>
                                 </span>
                             </div>
-                            <PremiumSelect
+                            <Select
                                 value=""
                                 onChange={(slug) => {
                                     if (slug) {
@@ -480,6 +421,7 @@ export function ItemGeneralInfo({
                                 })()}
                                 placeholder="Выберите тип..."
                                 compact={true}
+                                aria-label="Добавить новую характеристику"
                                 triggerClassName="w-full h-full opacity-0 hover:bg-transparent border-none p-0 cursor-pointer"
                             />
                         </div>
@@ -488,4 +430,6 @@ export function ItemGeneralInfo({
             )}
         </div>
     );
-}
+});
+
+ItemGeneralInfo.displayName = "ItemGeneralInfo";

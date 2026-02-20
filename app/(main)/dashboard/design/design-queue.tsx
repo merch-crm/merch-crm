@@ -5,19 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { pluralize } from "@/lib/pluralize";
 
-interface Order {
-    id: string;
-    orderNumber: string;
-    createdAt: Date;
-    priority: string | null;
-    client: {
-        name: string | null;
-    };
-    items: Array<{
-        description: string;
-        quantity: number;
-    }>;
-}
+import { Order } from "@/lib/types";
 
 interface DesignQueueProps {
     orders: Order[];
@@ -32,12 +20,12 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                     <p className="text-sm text-slate-400 mt-1">Заказы, ожидающие макетирования</p>
                 </div>
                 <div className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-bold">
-                    {orders.length} {pluralize(orders.length, 'заказ', 'заказа', 'заказов')}
+                    {orders?.length || 0} {pluralize(orders?.length || 0, 'заказ', 'заказа', 'заказов')}
                 </div>
             </div>
 
             <div className="space-y-3">
-                {orders.length === 0 ? (
+                {(!orders || orders?.length === 0) ? (
                     <div className="flex items-center justify-center h-48 text-slate-300">
                         <div className="text-center">
                             <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
@@ -45,9 +33,9 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                         </div>
                     </div>
                 ) : (
-                    orders.map((order) => {
+                    orders?.map((order) => {
                         const isUrgent = order.priority === "high" || order.priority === "urgent";
-                        const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+                        const totalItems = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
                         return (
                             <Link
@@ -65,7 +53,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                                 {order.orderNumber}
                                             </span>
                                             {isUrgent && (
-                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold ">
+                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-xs font-bold ">
                                                     Срочно
                                                 </div>
                                             )}
@@ -73,13 +61,13 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                         <div className="flex items-center gap-2 text-sm">
                                             <User className="w-4 h-4 text-slate-400" />
                                             <span className="font-bold text-slate-900">
-                                                {order.client.name || "Без имени"}
+                                                {order.client?.name || "Без имени"}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4 text-xs text-slate-500">
+                                <div className="flex items-center gap-3 text-xs text-slate-500">
                                     <div className="flex items-center gap-1.5">
                                         <Package className="w-3.5 h-3.5" />
                                         <span>{totalItems} {pluralize(totalItems, 'позиция', 'позиции', 'позиций')}</span>
@@ -90,11 +78,11 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                     </div>
                                 </div>
 
-                                {order.items.length > 0 && (
+                                {order.items && order.items?.length > 0 && (
                                     <div className="mt-3 pt-3 border-t border-slate-200">
                                         <p className="text-xs text-slate-600 line-clamp-2">
-                                            {order.items[0].description}
-                                            {order.items.length > 1 && ` +${order.items.length - 1} ${pluralize(order.items.length - 1, 'позиция', 'позиции', 'позиций')} ещё`}
+                                            {order.items[0]?.description}
+                                            {(order.items?.length || 0) > 1 && ` +${(order.items?.length || 0) - 1} ${pluralize((order.items?.length || 0) - 1, 'позиция', 'позиции', 'позиций')} ещё`}
                                         </p>
                                     </div>
                                 )}

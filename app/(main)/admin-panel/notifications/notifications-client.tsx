@@ -22,10 +22,13 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { updateNotificationSettingsAction, NotificationSettings } from "../actions";
+import { updateNotificationSettingsAction } from "../actions/notifications.actions";
+import { NotificationSettings } from "../actions";;
 import { useToast } from "@/components/ui/toast";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { playSound } from "@/lib/sounds";
+import { SwitchRow } from "@/components/ui/switch-row";
+import { Switch } from "@/components/ui/switch";
 
 // --- Constants ---
 
@@ -128,78 +131,58 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
     };
 
     return (
-        <div className="space-y-6 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
-                        <Bell className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Уведомления</h1>
-                        <p className="text-slate-700 text-[11px] font-medium mt-0.5">Управление каналами связи и триггерами системы</p>
-                    </div>
-                </div>
-                <Button
-                    onClick={handleSave}
-                    disabled={loading}
-                    size="lg"
-                    className="btn-dark rounded-[var(--radius-inner)] font-bold shadow-xl shadow-slate-900/10 border-none"
-                >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                    Сохранить изменения
-                </Button>
-            </div>
+        <div className="space-y-4 pb-20">
+            <AdminPageHeader
+                title="Уведомления"
+                subtitle="Управление каналами связи и триггерами системы"
+                icon={Bell}
+                actions={
+                    <Button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={loading}
+                        size="lg"
+                        className="btn-dark rounded-[var(--radius-inner)] font-bold shadow-xl shadow-slate-900/10 border-none"
+                    >
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                        Сохранить изменения
+                    </Button>
+                }
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* System & Push Settings */}
-                <div className="crm-card space-y-8">
+                <div className="crm-card space-y-4">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                             <Monitor className="w-6 h-6" />
                         </div>
                         <div>
                             <h3 className="font-bold text-slate-900">Системные уведомления</h3>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Внутри браузера</p>
+                            <p className="text-xs font-bold text-slate-400 mt-0.5">Внутри браузера</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-200 transition-colors hover:border-blue-200">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm">
-                                    <Bell className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-slate-800">Общие уведомления</p>
-                                    <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Показывать в колокольчике CRM</p>
-                                </div>
-                            </div>
-                            <Switch
-                                checked={settings.system.enabled}
-                                onCheckedChange={() => toggleNested("system", "enabled")}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-200 transition-colors hover:border-blue-200">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm">
-                                    <Smartphone className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-slate-800">Push-уведомления</p>
-                                    <p className="text-[10px] text-slate-700 mt-0.5 font-medium">Всплывающие окна рабочего стола</p>
-                                </div>
-                            </div>
-                            <Switch
-                                checked={settings.system.browserPush}
-                                onCheckedChange={() => toggleNested("system", "browserPush")}
-                            />
-                        </div>
+                        <SwitchRow
+                            icon={Bell}
+                            title="Общие уведомления"
+                            description="Показывать в колокольчике CRM"
+                            checked={settings.system.enabled}
+                            onCheckedChange={() => toggleNested("system", "enabled")}
+                        />
+                        <SwitchRow
+                            icon={Smartphone}
+                            title="Push-уведомления"
+                            description="Всплывающие окна рабочего стола"
+                            checked={settings.system.browserPush}
+                            onCheckedChange={() => toggleNested("system", "browserPush")}
+                        />
                     </div>
                 </div>
 
                 {/* Telegram Integration */}
-                <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl space-y-8 relative overflow-hidden group">
+                <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl space-y-4 relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
                     <div className="flex items-center gap-4 relative z-10">
                         <div className="w-12 h-12 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
@@ -207,7 +190,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                         </div>
                         <div>
                             <h3 className="font-bold">Telegram Бот</h3>
-                            <p className="text-blue-300 text-[10px] font-bold uppercase tracking-widest mt-0.5">Мгновенные оповещения</p>
+                            <p className="text-blue-300 text-xs font-bold mt-0.5">Мгновенные оповещения</p>
                         </div>
                         <Switch
                             checked={settings.telegram.enabled}
@@ -216,7 +199,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                         />
                     </div>
 
-                    <div className={cn("space-y-5 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
+                    <div className={cn("space-y-4 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 ml-1">Токен бота (API Token)</label>
                             <Input
@@ -246,10 +229,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
             </div>
 
             {/* Event Triggers */}
-            <div className="space-y-6">
+            <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold text-slate-900">События для уведомлений</h3>
-                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
+                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-black">
                         {Object.values(settings.events).filter(Boolean).length} триггера активно
                     </div>
                 </div>
@@ -277,7 +260,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                     <Icon className="w-5 h-5" />
                                 </div>
                                 <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
-                                <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest group-hover:text-primary transition-colors">
+                                <p className="text-xs font-bold text-slate-700 group-hover:text-primary transition-colors">
                                     {enabled ? "Активно" : "Выключено"}
                                 </p>
                             </button>

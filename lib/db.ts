@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "./env";
 
@@ -23,7 +23,7 @@ const pool = new Pool({
 
 import * as schema from "./schema";
 
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
 
 const globalForDb = global as unknown as { db: NodePgDatabase<typeof schema> };
 

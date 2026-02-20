@@ -1,15 +1,13 @@
 import { db } from "@/lib/db";
-import { isSuccess } from "@/lib/types";
+
 import { inventoryCategories } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
-import { CategoryDetailClient } from "./category-detail-client";
-import type { Category, InventoryItem, AttributeType, InventoryAttribute } from "./category-detail-client";
-import type { StorageLocation } from "../storage-locations-tab";
+import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from "./category-detail-client";
+import type { StorageLocation, InventoryFilters } from "../types";
 import { getSession } from "@/lib/auth";
-import { serializeForClient } from "@/lib/serialize";
-import type { Serialized } from "@/lib/serialize";
+import { serializeForClient, type Serialized } from "@/lib/serialize";
 import { cache } from "react";
 
 type PageParams = {
@@ -59,7 +57,10 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
     return { title: found ? `${found.name} | Склад` : "Категория | Склад" };
 }
 
-export default async function CategoryPage({ params }: PageParams) {
+export default async function CategoryPage({
+    params,
+    searchParams
+}: PageParams & { searchParams: Promise<{ page?: string; search?: string; status?: string; storage?: string }> }) {
     const { id: paramId } = await params;
 
     const session = await getSession();
@@ -113,14 +114,14 @@ export default async function CategoryPage({ params }: PageParams) {
 
     // Fetch subcategories for this category
     // Fetch all categories to calculate recursive counts
-    const { getInventoryCategories } = await import("../actions");
+    const { getInventoryCategories, getInventoryItems, getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../actions");
     const allCatsRes = await getInventoryCategories();
-    const allCats = isSuccess(allCatsRes) ? allCatsRes.data : [];
+    const allCats = (allCatsRes.success ? allCatsRes.data : []) as Category[];
 
     const countRecursiveTotalQty = (catId: string): number => {
         const cat = allCats.find((c: Category) => c.id === catId);
         if (!cat) return 0;
-        let sum = cat.totalQuantity || 0;
+        let sum = (cat.totalQuantity || 0) as number;
         const children = allCats.filter((c: Category) => c.parentId === catId);
         for (const child of children) {
             sum += countRecursiveTotalQty(child.id);
@@ -138,41 +139,48 @@ export default async function CategoryPage({ params }: PageParams) {
             .sort((a: Category, b: Category) => (b.totalQuantity || 0) - (a.totalQuantity || 0)) // Sort by qty desc
         : [];
 
-    // Fetch items
-    const { getInventoryItems, getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../actions");
-
-    const [itemsRes, locationsRes, typesRes, attrsRes, allCategoriesRaw] = await Promise.all([
-        getInventoryItems(),
-        getStorageLocations(),
-        getInventoryAttributeTypes(),
-        getInventoryAttributes(),
-        db.select({ id: inventoryCategories.id, parentId: inventoryCategories.parentId }).from(inventoryCategories)
-    ]);
-
-    const allItems = isSuccess(itemsRes) ? itemsRes.data : [];
-    const locationsData = isSuccess(locationsRes) ? locationsRes.data : [];
-    const typesData = isSuccess(typesRes) ? typesRes.data : [];
-    const attrsData = isSuccess(attrsRes) ? attrsRes.data : [];
-
     // Aggregate IDs of this category and all its descendants
-    const getAllDescendantIds = (catId: string, allCats: { id: string; parentId: string | null }[]): string[] => {
+    const getAllDescendantIds = (catId: string, cats: Category[]): string[] => {
         const ids = [catId];
-        const children = allCats.filter(c => c.parentId === catId);
+        const children = cats.filter(c => c.parentId === catId);
         for (const child of children) {
-            ids.push(...getAllDescendantIds(child.id, allCats));
+            ids.push(...getAllDescendantIds(child.id, cats));
         }
         return ids;
     };
 
-    const targetCategoryIds: (string | null)[] = resolvedCategoryId
-        ? getAllDescendantIds(resolvedCategoryId, allCategoriesRaw)
-        : [null];
+    const targetCategoryIds: string[] = resolvedCategoryId
+        ? getAllDescendantIds(resolvedCategoryId, allCats)
+        : [];
 
-    const categoryItems = allItems.filter(item =>
-        resolvedCategoryId
-            ? targetCategoryIds.includes(item.categoryId)
-            : !item.categoryId
-    );
+    // Fetch items with filters
+    const searchParamsObj = await searchParams;
+    const page = Number(searchParamsObj.page) || 1;
+    const limit = 20;
+
+    const [itemsRes, locationsRes, typesRes, attrsRes] = await Promise.all([
+        getInventoryItems({
+            categoryIds: targetCategoryIds,
+            page,
+            limit,
+            search: searchParamsObj.search,
+            status: searchParamsObj.status as InventoryFilters["status"],
+            storageLocationId: searchParamsObj.storage,
+            onlyOrphaned: paramId === "orphaned"
+        }),
+        getStorageLocations(),
+        getInventoryAttributeTypes(),
+        getInventoryAttributes()
+    ]);
+
+    const itemsData = itemsRes.success && itemsRes.data ? itemsRes.data : { items: [], total: 0 };
+    const categoryItems = itemsData.items;
+    const totalItems = itemsData.total;
+
+    // Use explicit any cast or optional chaining to avoid type inference issues with success property widening
+    const locationsData = locationsRes.success ? locationsRes.data : [] as StorageLocation[];
+    const typesData = typesRes.success ? typesRes.data : [] as AttributeType[];
+    const attrsData = attrsRes.success ? attrsRes.data : [] as InventoryAttribute[];
 
     // Унифицированная сериализация всех данных
     const subCategories = serializeForClient(subCategoriesRaw) as Serialized<Category[]>;
@@ -204,7 +212,10 @@ export default async function CategoryPage({ params }: PageParams) {
                 parentCategory={serializedParentCategory as Category}
                 subCategories={subCategories as Category[]}
                 items={items as InventoryItem[]}
+                totalItems={totalItems}
+                currentPage={page}
                 storageLocations={locations as StorageLocation[]}
+
                 attributeTypes={attributeTypes as AttributeType[]}
                 allAttributes={allAttributes as InventoryAttribute[]}
                 user={session}

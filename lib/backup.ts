@@ -44,16 +44,16 @@ export async function performDatabaseBackup(initiatedByUserId: string | null = n
 
             let offset = 0;
             const limit = 500;
-            let firstRow = true;
+            let isFirstRow = true;
 
             while (true) {
                 const chunk = await db.select().from(table as PgTable).limit(limit).offset(offset);
                 if (chunk.length === 0) break;
 
                 for (const row of chunk) {
-                    if (!firstRow) await write(',\n');
+                    if (!isFirstRow) await write(',\n');
                     await write('      ' + JSON.stringify(row));
-                    firstRow = false;
+                    isFirstRow = false;
                 }
 
                 if (chunk.length < limit) break;

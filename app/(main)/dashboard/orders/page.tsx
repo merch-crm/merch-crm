@@ -1,13 +1,15 @@
 import { OrdersTable } from "./orders-table";
 import { OrdersWidgets } from "./orders-widgets";
 import { OrdersToolbar } from "./orders-toolbar";
-import { getOrders, getOrderStats } from "./actions";
+import { getOrders, getOrderStats } from "./actions/core.actions";;
+import type { Order } from "@/lib/types";
 import { startOfDay, endOfDay, subDays } from "date-fns";
-import { PremiumPagination } from "@/components/ui/premium-pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -45,7 +47,7 @@ export default async function OrdersPage({
     }
 
     const ordersRes = await getOrders(from, to, page, 10, showArchived, search);
-    const allOrders = ordersRes.success && ordersRes.data ? ordersRes.data.orders : [];
+    const allOrders = ordersRes.success && ordersRes.data ? (ordersRes.data.orders as unknown as Order[]) : [];
     const total = ordersRes.success && ordersRes.data ? ordersRes.data.total : 0;
     const error = ordersRes.success ? undefined : ordersRes.error;
 
@@ -63,9 +65,9 @@ export default async function OrdersPage({
     const stats = statsRes.success && statsRes.data ? statsRes.data : { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
 
     return (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <PageContainer>
             {/* Header Area */}
-            <div className="flex flex-row items-center justify-between gap-5 px-1">
+            <div className="flex flex-row items-center justify-between gap-4 px-1">
                 <div className="flex-1 min-w-0">
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Заказы</h1>
                     <p className="hidden sm:block text-slate-400 text-sm font-medium mt-3">Управление производственным циклом и логистикой</p>
@@ -78,7 +80,7 @@ export default async function OrdersPage({
             <OrdersWidgets stats={stats} showFinancials={showFinancials} />
 
             {/* Main Content Area */}
-            <div className="space-y-5">
+            <div className="space-y-4">
                 <OrdersTable
                     orders={allOrders}
                     error={error}
@@ -87,13 +89,13 @@ export default async function OrdersPage({
                     showArchived={showArchived}
                 />
 
-                <PremiumPagination
+                <Pagination
                     totalItems={total}
                     pageSize={10}
                     currentPage={page}
                     itemNames={['заказ', 'заказа', 'заказов']}
                 />
             </div>
-        </div>
+        </PageContainer>
     );
 }

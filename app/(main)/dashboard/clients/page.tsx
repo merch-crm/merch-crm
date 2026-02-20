@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { ClientsTable } from "./clients-list";
-import { getClientStats } from "./actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getClientStats } from "./actions/core.actions";;
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 
 
 import { db } from "@/lib/db";
@@ -72,9 +72,9 @@ export default async function ClientsPage() {
     ].filter(card => card.visible);
 
     return (
-        <div className="space-y-5">
-            <div className="flex flex-col gap-5">
-                <div className="flex flex-row items-center justify-between gap-5 px-1">
+        <div className="space-y-4">
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-row items-center justify-between gap-4 px-1">
                     <div className="min-w-0 flex-1">
                         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Клиенты</h1>
                         <p className="text-slate-500 text-[11px] sm:text-[13px] font-medium mt-1.5 sm:mt-3 line-clamp-1">
@@ -101,7 +101,7 @@ export default async function ClientsPage() {
                                 <div className={`h-10 w-10 rounded-[var(--radius-inner)] flex items-center justify-center bg-slate-50 shadow-inner transition-transform duration-500`}>
                                     <item.icon className={`h-5 w-5 ${item.iconColor}`} />
                                 </div>
-                                <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${item.isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${item.isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                                     {item.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                                     {item.trend}
                                 </div>

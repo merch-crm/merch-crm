@@ -87,12 +87,12 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
     const toggleTorch = async () => {
         if (scannerRef.current) {
             try {
-                const newState = !torchOn;
+                const isNewFlashState = !torchOn;
                 await scannerRef.current.applyVideoConstraints({
                     // @ts-expect-error - torch is a valid constraint but not in standard types
-                    advanced: [{ torch: newState }]
+                    advanced: [{ torch: isNewFlashState }]
                 });
-                setTorchOn(newState);
+                setTorchOn(isNewFlashState);
             } catch (e) {
                 console.warn("Torch error", e);
             }
@@ -103,7 +103,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-500" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="absolute inset-0" onClick={onClose} />
+            <div role="button" tabIndex={0} className="absolute inset-0" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} />
             <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden border-none">
                 <div className="p-5 flex items-center justify-between border-b border-slate-200">
                     <div className="flex items-center gap-3">
@@ -111,8 +111,8 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <QrCode className="w-4 h-4 text-primary" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Сканер SKU</h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Наведите на QR-код</p>
+                            <h3 className="text-sm font-black text-slate-900 tracking-tight">Сканер SKU</h3>
+                            <p className="text-xs font-bold text-slate-400 mt-0.5">Наведите на QR-код</p>
                         </div>
                     </div>
                     <Button
@@ -135,7 +135,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                                 <RefreshCw className="w-10 h-10 animate-spin text-primary" />
                                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
                             </div>
-                            <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mt-6">Инициализация...</span>
+                            <span className="text-xs font-black text-white/50 tracking-[0.2em] mt-6">Инициализация...</span>
                         </div>
                     )}
 
@@ -144,12 +144,12 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6 border border-white/20">
                                 <Camera className="w-8 h-8 text-white" />
                             </div>
-                            <h4 className="font-black text-sm uppercase tracking-wider mb-2">Ошибка доступа</h4>
+                            <h4 className="font-black text-sm mb-2">Ошибка доступа</h4>
                             <p className="text-[11px] font-bold text-white/70 leading-relaxed mb-8 px-4">{error}</p>
                             <Button
                                 variant="outline"
                                 onClick={startScanner}
-                                className="h-10 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all active:scale-95"
+                                className="h-10 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl font-bold text-xs transition-all active:scale-95"
                             >
                                 Попробовать снова
                             </Button>
@@ -186,8 +186,8 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                         {torchOn ? <Zap className="w-5 h-5 fill-current" /> : <ZapOff className="w-5 h-5" />}
                     </Button>
                     <div className="text-right">
-                        <p className="text-[10px] font-black text-slate-900 uppercase tracking-tighter">Система готова</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Ожидание кода...</p>
+                        <p className="text-xs font-black text-slate-900 tracking-tighter">Система готова</p>
+                        <p className="text-xs font-bold text-slate-400 mt-0.5">Ожидание кода...</p>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ import {
     Search,
     Calendar,
     BarChart3,
-    User,
+    User as UserIcon,
     Users,
     Layout,
     List,
@@ -26,19 +26,11 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Input } from "@/components/ui/input";
 
 
-interface User {
-    id: string;
-    name: string;
-}
+import { User, Order } from "@/lib/types";
 
 interface Department {
     id: string;
     name: string;
-}
-
-interface Order {
-    id: string;
-    orderNumber: string;
 }
 
 interface TasksClientProps {
@@ -92,18 +84,18 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (task.description?.toLowerCase() || "").includes(searchQuery.toLowerCase());
 
-        let matchesTab = true;
+        let isMatchingTab = true;
         // For Kanban, we don't filter by 'done' here, as 'done' is a column.
         // We only filter by 'my' and 'department' for active tasks.
-        if (activeTab === "my") matchesTab = task.assignedToUserId === currentUserId;
-        else if (activeTab === "role") matchesTab = task.assignedToDepartmentId === currentUserDepartmentId;
+        if (activeTab === "my") isMatchingTab = task.assignedToUserId === currentUserId;
+        else if (activeTab === "role") isMatchingTab = task.assignedToDepartmentId === currentUserDepartmentId;
 
-        return matchesSearch && matchesTab;
+        return matchesSearch && isMatchingTab;
     });
 
     const tabs = [
         { id: "all", label: "Все потоки", icon: Layers },
-        { id: "my", label: "Моя работа", icon: User },
+        { id: "my", label: "Моя работа", icon: UserIcon },
         { id: "role", label: "Отдел", icon: Users },
     ];
 
@@ -121,8 +113,8 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
 
-                <div className="relative flex flex-col gap-6">
-                    <div className="flex flex-row items-center justify-between gap-4">
+                <div className="relative flex flex-col gap-4">
+                    <div className="flex flex-row items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none truncate">Рабочие процессы</h1>
                             <p className="hidden sm:block text-slate-400 font-medium max-w-md text-[13px] leading-relaxed mt-1">Контролируйте движение задач в реальном времени на интерактивной доске</p>
@@ -132,7 +124,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="relative group flex-1">
                             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
@@ -143,7 +135,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                 className="crm-filter-tray-search pl-12 pr-10 focus:outline-none w-full"
                             />
                             {searchQuery && (
-                                <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
+                                <button type="button" onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             )}
@@ -152,13 +144,13 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                 </div>
 
                 {/* Filter Toolbar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-4">
                     <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
                                         className={cn(
@@ -177,7 +169,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                             <tab.icon className="w-3.5 h-3.5" />
                                             <span className="hidden sm:inline">{tab.label}</span>
                                             {isActive && (
-                                                <span className="ml-1.5 px-1.5 py-0.5 bg-white/20 rounded-full text-[10px] text-white">
+                                                <span className="ml-1.5 px-1.5 py-0.5 bg-white/20 rounded-full text-xs text-white">
                                                     {filteredTasks.length}
                                                 </span>
                                             )}
@@ -193,7 +185,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                             {viewTabs.map((tab) => {
                                 const isActive = view === tab.id;
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={tab.id}
                                         onClick={() => setView(tab.id)}
                                         className={cn(

@@ -3,8 +3,8 @@
 import { createElement } from "react";
 import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getCategoryIcon, getColorStyles } from "../../../category-utils";
-import { Category } from "../../../types";
+import { getCategoryIcon, getColorStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { Category } from "@/app/(main)/dashboard/warehouse/types";
 import { Button } from "@/components/ui/button";
 
 interface CategorySelectorProps {
@@ -18,15 +18,15 @@ interface CategorySelectorProps {
 export function CategorySelector({ categories, onSelect, variant = "default", hideTitle = false, selectedCategoryId }: CategorySelectorProps) {
     return (
         <div className={cn("px-4 sm:px-10 pb-6", hideTitle ? "pt-2" : "pt-6 sm:pt-10")}>
-            <div className="max-w-6xl mx-auto w-full space-y-6">
+            <div className="max-w-6xl mx-auto w-full space-y-4">
                 {!hideTitle && (
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
                             <LayoutGrid className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900">Выберите тип позиции</h2>
-                            <p className="text-[10px] font-bold text-slate-500 opacity-60 mt-1">От типа зависят доступные поля и характеристики</p>
+                            <p className="text-xs font-bold text-slate-500 opacity-60 mt-1">От типа зависят доступные поля и характеристики</p>
                         </div>
                     </div>
                 )}
@@ -76,7 +76,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                                 variant="ghost"
                                 onClick={() => onSelect(category)}
                                 className={cn(
-                                    "group flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-slate-200 transition-all text-center shadow-sm aspect-square xl:aspect-auto h-auto",
+                                    "group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border border-slate-200 transition-all text-center shadow-sm aspect-square xl:aspect-auto h-auto",
                                     selectedCategoryId === category.id
                                         ? "border-slate-900 bg-slate-50 shadow-md hover:bg-slate-50"
                                         : "bg-white hover:border-slate-300 hover:shadow-md hover:bg-white"

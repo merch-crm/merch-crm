@@ -1,35 +1,36 @@
 "use client";
 
+import React from "react";
 import {
     Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { InventoryItem } from "../../../types";
+import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
 import { Input } from "@/components/ui/input";
 
 interface ItemStockAlertsProps {
     item: InventoryItem;
     isEditing: boolean;
-    editData: Partial<InventoryItem>;
-    setEditData: React.Dispatch<React.SetStateAction<Partial<InventoryItem>>>;
+    editData: InventoryItem;
+    setEditData: React.Dispatch<React.SetStateAction<InventoryItem>>;
     handleStartEdit: () => void;
     className?: string;
 }
 
-export function ItemStockAlerts({
+export const ItemStockAlerts = React.memo(({
     item,
     isEditing,
     editData,
     setEditData,
     handleStartEdit,
     className
-}: ItemStockAlertsProps) {
+}: ItemStockAlertsProps) => {
     return (
         <div className={cn(
             "crm-card rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50",
             className
         )}>
-            <div className="flex items-center gap-4 mb-8 relative z-10">
+            <div className="flex items-center gap-3 mb-8 relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm shrink-0">
                     <Bell className="w-6 h-6 animate-pulse" />
                 </div>
@@ -43,7 +44,7 @@ export function ItemStockAlerts({
                 {/* Min Stock Widget */}
                 <div className="relative p-4 rounded-2xl bg-muted/20 border border-border transition-all hover:bg-amber-500/10 hover:border-amber-500/30 group/card">
                     <div className="flex justify-between items-start mb-3">
-                        <span className="text-[9px] font-black text-muted-foreground transition-colors group-hover/card:text-amber-600 uppercase tracking-normal">Минимальный остаток</span>
+                        <span className="text-xs font-black text-muted-foreground transition-colors group-hover/card:text-amber-600">Минимальный остаток</span>
                         <div className="flex gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                         </div>
@@ -56,13 +57,14 @@ export function ItemStockAlerts({
                                     <Input
                                         type="number"
                                         value={editData.lowStockThreshold || 0}
-                                        onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        onChange={(e) => setEditData((prev) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        aria-label="Минимальный остаток (число)"
                                         className="text-2xl font-black text-foreground leading-none bg-transparent border-none p-0 w-16 outline-none focus-visible:ring-0 shadow-none h-auto"
                                     />
                                     <span className="text-[11px] font-black text-muted-foreground">шт.</span>
                                 </div>
                                 <div className="px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center">
-                                    <span className="text-[10px] font-bold text-amber-600 leading-none">МИНИМУМ</span>
+                                    <span className="text-xs font-bold text-amber-600 leading-none">МИНИМУМ</span>
                                 </div>
                             </div>
                             <div className="relative h-6 flex items-center">
@@ -78,7 +80,8 @@ export function ItemStockAlerts({
                                     max="500"
                                     step="1"
                                     value={editData.lowStockThreshold || 0}
-                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
+                                    aria-label="Минимальный остаток (слайдер)"
+                                    onChange={(e) => setEditData((prev) => ({ ...prev, lowStockThreshold: parseInt(e.target.value) || 0 }))}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
                                 {/* Custom Thumb handle */}
@@ -92,10 +95,10 @@ export function ItemStockAlerts({
                         <div className="flex flex-col items-start gap-2">
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black text-foreground leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.lowStockThreshold}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground">шт.</span>
+                                <span className="text-xs font-bold text-muted-foreground">шт.</span>
                             </div>
                             <div className="px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-amber-600 leading-none">МИНИМУМ</span>
+                                <span className="text-xs font-bold text-amber-600 leading-none">МИНИМУМ</span>
                             </div>
                         </div>
                     )}
@@ -104,7 +107,7 @@ export function ItemStockAlerts({
                 {/* Critical Stock Widget */}
                 <div className="relative p-4 rounded-2xl bg-muted/20 border border-border transition-all hover:bg-destructive/10 hover:border-destructive/30 group/card h-full">
                     <div className="flex justify-between items-start mb-3">
-                        <span className="text-[9px] font-black text-muted-foreground transition-colors group-hover/card:text-destructive uppercase tracking-normal">Критический остаток</span>
+                        <span className="text-xs font-black text-muted-foreground transition-colors group-hover/card:text-destructive">Критический остаток</span>
                         <div className="flex gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-destructive" />
                         </div>
@@ -117,13 +120,14 @@ export function ItemStockAlerts({
                                     <Input
                                         type="number"
                                         value={editData.criticalStockThreshold || 0}
-                                        onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        onChange={(e) => setEditData((prev) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                        aria-label="Критический остаток (число)"
                                         className="text-3xl font-black text-foreground leading-none bg-transparent border-none p-0 w-20 outline-none focus-visible:ring-0 shadow-none h-auto"
                                     />
                                     <span className="text-[13px] font-black text-muted-foreground">шт.</span>
                                 </div>
                                 <div className="px-3 py-1 bg-destructive/10 rounded-full border border-destructive/20 flex items-center justify-center">
-                                    <span className="text-[10px] font-bold text-destructive leading-none">КРИТИЧНО</span>
+                                    <span className="text-xs font-bold text-destructive leading-none">КРИТИЧНО</span>
                                 </div>
                             </div>
                             <div className="relative h-6 flex items-center">
@@ -139,7 +143,8 @@ export function ItemStockAlerts({
                                     max="500"
                                     step="1"
                                     value={editData.criticalStockThreshold || 0}
-                                    onChange={(e) => setEditData((prev: Partial<InventoryItem>) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
+                                    aria-label="Критический остаток (слайдер)"
+                                    onChange={(e) => setEditData((prev) => ({ ...prev, criticalStockThreshold: parseInt(e.target.value) || 0 }))}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
                                 <div
@@ -152,10 +157,10 @@ export function ItemStockAlerts({
                         <div className="flex flex-col items-start gap-2">
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black text-foreground leading-none cursor-pointer" onDoubleClick={handleStartEdit}>{item.criticalStockThreshold}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground">шт.</span>
+                                <span className="text-xs font-bold text-muted-foreground">шт.</span>
                             </div>
                             <div className="px-3 py-1 bg-destructive/10 rounded-full border border-destructive/20 flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-destructive leading-none">КРИТИЧНО</span>
+                                <span className="text-xs font-bold text-destructive leading-none">КРИТИЧНО</span>
                             </div>
                         </div>
                     )}
@@ -163,4 +168,6 @@ export function ItemStockAlerts({
             </div>
         </div>
     );
-}
+});
+
+ItemStockAlerts.displayName = "ItemStockAlerts";

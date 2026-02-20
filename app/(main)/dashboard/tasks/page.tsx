@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { getTasks } from "./actions";
 import { getUsers } from "../../admin-panel/actions";
 import { TasksClient } from "./tasks-client";
+import type { User, Order } from "@/lib/types";
 
 export default async function TasksPage() {
     const session = await getSession();
@@ -32,9 +33,13 @@ export default async function TasksPage() {
     return (
         <TasksClient
             initialTasks={(tasksRes.success && tasksRes.data) ? tasksRes.data : []}
-            users={usersRes.success && usersRes.data ? usersRes.data.users : []}
+            users={(usersRes.success && usersRes.data?.users && Array.isArray(usersRes.data.users)) ? usersRes.data.users.map(u => ({
+                ...u,
+                phone: u.phone || undefined,
+                avatar: u.avatar || undefined,
+            } as unknown as User)) : []}
             departments={departmentsRes || []}
-            orders={ordersRes || []}
+            orders={(ordersRes as unknown as Order[]) || []}
             currentUserId={userData.id}
             currentUserDepartmentId={userData.departmentId}
         />

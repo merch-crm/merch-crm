@@ -12,7 +12,8 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";
 import { getNotifications } from "@/components/notifications/actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { BrandingSettings } from "@/lib/types";
 import { NotificationManager } from "@/components/notifications/notification-manager";
 import { CommandMenu } from "@/components/layout/command-menu";
 import { checkAndRunNotifications } from "@/app/(main)/dashboard/notifications-actions";
@@ -46,7 +47,7 @@ export default async function DashboardLayout({
         `;
         const result = await pool.query(sql, [session.id]);
 
-        if (result.rows.length > 0) {
+        if (result?.rows && Array.isArray(result.rows) && result.rows.length > 0) {
             const row = result.rows[0];
             userData = {
                 name: row.name,
@@ -77,13 +78,18 @@ export default async function DashboardLayout({
     const { notifications, unreadCount } = await getNotifications();
 
     // Fetch branding settings
-    const branding = (await getBrandingSettings()) || {
+    const brandingRes = await getBrandingAction();
+    const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",
         faviconUrl: null,
-        backgroundColor: "#f2f2f2"
-    };
+        backgroundColor: "#f2f2f2",
+        crmBackgroundUrl: null,
+        crmBackgroundBlur: 0,
+        crmBackgroundBrightness: 100,
+        currencySymbol: "₽",
+    } as BrandingSettings;
 
     // Maintenance Mode Check
     try {
@@ -94,18 +100,18 @@ export default async function DashboardLayout({
         if (maintenanceSetting?.value === true && user.roleName !== "Администратор") {
             return (
                 <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
-                    <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-12 space-y-8 animate-in zoom-in-95 duration-700">
+                    <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-12 space-y-4 animate-in zoom-in-95 duration-700">
                         <div className="w-[100px] h-[100px] bg-primary/5 rounded-[24px] flex items-center justify-center text-primary mx-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
                         </div>
                         <div className="space-y-4">
-                            <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight tracking-normal">Технические работы</h1>
+                            <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight">Технические работы</h1>
                             <p className="text-[#64748B] text-lg font-medium leading-relaxed">
                                 Система временно недоступна для проведения планового обслуживания. Пожалуйста, зайдите позже.
                             </p>
                         </div>
                         <div className="pt-8 border-t border-slate-200">
-                            <p className="text-sm font-bold text-[#CBD5E1] tracking-widest uppercase">
+                            <p className="text-sm font-bold text-[#CBD5E1]">
                                 CRM Maintenance Mode
                             </p>
                         </div>
@@ -121,8 +127,8 @@ export default async function DashboardLayout({
         <SheetStackProvider>
             <BreadcrumbsProvider>
                 {/* Dynamic Branding Styles */}
-                <style dangerouslySetInnerHTML={{
-                    __html: `
+                <style>
+                    {`
                     :root { 
                         --primary: ${branding.primaryColor}; 
                         --background: ${branding.backgroundColor || "#f2f2f2"};
@@ -142,9 +148,9 @@ export default async function DashboardLayout({
                             filter: blur(${branding.crmBackgroundBlur || 0}px) brightness(${branding.crmBackgroundBrightness || 100}%);
                             transform: scale(1.1); /* To avoid white edges when blurred */
                         }
-                    ` : ''}
-                `
-                }} />
+                    ` : ""}
+                `}
+                </style>
 
                 <PullToRefresh>
                     <div className="min-h-screen pb-24 md:pb-0 relative">

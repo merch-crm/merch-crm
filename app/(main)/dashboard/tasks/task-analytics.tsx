@@ -13,46 +13,50 @@ import { cn } from "@/lib/utils";
 
 import { Task } from "./types";
 
-interface User {
-    id: string;
-    name: string;
-}
+import { User } from "@/lib/types";
 
 interface TaskAnalyticsProps {
     tasks: Task[];
     users: User[];
 }
 
-export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
+export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
+    const safeTasks = tasks || [];
+    const safeUsers = users || [];
+
     // Статистика по статусам
     const statusStats = {
-        new: tasks.filter(t => t.status === "new").length,
-        in_progress: tasks.filter(t => t.status === "in_progress").length,
-        review: tasks.filter(t => t.status === "review").length,
-        done: tasks.filter(t => t.status === "done").length,
+        new: safeTasks.filter(t => t.status === "new").length,
+        in_progress: safeTasks.filter(t => t.status === "in_progress").length,
+        review: safeTasks.filter(t => t.status === "review").length,
+        done: safeTasks.filter(t => t.status === "done").length,
     };
 
-    const totalTasks = tasks.length;
+    const totalTasks = safeTasks.length;
     const completionRate = totalTasks > 0 ? Math.round((statusStats.done / totalTasks) * 100) : 0;
 
     // Просроченные задачи
-    const overdueTasks = tasks.filter(t => {
+    const overdueTasks = safeTasks.filter(t => {
         if (!t.dueDate || t.status === "done") return false;
-        return new Date(t.dueDate) < new Date();
+        try {
+            return new Date(t.dueDate) < new Date();
+        } catch {
+            return false;
+        }
     }).length;
 
     // Задачи по приоритетам
     const priorityStats = {
-        high: tasks.filter(t => t.priority === "high" && t.status !== "done").length,
-        normal: tasks.filter(t => t.priority === "normal" && t.status !== "done").length,
-        low: tasks.filter(t => t.priority === "low" && t.status !== "done").length,
+        high: safeTasks.filter(t => t.priority === "high" && t.status !== "done").length,
+        normal: safeTasks.filter(t => t.priority === "normal" && t.status !== "done").length,
+        low: safeTasks.filter(t => t.priority === "low" && t.status !== "done").length,
     };
 
     // Топ исполнителей
-    const userTaskCounts = users.map(user => ({
+    const userTaskCounts = safeUsers.map(user => ({
         ...user,
-        total: tasks.filter(t => t.assignedToUserId === user.id).length,
-        completed: tasks.filter(t => t.assignedToUserId === user.id && t.status === "done").length,
+        total: safeTasks.filter(t => t.assignedToUserId === user.id).length,
+        completed: safeTasks.filter(t => t.assignedToUserId === user.id && t.status === "done").length,
     })).filter(u => u.total > 0).sort((a, b) => b.completed - a.completed).slice(0, 5);
 
     // Задачи на этой неделе
@@ -61,14 +65,14 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 7);
 
-    const thisWeekTasks = tasks.filter(t => {
+    const thisWeekTasks = safeTasks.filter(t => {
         if (!t.dueDate) return false;
         const dueDate = new Date(t.dueDate);
         return dueDate >= weekStart && dueDate <= weekEnd;
     }).length;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Основные метрики */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
                 <div className="crm-card !p-6 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
@@ -81,7 +85,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{totalTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400  tracking-normal">Задач в системе</p>
+                    <p className="text-sm font-bold text-slate-400 ">Задач в системе</p>
                 </div>
 
                 <div className="crm-card !p-6 !border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
@@ -94,7 +98,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{statusStats.done}</h3>
-                    <p className="text-sm font-bold text-slate-400  tracking-normal">Выполнено</p>
+                    <p className="text-sm font-bold text-slate-400 ">Выполнено</p>
                 </div>
 
                 <div className="crm-card !p-6 !border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
@@ -107,7 +111,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{thisWeekTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400  tracking-normal">На этой неделе</p>
+                    <p className="text-sm font-bold text-slate-400 ">На этой неделе</p>
                 </div>
 
                 <div className="crm-card !p-6 !border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
@@ -122,7 +126,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         )}
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{overdueTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400  tracking-normal">Просрочено</p>
+                    <p className="text-sm font-bold text-slate-400 ">Просрочено</p>
                 </div>
             </div>
 
@@ -136,7 +140,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Распределение по статусам</h3>
-                            <p className="text-xs font-bold text-slate-400  tracking-normal">Текущее состояние</p>
+                            <p className="text-xs font-bold text-slate-400 ">Текущее состояние</p>
                         </div>
                     </div>
 
@@ -174,7 +178,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Активные по приоритетам</h3>
-                            <p className="text-xs font-bold text-slate-400  tracking-normal">Требуют внимания</p>
+                            <p className="text-xs font-bold text-slate-400 ">Требуют внимания</p>
                         </div>
                     </div>
 
@@ -207,7 +211,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Топ исполнителей</h3>
-                            <p className="text-xs font-bold text-slate-400  tracking-normal">По количеству выполненных задач</p>
+                            <p className="text-xs font-bold text-slate-400 ">По количеству выполненных задач</p>
                         </div>
                     </div>
 
@@ -215,7 +219,7 @@ export function TaskAnalytics({ tasks, users }: TaskAnalyticsProps) {
                         {userTaskCounts.map((user, index) => {
                             const completionRate = user.total > 0 ? Math.round((user.completed / user.total) * 100) : 0;
                             return (
-                                <div key={user.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all">
+                                <div key={user.id} className="flex items-center gap-3 p-4 hover:bg-slate-50 rounded-2xl transition-all">
                                     <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-primary to-primary-foreground text-white font-bold text-sm shadow-lg">
                                         #{index + 1}
                                     </div>

@@ -41,27 +41,7 @@ export async function GET(
         }
 
         const fileBuffer = fs.readFileSync(fullPath);
-
-        // Determine content type based on extension
-        const ext = path.extname(fullPath).toLowerCase();
-        let contentType = "application/octet-stream";
-
-        const mimeTypes: Record<string, string> = {
-            ".jpg": "image/jpeg",
-            ".jpeg": "image/jpeg",
-            ".png": "image/png",
-            ".webp": "image/webp",
-            ".svg": "image/svg+xml",
-            ".gif": "image/gif",
-            ".pdf": "application/pdf",
-            ".txt": "text/plain",
-            ".json": "application/json",
-            ".csv": "text/csv"
-        };
-
-        if (mimeTypes[ext]) {
-            contentType = mimeTypes[ext];
-        }
+        const contentType = getMimeType(fullPath);
 
         return new NextResponse(fileBuffer, {
             headers: {
@@ -73,4 +53,21 @@ export async function GET(
         console.error("Error serving local file:", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
+}
+
+function getMimeType(filePath: string): string {
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeTypes: Record<string, string> = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+        ".svg": "image/svg+xml",
+        ".gif": "image/gif",
+        ".pdf": "application/pdf",
+        ".txt": "text/plain",
+        ".json": "application/json",
+        ".csv": "text/csv"
+    };
+    return mimeTypes[ext] || "application/octet-stream";
 }

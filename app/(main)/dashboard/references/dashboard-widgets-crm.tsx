@@ -12,7 +12,7 @@ const BrandCard = () => (
         className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-8 flex items-center justify-center aspect-square"
     >
         <div className="text-white">
-            <h2 className="text-6xl font-bold tracking-normal">nue</h2>
+            <h2 className="text-6xl font-bold">nue</h2>
             <div className="w-3 h-3 bg-white/40 rounded-full mt-2 ml-auto" />
         </div>
     </motion.div>
@@ -258,7 +258,7 @@ export default function DashboardWidgetsCRM() {
             </div>
 
             <div className="bg-[#2d2a3d] rounded-[3rem] p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-auto">
                     {/* Row 1 */}
                     <BrandCard />
                     <AppIconCard />

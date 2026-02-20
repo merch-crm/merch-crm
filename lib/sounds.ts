@@ -163,9 +163,9 @@ export const SOUND_CATEGORIES = {
 // const audioCache: Map<string, HTMLAudioElement> = new Map();
 
 // Настройки звука
-let soundEnabled = true;
+let isSoundEnabled = true;
 let soundVolume = 0.5;
-let vibrationEnabled = true;
+let isVibrationEnabled = true;
 
 // Конфигурация звуков
 export interface SoundConfig {
@@ -190,7 +190,7 @@ export function playSound(type: SoundType, options?: { volume?: number; force?: 
     if (typeof window === "undefined") return;
 
     // Check global enabled state
-    if (!soundEnabled && !options?.force) return;
+    if (!isSoundEnabled && !options?.force) return;
 
     // Check specific sound config
     const config = globalSoundConfig[type];
@@ -210,7 +210,7 @@ export function playSound(type: SoundType, options?: { volume?: number; force?: 
     }
 
     // Vibration logic
-    if (vibrationEnabled && (config?.vibration !== false)) {
+    if (isVibrationEnabled && (config?.vibration !== false)) {
         let pattern: number | number[] = 100; // Default: short tick
 
         if (type.includes("error") || type.includes("failed") || type.includes("cancelled") || type.includes("scan_error")) {
@@ -242,7 +242,7 @@ export function playSound(type: SoundType, options?: { volume?: number; force?: 
  */
 export function vibrate(pattern: number | number[] = 200) {
     if (typeof window === "undefined" || !navigator.vibrate) return;
-    if (!vibrationEnabled) return;
+    if (!isVibrationEnabled) return;
 
     try {
         navigator.vibrate(pattern);
@@ -272,7 +272,7 @@ export function preloadSounds(types?: SoundType[]) {
 }
 // ... rest of file unmodified
 export function setSoundEnabled(enabled: boolean) {
-    soundEnabled = enabled;
+    isSoundEnabled = enabled;
     if (typeof window !== "undefined") {
         localStorage.setItem("crm_sound_enabled", String(enabled));
     }
@@ -286,14 +286,14 @@ export function setSoundVolume(volume: number) {
 }
 
 export function setVibrationEnabled(enabled: boolean) {
-    vibrationEnabled = enabled;
+    isVibrationEnabled = enabled;
     if (typeof window !== "undefined") {
         localStorage.setItem("crm_vibration_enabled", String(enabled));
     }
 }
 
 export function getSoundSettings() {
-    return { enabled: soundEnabled, volume: soundVolume, vibration: vibrationEnabled };
+    return { enabled: isSoundEnabled, volume: soundVolume, vibration: isVibrationEnabled };
 }
 
 export function initSoundSettings() {
@@ -302,9 +302,9 @@ export function initSoundSettings() {
         const savedVolume = localStorage.getItem("crm_sound_volume");
         const savedVibration = localStorage.getItem("crm_vibration_enabled");
 
-        if (savedEnabled !== null) soundEnabled = savedEnabled === "true";
+        if (savedEnabled !== null) isSoundEnabled = savedEnabled === "true";
         if (savedVolume !== null) soundVolume = parseFloat(savedVolume);
-        if (savedVibration !== null) vibrationEnabled = savedVibration === "true";
+        if (savedVibration !== null) isVibrationEnabled = savedVibration === "true";
     }
 }
 

@@ -9,7 +9,8 @@ import {
 import Link from "next/link";
 import { AdminSidebar, AdminUserCard } from "./admin-tabs";
 import { AdminSearch } from "./admin-search";
-import { NotificationCenter, Notification } from "@/components/notifications/notification-center";
+import { NotificationCenter } from "@/components/notifications/notification-center";
+import type { Notification, BrandingSettings } from "@/lib/types";
 import { UserNav } from "@/components/layout/user-nav";
 import { Button } from "@/components/ui/button";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -32,7 +33,7 @@ interface UserNavUser {
     avatar?: string | null;
 }
 
-import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+// BrandingSettings is now imported from @/lib/types above
 
 export function AdminLayoutClient({
     children,
@@ -58,8 +59,8 @@ export function AdminLayoutClient({
                         <ShieldAlert className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <span className="font-bold text-lg tracking-normal leading-none block">Админ-панель</span>
-                        <span className="text-xs text-slate-400 font-bold tracking-wide uppercase">Система</span>
+                        <span className="font-bold text-lg leading-none block">Админ-панель</span>
+                        <span className="text-xs text-slate-400 font-bold tracking-wide">Система</span>
                     </div>
                 </Link>
 
@@ -71,6 +72,7 @@ export function AdminLayoutClient({
             <header className="md:hidden h-16 bg-[#0F172A] text-white px-4 flex items-center justify-between shrink-0 z-30 shadow-lg">
                 <div className="flex items-center gap-3">
                     <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsMobileMenuOpen(true)}
@@ -80,11 +82,12 @@ export function AdminLayoutClient({
                     </Button>
                     <div>
                         <span className="font-bold text-sm block">Админ-панель</span>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Система</span>
+                        <span className="text-xs text-slate-400 font-bold">Система</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         className="rounded-xl hover:bg-slate-100 h-10 w-10 shrink-0"
@@ -110,15 +113,37 @@ export function AdminLayoutClient({
                         </div>
                         <div>
                             <span className="font-black text-xl text-white block">MerchCRM</span>
-                            <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">Администрирование</span>
+                            <span className="text-xs text-slate-400 font-bold">Администрирование</span>
                         </div>
                     </div>
 
-                    <div className="space-y-2" onClick={() => setIsMobileMenuOpen(false)}>
+                    <div
+                        role="button"
+                        tabIndex={0}
+                        className="space-y-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-xl"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setIsMobileMenuOpen(false);
+                            }
+                        }}
+                    >
                         <AdminSidebar user={currentUser} />
                     </div>
 
-                    <div className="mt-8 pt-8 border-t border-slate-800" onClick={() => setIsMobileMenuOpen(false)}>
+                    <div
+                        role="button"
+                        tabIndex={0}
+                        className="mt-8 pt-8 border-t border-slate-800 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setIsMobileMenuOpen(false);
+                            }
+                        }}
+                    >
                         <AdminUserCard user={currentUser} />
                     </div>
                 </div>

@@ -9,13 +9,17 @@ import { logError } from "@/lib/error-logger";
 import { rateLimit, resetRateLimit } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/rate-limit-config";
 
-export async function loginAction(prevState: unknown, formData: FormData) {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+import { LoginSchema } from "./validation";
 
-    if (!email || !password) {
-        return { error: "Заполните все поля" };
+export async function loginAction(prevState: unknown, formData: FormData) {
+    const rawData = Object.fromEntries(formData.entries());
+    const validatedFields = LoginSchema.safeParse(rawData);
+
+    if (!validatedFields.success) {
+        return { error: validatedFields.error.issues[0].message };
     }
+
+    const { email, password } = validatedFields.data;
 
     // Rate limiting — prevent brute-force via server action
     const headersList = await headers();

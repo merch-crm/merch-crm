@@ -199,6 +199,7 @@ export const generateCategoryPrefix = (name: string): string => {
 };
 
 export const getIconNameFromName = (name: string): string => {
+    if (!name) return "tshirt-custom";
     const n = name.toLowerCase();
     if (n.includes("футболк") || n.includes("лонгслив") || n.includes("поло")) return "tshirt-custom";
     if (n.includes("худи")) return "hoodie-custom";
@@ -221,6 +222,7 @@ export const getIconNameFromName = (name: string): string => {
 };
 
 export const getCategoryIcon = (category: Partial<Category>) => {
+    if (!category) return Package;
     if (category.icon) {
         const icon = ICONS.find(i => i.name === category.icon);
         return icon ? icon.icon : Package;
@@ -399,15 +401,22 @@ export function serializeIconGroups(groups: IconGroupInput[]): SerializedIconGro
     }));
 }
 
+import DOMPurify from "isomorphic-dompurify";
+
 export const createSvgIcon = (svgContent: string) => {
-    const SvgIcon = ({ className }: { className?: string }) => (
-        <div
-            className={cn("flex items-center justify-center", className)}
-            dangerouslySetInnerHTML={{
-                __html: svgContent.includes('<svg') ? svgContent : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgContent}</svg>`
-            }}
-        />
-    );
+    const SvgIcon = ({ className }: { className?: string }) => {
+        const sanitizedContent = DOMPurify.sanitize(
+            svgContent.includes('<svg') ? svgContent : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgContent}</svg>`,
+            { ALLOWED_TAGS: ['svg', 'path', 'g', 'circle', 'rect', 'line', 'polyline', 'polygon'], ALLOWED_ATTR: ['viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'points', 'x', 'y', 'width', 'height', 'r', 'cx', 'cy', 'transform'] }
+        );
+
+        return (
+            <div
+                className={cn("flex items-center justify-center", className)}
+                dangerouslySetInnerHTML={{ __html: sanitizedContent }} // Safe: Sanitized via DOMPurify
+            />
+        );
+    };
     SvgIcon.displayName = 'SvgIcon';
     return SvgIcon;
 };
@@ -429,3 +438,27 @@ export function hydrateIconGroups(storedGroups: SerializedIconGroup[]) {
         };
     });
 }
+
+// Helper for forcing singular form of common clothing categories
+export const forceSingular = (name: string, metadataSingular?: string | null) => {
+    if (metadataSingular && metadataSingular.toLowerCase() !== name.toLowerCase()) return metadataSingular;
+    if (!name) return "";
+    const n = name.toLowerCase();
+    if (n.includes("футболк")) return "Футболка";
+    if (n.includes("худи")) return "Худи";
+    if (n.includes("лонгслив")) return "Лонгслив";
+    if (n.includes("свитшот")) return "Свитшот";
+    if (n.includes("толстовк")) return "Толстовка";
+    if (n.includes("куртк")) return "Куртка";
+    if (n.includes("бомбер")) return "Бомбер";
+    if (n.includes("шорт")) return "Шорты";
+    if (n.includes("штан") || n.includes("брюк")) return "Штаны";
+    if (n.includes("кепк")) return "Кепка";
+    if (n.includes("шапк")) return "Шапка";
+    if (n.includes("поло")) return "Поло";
+
+    // Simple generic rule for -ки endings
+    if (n.endsWith("ки")) return name.slice(0, -2) + "ка";
+
+    return name;
+};

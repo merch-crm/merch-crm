@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { MapPin } from "lucide-react";
-import { PremiumSelect, PremiumSelectOption } from "./premium-select";
+import { Select, SelectOption } from "./select";
 
 interface LocationOption {
     id: string;
@@ -10,6 +10,7 @@ interface LocationOption {
 }
 
 interface StorageLocationSelectProps {
+    id?: string;
     value: string;
     onChange: (value: string) => void;
     options: LocationOption[];
@@ -34,14 +35,14 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
                 title: opt.name,
                 badge: qty !== undefined ? `${qty} шт` : undefined,
                 icon: <MapPin className="sr-only" />
-            } as PremiumSelectOption;
+            } as SelectOption;
         })
         , [options, stocksMap]);
 
     return (
         <div className={className}>
             {name && <input type="hidden" name={name} value={value} />}
-            <PremiumSelect
+            <Select
                 options={safeOptions}
                 value={value}
                 onChange={onChange}

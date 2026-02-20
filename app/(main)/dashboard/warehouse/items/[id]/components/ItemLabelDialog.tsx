@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/responsive-modal";
 
 import { Printer } from "lucide-react";
-import { InventoryItem } from "../../../types";
+import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
 import { Button } from "@/components/ui/button";
 import { escapeHtml } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -99,7 +99,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                     <div class="label">
                         <div class="header">${escapeHtml(item.name)}</div>
                         <div class="content">
-                            <img src="${qrUrl}" class="qr" />
+                            <${"img"} src="${qrUrl}" class="qr" />
                             <div class="info">
                                 <div class="sku">SKU: ${escapeHtml(item.sku || 'N/A')}</div>
                                 <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
@@ -144,7 +144,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                 </div>
             }
         >
-            <div className="px-6 py-6 space-y-8 bg-card flex-1">
+            <div className="px-6 py-6 space-y-4 bg-card flex-1">
                 {/* Preview Label */}
                 <div className="flex flex-col items-center">
                     <label className="text-sm font-bold text-foreground mb-3">Предпросмотр (58x40мм)</label>
@@ -155,7 +155,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                             {item.name}
                         </div>
 
-                        <div className="flex gap-4 items-center">
+                        <div className="flex gap-3 items-center">
                             <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center border border-border overflow-hidden shadow-inner p-1">
                                 <Image
                                     src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
@@ -167,10 +167,10 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                             </div>
                             <div className="flex-1 space-y-1.5">
                                 <div className="space-y-0.5">
-                                    <div className="text-[8px] font-bold text-muted-foreground">Артикул</div>
+                                    <div className="text-xs font-bold text-muted-foreground">Артикул</div>
                                     <div className="text-[13px] font-black text-foreground tabular-nums leading-none">{item.sku || "—"}</div>
                                 </div>
-                                <div className="inline-block px-1.5 py-0.5 bg-primary/5 text-primary text-[8px] font-bold rounded-md border border-primary/20">
+                                <div className="inline-block px-1.5 py-0.5 bg-primary/5 text-primary text-xs font-bold rounded-md border border-primary/20">
                                     {item.category?.name || "Без категории"}
                                 </div>
                             </div>
@@ -189,7 +189,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                     </div>
                     <div className="flex-1">
                         <p className="text-xs font-bold text-foreground mb-1">Настройка печати</p>
-                        <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">Этикетка оптимизирована для термопринтеров. Формат будет открыт в новом окне для отправки на печать.</p>
+                        <p className="text-xs text-muted-foreground font-medium leading-relaxed">Этикетка оптимизирована для термопринтеров. Формат будет открыт в новом окне для отправки на печать.</p>
                     </div>
                 </div>
             </div>

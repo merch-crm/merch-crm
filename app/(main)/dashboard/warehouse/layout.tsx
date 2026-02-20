@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LayoutGrid, MapPin, Book, History, Clock, Plus, Eraser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ReactNode, useState, useEffect, useCallback } from "react";
+import { ReactNode, useEffect } from "react";
 import { AddCategoryDialog } from "./add-category-dialog";
 import { AddStorageLocationDialog } from "./add-storage-location-dialog";
 import { MoveInventoryDialog } from "./move-inventory-dialog";
@@ -14,10 +14,11 @@ import { QRScanner } from "@/components/ui/qr-scanner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { findItemBySKU, clearInventoryHistory, getInventoryItems, getStorageLocations, getAllUsers, getInventoryHistory, getSession, getInventoryCategories } from "./actions";
+import { findItemBySKU } from "./warehouse-stats-actions";
+import { clearInventoryHistory } from "./history-actions";;
+
 import { playSound } from "@/lib/sounds";
-import { InventoryItem, StorageLocation, Category } from "./types";
-import { Session } from "@/lib/auth";
+import { useWarehouseLayout } from "./hooks/useWarehouseLayout";
 
 const TABS = [
     { id: "categories", label: "Категории", icon: LayoutGrid, href: "/dashboard/warehouse/categories" },
@@ -47,17 +48,6 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const router = useRouter();
     const { toast } = useToast();
 
-    const [items, setItems] = useState<InventoryItem[]>([]);
-    const [locations, setLocations] = useState<StorageLocation[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
-    const [session, setSession] = useState<Session | null>(null);
-    const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-    const [isScannerOpen, setIsScannerOpen] = useState(false);
-    const [isClearHistoryOpen, setIsClearHistoryOpen] = useState(false);
-    const [isClearingHistory, setIsClearingHistory] = useState(false);
-
     let activeTab = "categories";
     if (pathname.includes("/categories")) activeTab = "categories";
     else if (pathname.includes("/storage")) activeTab = "storage";
@@ -65,44 +55,12 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     else if (pathname.includes("/history")) activeTab = "history";
     else if (pathname.includes("/archive")) activeTab = "archive";
 
+    const { state, actions } = useWarehouseLayout(activeTab);
+    const { items, locations, categories, users, session, history, isScannerOpen, isClearHistoryOpen, isClearingHistory } = state;
+    const { setIsScannerOpen, setIsClearHistoryOpen, setIsClearingHistory, loadDialogData } = actions;
+
     const isRootPage = TABS.some(tab => pathname === tab.href);
     const currentInfo = TAB_INFO[pathname] || TAB_INFO["/dashboard/warehouse/categories"];
-
-    const fetchSession = useCallback(async () => {
-        if (!session) {
-            const s = await getSession();
-            setSession(s);
-        }
-    }, [session]);
-
-    useEffect(() => {
-        fetchSession();
-    }, [fetchSession]);
-
-    // Simple helper to load data for dialogs only when needed
-    const loadDialogData = useCallback(async (type: string) => {
-        if (type === 'storage' && !locations.length) {
-            const [i, l, u] = await Promise.all([getInventoryItems(), getStorageLocations(), getAllUsers()]);
-            setItems(('data' in i && i.data) ? i.data : []);
-            setLocations(('data' in l && l.data) ? l.data : []);
-            setUsers(('data' in u && u.data) ? u.data : []);
-        }
-        if (type === 'history' && !history.length) {
-            const h = await getInventoryHistory();
-            setHistory(('data' in h && h.data) ? h.data : []);
-        }
-        if (type === 'characteristics' && !categories.length) {
-            const c = await getInventoryCategories();
-            setCategories(('data' in c && c.data) ? c.data : []);
-        }
-    }, [locations.length, history.length, categories.length]);
-
-    // Pre-load data when tab changes to avoid "disabled" state on buttons
-    useEffect(() => {
-        if (activeTab === 'storage' || activeTab === 'history' || activeTab === 'characteristics') {
-            loadDialogData(activeTab);
-        }
-    }, [activeTab, loadDialogData]);
 
     // Update document title immediately on client-side navigation
     useEffect(() => {
@@ -181,11 +139,11 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     };
 
     return (
-        <div className="flex flex-col gap-5 animate-in fade-in duration-700">
+        <div className="flex flex-col gap-4 animate-in fade-in duration-700">
             {isRootPage && (
                 <>
                     {/* Header */}
-                    <div className="flex flex-row items-center justify-between gap-4">
+                    <div className="flex flex-row items-center justify-between gap-3">
                         <div className="flex flex-col gap-1 min-w-0">
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight truncate">
                                 {currentInfo.title}
@@ -204,7 +162,11 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                     {/* Tabs Navigation */}
                     <div className="crm-card w-full !p-1.5 !rounded-[var(--radius-inner)]">
                         {/* Mobile Navigation (Icons Only) */}
-                        <div className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-2xl">
+                        <nav
+                            role="tablist"
+                            aria-label="Навигация по разделам склада (мобильная)"
+                            className="flex sm:hidden items-center justify-between gap-1 w-full bg-slate-50/50 p-1 rounded-2xl"
+                        >
                             {TABS.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 const Icon = tab.icon;
@@ -212,6 +174,9 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                     <Link
                                         key={tab.id}
                                         href={tab.href}
+                                        role="tab"
+                                        aria-selected={isActive}
+                                        aria-label={tab.label}
                                         className={cn(
                                             "flex-1 h-11 relative flex items-center justify-center rounded-[10px] transition-all duration-300",
                                             isActive ? "text-white" : "text-slate-400 hover:text-slate-600 active:scale-90"
@@ -232,18 +197,24 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                     </Link>
                                 );
                             })}
-                        </div>
+                        </nav>
 
                         {/* Desktop / Tablet Navigation (Full Labels) */}
-                        <div className="hidden sm:flex sm:items-center gap-1.5 sm:gap-2 w-full overflow-x-auto no-scrollbar">
+                        <nav
+                            role="tablist"
+                            aria-label="Навигация по разделам склада"
+                            className="hidden sm:flex sm:items-center gap-1.5 sm:gap-2 w-full overflow-x-auto no-scrollbar"
+                        >
                             {TABS.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 return (
                                     <Link
                                         key={tab.id}
                                         href={tab.href}
+                                        role="tab"
+                                        aria-selected={isActive}
                                         className={cn(
-                                            "crm-filter-tab flex-1 h-10 sm:h-11 px-3 sm:px-5 shrink-0 text-[12px] sm:text-[13px] group",
+                                            "crm-filter-tab flex-1 h-10 sm:h-11 px-3 sm:px-5 shrink-0 text-[12px] sm:text-[13px] gap-2 group",
                                             isActive ? "active text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
                                         )}
                                     >
@@ -263,7 +234,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                                     </Link>
                                 );
                             })}
-                        </div>
+                        </nav>
                     </div>
                 </>
             )}

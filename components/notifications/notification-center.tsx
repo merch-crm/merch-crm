@@ -11,17 +11,13 @@ import { ru } from "date-fns/locale";
 import { formatDate } from "@/lib/formatters";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { formatCount } from "@/lib/pluralize";
 
-export interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: "info" | "warning" | "success" | "error" | "transfer";
-    isRead: boolean;
-    createdAt: string | Date;
-}
+import type { Notification, BrandingSettings } from "@/lib/types";
 
-import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+// Local interface Notification was here
+
+// BrandingSettings is now imported from @/lib/types below
 
 interface NotificationCenterProps {
     notifications: Notification[];
@@ -29,12 +25,14 @@ interface NotificationCenterProps {
     branding?: BrandingSettings;
 }
 
-const typeConfig = {
+const typeConfig: Record<string, { icon: React.ElementType, color: string, bg: string }> = {
     info: { icon: Info, color: "text-blue-500", bg: "bg-blue-50" },
     warning: { icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-50" },
     success: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-50" },
     error: { icon: AlertCircle, color: "text-rose-500", bg: "bg-rose-50" },
     transfer: { icon: ArrowRightLeft, color: "text-indigo-500", bg: "bg-indigo-50" },
+    custom: { icon: Bell, color: "text-slate-500", bg: "bg-slate-50" },
+    system: { icon: Bell, color: "text-slate-500", bg: "bg-slate-50" },
 };
 
 export function NotificationCenter({ notifications, unreadCount: manualUnreadCount, branding }: NotificationCenterProps) {
@@ -148,9 +146,9 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                             <div className="p-6 md:p-8 md:pb-6 flex items-center justify-between bg-white z-10 relative shrink-0">
                                 <div>
                                     <h3 className="text-xl font-black md:font-bold text-slate-900 tracking-tight md:tracking-normal">Уведомления</h3>
-                                    <p className="text-slate-400 text-[10px] font-bold tracking-normal mt-1 uppercase">
+                                    <p className="text-slate-400 text-xs font-bold mt-1">
                                         {unreadCount > 0
-                                            ? `${unreadCount} непрочитанных сообщений`
+                                            ? formatCount(unreadCount, 'непрочитанное сообщение', 'непрочитанных сообщения', 'непрочитанных сообщений')
                                             : "Все уведомления прочитаны"}
                                     </p>
                                 </div>
@@ -161,7 +159,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                             size="sm"
                                             onClick={handleMarkAllAsRead}
                                             disabled={loading === "all"}
-                                            className="h-9 px-4 text-[10px] font-bold uppercase tracking-normal"
+                                            className="h-9 px-4 text-xs font-bold"
                                         >
                                             {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
                                         </Button>

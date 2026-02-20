@@ -1,0 +1,31 @@
+{
+  "timestamp": "21.02.2026, 01:00:05",
+  "duration": 5118,
+  "projectName": "MerchCRM",
+  "errors": [],
+  "stats": {
+    "totalFiles": 690,
+    "totalLines": 90453,
+    "totalSize": 4065672,
+    "pagesCount": 39,
+    "componentsCount": 188,
+    "hooksCount": 8,
+    "actionsCount": 53,
+    "typesCount": 11,
+    "apiRoutesCount": 10,
+    "formsCount": 27,
+    "testsCount": 106,
+    "tablesCount": 31,
+    "migrationsCount": 16,
+    "typescriptErrors": 0,
+    "lintErrors": 0,
+    "lintWarnings": 0,
+    "byCategory": {}
+  },
+  "health": {
+    "score": 100,
+    "grade": "A",
+    "summary": "Отличное состояние",
+    "recommendations": []
+  }
+}

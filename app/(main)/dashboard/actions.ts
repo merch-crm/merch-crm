@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, clients, notifications } from "@/lib/schema";
 import { count, sum, inArray, and, gte, lte, eq, desc } from "drizzle-orm";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 import {
     startOfDay,
     endOfDay,
@@ -14,39 +14,67 @@ import {
 } from "date-fns";
 import { getSession } from "@/lib/auth";
 import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+
+const DashboardPeriodSchema = z.enum(["today", "week", "month", "quarter", "all"]).default("month");
+const NotificationLimitSchema = z.number().int().min(1).max(50).default(5);
 
 export async function getDashboardStatsByPeriod(period: string = "month") {
-    const session = await getSession();
-    if (!session) throw new Error("Unauthorized");
+    try {
+        const session = await getSession();
+        if (!session) throw new Error("Unauthorized");
 
-    const now = new Date();
-    let startDate: Date;
-    let endDate: Date = endOfDay(now);
+        const validated = DashboardPeriodSchema.safeParse(period);
+        const finalPeriod = validated.success ? validated.data : "month";
 
-    switch (period) {
-        case "today":
-            startDate = startOfDay(now);
-            break;
-        case "week":
-            startDate = startOfWeek(now, { weekStartsOn: 1 });
-            break;
-        case "month":
-            startDate = startOfMonth(now);
-            endDate = endOfMonth(now);
-            break;
-        case "quarter":
-            startDate = startOfQuarter(now);
-            break;
-        case "all":
-            startDate = new Date(2000, 0, 1);
-            endDate = new Date(2100, 0, 1);
-            break;
-        default:
-            startDate = startOfMonth(now);
-            endDate = endOfMonth(now);
+        const now = new Date();
+        let startDate: Date;
+        let endDate: Date = endOfDay(now);
+
+        switch (finalPeriod) {
+            case "today":
+                startDate = startOfDay(now);
+                break;
+            case "week":
+                startDate = startOfWeek(now, { weekStartsOn: 1 });
+                break;
+            case "month":
+                startDate = startOfMonth(now);
+                endDate = endOfMonth(now);
+                break;
+            case "quarter":
+                startDate = startOfQuarter(now);
+                break;
+            case "all":
+                startDate = new Date(2000, 0, 1);
+                endDate = new Date(2100, 0, 1);
+                break;
+            default:
+                startDate = startOfMonth(now);
+                endDate = endOfMonth(now);
+        }
+
+        return await getDashboardStats(startDate, endDate);
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard",
+            method: "getDashboardStatsByPeriod"
+        });
+
+        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
+        const currencySymbol = branding?.currencySymbol || "₽";
+
+        return {
+            totalClients: 0,
+            newClients: 0,
+            totalOrders: 0,
+            inProduction: 0,
+            revenue: `0 ${currencySymbol}`,
+            averageCheck: `0 ${currencySymbol}`,
+            rawRevenue: 0
+        };
     }
-
-    return getDashboardStats(startDate, endDate);
 }
 
 export async function getDashboardStats(startDate?: Date, endDate?: Date) {
@@ -64,7 +92,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         );
 
         // 1. Total Clients (Lifetime)
-        const totalClientsResult = await db.select({ value: count() }).from(clients);
+        const totalClientsResult = await db.select({ value: count() }).from(clients).limit(1);
         const totalClients = totalClientsResult[0].value;
 
         // 2. New Clients count in period
@@ -73,19 +101,22 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             .where(and(
                 gte(clients.createdAt, startDate),
                 lte(clients.createdAt, endDate)
-            ));
+            ))
+            .limit(1);
         const newClients = newClientsResult[0].value;
 
         // 3. Total Orders count in period
         const totalOrdersResult = await db.select({ value: count() })
             .from(orders)
-            .where(dateFilter);
+            .where(dateFilter)
+            .limit(1);
         const totalOrders = totalOrdersResult[0].value;
 
         // 4. In Production count (Current snapshot)
         const inProductionResult = await db.select({ value: count() })
             .from(orders)
-            .where(inArray(orders.status, ["new", "design", "production"]));
+            .where(inArray(orders.status, ["new", "design", "production"]))
+            .limit(1);
         const inProduction = inProductionResult[0].value;
 
         // 7. Total Revenue for period
@@ -93,7 +124,8 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             value: sum(orders.totalAmount)
         })
             .from(orders)
-            .where(dateFilter);
+            .where(dateFilter)
+            .limit(1);
 
         const rawRevenue = Number(revenueResult[0].value || 0);
 
@@ -143,16 +175,17 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
 
 export async function getDashboardNotifications(limit = 5) {
     const session = await getSession();
-    // @ts-expect-error - session type has user id
-    if (!session || !session.user?.id) return [];
+    if (!session?.id) return [];
+
+    const validatedLimit = NotificationLimitSchema.safeParse(limit);
+    const finalLimit = validatedLimit.success ? validatedLimit.data : 5;
 
     try {
         const userNotifications = await db
             .select()
             .from(notifications)
-            // @ts-expect-error - session type has user id
-            .where(eq(notifications.userId, session.user.id))
-            .limit(limit)
+            .where(eq(notifications.userId, session.id))
+            .limit(finalLimit)
             .orderBy(desc(notifications.createdAt));
 
         return userNotifications.map(n => ({
@@ -164,6 +197,11 @@ export async function getDashboardNotifications(limit = 5) {
             isRead: n.isRead
         }));
     } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard",
+            method: "getDashboardNotifications"
+        });
         console.error("Error fetching notifications:", error);
         return [];
     }

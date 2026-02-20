@@ -2,18 +2,21 @@
 
 import { useState } from "react";
 import { Plus, Search, Calendar, FileText } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
-import { createExpense, CreateExpenseData } from "./actions";
+import { createExpense, CreateExpenseData } from "./actions";;
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { playSound } from "@/lib/sounds";
 import { useBranding } from "@/components/branding-provider";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export interface Expense {
     id: string;
@@ -25,13 +28,14 @@ export interface Expense {
 }
 
 export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
+    const router = useRouter();
     const { currencySymbol } = useBranding();
-    const [expenses, setExpenses] = useState(initialData || []);
     const [searchQuery, setSearchQuery] = useState("");
     const [isAdding, setIsAdding] = useState(false);
 
+    const expenses = initialData || [];
     const filteredExpenses = expenses.filter(e =>
-    (e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ((e.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.category.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
@@ -52,9 +56,10 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
     };
 
     return (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-end gap-5">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col md:flex-row md:items-center justify-end gap-4">
                 <Button
+                    type="button"
                     onClick={() => setIsAdding(true)}
                     className="h-11 w-11 sm:h-11 sm:w-auto bg-rose-600 hover:bg-rose-700 text-white rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold shadow-xl shadow-rose-100 transition-all active:scale-95 border-none shrink-0 p-0 sm:p-auto"
                     title="Добавить расход"
@@ -64,7 +69,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </Button>
             </div>
 
-            <div className="crm-card !p-6 flex-1 flex min-h-0 gap-4 px-8 pb-8 pt-4 items-center shadow-sm">
+            <div className="crm-card !p-6 flex-1 flex min-h-0 gap-3 px-8 pb-8 pt-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <Input
@@ -107,7 +112,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                         </td>
                                         <td className="crm-td">
                                             <span className={cn(
-                                                "px-2 py-1 rounded-md text-[10px] font-bold tracking-wider",
+                                                "px-2 py-1 rounded-md text-xs font-bold",
                                                 categoryColors[expense.category] || categoryColors.other
                                             )}>
                                                 {categoryLabels[expense.category]}
@@ -120,7 +125,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                         </td>
                                         <td className="crm-td crm-td-number">
                                             <div className="text-lg font-bold text-rose-600 leading-none">
-                                                -{Number(expense.amount).toLocaleString()} <span className="text-[10px] font-bold text-slate-400 ml-1">{currencySymbol}</span>
+                                                -{Number(expense.amount).toLocaleString()} <span className="text-xs font-bold text-slate-400 ml-1">{currencySymbol}</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -142,7 +147,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                         <div className="text-sm font-bold text-slate-900">
                                             {categoryLabels[expense.category] || "Прочее"}
                                         </div>
-                                        <div className="text-[10px] text-slate-400 font-bold">
+                                        <div className="text-xs text-slate-400 font-bold">
                                             {format(new Date(expense.date), "d MMM yyyy", { locale: ru })}
                                         </div>
                                     </div>
@@ -163,22 +168,16 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 />
 
                 {filteredExpenses.length === 0 && (
-                    <div className="py-20 text-center">
-                        <div className="flex flex-col items-center">
-                            <FileText className="w-12 h-12 text-slate-200 mb-4" />
-                            <p className="text-slate-400 font-medium">Расходов не найдено</p>
-                        </div>
-                    </div>
+                    <EmptyState icon={FileText} title="Расходов не найдено" />
                 )}
             </div>
 
             {isAdding && (
                 <AddExpenseDialog
                     onClose={() => setIsAdding(false)}
-                    onSuccess={(newExpense) => {
-                        setExpenses([newExpense, ...expenses]);
+                    onSuccess={() => {
                         setIsAdding(false);
-                        revalidateData();
+                        router.refresh();
                     }}
                 />
             )}
@@ -186,7 +185,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
     );
 }
 
-function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: (e: Expense) => void }) {
+function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
     const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
     const [category, setCategory] = useState("purchase");
@@ -196,6 +195,14 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData(e.currentTarget);
+        const amount = parseFloat(formData.get("amount") as string);
+
+        if (!amount || amount <= 0) {
+            toast("Сумма должна быть больше нуля", "error");
+            setIsLoading(false);
+            return;
+        }
+
         const data = Object.fromEntries(formData.entries()) as unknown as CreateExpenseData;
 
         try {
@@ -203,7 +210,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             if (res.success) {
                 toast("Расход добавлен", "success");
                 playSound("expense_added");
-                onSuccess(res.data as Expense);
+                onSuccess();
             } else {
                 toast(res.error || "Ошибка", "error");
                 playSound("notification_error");
@@ -222,7 +229,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             onClose={onClose}
             title="Новый расход"
         >
-            <form onSubmit={handleSubmit} className="p-4 space-y-6">
+            <form onSubmit={handleSubmit} className="p-4 space-y-4">
                 <div className="space-y-1.5">
                     <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
                     <Input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
@@ -231,7 +238,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                         <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
-                        <PremiumSelect
+                        <Select
                             name="category"
                             options={[
                                 { id: "purchase", title: "Закупки" },
@@ -255,15 +262,13 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                     <textarea name="description" placeholder="На что потрачены деньги..." className="w-full h-32 p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-medium text-sm resize-none" />
                 </div>
 
-                <div className="flex gap-4 pt-4 mt-auto">
+                <div className="flex gap-3 pt-4 mt-auto">
                     <Button type="button" variant="outline" onClick={onClose} className="hidden md:inline-flex h-11 flex-1 rounded-[var(--radius)] font-bold">Отмена</Button>
-                    <Button type="submit" disabled={isLoading} className="h-11 flex-1 w-full bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">{isLoading ? "Добавление..." : "Добавить"}</Button>
+                    <SubmitButton isLoading={isLoading} className="h-11 flex-1 w-full bg-rose-600 text-white rounded-[var(--radius)] font-bold shadow-xl shadow-rose-100">Добавить</SubmitButton>
                 </div>
             </form>
         </ResponsiveModal>
     );
 }
 
-function revalidateData() {
-    window.location.reload();
-}
+

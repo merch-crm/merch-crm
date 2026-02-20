@@ -34,7 +34,7 @@ export default function FileUploadShowcaseCRM() {
                                 <p className="text-slate-900 font-semibold truncate">Product Catalog.pdf</p>
                                 <p className="text-slate-400 text-xs">20 MB</p>
                             </div>
-                            <button className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                            <button type="button" className="p-2 text-slate-400 hover:text-red-500 transition-colors">
                                 <Trash2 size={20} />
                             </button>
                         </div>
@@ -48,7 +48,7 @@ export default function FileUploadShowcaseCRM() {
                                 <p className="text-slate-900 font-semibold truncate">Cinema 4D Project File.zip</p>
                                 <p className="text-slate-400 text-xs">20 MB</p>
                             </div>
-                            <button className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                            <button type="button" className="p-2 text-slate-400 hover:text-red-500 transition-colors">
                                 <Trash2 size={20} />
                             </button>
                         </div>
@@ -73,7 +73,7 @@ export default function FileUploadShowcaseCRM() {
                                     <p className="text-slate-400 text-xs mt-0.5">150 MB of 300 MB</p>
                                 </div>
                             </div>
-                            <button className="text-slate-400 hover:text-slate-600">
+                            <button type="button" className="text-slate-400 hover:text-slate-600">
                                 <X size={20} />
                             </button>
                         </div>

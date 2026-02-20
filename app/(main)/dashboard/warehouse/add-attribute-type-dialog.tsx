@@ -1,30 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, RefreshCw, Check } from "lucide-react";
+import { Plus, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { PremiumSelect } from "@/components/ui/premium-select";
-import { useToast } from "@/components/ui/toast";
-import { useRouter, useSearchParams } from "next/navigation";
-import { playSound } from "@/lib/sounds";
-import { createInventoryAttributeType } from "./actions";
+import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Category } from "./types";
-
-const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
-    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
-    ' ': '_'
-};
-
-const transliterateToSlug = (text: string) => {
-    return text.toLowerCase().split('').map(char => RUSSIAN_TO_LATIN_MAP[char] || char).join('').replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '');
-};
+import { useAddAttributeType, transliterateToSlug } from "./hooks/use-add-attribute-type";
 
 interface AddAttributeTypeDialogProps {
     categories: Category[];
@@ -33,57 +18,18 @@ interface AddAttributeTypeDialogProps {
 
 
 export function AddAttributeTypeDialog({ categories, className }: AddAttributeTypeDialogProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [label, setLabel] = useState("");
-    const [slug, setSlug] = useState("");
-    const [isSystem, setIsSystem] = useState(false);
-
-    const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
-
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const { toast } = useToast();
-
-    const rootCategories = categories.filter(c => !c.parentId);
-    const catParam = searchParams.get("cat");
-    const [activeCategoryId, setActiveCategoryId] = useState<string>(catParam || (rootCategories.length > 0 ? rootCategories[0].id : "uncategorized"));
-
-    const handleOpen = () => {
-        setLabel("");
-        setSlug("");
-        setIsSystem(false);
-        setIsSlugManuallyEdited(false);
-        const currentCat = searchParams.get("cat");
-        if (currentCat) {
-            setActiveCategoryId(currentCat);
-        } else if (rootCategories.length > 0) {
-            setActiveCategoryId(rootCategories[0].id);
-        }
-        setIsOpen(true);
-    };
-
-    const handleCreate = async () => {
-        if (!label.trim() || !slug.trim()) return;
-        setIsLoading(true);
-        try {
-            const catIdToSave = activeCategoryId === "uncategorized" ? undefined : activeCategoryId;
-            const res = await createInventoryAttributeType(label, slug, catIdToSave, isSystem);
-            if (res.success) {
-                toast("Новый раздел создан", "success");
-                playSound("notification_success");
-                setIsOpen(false);
-                router.refresh();
-            } else {
-                toast(res.error || "Ошибка создания", "error");
-                playSound("notification_error");
-            }
-        } catch {
-            toast("Ошибка создания", "error");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const {
+        isOpen, setIsOpen,
+        isLoading,
+        label, setLabel,
+        slug, setSlug,
+        isSystem, setIsSystem,
+        isSlugManuallyEdited, setIsSlugManuallyEdited,
+        activeCategoryId, setActiveCategoryId,
+        rootCategories,
+        handleOpen,
+        handleCreate
+    } = useAddAttributeType({ categories });
 
     const activeCategoryName = activeCategoryId === "uncategorized"
         ? "Без категории"
@@ -92,6 +38,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
     return (
         <>
             <Button
+                type="button"
                 onClick={handleOpen}
                 className={cn(
                     "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5",
@@ -103,9 +50,16 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
             </Button>
 
             <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Новая характеристика" showVisualTitle={false}>
-                <div className="flex flex-col bg-white">
+                <form
+                    id="add-attribute-type-form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleCreate();
+                    }}
+                    className="flex flex-col bg-white"
+                >
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shadow-sm shrink-0 border border-primary/10">
                                 <Plus className="w-6 h-6 text-primary" />
                             </div>
@@ -118,11 +72,11 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                         </div>
                     </div>
 
-                    <div className="px-6 pb-6 pt-4 space-y-6 overflow-y-auto custom-scrollbar">
+                    <div className="px-6 pb-6 pt-4 space-y-4 overflow-y-auto custom-scrollbar">
                         <div className="space-y-1.5 overflow-visible">
                             <label className="text-sm font-bold text-slate-700 ml-1">Раздел каталога товаров</label>
 
-                            <PremiumSelect
+                            <Select
                                 value={activeCategoryId}
                                 onChange={setActiveCategoryId}
                                 options={
@@ -191,7 +145,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                             <div className={cn("flex items-center justify-between group")}>
                                 <div className="flex flex-col gap-0.5">
                                     <span className="text-[11px] font-bold text-slate-900">Глобальная характеристика</span>
-                                    <span className="text-[10px] text-slate-500 font-bold">Будет видна во всех категориях товаров</span>
+                                    <span className="text-xs text-slate-500 font-bold">Будет видна во всех категориях товаров</span>
                                 </div>
                                 <Switch
                                     checked={isSystem}
@@ -211,21 +165,18 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                         >
                             Отмена
                         </Button>
-                        <Button
-                            onClick={handleCreate}
+                        <SubmitButton
+                            form="add-attribute-type-form"
+                            isLoading={isLoading}
                             disabled={isLoading || !label || !slug}
                             className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
-                        >
-                            {isLoading ? (
-                                <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                            ) : (
-                                <Check className="w-4 h-4 stroke-[3] text-white" />
-                            )}
-                            Сохранить
-                        </Button>
+                            text="Сохранить"
+                            loadingText="Сохранение..."
+                        />
                     </div>
-                </div>
+                </form>
             </ResponsiveModal>
+
         </>
     );
 }

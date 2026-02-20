@@ -29,7 +29,7 @@ import IconsShowcaseCRM from "./icons-showcase-crm";
 export default function DesignShowcasePage() {
     return (
         <div className="min-h-screen bg-background p-4 md:p-8 font-sans text-foreground overflow-x-hidden">
-            <div className="max-w-[1400px] mx-auto space-y-8">
+            <div className="max-w-[1400px] mx-auto space-y-4">
 
                 {/* Page Header */}
                 <header className="glass-panel p-8 mb-8">

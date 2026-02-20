@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { Undo2, X } from "lucide-react";
 import { undoLastAction } from "@/app/(main)/dashboard/undo-actions";
 import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function GlobalUndo() {
+    const router = useRouter();
     const [isVisible, setIsVisible] = useState(false);
     const [isUndoing, setIsUndoing] = useState(false);
     const { toast } = useToast();
@@ -35,7 +37,7 @@ export function GlobalUndo() {
         if (res.success) {
             toast("Действие отменено", "success");
             // Optional: trigger a page refresh if needed, but undoLastAction should handle data
-            window.location.reload();
+            router.refresh();
         } else {
             toast(res.error || "Не удалось отменить", "error");
         }
@@ -53,7 +55,7 @@ export function GlobalUndo() {
                     <Undo2 className="w-4 h-4 text-slate-400" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-[10px] font-bold  tracking-wider text-slate-500">Последнее действие</span>
+                    <span className="text-xs font-bold  text-slate-500">Последнее действие</span>
                     <span className="text-xs font-bold">Выполнено успешно</span>
                 </div>
             </div>
@@ -62,7 +64,7 @@ export function GlobalUndo() {
 
             <Button
                 onClick={handleUndo}
-                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-[11px] font-bold tracking-normal"
+                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-[11px] font-bold"
             >
                 {isUndoing ? "Отмена..." : "Отменить"}
             </Button>

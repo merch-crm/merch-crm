@@ -1,9 +1,5 @@
-import {
-    getSystemStats,
-    getMonitoringStats,
-    getSecurityStats,
-    getBackupsList
-} from "./actions";
+import { getSystemStats, getBackupsList } from "./actions/system.actions";
+import { getMonitoringStats, getSecurityStats } from "./actions/security.actions";;
 import { AdminOverviewClient } from "./admin-overview-client";
 import { Suspense } from "react";
 
@@ -27,7 +23,7 @@ async function AdminOverview() {
     return (
         <AdminOverviewClient
             stats={statsRes.success ? statsRes.data : undefined}
-            monitoring={monitoringRes.success ? monitoringRes.data : undefined}
+            monitoring={monitoringRes.success ? (monitoringRes.data as never) : undefined}
             security={securityRes.success ? securityRes.data : undefined}
             backups={backupsRes.success ? backupsRes.data : []}
         />
@@ -36,7 +32,7 @@ async function AdminOverview() {
 
 function AdminDashboardSkeleton() {
     return (
-        <div className="space-y-8 animate-pulse">
+        <div className="space-y-4 animate-pulse">
             <div className="flex justify-between items-end">
                 <div className="space-y-3">
                     <div className="h-10 w-64 bg-slate-200 rounded-xl" />

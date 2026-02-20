@@ -5,6 +5,8 @@ const redis = new Redis({
     host: env.REDIS_HOST,
     port: 6379,
     password: env.REDIS_PASSWORD,
+    maxRetriesPerRequest: null,
+    connectTimeout: 10000,
 });
 
 export default redis;

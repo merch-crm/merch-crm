@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Category, InventoryAttribute, AttributeType, ItemFormData } from "../../../types";
-import { CLOTHING_COLORS } from "../../../category-utils";
+import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { CLOTHING_COLORS } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { StepFooter } from "./step-footer";
 import { Button } from "@/components/ui/button";
 
@@ -156,16 +156,16 @@ export function PackagingBasicInfoStep({
     return (
         <div className="flex flex-col h-full overflow-hidden">
             <div className="flex-1 px-10 pt-10 pb-0 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="max-w-[800px] mx-auto space-y-8 pb-10">
+                <div className="max-w-[800px] mx-auto space-y-4 pb-10">
 
                     {/* Header */}
-                    <div className="flex items-center gap-4 shrink-0">
+                    <div className="flex items-center gap-3 shrink-0">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                             <Package className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900">Упаковка</h2>
-                            <p className="text-[10px] font-bold text-slate-500 opacity-60">Параметры и характеристики</p>
+                            <p className="text-xs font-bold text-slate-500 opacity-60">Параметры и характеристики</p>
                         </div>
                     </div>
 
@@ -186,8 +186,8 @@ export function PackagingBasicInfoStep({
                     {/* Section 1: Type & Brand */}
                     <section className="space-y-4">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-[10px] font-bold">1</span>
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Основное</h3>
+                            <span className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs font-bold">1</span>
+                            <h3 className="text-sm font-bold text-slate-900">Основное</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -223,7 +223,7 @@ export function PackagingBasicInfoStep({
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Бренд</label>
-                                <PremiumSelect
+                                <Select
                                     label=""
                                     placeholder="Выберите бренд"
                                     options={brands.map(b => ({ id: b.id, title: b.name }))}
@@ -237,8 +237,8 @@ export function PackagingBasicInfoStep({
                     {/* Section 2: Dimensions & Specs */}
                     <section className="space-y-4">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-[10px] font-bold">2</span>
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Габариты и Характеристики</h3>
+                            <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xs font-bold">2</span>
+                            <h3 className="text-sm font-bold text-slate-900">Габариты и Характеристики</h3>
                         </div>
 
                         <div className="grid grid-cols-12 gap-4">
@@ -255,7 +255,7 @@ export function PackagingBasicInfoStep({
 
                                 <div className="space-y-1.5">
                                     <label className="text-sm font-bold text-slate-700 ml-1">Размер (поиск)</label>
-                                    <PremiumSelect
+                                    <Select
                                         options={[
                                             { id: "S", title: "S - Маленький" },
                                             { id: "M", title: "M - Средний" },
@@ -273,7 +273,7 @@ export function PackagingBasicInfoStep({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Материал</label>
-                                <PremiumSelect
+                                <Select
                                     label=""
                                     placeholder="Выберите материал"
                                     options={materials.map(m => ({ id: m.id, title: m.name }))}
@@ -354,8 +354,8 @@ export function PackagingBasicInfoStep({
                     {/* Section 3: Logistics */}
                     <section className="space-y-4">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-[10px] font-bold">3</span>
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Закупка и Логистика</h3>
+                            <span className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs font-bold">3</span>
+                            <h3 className="text-sm font-bold text-slate-900">Закупка и Логистика</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -378,7 +378,7 @@ export function PackagingBasicInfoStep({
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Ед. измерения</label>
-                                <PremiumSelect
+                                <Select
                                     label=""
                                     placeholder=""
                                     options={measurementUnits.map(u => ({ id: u.id, title: u.name }))}
@@ -392,8 +392,8 @@ export function PackagingBasicInfoStep({
                     {/* Preview Generated Info */}
                     <div className="p-4 bg-slate-900/5 rounded-[16px] border border-slate-900/10 space-y-2">
                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Предпросмотр</span>
-                            <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded shadow-sm border border-slate-200">Авто-генерация</span>
+                            <span className="text-xs font-bold text-slate-500">Предпросмотр</span>
+                            <span className="text-xs font-bold text-slate-400 bg-white px-2 py-0.5 rounded shadow-sm border border-slate-200">Авто-генерация</span>
                         </div>
                         <div>
                             <div className="text-lg font-black text-slate-900 leading-tight mb-1">{formData.itemName || "—"}</div>

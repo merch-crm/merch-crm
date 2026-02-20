@@ -46,9 +46,9 @@ export default function FinanceLayout({
     const currentTabInfo = TAB_INFO[pathname] || TAB_INFO["/dashboard/finance/sales"];
 
     return (
-        <div className="flex flex-col gap-8 animate-in fade-in duration-700">
+        <div className="flex flex-col gap-3 animate-in fade-in duration-700">
             {/* 1. Page Header */}
-            <div className="flex flex-row items-center justify-between gap-4">
+            <div className="flex flex-row items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight truncate">
                         {currentTabInfo.title}

@@ -1,401 +1,269 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Mail, Phone, MapPin, ShoppingBag, Send, Instagram, Trash2, AlertTriangle, Pencil, Check } from "lucide-react";
-import { getClientDetails, deleteClient, updateClientComments } from "./actions";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import StatusBadgeInteractive from "../orders/status-badge-interactive";
-import { EditClientDialog } from "./edit-client-dialog";
-import { PremiumPagination } from "@/components/ui/premium-pagination";
-import { useBranding } from "@/components/branding-provider";
+import { useEffect, useState, useCallback } from "react";
+import {
+    Mail, Phone, MapPin, Building2, ShoppingBag,
+    Edit2, CreditCard, Clock, AlertCircle,
+    MessageCircle, ExternalLink,
+    Plus as PlusIcon
+} from "lucide-react";
+import { formatDate } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { useBranding } from "@/components/branding-provider";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Pagination } from "@/components/ui/pagination";
+import StatusBadgeInteractive from "../orders/status-badge-interactive";
 
-interface ClientOrder {
-    id: string;
-    status: string;
-    totalAmount: number | string | null;
-    createdAt: Date;
-    items: unknown[];
+import { getClientDetails } from "./actions/core.actions";;
+import type { ClientDetails, ClientProfileOrder } from "@/lib/types";
+import type { OrderStatus } from "@/lib/types/order";
+
+interface ClientDetailPopupProps {
+    clientId: string;
+    isOpen: boolean;
+    onClose: () => void;
+    onEdit?: () => void;
+    showFinancials?: boolean;
 }
 
-interface ClientDetailsData {
-    id: string;
-    lastName: string;
-    firstName: string;
-    patronymic?: string | null;
-    email?: string | null;
-    phone: string;
-    company?: string | null;
-    city?: string | null;
-    telegram?: string | null;
-    instagram?: string | null;
-    comments?: string | null;
-    orders: ClientOrder[];
-    stats: {
-        count: number;
-        total: number | string;
-        balance: number;
-    };
-}
-
-export function ClientDetailPopup({ clientId, isOpen, onClose, showFinancials }: { clientId: string, isOpen: boolean, onClose: () => void, showFinancials?: boolean }) {
+export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinancials = true }: ClientDetailPopupProps) {
     const { currencySymbol } = useBranding();
-    const [client, setClient] = useState<ClientDetailsData | null>(null);
+    const [client, setClient] = useState<ClientDetails | null>(null);
     const [loading, setLoading] = useState(true);
-
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [confirmDelete, setConfirmDelete] = useState(false);
-    const [deleteError, setDeleteError] = useState("");
-    const [showEditDialog, setShowEditDialog] = useState(false);
-    const [refreshKey, setRefreshKey] = useState(0);
     const [ordersPage, setOrdersPage] = useState(1);
+    const router = useRouter();
 
-    const [isEditingComments, setIsEditingComments] = useState(false);
-    const [tempComments, setTempComments] = useState("");
-    const [isSavingComments, setIsSavingComments] = useState(false);
+    const loadClient = useCallback(async (id: string) => {
+        setLoading(true);
+        const result = await getClientDetails(id);
+        if (result.success) {
+            setClient(result.data || null);
+        } else {
+            setClient(null);
+        }
+        setLoading(false);
+    }, []);
 
     useEffect(() => {
         if (isOpen && clientId) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setLoading(true);
-            setDeleteError("");
-            setConfirmDelete(false);
-            getClientDetails(clientId).then(res => {
-                if (res.success && res.data) {
-                    setClient(res.data);
-                    setTempComments(res.data.comments || "");
-                }
-                setLoading(false);
-            });
+            Promise.resolve().then(() => setLoading(true));
+            loadClient(clientId);
         }
-    }, [isOpen, clientId, refreshKey]);
-
-    useEffect(() => {
-        if (isOpen) {
-            const originalStyle = window.getComputedStyle(document.body).overflow;
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.overflow = originalStyle;
-            };
-        }
-    }, [isOpen]);
-
-    const handleSaveComments = async () => {
-        setIsSavingComments(true);
-        const res = await updateClientComments(clientId, tempComments);
-        if (res.success && client) {
-            setIsEditingComments(false);
-            setClient({ ...client, comments: tempComments });
-        }
-        setIsSavingComments(false);
-    };
-
-    const handleDelete = async () => {
-        setIsDeleting(true);
-        setDeleteError("");
-        const res = await deleteClient(clientId);
-        if (!res.success) {
-            setDeleteError(res.error);
-            setIsDeleting(false);
-            setConfirmDelete(false);
-        } else {
-            onClose();
-        }
-    };
+    }, [isOpen, clientId, loadClient]);
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true" data-dialog-open="true">
-            <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div className="fixed inset-0 bg-black/30 transition-opacity" onClick={onClose} />
-
-                <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-200">
-                    <div className="absolute top-0 right-0 pt-4 pr-4 z-10">
-                        <Button
-                            variant="ghost"
-                            onClick={onClose}
-                            className="text-slate-400 hover:text-slate-600 p-2 h-auto rounded-full hover:bg-slate-100 transition-colors"
-                        >
-                            <X className="h-6 w-6" />
-                        </Button>
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={loading ? "Загрузка..." : (client?.name || undefined)}
+            description="Детальная информация о клиенте"
+            className="max-w-4xl"
+        >
+            <div className="flex flex-col h-full bg-white">
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                        <p className="text-sm font-medium text-slate-400">Загружаем данные клиента...</p>
                     </div>
-
-                    {loading ? (
-                        <div className="p-20 text-center text-slate-400">Загрузка данных...</div>
-                    ) : client ? (
-                        <div className="flex flex-col h-full max-h-[90vh]">
-                            {/* Header */}
-                            <div className="p-8 pr-16 border-b border-slate-200 bg-white">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3">
-                                            <h2 className="text-2xl font-bold text-slate-900 leading-tight">
-                                                {client.lastName} {client.firstName} {client.patronymic}
-                                            </h2>
-                                            {!confirmDelete && (
-                                                <div className="flex items-center gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={() => setShowEditDialog(true)}
-                                                        className="p-2 h-auto text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
-                                                        title="Редактировать клиента"
-                                                    >
-                                                        <Pencil className="w-5 h-5" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={() => setConfirmDelete(true)}
-                                                        className="p-2 h-auto text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-                                                        title="Удалить клиента"
-                                                    >
-                                                        <Trash2 className="w-5 h-5" />
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </div>
-                                        {client.company && (
-                                            <p className="text-lg font-medium text-primary mt-1">{client.company}</p>
-                                        )}
-                                        <p className="text-slate-500 text-sm mt-2 flex items-center">
-                                            <MapPin className="w-4 h-4 mr-1" /> {client.city || "Город не указан"}
-                                        </p>
+                ) : client ? (
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 overflow-y-auto max-h-[80vh]">
+                        {/* Left Column: Basic Info - 4 cols */}
+                        <div className="md:col-span-5 space-y-4">
+                            {/* Entity Header */}
+                            <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                                        <Building2 className="w-8 h-8" />
                                     </div>
-                                    <div className="text-right">
-                                        <div className="text-slate-400 text-[10px]  font-bold tracking-wider mb-3">Статистика</div>
-                                        <div className="flex flex-wrap justify-end gap-5">
-                                            <div className="bg-slate-50 px-6 py-4 rounded-2xl shadow-sm border border-slate-200 min-w-[100px] text-left transition-all hover:shadow-md">
-                                                <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Заказов</div>
-                                                <div className="text-2xl font-bold text-slate-900 leading-none">{client.stats.count}</div>
-                                            </div>
-                                            {showFinancials && (
-                                                <div className="bg-slate-50 px-6 py-4 rounded-2xl shadow-sm border border-slate-200 min-w-[140px] text-left transition-all hover:shadow-md">
-                                                    <div className="text-slate-400 text-[10px] font-bold  tracking-normal mb-1">Сумма</div>
-                                                    <div className="text-2xl font-bold text-emerald-600 leading-none">
-                                                        {client.stats.total} <span className="text-lg font-bold ml-0.5">{currencySymbol}</span>
-                                                    </div>
-                                                </div>
-                                            )}
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Badge className="bg-primary/5 text-primary border-none font-bold text-xs px-2">
+                                                {client.clientType === 'b2b' ? 'Организация' : 'Частное лицо'}
+                                            </Badge>
                                         </div>
+                                        <h2 className="text-xl font-extrabold text-slate-900 leading-tight">{client.name}</h2>
                                     </div>
                                 </div>
 
-                                {confirmDelete && (
-                                    <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-                                        <div className="flex items-center text-red-700 text-sm font-medium">
-                                            <AlertTriangle className="w-5 h-5 mr-3 text-red-500" />
-                                            Вы уверены, что хотите удалить клиента? Все данные будут стерты.
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3 group">
+                                        <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
+                                            <Phone className="w-4 h-4" />
                                         </div>
-                                        <div className="flex gap-3">
-                                            <Button
-                                                variant="ghost"
-                                                onClick={() => setConfirmDelete(false)}
-                                                className="px-4 py-2 h-auto text-slate-600 hover:bg-white rounded-2xl text-sm font-bold transition-colors"
-                                                disabled={isDeleting}
-                                            >
-                                                Отмена
-                                            </Button>
-                                            <Button
-                                                onClick={handleDelete}
-                                                className="px-4 py-2 h-auto bg-red-600 text-white hover:bg-red-700 rounded-2xl text-sm font-bold transition-colors disabled:opacity-50"
-                                                disabled={isDeleting}
-                                            >
-                                                {isDeleting ? "Удаление..." : "удалить"}
-                                            </Button>
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-400 tracking-tight">Телефон</p>
+                                            <p className="text-sm font-bold text-slate-700">{client.phone || "---"}</p>
                                         </div>
                                     </div>
-                                )}
 
-                                {deleteError && (
-                                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-2xl text-orange-800 text-sm flex items-start">
-                                        <AlertTriangle className="w-5 h-5 mr-3 text-orange-500 shrink-0" />
-                                        {deleteError}
-                                    </div>
-                                )}
+                                    {client.email && (
+                                        <div className="flex items-center gap-3 group">
+                                            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
+                                                <Mail className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-400 tracking-tight">Email</p>
+                                                <p className="text-sm font-bold text-slate-700">{client.email}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {client.city && (
+                                        <div className="flex items-center gap-3 group">
+                                            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
+                                                <MapPin className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-400 tracking-tight">Адрес</p>
+                                                <p className="text-sm font-bold text-slate-700">{client.city}{client.address ? `, ${client.address}` : ''}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-8 pt-6">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                    {/* Left: Contacts & Comments */}
-                                    <div className="md:col-span-1 space-y-6">
-                                        <section>
-                                            <h3 className="text-xs font-bold text-slate-400  tracking-normal mb-3">Контакты</h3>
-                                            <ul className="space-y-3">
-                                                <li>
-                                                    <a
-                                                        href={`tel:${client.phone.replace(/\D/g, '')}`}
-                                                        className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors group"
-                                                    >
-                                                        <Phone className="w-4 h-4 mr-3 text-primary transition-transform" />
-                                                        {client.phone}
-                                                    </a>
-                                                </li>
-                                                {client.email && (
-                                                    <li>
-                                                        <a
-                                                            href={`mailto:${client.email}`}
-                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-primary transition-colors group"
-                                                        >
-                                                            <Mail className="w-4 h-4 mr-3 text-primary transition-transform" />
-                                                            {client.email}
-                                                        </a>
-                                                    </li>
-                                                )}
-                                                {client.telegram && (
-                                                    <li>
-                                                        <a
-                                                            href={`https://t.me/${client.telegram.startsWith('@') ? client.telegram.slice(1) : client.telegram}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-blue-500 transition-colors group"
-                                                        >
-                                                            <Send className="w-4 h-4 mr-3 text-blue-400 transition-transform" />
-                                                            {client.telegram}
-                                                        </a>
-                                                    </li>
-                                                )}
-                                                {client.instagram && (
-                                                    <li>
-                                                        <a
-                                                            href={`https://instagram.com/${client.instagram.startsWith('@') ? client.instagram.slice(1) : client.instagram}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center text-sm font-medium text-slate-700 hover:text-pink-500 transition-colors group"
-                                                        >
-                                                            <Instagram className="w-4 h-4 mr-3 text-pink-500 transition-transform" />
-                                                            {client.instagram}
-                                                        </a>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </section>
-
-                                        <section>
-                                            <div className="flex items-center justify-between mb-3">
-                                                <h3 className="text-xs font-bold text-slate-400  tracking-normal">Комментарии</h3>
-                                                {!isEditingComments ? (
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={() => setIsEditingComments(true)}
-                                                        className="p-1.5 h-auto text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
-                                                        title="Редактировать"
-                                                    >
-                                                        <Pencil className="w-4 h-4" />
-                                                    </Button>
-                                                ) : (
-                                                    <div className="flex gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            disabled={isSavingComments}
-                                                            onClick={() => setIsEditingComments(false)}
-                                                            className="p-1.5 h-auto text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all"
-                                                            title="Отменить"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            disabled={isSavingComments}
-                                                            onClick={handleSaveComments}
-                                                            className="p-1.5 h-auto text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-2xl transition-all"
-                                                            title="Сохранить"
-                                                        >
-                                                            {isSavingComments ? (
-                                                                <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                                                            ) : (
-                                                                <Check className="w-4 h-4" />
-                                                            )}
-                                                        </Button>
-                                                    </div>
-                                                )}
+                            {/* Tags / Social */}
+                            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                                <h3 className="text-xs font-bold text-slate-400 mb-4 px-1">Дополнительно</h3>
+                                <div className="space-y-4">
+                                    {client.telegram && (
+                                        <div className="flex items-center justify-between p-3 rounded-2xl bg-blue-50 border border-blue-100 group transition-all">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                                                    <MessageCircle className="w-4 h-4" />
+                                                </div>
+                                                <span className="text-sm font-bold text-blue-700">{client.telegram}</span>
                                             </div>
-
-                                            {isEditingComments ? (
-                                                <textarea
-                                                    value={tempComments}
-                                                    onChange={(e) => setTempComments(e.target.value)}
-                                                    className="w-full bg-slate-50 rounded-2xl p-4 border border-primary/20 text-sm text-slate-900 focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[100px] resize-none transition-all"
-                                                    placeholder="Введите комментарий..."
-                                                    autoFocus
-                                                />
-                                            ) : (
-                                                <div
-                                                    onClick={() => setIsEditingComments(true)}
-                                                    className="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-sm text-slate-600 whitespace-pre-wrap cursor-pointer hover:bg-slate-100/50 transition-colors group"
-                                                >
-                                                    {client.comments || "Нет комментариев"}
-                                                    <div className="mt-2 text-[10px] text-slate-300 font-bold  opacity-0 group-hover:opacity-100 transition-opacity">Нажмите, чтобы редактировать</div>
-                                                </div>
-                                            )}
-                                        </section>
-                                    </div>
-
-                                    {/* Right: Order History */}
-                                    <div className="md:col-span-2">
-                                        <h3 className="text-xs font-bold text-slate-400  tracking-normal mb-3 flex justify-between items-center">
-                                            История заказов
-                                            <ShoppingBag className="w-4 h-4" />
-                                        </h3>
-                                        <div className="space-y-3">
-                                            {(client.orders || []).slice((ordersPage - 1) * 3, ordersPage * 3).map((order: ClientOrder) => (
-                                                <div key={order.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 hover:bg-white transition-all shadow-sm">
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <span className="text-xs font-mono text-slate-400">#{order.id.slice(0, 8)}</span>
-                                                        <StatusBadgeInteractive orderId={order.id} status={order.status} />
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <div>
-                                                            <div className="text-sm font-bold text-slate-900">
-                                                                {order.items.length} поз. {showFinancials && `на ${order.totalAmount} ${currencySymbol}`}
-                                                            </div>
-                                                            <div className="text-xs text-slate-400">
-                                                                {format(new Date(order.createdAt), "dd MMM yyyy", { locale: ru })}
-                                                            </div>
-                                                        </div>
-                                                        <a href={`/dashboard/orders/${order.id}`} className="text-primary hover:opacity-80 text-sm font-medium">Подробнее</a>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            {client.orders.length === 0 && (
-                                                <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400 text-sm">
-                                                    У этого клиента еще нет заказов
-                                                </div>
-                                            )}
+                                            <ExternalLink className="w-4 h-4 text-blue-300 group-hover:text-blue-500 transition-colors" />
                                         </div>
-
-                                        {client.orders.length > 3 && (
-                                            <div className="mt-4 pt-4 border-t border-slate-200">
-                                                <PremiumPagination
-                                                    totalItems={client.orders.length}
-                                                    pageSize={3}
-                                                    currentPage={ordersPage}
-                                                    onPageChange={setOrdersPage}
-                                                    itemNames={['заказ', 'заказа', 'заказов']}
-                                                />
-                                            </div>
-                                        )}
+                                    )}
+                                    <div className="flex items-center gap-2 px-1">
+                                        <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
+                                            Создан {formatDate(client.createdAt, "dd.MM.yyyy")}
+                                        </Badge>
+                                        <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
+                                            Источник: {client.acquisitionSource || "---"}
+                                        </Badge>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                                <Button className="flex-1 rounded-2xl h-12 bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-lg shadow-primary/20" onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}>
+                                    <PlusIcon className="w-4 h-4 mr-2" /> Сделать заказ
+                                </Button>
+                                {onEdit && (
+                                    <Button variant="outline" className="rounded-2xl h-12 border-slate-200 text-slate-600 font-bold hover:bg-slate-50" onClick={onEdit}>
+                                        <Edit2 className="w-4 h-4" />
+                                    </Button>
+                                )}
                             </div>
                         </div>
-                    ) : (
-                        <div className="p-20 text-center text-red-500">Ошибка при загрузке клиента</div>
-                    )}
-                </div>
+
+                        {/* Right Column: Active Stuff - 8 cols */}
+                        <div className="md:col-span-7 space-y-4">
+                            {/* Summary Stats */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-primary/5 rounded-3xl p-5 border border-primary/10 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary border border-primary/10">
+                                            <ShoppingBag className="w-5 h-5" />
+                                        </div>
+                                        <span className="text-xs font-extrabold text-primary">Всего заказов</span>
+                                    </div>
+                                    <p className="text-3xl font-black text-slate-900">{client.stats.count}</p>
+                                </div>
+                                {showFinancials && (
+                                    <div className="bg-emerald-50 rounded-3xl p-5 border border-emerald-100 shadow-sm">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600 border border-emerald-100">
+                                                <CreditCard className="w-5 h-5" />
+                                            </div>
+                                            <span className="text-xs font-extrabold text-emerald-600">LTV</span>
+                                        </div>
+                                        <p className="text-3xl font-black text-slate-900 leading-tight">
+                                            {Math.round(Number(client.stats.total))} <span className="text-lg font-bold text-slate-400">{currencySymbol}</span>
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Orders List */}
+                            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col h-full min-h-[400px]">
+                                <div className="flex items-center justify-between mb-6 px-1">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
+                                            <Clock className="w-4 h-4" />
+                                        </div>
+                                        <h3 className="text-sm font-extrabold text-slate-800 tracking-tight">История заказов</h3>
+                                    </div>
+                                    <Badge className="bg-slate-100 text-slate-600 border-none font-bold">{(client.orders?.length || 0)}</Badge>
+                                </div>
+
+                                <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+                                    {client.orders && client.orders
+                                        .slice((ordersPage - 1) * 3, ordersPage * 3)
+                                        .map((order: ClientProfileOrder) => (
+                                            <div key={order.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-primary/30 transition-all hover:bg-white hover:shadow-md group">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <div className="text-sm font-black text-slate-900 group-hover:text-primary transition-colors">#{order.orderNumber || order.id.slice(0, 8)}</div>
+                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">Заказ за {formatDate(order.createdAt, "dd.MM.yyyy")}</div>
+                                                    </div>
+                                                    <StatusBadgeInteractive
+                                                        orderId={order.id}
+                                                        status={order.status as OrderStatus}
+                                                    />
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <div className="text-sm font-bold text-slate-900">
+                                                            {showFinancials && `${order.totalPrice || 0} ${currencySymbol}`}
+                                                        </div>
+                                                        <p className="text-xs font-bold text-slate-400 tracking-tight">
+                                                            {formatDate(order.createdAt, "d MMMM yyyy")}
+                                                        </p>
+                                                    </div>
+                                                    <div className="px-2 py-1 rounded-md bg-slate-50 text-xs font-bold text-slate-500 border border-slate-100">
+                                                        {order.status || "—"}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    {client.orders?.length === 0 && (
+                                        <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400 text-sm">
+                                            У этого клиента еще нет заказов
+                                        </div>
+                                    )}
+                                </div>
+
+                                {((client.orders?.length || 0) > 3) && (
+                                    <div className="mt-4 pt-4 border-t border-slate-200">
+                                        <Pagination
+                                            totalItems={client.orders?.length || 0}
+                                            pageSize={3}
+                                            currentPage={ordersPage}
+                                            onPageChange={setOrdersPage}
+                                            itemNames={['заказ', 'заказа', 'заказов']}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-20 bg-slate-50">
+                        <AlertCircle className="w-12 h-12 text-slate-300 mb-4" />
+                        <p className="text-slate-500 font-bold text-lg">Клиент не найден</p>
+                        <p className="text-slate-400 text-sm mt-1">Возможно, он был удален или перемещен</p>
+                    </div>
+                )}
             </div>
-            {showEditDialog && client && (
-                <div className="z-[70] relative">
-                    <EditClientDialog
-                        client={client}
-                        isOpen={showEditDialog}
-                        onClose={() => {
-                            setShowEditDialog(false);
-                            setRefreshKey(prev => prev + 1);
-                        }}
-                    />
-                </div>
-            )}
-        </div>
+        </ResponsiveModal>
     );
 }

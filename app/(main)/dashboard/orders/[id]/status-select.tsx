@@ -11,7 +11,7 @@ import {
     XCircle,
     MessageSquare
 } from "lucide-react";
-import { updateOrderStatus } from "../actions";
+import { updateOrderStatus } from "../actions/status.actions";;
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -109,7 +109,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             >
                 <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${activeStatus.bgColor} shadow-[0_0_8px_rgba(0,0,0,0.1)] group-hover:scale-125 transition-transform animate-pulse`} />
-                    <span className="text-xs font-bold text-slate-900  tracking-[0.15em]">
+                    <span className="text-xs font-bold text-slate-900">
                         {activeStatus.label}
                     </span>
                 </div>
@@ -169,11 +169,11 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                         />
                     </div>
 
-                    <div className="flex items-center justify-end gap-4 bg-white sticky bottom-0 pt-4">
+                    <div className="flex items-center justify-end gap-3 bg-white sticky bottom-0 pt-4">
                         <Button
                             variant="ghost"
                             onClick={() => setShowCancelDialog(false)}
-                            className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors tracking-normal items-center justify-center p-0"
+                            className="hidden md:flex h-11 px-6 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors items-center justify-center p-0"
                         >
                             Назад
                         </Button>
@@ -181,9 +181,9 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                             variant="destructive"
                             disabled={!cancelReason.trim() || loading}
                             onClick={() => handleStatusChange("cancelled", cancelReason)}
-                            className="h-11 w-full md:w-auto md:px-8 text-white rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none p-0"
+                            className="h-11 w-full md:w-auto md:px-8 text-white rounded-2xl text-xs font-bold shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none p-0"
                         >
-                            {loading ? "Отмена..." : "ОТМЕНИТЬ ЗАКАЗ"}
+                            {loading ? "Отмена..." : "Отменить заказ"}
                         </Button>
                     </div>
                 </div>

@@ -17,6 +17,10 @@ export async function rateLimit(
     limit: number,
     windowSec: number
 ): Promise<RateLimitResult> {
+    // Пропускаем лимиты в тестовом окружении и при локальной разработке
+    if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_E2E) {
+        return { success: true, remaining: limit, resetIn: 0 };
+    }
     const redisKey = `ratelimit:${key}`;
 
     const multi = redis.multi();

@@ -38,3 +38,133 @@
     z-index: 52;
     padding: 24px;
 }
+
+/* Стандартное поле формы с иконкой (используется в IconInput внутри диалогов) */
+.crm-dialog-field {
+    display: block;
+    width: 100%;
+    border-radius: var(--radius-inner);
+    border-color: #e2e8f0;
+    /* slate-200 */
+    background-color: #f8fafc;
+    /* slate-50 */
+    color: #0f172a;
+    /* slate-900 */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+    padding: 10px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    height: 44px;
+}
+
+.crm-dialog-field::placeholder {
+    color: #cbd5e1;
+}
+
+/* slate-300 */
+.crm-dialog-field:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: none;
+    outline: none;
+}
+
+/* Sticky footer диалога с кнопками действий */
+.crm-dialog-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    flex-shrink: 0;
+    padding: 12px 20px 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #f1f5f9;
+    /* slate-100 */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: auto;
+}
+
+@media (min-width: 1024px) {
+    .crm-dialog-footer {
+        justify-content: space-between;
+    }
+}
+
+/* Строка переключателя (SwitchRow) */
+.crm-switch-row {
+    padding: 12px;
+    background-color: #f1f5f9;
+    /* slate-100 */
+    border-radius: var(--radius-inner);
+    border: 1px solid #e2e8f0;
+    /* slate-200 */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+}
+
+/* Многострочное поле ввода в диалоге */
+.crm-dialog-textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 16px;
+    border-radius: var(--radius-inner);
+    border: 1px solid #e2e8f0;
+    /* slate-200 */
+    background-color: #f8fafc;
+    /* slate-50 */
+    color: #0f172a;
+    /* slate-900 */
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    outline: none;
+    resize: none;
+    line-height: 1.625;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+}
+
+.crm-dialog-textarea:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.05);
+}
+
+.crm-dialog-textarea::placeholder {
+    color: #cbd5e1;
+}
+
+/* slate-300 */
+
+/* Коробка ошибки в диалоге */
+.crm-error-box {
+    padding: 12px;
+    border-radius: var(--radius-inner);
+    background-color: #fff1f2;
+    /* rose-50 */
+    border: 1px solid #ffe4e6;
+    /* rose-100 */
+    color: #e11d48;
+    /* rose-600 */
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideInFromTop 0.2s ease-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

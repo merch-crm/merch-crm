@@ -1,4 +1,4 @@
-import { getFinancialStats } from "../actions";
+import { getFinancialStats } from "../actions";;
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";

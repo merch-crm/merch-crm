@@ -47,21 +47,24 @@ export function OrdersToolbar() {
             {/* Main Toolbar Row */}
             <div className="crm-filter-tray p-1.5">
                 {/* Search Box */}
-                <div className="relative flex-1 min-w-0">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                <div className="relative flex-1 min-w-0 group/search">
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 group-focus-within/search:text-primary transition-colors" />
                     <Input
-                        type="text"
+                        type="search"
                         placeholder="Поиск по заказам..."
+                        aria-label="Поиск по заказам"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none text-[13px] md:text-sm border-none bg-transparent shadow-none h-11"
+                        className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none text-sm border-none bg-transparent shadow-none h-11"
                     />
                     {searchQuery && (
                         <Button
+                            type="button"
                             variant="ghost"
                             size="icon"
                             onClick={() => setSearchQuery("")}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 w-8 h-8 rounded-full"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 w-8 h-8 rounded-full transition-all"
+                            aria-label="Очистить поиск"
                         >
                             <X className="w-4 h-4" />
                         </Button>
@@ -127,13 +130,15 @@ export function OrdersToolbar() {
                     ].map((tab) => (
                         <button
                             key={tab.id}
+                            type="button"
                             onClick={() => handleTabChange(tab.id === "archived")}
+                            aria-pressed={tab.active}
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-bold transition-all relative",
                                 tab.active ? "bg-white text-primary shadow-sm" : "text-slate-500"
                             )}
                         >
-                            <tab.icon className="w-4 h-4" />
+                            <tab.icon className="w-4 h-4" aria-hidden="true" />
                             <span>{tab.label}</span>
                         </button>
                     ))}
@@ -143,6 +148,7 @@ export function OrdersToolbar() {
                     asChild
                     variant="btn-dark"
                     className="w-11 h-11 flex items-center justify-center rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 shrink-0 p-0"
+                    aria-label="Создать новый заказ"
                 >
                     <Link
                         href="/dashboard/orders/new"

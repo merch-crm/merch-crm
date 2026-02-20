@@ -14,7 +14,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { formatFileSize } from "@/lib/formatters";
 import { motion } from "framer-motion";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import Image from "next/image";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -52,19 +54,13 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
     const systemErrors = security?.systemErrors || [];
 
 
-    const formatSize = (bytes: number) => {
-        if (!bytes) return "0 B";
-        const k = 1024;
-        const sizes = ["B", "KB", "MB", "GB", "TB"];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
-    };
+
 
     const platformItems = [
         {
             title: "База данных",
             subtitle: "PostgreSQL Production",
-            value: formatSize(stats?.database?.size || 0),
+            value: formatFileSize(stats?.database?.size || 0),
             progress: 85,
             color: "bg-primary",
             icon: <Database className="w-5 h-5" />
@@ -72,7 +68,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
         {
             title: "Хранилище S3",
             subtitle: "Files & Documents",
-            value: formatSize(stats?.storage?.size || 0),
+            value: formatFileSize(stats?.storage?.size || 0),
             progress: 42,
             color: "bg-slate-900",
             icon: <HardDrive className="w-5 h-5" />
@@ -80,24 +76,21 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
     ];
 
     return (
-        <div className="space-y-5 pb-20">
+        <div className="space-y-4 pb-20">
             {/* Page Header */}
-            <div className="flex items-center gap-5">
-                <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
-                    <ShieldCheck className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Обзор системы</h1>
-                    <p className="text-slate-500 text-[11px] font-medium mt-0.5">Основные показатели и состояние платформы MerchCRM</p>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Обзор системы"
+                subtitle="Основные показатели и состояние платформы MerchCRM"
+                icon={ShieldCheck}
+            />
 
             {/* Row 1: Greetings & Recommended Items (Platform Health) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                <div className="lg:col-span-8 space-y-5">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+                <div className="lg:col-span-8 space-y-4">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-bold text-slate-900">Состояние платформы</h2>
                         <Button
+                            type="button"
                             variant="ghost"
                             className="text-xs font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all group h-auto p-2"
                         >
@@ -105,7 +98,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                         </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {platformItems.map((item, i) => (
                             <div key={i} className="crm-card group cursor-default">
                                 <div className="flex justify-between items-start mb-8">
@@ -119,14 +112,14 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                         {[1, 2, 3].map(j => (
                                             <div key={j} className="w-6 h-6 rounded-full border-2 border-white bg-slate-100" />
                                         ))}
-                                        <div className="w-6 h-6 rounded-full border-2 border-white bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">+8</div>
+                                        <div className="w-6 h-6 rounded-full border-2 border-white bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">+8</div>
                                     </div>
                                 </div>
                                 <div>
                                     <h4 className="font-extrabold text-slate-900 mb-1 text-2xl">{item.value}</h4>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">{item.title}</p>
+                                    <p className="text-xs font-bold text-slate-400 mb-6">{item.title}</p>
                                     <div className="space-y-3">
-                                        <div className="flex justify-between text-[11px] font-bold">
+                                        <div className="flex justify-between text-xs font-bold">
                                             <span className="text-slate-400">{item.subtitle}</span>
                                             <span className="text-primary">{item.progress}% Load</span>
                                         </div>
@@ -156,7 +149,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                             className="w-full bg-primary/20 rounded-t-lg md:rounded-t-xl group-hover:bg-primary/40 transition-all relative border-t-2 border-primary/40"
                                         />
                                     </div>
-                                    <span className="text-[7px] md:text-[9px] font-bold text-slate-400 whitespace-nowrap">
+                                    <span className="text-xs font-bold text-slate-400 whitespace-nowrap">
                                         {isMobile ? (i * 2 + 8) : (i + 8)}:00
                                     </span>
                                 </div>
@@ -166,7 +159,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                 </div>
 
                 {/* Right Column - Status & Logs */}
-                <div className="lg:col-span-4 space-y-5">
+                <div className="lg:col-span-4 space-y-4">
                     {/* System Guard Card (Premium Perks style) */}
                     <div className="crm-card !bg-primary !border-primary text-white !shadow-2xl !shadow-primary/30 relative min-h-[300px] flex flex-col justify-between group">
                         <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
@@ -183,17 +176,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                         </div>
 
                         <Button
-                            className="relative z-10 w-full py-6 bg-white text-slate-900 rounded-2xl font-bold text-sm tracking-wide uppercase shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all h-auto border-none hover:bg-white/90"
+                            type="button"
+                            className="relative z-10 w-full py-6 bg-white text-slate-900 rounded-2xl font-bold text-sm tracking-wide shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all h-auto border-none hover:bg-white/90"
                         >
                             Запустить диагностику
                         </Button>
                     </div>
 
                     {/* Active Sessions List (Daily Schedule style) */}
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-lg font-bold text-slate-900">Сотрудники онлайн</h3>
                             <Button
+                                type="button"
                                 variant="ghost"
                                 size="icon"
                                 className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors h-10 w-10"
@@ -202,9 +197,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                             </Button>
                         </div>
 
-                        <div className="space-y-5">
+                        <div className="space-y-4">
                             {activeUsers.length > 0 ? activeUsers.slice(0, 5).map((user: ActiveUser, i: number) => (
-                                <div key={i} className="crm-card flex items-center gap-5 cursor-pointer group !p-4">
+                                <div
+                                    key={i}
+                                    className="crm-card flex items-center gap-4 cursor-pointer group !p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            // Handle interaction or navigation if needed
+                                        }
+                                    }}
+                                >
                                     <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0">
                                         {user.avatar ? (
                                             <Image src={user.avatar} alt={user.name || "User"} width={48} height={48} className="w-full h-full object-cover" />
@@ -218,10 +223,10 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                         <h4 className="text-sm font-bold text-slate-900 truncate">{user.name}</h4>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{user.role || "Сотрудник"}</p>
+                                            <p className="text-xs font-bold text-slate-400">{user.role || "Сотрудник"}</p>
                                         </div>
                                     </div>
-                                    <div className="text-[10px] font-bold text-slate-300 group-hover:text-primary transition-colors">
+                                    <div className="text-xs font-bold text-slate-300 group-hover:text-primary transition-colors">
                                         <Clock className="w-3.5 h-3.5" />
                                     </div>
                                 </div>
@@ -233,8 +238,9 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                         </div>
 
                         <Button
+                            type="button"
                             variant="outline"
-                            className="w-full py-8 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs uppercase tracking-wider h-auto bg-transparent border-slate-200"
+                            className="w-full py-8 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all group font-bold text-xs h-auto bg-transparent border-slate-200"
                         >
                             <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                             Уведомить всех
@@ -244,19 +250,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
             </div>
 
             {/* Row 2: Secondary Metrics (Bento Grid Bottom) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                     { title: "Пользователей", value: entityStats.find((s: EntityStat) => s.type === "users")?.count || 0, icon: <Users />, color: "text-blue-600 bg-blue-50" },
                     { title: "Всего заказов", value: entityStats.find((s: EntityStat) => s.type === "orders")?.count || 0, icon: <BarChart3 />, color: "text-emerald-600 bg-emerald-50" },
                     { title: "Ошибки системы", value: systemErrors.length, icon: <AlertTriangle />, color: "text-rose-600 bg-rose-50" },
                     { title: "Бэкапов", value: backups?.length || 0, icon: <Clock />, color: "text-amber-600 bg-amber-50" },
                 ].map((stat, i) => (
-                    <div key={i} className="crm-card flex items-center gap-6 group">
+                    <div key={i} className="crm-card flex items-center gap-4 group">
                         <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all", stat.color)}>
                             {stat.icon}
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.title}</p>
+                            <p className="text-xs font-bold text-slate-400 mb-1">{stat.title}</p>
                             <h4 className="text-2xl font-extrabold text-slate-900">{stat.value}</h4>
                         </div>
                     </div>

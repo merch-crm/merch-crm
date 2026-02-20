@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
 export function formatCurrency(amount: number, symbol: string = "₽"): string {
@@ -38,7 +38,7 @@ export function formatDate(date: Date | string, formatStr: string = "DD.MM.YYYY"
         "MM/DD/YYYY": "MM/dd/yyyy",
     };
 
-    const f = map[formatStr] || "dd.MM.yyyy";
+    const f = map[formatStr] || formatStr;
     return format(d, f, { locale: ru });
 }
 
@@ -53,6 +53,29 @@ export function formatDateTime(date: Date | string, formatStr: string = "DD.MM.Y
         "MM/DD/YYYY": "MM/dd/yyyy HH:mm",
     };
 
-    const f = map[formatStr] || "dd.MM.yyyy HH:mm";
+    const f = map[formatStr] || formatStr;
     return format(d, f, { locale: ru });
+}
+
+export function formatFileSize(bytes: number) {
+    if (bytes === 0) return "0 Б";
+    const k = 1024;
+    const sizes = ["Б", "КБ", "МБ", "ГБ", "ТБ"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
+
+export function formatUptime(seconds: number) {
+    const days = Math.floor(seconds / (3600 * 24));
+    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    return `${days}д ${hours}ч ${mins} м`;
+};
+
+export function formatTimeAgo(date: string | Date) {
+    try {
+        return formatDistanceToNow(new Date(date), { addSuffix: true, locale: ru });
+    } catch {
+        return "";
+    }
 }

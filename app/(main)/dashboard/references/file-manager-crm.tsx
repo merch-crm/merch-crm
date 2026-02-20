@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Select } from "@/components/ui/select";
 import {
     Folder,
     FileText,
@@ -37,6 +38,7 @@ interface FolderCard {
 
 export default function FileManagerCRM() {
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+    const [sortBy, setSortBy] = useState("type");
 
     // Данные для первого дизайна (macOS style)
     const folders: FolderCard[] = [
@@ -94,7 +96,7 @@ export default function FileManagerCRM() {
             </div>
 
             {/* ДИЗАЙН 1: macOS Cloud Storage Style */}
-            <div className="glass-panel p-8 space-y-6">
+            <div className="glass-panel p-8 space-y-4">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                         <div className="flex gap-2">
@@ -108,24 +110,30 @@ export default function FileManagerCRM() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2 text-sm text-slate-600">
                             <span>Sort by:</span>
-                            <select className="bg-transparent border-none outline-none font-medium">
-                                <option>type</option>
-                                <option>name</option>
-                                <option>date</option>
-                            </select>
+                            <Select
+                                value={sortBy}
+                                onChange={setSortBy}
+                                options={[
+                                    { id: "type", title: "type" },
+                                    { id: "name", title: "name" },
+                                    { id: "date", title: "date" },
+                                ]}
+                                compact
+                                variant="minimal"
+                            />
                         </div>
                         <div className="flex gap-2">
-                            <button
+                            <button type="button"
                                 onClick={() => setViewMode("grid")}
                                 className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-slate-400 hover:bg-slate-100"
                                     }`}
                             >
                                 <Grid3x3 className="w-4 h-4" />
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={() => setViewMode("list")}
                                 className={`p-2 rounded-lg transition-colors ${viewMode === "list" ? "bg-blue-100 text-blue-600" : "text-slate-400 hover:bg-slate-100"
                                     }`}
@@ -137,21 +145,21 @@ export default function FileManagerCRM() {
                 </div>
 
                 {/* Sidebar + Content */}
-                <div className="flex gap-6">
+                <div className="flex gap-4">
                     {/* Sidebar */}
                     <div className="w-48 space-y-2">
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg bg-blue-50 text-blue-600 font-medium text-sm">
+                        <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg bg-blue-50 text-blue-600 font-medium text-sm">
                             <Folder className="w-4 h-4" />
                             All Projects
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                        <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                             <Folder className="w-4 h-4" />
                             Fintory Projects
                         </button>
                     </div>
 
                     {/* Main Content */}
-                    <div className="flex-1 space-y-8">
+                    <div className="flex-1 space-y-4">
                         {/* Folders Grid */}
                         <div className="grid grid-cols-5 gap-4">
                             {folders.map((folder) => (
@@ -177,7 +185,7 @@ export default function FileManagerCRM() {
                                     </div>
                                     <div className="text-xs">
                                         <p className="font-semibold text-slate-900 truncate">{folder.name}</p>
-                                        <p className="text-slate-400 text-[10px]">{folder.date}</p>
+                                        <p className="text-slate-400 text-xs">{folder.date}</p>
                                     </div>
                                 </div>
                             ))}
@@ -193,12 +201,12 @@ export default function FileManagerCRM() {
                                     <div className="relative mb-2">
                                         <div className="w-full aspect-[4/3] bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center group-hover:border-slate-300 transition-colors">
                                             <FileText className="w-8 h-8 text-slate-300" />
-                                            <span className="absolute bottom-2 text-[10px] font-bold text-slate-400">pdf</span>
+                                            <span className="absolute bottom-2 text-xs font-bold text-slate-400">pdf</span>
                                         </div>
                                     </div>
                                     <div className="text-xs">
                                         <p className="font-semibold text-slate-900 truncate">{file.name}</p>
-                                        <p className="text-slate-400 text-[10px]">{file.date}</p>
+                                        <p className="text-slate-400 text-xs">{file.date}</p>
                                     </div>
                                 </div>
                             ))}
@@ -253,27 +261,27 @@ export default function FileManagerCRM() {
 
             {/* ДИЗАЙН 2: Modern Drive Style */}
             <div className="glass-panel p-8">
-                <div className="flex gap-8">
+                <div className="flex gap-4">
                     {/* Left Sidebar */}
-                    <div className="w-52 space-y-6">
+                    <div className="w-52 space-y-4">
                         <div className="mb-8">
                             <h3 className="text-2xl font-bold text-indigo-600">drive.</h3>
                         </div>
 
                         <nav className="space-y-1">
-                            <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-600 bg-indigo-50 font-medium text-sm">
+                            <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-600 bg-indigo-50 font-medium text-sm">
                                 <Folder className="w-4 h-4" />
                                 My drive
                             </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                            <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                 <FileText className="w-4 h-4" />
                                 My files
                             </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                            <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                 <Users className="w-4 h-4" />
                                 Sharing
                             </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                            <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                 <Clock className="w-4 h-4" />
                                 File requests
                             </button>
@@ -282,15 +290,15 @@ export default function FileManagerCRM() {
                         <div className="pt-6 border-t border-slate-200">
                             <p className="text-xs font-semibold text-slate-400 mb-3 px-4">MY PLACES</p>
                             <nav className="space-y-1">
-                                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                                <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                     <Folder className="w-4 h-4" />
                                     Designs
                                 </button>
-                                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                                <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                     <Folder className="w-4 h-4" />
                                     Music
                                 </button>
-                                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
+                                <button type="button" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm transition-colors">
                                     <Folder className="w-4 h-4" />
                                     Design Sprint
                                 </button>
@@ -299,14 +307,14 @@ export default function FileManagerCRM() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="flex-1 space-y-8">
+                    <div className="flex-1 space-y-4">
                         {/* Header */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <ChevronLeft className="w-5 h-5 text-slate-400" />
                                 <ChevronRight className="w-5 h-5 text-slate-400" />
                             </div>
-                            <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-full font-medium text-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                            <button type="button" className="px-6 py-2.5 bg-indigo-600 text-white rounded-full font-medium text-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
                                 UPLOAD NEW FILE
                             </button>
                         </div>
@@ -346,7 +354,7 @@ export default function FileManagerCRM() {
                         <div>
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-xl font-bold text-slate-900">New files</h3>
-                                <button className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
+                                <button type="button" className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
                                     VIEW ALL
                                 </button>
                             </div>
@@ -369,13 +377,13 @@ export default function FileManagerCRM() {
                                         <div className="text-sm text-slate-500">{file.date}</div>
                                         <div className="text-sm text-slate-500 w-20">.{file.type === "image" ? "psd" : "sketch"}</div>
                                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
+                                            <button type="button" className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
                                                 <MoreHorizontal className="w-4 h-4 text-slate-400" />
                                             </button>
-                                            <button className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
+                                            <button type="button" className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
                                                 <Plus className="w-4 h-4 text-slate-400" />
                                             </button>
-                                            <button className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
+                                            <button type="button" className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
                                                 <Share2 className="w-4 h-4 text-slate-400" />
                                             </button>
                                         </div>
@@ -388,7 +396,7 @@ export default function FileManagerCRM() {
                         <div>
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-xl font-bold text-slate-900">Shared with me</h3>
-                                <button className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
+                                <button type="button" className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
                                     VIEW ALL
                                 </button>
                             </div>
@@ -409,19 +417,19 @@ export default function FileManagerCRM() {
                     </div>
 
                     {/* Right Sidebar - Statistics */}
-                    <div className="w-72 space-y-6">
+                    <div className="w-72 space-y-4">
                         <div className="relative">
                             <input
                                 type="text"
                                 placeholder="SEARCH YOUR CONTENT"
                                 className="w-full px-4 py-3 pr-12 bg-slate-100 rounded-full text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            <button className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                            <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                                 <Search className="w-4 h-4 text-white" />
                             </button>
                         </div>
 
-                        <div className="bg-white rounded-2xl p-6 border border-slate-200 space-y-6">
+                        <div className="bg-white rounded-2xl p-6 border border-slate-200 space-y-4">
                             <h4 className="font-bold text-slate-900">Statistic</h4>
 
                             <div className="space-y-4">
@@ -544,7 +552,7 @@ export default function FileManagerCRM() {
                             </div>
                             <h5 className="font-bold text-slate-900 mb-2">Unlock more space now!</h5>
                             <p className="text-xs text-slate-600 mb-4">Upgrade to Drive Plus</p>
-                            <button className="w-full py-2.5 bg-indigo-600 text-white rounded-full font-medium text-sm hover:bg-indigo-700 transition-colors">
+                            <button type="button" className="w-full py-2.5 bg-indigo-600 text-white rounded-full font-medium text-sm hover:bg-indigo-700 transition-colors">
                                 UPGRADE NOW
                             </button>
                         </div>

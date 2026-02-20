@@ -22,46 +22,46 @@ export default function InvoiceDashboardCRM() {
             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 relative z-10">
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary shadow-2xl shadow-slate-900/20">
                         <FileText className="w-7 h-7" />
                     </div>
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] font-bold  tracking-normal text-slate-400">Inventory Management</span>
+                            <span className="text-xs font-bold  text-slate-400">Inventory Management</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300" />
-                            <span className="text-[10px] font-bold  tracking-normal text-primary">Invoices</span>
+                            <span className="text-xs font-bold  text-primary">Invoices</span>
                         </div>
                         <h1 className="text-3xl font-bold text-slate-900">Inv-672109</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="h-12 px-6 rounded-[var(--radius-inner)] btn-secondary flex items-center gap-2 text-sm font-bold">
+                    <button type="button" className="h-12 px-6 rounded-[var(--radius-inner)] btn-secondary flex items-center gap-2 text-sm font-bold">
                         Issue Credit
                     </button>
                     <div className="flex items-center gap-1">
-                        <button className="w-12 h-12 flex items-center justify-center bg-white text-slate-900 rounded-[var(--radius-inner)] shadow-md hover:scale-110 active:scale-95 transition-all text-primary border border-slate-200">
+                        <button type="button" className="w-12 h-12 flex items-center justify-center bg-white text-slate-900 rounded-[var(--radius-inner)] shadow-md hover:scale-110 active:scale-95 transition-all text-primary border border-slate-200">
                             <Pencil className="w-5 h-5" />
                         </button>
-                        <button className="w-12 h-12 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-100 rounded-[var(--radius-inner)] shadow-md hover:bg-rose-500 hover:text-white hover:border-rose-500 hover:scale-110 active:scale-95 transition-all">
+                        <button type="button" className="w-12 h-12 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-100 rounded-[var(--radius-inner)] shadow-md hover:bg-rose-500 hover:text-white hover:border-rose-500 hover:scale-110 active:scale-95 transition-all">
                             <Trash2 className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10">
                 {/* Main Content */}
-                <div className="lg:col-span-8 flex flex-col gap-8">
+                <div className="lg:col-span-8 flex flex-col gap-4">
 
                     {/* Hero Section */}
                     <div className="bg-slate-900 rounded-[var(--radius-outer)] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[60px]" />
-                        <div className="relative z-10 flex flex-col md:flex-row justify-between gap-8">
+                        <div className="relative z-10 flex flex-col md:flex-row justify-between gap-4">
                             <div>
-                                <span className="text-xs font-bold  tracking-normal text-white/50 mb-3 block">Total amount to pay</span>
+                                <span className="text-xs font-bold  text-white/50 mb-3 block">Total amount to pay</span>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-6xl font-bold">$12,450</span>
                                     <span className="text-2xl font-bold text-white/40">.00</span>
@@ -79,7 +79,7 @@ export default function InvoiceDashboardCRM() {
                                             <Image src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="user" width={40} height={40} />
                                         </div>
                                     ))}
-                                    <div className="w-10 h-10 rounded-full border-4 border-slate-900 bg-primary flex items-center justify-center text-[10px] font-bold">
+                                    <div className="w-10 h-10 rounded-full border-4 border-slate-900 bg-primary flex items-center justify-center text-xs font-bold">
                                         +12
                                     </div>
                                 </div>
@@ -163,17 +163,17 @@ export default function InvoiceDashboardCRM() {
                 </div>
 
                 {/* Sidebar / Stats */}
-                <div className="lg:col-span-4 flex flex-col gap-6">
+                <div className="lg:col-span-4 flex flex-col gap-4">
                     <div className="crm-card p-6 border-2 border-primary/20 bg-primary/5">
                         <h3 className="font-bold text-lg mb-6">Payment Progress</h3>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {[
                                 { label: "Design Fee", val: 100, color: "bg-primary" },
                                 { label: "Production", val: 65, color: "bg-primary/60" },
                                 { label: "Shipping", val: 30, color: "bg-slate-300" },
                             ].map((item, idx) => (
                                 <div key={idx} className="space-y-2">
-                                    <div className="flex justify-between text-xs font-bold  tracking-normal">
+                                    <div className="flex justify-between text-xs font-bold ">
                                         <span className="text-slate-500">{item.label}</span>
                                         <span className="text-primary">{item.val}%</span>
                                     </div>
@@ -187,7 +187,7 @@ export default function InvoiceDashboardCRM() {
 
                     <div className="crm-card p-6">
                         <h3 className="font-bold text-lg mb-6">Recent Activity</h3>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {[
                                 { user: "Leo M.", action: "Invoiced updated", time: "2h ago", icon: <Clock className="w-3 h-3" /> },
                                 { user: "System", action: "Payment received", time: "5h ago", icon: <Check className="w-3 h-3" /> },

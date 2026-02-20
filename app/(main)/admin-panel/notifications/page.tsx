@@ -1,4 +1,5 @@
-import { getNotificationSettingsAction, NotificationSettings } from "../actions";
+import { getNotificationSettingsAction } from "../actions/notifications.actions";
+import { NotificationSettings } from "../actions";;
 import { NotificationsClient } from "@/app/(main)/admin-panel/notifications/notifications-client";
 
 export default async function AdminNotificationsPage() {

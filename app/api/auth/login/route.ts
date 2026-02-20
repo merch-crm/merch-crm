@@ -40,7 +40,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Заполните все поля" }, { status: 400 });
         }
 
-        // console.log(`[API Login] Attempting login for email: '${email}'`);
 
         const { db } = await import('@/lib/db');
         const { users } = await import('@/lib/schema');

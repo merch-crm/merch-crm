@@ -1,4 +1,4 @@
-import { getFundsStats } from "../actions";
+import { getFundsStats } from "../actions";;
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { FundsClient } from "../funds-client";

@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 import { db } from "../lib/db";
 import { inventoryCategories } from "../lib/schema";
-import { eq } from "drizzle-orm";
 
 dotenv.config();
 
@@ -21,14 +20,21 @@ async function main() {
 
     console.log("Seeding categories...");
 
-    for (const cat of categories) {
-        const existing = await db.select().from(inventoryCategories).where(eq(inventoryCategories.name, cat.name)).limit(1);
-        if (existing.length === 0) {
-            await db.insert(inventoryCategories).values(cat);
-            console.log(`✓ Created category: ${cat.name}`);
-        } else {
+    // Fetch all existing categories once (instead of N queries)
+    const existingCategories = await db.select({ name: inventoryCategories.name }).from(inventoryCategories);
+    const existingNames = new Set(existingCategories.map(c => c.name));
+
+    const categoriesToInsert = categories.filter(cat => {
+        if (existingNames.has(cat.name)) {
             console.log(`- Category already exists: ${cat.name}`);
+            return false;
         }
+        return true;
+    });
+
+    if (categoriesToInsert.length > 0) {
+        await db.insert(inventoryCategories).values(categoriesToInsert);
+        categoriesToInsert.forEach(cat => console.log(`✓ Created category: ${cat.name}`));
     }
 
     console.log("Seeding storage locations cleanup...");

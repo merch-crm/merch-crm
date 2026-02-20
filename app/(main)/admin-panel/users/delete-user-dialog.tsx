@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { deleteUser } from "../actions";
+import { deleteUser } from "../actions/users.actions";;
 import { Loader2, Lock } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import type { User } from "@/lib/types";
+
 interface DeleteUserDialogProps {
-    user: { id: string; name: string; isSystem?: boolean } | null;
+    user: Pick<User, "id" | "name" | "isSystem"> | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -65,7 +67,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                     <div className="mb-6 p-4 bg-rose-50 rounded-[var(--radius-inner)] border border-rose-100">
                         <div className="flex items-center gap-2 text-rose-600 mb-3">
                             <Lock className="w-4 h-4" />
-                            <span className="text-xs font-bold tracking-wider">Системная защита</span>
+                            <span className="text-xs font-bold">Системная защита</span>
                         </div>
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системный пользователь. Для подтверждения удаления введите пароль от своей учетной записи.
@@ -89,6 +91,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
 
                 <div className="flex gap-3">
                     <Button
+                        type="button"
                         variant="ghost"
                         onClick={onClose}
                         disabled={isLoading}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { updateRolePermissions, updateRole, getDepartments, deleteRole } from "../actions";
+import { updateRolePermissions, updateRole, deleteRole } from "../actions/roles.actions";
+import { getDepartments } from "../actions/departments.actions";
 import { Loader2, Save, Shield, Building, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DeleteRoleDialog } from "./delete-role-dialog";
@@ -9,17 +10,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 
+import type { RoleDetail, DepartmentDetail } from "@/lib/types";
+
 interface RolePermissionsDialogProps {
-    role: {
-        id: string;
-        name: string;
-        departmentId: string | null;
-        isSystem: boolean;
-        permissions: Record<string, Record<string, boolean>>;
-    } | null;
+    role: RoleDetail | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -45,7 +42,7 @@ const ACTIONS = [
 export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissionsDialogProps) {
     const [permissions, setPermissions] = useState<Record<string, Record<string, boolean>>>({});
     const [loading, setLoading] = useState(false);
-    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
+    const [departments, setDepartments] = useState<DepartmentDetail[]>([]);
     const [roleName, setRoleName] = useState("");
     const [departmentId, setDepartmentId] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -74,13 +71,13 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     const handleToggle = (sectionId: string, actionId: string) => {
         setPermissions((prev) => {
             const section = prev[sectionId] || {};
-            const newValue = !section[actionId];
+            const isNewValue = !section[actionId];
 
             return {
                 ...prev,
                 [sectionId]: {
                     ...section,
-                    [actionId]: newValue
+                    [actionId]: isNewValue
                 }
             };
         });
@@ -103,8 +100,8 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 setShowDeleteConfirm(false);
                 onClose();
             }
-        } catch (error) {
-            console.error("Failed to delete role:", error);
+        } catch {
+            toast("Произошла ошибка при удалении", "error");
             setLoading(false);
         }
     };
@@ -134,8 +131,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 toast("Роль успешно обновлена", "success");
                 onClose();
             }
-        } catch (error) {
-            console.error("Failed to update role:", error);
+        } catch {
             toast("Произошла непредвиденная ошибка", "error");
         } finally {
             setLoading(false);
@@ -145,10 +141,10 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     const isMobile = useIsMobile();
 
     const FormContent = (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700 tracking-normal pl-1">Название роли</label>
+                    <label className="text-xs font-bold text-slate-700 pl-1">Название роли</label>
                     <div className="relative">
                         <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
                         <Input
@@ -161,10 +157,10 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700 tracking-normal pl-1">Отдел</label>
+                    <label className="text-xs font-bold text-slate-700 pl-1">Отдел</label>
                     <div className="relative">
                         <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                        <PremiumSelect
+                        <Select
                             value={departmentId || "none"}
                             options={[
                                 { id: "none", title: "Без отдела" },
@@ -195,7 +191,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                                 variant="ghost"
                                                 onClick={() => handleToggle(section.id, action.id)}
                                                 className={cn(
-                                                    "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all h-auto",
+                                                    "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
                                                     isChecked
                                                         ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
                                                         : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"

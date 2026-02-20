@@ -25,7 +25,7 @@ export default function EduplexDashboardCRM() {
                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                         <GraduationCap className="w-6 h-6" />
                     </div>
-                    <span className="font-bold text-xl tracking-normal">Eduplex</span>
+                    <span className="font-bold text-xl">Eduplex</span>
                 </div>
 
                 <nav className="flex-1 space-y-2">
@@ -36,7 +36,7 @@ export default function EduplexDashboardCRM() {
                         { label: "Discover", icon: <Compass /> },
                         { label: "Schedule", icon: <CalendarIcon /> },
                     ].map((item) => (
-                        <button
+                        <button type="button"
                             key={item.label}
                             className={cn(
                                 "w-full flex items-center gap-4 px-4 py-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group",
@@ -56,8 +56,8 @@ export default function EduplexDashboardCRM() {
                 <div className="mt-auto bg-white/5 border border-white/10 rounded-[var(--radius-outer)] p-6 relative overflow-hidden group hover:border-primary/40 transition-all">
                     <div className="relative z-10">
                         <h4 className="font-bold text-sm mb-2">Build your path</h4>
-                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed mb-4">Master new skills with our premium course library.</p>
-                        <button className="w-full py-2 bg-primary rounded-[var(--radius-inner)] text-[10px] font-bold  tracking-normal shadow-lg shadow-primary/10 group-hover:bg-primary-hover transition-colors">Go Premium</button>
+                        <p className="text-xs text-slate-400 font-medium leading-relaxed mb-4">Master new skills with our premium course library.</p>
+                        <button type="button" className="w-full py-2 bg-primary rounded-[var(--radius-inner)] text-xs font-bold  shadow-lg shadow-primary/10 group-hover:bg-primary-hover transition-colors">Go Premium</button>
                     </div>
                 </div>
             </aside>
@@ -65,10 +65,10 @@ export default function EduplexDashboardCRM() {
             {/* Main Content */}
             <main className="flex-1 p-8 md:p-12 relative z-0 overflow-auto">
                 {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900">Education Dashboard</h1>
-                        <p className="text-xs font-bold text-slate-400  tracking-normal mt-2 ml-0.5">Welcome back, Academy Member</p>
+                        <p className="text-xs font-bold text-slate-400  mt-2 ml-0.5">Welcome back, Academy Member</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="relative">
@@ -89,15 +89,15 @@ export default function EduplexDashboardCRM() {
                 </header>
 
                 {/* Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     {/* Recent Activity */}
-                    <div className="lg:col-span-8 space-y-8">
+                    <div className="lg:col-span-8 space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-xl font-bold">Recommended for you</h3>
-                            <button className="text-xs font-bold  tracking-normal text-primary flex items-center gap-1">View Library <ChevronRight className="w-3 h-3" /></button>
+                            <button type="button" className="text-xs font-bold  text-primary flex items-center gap-1">View Library <ChevronRight className="w-3 h-3" /></button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {[
                                 { title: "UI/UX Advanced Masterclass", mentor: "Sarah J.", time: "12h 30m", progress: 65, color: "bg-primary" },
                                 { title: "3D Animation Basics", mentor: "Mike R.", time: "8h 45m", progress: 20, color: "bg-slate-900" },
@@ -107,15 +107,15 @@ export default function EduplexDashboardCRM() {
                                         <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-all", course.color === "bg-primary" ? "bg-primary shadow-primary/20" : "bg-slate-900 shadow-slate-900/10")}>
                                             <Compass className="w-5 h-5" />
                                         </div>
-                                        <button className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-slate-900">
+                                        <button type="button" className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-slate-900">
                                             <Plus className="w-5 h-5" />
                                         </button>
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-slate-900 mb-1">{course.title}</h4>
-                                        <p className="text-xs font-bold text-slate-400  tracking-normal mb-6">Mentor: {course.mentor}</p>
+                                        <p className="text-xs font-bold text-slate-400  mb-6">Mentor: {course.mentor}</p>
                                         <div className="space-y-3">
-                                            <div className="flex justify-between text-[10px] font-bold  tracking-normal">
+                                            <div className="flex justify-between text-xs font-bold ">
                                                 <span className="text-slate-400">Progress</span>
                                                 <span className="text-primary">{course.progress}%</span>
                                             </div>
@@ -133,16 +133,16 @@ export default function EduplexDashboardCRM() {
                             <div className="flex items-center justify-between mb-8">
                                 <div>
                                     <h3 className="font-bold">Study Activity</h3>
-                                    <p className="text-[10px] font-bold text-slate-400  tracking-normal mt-1">Hours per day</p>
+                                    <p className="text-xs font-bold text-slate-400  mt-1">Hours per day</p>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-2 h-2 rounded-full bg-primary" />
-                                        <span className="text-[10px] font-bold  tracking-normal text-slate-400">Personal</span>
+                                        <span className="text-xs font-bold  text-slate-400">Personal</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-2 h-2 rounded-full bg-slate-200" />
-                                        <span className="text-[10px] font-bold  tracking-normal text-slate-400">Average</span>
+                                        <span className="text-xs font-bold  text-slate-400">Average</span>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@ export default function EduplexDashboardCRM() {
                                             <div className="absolute inset-x-0 bottom-0 bg-slate-50 rounded-full h-full" />
                                             <div className="relative w-full bg-primary rounded-full transition-all duration-500 group-hover:bg-primary-hover shadow-lg shadow-primary/10" style={{ height: `${h}%` }} />
                                         </div>
-                                        <span className="text-[10px] font-bold  tracking-normal text-slate-400">{"MTWTFSS"[i]}</span>
+                                        <span className="text-xs font-bold  text-slate-400">{"MTWTFSS"[i]}</span>
                                     </div>
                                 ))}
                             </div>
@@ -161,15 +161,15 @@ export default function EduplexDashboardCRM() {
                     </div>
 
                     {/* Right Sidebar: Schedule */}
-                    <div className="lg:col-span-4 space-y-8">
+                    <div className="lg:col-span-4 space-y-4">
                         <div className="crm-card p-8 bg-primary text-white shadow-2xl shadow-primary/30 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                             <h3 className="text-lg font-bold mb-4 relative z-10">Premium Perks</h3>
                             <p className="text-white/60 text-xs font-medium leading-relaxed mb-6 relative z-10">Access exclusive mentors and advanced workshops.</p>
-                            <button className="px-6 py-2.5 bg-white text-primary rounded-[var(--radius-inner)] text-[10px] font-bold  tracking-normal hover:scale-105 active:scale-95 transition-all w-fit relative z-10">Upgrade</button>
+                            <button type="button" className="px-6 py-2.5 bg-white text-primary rounded-[var(--radius-inner)] text-xs font-bold  hover:scale-105 active:scale-95 transition-all w-fit relative z-10">Upgrade</button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <h3 className="text-lg font-bold px-2">Daily Schedule</h3>
                             <div className="space-y-4">
                                 {[
@@ -177,15 +177,15 @@ export default function EduplexDashboardCRM() {
                                     { time: "11:30 AM", subject: "Design Theory", room: "S-5", color: "bg-slate-900" },
                                     { time: "02:00 PM", subject: "Physics Prep", room: "M-4", color: "bg-slate-400" },
                                 ].map((task, i) => (
-                                    <div key={i} className="crm-card p-6 flex gap-6 hover:translate-x-1 transition-transform">
+                                    <div key={i} className="crm-card p-6 flex gap-4 hover:translate-x-1 transition-transform">
                                         <div className="flex flex-col items-center justify-center shrink-0 border-r border-slate-200 pr-6 gap-1">
                                             <span className="text-xs font-bold text-slate-900">{task.time.split(' ')[0]}</span>
-                                            <span className="text-[8px] font-bold  tracking-normal text-slate-400">{task.time.split(' ')[1]}</span>
+                                            <span className="text-xs font-bold  text-slate-400">{task.time.split(' ')[1]}</span>
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between mb-2">
                                                 <h4 className="text-sm font-bold text-slate-900">{task.subject}</h4>
-                                                <span className="text-[10px] font-bold text-slate-400  tracking-normal">{task.room}</span>
+                                                <span className="text-xs font-bold text-slate-400 ">{task.room}</span>
                                             </div>
                                             <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
                                                 <div className={cn("h-full rounded-full", task.color)} style={{ width: "40%" }} />
@@ -194,9 +194,9 @@ export default function EduplexDashboardCRM() {
                                     </div>
                                 ))}
                             </div>
-                            <button className="w-full h-14 border-2 border-dashed border-slate-200 rounded-[var(--radius-outer)] flex items-center justify-center gap-2 text-slate-300 hover:border-primary/20 hover:text-primary hover:bg-primary/5 transition-all group">
+                            <button type="button" className="w-full h-14 border-2 border-dashed border-slate-200 rounded-[var(--radius-outer)] flex items-center justify-center gap-2 text-slate-300 hover:border-primary/20 hover:text-primary hover:bg-primary/5 transition-all group">
                                 <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                                <span className="text-xs font-bold  tracking-normal">Add Event</span>
+                                <span className="text-xs font-bold ">Add Event</span>
                             </button>
                         </div>
                     </div>

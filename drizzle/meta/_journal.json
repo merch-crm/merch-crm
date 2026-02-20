@@ -85,6 +85,20 @@
       "when": 1770114357634,
       "tag": "0011_add_show_in_sku_name_to_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1771347090565,
+      "tag": "0012_hot_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1771384058485,
+      "tag": "0013_cool_greymalkin",
+      "breakpoints": true
     }
   ]
 }

@@ -34,7 +34,7 @@ export function PeriodSelector() {
                         size="sm"
                         onClick={() => setPeriod(period.value)}
                         className={cn(
-                            "rounded-[18px] px-3.5 h-8 text-xs font-bold  tracking-wider transition-all",
+                            "rounded-[18px] px-3.5 h-8 text-xs font-bold  transition-all",
                             currentPeriod === period.value
                                 ? "bg-slate-900 text-white hover:bg-slate-800 shadow-md shadow-slate-200"
                                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"

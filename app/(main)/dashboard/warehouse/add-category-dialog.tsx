@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { SubmitButton } from "./submit-button";
-import { addInventoryCategory } from "./actions";
+import { addInventoryCategory } from "./category-actions";;
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getIconNameFromName, getGradientStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
@@ -19,6 +19,80 @@ interface AddCategoryDialogProps {
     className?: string;
     isOpen?: boolean; // Controlled
     onOpenChange?: (open: boolean) => void; // Controlled
+}
+
+interface SwitchRowProps {
+    mainLabel: string;
+    subLabel: string;
+    checked: boolean;
+    onCheckedChange: (val: boolean) => void;
+}
+
+function SwitchRow({ mainLabel, subLabel, checked, onCheckedChange }: SwitchRowProps) {
+    return (
+        <div className="crm-switch-row">
+            <div className={cn("flex items-center justify-between group w-full")}>
+                <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-bold text-slate-900 leading-[1.1]"><span className="sm:whitespace-nowrap">{mainLabel}</span></span>
+                    <span className="text-xs text-slate-400 font-bold leading-tight mt-0.5">{subLabel}</span>
+                </div>
+                <Switch
+                    checked={checked}
+                    onCheckedChange={onCheckedChange}
+                    variant="success"
+                />
+            </div>
+        </div>
+    );
+}
+
+function CategoryIconPreview({ name, color, size = "md" }: { name: string, color: string, size?: "sm" | "md" | "lg" }) {
+    const sizeClasses = {
+        sm: "w-8 h-8 rounded-[10px]",
+        md: "w-10 h-10 rounded-[12px]",
+        lg: "w-12 h-12 rounded-[14px]"
+    };
+    const iconSizeClasses = {
+        sm: "w-4 h-4",
+        md: "w-5 h-5",
+        lg: "w-6 h-6"
+    };
+
+    return (
+        <div className={cn(
+            "flex items-center justify-center shrink-0 transition-all duration-500 shadow-lg text-white bg-gradient-to-br",
+            sizeClasses[size],
+            getGradientStyles(color)
+        )}>
+            {createElement(getCategoryIcon({ name }), {
+                className: cn("stroke-[2.5]", iconSizeClasses[size])
+            })}
+        </div>
+    );
+}
+
+interface ValidatedInputProps extends React.ComponentProps<typeof Input> {
+    label: string;
+    error?: string | null;
+}
+
+function ValidatedInput({ label, error, className, ...props }: ValidatedInputProps) {
+    return (
+        <>
+            <label className="text-sm font-bold text-slate-700 ml-1">{label}</label>
+            <Input
+                className={cn(
+                    "h-11 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
+                    error
+                        ? "border-rose-300 bg-rose-50 text-rose-900"
+                        : "border-slate-200 bg-slate-50",
+                    className
+                )}
+                {...props}
+            />
+            {error && <p className="text-xs font-bold text-rose-500 ml-1">{error}</p>}
+        </>
+    );
 }
 
 export function AddCategoryDialog({
@@ -35,21 +109,25 @@ export function AddCategoryDialog({
         else setInternalIsOpen(open);
     };
 
-    const [error, setError] = useState<string | null>(null);
-    const [categoryName, setCategoryName] = useState("");
-    const [categoryPrefix, setCategoryPrefix] = useState("");
-    const [prefixManuallyEdited, setPrefixManuallyEdited] = useState(false);
-    const [selectedColor, setSelectedColor] = useState("primary");
-    const [showInSku, setShowInSku] = useState(true);
-    const [showInName, setShowInName] = useState(true);
-    const [_selectedParentId] = useState<string>(parentId || "");
-    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [uiState, setUiState] = useState({
+        error: null as string | null,
+        fieldErrors: {} as Record<string, string>
+    });
+
+    const [formState, setFormState] = useState({
+        name: "",
+        prefix: "",
+        prefixManuallyEdited: false,
+        color: "primary",
+        showInSku: true,
+        showInName: true,
+        parentId: parentId || ""
+    });
     const router = useRouter();
 
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
         const name = formData.get("name") as string;
         const prefix = formData.get("prefix") as string;
 
@@ -58,22 +136,21 @@ export function AddCategoryDialog({
         if (!prefix || prefix.trim().length < 2) newErrors.prefix = "Введите артикул категории (напр. TS)";
 
         if (Object.keys(newErrors).length > 0) {
-            setFieldErrors(newErrors);
+            setUiState(prev => ({ ...prev, fieldErrors: newErrors }));
             return;
         }
 
-        setError(null);
-        setFieldErrors({});
+        setUiState(prev => ({ ...prev, error: null, fieldErrors: {} }));
 
         formData.set("icon", getIconNameFromName(name));
-        formData.set("color", selectedColor);
-        formData.set("parentId", _selectedParentId);
-        formData.set("showInSku", String(showInSku));
-        formData.set("showInName", String(showInName));
+        formData.set("color", formState.color);
+        formData.set("parentId", formState.parentId);
+        formData.set("showInSku", String(formState.showInSku));
+        formData.set("showInName", String(formState.showInName));
         const result = await addInventoryCategory(formData);
 
-        if (result.error) {
-            setError(result.error);
+        if (!result.success) {
+            setUiState(prev => ({ ...prev, error: result.error }));
         } else {
             setIsOpen(false);
             router.refresh();
@@ -85,11 +162,13 @@ export function AddCategoryDialog({
             <Button
                 type="button"
                 onClick={() => {
-                    setCategoryName("");
-                    setCategoryPrefix("");
-                    setPrefixManuallyEdited(false);
-                    setFieldErrors({});
-                    setError(null);
+                    setFormState(prev => ({
+                        ...prev,
+                        name: "",
+                        prefix: "",
+                        prefixManuallyEdited: false
+                    }));
+                    setUiState({ error: null, fieldErrors: {} });
                     setIsOpen(true);
                 }}
                 className={cn(
@@ -102,12 +181,10 @@ export function AddCategoryDialog({
             </Button>
 
             <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title={parentId ? "Новая подкатегория" : "Новая категория"} showVisualTitle={false} hideClose={true}>
-                <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <form onSubmit={handleSubmit} noValidate className="flex flex-col flex-1 min-h-0 overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                        <div className="flex items-center gap-4">
-                            <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-500 shadow-lg text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
-                                {createElement(getCategoryIcon({ name: categoryName }), { className: "w-6 h-6 stroke-[2.5]" })}
-                            </div>
+                        <div className="flex items-center gap-3">
+                            <CategoryIconPreview name={formState.name} color={formState.color} size="lg" />
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">
                                     {parentId ? "Подкатегория" : "Новая категория"}
@@ -117,55 +194,50 @@ export function AddCategoryDialog({
                         </div>
                     </div>
 
-                    <form id="add-category-form" onSubmit={handleSubmit} noValidate className="px-6 py-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar flex-1">
-                        <div className="flex gap-4">
+                    <div className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                        <div className="flex gap-3">
                             <div className="space-y-1.5 flex-1">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Название категории</label>
-                                <Input
+                                <ValidatedInput
+                                    label="Название категории"
                                     name="name"
                                     required
-                                    value={categoryName}
+                                    value={formState.name}
                                     placeholder="Напр. Футболки"
+                                    error={uiState.fieldErrors.name}
                                     onChange={(e) => {
                                         const name = e.target.value;
-                                        setCategoryName(name);
-                                        if (!prefixManuallyEdited) {
-                                            setCategoryPrefix(generateCategoryPrefix(name));
-                                        }
+                                        setFormState(prev => ({
+                                            ...prev,
+                                            name,
+                                            prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
+                                        }));
                                     }}
-                                    className={cn(
-                                        "h-11 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
-                                        fieldErrors.name
-                                            ? "border-rose-300 bg-rose-50 text-rose-900"
-                                            : "border-slate-200 bg-slate-50"
-                                    )}
                                     onInput={() => {
-                                        if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: "" }));
+                                        if (uiState.fieldErrors.name) setUiState(prev => ({
+                                            ...prev,
+                                            fieldErrors: { ...prev.fieldErrors, name: "" }
+                                        }));
                                     }}
                                 />
-                                {fieldErrors.name && <p className="text-[9px] font-bold text-rose-500 ml-1">{fieldErrors.name}</p>}
                             </div>
                             <div className="space-y-1.5 w-24">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Артикул</label>
-                                <Input
+                                <ValidatedInput
+                                    label="Артикул"
                                     name="prefix"
                                     required
-                                    value={categoryPrefix}
+                                    value={formState.prefix}
                                     placeholder="TS"
+                                    error={uiState.fieldErrors.prefix}
+                                    className="text-center"
                                     onChange={(e) => {
                                         const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-                                        setCategoryPrefix(val);
-                                        setPrefixManuallyEdited(true);
-                                        if (fieldErrors.prefix) setFieldErrors(prev => ({ ...prev, prefix: "" }));
+                                        setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
+                                        if (uiState.fieldErrors.prefix) setUiState(prev => ({
+                                            ...prev,
+                                            fieldErrors: { ...prev.fieldErrors, prefix: "" }
+                                        }));
                                     }}
-                                    className={cn(
-                                        "h-11 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-center text-sm shadow-sm",
-                                        fieldErrors.prefix
-                                            ? "border-rose-300 bg-rose-50 text-rose-900"
-                                            : "border-slate-200 bg-slate-50"
-                                    )}
                                 />
-                                {fieldErrors.prefix && <p className="text-[9px] font-bold text-rose-500 ml-1">{fieldErrors.prefix}</p>}
                             </div>
                         </div>
 
@@ -174,7 +246,7 @@ export function AddCategoryDialog({
                             <textarea
                                 name="description"
                                 placeholder="Опциональное описание назначения этой категории..."
-                                className="w-full min-h-[70px] p-4 rounded-[var(--radius-inner)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-medium text-sm text-slate-900 placeholder:text-slate-300 resize-none bg-slate-50 leading-relaxed shadow-sm"
+                                className="crm-dialog-textarea"
                             />
                         </div>
 
@@ -182,9 +254,7 @@ export function AddCategoryDialog({
                             <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-2 shadow-sm">
                                 <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                                 <div className="flex items-center justify-center py-1">
-                                    <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
-                                        {createElement(getCategoryIcon({ name: categoryName }), { className: "w-5 h-5 stroke-[2.5]" })}
-                                    </div>
+                                    <CategoryIconPreview name={formState.name} color={formState.color} size="md" />
                                 </div>
                             </div>
 
@@ -192,14 +262,14 @@ export function AddCategoryDialog({
                                 <span className="text-sm font-bold text-slate-700 leading-none">Цвет</span>
                                 <div className="grid grid-cols-5 sm:flex sm:flex-wrap gap-2.5">
                                     {COLORS.map((color) => {
-                                        const isSelected = selectedColor === color.name;
+                                        const isSelected = formState.color === color.name;
                                         return (
                                             <Button
                                                 key={color.name}
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => setSelectedColor(color.name)}
+                                                onClick={() => setFormState(prev => ({ ...prev, color: color.name }))}
                                                 className={cn(
                                                     "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90 shadow-sm p-0",
                                                     color.class,
@@ -215,43 +285,30 @@ export function AddCategoryDialog({
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-3 bg-slate-100 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                                <div className={cn("flex items-center justify-between group w-full")}>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]"><span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span></span>
-                                        <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в SKU</span>
-                                    </div>
-                                    <Switch
-                                        checked={showInSku}
-                                        onCheckedChange={setShowInSku}
-                                        variant="success"
-                                    />
-                                </div>
-                            </div>
-                            <div className="p-3 bg-slate-100 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                                <div className={cn("flex items-center justify-between group w-full")}>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-[11px] font-bold text-slate-900 leading-[1.1]"><span className="sm:whitespace-nowrap">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span></span>
-                                        <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в имени</span>
-                                    </div>
-                                    <Switch
-                                        checked={showInName}
-                                        onCheckedChange={setShowInName}
-                                        variant="success"
-                                    />
-                                </div>
-                            </div>
+                            <SwitchRow
+                                mainLabel="Добавлять в артикул"
+                                subLabel="Будет в SKU"
+                                checked={formState.showInSku}
+                                onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
+                            />
+                            <SwitchRow
+                                mainLabel="Добавлять в название"
+                                subLabel="Будет в имени"
+                                checked={formState.showInName}
+                                onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
+                            />
                         </div>
 
-                        {error && (
-                            <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold flex items-center gap-2 animate-in slide-in-from-top-2">
+
+                        {uiState.error && (
+                            <div className="crm-error-box">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
-                                {error}
+                                {uiState.error}
                             </div>
                         )}
-                    </form>
+                    </div>
 
-                    <div className="sticky bottom-0 z-10 shrink-0 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-end lg:justify-between gap-3 mt-auto">
+                    <div className="crm-dialog-footer">
                         <Button
                             type="button"
                             variant="ghost"
@@ -261,13 +318,12 @@ export function AddCategoryDialog({
                             Отмена
                         </Button>
                         <SubmitButton
-                            form="add-category-form"
                             label="Сохранить"
                             pendingLabel="Выполняется..."
                             className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50"
                         />
                     </div>
-                </div>
+                </form>
             </ResponsiveModal>
         </>
     );

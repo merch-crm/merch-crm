@@ -1,44 +1,59 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
+import React, { createContext, useContext, useState, ReactNode, useCallback } from "react";
 
 interface SheetStackContextType {
-    registerSheet: (id: string) => number;
+    stack: string[];
+    pushSheet: (id: string) => void;
+    popSheet: () => void;
+    clearSheets: () => void;
+    registerSheet: (id: string) => void;
     unregisterSheet: (id: string) => void;
     getStackDepth: (id: string) => number;
-    stack: string[];
 }
 
-const SheetStackContext = createContext<SheetStackContextType | null>(null);
+const SheetStackContext = createContext<SheetStackContextType | undefined>(undefined);
 
-export function SheetStackProvider({ children }: { children: React.ReactNode }) {
+export function SheetStackProvider({ children }: { children: ReactNode }) {
     const [stack, setStack] = useState<string[]>([]);
 
+    const pushSheet = useCallback((id: string) => {
+        setStack((prev) => [...prev, id]);
+    }, []);
+
+    const popSheet = useCallback(() => {
+        setStack((prev) => prev.slice(0, -1));
+    }, []);
+
+    const clearSheets = useCallback(() => {
+        setStack([]);
+    }, []);
+
     const registerSheet = useCallback((id: string) => {
-        setStack(prev => {
+        setStack((prev) => {
             if (prev.includes(id)) return prev;
             return [...prev, id];
         });
-        return stack.length;
-    }, [stack.length]);
+    }, []);
 
     const unregisterSheet = useCallback((id: string) => {
-        setStack(prev => prev.filter(item => item !== id));
+        setStack((prev) => prev.filter(item => item !== id));
     }, []);
 
     const getStackDepth = useCallback((id: string) => {
         return stack.indexOf(id);
     }, [stack]);
 
-    const value = useMemo(() => ({
-        registerSheet,
-        unregisterSheet,
-        getStackDepth,
-        stack
-    }), [registerSheet, unregisterSheet, getStackDepth, stack]);
-
     return (
-        <SheetStackContext.Provider value={value}>
+        <SheetStackContext.Provider value={{
+            stack,
+            pushSheet,
+            popSheet,
+            clearSheets,
+            registerSheet,
+            unregisterSheet,
+            getStackDepth
+        }}>
             {children}
         </SheetStackContext.Provider>
     );
@@ -47,7 +62,7 @@ export function SheetStackProvider({ children }: { children: React.ReactNode }) 
 export function useSheetStack() {
     const context = useContext(SheetStackContext);
     if (!context) {
-        throw new Error("useSheetStack must be used within a SheetStackProvider");
+        throw new Error("This hook must be used within SheetStackProvider");
     }
     return context;
 }

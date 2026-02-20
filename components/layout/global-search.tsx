@@ -103,9 +103,9 @@ export function GlobalSearch() {
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute top-full mt-2 w-full bg-white rounded-[18px] shadow-2xl border border-slate-200 overflow-hidden z-50 max-h-[400px] overflow-y-auto"
                     >
-                        {results.length > 0 ? (
+                        {Array.isArray(results) && results.length > 0 ? (
                             <div className="p-2 space-y-1">
-                                {results.map((result) => (
+                                {(results || []).map((result) => (
                                     <Button
                                         key={`${result.type}-${result.id}`}
                                         variant="ghost"
@@ -125,7 +125,7 @@ export function GlobalSearch() {
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-bold text-slate-900 text-sm truncate">{result.title}</span>
-                                                <span className="text-[10px] font-bold tracking-normal text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded-md">
+                                                <span className="text-xs font-bold text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded-md">
                                                     {getTypeLabel(result.type)}
                                                 </span>
                                             </div>

@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { Plus, Shield, Loader2, Building, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
-import { createRole, getDepartments } from "../actions";
+import { IconInput } from "@/components/ui/icon-input";
+import { IconSelect } from "@/components/ui/icon-select";
+import { createRole } from "../actions/roles.actions";
+import { getDepartments } from "../actions/departments.actions";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { RoleColorPicker } from "@/components/ui/role-color-picker";
 
 interface AddRoleDialogProps {
     onSuccess: () => void;
@@ -51,13 +53,13 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
     const handleToggle = (sectionId: string, actionId: string) => {
         setPermissions((prev) => {
             const section = prev[sectionId] || {};
-            const newValue = !section[actionId];
+            const isNewValue = !section[actionId];
 
             return {
                 ...prev,
                 [sectionId]: {
                     ...section,
-                    [actionId]: newValue
+                    [actionId]: isNewValue
                 }
             };
         });
@@ -83,9 +85,55 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
 
     const isMobile = useIsMobile();
 
+    const PermissionButton = ({ sectionId, actionId, label, isDesktop = false }: { sectionId: string, actionId: string, label?: string, isDesktop?: boolean }) => {
+        const isChecked = permissions[sectionId]?.[actionId] || false;
+
+        if (isDesktop) {
+            return (
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleToggle(sectionId, actionId)}
+                    className={cn(
+                        "w-6 h-6 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90 p-0 hover:bg-transparent",
+                        isChecked
+                            ? "bg-primary border-primary text-white shadow-sm hover:text-white"
+                            : "bg-white border-slate-200 hover:border-primary/40"
+                    )}
+                >
+                    {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
+                </Button>
+            );
+        }
+
+        return (
+            <Button
+                type="button"
+                variant="ghost"
+                onClick={() => handleToggle(sectionId, actionId)}
+                className={cn(
+                    "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
+                    isChecked
+                        ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                        : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
+                )}
+            >
+                <div className={cn(
+                    "w-4 h-4 rounded border flex items-center justify-center transition-all",
+                    isChecked ? "bg-primary border-primary text-white" : "bg-white border-slate-300"
+                )}>
+                    {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
+                </div>
+                {label}
+            </Button>
+        );
+    };
+
     return (
         <>
             <Button
+                type="button"
                 onClick={() => setIsOpen(true)}
                 size={isMobile ? "default" : "lg"}
                 className={cn(
@@ -112,63 +160,46 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                         </div>
                     )}
 
-                    <form action={handleSubmit} className="space-y-6 pb-2">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSubmit(new FormData(e.currentTarget));
+                        }}
+                        className="space-y-4 pb-2"
+                    >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название роли</label>
-                                <div className="relative">
-                                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                                    <Input
-                                        type="text"
-                                        name="name"
-                                        required
-                                        placeholder="Например: Оператор цеха"
-                                        className="block w-full pl-10 rounded-[var(--radius-inner)] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
-                                    />
-                                </div>
+                                <IconInput
+                                    startIcon={Shield}
+                                    type="text"
+                                    name="name"
+                                    required
+                                    placeholder="Например: Оператор цеха"
+                                    className="crm-dialog-field"
+                                />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Привязка к отделу</label>
-                                <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                                    <PremiumSelect
-                                        name="departmentId"
-                                        value={selectedDepartmentId}
-                                        options={[
-                                            { id: "none", title: "Общая роль (без отдела)" },
-                                            ...departments.map(dept => ({ id: dept.id, title: dept.name }))
-                                        ]}
-                                        placeholder="Выбрать отдел"
-                                        className="pl-10 h-11"
-                                        onChange={(val: string) => setSelectedDepartmentId(val)}
-                                    />
-                                </div>
+                                <IconSelect
+                                    startIcon={Building}
+                                    name="departmentId"
+                                    value={selectedDepartmentId}
+                                    options={[
+                                        { id: "none", title: "Общая роль (без отдела)" },
+                                        ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                                    ]}
+                                    placeholder="Выбрать отдел"
+                                    className="h-11"
+                                    onChange={(val: string) => setSelectedDepartmentId(val)}
+                                />
                             </div>
                         </div>
 
                         <div className="space-y-3">
                             <label className="text-sm font-bold text-slate-700 ml-1">Цвет роли (от отдела по умолчанию)</label>
-                            <div className="flex flex-wrap gap-2 p-3 md:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-inner">
-                                {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
-                                    <label key={c} className="relative cursor-pointer group">
-                                        <input type="radio" name="color" value={c} className="peer sr-only" />
-                                        <div className={cn(
-                                            "w-8 h-8 rounded-[var(--radius-inner)] transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
-                                            c === "indigo" ? "bg-primary peer-checked:ring-primary" :
-                                                c === "slate" ? "bg-slate-500 peer-checked:ring-slate-500" :
-                                                    c === "red" ? "bg-red-500 peer-checked:ring-red-500" :
-                                                        c === "orange" ? "bg-orange-500 peer-checked:ring-orange-500" :
-                                                            c === "emerald" ? "bg-emerald-500 peer-checked:ring-emerald-500" :
-                                                                c === "blue" ? "bg-blue-500 peer-checked:ring-blue-500" :
-                                                                    c === "purple" ? "bg-purple-500 peer-checked:ring-purple-500" :
-                                                                        c === "rose" ? "bg-rose-500 peer-checked:ring-rose-500" :
-                                                                            c === "cyan" ? "bg-cyan-500 peer-checked:ring-cyan-500" :
-                                                                                "bg-amber-500 peer-checked:ring-amber-500"
-                                        )} />
-                                    </label>
-                                ))}
-                            </div>
+                            <RoleColorPicker />
                         </div>
 
                         <div className="space-y-3">
@@ -180,31 +211,14 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                         <div key={section.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
                                             <h4 className="text-sm font-bold text-slate-900 mb-3">{section.label}</h4>
                                             <div className="grid grid-cols-2 gap-2">
-                                                {ACTIONS.map(action => {
-                                                    const isChecked = permissions[section.id]?.[action.id] || false;
-                                                    return (
-                                                        <Button
-                                                            key={action.id}
-                                                            type="button"
-                                                            variant="ghost"
-                                                            onClick={() => handleToggle(section.id, action.id)}
-                                                            className={cn(
-                                                                "flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold border transition-all h-auto",
-                                                                isChecked
-                                                                    ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
-                                                                    : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
-                                                            )}
-                                                        >
-                                                            <div className={cn(
-                                                                "w-4 h-4 rounded border flex items-center justify-center transition-all",
-                                                                isChecked ? "bg-primary border-primary text-white" : "bg-white border-slate-300"
-                                                            )}>
-                                                                {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
-                                                            </div>
-                                                            {action.label}
-                                                        </Button>
-                                                    );
-                                                })}
+                                                {ACTIONS.map(action => (
+                                                    <PermissionButton
+                                                        key={action.id}
+                                                        sectionId={section.id}
+                                                        actionId={action.id}
+                                                        label={action.label}
+                                                    />
+                                                ))}
                                             </div>
                                         </div>
                                     ))}
@@ -226,27 +240,15 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                                     <td className="crm-td font-bold text-slate-700 text-xs">
                                                         {section.label}
                                                     </td>
-                                                    {ACTIONS.map(action => {
-                                                        const isChecked = permissions[section.id]?.[action.id] || false;
-                                                        return (
-                                                            <td key={action.id} className="crm-td text-center">
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => handleToggle(section.id, action.id)}
-                                                                    className={cn(
-                                                                        "w-6 h-6 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90 p-0 hover:bg-transparent",
-                                                                        isChecked
-                                                                            ? "bg-primary border-primary text-white shadow-sm hover:text-white"
-                                                                            : "bg-white border-slate-200 hover:border-primary/40"
-                                                                    )}
-                                                                >
-                                                                    {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
-                                                                </Button>
-                                                            </td>
-                                                        );
-                                                    })}
+                                                    {ACTIONS.map(action => (
+                                                        <td key={action.id} className="crm-td text-center">
+                                                            <PermissionButton
+                                                                sectionId={section.id}
+                                                                actionId={action.id}
+                                                                isDesktop={true}
+                                                            />
+                                                        </td>
+                                                    ))}
                                                 </tr>
                                             ))}
                                         </tbody>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     CreditCard,
     ArrowDownRight,
@@ -13,14 +14,17 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
 import { useBranding } from "@/components/branding-provider";
 import { useToast } from "@/components/ui/toast";
-import { createExpense, CreateExpenseData } from "./actions";
+import { createExpense, CreateExpenseData } from "./actions";;
 import { playSound } from "@/lib/sounds";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 
 
 interface Transaction {
@@ -66,6 +70,7 @@ export function TransactionsClient({
     const [view, setView] = useState<'all' | 'payments' | 'expenses'>('all');
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddingExpense, setIsAddingExpense] = useState(false);
+    const router = useRouter();
 
 
     // Map payments and expenses to a unified format
@@ -120,6 +125,7 @@ export function TransactionsClient({
                     />
                     {searchQuery && (
                         <Button
+                            type="button"
                             variant="ghost"
                             size="icon"
                             onClick={() => setSearchQuery("")}
@@ -177,6 +183,7 @@ export function TransactionsClient({
 
                 <div className="shrink-0 ml-1">
                     <Button
+                        type="button"
                         onClick={() => setIsAddingExpense(true)}
                         className="h-11 w-11 sm:h-auto sm:w-auto sm:px-6 !bg-primary text-white gap-2 border-none rounded-full sm:rounded-2xl flex items-center justify-center p-0 sm:p-auto"
                     >
@@ -206,8 +213,8 @@ export function TransactionsClient({
                                     {filtered.map((t) => (
                                         <tr key={t.id} className="crm-tr">
                                             <td className="crm-td">
-                                                <div className="text-sm font-bold text-slate-900">{new Date(t.date).toLocaleDateString()}</div>
-                                                <div className="text-[10px] text-slate-400 font-bold tracking-normal mt-0.5">{new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                <div className="text-sm font-bold text-slate-900">{format(new Date(t.date), "dd.MM.yyyy", { locale: ru })}</div>
+                                                <div className="text-xs text-slate-400 font-bold mt-0.5">{format(new Date(t.date), "HH:mm", { locale: ru })}</div>
                                             </td>
                                             <td className="crm-td">
                                                 <div className="flex items-center gap-3">
@@ -218,8 +225,8 @@ export function TransactionsClient({
                                                         {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                                     </div>
                                                     <div>
-                                                        <div className="text-sm font-bold text-slate-900 tracking-normal">{t.category}</div>
-                                                        {t.orderNumber && <div className="text-[10px] font-bold text-primary">Заказ #{t.orderNumber} • {t.clientName}</div>}
+                                                        <div className="text-sm font-bold text-slate-900">{t.category}</div>
+                                                        {t.orderNumber && <div className="text-xs font-bold text-primary">Заказ #{t.orderNumber} • {t.clientName}</div>}
                                                     </div>
                                                 </div>
                                             </td>
@@ -228,7 +235,7 @@ export function TransactionsClient({
                                             </td>
                                             <td className="crm-td crm-td-number">
                                                 <div className={cn(
-                                                    "text-lg font-bold tracking-normal",
+                                                    "text-lg font-bold",
                                                     t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                                 )}>
                                                     {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} {currencySymbol}
@@ -243,9 +250,17 @@ export function TransactionsClient({
                     renderCard={(t) => (
                         <div
                             key={t.id}
-                            className="group relative flex items-center justify-between p-4 transition-all duration-300 active:bg-slate-50"
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    // Could open details if we had them
+                                }
+                            }}
+                            className="group relative flex items-center justify-between p-4 transition-all duration-300 active:bg-slate-50 focus:outline-none focus:bg-slate-50"
                         >
-                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <div className={cn(
                                     "w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-active:scale-90",
                                     t.type === 'payment' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
@@ -265,13 +280,13 @@ export function TransactionsClient({
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
-                                            <span>{new Date(t.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                                            <span>{format(new Date(t.date), "d MMM", { locale: ru })}</span>
                                             <span>•</span>
                                             <span className="truncate max-w-[120px]">{t.description || "Без описания"}</span>
                                         </div>
                                         {t.orderNumber && (
-                                            <span className="text-[9px] font-black text-primary bg-primary/5 px-1.5 py-0.5 rounded-[4px] uppercase tracking-tighter">
+                                            <span className="text-xs font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-[4px]">
                                                 #{t.orderNumber}
                                             </span>
                                         )}
@@ -296,7 +311,7 @@ export function TransactionsClient({
                     onClose={() => setIsAddingExpense(false)}
                     onSuccess={() => {
                         setIsAddingExpense(false);
-                        window.location.reload();
+                        router.refresh();
                     }}
                 />
             )}
@@ -314,6 +329,14 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData(e.currentTarget);
+        const amount = parseFloat(formData.get("amount") as string);
+
+        if (!amount || amount <= 0) {
+            toast("Сумма должна быть больше нуля", "error");
+            setIsLoading(false);
+            return;
+        }
+
         const data = Object.fromEntries(formData.entries()) as unknown as CreateExpenseData;
 
         try {
@@ -341,10 +364,10 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             title="Новый расход"
         >
             <form onSubmit={handleSubmit} className="p-6 pt-2">
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Категория</label>
-                        <PremiumSelect
+                        <label className="text-xs font-bold text-slate-400 ml-1">Категория</label>
+                        <Select
                             name="category"
                             options={[
                                 { id: "purchase", title: "Закупки" },
@@ -359,17 +382,17 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Сумма {currencySymbol}</label>
+                        <label className="text-xs font-bold text-slate-400 ml-1">Сумма {currencySymbol}</label>
                         <Input name="amount" type="number" step="0.01" required placeholder="0.00" className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Дата</label>
+                        <label className="text-xs font-bold text-slate-400 ml-1">Дата</label>
                         <Input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Описание</label>
+                        <label className="text-xs font-bold text-slate-400 ml-1">Описание</label>
                         <textarea name="description" rows={3} placeholder="За что платеж..." className="w-full p-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm resize-none" />
                     </div>
 
@@ -382,7 +405,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                         >
                             Отмена
                         </Button>
-                        <Button variant="btn-dark" type="submit" disabled={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">{isLoading ? "Запись..." : "Сохранить"}</Button>
+                        <SubmitButton variant="btn-dark" isLoading={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">Сохранить</SubmitButton>
                     </div>
                 </div>
             </form>

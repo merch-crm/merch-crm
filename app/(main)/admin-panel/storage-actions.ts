@@ -7,6 +7,8 @@ import { requireAdmin } from "@/lib/admin";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import fs from "fs";
+import { logError } from "@/lib/error-logger";
+import { StorageQuotaSettingsSchema } from "./validation";
 
 export interface StorageQuotaSettings {
     maxS3Size: number;
@@ -44,7 +46,11 @@ export async function getStorageQuotaSettings() {
         if (!record) return { success: true, data: DEFAULT_SETTINGS };
         return { success: true, data: record.value as unknown as StorageQuotaSettings };
     } catch (e) {
-        console.error("Error fetching storage settings:", e);
+        await logError({
+            error: e,
+            path: "/admin-panel/storage",
+            method: "getStorageQuotaSettings"
+        });
         return { success: false, error: e instanceof Error ? e.message : "Ошибка получения настроек" };
     }
 }
@@ -54,19 +60,30 @@ export async function updateStorageQuotaSettings(settings: StorageQuotaSettings)
     try {
         await requireAdmin(session);
 
+        const validated = StorageQuotaSettingsSchema.safeParse(settings);
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0].message };
+        }
+        const validSettings = validated.data;
+
         await db.insert(systemSettings).values({
             key: "storage_config",
-            value: settings,
+            value: validSettings,
             updatedAt: new Date()
         }).onConflictDoUpdate({
             target: systemSettings.key,
-            set: { value: settings, updatedAt: new Date() }
+            set: { value: validSettings, updatedAt: new Date() }
         });
 
         revalidatePath("/admin-panel/storage");
         return { success: true };
     } catch (e) {
-        console.error("Error updating storage settings:", e);
+        await logError({
+            error: e,
+            path: "/admin-panel/storage",
+            method: "updateStorageQuotaSettings",
+            details: { settings }
+        });
         return { success: false, error: e instanceof Error ? e.message : "Ошибка сохранения настроек" };
     }
 }
@@ -123,7 +140,11 @@ export async function checkStorageQuotas() {
 
         return { success: true, data: result };
     } catch (e) {
-        console.error("Storage quota check error:", e);
+        await logError({
+            error: e,
+            path: "/admin-panel/storage",
+            method: "checkStorageQuotas"
+        });
         return { success: false, error: e instanceof Error ? e.message : "Ошибка проверки квот" };
     }
 }

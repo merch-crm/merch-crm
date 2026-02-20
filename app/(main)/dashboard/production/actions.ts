@@ -8,6 +8,20 @@ import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { updateItemStage } from "@/lib/production";
 import { ActionResult } from "@/lib/types";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+
+const UpdateStageSchema = z.object({
+    orderItemId: z.string().uuid(),
+    stage: z.enum(['prep', 'print', 'application', 'packaging']),
+    status: z.enum(['pending', 'in_progress', 'done', 'failed']),
+});
+
+const ReportDefectSchema = z.object({
+    orderItemId: z.string().uuid(),
+    quantity: z.number().positive(),
+    reason: z.string().min(1).max(500),
+});
 
 /**
  * Action для обновления этапа производства конкретной позиции.
@@ -21,22 +35,30 @@ export async function updateProductionStageAction(
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
+    const validated = UpdateStageSchema.safeParse({ orderItemId, stage, status });
+    if (!validated.success) {
+        return { success: false, error: "Некорректные данные: " + validated.error.issues[0].message };
+    }
+
     try {
-        await updateItemStage(orderItemId, stage, status);
+        const item = await db.transaction(async (tx) => {
+            await updateItemStage(orderItemId, stage, status, tx);
 
-        const item = await db.query.orderItems.findFirst({
-            where: eq(orderItems.id, orderItemId),
-            with: { order: true }
-        });
-
-        if (item) {
-            await logAction("Обновлен этап производства", "order_item", orderItemId, {
-                orderNumber: item.order.orderNumber,
-                stage,
-                status,
-                updatedAt: new Date()
+            const record = await tx.query.orderItems.findFirst({
+                where: eq(orderItems.id, orderItemId),
+                with: { order: true }
             });
-        }
+
+            if (record && record.order) {
+                await logAction("Обновлен этап производства", "order_item", orderItemId, {
+                    orderNumber: record.order.orderNumber || '???',
+                    stage,
+                    status,
+                    updatedAt: new Date()
+                }, tx);
+            }
+            return record;
+        });
 
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/orders");
@@ -44,8 +66,13 @@ export async function updateProductionStageAction(
 
         return { success: true };
     } catch (error) {
-        console.error("Error updating production stage:", error);
-        return { success: false, error: error instanceof Error ? error.message : "Ошибка при обновлении этапа" };
+        await logError({
+            error,
+            path: "/dashboard/production",
+            method: "updateProductionStageAction",
+            details: { orderItemId, stage, status }
+        });
+        return { success: false, error: "Не удалось обновить этап производства" };
     }
 }
 
@@ -56,6 +83,7 @@ export async function getProductionStats(): Promise<ActionResult<{ active: numbe
     try {
         const activeOrders = await db.query.orders.findMany({
             where: eq(orders.status, "production"),
+            limit: 100
         });
 
         const activeCount = activeOrders.length;
@@ -76,8 +104,12 @@ export async function getProductionStats(): Promise<ActionResult<{ active: numbe
             }
         };
     } catch (error) {
-        console.error("Error fetching production stats:", error);
-        return { success: false, error: "Не удалось загрузить production stats" };
+        await logError({
+            error,
+            path: "/dashboard/production",
+            method: "getProductionStats"
+        });
+        return { success: false, error: "Не удалось загрузить статистику производства" };
     }
 }
 
@@ -102,16 +134,17 @@ export async function getProductionItems(): Promise<ActionResult<ProductionItem[
                 items: true,
                 client: true,
                 attachments: true,
-            }
+            },
+            limit: 50 // Performance: Limit active production orders
         });
 
         // Flatten order items with order context
         const items = productionOrders.flatMap(order =>
-            order.items.map(item => ({
+            (order.items || []).map(item => ({
                 ...item,
                 order: {
                     id: order.id,
-                    orderNumber: order.orderNumber,
+                    orderNumber: order.orderNumber || '',
                     client: order.client,
                     priority: order.priority,
                     attachments: order.attachments,
@@ -121,8 +154,12 @@ export async function getProductionItems(): Promise<ActionResult<ProductionItem[
 
         return { success: true, data: items };
     } catch (error) {
-        console.error("Error fetching production items:", error);
-        return { success: false, error: "Не удалось загрузить production товары" };
+        await logError({
+            error,
+            path: "/dashboard/production",
+            method: "getProductionItems"
+        });
+        return { success: false, error: "Не удалось загрузить позиции производства" };
     }
 }
 
@@ -130,6 +167,11 @@ export async function getProductionItems(): Promise<ActionResult<ProductionItem[
 export async function reportProductionDefect(orderItemId: string, quantity: number, reason: string): Promise<ActionResult> {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
+
+    const validated = ReportDefectSchema.safeParse({ orderItemId, quantity, reason });
+    if (!validated.success) {
+        return { success: false, error: "Некорректные данные: " + validated.error.issues[0].message };
+    }
 
     try {
         await db.transaction(async (tx) => {
@@ -153,24 +195,29 @@ export async function reportProductionDefect(orderItemId: string, quantity: numb
                 itemId: item.inventoryId,
                 changeAmount: -quantity,
                 type: "out",
-                reason: `Брак (Производство): Заказ #${item.order.orderNumber}. Причина: ${reason}`,
+                reason: `Брак (Производство): Заказ #${item.order?.orderNumber || '???'}. Причина: ${reason}`,
                 createdBy: session.id,
             });
 
             // 3. Log Action
             await logAction("Зафиксирован брак", "order_item", orderItemId, {
-                orderNumber: item.order.orderNumber,
+                orderNumber: item.order?.orderNumber || '???',
                 quantity,
                 reason,
                 updatedAt: new Date()
-            });
+            }, tx);
         });
 
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch (error) {
-        console.error("Error reporting defect:", error);
+        await logError({
+            error,
+            path: "/dashboard/production",
+            method: "reportProductionDefect",
+            details: { orderItemId, quantity }
+        });
         return { success: false, error: error instanceof Error ? error.message : "Ошибка при списании брака" };
     }
 }

@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     try {
-        const result = await db.select({ value: count() }).from(orders);
+        const result = await db.select({ value: count() }).from(orders).limit(1);
         return NextResponse.json({ count: result[0].value });
     } catch {
         return NextResponse.json({ error: "Не удалось загрузить count" }, { status: 500 });

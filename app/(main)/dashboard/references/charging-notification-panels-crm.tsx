@@ -6,7 +6,7 @@ import { Check, Zap } from "lucide-react";
 
 export default function ChargingNotificationPanelsCRM() {
     return (
-        <section className="space-y-8 flex flex-col items-center py-12">
+        <section className="space-y-4 flex flex-col items-center py-12">
             <div className="flex items-center gap-3 self-start px-4">
                 <div className="h-8 w-1 bg-[#22c55e] rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Charging Notifications</h2>

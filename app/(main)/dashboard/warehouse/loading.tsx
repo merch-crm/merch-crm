@@ -1,19 +1,9 @@
-
+import { SkeletonPageHeader } from "@/components/ui/skeleton";
 
 export default function WarehouseLoading() {
     return (
-        <div className="space-y-8 animate-pulse">
-            {/* Header Skeleton */}
-            <div className="flex justify-between items-start">
-                <div className="space-y-3">
-                    <div className="h-10 w-64 bg-slate-200 rounded-2xl" />
-                    <div className="h-4 w-96 bg-slate-50 rounded-lg" />
-                </div>
-                <div className="flex gap-3">
-                    <div className="h-11 w-40 bg-slate-200 rounded-xl" />
-                    <div className="h-11 w-40 bg-slate-200 rounded-xl" />
-                </div>
-            </div>
+        <div className="space-y-4 animate-pulse">
+            <SkeletonPageHeader buttons={2} />
 
             {/* Tabs Skeleton */}
             <div className="h-[58px] bg-white/50 border border-slate-200/50 rounded-[22px]" />

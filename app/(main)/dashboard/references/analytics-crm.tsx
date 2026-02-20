@@ -17,21 +17,21 @@ import { cn } from "@/lib/utils";
 
 export default function AnalyticsCRM() {
     return (
-        <div className="space-y-8 mt-10">
+        <div className="space-y-4 mt-10">
 
             {/* --- HEADER --- */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold tracking-normal text-slate-900">Analytics</h1>
+                <h1 className="text-4xl font-bold text-slate-900">Analytics</h1>
 
                 <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center hover:scale-110 transition-transform"><Search className="w-5 h-5 text-slate-600" /></button>
-                    <button className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center hover:scale-110 transition-transform"><SlidersHorizontal className="w-5 h-5 text-slate-600" /></button>
-                    <button className="h-10 px-4 rounded-[var(--radius-inner)] glass-panel flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                    <button type="button" className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center hover:scale-110 transition-transform"><Search className="w-5 h-5 text-slate-600" /></button>
+                    <button type="button" className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center hover:scale-110 transition-transform"><SlidersHorizontal className="w-5 h-5 text-slate-600" /></button>
+                    <button type="button" className="h-10 px-4 rounded-[var(--radius-inner)] glass-panel flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
                         <Calendar className="w-4 h-4" />
                         <span>27 Jan - 27 Feb</span>
                         <ChevronDown className="w-4 h-4 opacity-50" />
                     </button>
-                    <button className="h-10 px-4 rounded-[var(--radius-inner)] bg-primary text-white flex items-center gap-2 text-sm font-bold hover:bg-primary-hover transition-colors shadow-xl shadow-primary/20">
+                    <button type="button" className="h-10 px-4 rounded-[var(--radius-inner)] bg-primary text-white flex items-center gap-2 text-sm font-bold hover:bg-primary-hover transition-colors shadow-xl shadow-primary/20">
                         <Plus className="w-4 h-4" />
                         Add Wallet
                     </button>
@@ -40,7 +40,7 @@ export default function AnalyticsCRM() {
 
 
             {/* --- GRID --- */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
                 {/* EXPENSES (Dark Card) */}
                 <div className="lg:col-span-4 bg-slate-900 rounded-[var(--radius-outer)] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 min-h-[400px] flex flex-col">
@@ -50,7 +50,7 @@ export default function AnalyticsCRM() {
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-8">
                             <h3 className="text-2xl font-bold">Expenses</h3>
-                            <button className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                                 <MoreHorizontal className="w-4 h-4" />
                             </button>
                         </div>
@@ -64,7 +64,7 @@ export default function AnalyticsCRM() {
                                     <circle cx="100" cy="100" r="80" fill="none" stroke="#a78bfa" strokeWidth="20" strokeDasharray="125 502" strokeDashoffset="-251" strokeLinecap="round" />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <div className="text-sm font-bold text-white/60  tracking-wider">All expenses</div>
+                                    <div className="text-sm font-bold text-white/60 ">All expenses</div>
                                     <div className="text-3xl font-bold">$5120<span className="text-lg">.00</span></div>
                                 </div>
                             </div>
@@ -81,7 +81,7 @@ export default function AnalyticsCRM() {
                 <div className="lg:col-span-4 glass-panel p-8 min-h-[400px] flex flex-col">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Replenishment</h3>
-                        <button className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
+                        <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
                             <MoreHorizontal className="w-4 h-4 text-slate-600" />
                         </button>
                     </div>
@@ -93,7 +93,7 @@ export default function AnalyticsCRM() {
                             <Apple className="w-8 h-8 text-white" />
                         </div>
                         <div className="absolute bottom-6 left-6 right-6">
-                            <div className="text-white/60 text-xs font-bold  tracking-wider mb-2">Balance</div>
+                            <div className="text-white/60 text-xs font-bold  mb-2">Balance</div>
                             <div className="text-white text-2xl font-bold">$ 4,532.00</div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ export default function AnalyticsCRM() {
                 <div className="lg:col-span-4 glass-panel p-8">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Transfers to people</h3>
-                        <button className="text-xs font-bold text-slate-400 hover:text-slate-900  tracking-wider">See all</button>
+                        <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900 ">See all</button>
                     </div>
 
                     <div className="space-y-4">
@@ -143,7 +143,7 @@ export default function AnalyticsCRM() {
                 <div className="lg:col-span-6 glass-panel p-8">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Spending categories</h3>
-                        <button className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
+                        <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
                             <MoreHorizontal className="w-4 h-4 text-slate-600" />
                         </button>
                     </div>
@@ -184,10 +184,10 @@ export default function AnalyticsCRM() {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Your expenses this year</h3>
                         <div className="flex items-center gap-2">
-                            <button className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
+                            <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
                                 <SlidersHorizontal className="w-4 h-4 text-slate-600" />
                             </button>
-                            <button className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
+                            <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
                                 <ArrowUpRight className="w-4 h-4 text-slate-600" />
                             </button>
                         </div>
@@ -244,7 +244,7 @@ export default function AnalyticsCRM() {
                 <div className="lg:col-span-12 glass-panel p-8">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Your currencies</h3>
-                        <button className="h-10 px-4 rounded-[var(--radius-inner)] bg-primary text-white flex items-center gap-2 text-sm font-bold hover:bg-primary-hover transition-colors shadow-xl shadow-primary/20">
+                        <button type="button" className="h-10 px-4 rounded-[var(--radius-inner)] bg-primary text-white flex items-center gap-2 text-sm font-bold hover:bg-primary-hover transition-colors shadow-xl shadow-primary/20">
                             <Plus className="w-4 h-4" />
                             Add Currency
                         </button>

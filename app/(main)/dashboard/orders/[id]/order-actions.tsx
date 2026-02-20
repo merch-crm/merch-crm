@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Archive, ArchiveRestore, Trash2, Loader2 } from "lucide-react";
-import { archiveOrder, deleteOrder } from "../actions";
+import { archiveOrder, deleteOrder } from "../actions/core.actions";;
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

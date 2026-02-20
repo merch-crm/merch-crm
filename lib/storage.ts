@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, ListObjectsV2Output, DeleteObjectCommand, CopyObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import sharp from "sharp";
 
 const endpoint = process.env.S3_ENDPOINT || process.env.REG_STORAGE_ENDPOINT || "https://s3.regru.cloud";
 const region = process.env.S3_REGION || process.env.REG_STORAGE_REGION || "ru-1";
@@ -15,21 +16,49 @@ const s3Client = new S3Client({
     forcePathStyle: true, // Often required for S3-compatible providers
 });
 
+interface UploadOptions {
+    compress?: boolean;
+}
+
 export async function uploadFile(
     key: string,
     body: Buffer | Uint8Array | Blob | string,
-    contentType?: string
+    contentType?: string,
+    options: UploadOptions = {}
 ) {
+    let finalBody = body;
+    let finalContentType = contentType;
+    let finalKey = key;
+
+    // Image compression logic
+    // Only works if body is Buffer or Uint8Array. If string/Blob, we might skip or convert.
+    // Assuming body is Buffer for uploads.
+    if (options.compress && contentType?.startsWith("image/") && !contentType.includes("svg") && !contentType.includes("gif") && (body instanceof Buffer || body instanceof Uint8Array)) {
+        try {
+            const image = sharp(body as Buffer);
+
+            finalBody = await image
+                .resize(2560, 2560, { fit: "inside", withoutEnlargement: true })
+                .webp({ quality: 85 })
+                .toBuffer();
+
+            finalContentType = "image/webp";
+            finalKey = key.replace(/\.[^/.]+$/, "") + ".webp";
+        } catch (error) {
+            console.error("Image compression failed, proceeding with original:", error);
+        }
+    }
+
     const command = new PutObjectCommand({
         Bucket: bucketName,
-        Key: key,
-        Body: body,
-        ContentType: contentType,
+        Key: finalKey,
+        Body: finalBody,
+        ContentType: finalContentType,
     });
 
     try {
         await s3Client.send(command);
-        return key;
+        return finalKey;
     } catch (error) {
         console.error("Error uploading file to Reg.ru Storage:", error);
         throw error;

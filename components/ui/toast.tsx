@@ -73,7 +73,7 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
                             setIsVisible(false);
                             setTimeout(onClose, 300);
                         }}
-                        className="ml-4 px-3 py-1 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-bold tracking-normal text-slate-900 transition-all flex items-center gap-1.5"
+                        className="ml-4 px-3 py-1 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-900 transition-all flex items-center gap-1.5"
                     >
                         <Undo2 className="w-3 h-3" />
                         {action.label}

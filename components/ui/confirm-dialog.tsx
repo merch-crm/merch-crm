@@ -101,6 +101,7 @@ export function ConfirmDialog({
                 )}>
                     <Button
                         variant="ghost"
+                        type="button"
                         onClick={onClose}
                         disabled={isLoading}
                         className={cn(
@@ -114,6 +115,7 @@ export function ConfirmDialog({
                     </Button>
                     <Button
                         variant={isDestructive ? "destructive" : "btn-dark"}
+                        type="button"
                         onClick={onConfirm}
                         disabled={isLoading || isConfirmDisabled}
                         className={cn(

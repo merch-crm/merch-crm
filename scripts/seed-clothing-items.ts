@@ -34,14 +34,14 @@ async function main() {
         description: string;
         quantity: number;
         unit: string;
-        attributes: any;
+        attributes: Record<string, unknown>;
     }> = {
         "Футболки": {
             name: "Футболка базовая хлопок",
             sku: "FT-001",
             description: "Классическая футболка из 100% хлопка, плотность 160 г/м²",
             quantity: 50,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "100% хлопок",
                 density: "160 г/м²",
@@ -54,7 +54,7 @@ async function main() {
             sku: "HD-001",
             description: "Худи с капюшоном и карманом-кенгуру, плотность 320 г/м²",
             quantity: 30,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "80% хлопок, 20% полиэстер",
                 density: "320 г/м²",
@@ -67,7 +67,7 @@ async function main() {
             sku: "SW-001",
             description: "Свободный свитшот без капюшона, плотность 280 г/м²",
             quantity: 25,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "80% хлопок, 20% полиэстер",
                 density: "280 г/м²",
@@ -80,7 +80,7 @@ async function main() {
             sku: "LS-001",
             description: "Лонгслив с длинным рукавом, плотность 180 г/м²",
             quantity: 40,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "100% хлопок",
                 density: "180 г/м²",
@@ -93,7 +93,7 @@ async function main() {
             sku: "ZH-001",
             description: "Худи с полной молнией и двумя карманами, плотность 340 г/м²",
             quantity: 20,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "80% хлопок, 20% полиэстер",
                 density: "340 г/м²",
@@ -106,7 +106,7 @@ async function main() {
             sku: "AN-001",
             description: "Анорак с капюшоном и передним карманом, водоотталкивающая ткань",
             quantity: 15,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "100% нейлон",
                 features: ["Водоотталкивающая ткань", "Ветрозащита"],
@@ -119,7 +119,7 @@ async function main() {
             sku: "PL-001",
             description: "Рубашка поло с воротником и планкой на пуговицах, плотность 200 г/м²",
             quantity: 35,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "100% хлопок пике",
                 density: "200 г/м²",
@@ -132,7 +132,7 @@ async function main() {
             sku: "PT-001",
             description: "Спортивные штаны с резинкой и карманами, плотность 280 г/м²",
             quantity: 28,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "80% хлопок, 20% полиэстер",
                 density: "280 г/м²",
@@ -145,7 +145,7 @@ async function main() {
             sku: "CP-001",
             description: "Бейсболка с регулируемым ремешком, 6 панелей",
             quantity: 60,
-            unit: "pcs",
+            unit: "шт.",
             attributes: {
                 material: "100% хлопок",
                 type: "6 панелей",

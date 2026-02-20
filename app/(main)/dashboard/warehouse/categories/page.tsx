@@ -1,8 +1,10 @@
-import { getInventoryCategories, getSession, getOrphanedItemCount } from "../actions";
+import { getInventoryCategories, getOrphanedItemCount } from "../category-actions";
+import { getSession } from "../warehouse-stats-actions";;
 import { InventoryClient } from "../inventory-client";
 import { WarehouseWidgetsContainer } from "./widgets-container";
 import { WarehouseWidgetsSkeleton } from "../warehouse-widgets";
 import { Suspense } from "react";
+import { PageContainer } from "@/components/ui/page-container";
 
 export const metadata = {
     title: "Категории | Склад",
@@ -16,7 +18,7 @@ export default async function WarehouseCategoriesPage() {
     const session = await getSession();
 
     return (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <PageContainer>
             <Suspense fallback={<WarehouseWidgetsSkeleton />}>
                 <WarehouseWidgetsContainer />
             </Suspense>
@@ -56,7 +58,7 @@ export default async function WarehouseCategoriesPage() {
             }>
                 <InventoryListContainer session={session} />
             </Suspense>
-        </div>
+        </PageContainer>
     );
 }
 
@@ -69,8 +71,8 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
         getOrphanedItemCount()
     ]);
 
-    const categoriesRes = (categoriesResult.success && 'data' in categoriesResult) ? categoriesResult.data : [];
-    const orphanedCount = (orphanedResult.success && 'data' in orphanedResult) ? orphanedResult.data : 0;
+    const categoriesRes = categoriesResult.success ? (categoriesResult.data || []) : [];
+    const orphanedCount = orphanedResult.success ? (orphanedResult.data || 0) : 0;
 
     const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
     const categories: Category[] = [...categoriesRes];

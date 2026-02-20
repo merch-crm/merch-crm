@@ -34,11 +34,36 @@ export const UpdateOrderPrioritySchema = z.object({
     priority: z.enum(["low", "medium", "high", "normal"]),
 });
 
-export const SearchOrdersSchema = z.object({
-    from: z.date().optional(),
-    to: z.date().optional(),
-    page: z.number().int().min(1).default(1),
-    limit: z.number().int().min(1).max(100).default(20),
-    showArchived: z.boolean().default(false),
-    search: z.string().optional(),
+export const OrderIdSchema = z.object({
+    orderId: z.string().uuid("Некорректный ID заказа"),
+});
+
+export const UpdateOrderStatusSchema = z.object({
+    orderId: z.string().uuid("Некорректный ID заказа"),
+    newStatus: z.enum(["new", "design", "production", "done", "shipped", "cancelled"]),
+    reason: z.string().optional(),
+});
+
+export const BulkOrdersSchema = z.object({
+    orderIds: z.array(z.string().uuid("Некорректный ID заказа")).min(1, "Выберите хотя бы один заказ"),
+});
+
+export const AddPaymentSchema = z.object({
+    orderId: z.string().uuid("Некорректный ID заказа"),
+    amount: z.number().min(0.01, "Сумма должна быть больше 0"),
+    method: z.enum(["cash", "bank", "online", "account"]),
+    isAdvance: z.boolean().default(false),
+    comment: z.string().optional(),
+});
+
+export const RefundOrderSchema = z.object({
+    orderId: z.string().uuid("Некорректный ID заказа"),
+    amount: z.number().min(0.01, "Сумма должна быть больше 0"),
+    reason: z.string().min(1, "Укажите причину возврата"),
+});
+
+export const UpdateOrderFieldSchema = z.object({
+    orderId: z.string().uuid("Некорректный ID заказа"),
+    field: z.string(),
+    value: z.union([z.string(), z.number(), z.boolean(), z.date()]).nullable(),
 });

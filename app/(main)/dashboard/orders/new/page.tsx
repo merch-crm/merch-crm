@@ -1,4 +1,4 @@
-import { getInventoryForSelect } from "../actions";
+import { getInventoryForSelect } from "../actions/core.actions";;
 import { CreateOrderPageClient } from "./page-client";
 import { getSession } from "@/lib/auth";
 
@@ -16,7 +16,7 @@ export default async function NewOrderPage() {
 
     return (
         <CreateOrderPageClient
-            initialInventory={inventory}
+            initialInventory={inventory.map(i => ({ ...i, quantity: i.quantity || 0, unit: null }))}
             userRoleName={session?.roleName}
         />
     );

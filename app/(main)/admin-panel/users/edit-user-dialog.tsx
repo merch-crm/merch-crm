@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+
 import { User, Mail, Lock, Shield, Building, Save, Loader2, Eye, EyeOff } from "lucide-react";
-import { updateUser, getRoles, getDepartments } from "../actions";
+
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
+import { IconSelect } from "@/components/ui/icon-select";
+import { IconInput } from "@/components/ui/icon-input";
+import { useEditUser } from "./hooks/use-edit-user";
 
 interface EditUserDialogProps {
     user: {
@@ -22,55 +25,7 @@ interface EditUserDialogProps {
 }
 
 export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDialogProps) {
-    const [loading, setLoading] = useState(false);
-    const [roles, setRoles] = useState<{ id: string, name: string, departmentId: string | null }[]>([]);
-    const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
-    const [selectedRoleId, setSelectedRoleId] = useState(user?.roleId || "");
-    const [selectedDeptId, setSelectedDeptId] = useState(user?.departmentId || "");
-
-    useEffect(() => {
-        if (isOpen) {
-            getRoles().then(res => {
-                if (res.data) setRoles(res.data as { id: string, name: string, departmentId: string | null }[]);
-            });
-            getDepartments().then(res => {
-                if (res.data) setDepartments(res.data as { id: string, name: string }[]);
-            });
-        }
-    }, [isOpen]);
-
-    // Initialize state when user changes, but only if not already set or different
-    // Initialize state when user changes
-    useEffect(() => {
-        if (user && isOpen) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setSelectedRoleId(user.roleId || "");
-            setSelectedDeptId(user.departmentId || "");
-        }
-    }, [user, isOpen]);
-
-    const handleRoleChange = (roleId: string) => {
-        setSelectedRoleId(roleId);
-        const role = roles.find(r => r.id === roleId);
-        if (role && role.departmentId) {
-            setSelectedDeptId(role.departmentId);
-        }
-    };
-
-    async function handleSubmit(formData: FormData) {
-        if (!user) return;
-        setLoading(true);
-        setError(null);
-        const res = await updateUser(user.id, formData);
-        setLoading(false);
-        if (res?.error) {
-            setError(res.error);
-        } else {
-            onSuccess();
-        }
-    }
+    const { state, updateState, handleRoleChange, handleSubmit } = useEditUser(user, isOpen, onClose, onSuccess);
 
     if (!user) return null;
 
@@ -83,61 +38,57 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
             className="items-start"
         >
             <div>
-                {error && (
+                {state.error && (
                     <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-[18px] border border-red-100">
-                        {error}
+                        {state.error}
                     </div>
                 )}
 
-                <form action={handleSubmit} className="space-y-5 pb-5">
+                <form onSubmit={handleSubmit} className="space-y-4 pb-5">
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 pl-1">ФИО сотрудника</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                            <Input
-                                type="text"
-                                name="name"
-                                required
-                                defaultValue={user.name}
-                                placeholder="Иван Иванов"
-                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
-                            />
-                        </div>
+                        <IconInput
+                            startIcon={User}
+                            type="text"
+                            name="name"
+                            required
+                            defaultValue={user.name}
+                            placeholder="Иван Иванов"
+                            className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
+                        />
                     </div>
 
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 pl-1">Email (Логин)</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                            <Input
-                                type="email"
-                                name="email"
-                                required
-                                defaultValue={user.email}
-                                placeholder="ivan@crm.local"
-                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
-                            />
-                        </div>
+                        <IconInput
+                            startIcon={Mail}
+                            type="email"
+                            name="email"
+                            required
+                            defaultValue={user.email}
+                            placeholder="ivan@crm.local"
+                            className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
+                        />
                     </div>
 
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 pl-1">Новый пароль (оставьте пустым, если не хотите менять)</label>
                         <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                            <Input
-                                type={showPassword ? "text" : "password"}
+                            <IconInput
+                                startIcon={Lock}
+                                type={state.showPassword ? "text" : "password"}
                                 name="password"
                                 placeholder="••••••••"
-                                className="block w-full pl-10 pr-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
+                                className="block w-full pr-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
                             />
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={() => updateState({ showPassword: !state.showPassword })}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors h-auto w-auto hover:bg-transparent"
                             >
-                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                {state.showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </Button>
                         </div>
                     </div>
@@ -145,35 +96,31 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Роль в системе</label>
-                            <div className="relative">
-                                <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                                <PremiumSelect
-                                    name="roleId"
-                                    value={selectedRoleId}
-                                    options={roles.map(role => ({ id: role.id, title: role.name }))}
-                                    placeholder="Выбрать роль"
-                                    className="pl-10 h-11"
-                                    onChange={(val) => handleRoleChange(val)}
-                                />
-                            </div>
+                            <IconSelect
+                                startIcon={Shield}
+                                name="roleId"
+                                value={state.selectedRoleId}
+                                options={state.roles.map(role => ({ id: role.id, title: role.name }))}
+                                placeholder="Выбрать роль"
+                                className="h-11"
+                                onChange={(val) => handleRoleChange(val)}
+                            />
                         </div>
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Отдел</label>
-                            <div className="relative">
-                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                                <PremiumSelect
-                                    name="departmentId"
-                                    value={selectedDeptId}
-                                    options={[
-                                        { id: "", title: "Все отделы" },
-                                        ...departments.map(dept => ({ id: dept.id, title: dept.name }))
-                                    ]}
-                                    placeholder="Выбрать отдел"
-                                    className="pl-10 h-11"
-                                    onChange={(val) => setSelectedDeptId(val)}
-                                />
-                                <input type="hidden" name="department" value={departments.find(d => d.id === selectedDeptId)?.name || ""} />
-                            </div>
+                            <IconSelect
+                                startIcon={Building}
+                                name="departmentId"
+                                value={state.selectedDeptId}
+                                options={[
+                                    { id: "", title: "Все отделы" },
+                                    ...state.departments.map(dept => ({ id: dept.id, title: dept.name }))
+                                ]}
+                                placeholder="Выбрать отдел"
+                                className="h-11"
+                                onChange={(val) => updateState({ selectedDeptId: val })}
+                            />
+                            <input type="hidden" name="department" value={state.departments.find(d => d.id === state.selectedDeptId)?.name || ""} />
                         </div>
                     </div>
 
@@ -188,15 +135,15 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                         </Button>
                         <Button
                             type="submit"
-                            disabled={loading}
+                            disabled={state.loading}
                             className="flex-[2] inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] h-11 px-4 font-bold text-white shadow-lg transition-all active:scale-[0.98]"
                         >
-                            {loading ? (
+                            {state.loading ? (
                                 <Loader2 className="w-5 h-5 animate-spin mr-1" />
                             ) : (
                                 <Save className="w-5 h-5 mr-1" />
                             )}
-                            {loading ? "Сохранение..." : "Сохранить изменения"}
+                            {state.loading ? "Сохранение..." : "Сохранить изменения"}
                         </Button>
                     </div>
                 </form>

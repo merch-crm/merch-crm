@@ -1,6 +1,6 @@
 "use client";
 
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet-dialog";
 import { Sidebar } from "./sidebar";
 import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -36,7 +36,7 @@ export function MobileSidebarTrigger({ user }: { user: UserProp }) {
                         <div className="p-1 rounded-xl transition-transform duration-300">
                             <Menu className="h-5 w-5" strokeWidth={2} />
                         </div>
-                        <span className="text-[10px] font-bold tracking-tight">Меню</span>
+                        <span className="text-xs font-bold tracking-tight">Меню</span>
                     </div>
                 </Button>
             </SheetTrigger>

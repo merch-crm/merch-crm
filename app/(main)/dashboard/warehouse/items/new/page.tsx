@@ -1,4 +1,7 @@
-import { getInventoryCategories, getStorageLocations, getMeasurementUnits, getInventoryAttributes, getInventoryAttributeTypes } from "../../actions";
+import { getInventoryCategories } from "../../category-actions";
+import { getStorageLocations } from "../../storage-actions";
+import { getMeasurementUnits } from "../../warehouse-shared.actions";
+import { getInventoryAttributes, getInventoryAttributeTypes } from "../../attribute-actions";;
 import { NewItemPageClient } from "./new-item-page-client";
 
 export const metadata = {

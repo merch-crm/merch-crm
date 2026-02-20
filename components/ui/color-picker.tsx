@@ -83,7 +83,7 @@ export function ColorPicker({
                         sideOffset={8}
                         collisionPadding={20}
                     >
-                        <style dangerouslySetInnerHTML={{ __html: colorPickerStyles }} />
+                        <style>{colorPickerStyles}</style>
 
                         <div className="p-3.5 space-y-4">
                             <div className="custom-color-picker-wrapper">
@@ -100,7 +100,7 @@ export function ColorPicker({
                                     <input
                                         value={inputValue}
                                         onChange={handleInputChange}
-                                        className="bg-transparent border-none outline-none font-mono text-[11px] font-bold text-slate-900 w-full uppercase tracking-wider"
+                                        className="bg-transparent border-none outline-none font-mono text-xs font-bold text-slate-900 w-full"
                                         spellCheck={false}
                                     />
                                 </div>
@@ -172,5 +172,5 @@ const colorPickerStyles = `
 `;
 
 export function ColorPickerStyles() {
-    return <style dangerouslySetInnerHTML={{ __html: colorPickerStyles }} />;
+    return <style>{colorPickerStyles}</style>;
 }

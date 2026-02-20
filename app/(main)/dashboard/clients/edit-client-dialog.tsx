@@ -2,33 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, MessageSquare } from "lucide-react";
-import { updateClient, getManagers } from "./actions";
+import { updateClient, getManagers } from "./actions/core.actions";;
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { Select } from "@/components/ui/select";
 
+
+interface ClientData {
+    id: string;
+    lastName: string;
+    firstName: string;
+    patronymic?: string | null;
+    company?: string | null;
+    phone?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+    email?: string | null;
+    city?: string | null;
+    address?: string | null;
+    comments?: string | null;
+    socialLink?: string | null;
+    acquisitionSource?: string | null;
+    managerId?: string | null;
+}
 
 interface EditClientDialogProps {
-    client: {
-        id: string;
-        lastName: string;
-        firstName: string;
-        patronymic?: string | null;
-        company?: string | null;
-        phone?: string | null;
-        telegram?: string | null;
-        instagram?: string | null;
-        email?: string | null;
-        city?: string | null;
-        address?: string | null;
-        comments?: string | null;
-        socialLink?: string | null;
-        acquisitionSource?: string | null;
-        managerId?: string | null;
-    };
+    client: ClientData;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -58,8 +60,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
 
     if (!client) return null;
 
-    async function handleSubmit(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setLoading(true);
+        const formData = new FormData(e.currentTarget);
         const res = await updateClient(client.id, formData);
         setLoading(false);
         if (!res.success) {
@@ -80,8 +84,8 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
             description="Измените необходимые поля"
             className="max-w-2xl max-h-[90vh]"
         >
-            <form action={handleSubmit} className="flex flex-col h-full bg-white">
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 custom-scrollbar">
+            <form onSubmit={handleSubmit} className="flex flex-col h-full bg-white">
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 custom-scrollbar">
                     {/* Name Group */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -206,7 +210,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Источник
                             </label>
-                            <PremiumSelect
+                            <Select
                                 name="acquisitionSource"
                                 value={acquisitionSource}
                                 onChange={setAcquisitionSource}
@@ -227,7 +231,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Менеджер
                             </label>
-                            <PremiumSelect
+                            <Select
                                 name="managerId"
                                 value={managerId}
                                 onChange={setManagerId}

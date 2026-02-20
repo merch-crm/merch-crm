@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { Sparkles } from "lucide-react";
 import { CLOTHING_QUALITIES } from "./category-utils";
-import { PremiumSelect, PremiumSelectOption } from "@/components/ui/premium-select";
+import { Select, SelectOption } from "@/components/ui/select";
 
 interface QualityDropdownProps {
     value: string;
@@ -22,7 +22,7 @@ export function QualityDropdown({ value, onChange, options: externalOptions, cla
             title: q.name,
             description: q.code === "PRM" ? "Премиум материалы" : q.code === "BS" ? "Базовые материалы" : "Пользовательский вариант",
             icon: <Sparkles className="w-4 h-4 opacity-50" />
-        } as PremiumSelectOption));
+        } as SelectOption));
     }, [finalOptions]);
 
     const handleChange = (id: string) => {
@@ -36,7 +36,7 @@ export function QualityDropdown({ value, onChange, options: externalOptions, cla
 
     return (
         <div className={className}>
-            <PremiumSelect
+            <Select
                 options={selectOptions}
                 value={value}
                 onChange={handleChange}

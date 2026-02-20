@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { reportProductionDefect } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -23,6 +24,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
     const [reason, setReason] = useState("");
     const [isPending, setIsPending] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     const handleReport = async () => {
         if (!quantity || Number(quantity) <= 0) {
@@ -42,7 +44,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
             toast("Брак зафиксирован. Остатки списаны.", "success");
             playSound("notification_success");
             setIsOpen(false);
-            window.location.reload();
+            router.refresh();
         } else {
             toast(res.error || "Ошибка при списании брака", "error");
             playSound("notification_error");
@@ -67,8 +69,8 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                 className="max-w-md"
             >
                 <div className="flex flex-col">
-                    <div className="p-6 space-y-6">
-                        <div className="flex items-center gap-4 mb-2">
+                    <div className="p-6 space-y-4">
+                        <div className="flex items-center gap-3 mb-2">
                             <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
                                 <AlertTriangle className="w-6 h-6" />
                             </div>
@@ -82,7 +84,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
 
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="quantity" className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Количество брака (шт)</Label>
+                                <Label htmlFor="quantity" className="text-[11px] font-bold text-slate-400">Количество брака (шт)</Label>
                                 <Input
                                     id="quantity"
                                     type="number"
@@ -90,11 +92,11 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                                     onChange={(e) => setQuantity(e.target.value)}
                                     className="h-12 bg-slate-50 border-slate-200 font-bold rounded-2xl"
                                 />
-                                <p className="text-[10px] text-slate-400 font-bold">Максимально в этой позиции: {maxQuantity} шт</p>
+                                <p className="text-xs text-slate-400 font-bold">Максимально в этой позиции: {maxQuantity} шт</p>
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="reason" className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Причина брака</Label>
+                                <Label htmlFor="reason" className="text-[11px] font-bold text-slate-400">Причина брака</Label>
                                 <Input
                                     id="reason"
                                     value={reason}

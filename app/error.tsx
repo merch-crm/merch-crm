@@ -23,7 +23,7 @@ export default function Error({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
-            <div className="text-center p-8 md:p-12 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-8 animate-in zoom-in-95 duration-700">
+            <div className="text-center p-8 md:p-12 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-700">
                 <div className="w-[80px] h-[80px] bg-rose-50 rounded-[24px] flex items-center justify-center text-rose-500 mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                 </div>
@@ -39,13 +39,13 @@ export default function Error({
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                    <button
+                    <button type="button"
                         onClick={() => reset()}
                         className="flex-1 px-6 py-3.5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10"
                     >
                         Попробовать снова
                     </button>
-                    <button
+                    <button type="button"
                         onClick={() => window.location.href = '/dashboard'}
                         className="flex-1 px-6 py-3.5 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98]"
                     >
@@ -53,7 +53,7 @@ export default function Error({
                     </button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 text-[10px] font-bold text-slate-300 tracking-widest uppercase">
+                <div className="pt-4 border-t border-slate-100 text-xs font-bold text-slate-300">
                     Merch CRM Recovery Mode
                 </div>
             </div>

@@ -100,16 +100,16 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                     const isDone = task.status === "done";
 
                     return (
-                        <div
+                        <div role="button" tabIndex={0}
                             key={task.id}
-                            onClick={() => setSelectedTask(task)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedTask(task)}
                             className={cn(
                                 "group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
                                 index !== tasks.length - 1 && "border-b border-slate-100",
                                 isDone && "bg-slate-50/50"
                             )}
                         >
-                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -132,11 +132,11 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                                         )}>
                                             {task.title}
                                         </h3>
-                                        <span className={cn("px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter", config.color)}>
+                                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-black tracking-tighter", config.color)}>
                                             {config.label}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400">
+                                    <div className="flex items-center gap-3 text-xs font-bold text-slate-400">
                                         <div className="flex items-center gap-1">
                                             <User className="w-3 h-3" />
                                             <span className="truncate max-w-[100px]">

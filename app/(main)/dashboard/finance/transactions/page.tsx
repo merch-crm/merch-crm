@@ -1,4 +1,4 @@
-import { getFinanceTransactions } from "../actions";
+import { getFinanceTransactions } from "../actions";;
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { TransactionsClient } from "../transactions-client";

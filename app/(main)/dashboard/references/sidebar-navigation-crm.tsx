@@ -71,8 +71,8 @@ const SidebarItem = ({
     if (!isCollapsed) {
         return (
             <div className="mb-1">
-                <div
-                    onClick={() => item.subItems ? onToggle(item.id) : null}
+                <div role="button" tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => item.subItems ? onToggle(item.id) : null}
                     className={`
                         relative flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-colors
                         ${isActive || (item.isOpen && item.subItems) ? 'bg-slate-100/80 text-slate-900' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'}
@@ -221,7 +221,7 @@ export default function SidebarNavigationCRM() {
                 {/* STATE 1: EXPANDED */}
                 <div className="w-[280px] h-[700px] bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-5 flex flex-col relative overflow-visible">
                     {/* Toggle Button */}
-                    <button className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
+                    <button type="button" className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
                         <ChevronLeft size={14} />
                     </button>
 
@@ -276,7 +276,7 @@ export default function SidebarNavigationCRM() {
                 {/* STATE 2: COLLAPSED */}
                 <div className="w-[84px] h-[700px] bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] p-4 flex flex-col relative items-center">
                     {/* Toggle Button */}
-                    <button className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
+                    <button type="button" className="absolute -right-3 top-12 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200 z-10">
                         <ChevronRight size={14} />
                     </button>
 

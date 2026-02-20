@@ -45,7 +45,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
             description={`Вы уверены, что хотите удалить роль ${role.name}?`}
             className="items-start"
         >
-            <div className="space-y-6">
+            <div className="space-y-4">
                 <div className="bg-slate-50 rounded-[18px] p-4 mb-6 border border-slate-200 text-center backdrop-blur-sm">
                     <p className="text-[13px] text-slate-600 leading-relaxed font-medium">
                         Это действие <span className="text-slate-900 font-bold">нельзя будет отменить</span>. Все настройки разрешений для этой роли будут безвозвратно удалены.
@@ -56,7 +56,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                     <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100">
                         <div className="flex items-center gap-2 text-rose-600 mb-3">
                             <Lock className="w-4 h-4" />
-                            <span className="text-xs font-bold  tracking-wider">Системная защита</span>
+                            <span className="text-xs font-bold ">Системная защита</span>
                         </div>
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системная роль. Для подтверждения удаления введите пароль от своей учетной записи.
@@ -74,6 +74,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
                     <Button
+                        type="button"
                         variant="ghost"
                         onClick={() => {
                             setPassword("");
@@ -85,6 +86,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                         Отмена
                     </Button>
                     <Button
+                        type="button"
                         variant="destructive"
                         onClick={handleConfirm}
                         disabled={loading || (role.isSystem && !password.trim())}

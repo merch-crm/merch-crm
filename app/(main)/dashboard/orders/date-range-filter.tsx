@@ -51,8 +51,8 @@ export function DateRangeFilter() {
     const handleApplyCustomRange = () => {
         if (dateRange?.from) {
             const params = new URLSearchParams(searchParams.toString());
-            const fromStr = format(dateRange.from, "yyyy-MM-dd");
-            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : fromStr;
+            const fromStr = format(dateRange.from, "yyyy-MM-dd", { locale: ru });
+            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd", { locale: ru }) : fromStr;
 
             params.set("from", fromStr);
             params.set("to", toStr);
@@ -81,7 +81,7 @@ export function DateRangeFilter() {
                                 : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
-                        <button>{range.label}</button>
+                        <button type="button">{range.label}</button>
                     </Button>
                 ))}
 
@@ -98,7 +98,7 @@ export function DateRangeFilter() {
                                     : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
-                            <button>
+                            <button type="button">
                                 <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ? "text-primary" : "text-slate-400")} />
                                 <span className="hidden sm:inline">Выбрать период</span>
                                 <span className="sm:hidden">Период</span>
@@ -137,7 +137,7 @@ export function DateRangeFilter() {
                                             locale={ru}
                                         />
 
-                                        <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between gap-4">
+                                        <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
                                             <div className="text-xs font-medium text-slate-500">
                                                 {dateRange?.from ? (
                                                     <>
@@ -167,7 +167,7 @@ export function DateRangeFilter() {
                 {isCustom && fromParam && toParam && (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-[14px] shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
                         <span className="text-primary font-bold text-sm">
-                            {format(new Date(fromParam), "dd.MM.yy")} — {format(new Date(toParam), "dd.MM.yy")}
+                            {format(new Date(fromParam), "dd.MM.yy", { locale: ru })} — {format(new Date(toParam), "dd.MM.yy", { locale: ru })}
                         </span>
                         <Button
                             variant="ghost"

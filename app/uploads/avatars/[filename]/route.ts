@@ -23,7 +23,6 @@ export async function GET(
         const filePath = path.join(LOCAL_STORAGE_ROOT, "avatars", filename);
 
         if (!fs.existsSync(filePath)) {
-            console.log(`[LegacyAvatarRoute] File not found: ${filePath}`);
             return new NextResponse("File not found", { status: 404 });
         }
 

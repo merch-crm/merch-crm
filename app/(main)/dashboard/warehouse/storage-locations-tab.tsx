@@ -3,7 +3,7 @@
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { deleteStorageLocation, updateStorageLocationsOrder } from "./actions";
+import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";;
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -43,16 +43,18 @@ export interface StorageLocation {
         name: string;
     } | null;
     type: "warehouse" | "production" | "office";
-    items?: Array<{
-        id: string;
-        name: string;
-        quantity: number;
-        unit: string;
-        sku?: string | null;
-        categoryId?: string | null;
-        categoryName?: string | null;
-    }>;
+    items?: StorageLocationItem[];
 }
+
+export type StorageLocationItem = {
+    id: string;
+    name: string;
+    quantity: number;
+    unit: string;
+    sku?: string | null;
+    categoryId?: string | null;
+    categoryName?: string | null;
+};
 
 interface StorageLocationsTabProps {
     locations: StorageLocation[];
@@ -60,64 +62,77 @@ interface StorageLocationsTabProps {
 }
 
 export function StorageLocationsTab({ locations, users }: StorageLocationsTabProps) {
-    const [editingLocation, setEditingLocation] = useState<StorageLocation | null>(null);
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [deleteName, setDeleteName] = useState<string | null>(null);
-    const [deleteIsSystem, setDeleteIsSystem] = useState(false);
-    const [deletePassword, setDeletePassword] = useState("");
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [mounted, setMounted] = useState(false);
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const [localLocations, setLocalLocations] = useState(locations);
-    const [prevPropsLocations, setPrevPropsLocations] = useState(locations);
+    const [uiState, setUiState] = useState({
+        editingLocation: null as StorageLocation | null,
+        deleteId: null as string | null,
+        deleteName: null as string | null,
+        deleteIsSystem: false,
+        deletePassword: "",
+        isDeleting: false,
+        isMounted: false,
+        activeId: null as string | null
+    });
+
+    const [dataState, setDataState] = useState({
+        localLocations: locations,
+        prevPropsLocations: locations
+    });
     const { toast } = useToast();
 
     // State during render pattern for synchronizing props with local state
-    if (locations !== prevPropsLocations) {
-        setPrevPropsLocations(locations);
-        setLocalLocations(locations);
+    if (locations !== dataState.prevPropsLocations) {
+        setDataState(prev => ({
+            ...prev,
+            prevPropsLocations: locations,
+            localLocations: locations
+        }));
 
         // Sync editing location if it changed in props
-        if (editingLocation) {
-            const updated = locations.find(l => l.id === editingLocation.id);
-            if (updated && JSON.stringify(updated) !== JSON.stringify(editingLocation)) {
-                setEditingLocation(updated);
+        if (uiState.editingLocation) {
+            const updated = locations.find(l => l.id === uiState.editingLocation?.id);
+            if (updated && JSON.stringify(updated) !== JSON.stringify(uiState.editingLocation)) {
+                setUiState(prev => ({ ...prev, editingLocation: updated }));
             }
         }
     }
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMounted(true);
+        setUiState(prev => ({ ...prev, isMounted: true }));
     }, []);
 
     const handleDeleteClick = (e: React.MouseEvent, id: string, name: string, isSystem: boolean) => {
         e.stopPropagation();
-        setDeleteId(id);
-        setDeleteName(name);
-        setDeleteIsSystem(isSystem);
-        setDeletePassword("");
+        setUiState(prev => ({
+            ...prev,
+            deleteId: id,
+            deleteName: name,
+            deleteIsSystem: isSystem,
+            deletePassword: ""
+        }));
     };
 
     const handleConfirmDelete = async () => {
-        if (!deleteId) return;
-        setIsDeleting(true);
-        const res = await deleteStorageLocation(deleteId, deletePassword);
-        setIsDeleting(false);
+        if (!uiState.deleteId) return;
+        setUiState(prev => ({ ...prev, isDeleting: true }));
+        const res = await deleteStorageLocation(uiState.deleteId, uiState.deletePassword);
+        setUiState(prev => ({ ...prev, isDeleting: false }));
         if (res.success) {
             toast("Локация удалена", "success");
         } else {
             toast(res.error || "Ошибка при удалении", "error");
         }
-        setDeleteId(null);
-        setDeleteName(null);
-        setDeleteIsSystem(false);
-        setDeletePassword("");
+        setUiState(prev => ({
+            ...prev,
+            deleteId: null,
+            deleteName: null,
+            deleteIsSystem: false,
+            deletePassword: ""
+        }));
     };
 
     const handleEdit = (e: React.MouseEvent, loc: StorageLocation) => {
         e.stopPropagation();
-        setEditingLocation(loc);
+        setUiState(prev => ({ ...prev, editingLocation: loc }));
     };
 
     const sensors = useSensors(
@@ -132,19 +147,19 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     );
 
     const handleDragStart = (event: DragStartEvent) => {
-        setActiveId(event.active.id as string);
+        setUiState(prev => ({ ...prev, activeId: event.active.id as string }));
     };
 
     const handleDragEnd = async (event: DragEndEvent) => {
-        setActiveId(null);
+        setUiState(prev => ({ ...prev, activeId: null }));
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
-            const oldIndex = localLocations.findIndex((l) => l.id === active.id);
-            const newIndex = localLocations.findIndex((l) => l.id === over.id);
+            const oldIndex = dataState.localLocations.findIndex((l) => l.id === active.id);
+            const newIndex = dataState.localLocations.findIndex((l) => l.id === over.id);
 
-            const newOrder = arrayMove(localLocations, oldIndex, newIndex);
-            setLocalLocations(newOrder);
+            const newOrder = arrayMove(dataState.localLocations, oldIndex, newIndex);
+            setDataState(prev => ({ ...prev, localLocations: newOrder }));
 
             const itemsToUpdate = newOrder.map((loc, index) => ({
                 id: loc.id,
@@ -153,13 +168,13 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
             const result = await updateStorageLocationsOrder(itemsToUpdate);
             if (!result.success) {
-                setLocalLocations(localLocations);
+                setDataState(prev => ({ ...prev, localLocations: dataState.localLocations }));
                 toast(result.error || "Не удалось обновить порядок", "error");
             }
         }
     };
 
-    if (localLocations.length === 0) {
+    if (dataState.localLocations.length === 0) {
         return (
             <div className="py-24 flex flex-col items-center justify-center text-center px-4 crm-card shadow-sm">
                 <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center mb-6 text-slate-300 shadow-sm ring-1 ring-slate-200">
@@ -173,7 +188,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         );
     }
 
-    if (!mounted) return null;
+    if (!uiState.isMounted) return null;
 
     return (
         <>
@@ -184,26 +199,25 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext
-                    items={localLocations.map(l => l.id)}
+                    items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                        {localLocations.map((loc) => (
+                        {dataState.localLocations.map((loc) => (
                             <SortableLocationCard
                                 key={loc.id}
                                 loc={loc}
-                                onEdit={(e: React.MouseEvent) => handleEdit(e, loc)}
                                 onDeleteClick={(e: React.MouseEvent) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
-                                onClick={() => setEditingLocation(loc)}
+                                onClick={() => setUiState(prev => ({ ...prev, editingLocation: loc }))}
                             />
                         ))}
                     </div>
                 </SortableContext>
                 <DragOverlay adjustScale={true}>
-                    {activeId ? (
+                    {uiState.activeId ? (
                         <div className="w-full h-full pointer-events-none">
                             <LocationCardContent
-                                loc={localLocations.find(l => l.id === activeId)!}
+                                loc={dataState.localLocations.find(l => l.id === uiState.activeId)!}
                                 isOverlay
                             />
                         </div>
@@ -212,16 +226,16 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             </DndContext>
 
             <ConfirmDialog
-                isOpen={!!deleteId}
-                onClose={() => setDeleteId(null)}
+                isOpen={!!uiState.deleteId}
+                onClose={() => setUiState(prev => ({ ...prev, deleteId: null }))}
                 onConfirm={handleConfirmDelete}
-                isLoading={isDeleting}
+                isLoading={uiState.isDeleting}
                 title="Удалить локацию?"
-                description={`Локация «${deleteName}» будет удалена. Данное действие необратимо.`}
+                description={`Локация «${uiState.deleteName}» будет удалена. Данное действие необратимо.`}
                 confirmText="Удалить"
                 variant="destructive"
             >
-                {deleteIsSystem && (
+                {uiState.deleteIsSystem && (
                     <div className="p-4 bg-rose-50 rounded-[var(--radius-inner)] border border-rose-100 text-left">
                         <div className="flex items-center gap-2 text-rose-600 mb-3">
                             <Lock className="w-4 h-4" />
@@ -229,8 +243,8 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                         </div>
                         <Input
                             type="password"
-                            value={deletePassword}
-                            onChange={(e) => setDeletePassword(e.target.value)}
+                            value={uiState.deletePassword}
+                            onChange={(e) => setUiState(prev => ({ ...prev, deletePassword: e.target.value }))}
                             placeholder="Пароль администратора"
                             className="h-11 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:border-rose-300 font-medium text-slate-900 placeholder:text-rose-200 text-sm"
                             autoFocus
@@ -242,9 +256,9 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             <EditStorageLocationDialog
                 users={users}
                 locations={locations}
-                location={editingLocation || locations[0]}
-                isOpen={!!editingLocation}
-                onClose={() => setEditingLocation(null)}
+                location={uiState.editingLocation || locations[0]}
+                isOpen={!!uiState.editingLocation}
+                onClose={() => setUiState(prev => ({ ...prev, editingLocation: null }))}
             />
         </>
     );
@@ -300,10 +314,10 @@ const LocationCardContent = memo(({
         )}>
             <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <div
+                    <div role="button" tabIndex={0}
                         {...dragHandleProps}
                         className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px]"
-                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
                     >
                         <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
@@ -331,7 +345,7 @@ const LocationCardContent = memo(({
                 </div>
             </div>
 
-            <div className="space-y-4 sm:space-y-6 mt-auto">
+            <div className="space-y-4 sm:space-y-4 mt-auto">
                 <div className="space-y-1 sm:space-y-2">
                     <div className="flex items-center gap-2">
                         <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight text-balance">
@@ -341,7 +355,7 @@ const LocationCardContent = memo(({
                         {loc.isDefault && <Star className="w-3 h-3 sm:w-4 sm:h-4 text-primary fill-primary shrink-0" />}
                         {loc.isSystem && <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-300 shrink-0" />}
                     </div>
-                    <p className="text-[11px] sm:text-[10px] font-bold text-slate-400 truncate">
+                    <p className="text-[11px] sm:text-xs font-bold text-slate-400 truncate">
                         {loc.address || "Адрес не указан"}
                     </p>
                 </div>
@@ -377,21 +391,21 @@ const LocationCardContent = memo(({
                         <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
                             <User className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
-                        <span className="text-[10px] font-bold text-slate-500 truncate">
+                        <span className="text-xs font-bold text-slate-500 truncate">
                             {loc.responsibleUser?.name || "Нет ответственного"}
                         </span>
                     </div>
 
                     {!isOverlay && (
                         <div className="flex gap-1.5 sm:gap-2 shrink-0">
-                            <button
+                            <button type="button"
                                 onClick={onEdit}
                                 className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
                             >
                                 <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                             {!loc.isSystem && (
-                                <button
+                                <button type="button"
                                     onClick={onDeleteClick}
                                     className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all border border-rose-100"
                                 >
@@ -426,12 +440,12 @@ const SortableLocationCard = memo(({ loc, onEdit, onDeleteClick, onClick }: Sort
     };
 
     return (
-        <div
+        <div role="button" tabIndex={0}
             ref={setNodeRef}
             style={style}
             onClick={onClick}
             className="h-full cursor-pointer"
-        >
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
             <LocationCardContent
                 loc={loc}
                 onEdit={onEdit}

@@ -24,10 +24,10 @@ export default function TwistyCRM() {
                     <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg">
                         T
                     </div>
-                    <span className="font-bold text-lg tracking-normal">TWISTY</span>
+                    <span className="font-bold text-lg">TWISTY</span>
                 </div>
 
-                <nav className="hidden md:flex items-center gap-8 bg-transparent text-sm font-medium text-slate-500">
+                <nav className="hidden md:flex items-center gap-4 bg-transparent text-sm font-medium text-slate-500">
                     <a href="#" className="text-slate-900 font-bold">Home</a>
                     <a href="#" className="hover:text-slate-900 transition-colors">Messages</a>
                     <a href="#" className="hover:text-slate-900 transition-colors">Discover</a>
@@ -45,10 +45,10 @@ export default function TwistyCRM() {
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
                 {/* LEFT COLUMN (8 cols) */}
-                <div className="lg:col-span-8 flex flex-col gap-8">
+                <div className="lg:col-span-8 flex flex-col gap-4">
 
                     {/* 1. INCOME TRACKER */}
                     <div className="crm-card p-8 relative overflow-hidden">
@@ -64,7 +64,7 @@ export default function TwistyCRM() {
                                     Track changes in income over time and access detailed data on each project and payments received
                                 </p>
                             </div>
-                            <button className="flex items-center gap-2 px-4 py-2 rounded-[var(--radius-inner)] border border-slate-200 text-xs font-bold hover:bg-slate-50 transition-colors">
+                            <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-[var(--radius-inner)] border border-slate-200 text-xs font-bold hover:bg-slate-50 transition-colors">
                                 <span>Week</span>
                                 <ChevronDown className="w-3 h-3 opacity-50" />
                             </button>
@@ -123,12 +123,12 @@ export default function TwistyCRM() {
                     </div>
 
                     {/* BOTTOM ROW (Connect + Premium) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Let's Connect */}
                         <div className="crm-card p-6">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-lg">Let&apos;s Connect</h3>
-                                <button className="text-xs font-bold text-slate-400 hover:text-slate-900  tracking-wider">See all</button>
+                                <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900">See all</button>
                             </div>
                             <div className="space-y-4">
                                 {[
@@ -143,12 +143,12 @@ export default function TwistyCRM() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-sm font-bold text-slate-900">{user.name}</span>
-                                                    <span className={cn("text-[8px] text-white px-1.5 py-0.5 rounded-md font-bold", user.bg)}>{user.tag}</span>
+                                                    <span className={cn("text-xs text-white px-1.5 py-0.5 rounded-md font-bold", user.bg)}>{user.tag}</span>
                                                 </div>
-                                                <div className="text-[10px] text-slate-400 font-medium">{user.role}</div>
+                                                <div className="text-xs text-slate-400 font-medium">{user.role}</div>
                                             </div>
                                         </div>
-                                        <button className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors">
+                                        <button type="button" className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors">
                                             <Plus className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -172,7 +172,7 @@ export default function TwistyCRM() {
                                 </p>
                             </div>
 
-                            <button className="relative z-10 bg-white text-[#5d00ff] text-xs font-bold py-3 px-4 rounded-[var(--radius-inner)] flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
+                            <button type="button" className="relative z-10 bg-white text-[#5d00ff] text-xs font-bold py-3 px-4 rounded-[var(--radius-inner)] flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
                                 <span>Upgrade now</span>
                                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                             </button>
@@ -182,7 +182,7 @@ export default function TwistyCRM() {
                 </div>
 
                 {/* RIGHT COLUMN (4 cols) */}
-                <div className="lg:col-span-4 flex flex-col gap-6">
+                <div className="lg:col-span-4 flex flex-col gap-4">
 
                     <h3 className="text-lg font-bold px-2">Your Recent Projects</h3>
 
@@ -198,13 +198,13 @@ export default function TwistyCRM() {
                             <h4 className="font-bold text-slate-900 mb-1">Web Development</h4>
                             <div className="text-xs text-slate-400 mb-4 font-medium">$10/hour</div>
                             <div className="flex gap-2 mb-4">
-                                <span className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-[10px] font-bold text-slate-500  tracking-wider">Remote</span>
-                                <span className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-[10px] font-bold text-slate-500  tracking-wider">Part-time</span>
+                                <span className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-xs font-bold text-slate-500">Remote</span>
+                                <span className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-xs font-bold text-slate-500">Part-time</span>
                             </div>
-                            <p className="text-[10px] text-slate-400 leading-relaxed line-clamp-2 mb-4 font-medium">
+                            <p className="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4 font-medium">
                                 This project involves implementing new features as well as integrating with third-party APIs
                             </p>
-                            <div className="flex items-center gap-4 text-[10px] text-slate-400 border-t border-slate-200 pt-4 font-medium">
+                            <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-200 pt-4 font-medium">
                                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full border border-slate-300" /> Germany</span>
                                 <span>2h ago</span>
                             </div>
@@ -217,7 +217,7 @@ export default function TwistyCRM() {
                                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center text-slate-500">
                                         <PenTool className="w-5 h-5" />
                                     </div>
-                                    <div className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-[10px] font-bold text-slate-500  tracking-wider">Copyright</div>
+                                    <div className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-xs font-bold text-slate-500">Copyright</div>
                                 </div>
                                 <div className="text-xs text-slate-400 font-medium">$10/hour</div>
                             </div>
@@ -230,7 +230,7 @@ export default function TwistyCRM() {
                                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-100 flex items-center justify-center text-blue-500">
                                         <Briefcase className="w-5 h-5" />
                                     </div>
-                                    <div className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-[10px] font-bold text-slate-500  tracking-wider">Web Des...</div>
+                                    <div className="px-3 py-1 bg-slate-100 rounded-[var(--radius-inner)] text-xs font-bold text-slate-500">Web Des...</div>
                                 </div>
                                 <div className="text-xs text-slate-400 font-medium">$10/hour</div>
                             </div>

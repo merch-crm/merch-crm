@@ -77,7 +77,7 @@ const FlightBubbles = () => {
                 className="relative cursor-pointer transition-shadow hover:shadow-xl"
             >
                 <div className="flex items-center gap-3 px-7 py-4 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-black">
-                    <span className="text-[16px] font-semibold tracking-normal">Смена аэропорта</span>
+                    <span className="text-[16px] font-semibold">Смена аэропорта</span>
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold tracking-wide">
                         <span>IST</span>
                         <ChevronRight className="w-2.5 h-2.5 opacity-30 mx-0.5" />
@@ -109,7 +109,7 @@ const FlightBubbles = () => {
                             "flex items-center gap-3 px-7 py-4 rounded-full shadow-xl transition-shadow",
                             item.variant === "dark" ? "bg-black text-white shadow-black/10" : "bg-white text-black shadow-black/5"
                         )}>
-                            <span className="text-[16px] font-semibold tracking-normal">{item.label}</span>
+                            <span className="text-[16px] font-semibold">{item.label}</span>
                             <div className={cn(
                                 "px-3.5 py-1.5 rounded-xl text-[13px] font-bold",
                                 item.variant === "dark" ? "bg-white text-black" : "bg-black text-white"
@@ -136,8 +136,8 @@ const DeliveryTracking = () => {
                 className="w-[400px] bg-white rounded-[48px] p-10 shadow-crm-lg border border-slate-200"
             >
                 <div className="space-y-1 mb-10">
-                    <h2 className="text-[32px] font-bold text-[#1A1B2E] tracking-normal">В пути</h2>
-                    <p className="text-[#1A1B2E]/50 text-[18px] font-medium tracking-normal">Ваш груз доставляется.</p>
+                    <h2 className="text-[32px] font-bold text-[#1A1B2E]">В пути</h2>
+                    <p className="text-[#1A1B2E]/50 text-[18px] font-medium">Ваш груз доставляется.</p>
                 </div>
 
                 <div className="bg-[#1A1B2E] rounded-[40px] p-8 relative overflow-hidden flex items-center justify-between mb-10 min-h-[120px]">
@@ -187,8 +187,8 @@ const DeliveryTracking = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <p className="text-[#1A1B2E]/50 text-[18px] font-bold tracking-normal">Ожидаемое время доставки</p>
-                    <h3 className="text-[54px] font-black text-[#1A1B2E] leading-none tracking-normaler">09:20</h3>
+                    <p className="text-[#1A1B2E]/50 text-[18px] font-bold">Ожидаемое время доставки</p>
+                    <h3 className="text-[54px] font-black text-[#1A1B2E] leading-noneer">09:20</h3>
                 </div>
             </motion.div>
         </div>
@@ -227,7 +227,7 @@ const TaskelloCard = () => {
                                 />
                             </svg>
                             <div className="absolute top-[-10px] left-8 space-y-0.5 group-hover:translate-x-1 transition-transform">
-                                <h3 className="text-white text-[20px] font-bold tracking-normal">Ежедневник</h3>
+                                <h3 className="text-white text-[20px] font-bold">Ежедневник</h3>
                                 <p className="text-white/40 text-[14px] font-bold">Заметки и дневник</p>
                             </div>
                         </div>
@@ -235,10 +235,10 @@ const TaskelloCard = () => {
                         <div className="flex-1 bg-[#1A1A1A] relative px-10 pb-10 flex flex-col justify-end">
                             <div className="flex justify-between items-end">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-[44px] font-bold text-white tracking-normaler leading-none">05</span>
+                                    <span className="text-[44px] font-bold text-whiteer leading-none">05</span>
                                     <span className="text-[17px] font-bold text-white/50 leading-none">Док</span>
                                 </div>
-                                <div className="text-[17px] font-bold text-white tracking-normal pb-1">
+                                <div className="text-[17px] font-bold text-white pb-1">
                                     1270 заметок
                                 </div>
                             </div>
@@ -272,7 +272,7 @@ const SoftFolder = () => {
                             />
                         </svg>
                         <div className="absolute top-[-30px] left-8">
-                            <h3 className="text-black text-[15px] font-black tracking-normal">Дизайны</h3>
+                            <h3 className="text-black text-[15px] font-black">Дизайны</h3>
                             <p className="text-black/30 text-[11px] font-bold">Веб и приложения</p>
                         </div>
                     </div>
@@ -280,7 +280,7 @@ const SoftFolder = () => {
                         <div className="flex justify-between items-baseline w-full">
                             <div className="flex items-baseline gap-1">
                                 <span className="text-[28px] font-black text-black">04</span>
-                                <span className="text-[13px] font-bold text-black/30 uppercase tracking-widest">Теги</span>
+                                <span className="text-[13px] font-bold text-black/30">Теги</span>
                             </div>
                             <div className="text-[13px] font-black text-black opacity-80">
                                 1012 работ
@@ -298,10 +298,10 @@ const CryptoSwap = () => {
     return (
         <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
             <div className="w-full max-w-[480px] flex flex-col items-center">
-                <div className="flex gap-8 mb-8">
-                    <button className="px-6 py-2 rounded-full bg-black/5 text-black font-bold text-[15px]">Обмен</button>
-                    <button className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Отправить</button>
-                    <button className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Купить</button>
+                <div className="flex gap-4 mb-8">
+                    <button type="button" className="px-6 py-2 rounded-full bg-black/5 text-black font-bold text-[15px]">Обмен</button>
+                    <button type="button" className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Отправить</button>
+                    <button type="button" className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Купить</button>
                 </div>
                 <div className="w-full space-y-1 relative">
                     <motion.div whileHover={{ scale: 1.01 }} className="bg-white rounded-[32px] p-8 shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-white">
@@ -309,7 +309,7 @@ const CryptoSwap = () => {
                         <div className="flex justify-between items-center mb-2">
                             <input type="text" defaultValue="10" className="text-[48px] font-bold text-black bg-transparent w-1/2 outline-none" />
                             <div className="flex flex-col items-end gap-2">
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 hover:bg-black/5 transition-all group">
+                                <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 hover:bg-black/5 transition-all group">
                                     <div className="w-8 h-8 rounded-full bg-[#627EEA] flex items-center justify-center text-white">
                                         <svg width="14" height="22" viewBox="0 0 14 22" fill="none"><path d="M7 0L6.8 0.7V15L7 15.2L13.7 11.2L7 0Z" fill="white" fillOpacity="0.6" /><path d="M7 0L0.3 11.2L7 15.2V8.1V0Z" fill="white" /><path d="M7 22L6.9 21.6V16.7L7 16.5L13.7 12.5L7 22Z" fill="white" fillOpacity="0.6" /><path d="M7 22V16.5L0.3 12.5L7 22Z" fill="white" /><path d="M7 15.2L13.7 11.2L7 8.1L7 15.2Z" fill="white" fillOpacity="0.2" /><path d="M0.3 11.2L7 15.2V8.1L0.3 11.2Z" fill="white" fillOpacity="0.6" /></svg>
                                     </div>
@@ -336,7 +336,7 @@ const CryptoSwap = () => {
                         <div className="flex justify-between items-center mb-2">
                             <input type="text" defaultValue="147.712" className="text-[48px] font-bold text-black bg-transparent w-1/2 outline-none" />
                             <div className="flex flex-col items-end gap-2">
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 hover:bg-black/5 transition-all group">
+                                <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 hover:bg-black/5 transition-all group">
                                     <div className="w-8 h-8 rounded-full bg-[#7139C5] flex items-center justify-center text-white">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M11.64 4.14a4.34 4.34 0 1 0-7.28 0 4.14 4.14 0 0 0 .54 8 4.14 4.14 0 0 06.2 0 4.14 4.14 0 0 0 .54-8zM8 12.3a2.3 2.3 0 1 1 0-4.6 2.3 2.3 0 0 1 0 4.6zm3.45-6.9a.86.86 0 1 1-1.72 0 .86.86 0 0 1 1.72 0zm-5.18 0a.86.86 0 1 1-1.72 0 .86.86 0 0 1 1.72 0z" /></svg>
                                     </div>
@@ -372,8 +372,8 @@ const QuickSettings = () => {
             </div>
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} className="w-[340px] bg-[#1A1A1A] rounded-[48px] p-5 shadow-[0_30px_60px_rgba(0,0,0,0.1)] relative z-10">
                 <div className="flex items-center justify-between px-4 mb-5">
-                    <span className="text-white/40 text-[13px] font-bold uppercase tracking-widest">Быстрые настройки</span>
-                    <button className="text-white/30 hover:text-white transition-colors"><Settings className="w-5 h-5" /></button>
+                    <span className="text-white/40 text-[13px] font-bold">Быстрые настройки</span>
+                    <button type="button" className="text-white/30 hover:text-white transition-colors"><Settings className="w-5 h-5" /></button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     {modules.map((m, i) => (
@@ -387,9 +387,9 @@ const QuickSettings = () => {
                 </div>
             </motion.div>
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between px-10 py-5 bg-black rounded-3xl text-white">
-                <div className="flex gap-6 items-center">
+                <div className="flex gap-4 items-center">
                     <span className="text-[18px] font-black">{new Date().getFullYear()}</span>
-                    <div className="flex flex-col text-[10px] font-bold uppercase tracking-wider opacity-60">
+                    <div className="flex flex-col text-xs font-bold opacity-60">
                         <span>23</span>
                         <span>Янв</span>
                     </div>
@@ -406,7 +406,7 @@ const DarkSchedule = () => {
         <div className="p-10 md:p-20 rounded-[40px] bg-[#EAEAEA] flex items-center justify-center overflow-hidden">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="w-[380px] bg-black rounded-[48px] p-10 shadow-3xl">
                 <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-[32px] font-semibold text-white tracking-normal">Март</h2>
+                    <h2 className="text-[32px] font-semibold text-white">Март</h2>
                     <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} className="w-10 h-10 rounded-xl bg-[#1A1A1A] flex items-center justify-center text-white border border-white/5 shadow-lg"><Plus className="w-6 h-6" /></motion.button>
                 </div>
                 <div className="space-y-4">
@@ -418,7 +418,7 @@ const DarkSchedule = () => {
                     ].map((item, i) => (
                         <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.03, x: 5 }} className="flex gap-4 cursor-pointer group">
                             <div className="w-10 pt-1.5 flex flex-col items-center">
-                                <span className="text-[11px] font-bold text-[#444] uppercase tracking-wider group-hover:text-[#666] transition-colors">{item.d}</span>
+                                <span className="text-[11px] font-bold text-[#444] group-hover:text-[#666] transition-colors">{item.d}</span>
                                 <span className="text-[20px] font-semibold text-white">{item.n}</span>
                             </div>
                             <div className={cn("flex-1 px-6 py-5 rounded-[22px] transition-all", item.active ? "bg-[#7C3AED] text-white shadow-xl shadow-[#7C3AED]/20" : "bg-[#181818] text-[#666] group-hover:bg-[#202020]")}>
@@ -444,11 +444,11 @@ const CalendarWidgets = () => {
     };
     return (
         <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
-            <div className="flex flex-col xl:flex-row gap-10 items-center justify-center w-full">
+            <div className="flex flex-col xl:flex-row gap-4 items-center justify-center w-full">
                 <motion.div whileHover={{ y: -10 }} className="w-[320px] bg-white rounded-[40px] p-8 shadow-2xl border border-slate-200 flex-shrink-0">
                     <div className="flex justify-between items-start mb-6">
                         <motion.div layout>
-                            <div className="text-[36px] font-bold text-black leading-none tracking-normaler">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
+                            <div className="text-[36px] font-bold text-black leading-noneer">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
                             <div className="text-[18px] font-medium text-slate-300">{selectedDate ? format(selectedDate, "MMMM", { locale: ru }) : "Дата"}</div>
                         </motion.div>
                     </div>
@@ -504,7 +504,7 @@ const ModernDropdown = () => {
                 <label className="block text-[15px] font-bold text-slate-900 ml-1">Share with</label>
 
                 <div className="relative">
-                    <button
+                    <button type="button"
                         onClick={() => setIsOpen(!isOpen)}
                         className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all group"
                     >
@@ -522,7 +522,7 @@ const ModernDropdown = () => {
                             >
                                 <div className="flex flex-col gap-1">
                                     {options.map((option) => (
-                                        <button
+                                        <button type="button"
                                             key={option.id}
                                             onClick={() => {
                                                 setSelected(option.id);
@@ -569,7 +569,7 @@ const ModernDropdown = () => {
 /* --- 13. AI CHAT CARDS --- */
 const AIChatCards = () => {
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#F3F4F6] flex flex-wrap gap-8 items-center justify-center overflow-hidden">
+        <div className="p-10 md:p-24 rounded-[40px] bg-[#F3F4F6] flex flex-wrap gap-4 items-center justify-center overflow-hidden">
             {/* DARK CARD */}
             <motion.div
                 whileHover={{ y: -8, scale: 1.02 }}
@@ -581,11 +581,11 @@ const AIChatCards = () => {
                     </svg>
                 </div>
 
-                <h3 className="text-white text-[24px] font-bold text-center leading-tight tracking-normal">
+                <h3 className="text-white text-[24px] font-bold text-center leading-tight">
                     Чем я могу помочь сегодня?
                 </h3>
 
-                <button className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all group/mic">
+                <button type="button" className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all group/mic">
                     <Mic className="w-6 h-6 transition-transform group-hover/mic:scale-110" />
                 </button>
             </motion.div>
@@ -601,7 +601,7 @@ const AIChatCards = () => {
                     </svg>
                 </div>
 
-                <h3 className="text-black text-[24px] font-bold text-center leading-tight tracking-normal">
+                <h3 className="text-black text-[24px] font-bold text-center leading-tight">
                     What can I help you with today?
                 </h3>
 
@@ -650,7 +650,7 @@ const PWAPrompt = () => {
                 className="relative group w-full max-w-[420px]"
             >
                 <div className="bg-[#BFFF07] rounded-[32px] p-6 pr-12 shadow-[0_20px_50px_rgba(191,255,7,0.15)] relative">
-                    <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-4">
                         {/* Icon Block */}
                         <div className="w-24 h-24 bg-black rounded-3xl flex items-center justify-center relative flex-shrink-0">
                             <Share className="w-8 h-8 text-white" />
@@ -685,7 +685,7 @@ const PWAPrompt = () => {
                     </div>
 
                     {/* Close Button */}
-                    <button className="absolute top-4 right-4 w-8 h-8 bg-black rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
+                    <button type="button" className="absolute top-4 right-4 w-8 h-8 bg-black rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
                         <X className="w-4 h-4" />
                     </button>
 
@@ -744,8 +744,8 @@ const JobActionsGrid = () => {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-lg md:text-xl font-bold text-black tracking-normal">Add job</h3>
-                    <button className="text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 text-xs font-semibold">
+                    <h3 className="text-lg md:text-xl font-bold text-black">Add job</h3>
+                    <button type="button" className="text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 text-xs font-semibold">
                         More
                         <ChevronRight className="w-3.5 h-3.5" />
                     </button>
@@ -785,7 +785,7 @@ const JobActionsGrid = () => {
                             </div>
 
                             {/* Label */}
-                            <span className="text-sm md:text-base font-bold text-black tracking-normal">
+                            <span className="text-sm md:text-base font-bold text-black">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -799,7 +799,7 @@ const JobActionsGrid = () => {
                         placeholder="Or just describe it"
                         className="w-full h-10 md:h-12 px-4 pr-12 rounded-[14px] bg-slate-50/80 border-2 border-transparent hover:border-slate-200/50 focus:border-slate-300 focus:bg-white outline-none text-sm md:text-base text-slate-400 placeholder:text-slate-300 font-medium transition-all"
                     />
-                    <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-200/80 hover:bg-slate-300 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all group">
+                    <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-200/80 hover:bg-slate-300 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all group">
                         <Mic className="w-4 h-4 group-hover:scale-110 transition-transform" />
                     </button>
                 </div>
@@ -850,10 +850,10 @@ const WeatherWidget = () => {
                 </div>
 
                 {/* City Selector */}
-                <div className="flex items-center justify-center gap-6 mb-4 z-20 relative">
-                    <button className="text-white/50 text-base font-light hover:text-white transition-colors">Los Angeles</button>
-                    <button className="text-white text-base font-light border-b border-white pb-0.5">New York</button>
-                    <button className="text-white/50 text-base font-light hover:text-white transition-colors">Be</button>
+                <div className="flex items-center justify-center gap-4 mb-4 z-20 relative">
+                    <button type="button" className="text-white/50 text-base font-light hover:text-white transition-colors">Los Angeles</button>
+                    <button type="button" className="text-white text-base font-light border-b border-white pb-0.5">New York</button>
+                    <button type="button" className="text-white/50 text-base font-light hover:text-white transition-colors">Be</button>
                 </div>
 
                 {/* Main Weather Visual - Realistic Cloud & Lightning */}
@@ -929,7 +929,7 @@ const WeatherWidget = () => {
 
                 {/* Temperature */}
                 <div className="text-center mb-8 relative z-20 mt-4">
-                    <div className="text-white text-[100px] font-thin leading-[0.9] tracking-normaler">16°</div>
+                    <div className="text-white text-[100px] font-thin leading-[0.9]er">16°</div>
                     <div className="flex items-center justify-center gap-4 text-white/80 text-base font-light mt-2">
                         <div className="flex items-center gap-1">
                             <ArrowDown className="w-4 h-4 text-white/60" />
@@ -957,7 +957,7 @@ const WeatherWidget = () => {
                                 transition={{ delay: i * 0.1 }}
                                 className="flex flex-col items-center gap-1.5"
                             >
-                                <span className="text-white/60 text-xs font-medium uppercase tracking-wider">{day.day}</span>
+                                <span className="text-white/60 text-xs font-medium">{day.day}</span>
                                 <div className="relative my-1">
                                     <Icon className="w-6 h-6 text-[#FFD54F]" />
                                     {day.icon === CloudRain && (
@@ -978,10 +978,10 @@ const WeatherWidget = () => {
 /* --- SMART HOME DASHBOARD --- */
 const SmartHomeDashboard = () => {
     return (
-        <div className="p-5 md:p-12 rounded-[40px] bg-[#E0E5EC] flex flex-col lg:flex-row gap-6 items-start justify-center overflow-hidden relative">
+        <div className="p-5 md:p-12 rounded-[40px] bg-[#E0E5EC] flex flex-col lg:flex-row gap-4 items-start justify-center overflow-hidden relative">
 
             {/* LEFT COLUMN */}
-            <div className="flex flex-col gap-6 w-full lg:w-[320px]">
+            <div className="flex flex-col gap-4 w-full lg:w-[320px]">
                 {/* Profile Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -1005,7 +1005,7 @@ const SmartHomeDashboard = () => {
                             <p className="text-black/60 text-xs font-medium">7 devices active</p>
                         </div>
                     </div>
-                    <button className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:bg-black/10 transition-colors z-10">
+                    <button type="button" className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:bg-black/10 transition-colors z-10">
                         <MoreHorizontal className="w-5 h-5" />
                     </button>
                     {/* Decorative circles */}
@@ -1030,7 +1030,7 @@ const SmartHomeDashboard = () => {
                                 <p className="text-slate-400 text-xs font-medium">Daily usage</p>
                             </div>
                         </div>
-                        <button className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform">
+                        <button type="button" className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform">
                             <ArrowUp className="w-5 h-5 rotate-45" />
                         </button>
                     </div>
@@ -1064,7 +1064,7 @@ const SmartHomeDashboard = () => {
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="flex flex-col gap-6 w-full lg:w-[480px]">
+            <div className="flex flex-col gap-4 w-full lg:w-[480px]">
                 {/* Air Conditioner Widget */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -1085,7 +1085,7 @@ const SmartHomeDashboard = () => {
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="text-xs font-bold text-slate-400">On <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block ml-1" /></div>
-                            <button className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/20">
+                            <button type="button" className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/20">
                                 <Power className="w-5 h-5" />
                             </button>
                         </div>
@@ -1095,7 +1095,7 @@ const SmartHomeDashboard = () => {
                     <div className="relative h-[280px] flex items-center justify-center mb-6">
                         {/* Timer Pill */}
                         <div className="absolute top-0 left-0 bg-[#E8EDF5] text-[#5570F1] px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full border-2 border-[#5570F1] flex items-center justify-center text-[8px]">l</div>
+                            <div className="w-4 h-4 rounded-full border-2 border-[#5570F1] flex items-center justify-center text-xs">l</div>
                             2h
                         </div>
 
@@ -1119,8 +1119,8 @@ const SmartHomeDashboard = () => {
 
                         {/* Center Info */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center mt-6">
-                            <div className="text-[8px] font-bold text-slate-800 mb-1">24°</div>
-                            <div className="text-6xl font-black text-slate-800 tracking-normal">24°</div>
+                            <div className="text-xs font-bold text-slate-800 mb-1">24°</div>
+                            <div className="text-6xl font-black text-slate-800">24°</div>
                             <div className="text-slate-400 text-sm font-medium mt-1">Temperature</div>
 
                             <div className="flex items-center justify-between w-48 mt-8 text-xs font-bold text-slate-400 px-4">
@@ -1132,7 +1132,7 @@ const SmartHomeDashboard = () => {
                 </motion.div>
 
                 {/* Bottom Row - Scenes */}
-                <div className="flex gap-6">
+                <div className="flex gap-4">
                     {/* Morning Scene */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -1183,15 +1183,15 @@ const SmartHomeDashboard = () => {
                     className="bg-white rounded-3xl p-3 pl-5 flex items-center justify-between shadow-lg shadow-slate-200/50"
                 >
                     <div className="flex items-center gap-4">
-                        <button className="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-600 transition-colors">
+                        <button type="button" className="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-600 transition-colors">
                             <PlusCircle className="w-5 h-5" />
                         </button>
                         <div>
                             <h4 className="text-slate-800 font-bold text-sm">You created 8 scenes</h4>
-                            <p className="text-slate-400 text-[10px] font-medium">24 devices in use</p>
+                            <p className="text-slate-400 text-xs font-medium">24 devices in use</p>
                         </div>
                     </div>
-                    <button className="bg-black text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-800 transition-colors">
+                    <button type="button" className="bg-black text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-800 transition-colors">
                         See All
                     </button>
                 </motion.div>
@@ -1266,11 +1266,11 @@ const DateRangePickers = () => {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6 px-2">
-                    <button onClick={() => setCurrentDate1(subMonths(currentDate1, 1))} className="text-slate-400 hover:text-slate-600">
+                    <button type="button" onClick={() => setCurrentDate1(subMonths(currentDate1, 1))} className="text-slate-400 hover:text-slate-600">
                         <ChevronLeft className="w-5 h-5" />
                     </button>
                     <h3 className="text-slate-800 font-bold text-lg capitalize">{format(currentDate1, 'LLLL yyyy', { locale: ru })}</h3>
-                    <button onClick={() => setCurrentDate1(addMonths(currentDate1, 1))} className="text-slate-400 hover:text-slate-600">
+                    <button type="button" onClick={() => setCurrentDate1(addMonths(currentDate1, 1))} className="text-slate-400 hover:text-slate-600">
                         <ChevronRight className="w-5 h-5" />
                     </button>
                 </div>
@@ -1304,7 +1304,7 @@ const DateRangePickers = () => {
                                     )} style={{ left: start ? '4px' : '0', right: end ? '4px' : '0' }} />
                                 )}
 
-                                <button
+                                <button type="button"
                                     onClick={() => handleDateClick(day, setSelectedRange1, selectedRange1)}
                                     className={cn(
                                         "relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
@@ -1312,7 +1312,7 @@ const DateRangePickers = () => {
 
                                     )}
                                 >
-                                    {format(day, 'd')}
+                                    {format(day, 'd', { locale: ru })}
                                 </button>
                             </div>
                         );
@@ -1321,10 +1321,10 @@ const DateRangePickers = () => {
 
                 {/* Footer Buttons */}
                 <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
-                    <button className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
+                    <button type="button" className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
-                    <button className="flex-1 py-3 rounded-2xl bg-[#EAF2FF] text-[#0062FF] font-semibold text-sm hover:bg-[#D4E5FF] transition-colors w-full">
+                    <button type="button" className="flex-1 py-3 rounded-2xl bg-[#EAF2FF] text-[#0062FF] font-semibold text-sm hover:bg-[#D4E5FF] transition-colors w-full">
                         Применить
                     </button>
                 </div>
@@ -1340,12 +1340,12 @@ const DateRangePickers = () => {
             >
                 {/* Header with Dropdowns */}
                 <div className="flex items-center gap-3 mb-6 px-1">
-                    <button className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-xl text-slate-700 text-sm font-bold flex-1 hover:bg-slate-100 capitalize">
+                    <button type="button" className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-xl text-slate-700 text-sm font-bold flex-1 hover:bg-slate-100 capitalize">
                         {format(currentDate2, 'LLLL', { locale: ru })}
                         <ChevronDown className="w-4 h-4 text-slate-400" />
                     </button>
-                    <button className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-xl text-slate-700 text-sm font-bold flex-1 hover:bg-slate-100">
-                        {format(currentDate2, 'yyyy')}
+                    <button type="button" className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-xl text-slate-700 text-sm font-bold flex-1 hover:bg-slate-100">
+                        {format(currentDate2, 'yyyy', { locale: ru })}
                         <ChevronDown className="w-4 h-4 text-slate-400" />
                     </button>
                 </div>
@@ -1378,14 +1378,14 @@ const DateRangePickers = () => {
                                     )} style={{ left: start ? '4px' : '0', right: end ? '4px' : '0' }} />
                                 )}
 
-                                <button
+                                <button type="button"
                                     onClick={() => handleDateClick(day, setSelectedRange2, selectedRange2)}
                                     className={cn(
                                         "relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
                                         selected ? "bg-[#7B2CBF] text-white shadow-lg shadow-[#7B2CBF]/40" : isCurrentMonth ? "text-slate-700 hover:bg-slate-50" : "text-slate-300",
                                     )}
                                 >
-                                    {format(day, 'd')}
+                                    {format(day, 'd', { locale: ru })}
                                 </button>
                             </div>
                         );
@@ -1394,10 +1394,10 @@ const DateRangePickers = () => {
 
                 {/* Footer Buttons */}
                 <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
-                    <button className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
+                    <button type="button" className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
-                    <button className="flex-1 py-3 rounded-2xl bg-[#F0E5FF] text-[#7B2CBF] font-semibold text-sm hover:bg-[#E0CCFF] transition-colors w-full">
+                    <button type="button" className="flex-1 py-3 rounded-2xl bg-[#F0E5FF] text-[#7B2CBF] font-semibold text-sm hover:bg-[#E0CCFF] transition-colors w-full">
                         Применить
                     </button>
                 </div>
@@ -1458,7 +1458,7 @@ const PricingPlans = () => {
     ];
 
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F5F5F7] flex flex-wrap gap-8 items-center justify-center">
+        <div className="p-10 md:p-20 rounded-[40px] bg-[#F5F5F7] flex flex-wrap gap-4 items-center justify-center">
             {plans.map((plan, index) => (
                 <motion.div
                     key={index}
@@ -1487,7 +1487,7 @@ const PricingPlans = () => {
                         </p>
 
                         {/* Button */}
-                        <button className="w-full py-4 bg-[#1A1A1A] hover:bg-black text-white rounded-[20px] font-bold text-sm transition-transform active:scale-[0.98] shadow-lg shadow-black/20">
+                        <button type="button" className="w-full py-4 bg-[#1A1A1A] hover:bg-black text-white rounded-[20px] font-bold text-sm transition-transform active:scale-[0.98] shadow-lg shadow-black/20">
                             {plan.buttonText}
                         </button>
                     </div>
@@ -1529,11 +1529,11 @@ export default function NewReferencesCRM() {
             case "logistics":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><TruckIcon className="text-blue-500" />Отслеживание и статус</h3>
                             <DeliveryTracking />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><TruckIcon className="text-blue-500" />Инфо-бабблы логистики</h3>
                             <FlightBubbles />
                         </section>
@@ -1542,7 +1542,7 @@ export default function NewReferencesCRM() {
             case "ai":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Sparkles className="text-purple-500" />Модули AI чата</h3>
                             <AIChatCards />
                         </section>
@@ -1551,15 +1551,15 @@ export default function NewReferencesCRM() {
             case "cards":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Invoice Dashboard</h3>
                             <InvoiceDashboard />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Карточка Taskello</h3>
                             <TaskelloCard />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Soft Mesh Folder</h3>
                             <SoftFolder />
                         </section>
@@ -1568,15 +1568,15 @@ export default function NewReferencesCRM() {
             case "widgets":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Обмен криптовалюты</h3>
                             <CryptoSwap />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Быстрые настройки (Bento)</h3>
                             <QuickSettings />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Умный дом</h3>
                             <SmartHomeDashboard />
                         </section>
@@ -1585,15 +1585,15 @@ export default function NewReferencesCRM() {
             case "calendar":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Расписание (Тёмная тема)</h3>
                             <DarkSchedule />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Календарные виджеты</h3>
                             <CalendarWidgets />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Выбор диапазона дат</h3>
                             <DateRangePickers />
                         </section>
@@ -1602,15 +1602,15 @@ export default function NewReferencesCRM() {
             case "ui":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><MousePointer2 className="text-green-500" />Установка приложения (PWA)</h3>
                             <PWAPrompt />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><MousePointer2 className="text-green-500" />Премиальная пагинация</h3>
                             <PaginationCRM />
                         </section>
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-green-500" />Тарифные планы</h3>
                             <PricingPlans />
                         </section>
@@ -1619,7 +1619,7 @@ export default function NewReferencesCRM() {
             case "dropdowns":
                 return (
                     <div className="space-y-48">
-                        <section className="space-y-8">
+                        <section className="space-y-4">
                             <h3 className="text-xl font-bold flex items-center gap-2"><ChevronDown className="text-blue-500" />Современный Dropdown</h3>
                             <ModernDropdown />
                         </section>
@@ -1627,7 +1627,7 @@ export default function NewReferencesCRM() {
                 );
             default:
                 return (
-                    <div className="space-y-64">
+                    <div className="space-y-44">
                         <section className="space-y-12">
                             <div className="flex items-center gap-4 border-b pb-4">
                                 <TruckIcon className="w-8 h-8 text-blue-500" />
@@ -1636,7 +1636,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Виджеты отслеживания и транспортные статусы</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <DeliveryTracking />
                                 <FlightBubbles />
                             </div>
@@ -1650,7 +1650,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Премиальные дизайны карточек и контейнеров</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <TaskelloCard />
                                 <SoftFolder />
                             </div>
@@ -1664,7 +1664,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Сложные UI взаимодействия и инструменты</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <CryptoSwap />
                                 <QuickSettings />
                                 <SmartHomeDashboard />
@@ -1679,7 +1679,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Управление временем и событиями</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <DarkSchedule />
                                 <CalendarWidgets />
                                 <DateRangePickers />
@@ -1694,7 +1694,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Навигация и базовые элементы интерфейса</p>
                                 </div>
                             </div>
-                            <div className="space-y-8">
+                            <div className="space-y-4">
                                 <PaginationCRM />
                                 <PWAPrompt />
                                 <JobActionsGrid />
@@ -1711,7 +1711,7 @@ export default function NewReferencesCRM() {
                                     <p className="text-slate-400 font-medium">Интерактивные меню выбора и фильтрации</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <ModernDropdown />
                             </div>
                         </section>
@@ -1733,16 +1733,16 @@ export default function NewReferencesCRM() {
 
     return (
         <section className="max-w-[1600px] mx-auto px-6 py-12 space-y-12">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-2">
-                    <span className="text-blue-600 font-black uppercase tracking-[0.3em] text-[10px]">Reference Hub</span>
-                    <h2 className="text-6xl font-black text-slate-900 tracking-normaler leading-none">Библиотека референсов</h2>
+                    <span className="text-blue-600 font-black tracking-[0.3em] text-xs">Reference Hub</span>
+                    <h2 className="text-6xl font-black text-slate-900er leading-none">Библиотека референсов</h2>
                     <p className="text-slate-400 text-lg font-medium max-w-xl">Коллекция интерактивных компонентов и премиальных UI-дизайнов для CRM системы.</p>
                 </div>
 
                 <div className="flex p-1.5 bg-slate-100 rounded-2xl gap-1">
                     {categories.map((cat) => (
-                        <button
+                        <button type="button"
                             key={cat.id}
                             onClick={() => setActiveTab(cat.id)}
                             className={cn(
@@ -1770,7 +1770,7 @@ export default function NewReferencesCRM() {
             </motion.div>
 
             <footer className="pt-24 pb-12 border-t mt-24 text-center">
-                <p className="text-slate-300 font-black uppercase tracking-widest text-[10px]">Merch CRM Design System © {new Date().getFullYear()}</p>
+                <p className="text-slate-300 font-black text-xs">Merch CRM Design System © {new Date().getFullYear()}</p>
             </footer>
         </section>
     );

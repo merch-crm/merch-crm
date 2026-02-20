@@ -15,3 +15,15 @@ export const CreateTaskSchema = z.object({
 export const UpdateTaskSchema = CreateTaskSchema.partial().extend({
     status: z.enum(["new", "in_progress", "review", "done", "archived"]).optional(),
 });
+
+export const TaskIdSchema = z.object({
+    taskId: z.string().uuid("Некорректный ID задачи"),
+});
+
+export const TaskContentSchema = z.object({
+    content: z.string().min(1, "Контент не может быть пустым"),
+});
+
+export const ChecklistItemSchema = z.object({
+    itemId: z.string().uuid("Некорректный ID пункта"),
+});

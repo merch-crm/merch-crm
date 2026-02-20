@@ -6,7 +6,8 @@ export function exportToCSV<T>(
     filename: string,
     columns?: { header: string; key: keyof T | ((item: T) => string | number | boolean | null | undefined | Date) }[]
 ) {
-    if (data.length === 0) return;
+    if (!data || !Array.isArray(data) || data.length === 0) return;
+    const safeData = data as T[];
 
     let headers: string[] = [];
     let rows: string[][] = [];
@@ -14,7 +15,7 @@ export function exportToCSV<T>(
     if (columns) {
         // Use provided column definitions
         headers = columns.map(col => col.header);
-        rows = data.map(item =>
+        rows = safeData.map(item =>
             columns.map(col => {
                 const value = typeof col.key === "function" ? col.key(item) : item[col.key];
                 return formatCSVValue(value);
@@ -22,16 +23,16 @@ export function exportToCSV<T>(
         );
     } else {
         // Auto-generate columns from the first object
-        const firstItem = data[0] as Record<string, unknown>;
+        const firstItem = (safeData[0] || {}) as Record<string, unknown>;
         headers = Object.keys(firstItem).filter(key => typeof firstItem[key] !== "object" || firstItem[key] === null);
-        rows = data.map(item =>
+        rows = safeData.map(item =>
             headers.map(header => formatCSVValue((item as Record<string, unknown>)[header]))
         );
     }
 
     const csvContent = [
         headers.join(","),
-        ...rows.map(row => row.join(","))
+        ...(rows || []).map(row => row.join(","))
     ].join("\n");
 
     // Add BOM for Excel Russian character support

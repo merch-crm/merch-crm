@@ -54,34 +54,34 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
         <div className="crm-card !p-8 h-full flex flex-col shadow-xl shadow-slate-200/50">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="p-3 bg-primary/5 rounded-2xl">
                         <CalendarIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-normal">
+                        <h2 className="text-2xl font-bold text-slate-900">
                             {format(monthToRender, "LLLL yyyy", { locale: ru })}
                         </h2>
-                        <p className="text-xs font-bold text-slate-400  tracking-normal">
+                        <p className="text-xs font-bold text-slate-400 ">
                             Календарь задач
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <button
+                    <button type="button"
                         onClick={() => setCurrentMonth(subMonths(monthToRender, 1))}
                         className="p-3 hover:bg-slate-50 rounded-2xl transition-all"
                     >
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
                     </button>
-                    <button
+                    <button type="button"
                         onClick={() => setCurrentMonth(new Date())}
                         className="px-4 py-2 bg-slate-900 text-white rounded-2xl text-xs font-bold hover:bg-slate-800 transition-all"
                     >
                         СЕГОДНЯ
                     </button>
-                    <button
+                    <button type="button"
                         onClick={() => setCurrentMonth(addMonths(monthToRender, 1))}
                         className="p-3 hover:bg-slate-50 rounded-2xl transition-all"
                     >
@@ -94,7 +94,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             <div className="grid grid-cols-7 gap-2 mb-4">
                 {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((day) => (
                     <div key={day} className="text-center">
-                        <span className="text-xs font-bold text-slate-400  tracking-normal">
+                        <span className="text-xs font-bold text-slate-400 ">
                             {day}
                         </span>
                     </div>
@@ -122,10 +122,10 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                     "text-sm font-bold",
                                     isCurrentDay ? "text-primary" : isCurrentMonth ? "text-slate-900" : "text-slate-300"
                                 )}>
-                                    {format(day, "d")}
+                                    {format(day, "d", { locale: ru })}
                                 </span>
                                 {dayTasks.length > 0 && (
-                                    <span className="px-1.5 py-0.5 bg-primary/5 text-primary rounded-md text-[10px] font-bold">
+                                    <span className="px-1.5 py-0.5 bg-primary/5 text-primary rounded-md text-xs font-bold">
                                         {dayTasks.length}
                                     </span>
                                 )}
@@ -133,7 +133,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
 
                             <div className="space-y-1.5">
                                 {dayTasks.slice(0, 3).map((task) => (
-                                    <button
+                                    <button type="button"
                                         key={task.id}
                                         onClick={() => onTaskClick(task)}
                                         className={cn(
@@ -145,7 +145,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                         <div className="flex items-center gap-1.5 mb-1">
                                             <div className={cn("h-1.5 w-1.5 rounded-full", getPriorityColor(task.priority))} />
                                             <span className={cn(
-                                                "text-[10px] font-bold truncate",
+                                                "text-xs font-bold truncate",
                                                 task.status === "done" ? "line-through text-slate-400" : "text-slate-700 group-hover:text-primary"
                                             )}>
                                                 {task.title}
@@ -154,7 +154,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                     </button>
                                 ))}
                                 {dayTasks.length > 3 && (
-                                    <div className="text-[9px] font-bold text-slate-400 text-center  tracking-normal">
+                                    <div className="text-xs font-bold text-slate-400 text-center ">
                                         +{dayTasks.length - 3} ещё
                                     </div>
                                 )}
@@ -165,7 +165,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-6 mt-6 pt-6 border-t border-slate-200">
+            <div className="flex items-center gap-4 mt-6 pt-6 border-t border-slate-200">
                 <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-rose-500" />
                     <span className="text-xs font-bold text-slate-600">Высокий</span>

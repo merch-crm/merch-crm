@@ -2,40 +2,71 @@
 
 import { db } from "@/lib/db";
 import { orders } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
+import { logError } from "@/lib/error-logger";
+import { ActionResult } from "@/lib/types";
 
-export async function getDesignStats() {
+export async function getDesignStats(): Promise<ActionResult<{
+    newTasks: number;
+    pendingApproval: number;
+    completed: number;
+    efficiency: number;
+}>> {
     const session = await getSession();
-    if (!session) return { newTasks: 0, pendingApproval: 0, completed: 0, efficiency: 95 };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const designOrders = await db.query.orders.findMany({
             where: eq(orders.status, "design"),
+            limit: 100 // Safety limit
         });
 
         const newTasks = designOrders.length;
-        const pendingApproval = designOrders.filter(o => o.priority === "high").length;
+        const pendingApproval = designOrders.filter(o => o.priority === "high" || o.priority === "urgent").length;
 
         // Mock data for completed and efficiency
         const completed = 24;
         const efficiency = 95;
 
         return {
-            newTasks,
-            pendingApproval,
-            completed,
-            efficiency
+            success: true,
+            data: {
+                newTasks,
+                pendingApproval,
+                completed,
+                efficiency
+            }
         };
     } catch (error) {
-        console.error("Error fetching design stats:", error);
-        return { newTasks: 0, pendingApproval: 0, completed: 0, efficiency: 0 };
+        await logError({
+            error,
+            path: "/dashboard/design",
+            method: "getDesignStats"
+        });
+        return { success: false, error: "Не удалось загрузить статистику дизайна" };
     }
 }
 
-export async function getDesignOrders() {
+import { z } from "zod";
+import { Order } from "@/lib/types/order";
+
+const GetDesignOrdersSchema = z.object({
+    page: z.number().int().positive().optional().default(1),
+    limit: z.number().int().positive().max(100).optional().default(50),
+});
+
+export async function getDesignOrders(input: z.input<typeof GetDesignOrdersSchema> = {}): Promise<ActionResult<Order[]>> {
     const session = await getSession();
-    if (!session) return [];
+    if (!session) return { success: false, error: "Не авторизован" };
+
+    const validated = GetDesignOrdersSchema.safeParse(input);
+    if (!validated.success) {
+        return { success: false, error: "Некорректные параметры: " + validated.error.issues[0].message };
+    }
+
+    const { page, limit } = validated.data;
+    const offset = (page - 1) * limit;
 
     try {
         const designOrders = await db.query.orders.findMany({
@@ -43,12 +74,20 @@ export async function getDesignOrders() {
             with: {
                 client: true,
                 items: true,
-            }
+            },
+            limit,
+            offset,
+            orderBy: [desc(orders.createdAt)]
         });
 
-        return designOrders;
+        return { success: true, data: designOrders as unknown as Order[] };
     } catch (error) {
-        console.error("Error fetching design orders:", error);
-        return [];
+        await logError({
+            error,
+            path: "/dashboard/design",
+            method: "getDesignOrders",
+            details: { page, limit }
+        });
+        return { success: false, error: "Не удалось загрузить список заказов" };
     }
 }

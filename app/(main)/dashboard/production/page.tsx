@@ -1,6 +1,7 @@
 import { ProductionWidgets } from "./production-widgets";
 import { ProductionBoard } from "./production-board";
 import { getProductionStats, getProductionItems } from "./actions";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default async function ProductionPage() {
     const statsRes = await getProductionStats();
@@ -10,7 +11,7 @@ export default async function ProductionPage() {
     const items = (itemsRes.success && itemsRes.data) ? itemsRes.data : [];
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <PageContainer>
             {/* Header */}
             <div className="px-1">
                 <h1 className="text-4xl font-bold text-slate-900 leading-none">Производство</h1>
@@ -22,6 +23,6 @@ export default async function ProductionPage() {
 
             {/* Kanban Board */}
             <ProductionBoard items={items} />
-        </div>
+        </PageContainer>
     );
 }

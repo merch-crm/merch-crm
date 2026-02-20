@@ -48,8 +48,8 @@ export function FinanceDateFilter() {
     const handleApplyCustomRange = () => {
         if (dateRange?.from) {
             const params = new URLSearchParams(searchParams.toString());
-            const fromStr = format(dateRange.from, "yyyy-MM-dd");
-            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : fromStr;
+            const fromStr = format(dateRange.from, "yyyy-MM-dd", { locale: ru });
+            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd", { locale: ru }) : fromStr;
 
             params.set("from", fromStr);
             params.set("to", toStr);
@@ -123,7 +123,7 @@ export function FinanceDateFilter() {
                                 className="rounded-2xl"
                             />
 
-                            <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between gap-4">
+                            <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
                                 <div className="text-xs font-medium text-slate-500">
                                     {dateRange?.from ? (
                                         <>
@@ -156,7 +156,7 @@ export function FinanceDateFilter() {
                     </div>
                 ) : currentRange !== "all" && (
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-left-2 duration-300">
-                        <span className="text-slate-400 font-bold text-sm  tracking-normal text-[10px]">
+                        <span className="text-slate-400 font-bold text-xs">
                             {currentRange === "today" && "За сегодня"}
                             {currentRange === "7d" && "За последние 7 дней"}
                             {currentRange === "30d" && "За последние 30 дней"}

@@ -13,13 +13,14 @@ import Image from "next/image";
 import { RoleBadge } from "@/components/ui/role-badge";
 import { Button } from "@/components/ui/button";
 
-import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import type { BrandingSettings } from "@/lib/types";
 
 export function UserNav({ user, branding }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null },
     branding?: BrandingSettings
 }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const isMobile = useMediaQuery("(max-width: 767px)");
@@ -38,6 +39,7 @@ export function UserNav({ user, branding }: {
         <div className="relative" ref={dropdownRef}>
             <Button
                 variant="ghost"
+                type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-3 p-1.5 h-auto rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 group hover:shadow-sm"
             >
@@ -123,11 +125,12 @@ export function UserNav({ user, branding }: {
                                     <div className="flex flex-col gap-1 min-w-0 flex-1">
                                         <span className="text-xl md:text-base font-black md:font-bold text-slate-900 leading-tight truncate">{user.name}</span>
                                         <span className="text-sm md:text-[12px] text-slate-400 font-medium truncate">{user.email}</span>
-                                        <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit text-[10px] px-2 py-0" />
+                                        <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit text-xs px-2 py-0" />
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        type="button"
                                         onClick={() => setIsOpen(false)}
                                         className="md:hidden p-2 rounded-full"
                                     >
@@ -186,7 +189,7 @@ export function UserNav({ user, branding }: {
                                 {/* Social Links from Branding */}
                                 {(branding?.socialTelegram || branding?.socialWhatsapp || branding?.socialWebsite) && (
                                     <div className="p-4 md:p-2.5 bg-slate-50/50 border-t border-slate-200/60 space-y-1 md:space-y-1">
-                                        <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Ресурсы компании</p>
+                                        <p className="text-xs font-bold text-slate-400 px-3 py-1">Ресурсы компании</p>
                                         {branding.socialTelegram && (
                                             <a href={branding.socialTelegram} target="_blank" rel="noopener noreferrer" className="dropdown-item py-3 md:py-2 hover:bg-sky-50 hover:text-sky-600">
                                                 <Send className="h-4 w-4" />
@@ -211,19 +214,27 @@ export function UserNav({ user, branding }: {
 
                             {/* Exit Section */}
                             <div className="p-4 md:p-2.5 bg-rose-50/30 shrink-0">
-                                <form action={async () => {
-                                    await logout();
-                                    router.push("/login");
-                                }}>
-                                    <Button
-                                        type="submit"
-                                        variant="ghost"
-                                        className="w-full dropdown-item py-3 md:py-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700 justify-center md:justify-start"
-                                    >
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={async () => {
+                                        if (isLoggingOut) return;
+                                        setIsLoggingOut(true);
+                                        await logout();
+                                        router.push("/login");
+                                    }}
+                                    disabled={isLoggingOut}
+                                    className="w-full dropdown-item py-3 md:py-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700 justify-center md:justify-start"
+                                >
+                                    {isLoggingOut ? (
+                                        <div className="h-5 w-5 border-2 border-rose-600 border-t-transparent rounded-full animate-spin" />
+                                    ) : (
                                         <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100" />
-                                        <span className="text-base md:text-sm font-black md:font-bold">Выйти</span>
-                                    </Button>
-                                </form>
+                                    )}
+                                    <span className="text-base md:text-sm font-black md:font-bold">
+                                        {isLoggingOut ? "Выход..." : "Выйти"}
+                                    </span>
+                                </Button>
                             </div>
                         </motion.div>
                     </>

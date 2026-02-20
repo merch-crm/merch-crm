@@ -1,21 +1,44 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { users, orders, tasks, auditLogs, clients } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { comparePassword, hashPassword } from "@/lib/password";
 import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { orders, tasks, auditLogs, clients } from "@/lib/schema";
+
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { saveAvatarFile } from "@/lib/avatar-storage";
+import { z } from "zod";
+
+const ProfileSchema = z.object({
+    name: z.string().min(1, "Имя обязательно"),
+    phone: z.string().optional().nullable(),
+    telegram: z.string().optional().nullable(),
+    instagram: z.string().optional().nullable(),
+    socialMax: z.string().optional().nullable(),
+    birthday: z.string().optional().nullable(),
+});
+
+const PasswordSchema = z.object({
+    currentPassword: z.string().min(1, "Введите текущий пароль"),
+    newPassword: z.string().min(6, "Новый пароль должен быть не менее 6 символов"),
+    confirmPassword: z.string().min(1, "Подтвердите новый пароль"),
+}).refine(data => data.newPassword === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"]
+});
 
 
 export async function logout() {
-    (await cookies()).delete("session");
+    try {
+        (await cookies()).delete("session");
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
 }
 
 export async function getUserProfile() {
@@ -53,53 +76,56 @@ export async function updateProfile(formData: FormData) {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
-    const name = formData.get("name") as string;
-    const phone = formData.get("phone") as string;
-    const avatarFile = formData.get("avatar") as File;
+    const rawData = {
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        telegram: formData.get("telegram"),
+        instagram: formData.get("instagram"),
+        socialMax: formData.get("socialMax"),
+        birthday: formData.get("birthday"),
+    };
 
-    const telegram = formData.get("telegram") as string;
-    const instagram = formData.get("instagram") as string;
-    const socialMax = formData.get("socialMax") as string;
-    const birthday = formData.get("birthday") as string;
+    const validated = ProfileSchema.safeParse(rawData);
+    if (!validated.success) {
+        return { success: false, error: "Некорректные данные: " + validated.error.issues[0].message };
+    }
 
-    if (!name) return { success: false, error: "Имя обязательно" };
+    const { name, phone, telegram, instagram, socialMax, birthday } = validated.data;
+    const avatarFile = formData.get("avatar") as File | null;
 
     try {
         const updateData: Partial<typeof users.$inferInsert> = {
             name,
-            phone,
-            telegram,
-            instagram,
-            socialMax,
+            phone: phone || null,
+            telegram: telegram || null,
+            instagram: instagram || null,
+            socialMax: socialMax || null,
             birthday: birthday || null,
             updatedAt: new Date()
         };
 
         if (avatarFile && avatarFile.size > 0) {
-            // Get current user to check for existing avatar
             const currentUser = await db.query.users.findFirst({
                 where: eq(users.id, session.id),
                 columns: { avatar: true }
             });
 
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
-
-            // Use utility function that handles both save and delete
-            // Use the name from form or session for filename
             const displayName = name || session.name || "user";
             updateData.avatar = await saveAvatarFile(buffer, session.id, displayName, currentUser?.avatar || null);
         }
 
-        await db.update(users)
-            .set(updateData)
-            .where(eq(users.id, session.id));
+        await db.transaction(async (tx) => {
+            await tx.update(users)
+                .set(updateData)
+                .where(eq(users.id, session.id));
 
-        await logAction("profile_update", "users", session.id, {
-            changedFields: Object.keys(updateData).filter(k => k !== 'avatar')
+            await logAction("profile_update", "users", session.id, {
+                changedFields: Object.keys(updateData).filter(k => k !== 'avatar')
+            }, tx);
         });
 
         revalidatePath("/dashboard/profile");
-        // Revalidate layout to update header avatar if safe
         revalidatePath("/", "layout");
 
         return { success: true };
@@ -110,8 +136,7 @@ export async function updateProfile(formData: FormData) {
             method: "updateProfile",
             details: { name, phone }
         });
-        console.error("Error updating profile:", error);
-        return { success: false, error: `Ошибка обновления профиля: ${(error as Error).message || String(error)}` };
+        return { success: false, error: "Не удалось обновить профиль" };
     }
 }
 
@@ -119,21 +144,13 @@ export async function updatePassword(formData: FormData) {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
-    const currentPassword = formData.get("currentPassword") as string;
-    const newPassword = formData.get("newPassword") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        return { success: false, error: "Заполните все поля" };
+    const rawData = Object.fromEntries(formData);
+    const validated = PasswordSchema.safeParse(rawData);
+    if (!validated.success) {
+        return { success: false, error: validated.error.issues[0].message };
     }
 
-    if (newPassword !== confirmPassword) {
-        return { success: false, error: "Пароли не совпадают" };
-    }
-
-    if (newPassword.length < 6) {
-        return { success: false, error: "Новый пароль должен быть не менее 6 символов" };
-    }
+    const { currentPassword, newPassword } = validated.data;
 
     try {
         const user = await db.query.users.findFirst({
@@ -146,11 +163,13 @@ export async function updatePassword(formData: FormData) {
         if (!isMatch) return { success: false, error: "Текущий пароль указан неверно" };
 
         const newHash = await hashPassword(newPassword);
-        await db.update(users)
-            .set({ passwordHash: newHash })
-            .where(eq(users.id, session.id));
+        await db.transaction(async (tx) => {
+            await tx.update(users)
+                .set({ passwordHash: newHash })
+                .where(eq(users.id, session.id));
 
-        await logAction("password_change", "users", session.id);
+            await logAction("password_change", "users", session.id, undefined, tx);
+        });
 
         return { success: true };
     } catch (error) {
@@ -159,8 +178,7 @@ export async function updatePassword(formData: FormData) {
             path: "/dashboard/profile",
             method: "updatePassword"
         });
-        console.error("Error updating password:", error);
-        return { success: false, error: "Не удалось обновить password" };
+        return { success: false, error: "Не удалось обновить пароль" };
     }
 }
 
@@ -179,7 +197,8 @@ export async function getUserStatistics() {
             totalRevenue: sum(orders.totalAmount)
         })
             .from(orders)
-            .where(eq(orders.createdBy, session.id));
+            .where(eq(orders.createdBy, session.id))
+            .limit(1);
 
         const monthlyOrders = await db.select({
             count: count()
@@ -189,7 +208,8 @@ export async function getUserStatistics() {
                 eq(orders.createdBy, session.id),
                 gte(orders.createdAt, firstDayOfMonth),
                 lte(orders.createdAt, lastDayOfMonth)
-            ));
+            ))
+            .limit(1);
 
         // 2. Tasks stats
         const userTasksCount = await db.select({
@@ -198,7 +218,8 @@ export async function getUserStatistics() {
         })
             .from(tasks)
             .where(eq(tasks.assignedToUserId, session.id))
-            .groupBy(tasks.status);
+            .groupBy(tasks.status)
+            .limit(20);
 
         const totalTasks = userTasksCount.reduce((acc, curr) => acc + Number(curr.count), 0);
         const completedTasks = Number(userTasksCount.find(t => t.status === "done")?.count || 0);
@@ -209,7 +230,8 @@ export async function getUserStatistics() {
             count: count()
         })
             .from(auditLogs)
-            .where(eq(auditLogs.userId, session.id));
+            .where(eq(auditLogs.userId, session.id))
+            .limit(1);
 
         return {
             data: {
@@ -235,8 +257,9 @@ export async function getUserStatistics() {
 export async function getUpcomingBirthdays() {
     try {
         const allUsers = await db.query.users.findMany({
-            where: (users, { isNotNull }) => isNotNull(users.birthday),
-            columns: { name: true, birthday: true, avatar: true }
+            where: (users, { isNotNull, eq }) => and(isNotNull(users.birthday), eq(users.isSystem, false)),
+            columns: { name: true, birthday: true, avatar: true },
+            limit: 50
         });
 
         const today = new Date();
@@ -246,12 +269,17 @@ export async function getUpcomingBirthdays() {
             success: true, data: allUsers.filter(user => {
                 if (!user.birthday) return false;
                 const bday = new Date(user.birthday);
-                return bday.getUTCMonth() === today.getUTCMonth() && bday.getUTCDate() === today.getUTCDate();
+                // Compare UTC date of birthday (from 'YYYY-MM-DD') with local today date
+                return bday.getUTCMonth() === today.getMonth() && bday.getUTCDate() === today.getDate();
             })
         };
     } catch (error) {
-        console.error("Error fetching birthdays:", error);
-        return { success: false, error: "Не удалось загрузить birthdays", data: [] };
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getUpcomingBirthdays"
+        });
+        return { success: false, error: "Не удалось загрузить дни рождения", data: [] };
     }
 }
 
@@ -267,12 +295,17 @@ export async function getLostClientsCount() {
                 eq(clients.isArchived, false)
             ))
             .groupBy(clients.id)
-            .having(sql`max(${orders.createdAt}) < ${threeMonthsAgo} OR max(${orders.createdAt}) IS NULL`);
+            .having(sql`max(${orders.createdAt}) < ${threeMonthsAgo} OR max(${orders.createdAt}) IS NULL`)
+            .limit(100);
 
         return { success: true, data: lostClients.length };
     } catch (error) {
-        console.error("Error fetching lost clients:", error);
-        return { success: false, error: "Не удалось загрузить lost клиенты", data: 0 };
+        await logError({
+            error,
+            path: "/dashboard/profile",
+            method: "getLostClientsCount"
+        });
+        return { success: false, error: "Не удалось загрузить количество потерянных клиентов", data: 0 };
     }
 }
 
@@ -283,7 +316,8 @@ export async function getUserSchedule() {
     try {
         const userTasks = await db.query.tasks.findMany({
             where: eq(tasks.assignedToUserId, session.id),
-            orderBy: [desc(tasks.dueDate)]
+            orderBy: [desc(tasks.dueDate)],
+            limit: 100
         });
 
         return { success: true, data: userTasks };

@@ -17,7 +17,7 @@ interface InventoryClientProps {
     user: Session | null;
 }
 
-export function InventoryClient({ categories, user }: InventoryClientProps) {
+export function InventoryClient({ categories = [], user }: InventoryClientProps) {
     const router = useRouter();
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
@@ -79,6 +79,20 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
         };
     });
 
+    if (itemsByCategory.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
+                    </svg>
+                </div>
+                <h3 className="text-lg font-bold text-slate-700 mb-1">Категории не созданы</h3>
+                <p className="text-sm text-slate-400 max-w-xs">Создайте первую категорию через кнопку «Добавить категорию»</p>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
@@ -89,7 +103,15 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                     return (
                         <div
                             key={category.id}
+                            role="button"
+                            tabIndex={0}
                             onClick={() => router.push(`/dashboard/warehouse/${category.id}`)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    router.push(`/dashboard/warehouse/${category.id}`);
+                                }
+                            }}
                             className="group relative flex flex-col h-full min-h-[220px] crm-card shadow-sm hover:shadow-md transition-all duration-300 p-0 overflow-hidden bg-white cursor-pointer"
                         >
                             {/* Header Variant B */}
@@ -107,14 +129,14 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                         <h3 className="font-bold text-[17px] text-slate-800 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">
                                             {category.name}
                                         </h3>
-                                        <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full inline-block">
+                                        <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full inline-block">
                                             {category.totalQuantity || 0} шт.
                                         </span>
                                     </div>
                                 </div>
 
                                 {!isOrphaned && (
-                                    <button
+                                    <button type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setEditingCategory(category);
@@ -131,24 +153,33 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                 {category.children && category.children.length > 0 ? (
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Подкатегории</span>
-                                            <span className="text-[10px] font-bold text-slate-300 bg-slate-50 px-1.5 rounded-md">{category.children.length}</span>
+                                            <span className="text-xs font-bold text-slate-400">Подкатегории</span>
+                                            <span className="text-xs font-bold text-slate-300 bg-slate-50 px-1.5 rounded-md">{category.children.length}</span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2">
                                             {category.children.slice(0, 5).map(child => (
                                                 <div
                                                     key={child.id}
+                                                    role="button"
+                                                    tabIndex={0}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         router.push(`/dashboard/warehouse/${child.id}`);
                                                     }}
-                                                    className="px-3 py-2 bg-slate-50 hover:bg-white border border-slate-100 hover:border-indigo-200 rounded-[10px] text-[11px] font-bold text-slate-600 hover:text-indigo-600 transition-all truncate hover:shadow-sm text-center"
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' || e.key === ' ') {
+                                                            e.stopPropagation();
+                                                            e.preventDefault();
+                                                            router.push(`/dashboard/warehouse/${child.id}`);
+                                                        }
+                                                    }}
+                                                    className="px-3 py-2 bg-slate-50 hover:bg-white border border-slate-100 hover:border-indigo-200 rounded-[10px] text-xs font-bold text-slate-600 hover:text-indigo-600 transition-all truncate hover:shadow-sm text-center"
                                                 >
                                                     {child.name}
                                                 </div>
                                             ))}
                                             {category.children.length > 5 && (
-                                                <div className="px-3 py-2 flex items-center justify-center bg-slate-50/50 border border-dashed border-slate-200 rounded-[10px] text-[10px] font-bold text-slate-400">
+                                                <div className="px-3 py-2 flex items-center justify-center bg-slate-50/50 border border-dashed border-slate-200 rounded-[10px] text-xs font-bold text-slate-400">
                                                     +{category.children.length - 5} еще
                                                 </div>
                                             )}
@@ -156,7 +187,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-2 h-full">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Описание</span>
+                                        <span className="text-xs font-bold text-slate-400">Описание</span>
                                         <p className="text-[13px] text-slate-500 leading-relaxed line-clamp-3 font-medium">
                                             {category.description || "Описание отсутствует"}
                                         </p>
@@ -166,7 +197,7 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
 
                             {/* Footer Link */}
                             <div className="px-6 py-3 border-t border-slate-50 bg-slate-50/30 flex items-center justify-between transition-colors group-hover:bg-indigo-50/30 mt-auto">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 transition-colors group-hover:text-indigo-600">Перейти в категорию</span>
+                                <span className="text-xs font-bold text-slate-400 transition-colors group-hover:text-indigo-600">Перейти в категорию</span>
                                 <div className="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-300 group-hover:border-indigo-200 group-hover:text-indigo-500 transition-all shadow-sm">
                                     <ChevronRight className="w-3.5 h-3.5" />
                                 </div>
@@ -175,13 +206,15 @@ export function InventoryClient({ categories, user }: InventoryClientProps) {
                     );
                 })}
             </div>
-            <EditCategoryDialog
-                category={editingCategory || categories[0]}
-                categories={categories}
-                isOpen={!!editingCategory}
-                onClose={() => setEditingCategory(null)}
-                user={user}
-            />
+            {editingCategory && (
+                <EditCategoryDialog
+                    category={editingCategory}
+                    categories={categories}
+                    isOpen={!!editingCategory}
+                    onClose={() => setEditingCategory(null)}
+                    user={user}
+                />
+            )}
         </>
     );
 }

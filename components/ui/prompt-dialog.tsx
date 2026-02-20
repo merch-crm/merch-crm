@@ -70,7 +70,7 @@ export function PromptDialog({
                     </div>
                 </div>
 
-                <div className="p-6 md:p-8 pt-4 space-y-6">
+                <div className="p-6 md:p-8 pt-4 space-y-4">
                     {(description) && (
                         <p className="text-sm font-bold text-slate-600 leading-relaxed">
                             {description}
@@ -79,7 +79,7 @@ export function PromptDialog({
 
                     <div className="space-y-2">
                         {label && (
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                            <label className="text-xs font-black text-slate-400 ml-1">
                                 {label} <span className="text-rose-500">*</span>
                             </label>
                         )}
@@ -104,7 +104,7 @@ export function PromptDialog({
                             {...inputProps}
                         />
                         {error && (
-                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-rose-500 ml-1 animate-in slide-in-from-top-1">
                                 <AlertCircle className="w-3 h-3" />
                                 <span>Поле не может быть пустым</span>
                             </div>
@@ -114,12 +114,14 @@ export function PromptDialog({
                     <div className="flex flex-col-reverse md:flex-row gap-3 pt-2">
                         <Button
                             variant="ghost"
+                            type="button"
                             onClick={onClose}
                             className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all"
                         >
                             {cancelText}
                         </Button>
                         <Button
+                            type="button"
                             onClick={handleConfirm}
                             disabled={isLoading || !value.trim()}
                             className="flex-[2] h-11 rounded-[var(--radius-inner)] bg-primary shadow-xl shadow-primary/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 border-none"

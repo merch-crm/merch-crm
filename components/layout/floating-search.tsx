@@ -82,7 +82,7 @@ export function FloatingSearch() {
                         >
                             <div className="pr-6 pl-1 flex items-center whitespace-nowrap">
                                 <span className="text-sm font-bold text-slate-700 mr-4">Поиск</span>
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-slate-100 border border-slate-200 text-[10px] font-black text-slate-400">
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-slate-100 border border-slate-200 text-xs font-black text-slate-400">
                                     <Command className="w-3.5 h-3.5" />
                                     <span>K</span>
                                 </div>

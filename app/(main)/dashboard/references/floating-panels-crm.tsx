@@ -33,7 +33,7 @@ const PanelContainer = ({ children, className = "" }: { children: React.ReactNod
 );
 
 const IconButton = ({ icon: Icon, active = false, className = "", blue = false }: { icon: React.ElementType, active?: boolean, className?: string, blue?: boolean }) => (
-    <button className={`p-2.5 rounded-full transition-colors flex items-center justify-center ${active ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'} ${blue ? '!bg-[#3b5bdb] !text-white hover:!bg-[#3b5bdb]/90' : ''} ${className}`}>
+    <button type="button" className={`p-2.5 rounded-full transition-colors flex items-center justify-center ${active ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'} ${blue ? '!bg-[#3b5bdb] !text-white hover:!bg-[#3b5bdb]/90' : ''} ${className}`}>
         <Icon size={20} strokeWidth={2} />
     </button>
 );
@@ -48,7 +48,7 @@ export default function FloatingPanelsCRM() {
                 <h2 className="text-3xl font-bold text-slate-800">Floating Action Panels</h2>
             </div>
 
-            <div className="flex flex-col gap-6 items-start scale-110 p-12">
+            <div className="flex flex-col gap-4 items-start scale-110 p-12">
 
                 {/* 1. Type Selector (Small pill) */}
                 <PanelContainer className="self-start mb-2 px-3">

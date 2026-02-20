@@ -38,54 +38,59 @@ export async function GET() {
         // We can't easily iterate db.query keys safely with typing without being careful.
         // Let's do it explicitly for safety.
 
-        backupData.roles = await db.select().from(schema.roles);
-        backupData.departments = await db.select().from(schema.departments);
-        backupData.users = await db.select().from(schema.users);
+        const data = await db.transaction(async (tx) => {
+            backupData.roles = await tx.select().from(schema.roles);
+            backupData.departments = await tx.select().from(schema.departments);
+            backupData.users = await tx.select().from(schema.users);
 
-        backupData.clients = await db.select().from(schema.clients);
+            backupData.clients = await tx.select().from(schema.clients);
 
-        backupData.inventoryCategories = await db.select().from(schema.inventoryCategories);
-        backupData.storageLocations = await db.select().from(schema.storageLocations);
-        backupData.inventoryItems = await db.select().from(schema.inventoryItems);
-        backupData.inventoryAttributes = await db.select().from(schema.inventoryAttributes);
-        backupData.inventoryAttributeTypes = await db.select().from(schema.inventoryAttributeTypes);
+            backupData.inventoryCategories = await tx.select().from(schema.inventoryCategories);
+            backupData.storageLocations = await tx.select().from(schema.storageLocations);
+            backupData.inventoryItems = await tx.select().from(schema.inventoryItems);
+            backupData.inventoryAttributes = await tx.select().from(schema.inventoryAttributes);
+            backupData.inventoryAttributeTypes = await tx.select().from(schema.inventoryAttributeTypes);
 
-        backupData.inventoryStocks = await db.select().from(schema.inventoryStocks);
-        backupData.inventoryTransactions = await db.select().from(schema.inventoryTransactions);
-        backupData.inventoryTransfers = await db.select().from(schema.inventoryTransfers);
+            backupData.inventoryStocks = await tx.select().from(schema.inventoryStocks);
+            backupData.inventoryTransactions = await tx.select().from(schema.inventoryTransactions);
+            backupData.inventoryTransfers = await tx.select().from(schema.inventoryTransfers);
 
-        backupData.promocodes = await db.select().from(schema.promocodes);
-        backupData.orders = await db.select().from(schema.orders);
-        backupData.orderItems = await db.select().from(schema.orderItems);
-        backupData.payments = await db.select().from(schema.payments);
-        backupData.orderAttachments = await db.select().from(schema.orderAttachments);
+            backupData.promocodes = await tx.select().from(schema.promocodes);
+            backupData.orders = await tx.select().from(schema.orders);
+            backupData.orderItems = await tx.select().from(schema.orderItems);
+            backupData.payments = await tx.select().from(schema.payments);
+            backupData.orderAttachments = await tx.select().from(schema.orderAttachments);
 
-        backupData.tasks = await db.select().from(schema.tasks);
-        backupData.taskChecklists = await db.select().from(schema.taskChecklists);
-        backupData.taskComments = await db.select().from(schema.taskComments);
-        backupData.taskHistory = await db.select().from(schema.taskHistory);
-        backupData.taskAttachments = await db.select().from(schema.taskAttachments);
+            backupData.tasks = await tx.select().from(schema.tasks);
+            backupData.taskChecklists = await tx.select().from(schema.taskChecklists);
+            backupData.taskComments = await tx.select().from(schema.taskComments);
+            backupData.taskHistory = await tx.select().from(schema.taskHistory);
+            backupData.taskAttachments = await tx.select().from(schema.taskAttachments);
 
-        backupData.expenses = await db.select().from(schema.expenses);
-        backupData.wikiFolders = await db.select().from(schema.wikiFolders);
-        backupData.wikiPages = await db.select().from(schema.wikiPages);
-        backupData.systemSettings = await db.select().from(schema.systemSettings);
+            backupData.expenses = await tx.select().from(schema.expenses);
+            backupData.wikiFolders = await tx.select().from(schema.wikiFolders);
+            backupData.wikiPages = await tx.select().from(schema.wikiPages);
+            backupData.systemSettings = await tx.select().from(schema.systemSettings);
 
-        // Security logs are usually large, maybe exclude or make optional? 
-        // Let's include them for full backup.
-        backupData.auditLogs = await db.select().from(schema.auditLogs);
-        backupData.securityEvents = await db.select().from(schema.securityEvents);
+            // Security logs are usually large, maybe exclude or make optional? 
+            // Let's include them for full backup.
+            backupData.auditLogs = await tx.select().from(schema.auditLogs);
+            backupData.securityEvents = await tx.select().from(schema.securityEvents);
 
-        const data = JSON.stringify({
-            meta: {
-                version: "1.0",
-                timestamp,
-                generatedBy: user.email
-            },
-            data: backupData
-        }, null, 2);
+            const json = JSON.stringify({
+                meta: {
+                    version: "1.0",
+                    timestamp,
+                    generatedBy: user.email
+                },
+                data: backupData
+            }, null, 2);
 
-        await logAction("Скачан бэкап базы", "system", "backup", { size: data.length });
+            await logAction("Скачан бэкап базы", "system", "backup", { size: json.length }, tx);
+            return json;
+        });
+
+
 
         return new NextResponse(data, {
             headers: {

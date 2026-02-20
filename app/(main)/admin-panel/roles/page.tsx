@@ -1,45 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getRoles, deleteRole } from "../actions";
+import { useEffect, useState, useCallback } from "react";
+import { getRoles, deleteRole } from "../actions/roles.actions";;
 import { Shield, Key, Palette, Printer, Scissors, Package, ShoppingBag, UserCog, LucideIcon } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { RolePermissionsDialog } from "./role-permissions-dialog";
 import { AddRoleDialog } from "./add-role-dialog";
 import { EditRoleDialog } from "./edit-role-dialog";
 import { DeleteRoleDialog } from "./delete-role-dialog";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 
-interface Role {
-    id: string;
-    name: string;
-    isSystem: boolean;
-    departmentId: string | null;
-    department?: {
-        name: string;
-        color: string | null;
-    } | null;
-    color: string | null;
-    permissions: Record<string, Record<string, boolean>>;
-}
+import { RoleDetail } from "@/lib/types";
 
 export default function AdminRolesPage() {
-    const [roles, setRoles] = useState<Role[]>([]);
+    const [roles, setRoles] = useState<RoleDetail[]>([]);
     const [loading, setLoading] = useState(true);
-    const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
-    const [editingRole, setEditingRole] = useState<Role | null>(null);
-    const [deletingRole, setDeletingRole] = useState<Role | null>(null);
+    const [permissionsRole, setPermissionsRole] = useState<RoleDetail | null>(null);
+    const [editingRole, setEditingRole] = useState<RoleDetail | null>(null);
+    const [deletingRole, setDeletingRole] = useState<RoleDetail | null>(null);
     const { toast } = useToast();
 
-    const fetchRoles = () => {
+    const fetchRoles = useCallback(() => {
         getRoles().then(res => {
-            if (res.data) setRoles(res.data as Role[]);
+            if (res.data) setRoles(res.data as RoleDetail[]);
             setLoading(false);
         });
-    };
+    }, []);
 
     useEffect(() => {
         fetchRoles();
-    }, []);
+    }, [fetchRoles]);
 
     const handleDeleteRole = async (id: string, password?: string) => {
         const res = await deleteRole(id, password);
@@ -51,7 +41,7 @@ export default function AdminRolesPage() {
         }
     };
 
-    const getRoleConfig = (role: Role) => {
+    const getRoleConfig = (role: RoleDetail) => {
         const hardcoded: Record<string, { icon: LucideIcon; defaultGradient: string }> = {
             "Администратор": { icon: Shield, defaultGradient: "from-red-400 to-red-600" },
             "Дизайнер": { icon: Palette, defaultGradient: "from-purple-400 to-purple-600" },
@@ -95,19 +85,13 @@ export default function AdminRolesPage() {
     if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка ролей системы...</div>;
 
     return (
-        <div className="space-y-6 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
-                        <Shield className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-slate-900 tracking-normal">Роли и права</h1>
-                        <p className="text-slate-500 text-[11px] font-medium mt-0.5">Настройка доступов и полномочий сотрудников</p>
-                    </div>
-                </div>
-                <AddRoleDialog onSuccess={fetchRoles} />
-            </div>
+        <div className="space-y-4 pb-20">
+            <AdminPageHeader
+                title="Роли и права"
+                subtitle="Настройка доступов и полномочий сотрудников"
+                icon={Shield}
+                actions={<AddRoleDialog onSuccess={fetchRoles} />}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {roles.map((role) => {
@@ -115,9 +99,9 @@ export default function AdminRolesPage() {
                     const Icon = style.icon;
 
                     return (
-                        <div
+                        <div role="button" tabIndex={0}
                             key={role.id}
-                            onClick={() => setPermissionsRole(role)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setPermissionsRole(role)}
                             className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${style.cardGradient} hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer h-[180px] flex flex-col`}
                         >
                             <div className="p-6 flex flex-col h-full">
@@ -126,15 +110,15 @@ export default function AdminRolesPage() {
                                         <Icon className={`w-5 h-5 ${style.color}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-bold text-slate-900 truncate tracking-normal group-hover:text-primary transition-colors">
+                                        <h3 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">
                                             {role.name}
                                         </h3>
                                         <div className="mt-0.5 flex items-center gap-2">
                                             {role.isSystem && (
-                                                <span className="text-[10px] font-bold  tracking-normal px-2 py-0.5 bg-slate-100 text-slate-500 rounded">System</span>
+                                                <span className="text-xs font-bold  px-2 py-0.5 bg-slate-100 text-slate-500 rounded">System</span>
                                             )}
                                             {role.department && (
-                                                <span className="text-[10px] font-bold  tracking-normal text-primary">
+                                                <span className="text-xs font-bold  text-primary">
                                                     {role.department.name}
                                                 </span>
                                             )}
@@ -149,15 +133,15 @@ export default function AdminRolesPage() {
                                     <div className="flex flex-wrap gap-1.5 h-[40px] overflow-hidden items-start">
                                         {Object.keys(role.permissions || {}).length > 0 ? (
                                             Object.keys(role.permissions || {}).slice(0, 3).map(p => (
-                                                <span key={p} className="text-[10px] bg-white border border-slate-200 text-slate-500 font-bold px-2 py-0.5 rounded shadow-sm">
+                                                <span key={p} className="text-xs bg-white border border-slate-200 text-slate-500 font-bold px-2 py-0.5 rounded shadow-sm">
                                                     {p}
                                                 </span>
                                             ))
                                         ) : (
-                                            <span className="text-[11px] text-slate-400">Нет настроенных прав</span>
+                                            <span className="text-xs text-slate-400">Нет настроенных прав</span>
                                         )}
                                         {(Object.keys(role.permissions || {}).length || 0) > 3 && (
-                                            <span className="text-[10px] text-slate-400 font-bold px-1 py-0.5">
+                                            <span className="text-xs text-slate-400 font-bold px-1 py-0.5">
                                                 +{Object.keys(role.permissions || {}).length - 3}
                                             </span>
                                         )}
@@ -165,7 +149,7 @@ export default function AdminRolesPage() {
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between mt-auto">
-                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400  tracking-normal">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 ">
                                         <Key className="w-3.5 h-3.5" />
                                         <span>Разрешения</span>
                                     </div>

@@ -132,13 +132,13 @@ export function CommandMenu() {
                                     <div className="px-6 py-12 text-center text-slate-400 text-sm font-bold animate-pulse">Поиск...</div>
                                 )}
 
-                                {!loading && results.length === 0 && query.length >= 2 && (
+                                {!loading && (results || []).length === 0 && query.length >= 2 && (
                                     <div className="px-6 py-12 text-center text-slate-400 text-sm font-bold">Ничего не найдено</div>
                                 )}
 
-                                {!loading && results.length === 0 && query.length < 2 && (
+                                {!loading && (results || []).length === 0 && query.length < 2 && (
                                     <div className="p-2">
-                                        <div className="text-[10px] font-black text-slate-400 px-4 mb-3 uppercase tracking-widest">Быстрый переход</div>
+                                        <div className="text-xs font-black text-slate-400 px-4 mb-3">Быстрый переход</div>
                                         <div className="grid grid-cols-2 gap-3">
                                             {[
                                                 { label: 'Заказы', href: '/dashboard/orders', icon: icons.order },
@@ -163,7 +163,7 @@ export function CommandMenu() {
                                 )}
 
                                 <div className="space-y-1.5 pt-1">
-                                    {results.map((res) => (
+                                    {(results || []).map((res) => (
                                         <Button
                                             key={`${res.type}-${res.id}`}
                                             variant="ghost"
@@ -179,7 +179,7 @@ export function CommandMenu() {
                                                     <div className="text-[11px] text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
                                                 </div>
                                             </div>
-                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
+                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-xs font-black text-slate-500 tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
                                                 {res.type === 'item' ? 'Товар' :
                                                     res.type === 'order' ? 'Заказ' :
                                                         res.type === 'client' ? 'Клиент' :

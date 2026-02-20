@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon } from "lucide-react";
+import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon, Maximize } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { updateProductionStageAction } from "./actions";
 import { useRouter } from "next/navigation";
 import { DefectDialog } from "./defect-dialog";
 import { ImageLightbox } from "@/components/image-lightbox";
-import { Maximize } from "lucide-react";
+
 import { pluralize } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 
 interface OrderItem {
     id: string;
-    description: string;
+    description: string | null;
     quantity: number;
     order: {
         id: string;
@@ -51,7 +51,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
     const { toast } = useToast();
 
     const getItemsByStage = (stage: Stage): OrderItem[] => {
-        return items.filter(item => {
+        return (items || []).filter(item => {
             const statusKey = `stage${stage.charAt(0).toUpperCase() + stage.slice(1)}Status` as keyof OrderItem;
             return item[statusKey] === 'in_progress' || item[statusKey] === 'pending';
         });
@@ -71,7 +71,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 overflow-x-auto pb-4 custom-scrollbar lg:overflow-visible">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 overflow-x-auto pb-4 custom-scrollbar lg:overflow-visible">
             {stages.map((stage) => {
                 const stageItems = getItemsByStage(stage.id);
                 const Icon = stage.icon;
@@ -79,7 +79,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                 return (
                     <div key={stage.id} className="crm-card min-h-[500px] flex flex-col">
                         {/* Column Header */}
-                        <div className="flex items-center gap-3 md:gap-4 mb-5 pb-4 border-b border-slate-200">
+                        <div className="flex items-center gap-3 md:gap-3 mb-5 pb-4 border-b border-slate-200">
                             <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[16px] flex items-center justify-center shrink-0", stage.color)}>
                                 <Icon className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
@@ -139,7 +139,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                             e.stopPropagation();
                                                             setLightboxImage(item.order.attachments?.[0]?.fileUrl || null);
                                                         }}
-                                                        className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/mockup:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold gap-2 p-0 h-auto hover:bg-slate-900/50 hover:text-white"
+                                                        className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/mockup:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2 p-0 h-auto hover:bg-slate-900/50 hover:text-white"
                                                     >
                                                         <Maximize className="w-3.5 h-3.5" />
                                                         Открыть во весь экран
@@ -149,7 +149,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
 
                                             {/* Item Description */}
                                             <div className="text-xs md:text-sm font-medium text-slate-600 mb-4 line-clamp-3 leading-relaxed">
-                                                {item.description}
+                                                {item.description || "Без описания"}
                                             </div>
 
                                             {/* Quantity */}
@@ -183,7 +183,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                 <DefectDialog
                                                     orderItemId={item.id}
                                                     maxQuantity={item.quantity}
-                                                    itemName={item.description}
+                                                    itemName={item.description || "Товар"}
                                                 />
                                             </div>
                                         </div>

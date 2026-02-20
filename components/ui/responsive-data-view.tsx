@@ -16,17 +16,19 @@ interface ResponsiveDataViewProps<T> {
  * Ensures that the desktop UI remains unchanged while providing a purpose-built mobile experience.
  */
 export function ResponsiveDataView<T>({
-    data,
+    data = [],
     renderTable,
     renderCard,
     mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-4 md:hidden",
     desktopClassName = "hidden md:block"
 }: ResponsiveDataViewProps<T>) {
+    if (!data || !Array.isArray(data)) return null;
+
     return (
         <div className="w-full">
             {/* Mobile/Tablet View: Grid of cards */}
             <div className={mobileGridClassName}>
-                {data.map((item, index) => renderCard(item, index))}
+                {(data || []).map((item, index) => renderCard(item, index))}
             </div>
 
             {/* Desktop View: Original Table */}

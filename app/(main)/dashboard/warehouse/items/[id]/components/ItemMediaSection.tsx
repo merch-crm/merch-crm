@@ -5,7 +5,9 @@ import Image from "next/image";
 import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { InventoryItem } from "../../../types";
+import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { useDraggableScroll } from "@/components/hooks/useDraggableScroll";
+import { useGalleryLightbox } from "@/components/hooks/useGalleryLightbox";
 
 interface ItemMediaSectionProps {
     item: InventoryItem;
@@ -37,7 +39,7 @@ function getAllItemImages(item: InventoryItem) {
     return images;
 }
 
-export function ItemMediaSection({
+export const ItemMediaSection = React.memo(({
     item,
     isEditing,
     onImageChange,
@@ -45,94 +47,40 @@ export function ItemMediaSection({
     onSetMain,
     onImageClick,
     uploadStates
-}: ItemMediaSectionProps) {
+}: ItemMediaSectionProps) => {
     const allImages = React.useMemo(() => getAllItemImages(item), [item]);
-    const [fullscreen, setFullscreen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [imageZoomed, setImageZoomed] = useState(false);
     const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 
     // Draggable Scroll Logic
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeftState, setScrollLeftState] = useState(0);
-    const [dragDistance, setDragDistance] = useState(0);
+    const { ref: scrollRef, isDragging, dragDistance, events: scrollEvents } = useDraggableScroll<HTMLDivElement>();
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (!scrollRef.current) return;
-        setIsDragging(true);
-        setStartX(e.pageX - scrollRef.current.offsetLeft);
-        setScrollLeftState(scrollRef.current.scrollLeft);
-        setDragDistance(0);
-    };
+    // Lightbox Logic
+    const {
+        fullscreen,
+        currentIndex,
+        imageZoomed,
+        lightboxRef,
+        setFullscreen,
+        setCurrentIndex,
+        setImageZoomed,
+        openFullscreen,
+        nextImage,
+        prevImage,
+        handleKeyDown
+    } = useGalleryLightbox(allImages.length);
 
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging || !scrollRef.current) return;
-        e.preventDefault();
-        const x = e.pageX - scrollRef.current.offsetLeft;
-        const walk = (x - startX) * 1.5; // multiplier for scroll speed
-        scrollRef.current.scrollLeft = scrollLeftState - walk;
-        setDragDistance(Math.abs(x - startX));
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseLeave = () => {
-        setIsDragging(false);
-    };
-
-
-    const openFullscreen = (src: string | null) => {
+    const handleFullscreenOpen = (src: string | null) => {
         if (!src) return;
         const idx = allImages.findIndex(img => img.src === src);
-        setCurrentIndex(idx >= 0 ? idx : 0);
-        setImageZoomed(false);
-        setFullscreen(true);
-    };
-
-    const nextImage = () => {
-        setCurrentIndex(prev => (prev + 1) % allImages.length);
-        setImageZoomed(false);
-    };
-
-    const prevImage = () => {
-        setCurrentIndex(prev => (prev - 1 + allImages.length) % allImages.length);
-        setImageZoomed(false);
-    };
-
-    // Focus management for keyboard navigation
-    const lightboxRef = useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-        if (fullscreen && lightboxRef.current) {
-            lightboxRef.current.focus();
-        }
-    }, [fullscreen]);
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            setCurrentIndex(prev => (prev - 1 + allImages.length) % allImages.length);
-            setImageZoomed(false);
-        } else if (e.key === "ArrowRight") {
-            e.preventDefault();
-            setCurrentIndex(prev => (prev + 1) % allImages.length);
-            setImageZoomed(false);
-        } else if (e.key === "Escape") {
-            e.preventDefault();
-            setFullscreen(false);
-        }
+        openFullscreen(idx);
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
-                        <ImageIcon className="w-6 h-6" />
+                        <ImageIcon className="w-6 h-6" aria-label="Image placeholder" />
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-foreground">Галерея</h3>
@@ -146,6 +94,7 @@ export function ItemMediaSection({
                     {allImages.some(i => !i.src) && (
                         <Button
                             asChild
+                            type="button"
                             variant="btn-dark"
                             className="h-10 px-6 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center gap-2 border-none"
                         >
@@ -166,7 +115,7 @@ export function ItemMediaSection({
                                         }
                                     }}
                                 />
-                                <ImagePlus className="w-4 h-4" />
+                                <ImagePlus className="w-4 h-4" aria-label="Add image" />
                                 <span>Добавить больше</span>
                             </label>
                         </Button>
@@ -178,12 +127,9 @@ export function ItemMediaSection({
             <div className="relative group/gallery">
                 <div
                     ref={scrollRef}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseLeave}
+                    {...scrollEvents}
                     className={cn(
-                        "flex overflow-x-auto gap-4 snap-x snap-mandatory no-scrollbar",
+                        "flex overflow-x-auto gap-3 snap-x snap-mandatory no-scrollbar",
                         isDragging ? "cursor-grabbing select-none snap-none scroll-auto" : "cursor-grab snap-x scroll-smooth"
                     )}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -192,13 +138,15 @@ export function ItemMediaSection({
                         if (!img.src && !isEditing) return null;
                         return (
                             <div
+                                role="button"
+                                tabIndex={img.src ? 0 : -1}
                                 key={idx}
                                 onClick={() => {
                                     if (dragDistance < 15 && img.src) {
                                         if (onImageClick) {
                                             onImageClick(idx);
                                         } else {
-                                            openFullscreen(img.src);
+                                            handleFullscreenOpen(img.src);
                                         }
                                     }
                                 }}
@@ -207,12 +155,10 @@ export function ItemMediaSection({
                                         e.preventDefault();
                                         if (img.src) {
                                             if (onImageClick) onImageClick(idx);
-                                            else openFullscreen(img.src);
+                                            else handleFullscreenOpen(img.src);
                                         }
                                     }
                                 }}
-                                role="button"
-                                tabIndex={img.src ? 0 : -1}
                                 aria-label={`Просмотреть ${img.label}`}
                                 className={cn(
                                     "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-muted/30 snap-start",
@@ -233,7 +179,7 @@ export function ItemMediaSection({
 
                                         {/* Glassmorphism Overlay */}
                                         <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <p className="text-[10px] font-bold text-white">{img.label}</p>
+                                            <p className="text-xs font-bold text-white">{img.label}</p>
                                         </div>
 
                                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -242,6 +188,7 @@ export function ItemMediaSection({
                                         {isEditing && (
                                             <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
                                                 <Button
+                                                    type="button"
                                                     variant="destructive"
                                                     size="icon"
                                                     aria-label="Удалить изображение"
@@ -256,6 +203,7 @@ export function ItemMediaSection({
 
                                                 <Button
                                                     asChild
+                                                    type="button"
                                                     variant="secondary"
                                                     size="icon"
                                                     aria-label="Изменить изображение"
@@ -281,6 +229,7 @@ export function ItemMediaSection({
 
                                                 {img.type !== "front" && (
                                                     <Button
+                                                        type="button"
                                                         variant="btn-dark"
                                                         size="icon"
                                                         aria-label="Сделать основным"
@@ -322,19 +271,20 @@ export function ItemMediaSection({
                                                             strokeDasharray={`${uploadStates?.[img.type]?.progress ?? 0}, 100`}
                                                         />
                                                     </svg>
-                                                    <span className="absolute text-[10px] font-bold text-primary">
+                                                    <span className="absolute text-xs font-bold text-primary">
                                                         {uploadStates?.[img.type]?.progress ?? 0}%
                                                     </span>
                                                 </div>
-                                                <span className="text-[9px] font-bold text-muted-foreground animate-pulse">Загрузка...</span>
+                                                <span className="text-xs font-bold text-muted-foreground animate-pulse">Загрузка...</span>
                                             </div>
                                         ) : !isEditing ? (
                                             <div className="w-10 h-10 rounded-2xl bg-card shadow-sm flex items-center justify-center">
-                                                <ImageIcon className="w-5 h-5 text-muted-foreground/50" />
+                                                <ImageIcon className="w-5 h-5 text-muted-foreground/50" aria-label="No image" />
                                             </div>
                                         ) : (
                                             <Button
                                                 asChild
+                                                type="button"
                                                 variant="ghost"
                                                 className="w-full h-full flex flex-col items-center justify-center p-0 rounded-2xl border-none hover:bg-primary/5 group/upload"
                                             >
@@ -354,7 +304,7 @@ export function ItemMediaSection({
                                                     <div className="w-10 h-10 flex items-center justify-center bg-primary/5 text-primary rounded-2xl group-hover/upload:bg-primary group-hover/upload:text-white transition-all transform group-hover/upload:rotate-90 group-hover/upload:shadow-lg mb-2">
                                                         <Plus className="w-5 h-5" />
                                                     </div>
-                                                    <span className="text-[8px] font-bold text-muted-foreground group-hover/upload:text-primary transition-colors">Добавить</span>
+                                                    <span className="text-xs font-bold text-muted-foreground group-hover/upload:text-primary transition-colors">Добавить</span>
                                                 </label>
                                             </Button>
                                         )}
@@ -378,13 +328,14 @@ export function ItemMediaSection({
                     data-dialog-open="true"
                 >
                     {/* Backdrop */}
-                    <div
+                    <div role="button" tabIndex={0}
                         className="absolute inset-0 bg-black/60 backdrop-blur-md"
-                        onClick={() => setFullscreen(false)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setFullscreen(false)}
                     />
 
                     {/* Close Button */}
                     <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => setFullscreen(false)}
@@ -396,6 +347,7 @@ export function ItemMediaSection({
 
                     {/* Navigation */}
                     <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         aria-label="Назад"
@@ -406,6 +358,7 @@ export function ItemMediaSection({
                     </Button>
 
                     <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         aria-label="Вперед"
@@ -416,27 +369,33 @@ export function ItemMediaSection({
                     </Button>
 
                     {/* Main Content */}
-                    <div className="relative w-full max-w-5xl aspect-square md:aspect-auto h-full flex flex-col items-center justify-center gap-8 z-[105]">
+                    <div className="relative w-full max-w-5xl aspect-square md:aspect-auto h-full flex flex-col items-center justify-center gap-3 z-[105]">
                         <div className="relative w-full h-[70vh] flex items-center justify-center">
                             {allImages[currentIndex].src && (
-                                <Image
-                                    src={allImages[currentIndex].src || ""}
-                                    alt="Full view"
-                                    fill
-                                    className={cn(
-                                        "object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
-                                        imageZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
-                                    )}
+                                <button
+                                    type="button"
+                                    className="relative w-full h-full block"
                                     onClick={() => setImageZoomed(!imageZoomed)}
-                                    unoptimized
-                                />
+                                    aria-label="Увеличить/уменьшить изображение"
+                                >
+                                    <Image
+                                        src={allImages[currentIndex].src || ""}
+                                        alt={allImages[currentIndex].label}
+                                        fill
+                                        className={cn(
+                                            "object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
+                                            imageZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
+                                        )}
+                                        unoptimized
+                                    />
+                                </button>
                             )}
                         </div>
 
-                        <div className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center gap-4">
-                            <span className="text-[10px] font-bold text-white">{allImages[currentIndex].label}</span>
+                        <div className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center gap-3">
+                            <span className="text-xs font-bold text-white">{allImages[currentIndex].label}</span>
                             <div className="w-px h-4 bg-white/20" />
-                            <span className="text-[10px] font-bold text-white/40">{currentIndex + 1} / {allImages.length}</span>
+                            <span className="text-xs font-bold text-white/40">{currentIndex + 1} / {allImages.length}</span>
                         </div>
                     </div>
 
@@ -445,6 +404,7 @@ export function ItemMediaSection({
                         {allImages.map((img, i) => (
                             <Button
                                 key={i}
+                                type="button"
                                 variant="ghost"
                                 onClick={(e: React.MouseEvent) => { e.stopPropagation(); setCurrentIndex(i); }}
                                 className={cn(
@@ -453,10 +413,10 @@ export function ItemMediaSection({
                                 )}
                             >
                                 {img.src ? (
-                                    <Image src={img.src} alt="thumb" fill className="object-cover" unoptimized />
+                                    <Image src={img.src} alt={`Миниатюра: ${img.label}`} fill className="object-cover" unoptimized />
                                 ) : (
                                     <div className="w-full h-full bg-muted/20 flex items-center justify-center">
-                                        <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                                        <ImageIcon className="w-5 h-5 text-muted-foreground" aria-label="Image icon" />
                                     </div>
                                 )}
                             </Button>
@@ -466,4 +426,6 @@ export function ItemMediaSection({
             )}
         </div>
     );
-}
+});
+
+ItemMediaSection.displayName = "ItemMediaSection";

@@ -8,39 +8,11 @@ import { requireAdmin } from "@/lib/admin";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
 import { saveLocalFile } from "@/lib/local-storage";
+import { logError } from "@/lib/error-logger";
+import { BrandingSettingsSchema, IconGroupsSchema } from "./validation";
 import sharp from "sharp";
 
-export interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    radiusOuter?: number;
-    radiusInner?: number;
-    // New fields
-    loginSlogan?: string | null;
-    loginBackgroundUrl?: string | null;
-    dashboardWelcome?: string | null;
-    socialTelegram?: string | null;
-    socialWhatsapp?: string | null;
-    socialWebsite?: string | null;
-    notificationSound?: string | null;
-    vibrationEnabled?: boolean;
-    printLogoUrl?: string | null;
-    emailLogoUrl?: string | null;
-    emailPrimaryColor?: string;
-    emailContrastColor?: string;
-    emailFooter?: string | null;
-    emailSignature?: string | null;
-    soundConfig?: Record<string, { enabled: boolean; vibration: boolean; customUrl?: string | null }>;
-    backgroundColor?: string | null;
-    crmBackgroundUrl?: string | null;
-    crmBackgroundBlur?: number;
-    crmBackgroundBrightness?: number;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-}
+import type { BrandingSettings } from "@/lib/types";
 
 import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 
@@ -55,7 +27,7 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
         loginSlogan: "Ваша CRM для управления мерчем",
         dashboardWelcome: "Добро пожаловать в систему управления",
         notificationSound: "/sounds/notification.wav",
-        vibrationEnabled: true,
+        isVibrationEnabled: true,
         soundConfig: {},
         backgroundColor: "#f2f2f2",
         crmBackgroundUrl: null,
@@ -85,11 +57,15 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             faviconUrl: (val.faviconUrl as string) || (val.favicon_url as string) || null,
             radiusOuter: (val.radiusOuter as number) || (val.radius_outer as number) || 24,
             radiusInner: (val.radiusInner as number) || (val.radius_inner as number) || 14,
-            vibrationEnabled: val.vibrationEnabled !== undefined ? (val.vibrationEnabled as boolean) : true,
+            isVibrationEnabled: val.isVibrationEnabled !== undefined ? (val.isVibrationEnabled as boolean) : (val.vibrationEnabled !== undefined ? (val.vibrationEnabled as boolean) : true),
             soundConfig: (val.soundConfig as BrandingSettings['soundConfig']) || {}
         } as BrandingSettings;
     } catch (error) {
-        console.error("Error fetching branding settings from DB:", error);
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "getBrandingSettings"
+        });
         return defaultBranding;
     }
 }
@@ -99,10 +75,14 @@ export async function updateBrandingSettings(data: BrandingSettings) {
     try {
         await requireAdmin(session);
 
-        // Check if settings exist
-        const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
-        const existing = result[0];
+        const validatedData = BrandingSettingsSchema.safeParse(data);
+        if (!validatedData.success) {
+            return { error: validatedData.error.issues[0].message };
+        }
 
+        const validData = validatedData.data;
+
+        // Check if settings exist
         const saveData: Record<string, unknown> = { ...data };
 
         // Sync camelCase and snake_case properties for DB compatibility (legacy support)
@@ -112,26 +92,33 @@ export async function updateBrandingSettings(data: BrandingSettings) {
         if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
         if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
 
-        if (existing) {
-            await db.update(systemSettings)
-                .set({ value: saveData, updatedAt: new Date() })
-                .where(eq(systemSettings.key, "branding"));
-        } else {
-            await db.insert(systemSettings).values({
-                key: "branding",
-                value: saveData,
-            });
-        }
+        await db.transaction(async (tx) => {
+            await tx.insert(systemSettings)
+                .values({
+                    key: "branding",
+                    value: validData,
+                    updatedAt: new Date()
+                })
+                .onConflictDoUpdate({
+                    target: systemSettings.key,
+                    set: { value: validData, updatedAt: new Date() }
+                });
 
-        await logAction("Обновление настроек брендинга", "system", "branding", saveData);
+            await logAction("Обновление настроек брендинга", "system", "branding", saveData, tx);
+        });
 
         revalidatePath("/dashboard");
         revalidatePath("/admin-panel/branding");
 
         return { success: true };
     } catch (error: unknown) {
-        console.error("Error updating branding settings:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to update settings";
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "updateBrandingSettings",
+            details: { data }
+        });
+        const errorMessage = error instanceof Error ? error.message : "Ошибка при обновлении настроек";
         return { error: errorMessage };
     }
 }
@@ -212,8 +199,12 @@ export async function uploadBrandingFile(formData: FormData) {
             return { error: result.error || "Failed to save file" };
         }
     } catch (error) {
-        console.error("Error processing branding file:", error);
-        return { error: "Не удалось process image" };
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "uploadBrandingFile"
+        });
+        return { error: "Не удалось обработать файл" };
     }
 }
 
@@ -244,8 +235,12 @@ export async function exportDatabaseBackup() {
 
         return { success: true, data };
     } catch (error: unknown) {
-        console.error("Error exporting database:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to export database";
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "exportDatabaseBackup"
+        });
+        const errorMessage = error instanceof Error ? error.message : "Ошибка при экспорте базы данных";
         return { error: errorMessage };
     }
 }
@@ -262,7 +257,11 @@ export async function getIconGroups(): Promise<SerializedIconGroup[]> {
         const val = settings.value as unknown as SerializedIconGroup[];
         return val;
     } catch (error) {
-        console.error("Error fetching icon groups:", error);
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "getIconGroups"
+        });
         return serializeIconGroups(ICON_GROUPS);
     }
 }
@@ -272,30 +271,38 @@ export async function updateIconGroups(groups: SerializedIconGroup[]) {
     try {
         await requireAdmin(session);
 
-        const serialized = groups;
-        const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "icon_groups")).limit(1);
-        const existing = result[0];
-
-        if (existing) {
-            await db.update(systemSettings)
-                .set({ value: serialized, updatedAt: new Date() })
-                .where(eq(systemSettings.key, "icon_groups"));
-        } else {
-            await db.insert(systemSettings).values({
-                key: "icon_groups",
-                value: serialized,
-            });
+        const validated = IconGroupsSchema.safeParse(groups);
+        if (!validated.success) {
+            return { error: validated.error.issues[0].message };
         }
+        const serialized = validated.data;
+        await db.transaction(async (tx) => {
+            await tx.insert(systemSettings)
+                .values({
+                    key: "icon_groups",
+                    value: serialized,
+                    updatedAt: new Date()
+                })
+                .onConflictDoUpdate({
+                    target: systemSettings.key,
+                    set: { value: serialized, updatedAt: new Date() }
+                });
 
-        await logAction("Обновление категорий иконок", "system", "icon_groups", {});
+            await logAction("Обновление категорий иконок", "system", "icon_groups", {}, tx);
+        });
 
         revalidatePath("/dashboard");
         revalidatePath("/admin-panel/branding");
 
         return { success: true };
     } catch (error: unknown) {
-        console.error("Error updating icon groups:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to update icon groups";
+        await logError({
+            error,
+            path: "/admin-panel/branding",
+            method: "updateIconGroups",
+            details: { groupsCount: groups.length }
+        });
+        const errorMessage = error instanceof Error ? error.message : "Ошибка при обновлении групп иконок";
         return { error: errorMessage };
     }
 }

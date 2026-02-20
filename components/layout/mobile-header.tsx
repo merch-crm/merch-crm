@@ -5,13 +5,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Printer, Search } from "lucide-react";
 import { UserNav } from "./user-nav";
-import { NotificationCenter, Notification } from "@/components/notifications/notification-center";
+import { NotificationCenter } from "@/components/notifications/notification-center";
 import { useSheetStack } from "@/components/ui/sheet-stack-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-
-import { BrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import type { Notification, BrandingSettings } from "@/lib/types";
 
 const routeNames: Record<string, string> = {
     "/dashboard": "Главная",
@@ -71,15 +70,14 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
                 <Link href="/dashboard" className="transition-transform active:scale-95">
                     <div className="bg-primary rounded-[10px] w-9 h-9 p-1 flex items-center justify-center shadow-sm">
                         {branding.logoUrl ? (
-                            <div className="relative h-7 w-7">
-                                <Image
-                                    src={branding.logoUrl}
-                                    alt="Logo"
-                                    fill
-                                    className="object-contain"
-                                    unoptimized
-                                />
-                            </div>
+                            <Image
+                                src={branding.logoUrl}
+                                alt="Logo"
+                                width={28}
+                                height={28}
+                                className="object-contain"
+                                unoptimized
+                            />
                         ) : (
                             <Printer className="h-7 w-7 text-white" />
                         )}

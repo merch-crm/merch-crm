@@ -39,7 +39,7 @@ export function StorageManager() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
                 <div className="flex items-center gap-2 p-1.5 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
@@ -47,7 +47,7 @@ export function StorageManager() {
                         variant="ghost"
                         onClick={() => setActiveTab("s3")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold tracking-normal transition-all h-auto",
+                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold transition-all h-auto",
                             activeTab === "s3"
                                 ? "bg-white text-[#5d00ff] shadow-sm border border-slate-200 hover:bg-white hover:text-[#5d00ff]"
                                 : "text-slate-400 hover:text-slate-600 bg-transparent"
@@ -60,7 +60,7 @@ export function StorageManager() {
                         variant="ghost"
                         onClick={() => setActiveTab("local")}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold tracking-normal transition-all h-auto",
+                            "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold transition-all h-auto",
                             activeTab === "local"
                                 ? "bg-white text-emerald-600 shadow-sm border border-slate-200 hover:bg-white hover:text-emerald-600"
                                 : "text-slate-400 hover:text-slate-600 bg-transparent"

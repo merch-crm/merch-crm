@@ -2,9 +2,17 @@
 
 import { db } from "@/lib/db";
 import { notifications } from "@/lib/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+
+import { NotificationType, NotificationPriority } from "@/lib/types";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+
+const MarkAsReadSchema = z.object({
+    notificationId: z.string().uuid(),
+});
 
 export async function getNotifications() {
     const session = await getSession();
@@ -15,60 +23,89 @@ export async function getNotifications() {
             db.query.notifications.findMany({
                 where: eq(notifications.userId, session.id),
                 orderBy: [desc(notifications.createdAt)],
-                limit: 20,
+                limit: 50, // Increased limit for detailed view
             }),
-            db.query.notifications.findMany({
-                where: and(
+            db.select({ count: sql`count(*)` })
+                .from(notifications)
+                .where(and(
                     eq(notifications.userId, session.id),
                     eq(notifications.isRead, false)
-                ),
-                columns: { id: true }
-            })
+                ))
         ]);
+
+        const unreadCount = Number(unreadCountResult[0]?.count || 0);
 
         return {
             notifications: userNotifications.map(n => ({
                 ...n,
-                createdAt: n.createdAt.toISOString()
+                type: n.type as NotificationType,
+                priority: n.priority as NotificationPriority,
+                createdAt: n.createdAt,
+                updatedAt: n.createdAt,
+                channels: [],
+                isArchived: false,
             })),
-            unreadCount: unreadCountResult.length
+            unreadCount
         };
     } catch (error) {
-        console.error("Error fetching notifications:", error);
+        await logError({
+            error,
+            path: "/components/notifications",
+            method: "getNotifications"
+        });
         return { notifications: [], unreadCount: 0 };
     }
 }
 
 export async function markAsRead(notificationId: string) {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
+
+    const validated = MarkAsReadSchema.safeParse({ notificationId });
+    if (!validated.success) return { error: "Некорректный ID уведомления" };
 
     try {
-        await db.update(notifications)
-            .set({ isRead: true })
-            .where(eq(notifications.id, notificationId));
+        await db.transaction(async (tx) => {
+            await tx.update(notifications)
+                .set({ isRead: true })
+                .where(and(
+                    eq(notifications.id, notificationId),
+                    eq(notifications.userId, session.id)
+                ));
+        });
 
         revalidatePath("/dashboard");
         return { success: true };
     } catch (error) {
-        console.error("Error marking notification as read:", error);
-        return { error: error instanceof Error ? error.message : "Failed to mark as read" };
+        await logError({
+            error,
+            path: "/components/notifications",
+            method: "markAsRead",
+            details: { notificationId }
+        });
+        return { error: "Не удалось отметить как прочитанное" };
     }
 }
 
 export async function markAllAsRead() {
     const session = await getSession();
-    if (!session) return { error: "Unauthorized" };
+    if (!session) return { error: "Не авторизован" };
 
     try {
-        await db.update(notifications)
-            .set({ isRead: true })
-            .where(eq(notifications.userId, session.id));
+        await db.transaction(async (tx) => {
+            await tx.update(notifications)
+                .set({ isRead: true })
+                .where(eq(notifications.userId, session.id));
+        });
 
         revalidatePath("/dashboard");
         return { success: true };
     } catch (error) {
-        console.error("Error marking all notifications as read:", error);
-        return { error: error instanceof Error ? error.message : "Failed to mark all as read" };
+        await logError({
+            error,
+            path: "/components/notifications",
+            method: "markAllAsRead"
+        });
+        return { error: "Не удалось отметить все уведомления" };
     }
 }

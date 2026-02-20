@@ -1,12 +1,17 @@
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import * as schema from "@/lib/schema";
 import { db } from "@/lib/db";
-import { auditLogs } from "@/lib/schema";
+const { auditLogs } = schema;
 import { getSession } from "@/lib/auth";
+
+type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
 
 export async function logAction(
     action: string,
     entityType: string,
     entityId: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
+    tx?: Transaction
 ) {
     const session = await getSession();
 
@@ -14,7 +19,8 @@ export async function logAction(
     const userId = session?.id || null;
 
     try {
-        await db.insert(auditLogs).values({
+        const d = tx || db;
+        await d.insert(auditLogs).values({
             userId,
             action,
             entityType,

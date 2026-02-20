@@ -2,11 +2,12 @@
 
 import { Package } from "lucide-react";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { pluralize } from "@/lib/pluralize";
 
 
 interface OrderItem {
     id: string;
-    description: string;
+    description: string | null;
     quantity: number;
     price: string;
 }
@@ -20,6 +21,7 @@ interface OrderItemsTableProps {
 }
 
 export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAmount, discountAmount }: OrderItemsTableProps) {
+    const safeItems = items || [];
     return (
         <div className="crm-card !p-0 overflow-hidden">
             <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
@@ -27,11 +29,11 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                     <Package className="w-5 h-5 mr-3 text-primary" />
                     Позиции заказа
                 </h3>
-                <span className="text-xs font-bold text-slate-400">{items.length} поз.</span>
+                <span className="text-xs font-bold text-slate-400">{safeItems.length} {pluralize(safeItems.length, 'позиция', 'позиции', 'позиций')}</span>
             </div>
 
             <ResponsiveDataView
-                data={items}
+                data={safeItems}
                 renderTable={() => (
                     <table className="crm-table">
                         <thead className="crm-thead">
@@ -47,9 +49,9 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                             </tr>
                         </thead>
                         <tbody className="crm-tbody">
-                            {items.map((item) => (
+                            {safeItems.map((item) => (
                                 <tr key={item.id} className="crm-tr">
-                                    <td className="crm-td font-semibold text-slate-900">{item.description}</td>
+                                    <td className="crm-td font-semibold text-slate-900">{item.description || "Без названия"}</td>
                                     <td className="crm-td crm-td-number">{item.quantity} шт</td>
                                     {showFinancials && (
                                         <>
@@ -64,12 +66,12 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                             <tfoot className="bg-slate-50/80">
                                 {Number(discountAmount || 0) > 0 && (
                                     <tr>
-                                        <td colSpan={3} className="px-8 py-3 text-right text-xs font-bold text-slate-400 tracking-wider border-t border-slate-100">Скидка:</td>
+                                        <td colSpan={3} className="px-8 py-3 text-right text-xs font-bold text-slate-400 border-t border-slate-100">Скидка:</td>
                                         <td className="px-8 py-3 text-right text-sm text-rose-500 font-bold border-t border-slate-100">-{discountAmount} {currencySymbol}</td>
                                     </tr>
                                 )}
                                 <tr>
-                                    <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500 tracking-wider">Итого к оплате:</td>
+                                    <td colSpan={3} className="px-8 py-6 text-right text-sm font-bold text-slate-500">Итого к оплате:</td>
                                     <td className="px-8 py-6 text-right text-2xl text-primary font-bold">{totalAmount} {currencySymbol}</td>
                                 </tr>
                             </tfoot>
@@ -78,12 +80,12 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                 )}
                 renderCard={(item) => (
                     <div key={item.id} className="crm-card !p-4 space-y-3">
-                        <div className="text-sm font-bold text-slate-900">{item.description}</div>
+                        <div className="text-sm font-bold text-slate-900">{item.description || "Без названия"}</div>
                         <div className="flex justify-between items-center pt-2 border-t border-slate-50">
                             <div className="text-xs text-slate-500">Количество: <span className="font-bold text-slate-700">{item.quantity} шт</span></div>
                             {showFinancials && (
                                 <div className="text-right">
-                                    <div className="text-[10px] text-slate-400 uppercase tracking-tight font-bold">Сумма</div>
+                                    <div className="text-xs text-slate-400 font-bold">Сумма</div>
                                     <div className="text-base font-bold text-primary">{item.quantity * Number(item.price)} {currencySymbol}</div>
                                 </div>
                             )}
@@ -97,12 +99,12 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                 <div className="sm:hidden px-6 py-6 border-t border-slate-100 bg-slate-50/80">
                     {Number(discountAmount || 0) > 0 && (
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Скидка:</span>
+                            <span className="text-xs font-bold text-slate-400">Скидка:</span>
                             <span className="text-sm text-rose-500 font-bold">-{discountAmount} {currencySymbol}</span>
                         </div>
                     )}
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Итого к оплате:</span>
+                        <span className="text-sm font-bold text-slate-500">Итого к оплате:</span>
                         <span className="text-2xl text-primary font-bold">{totalAmount} {currencySymbol}</span>
                     </div>
                 </div>

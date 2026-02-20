@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { getOrderById } from "../actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import NextImage from "next/image";
+import { getOrderById } from "../actions/core.actions";;
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { formatDate, formatDateTime } from "@/lib/formatters";
 import StatusSelect from "./status-select";
 import PrioritySelect from "./priority-select";
-import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock, XCircle } from "lucide-react";
+import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock, XCircle, Wallet, Receipt } from "lucide-react";
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
 import { db } from "@/lib/db";
@@ -13,7 +13,7 @@ import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { RefundDialog } from "./refund-dialog";
-import { Wallet, Receipt } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import OrderActions from "./order-actions";
@@ -60,26 +60,24 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     const canArchive = canDelete || ["Отдел продаж"].includes(user?.department?.name || "");
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between crm-card !p-4 sm:!p-6 gap-4">
-                <div className="flex items-center gap-3 sm:gap-6 min-w-0 flex-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between crm-card !p-4 sm:!p-6 gap-3">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                     <Button variant="ghost" size="icon" asChild className="text-slate-400 hover:text-primary p-2 sm:p-2.5 rounded-full sm:rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200 shrink-0 w-auto h-auto">
                         <Link href="/dashboard/orders">
                             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                         </Link>
                     </Button>
                     <div className="min-w-0">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">Заказ #{order.id.slice(0, 8)}</h1>
-                            <span className="hidden sm:inline px-2 py-1 rounded bg-slate-100 text-slate-500 text-[10px] font-bold tracking-wider shrink-0">Internal ID</span>
-                        </div>
-                        <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 truncate">
-                            {format(new Date(order.createdAt), "d MMMM yyyy, HH:mm", { locale: ru })}
+                        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">Заказ #{order.id.slice(0, 8)}</h1>
+                        <span className="hidden sm:inline px-2 py-1 rounded bg-slate-100 text-slate-500 text-xs font-bold shrink-0">Internal ID</span>
+                        <p className="text-slate-500 text-xs sm:text-sm mt-0.5 truncate">
+                            {formatDateTime(order.createdAt, "d MMMM yyyy, HH:mm")}
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-6 shrink-0 ml-auto sm:ml-0">
+                <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-auto sm:ml-0">
                     <OrderActions
                         orderId={order.id}
                         isArchived={order.isArchived}
@@ -87,7 +85,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                         canArchive={canArchive}
                     />
                     <div className="hidden md:block w-px h-12 bg-slate-100 mx-2" />
-                    <div className="hidden sm:flex items-center gap-4">
+                    <div className="hidden sm:flex items-center gap-3">
                         <div className="w-32 lg:w-48">
                             <PrioritySelect orderId={order.id} currentPriority={order.priority || 'normal'} />
                         </div>
@@ -101,7 +99,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
             {/* Cancellation Reason Alert */}
             {order.status === 'cancelled' && order.cancelReason && (
                 <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 shadow-sm">
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
                             <XCircle className="w-5 h-5 text-rose-600" />
                         </div>
@@ -142,11 +140,11 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             </Button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <div>
                                 <div className="text-xl font-bold text-slate-900 mb-1">{client.name}</div>
                                 {client.company && (
-                                    <div className="text-sm font-bold text-primary  tracking-wider">{client.company}</div>
+                                    <div className="text-sm font-bold text-primary ">{client.company}</div>
                                 )}
                             </div>
 
@@ -168,7 +166,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                         {client.email}
                                     </a>
                                 )}
-                                <div className="flex gap-4 pt-1">
+                                <div className="flex gap-3 pt-1">
                                     {client.telegram && (
                                         <div className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-2xl">
                                             <Send className="w-3 h-3 mr-1.5" /> Telegram
@@ -230,7 +228,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                     </span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
-                                    <span className="text-sm font-bold text-slate-900  tracking-wider">Остаток:</span>
+                                    <span className="text-sm font-bold text-slate-900 ">Остаток:</span>
                                     <span className="text-xl font-bold text-rose-600">
                                         {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} {currencySymbol}
                                     </span>
@@ -254,7 +252,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                             <div key={p.id} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-200">
                                                 <div className="min-w-0">
                                                     <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
-                                                    <div className="text-[10px] text-slate-400">{format(new Date(p.createdAt), "dd.MM.yy HH:mm")} • {p.method}</div>
+                                                    <div className="text-xs text-slate-400">{formatDateTime(p.createdAt, "dd.MM.yy HH:mm")} • {p.method}</div>
                                                 </div>
                                                 <div className={cn("text-xs font-bold shrink-0 ml-2", Number(p.amount) < 0 ? "text-rose-600" : "text-slate-900")}>
                                                     {p.amount} {currencySymbol}
@@ -280,10 +278,10 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             <Clock className="w-5 h-5 mr-3 text-primary" />
                             Детали заказа
                         </h3>
-                        <div className="space-y-5 text-sm">
+                        <div className="space-y-4 text-sm">
                             <div className="flex justify-between items-center">
                                 <span className="text-slate-400 font-medium">Приоритет</span>
-                                <span className={`px-2 py-1 rounded-2xl text-xs font-bold  tracking-wider ${order.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-300'
+                                <span className={`px-2 py-1 rounded-2xl text-xs font-bold  ${order.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-300'
                                     }`}>
                                     {order.priority === 'high' ? 'Высокий' : order.priority === 'low' ? 'Низкий' : 'Обычный'}
                                 </span>
@@ -292,27 +290,33 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <span className="text-slate-400 font-medium">Мягкий дедлайн</span>
                                 <span className="font-bold flex items-center">
                                     <Calendar className="w-4 h-4 mr-2 text-primary" />
-                                    {order.deadline ? format(new Date(order.deadline), 'dd.MM.yyyy') : 'Не указан'}
+                                    {order.deadline ? formatDate(order.deadline, 'dd.MM.yyyy') : 'Не указан'}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center pt-5 border-t border-slate-800">
                                 <span className="text-slate-400 font-medium">Ответственный</span>
                                 <div className="flex items-center font-bold">
-                                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] mr-2 overflow-hidden">
+                                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-xs mr-2 overflow-hidden">
                                         {order.creator?.avatar ? (
-                                            // eslint-disable-next-line @next/next/no-img-element
-                                            <img src={order.creator.avatar} alt={order.creator.name} className="w-full h-full object-cover" />
+                                            <NextImage
+                                                src={order.creator.avatar}
+                                                alt={order.creator.name || 'Avatar'}
+                                                width={24}
+                                                height={24}
+                                                className="w-full h-full object-cover"
+                                            />
                                         ) : (
                                             order.creator?.name?.[0]
                                         )}
                                     </div>
-                                    {order.creator?.name}
                                 </div>
+                                {order.creator?.name}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     );
 }

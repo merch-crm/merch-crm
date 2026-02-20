@@ -1,4 +1,4 @@
-import { getPLReport } from "../actions";
+import { getPLReport } from "../actions";;
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { PLClient } from "../pl-client";

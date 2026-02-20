@@ -1,4 +1,5 @@
-import { getInventoryAttributes, getInventoryAttributeTypes, getInventoryCategories } from "../actions";
+import { getInventoryAttributes, getInventoryAttributeTypes } from "../attribute-actions";
+import { getInventoryCategories } from "../category-actions";;
 import { WarehouseCharacteristic } from "../warehouse-characteristic";
 import { getSession } from "@/lib/auth";
 

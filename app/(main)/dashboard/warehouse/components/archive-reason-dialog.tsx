@@ -52,6 +52,7 @@ export function ArchiveReasonDialog({
                 Отмена
             </Button>
             <Button
+                type="button"
                 onClick={handleConfirm}
                 disabled={isLoading || !reason.trim()}
                 className="h-11 flex-1 sm:flex-none sm:px-10 rounded-[var(--radius-inner)] bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-40"
@@ -68,7 +69,7 @@ export function ArchiveReasonDialog({
             <div className="flex flex-col h-full overflow-hidden">
                 {/* Header Section */}
                 <div className="p-6 pb-2 flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-4 text-left">
+                    <div className="flex items-center gap-3 text-left">
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 shadow-sm border border-amber-100">
                             <Archive className="w-6 h-6" />
                         </div>
@@ -86,10 +87,11 @@ export function ArchiveReasonDialog({
                         </p>
 
                         <div className="space-y-1.5 pt-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">
+                            <label htmlFor="archive-reason" className="text-sm font-bold text-slate-700 ml-1">
                                 Причина архивации <span className="text-rose-500">*</span>
                             </label>
                             <textarea
+                                id="archive-reason"
                                 autoFocus
                                 value={reason}
                                 onChange={(e) => {
@@ -105,7 +107,7 @@ export function ArchiveReasonDialog({
                                 )}
                             />
                             {error && (
-                                <div className="flex items-center gap-2 text-[10px] font-bold text-rose-500 ml-2 animate-in slide-in-from-top-1">
+                                <div className="flex items-center gap-2 text-xs font-bold text-rose-500 ml-2 animate-in slide-in-from-top-1">
                                     <AlertCircle className="w-3.5 h-3.5" />
                                     <span>Укажите причину</span>
                                 </div>

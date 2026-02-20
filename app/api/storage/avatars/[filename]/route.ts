@@ -2,12 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
+import { getSession } from "@/lib/auth";
 
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ filename: string }> }
 ) {
     const { filename } = await params;
+
+    // Check if user is authenticated (even if it's just their own avatar, they should be logged in to see any system content)
+    // You might want to relax this if avatars are public, but for a CRM it's safer to require auth.
+    const session = await getSession();
+    if (!session) {
+        return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     // Security check: only allow image files and prevent directory traversal
     if (!filename.match(/^[a-z0-9_\-\.]+\.(jpg|jpeg|png|webp)$/i)) {

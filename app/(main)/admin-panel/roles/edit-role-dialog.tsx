@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Shield, Loader2, Building } from "lucide-react";
-import { updateRole, getDepartments } from "../actions";
+import { updateRole } from "../actions/roles.actions";
+import { getDepartments } from "../actions/departments.actions";
 import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PremiumSelect } from "@/components/ui/premium-select";
+import { IconInput } from "@/components/ui/icon-input";
+import { IconSelect } from "@/components/ui/icon-select";
+import { RoleColorPicker } from "@/components/ui/role-color-picker";
 
 interface EditRoleDialogProps {
     role: {
@@ -69,62 +71,44 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                     </div>
                 )}
 
-                <form action={handleSubmit} className="space-y-6 pb-2">
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSubmit(new FormData(e.currentTarget));
+                    }}
+                    className="space-y-4 pb-2"
+                >
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Название роли</label>
-                        <div className="relative">
-                            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                            <Input
-                                type="text"
-                                name="name"
-                                required
-                                defaultValue={role?.name}
-                                placeholder="Например: Оператор цеха"
-                                className="block w-full pl-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-12"
-                            />
-                        </div>
+                        <label className="text-xs font-bold text-slate-700  pl-1">Название роли</label>
+                        <IconInput
+                            startIcon={Shield}
+                            type="text"
+                            name="name"
+                            required
+                            defaultValue={role?.name}
+                            placeholder="Например: Оператор цеха"
+                            className="block w-full rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-12"
+                        />
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Привязка к отделу</label>
-                        <div className="relative">
-                            <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-                            <PremiumSelect
-                                name="departmentId"
-                                value={selectedDepartmentId || ""}
-                                options={[
-                                    { id: "none", title: "Общая роль (без отдела)" },
-                                    ...departments.map(dept => ({ id: dept.id, title: dept.name }))
-                                ]}
-                                placeholder="Выбрать отдел"
-                                className="pl-10 h-11"
-                                onChange={(val: string) => setSelectedDepartmentId(val)}
-                            />
-                        </div>
+                        <label className="text-xs font-bold text-slate-700  pl-1">Привязка к отделу</label>
+                        <IconSelect
+                            startIcon={Building}
+                            name="departmentId"
+                            value={selectedDepartmentId || ""}
+                            options={[
+                                { id: "none", title: "Общая роль (без отдела)" },
+                                ...departments.map(dept => ({ id: dept.id, title: dept.name }))
+                            ]}
+                            className="pl-10 h-11"
+                            onChange={(val: string) => setSelectedDepartmentId(val)}
+                        />
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-xs font-bold text-slate-700  tracking-normal pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
-                        <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-[18px] border border-slate-200 shadow-inner">
-                            {["indigo", "slate", "red", "orange", "emerald", "blue", "purple", "rose", "cyan", "amber"].map((c) => (
-                                <label key={c} className="relative cursor-pointer group">
-                                    <input type="radio" name="color" value={c} defaultChecked={role?.color === c} className="peer sr-only" />
-                                    <div className={cn(
-                                        "w-8 h-8 rounded-[18px] transition-all border-2 border-transparent peer-checked:border-white peer-checked:ring-2 shadow-sm group-hover:scale-110",
-                                        c === "indigo" ? "bg-primary peer-checked:ring-primary" :
-                                            c === "slate" ? "bg-slate-500 peer-checked:ring-slate-500" :
-                                                c === "red" ? "bg-red-500 peer-checked:ring-red-500" :
-                                                    c === "orange" ? "bg-orange-500 peer-checked:ring-orange-500" :
-                                                        c === "emerald" ? "bg-emerald-500 peer-checked:ring-emerald-500" :
-                                                            c === "blue" ? "bg-blue-500 peer-checked:ring-blue-500" :
-                                                                c === "purple" ? "bg-purple-500 peer-checked:ring-purple-500" :
-                                                                    c === "rose" ? "bg-rose-500 peer-checked:ring-rose-500" :
-                                                                        c === "cyan" ? "bg-cyan-500 peer-checked:ring-cyan-500" :
-                                                                            "bg-amber-500 peer-checked:ring-amber-500"
-                                    )} />
-                                </label>
-                            ))}
-                        </div>
+                        <label className="text-xs font-bold text-slate-700  pl-1">Цвет роли (наследуется от отдела по умолчанию)</label>
+                        <RoleColorPicker defaultValue={role.color || undefined} />
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-slate-200 flex gap-3 sticky bottom-0 bg-white">

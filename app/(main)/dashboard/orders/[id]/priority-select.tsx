@@ -6,7 +6,7 @@ import {
     Zap,
     Circle
 } from "lucide-react";
-import { updateOrderPriority } from "../actions";
+import { updateOrderPriority } from "../actions/status.actions";;
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 const priorities = [

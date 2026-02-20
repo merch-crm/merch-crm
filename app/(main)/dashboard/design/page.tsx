@@ -1,13 +1,22 @@
 import { DesignWidgets } from "./design-widgets";
 import { DesignQueue } from "./design-queue";
 import { getDesignStats, getDesignOrders } from "./actions";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default async function DesignPage() {
-    const stats = await getDesignStats();
-    const orders = await getDesignOrders();
+    const statsRes = await getDesignStats();
+    const ordersRes = await getDesignOrders();
+
+    const stats = statsRes.success ? statsRes.data! : {
+        newTasks: 0,
+        pendingApproval: 0,
+        completed: 0,
+        efficiency: 0
+    };
+    const orders = ordersRes.success ? ordersRes.data! : [];
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <PageContainer>
             {/* Header */}
             <div className="px-1">
                 <h1 className="text-4xl font-bold text-slate-900 leading-none">Дизайн-студия</h1>
@@ -19,6 +28,6 @@ export default async function DesignPage() {
 
             {/* Queue */}
             <DesignQueue orders={orders} />
-        </div>
+        </PageContainer>
     );
 }

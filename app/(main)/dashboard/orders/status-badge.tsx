@@ -56,7 +56,7 @@ export default function StatusBadge({ status }: { status: string }) {
         >
             <Icon className="w-3.5 h-3.5 sm:hidden" />
             <div className={cn("hidden sm:block w-1.5 h-1.5 rounded-full animate-pulse", item.color.replace("text-", "bg-"))} />
-            <span className="hidden sm:inline text-[11px] font-bold  tracking-wider">{item.label}</span>
+            <span className="hidden sm:inline text-[11px] font-bold ">{item.label}</span>
         </div>
     );
 }

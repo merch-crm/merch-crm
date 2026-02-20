@@ -1,4 +1,5 @@
-import { getStorageLocations, getAllUsers } from "../actions";
+import { getStorageLocations } from "../storage-actions";
+import { getAllUsers } from "../warehouse-stats-actions";;
 import { StorageLocationsTab } from "../storage-locations-tab";
 
 export const metadata = {

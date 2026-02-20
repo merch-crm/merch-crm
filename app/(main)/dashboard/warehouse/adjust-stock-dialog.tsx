@@ -1,19 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 import { Plus, Minus, AlertCircle, Package, RefreshCw, Check } from "lucide-react";
-import { adjustInventoryStock } from "./actions";
-import { playSound } from "@/lib/sounds";
 
 import { cn, formatUnit } from "@/lib/utils";
 import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-
-
 import { Session } from "@/lib/auth";
+import { useAdjustStock } from "./hooks/use-adjust-stock";
 
 interface AdjustStockDialogProps {
     item: {
@@ -35,79 +30,22 @@ interface AdjustStockDialogProps {
 
 export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose, initialType = "in", user }: AdjustStockDialogProps) {
 
-    const [amount, setAmount] = useState<number>(initialType === "set" ? (item?.quantity || 0) : 1);
-    const [type, setType] = useState<"in" | "out" | "set">(initialType);
-    const [selectedLocationId, setSelectedLocationId] = useState<string>(item?.storageLocationId || "");
-    const [reason, setReason] = useState("");
-    const [costPrice, setCostPrice] = useState<string>(item?.costPrice ? String(item.costPrice) : "");
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState("");
+    const {
+        amount, setAmount,
+        type, setType,
+        selectedLocationId, setSelectedLocationId,
+        reason, setReason,
+        costPrice, setCostPrice,
+        isSubmitting,
+        error,
+        handleSubmit
+    } = useAdjustStock({ item, locations, initialType, onClose });
 
     const canSeeCost = user?.roleName === "Администратор" || user?.roleName === "Руководство" || user?.departmentName === "Отдел продаж";
-
-
-
-    // Sync selected location when locations are loaded
-    useEffect(() => {
-        if (!selectedLocationId && Array.isArray(locations) && locations.length > 0) {
-            setSelectedLocationId(locations[0].id);
-        }
-    }, [locations, selectedLocationId]);
-
 
     const currentStockOnLocation = Array.isArray(itemStocks)
         ? itemStocks.find(s => s.storageLocationId === selectedLocationId)?.quantity ?? 0
         : 0;
-
-
-
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (amount <= 0) return;
-        if (Array.isArray(locations) && locations.length > 0 && !selectedLocationId) {
-            setError("Выберите склад");
-            return;
-        }
-
-
-        setIsSubmitting(true);
-        setError("");
-
-        try {
-
-            const finalCostPrice = (type === "in" || type === "out")
-                ? (costPrice ? parseFloat(costPrice) : (item.costPrice ? Number(item.costPrice) : undefined))
-                : undefined;
-
-            const res = await adjustInventoryStock(
-                item.id,
-                amount,
-                type,
-                reason,
-                selectedLocationId,
-                finalCostPrice
-            );
-            if (res.success) {
-                if (type === "in") {
-                    playSound("stock_replenished");
-                } else {
-                    playSound("item_updated");
-                }
-                if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-                onClose();
-            } else {
-                setError(res.error || "Ошибка при обновлении");
-                playSound("notification_error");
-            }
-        } catch {
-            setError("Произошла системная ошибка");
-            playSound("notification_error");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
 
     if (!item) return null;
 
@@ -115,21 +53,21 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Корректировка остатков" showVisualTitle={false} className="sm:max-w-[640px]">
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shadow-sm">
                             <Package className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Корректировка</h2>
-                            <p className="text-[11px] font-bold text-slate-700 mt-0.5">
+                            <p className="text-xs font-bold text-slate-700 mt-0.5">
                                 Объект: <span className="text-slate-900 font-bold">{item.name}</span>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1">
-                    <div className="space-y-6">
+                <form id="adjust-stock-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                    <div className="space-y-4">
                         {/* 1. Context: Where and What */}
                         <div className="space-y-4">
                             <div className="space-y-2 overflow-visible">
@@ -167,7 +105,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 )}
                                             >
                                                 <op.icon className={cn("w-5 h-5", isActive && "stroke-[3]")} />
-                                                <span className="text-[10px] font-black uppercase mt-1 tracking-tighter">{op.label}</span>
+                                                <span className="text-xs font-black mt-1 tracking-tighter">{op.label}</span>
                                             </Button>
                                         );
                                     })}
@@ -197,7 +135,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                 <div className="space-y-2.5 flex-1">
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-900 shadow-md">
                                         <Package className="w-3 h-3 text-slate-300" />
-                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                                        <span className="text-xs font-black text-white px-1">
                                             Было
                                         </span>
                                     </div>
@@ -205,7 +143,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                         <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">
                                             {selectedLocationId ? currentStockOnLocation : item.quantity}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
+                                        <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
 
@@ -246,7 +184,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 "bg-primary border-primary-600 shadow-primary/20"
                                     )}>
                                         {type === 'in' ? <Plus className="w-3 h-3 text-white" /> : type === 'out' ? <Minus className="w-3 h-3 text-white" /> : <Check className="w-3 h-3 text-white" />}
-                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                                        <span className="text-xs font-black text-white px-1">
                                             {type === 'set' ? 'Итого' : 'Станет'}
                                         </span>
                                     </div>
@@ -261,14 +199,14 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 type === 'out' ? currentStockOnLocation - amount :
                                                     amount}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
+                                        <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* 3. Inputs: Amount & Price */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {/* Quantity Block */}
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 ml-1">
@@ -320,12 +258,12 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                     </label>
                                     <div className="grid grid-cols-5 gap-2 h-[72px]">
                                         <div className="col-span-2 bg-slate-100/50 border border-dashed border-slate-200 rounded-[var(--radius-inner)] px-3 flex flex-col items-center justify-center">
-                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">Предыдущая</span>
+                                            <span className="text-xs font-black text-slate-400 mb-0.5">Предыдущая</span>
                                             <div className="flex items-baseline gap-0.5">
                                                 <span className="text-lg font-black text-slate-500 tabular-nums">
                                                     {item.costPrice ? Math.round(Number(item.costPrice)).toLocaleString('ru-RU') : "0"}
                                                 </span>
-                                                <span className="text-[10px] font-bold text-slate-400">₽</span>
+                                                <span className="text-xs font-bold text-slate-400">₽</span>
                                             </div>
                                         </div>
                                         <div className="col-span-3 relative group h-full">
@@ -349,7 +287,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
 
                         {/* 4. Reason */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500 uppercase-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500-none">*</span></label>
                             <textarea
                                 value={reason}
                                 required
@@ -362,7 +300,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                         {error && (
                             <div className="flex items-center gap-2 p-3 rounded-[var(--radius-inner)] bg-rose-50 text-rose-600 border border-rose-100 animate-in slide-in-from-top-2">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
-                                <p className="text-[10px] font-bold leading-none">{error}</p>
+                                <p className="text-xs font-bold leading-none">{error}</p>
                             </div>
                         )}
                     </div>
@@ -379,8 +317,8 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     </Button>
                     <Button
                         type="submit"
+                        form="adjust-stock-form"
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
-                        onClick={handleSubmit}
                         className={cn(
                             "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                         )}
@@ -394,6 +332,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                             </>
                         )}
                     </Button>
+
                 </div>
             </div>
         </ResponsiveModal>

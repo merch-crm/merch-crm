@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle, RefreshCw, Check } from "lucide-react";
-import { transferInventoryStock } from "../../actions";
+import { transferInventoryStock } from "../../stock-actions";;
 import { StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -121,7 +121,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Перемещение товара" showVisualTitle={false} className="sm:max-w-[640px]">
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-slate-200">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
                             <ArrowRightLeft className="w-5 h-5 text-primary" />
                         </div>
@@ -134,8 +134,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1">
-                    <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                    <div className="space-y-4">
                         {/* 1. Source & Destination selection */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -182,13 +182,13 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 <div className="space-y-2.5 flex-1">
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-900 shadow-md">
                                         <Package className="w-3 h-3 text-slate-300" />
-                                        <span className="text-[10px] font-black text-white uppercase tracking-widest truncate max-w-[120px]" title={fromLocationName}>
+                                        <span className="text-xs font-black text-white truncate max-w-[120px]" title={fromLocationName}>
                                             {fromLocationName}
                                         </span>
                                     </div>
                                     <div className="flex items-baseline gap-2 pl-1">
                                         <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">{fromStock}</span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
+                                        <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
 
@@ -203,7 +203,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 <div className="space-y-2.5 text-right flex-1">
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary border border-primary-600 shadow-lg shadow-primary/20">
                                         <Package className="w-3 h-3 text-white" />
-                                        <span className="text-[10px] font-black text-white uppercase tracking-widest truncate max-w-[120px]" title={toLocationName}>
+                                        <span className="text-xs font-black text-white truncate max-w-[120px]" title={toLocationName}>
                                             {toLocationName}
                                         </span>
                                     </div>
@@ -211,14 +211,14 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         <span className="text-5xl font-black text-primary tabular-nums tracking-tight drop-shadow-sm">
                                             {toStock + amount}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatUnit(item.unit)}</span>
+                                        <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* 3. Inputs: Amount */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Количество</label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-2xl flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
@@ -277,13 +277,13 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                             setAmount(fromStock);
                                             toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`, "info");
                                         }}
-                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
+                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                                     >
                                         Переместить всё ({fromStock})
                                     </Button>
                                 ) : (
                                     <div className="h-[72px] w-full rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 flex items-center justify-center">
-                                        <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Выберите склад</span>
+                                        <span className="text-xs font-bold text-slate-300">Выберите склад</span>
                                     </div>
                                 )}
                             </div>
@@ -291,7 +291,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
                         {/* 4. Reason */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500 uppercase-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500-none">*</span></label>
                             <textarea
                                 value={reason}
                                 required
@@ -304,7 +304,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         {error && (
                             <div className="flex items-center gap-2 p-3 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 animate-in slide-in-from-top-2">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
-                                <p className="text-[10px] font-bold leading-none">{error}</p>
+                                <p className="text-xs font-bold leading-none">{error}</p>
                             </div>
                         )}
                     </div>

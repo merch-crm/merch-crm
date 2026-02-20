@@ -58,7 +58,7 @@ export default async function ProfilePage() {
 
     const activities = (groupedLogs || []).slice(0, 5).map((log, index) => {
         const style = getActivityStyle(log.action);
-        const exactTime = format(new Date(log.createdAt), "HH:mm");
+        const exactTime = format(new Date(log.createdAt), "HH:mm", { locale: ru });
         const relativeTime = formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: ru });
 
         return {

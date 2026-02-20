@@ -1,4 +1,4 @@
-import { getManagers } from "../actions";
+import { getManagers } from "../actions/core.actions";;
 import { NewClientPageClient } from "./page-client";
 
 export const metadata = {

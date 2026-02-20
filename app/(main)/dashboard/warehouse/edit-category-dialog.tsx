@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, createElement } from "react";
 import { Check, Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from "./submit-button";
 import { Button } from "@/components/ui/button";
 
-import { updateInventoryCategory, deleteInventoryCategory } from "./actions";
+import { updateInventoryCategory, deleteInventoryCategory } from "./category-actions";;
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Session } from "@/lib/auth";
@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/toast";
 
 
 import { Category } from "./types";
-import { createElement } from "react";
+
 import { getCategoryIcon, getGradientStyles, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Switch } from "@/components/ui/switch";
@@ -29,106 +29,114 @@ interface EditCategoryDialogProps {
 
 export function EditCategoryDialog({ category, categories, isOpen, onClose }: EditCategoryDialogProps) {
     const { toast } = useToast();
-    const [isPending, setIsPending] = useState(false);
-    const [deletePassword, setDeletePassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [categoryName, setCategoryName] = useState(category.name);
-    const [categoryPrefix, setCategoryPrefix] = useState(category.prefix || "");
-    const [prefixManuallyEdited, setPrefixManuallyEdited] = useState(false);
-    const [selectedColor, setSelectedColor] = useState(category.color || "primary");
-    const [showInSku, setShowInSku] = useState(category.showInSku ?? true);
-    const [showInName, setShowInName] = useState(category.showInName ?? true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [subToDelete, setSubToDelete] = useState<string | null>(null);
-    const [subPending, setSubPending] = useState(false);
-    const [prevCategoryId, setPrevCategoryId] = useState(category.id);
+    const [uiState, setUiState] = useState({
+        isPending: false,
+        deletePassword: "",
+        error: null as string | null,
+        showDeleteModal: false,
+        subToDelete: null as string | null,
+        subPending: false,
+        prevCategoryId: category.id
+    });
+
+    const [formState, setFormState] = useState({
+        name: category.name,
+        prefix: category.prefix || "",
+        prefixManuallyEdited: false,
+        color: category.color || "primary",
+        showInSku: category.showInSku ?? true,
+        showInName: category.showInName ?? true,
+    });
 
     // Reset state when category changes
-    if (category.id !== prevCategoryId) {
-        setPrevCategoryId(category.id);
-        setCategoryName(category.name);
-        setCategoryPrefix(category.prefix || "");
-        setSelectedColor(category.color || "primary");
-        setShowInSku(category.showInSku ?? true);
-        setShowInName(category.showInName ?? true);
-        setPrefixManuallyEdited(false);
-        setError(null);
+    if (category.id !== uiState.prevCategoryId) {
+        setUiState(prev => ({
+            ...prev,
+            prevCategoryId: category.id,
+            error: null,
+            deletePassword: "",
+            showDeleteModal: false,
+            subToDelete: null,
+            isPending: false,
+            subPending: false
+        }));
+        setFormState({
+            name: category.name,
+            prefix: category.prefix || "",
+            prefixManuallyEdited: false,
+            color: category.color || "primary",
+            showInSku: category.showInSku ?? true,
+            showInName: category.showInName ?? true,
+        });
     }
 
     const router = useRouter();
 
     const selectedParentId = category.parentId || "";
-    const subCategories = categories.filter(c => c.parentId === category.id);
+    const subCategories = (categories || []).filter(c => c.parentId === category.id);
     const isParentCategory = !category.parentId;
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setIsPending(true);
-        setError(null);
+        setUiState(prev => ({ ...prev, isPending: true, error: null }));
 
         const formData = new FormData(event.currentTarget);
         const nameInput = (event.currentTarget.elements.namedItem("name") as HTMLInputElement).value;
         formData.set("icon", getIconNameFromName(nameInput));
-        formData.set("color", selectedColor);
+        formData.set("color", formState.color);
         formData.set("parentId", selectedParentId);
-        formData.set("showInSku", String(showInSku));
-        formData.set("showInName", String(showInName));
+        formData.set("showInSku", String(formState.showInSku));
+        formData.set("showInName", String(formState.showInName));
 
         const result = await updateInventoryCategory(category.id, formData);
 
-        if (result?.error) {
-            setError(result.error);
-            setIsPending(false);
+        if (!result.success) {
+            setUiState(prev => ({ ...prev, error: result.error, isPending: false }));
         } else {
             onClose();
-            setIsPending(false);
+            setUiState(prev => ({ ...prev, isPending: false }));
             router.refresh();
         }
     }
 
     async function handleDeleteCategory() {
-        setIsPending(true);
-        const result = await deleteInventoryCategory(category.id, deletePassword);
-        if (result?.error) {
-            setError(result.error);
-            setIsPending(false);
-            setShowDeleteModal(false);
-            setDeletePassword("");
+        setUiState(prev => ({ ...prev, isPending: true }));
+        const result = await deleteInventoryCategory(category.id);
+        if (!result.success) {
+            setUiState(prev => ({ ...prev, error: result.error, isPending: false, showDeleteModal: false, deletePassword: "" }));
         } else {
-            setShowDeleteModal(false);
+            setUiState(prev => ({ ...prev, isPending: false, showDeleteModal: false }));
             onClose();
-            setIsPending(false);
             router.refresh();
         }
     }
 
     async function handleDeleteSubcategory(subId: string) {
-        setSubToDelete(subId);
+        setUiState(prev => ({ ...prev, subToDelete: subId }));
     }
 
     async function confirmDeleteSub() {
-        if (!subToDelete) return;
-        setSubPending(true);
-        const result = await deleteInventoryCategory(subToDelete);
-        if (result?.success) {
+        if (!uiState.subToDelete) return;
+        setUiState(prev => ({ ...prev, subPending: true }));
+        const result = await deleteInventoryCategory(uiState.subToDelete);
+        if (result.success) {
             toast("Подкатегория удалена", "success");
             router.refresh();
         } else {
-            toast(result?.error || "Ошибка при удалении", "error");
+            toast(result.error || "Ошибка при удалении", "error");
         }
-        setSubPending(false);
-        setSubToDelete(null);
+        setUiState(prev => ({ ...prev, subPending: false, subToDelete: null }));
     }
 
-    const MainIcon = getCategoryIcon({ name: categoryName });
-    const subToDeleteData = subCategories.find(s => s.id === subToDelete);
+    const MainIcon = getCategoryIcon({ name: formState.name });
+    const subToDeleteData = subCategories.find(s => s.id === uiState.subToDelete);
 
     return (
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Редактирование категории" showVisualTitle={false}>
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
-                    <div className="flex items-center gap-4">
-                        <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                    <div className="flex items-center gap-3">
+                        <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white bg-gradient-to-br", getGradientStyles(formState.color))}>
                             {createElement(MainIcon, { className: "w-6 h-6 stroke-[2.5]" })}
                         </div>
                         <div>
@@ -141,28 +149,29 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 </div>
 
-                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1">
-                    {error && (
-                        <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                    {uiState.error && (
+                        <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                             <AlertCircle className="w-4 h-4" />
-                            {error}
+                            {uiState.error}
                         </div>
                     )}
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                         <div className="space-y-2 flex-1">
                             <label className="text-sm font-bold text-slate-700 ml-1">Название категории</label>
                             <input
                                 name="name"
                                 required
-                                value={categoryName}
+                                value={formState.name}
                                 placeholder="Напр. Футболки"
                                 onChange={(e) => {
                                     const name = e.target.value;
-                                    setCategoryName(name);
-                                    if (!prefixManuallyEdited) {
-                                        setCategoryPrefix(generateCategoryPrefix(name));
-                                    }
+                                    setFormState(prev => ({
+                                        ...prev,
+                                        name,
+                                        prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
+                                    }));
                                 }}
                                 className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
                             />
@@ -171,13 +180,12 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <label className="text-sm font-bold text-slate-700 ml-1">Артикул</label>
                             <input
                                 name="prefix"
-                                value={categoryPrefix}
+                                value={formState.prefix}
                                 placeholder="TS"
                                 className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-center text-sm outline-none shadow-sm tabular-nums"
                                 onChange={(e) => {
                                     const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-                                    setCategoryPrefix(val);
-                                    setPrefixManuallyEdited(true);
+                                    setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
                                 }}
                             />
                         </div>
@@ -187,7 +195,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">
                             <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                             <div className="flex items-center justify-center py-2">
-                                <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5 text-white bg-gradient-to-br", getGradientStyles(selectedColor))}>
+                                <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5 text-white bg-gradient-to-br", getGradientStyles(formState.color))}>
                                     {createElement(MainIcon, { className: "w-5 h-5 stroke-[2.5]" })}
                                 </div>
                             </div>
@@ -197,14 +205,14 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <span className="text-sm font-bold text-slate-700 leading-none">Цвет</span>
                             <div className="grid grid-cols-5 sm:flex sm:flex-wrap gap-2.5">
                                 {COLORS.map((color) => {
-                                    const isSelected = selectedColor === color.name;
+                                    const isSelected = formState.color === color.name;
                                     return (
                                         <Button
                                             key={color.name}
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => setSelectedColor(color.name)}
+                                            onClick={() => setFormState(prev => ({ ...prev, color: color.name }))}
                                             className={cn(
                                                 "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group shadow-sm ring-1 ring-black/5 p-0",
                                                 color.class,
@@ -224,11 +232,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <div className="flex items-center justify-between group w-full">
                                 <div className="flex flex-col gap-0.5">
                                     <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span>
-                                    <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в SKU</span>
+                                    <span className="text-xs text-slate-400 font-bold leading-tight mt-0.5">Будет в SKU</span>
                                 </div>
                                 <Switch
-                                    checked={showInSku}
-                                    onCheckedChange={setShowInSku}
+                                    checked={formState.showInSku}
+                                    onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
                                     variant="success"
                                 />
                             </div>
@@ -237,11 +245,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <div className="flex items-center justify-between group w-full">
                                 <div className="flex flex-col gap-0.5">
                                     <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span>
-                                    <span className="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-wider mt-0.5">Будет в имени</span>
+                                    <span className="text-xs text-slate-400 font-bold leading-tight mt-0.5">Будет в имени</span>
                                 </div>
                                 <Switch
-                                    checked={showInName}
-                                    onCheckedChange={setShowInName}
+                                    checked={formState.showInName}
+                                    onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
                                     variant="success"
                                 />
                             </div>
@@ -262,7 +270,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div className="space-y-4 pt-3">
                             <div className="flex items-center justify-between px-1">
                                 <label className="text-sm font-bold text-slate-700">Подкатегории</label>
-                                <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm">{subCategories.length}</span>
+                                <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">{subCategories.length}</span>
                             </div>
 
                             <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-3 md:gap-4">
@@ -274,7 +282,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                                 type="button"
                                                 variant="destructive"
                                                 size="icon"
-                                                disabled={subPending}
+                                                disabled={uiState.subPending}
                                                 onClick={() => handleDeleteSubcategory(sub.id)}
                                                 className="absolute -top-2 -right-2 w-7 h-7 bg-rose-500 hover:bg-rose-600 text-white shadow-lg rounded-full flex items-center justify-center transition-all z-10 border border-white active:scale-95"
                                             >
@@ -283,7 +291,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                             <div className={cn("w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-sm ring-1 ring-black/5 mb-2 transition-all", getColorStyles(sub.color || 'primary'))}>
                                                 <IconComponent className="w-6 h-6 md:w-7 md:h-7 shadow-sm" />
                                             </div>
-                                            <span className="text-[10px] md:text-[11px] font-bold text-slate-500 truncate w-full text-center px-0.5 leading-tight">{sub.name}</span>
+                                            <span className="text-xs md:text-[11px] font-bold text-slate-500 truncate w-full text-center px-0.5 leading-tight">{sub.name}</span>
                                         </div>
                                     );
                                 })}
@@ -296,7 +304,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     <Button
                         type="button"
                         variant="destructive"
-                        onClick={() => setShowDeleteModal(true)}
+                        onClick={() => setUiState(prev => ({ ...prev, showDeleteModal: true }))}
                         className="lg:flex-none lg:px-6 h-11 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 font-bold text-sm w-full lg:w-auto"
                     >
                         <Trash2 className="w-4 h-4" />
@@ -320,7 +328,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 </div>
 
                 {/* Subcategory Deletion Confirmation */}
-                <ResponsiveModal isOpen={!!subToDelete} onClose={() => setSubToDelete(null)}>
+                <ResponsiveModal isOpen={!!uiState.subToDelete} onClose={() => setUiState(prev => ({ ...prev, subToDelete: null }))}>
                     <div className="p-8 text-center flex flex-col items-center">
                         <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-5 text-rose-500 shadow-sm border border-rose-100">
                             <Trash2 className="w-6 h-6" />
@@ -342,7 +350,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onClick={() => setSubToDelete(null)}
+                                onClick={() => setUiState(prev => ({ ...prev, subToDelete: null }))}
                                 className="hidden lg:flex h-11 w-full rounded-[var(--radius-inner)] text-slate-400 font-bold text-sm"
                             >
                                 Отмена
@@ -353,8 +361,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 {/* Category Deletion Confirmation */}
                 <ResponsiveModal
-                    isOpen={showDeleteModal}
-                    onClose={() => { setShowDeleteModal(false); setDeletePassword(""); }}
+                    isOpen={uiState.showDeleteModal}
+                    onClose={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword: "" })); }}
                     showVisualTitle={false}
                 >
                     <div className="p-10 text-center flex flex-col items-center">
@@ -371,8 +379,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 <label className="text-sm font-bold text-rose-600 mb-3 block">Системная защита</label>
                                 <input
                                     type="password"
-                                    value={deletePassword}
-                                    onChange={(e) => setDeletePassword(e.target.value)}
+                                    value={uiState.deletePassword}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setUiState(prev => ({ ...prev, deletePassword: val }));
+                                    }}
                                     placeholder="Пароль от аккаунта"
                                     className="w-full h-12 px-4 rounded-[var(--radius-inner)] border border-rose-200 bg-white focus:ring-4 focus:ring-rose-500/10 focus:border-rose-400 outline-none text-sm font-bold shadow-sm"
                                     autoFocus
@@ -385,15 +396,15 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 type="button"
                                 variant="destructive"
                                 onClick={handleDeleteCategory}
-                                disabled={isPending || (category.isSystem && !deletePassword.trim())}
+                                disabled={uiState.isPending || (category.isSystem && !uiState.deletePassword.trim())}
                                 className="h-12 w-full max-w-[320px] bg-[#ff463c] hover:bg-[#ff463c]/90 text-white rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-rose-500/20 border-none"
                             >
-                                {isPending ? "Удаление..." : "Удалить категорию"}
+                                {uiState.isPending ? "Удаление..." : "Удалить категорию"}
                             </Button>
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onClick={() => { setShowDeleteModal(false); setDeletePassword(""); }}
+                                onClick={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword: "" })); }}
                                 className="h-11 w-full text-slate-400 font-bold text-sm"
                             >
                                 Отмена

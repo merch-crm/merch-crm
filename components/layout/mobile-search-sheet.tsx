@@ -191,7 +191,7 @@ export function MobileSearchSheet() {
                                 </div>
                             )}
 
-                            {!loading && query.length >= 2 && results.length === 0 && (
+                            {!loading && query.length >= 2 && Array.isArray(results) && results.length === 0 && (
                                 <div className="py-16 text-center flex flex-col items-center justify-center">
                                     <div className="w-20 h-20 bg-slate-100/50 rounded-full flex items-center justify-center mb-4">
                                         <Search className="w-8 h-8 text-slate-300" />
@@ -203,9 +203,9 @@ export function MobileSearchSheet() {
                                 </div>
                             )}
 
-                            {!loading && results.length > 0 && (
+                            {!loading && Array.isArray(results) && results.length > 0 && (
                                 <div className="space-y-2">
-                                    {results.map((result) => (
+                                    {(results || []).map((result) => (
                                         <Button
                                             key={`${result.type}-${result.id}`}
                                             variant="ghost"
@@ -225,7 +225,7 @@ export function MobileSearchSheet() {
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <span className="font-black text-slate-900 text-[15px] truncate">{result.title}</span>
-                                                    <span className="text-[10px] font-bold tracking-normal text-slate-400 px-2 py-0.5 bg-slate-100 rounded-md shrink-0">
+                                                    <span className="text-xs font-bold text-slate-400 px-2 py-0.5 bg-slate-100 rounded-md shrink-0">
                                                         {getTypeLabel(result.type)}
                                                     </span>
                                                 </div>

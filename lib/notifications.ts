@@ -23,7 +23,7 @@ export async function createNotification(data: {
     }
 }
 
-export async function notifyWarehouseManagers(data: {
+export async function sendStaffNotifications(data: {
     title: string;
     message: string;
     type: "info" | "warning" | "success" | "error" | "transfer";
@@ -33,7 +33,8 @@ export async function notifyWarehouseManagers(data: {
         const staff = await db.query.users.findMany({
             with: {
                 role: true
-            }
+            },
+            limit: 500
         });
 
         const targetUsers = staff.filter(u =>
@@ -94,7 +95,7 @@ export async function checkItemStockAlerts(itemId: string) {
             });
 
             if (!existing) {
-                await notifyWarehouseManagers({ title, message, type: alertType });
+                await sendStaffNotifications({ title, message, type: alertType });
             }
         }
     } catch (error) {

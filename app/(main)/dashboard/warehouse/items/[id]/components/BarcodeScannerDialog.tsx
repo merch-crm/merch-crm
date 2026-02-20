@@ -51,7 +51,6 @@ export function BarcodeScannerDialog({
                     stopScanner();
                 },
                 () => {
-                    // console.log(errorMessage); // Ignore scan errors
                 }
             ).catch(err => {
                 console.error("Error starting scanner", err);
@@ -74,13 +73,13 @@ export function BarcodeScannerDialog({
         <ResponsiveModal isOpen={isOpen} onClose={handleClose} title="Штрихкод" showVisualTitle={false} className="sm:max-w-md">
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0 border-b border-slate-100">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center shadow-sm">
                             <Camera className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Штрихкод</h2>
-                            <p className="text-[10px] font-bold text-slate-500 mt-0.5">Наведите на код товара</p>
+                            <p className="text-xs font-bold text-slate-500 mt-0.5">Наведите на код товара</p>
                         </div>
                     </div>
                     <Button
@@ -93,7 +92,7 @@ export function BarcodeScannerDialog({
                     </Button>
                 </div>
 
-                <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+                <div className="p-6 space-y-4 flex-1 overflow-y-auto">
                     <div className="relative bg-black rounded-2xl overflow-hidden aspect-square border border-white/10 shadow-2xl ring-1 ring-white/5 mx-auto max-w-[320px] w-full">
                         <div id="reader" className="w-full h-full" />
                         <div className="absolute inset-0 pointer-events-none border-[40px] border-black/40">

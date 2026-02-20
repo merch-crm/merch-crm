@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getDepartments, deleteDepartment } from "../actions";
+import { useEffect, useState, useCallback } from "react";
+import { getDepartments, deleteDepartment } from "../actions/departments.actions";;
 import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -37,8 +37,8 @@ export function DepartmentsTable() {
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
     const { toast } = useToast();
 
-    const fetchDepartments = (isInitial = true) => {
-        if (isInitial) setLoading(true);
+    const fetchDepartments = useCallback((isInitial = true) => {
+        // if (isInitial) setLoading(true); // Optimistic updates, relying on initial state for first load
         getDepartments().then(res => {
             if (res.data) {
                 setDepartments(res.data as Department[]);
@@ -48,14 +48,13 @@ export function DepartmentsTable() {
             console.error('Failed to fetch departments:', err);
             if (isInitial) setLoading(false);
         });
-    };
+    }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchDepartments(true);
         const interval = setInterval(() => fetchDepartments(false), 15000);
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchDepartments]);
 
     const handleDeleteClick = (dept: Department) => {
         setDepartmentToDelete(dept);
@@ -91,7 +90,7 @@ export function DepartmentsTable() {
     if (loading) return <div className="text-slate-400 p-12 text-center text-sm font-medium">Загрузка отделов...</div>;
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="space-y-4 pb-20">
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--crm-grid-gap)]">
                 {departments.map((dept) => {
@@ -99,9 +98,9 @@ export function DepartmentsTable() {
                     const Icon = config.Icon;
 
                     return (
-                        <div
+                        <div role="button" tabIndex={0}
                             key={dept.id}
-                            onClick={() => setSelectedDepartment(dept)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedDepartment(dept)}
                             className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all h-[200px] flex flex-col cursor-pointer active:scale-[0.98]`}
                         >
                             <div className="p-7 flex flex-col h-full">
@@ -110,11 +109,12 @@ export function DepartmentsTable() {
                                         <Icon className={`w-7 h-7 ${config.iconColor}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="text-xl font-bold text-slate-900 truncate tracking-normal">{dept.name}</h4>
-                                        <p className={`text-[10px] font-bold  tracking-[0.2em] mt-1 ${config.iconColor}`}>Подразделение</p>
+                                        <h4 className="text-xl font-bold text-slate-900 truncate">{dept.name}</h4>
+                                        <p className={`text-xs font-bold mt-1 ${config.iconColor}`}>Подразделение</p>
                                     </div>
                                     <div className="flex flex-col gap-1 -mr-3 -mt-3">
                                         <Button
+                                            type="button"
                                             variant="ghost"
                                             size="icon"
                                             onClick={(e) => {
@@ -127,6 +127,7 @@ export function DepartmentsTable() {
                                         </Button>
                                         {!dept.isSystem && (
                                             <Button
+                                                type="button"
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={(e) => {
@@ -148,7 +149,7 @@ export function DepartmentsTable() {
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between mt-auto">
-                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400  tracking-normal">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 ">
                                         <Users className="w-3.5 h-3.5" />
                                         <span>Сотрудники</span>
                                     </div>

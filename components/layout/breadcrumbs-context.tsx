@@ -1,18 +1,16 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
     label: string;
-    href?: string;
-    isEllipsis?: boolean;
+    href: string;
 }
 
 interface BreadcrumbsContextType {
     labels: Map<string, string>;
-    setBreadcrumb: (path: string, label: string) => void;
-    clearBreadcrumb: (path: string) => void;
     customTrail: BreadcrumbItem[] | null;
+    setLabels: (labels: Map<string, string>) => void;
     setCustomTrail: (trail: BreadcrumbItem[] | null) => void;
 }
 
@@ -22,30 +20,8 @@ export function BreadcrumbsProvider({ children }: { children: ReactNode }) {
     const [labels, setLabels] = useState<Map<string, string>>(new Map());
     const [customTrail, setCustomTrail] = useState<BreadcrumbItem[] | null>(null);
 
-    const setBreadcrumb = useCallback((path: string, label: string) => {
-        setLabels(prev => {
-            const newMap = new Map(prev);
-            newMap.set(path, label);
-            return newMap;
-        });
-    }, []);
-
-    const clearBreadcrumb = useCallback((path: string) => {
-        setLabels(prev => {
-            const newMap = new Map(prev);
-            newMap.delete(path);
-            return newMap;
-        });
-    }, []);
-
     return (
-        <BreadcrumbsContext.Provider value={{
-            labels,
-            setBreadcrumb,
-            clearBreadcrumb,
-            customTrail,
-            setCustomTrail
-        }}>
+        <BreadcrumbsContext.Provider value={{ labels, customTrail, setLabels, setCustomTrail }}>
             {children}
         </BreadcrumbsContext.Provider>
     );
@@ -54,7 +30,7 @@ export function BreadcrumbsProvider({ children }: { children: ReactNode }) {
 export function useBreadcrumbs() {
     const context = useContext(BreadcrumbsContext);
     if (!context) {
-        throw new Error("useBreadcrumbs must be used within BreadcrumbsProvider");
+        throw new Error("This hook must be used within BreadcrumbsProvider");
     }
     return context;
 }

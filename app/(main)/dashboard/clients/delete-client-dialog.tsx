@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { deleteClient } from "./actions";
+import { deleteClient } from "./actions/core.actions";;
 import { Loader2, AlertTriangle } from "lucide-react";
 import { playSound } from "@/lib/sounds";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
