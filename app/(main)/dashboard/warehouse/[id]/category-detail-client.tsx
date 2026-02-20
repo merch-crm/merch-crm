@@ -4,18 +4,16 @@ import { useMemo } from "react";
 import { ArrowLeft, Plus, SearchX, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useDebounce } from "@/hooks/use-debounce";
 
 import { Button } from "@/components/ui/button";
 
-import { updateInventoryCategoriesOrder } from "../category-actions";;
+import { updateInventoryCategoriesOrder } from "../category-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../storage-locations-tab";
 
 import { useBranding } from "@/components/branding-provider";
 import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
-
 
 import {
     DndContext,
@@ -42,12 +40,10 @@ import type {
     InventoryFilters, ThumbnailSettings
 } from "../types";
 
-
 import { SortableSubCategoryCard, SubCategoryCardContent } from "./components/SubCategoryCard";
 import { CategoryFilters } from "./components/CategoryFilters";
 import { CategoryItemsList } from "./components/CategoryItemsList";
 import { MassActionsBar } from "./components/MassActionsBar";
-
 
 import { useCategoryDetail } from "./hooks/use-category-detail";
 import dynamic from "next/dynamic";
@@ -89,7 +85,7 @@ export function CategoryDetailClient({
 }: CategoryDetailClientProps) {
     const {
         subCategories, setSubCategories,
-        allCategories, setAllCategories,
+        allCategories,
         ui, setUi,
         filters, setFilters,
         dialogs, setDialogs,
@@ -159,8 +155,6 @@ export function CategoryDetailClient({
             }
         }
     };
-
-
 
     const itemsPerPage = 20;
     const subsPerPage = 12;
@@ -472,7 +466,6 @@ export function CategoryDetailClient({
                             }}
                         />
                     )}
-
 
                 </>
             )}

@@ -19,34 +19,59 @@ export default defineConfig({
     },
 
     projects: [
+        {
+            name: 'setup',
+            testMatch: /.*\.setup\.ts/,
+        },
         // Google Chrome
         {
             name: 'chrome',
-            use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+            use: {
+                ...devices['Desktop Chrome'],
+                channel: 'chrome',
+                storageState: 'playwright/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
 
         // Safari (WebKit)
         {
             name: 'safari',
-            use: { ...devices['Desktop Safari'] },
+            use: {
+                ...devices['Desktop Safari'],
+                storageState: 'playwright/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
 
         // Safari на iPhone
         {
             name: 'mobile-safari',
-            use: { ...devices['iPhone 14'] },
+            use: {
+                ...devices['iPhone 14'],
+                storageState: 'playwright/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
 
         // Safari на iPad
         {
             name: 'tablet-safari',
-            use: { ...devices['iPad Pro 11'] },
+            use: {
+                ...devices['iPad Pro 11'],
+                storageState: 'playwright/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
 
         // Firefox
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
+            use: {
+                ...devices['Desktop Firefox'],
+                storageState: 'playwright/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
 
     ],

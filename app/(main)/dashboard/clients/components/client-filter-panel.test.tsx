@@ -49,11 +49,11 @@ describe('ClientFilterPanel', () => {
         return render(
             <ClientFilterPanel
                 filters={{ ...defaultFilters, ...overrides.filters }}
-                setFilters={(overrides.setFilters ?? setFiltersMock) as any}
+                setFilters={overrides.setFilters ?? setFiltersMock}
                 uiState={{ ...defaultUiState, ...overrides.uiState }}
-                setUiState={(overrides.setUiState ?? setUiStateMock) as any}
+                setUiState={overrides.setUiState ?? setUiStateMock}
                 regions={overrides.regions ?? []}
-                onAddToHistory={(overrides.onAddToHistory ?? onAddToHistoryMock) as any}
+                onAddToHistory={overrides.onAddToHistory ?? onAddToHistoryMock}
             />
         )
     }

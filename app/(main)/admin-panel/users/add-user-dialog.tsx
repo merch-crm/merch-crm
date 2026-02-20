@@ -3,8 +3,7 @@
 
 import { Plus, User, Mail, Lock, Shield, Building, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+
 import { IconSelect } from "@/components/ui/icon-select";
 import { IconInput } from "@/components/ui/icon-input";
 import { cn } from "@/lib/utils";

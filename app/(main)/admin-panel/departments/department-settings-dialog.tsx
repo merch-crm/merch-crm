@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
 import { useDepartmentSettings } from "./hooks/use-department-settings";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -17,8 +16,6 @@ interface DepartmentSettingsDialogProps {
     onClose: () => void;
     onSuccess: () => void;
 }
-
-
 
 export function DepartmentSettingsDialog({ department, isOpen, onClose, onSuccess }: DepartmentSettingsDialogProps) {
     const { state, updateState, handleAddRole, handleRemoveRole, handleGeneralSubmit } = useDepartmentSettings(department, isOpen, onClose, onSuccess);
@@ -279,5 +276,4 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
         </ResponsiveModal>
     );
 }
-
 

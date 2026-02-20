@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { format, differenceInSeconds } from "date-fns";
 import { cn } from "@/lib/utils";
 import { formatDuration } from "./utils";
 import { TimeTrackerBadgeProps } from "./types";

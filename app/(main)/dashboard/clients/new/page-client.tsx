@@ -15,7 +15,6 @@ import { addClient } from "../actions/core.actions";;
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SegmentedControl } from "@/components/ui/segmented-control";

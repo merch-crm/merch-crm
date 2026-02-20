@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, X, Layers, ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Tag, Archive, ChevronDown, LayoutGrid, type LucideIcon } from "lucide-react";
+import { Search, X, Layers, ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Tag, Archive, ChevronDown, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";

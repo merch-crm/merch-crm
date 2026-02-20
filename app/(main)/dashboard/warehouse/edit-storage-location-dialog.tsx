@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
-import { StorageLocation, StorageLocationItem } from "./storage-locations-tab";
+import { StorageLocation } from "./storage-locations-tab";
 import { useEditLocationLogic } from "./components/storage-location/hooks/useEditLocationLogic";
 import { LocationForm } from "./components/storage-location/location-form";
 import { LocationItemsList } from "./components/storage-location/location-items-list";

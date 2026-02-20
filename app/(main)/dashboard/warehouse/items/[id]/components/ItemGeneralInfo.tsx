@@ -2,13 +2,6 @@
 
 import React from "react";
 import {
-    Sparkles,
-    BadgeCheck,
-    Shirt,
-    Layers,
-    Ruler,
-    Droplets,
-    Search,
     Pencil,
     Plus,
     X,

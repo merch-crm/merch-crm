@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Printer, AlignLeft, AlignCenter, RotateCw } from "lucide-react";
+import { AlignLeft, AlignCenter, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,6 @@ interface LabelPrinterSettingsProps {
     item: InventoryItem;
     resolvedParams: ResolvedParam[];
     branding: BrandingSettings;
-    isMobile: boolean;
 }
 
 export function LabelPrinterSettings({
@@ -26,11 +25,8 @@ export function LabelPrinterSettings({
     setDisplayOptions,
     item,
     resolvedParams,
-    branding,
-    isMobile
+    branding
 }: LabelPrinterSettingsProps) {
-    const currentW = config.isLandscape ? parseInt(config.customHeight.toString()) : parseInt(config.customWidth.toString()); // Simplified for now
-    const currentH = config.isLandscape ? parseInt(config.customWidth.toString()) : parseInt(config.customHeight.toString());
 
     return (
         <div className="md:flex-1 md:min-h-0 md:overflow-y-auto px-6 py-6 space-y-4 md:custom-scrollbar relative">

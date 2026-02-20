@@ -168,7 +168,7 @@ export async function updateRoleDepartment(roleId: string, departmentId: string 
 
         revalidatePath("/admin-panel/roles");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось обновить отдел роли" };
     }
 }

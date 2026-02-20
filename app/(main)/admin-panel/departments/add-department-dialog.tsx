@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Plus, Building, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,8 +13,6 @@ import { IconInput } from "@/components/ui/icon-input";
 interface AddDepartmentDialogProps {
     onSuccess: () => void;
 }
-
-
 
 export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
     const { state, updateState, toggleRole, handleSubmit } = useAddDepartment(onSuccess);
@@ -182,5 +179,4 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
         </>
     );
 }
-
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Play, Square, Clock, CalendarDays } from "lucide-react";
+import { Clock, CalendarDays } from "lucide-react";
 import { format, differenceInSeconds } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";

@@ -40,7 +40,7 @@ export function SummaryStep({
     isSubmitting
 }: SummaryStepProps) {
     const isMobile = useIsMobile();
-    const logic = useSummaryLogic({ formData, updateFormData, category, subCategories, dynamicAttributes });
+    const logic = useSummaryLogic({ formData, updateFormData, subCategories, dynamicAttributes });
 
     return (
         <div className="flex flex-col h-full min-h-0">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ClientSummary as Client } from "@/lib/types";
-import { ClientFilters } from "../actions";;
+import { ClientFilters } from "../actions";
 
 export interface ClientUiState {
     showFilters: boolean;

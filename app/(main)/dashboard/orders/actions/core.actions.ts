@@ -9,18 +9,18 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { sendStaffNotifications } from "@/lib/notifications";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
-import { CreateOrderSchema, OrderIdSchema, UpdateOrderFieldSchema } from "../validation";
+import { CreateOrderSchema, OrderIdSchema } from "../validation";
 import { ActionResult } from "@/lib/types";
 import { releaseOrderReservation } from "./utils";
 
-const { orders, orderItems, clients, users, inventoryItems, promocodes, payments, orderAttachments } = schema;
+const { orders, orderItems, clients, users, inventoryItems, promocodes, payments } = schema;
 
 export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string): Promise<ActionResult<{
     orders: (typeof orders.$inferSelect & {
         client: typeof clients.$inferSelect | null;
         items: (typeof orderItems.$inferSelect)[];
         creator: (typeof users.$inferSelect & { role: typeof schema.roles.$inferSelect | null }) | null;
-        attachments: (typeof orderAttachments.$inferSelect)[];
+        attachments: (typeof schema.orderAttachments.$inferSelect)[];
     })[];
     total: number;
     totalPages: number;
@@ -162,7 +162,7 @@ type OrderComplete = typeof schema.orders.$inferSelect & {
     client: typeof schema.clients.$inferSelect | null;
     items: typeof schema.orderItems.$inferSelect[];
     creator: (typeof schema.users.$inferSelect & { role: typeof schema.roles.$inferSelect | null }) | null;
-    attachments: typeof schema.orderAttachments.$inferSelect[];
+    attachments: (typeof schema.orderAttachments.$inferSelect)[];
     payments: typeof schema.payments.$inferSelect[];
     promocode: typeof schema.promocodes.$inferSelect | null;
 };
@@ -430,14 +430,14 @@ export async function getClientsForSelect(): Promise<ActionResult<{ id: string; 
     try {
         const data = await db.select({ id: clients.id, name: clients.name }).from(clients).where(eq(clients.isArchived, false)).limit(100);
         return { success: true, data };
-    } catch (_error) { return { success: false, error: "Ошибка" }; }
+    } catch { return { success: false, error: "Ошибка" }; }
 }
 
 export async function getInventoryForSelect(): Promise<ActionResult<{ id: string; name: string | null; quantity: number | null }[]>> {
     try {
         const data = await db.select({ id: inventoryItems.id, name: inventoryItems.name, quantity: inventoryItems.quantity }).from(inventoryItems).limit(100);
         return { success: true, data };
-    } catch (_error) { return { success: false, error: "Ошибка" }; }
+    } catch { return { success: false, error: "Ошибка" }; }
 }
 
 export async function searchClients(query: string): Promise<ActionResult<typeof clients.$inferSelect[]>> {
@@ -448,5 +448,5 @@ export async function searchClients(query: string): Promise<ActionResult<typeof 
             limit: 10
         });
         return { success: true, data: results };
-    } catch (_error) { return { success: false, error: "Ошибка" }; }
+    } catch { return { success: false, error: "Ошибка" }; }
 }

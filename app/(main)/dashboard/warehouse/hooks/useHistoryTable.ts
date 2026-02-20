@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { Transaction } from "../history-types";
-import { deleteInventoryTransactions } from "../history-actions";;
+import { deleteInventoryTransactions } from "../history-actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { sentence } from "@/lib/pluralize";

@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback, useMemo } from "react";
 import { getClients, getManagers, updateClientField, getRegions } from "./actions/core.actions";
-import { bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients } from "./actions/bulk.actions";;
+import { bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients } from "./actions/bulk.actions";
 import { useDebounce } from "@/hooks/use-debounce";
 import { undoLastAction } from "../undo-actions";
 import { exportToCSV } from "@/lib/export-utils";
@@ -28,7 +28,7 @@ import type { ClientSummary as Client } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ClientFilterPanel } from "./components/client-filter-panel";
 import { ClientTable } from "./components/client-table";
-import { ClientFilters } from "./actions";;
+
 
 import { useClientsState } from "./hooks/use-clients-state";
 
@@ -72,7 +72,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         });
 
         return () => clearTimeout(t);
-    }, []);
+    }, [setManagers, setRegions, setUiState, setViewState]);
 
     const addToHistory = useCallback((query: string) => {
         if (!query || query.length < 2) return;
@@ -81,7 +81,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             localStorage.setItem("client_search_history", JSON.stringify(newHistory));
             return { ...prev, searchHistory: newHistory };
         });
-    }, []);
+    }, [setUiState]);
 
     const fetchClients = useCallback(() => {
         setViewState(prev => prev.loading ? prev : { ...prev, loading: true });
@@ -106,7 +106,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 setViewState(prev => ({ ...prev, loading: false }));
             }
         });
-    }, [currentPage, debouncedSearch, filters.sortBy, filters.period, filters.orderCount, filters.region, filters.status, filters.showArchived]);
+    }, [currentPage, debouncedSearch, filters.sortBy, filters.period, filters.orderCount, filters.region, filters.status, filters.showArchived, setViewState]);
 
     useEffect(() => {
         // Use a microtask/timeout to avoid synchronous state update warning
@@ -178,13 +178,13 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             });
             setSelectedIds(newIds);
         }
-    }, [isAllSelected, clientsList, selectedIds]);
+    }, [isAllSelected, clientsList, selectedIds, setSelectedIds]);
 
     const handleSelectRow = useCallback((id: string) => {
         setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
         );
-    }, []);
+    }, [setSelectedIds]);
 
     const handleExport = useCallback(() => {
         const selectedClients = (viewState.data?.clients || []).filter(c => selectedIds.includes(c.id));

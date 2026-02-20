@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
     Package, ArrowUpRight, ArrowDownLeft, Clock, Building2,
-    ArrowRight, ArrowLeftRight, Book, LayoutGrid, User
+    ArrowLeftRight, Book, LayoutGrid, User
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";

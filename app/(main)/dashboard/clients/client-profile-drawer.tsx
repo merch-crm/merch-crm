@@ -17,7 +17,7 @@ import { useToast } from "@/components/ui/toast";
 import { InfoRow } from "@/components/ui/info-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ModernStatCard } from "@/components/ui/stat-card";
-import { getClientDetails } from "./actions/core.actions";;
+import { getClientDetails } from "./actions/core.actions";
 import type { ClientProfile } from "@/lib/types";
 
 // Local interfaces removed in favor of @/lib/types

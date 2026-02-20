@@ -5,11 +5,11 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
     Package, ArrowUpRight, ArrowDownLeft, Clock, Building2,
-    ArrowRight, ArrowLeftRight, Book
+    ArrowLeftRight, Book
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { cn, formatUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { type Transaction } from "../history-types";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";

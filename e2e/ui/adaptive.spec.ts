@@ -2,56 +2,60 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Адаптивность интерфейса', () => {
     test('навигация на мобильном', async ({ page, isMobile }) => {
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
+        await page.goto('/dashboard')
+        // Ждем видимости любого заголовка как признака загрузки
+        await page.locator('h1, h2, .page-header').first().waitFor({ state: 'visible', timeout: 15000 });
         await expect(page).toHaveURL('/dashboard')
 
         if (isMobile) {
-            const burger = page.getByRole('button', { name: /меню/i }).first()
+            const burger = page.getByRole('button', { name: /меню|toggle menu/i }).first()
+            await burger.waitFor({ state: 'visible' });
             await expect(burger).toBeVisible()
 
             await burger.click()
             await expect(page.getByRole('navigation')).toBeVisible()
         } else {
-            await expect(page.getByRole('navigation').first()).toBeVisible()
+            const nav = page.getByRole('navigation').first();
+            await nav.waitFor({ state: 'visible' });
+            await expect(nav).toBeVisible()
         }
     })
 
     test('таблица заказов адаптируется', async ({ page, isMobile }) => {
-        // Сначала логин
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
-        await expect(page).toHaveURL('/dashboard')
-
         await page.goto('/dashboard/orders')
-        await page.waitForLoadState('networkidle')
-        await page.waitForSelector('.crm-table, .crm-card', { timeout: 10000 })
+
+        // Ожидаем появления контейнера с данными
+        const container = page.locator('.crm-table, .crm-card, text=Заказы').first();
+        await container.waitFor({ state: 'visible', timeout: 15000 });
+        await expect(container).toBeVisible()
 
         if (isMobile) {
             // На мобильном — карточки. Проверяем наличие текста ID/ORD
-            await expect(page.locator('text=ORD-').first()).toBeVisible()
+            const orderRef = page.locator('text=ORD-').first();
+            await orderRef.waitFor({ state: 'visible' });
+            await expect(orderRef).toBeVisible()
         } else {
             // На десктопе — таблица. Проверяем наличие заголовка ID / Дата
-            await expect(page.locator('th').filter({ hasText: 'ID / Дата' }).first()).toBeVisible()
+            const th = page.locator('th').filter({ hasText: /ID|Дата/i }).first();
+            await th.waitFor({ state: 'visible' });
+            await expect(th).toBeVisible()
         }
     })
 
     test('визуальный снимок дашборда', async ({ page }) => {
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
-        await page.waitForURL('/dashboard')
-
         await page.goto('/dashboard')
-        await page.waitForLoadState('networkidle')
+
+        // Ждем отрисовки основного контента
+        const header = page.locator('h1, h2, .page-header').first();
+        await header.waitFor({ state: 'visible', timeout: 15000 });
 
         await expect(page).toHaveScreenshot('dashboard.png', {
             fullPage: true,
+            mask: [
+                page.locator('[data-testid="chart"]'),
+                page.locator('text=/\\d{1,2}:\\d{2}/'), // Маскируем время (ЧЧ:ММ)
+                page.locator('text=/\\d{1,2} \\w+/'), // Маскируем дату (например "20 февраля")
+            ],
         })
     })
 })

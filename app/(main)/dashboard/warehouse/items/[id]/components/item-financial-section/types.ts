@@ -1,7 +1,6 @@
 "use client";
 
 import { LucideIcon } from "lucide-react";
-import { InventoryItem, ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
 
 export type Timeframe = 'month' | 'quarter' | 'half-year' | 'year' | 'all';
 

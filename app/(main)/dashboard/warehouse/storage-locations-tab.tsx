@@ -3,7 +3,7 @@
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";;
+import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";
 import { useState, useEffect, memo } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -130,8 +130,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         }));
     };
 
-    const handleEdit = (e: React.MouseEvent, loc: StorageLocation) => {
-        e.stopPropagation();
+    const handleEdit = (loc: StorageLocation) => {
         setUiState(prev => ({ ...prev, editingLocation: loc }));
     };
 
@@ -208,7 +207,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                 key={loc.id}
                                 loc={loc}
                                 onDeleteClick={(e: React.MouseEvent) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
-                                onClick={() => setUiState(prev => ({ ...prev, editingLocation: loc }))}
+                                onClick={() => handleEdit(loc)}
                             />
                         ))}
                     </div>

@@ -3,33 +3,21 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Check,
     ShoppingCart,
     User,
     Package,
     Clock,
-    RotateCcw,
-    Search,
-    ChevronRight,
-    Plus,
-    Tag,
-    CreditCard,
-    AlertCircle
+    ChevronRight
 } from "lucide-react";
-import { cn, formatUnit } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { createOrder, searchClients } from "../actions/core.actions";;
+import { createOrder, searchClients } from "../actions/core.actions";
 import { ActionResult, Client, ClientType } from "@/lib/types";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { useBranding } from "@/components/branding-provider";
-import { Switch } from "@/components/ui/switch";
 import { OrderSidebar } from "./components/OrderSidebar";
 import { StepClientSelection } from "./components/StepClientSelection";
 import { StepItemSelection } from "./components/StepItemSelection";
@@ -250,12 +238,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         }
     }, []);
 
-    const addToHistory = (q: string) => {
-        if (!q.trim() || searchState.history.includes(q)) return;
-        const newHistory = [q, ...searchState.history.slice(0, 4)];
-        setSearchState(prev => ({ ...prev, history: newHistory }));
-        localStorage.setItem("order_client_search_history", JSON.stringify(newHistory));
-    };
+    /* addToHistory removed */
 
     const addItem = (item: OrderInventoryItem) => {
         if (orderData.selectedItems.find(i => i.id === item.id)) return;

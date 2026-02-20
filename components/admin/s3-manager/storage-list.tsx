@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import NextImage from "next/image";
 import {
     Folder,
     File,

@@ -6,7 +6,6 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
 import { UserStatsDrawer } from "./user-stats-drawer";
-import { useRouter } from "next/navigation";
 import { cn, handleA11yKeyDown } from "@/lib/utils";
 import { impersonateUser } from "../actions/security.actions";;
 import { useToast } from "@/components/ui/toast";

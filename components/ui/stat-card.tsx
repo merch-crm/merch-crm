@@ -1,8 +1,7 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 
 interface ModernStatCardProps {
     icon: React.ElementType;

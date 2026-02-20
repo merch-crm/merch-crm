@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { revalidatePath } from "next/cache";
@@ -11,7 +11,7 @@ import { BulkClientsSchema } from "../validation";
 import { ActionResult } from "@/lib/types";
 import { releaseReservationsForOrders } from "./utils";
 
-const { clients, orders, users } = schema;
+const { clients, orders } = schema;
 
 export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResult> {
     const session = await getSession();

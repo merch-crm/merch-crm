@@ -155,7 +155,7 @@ export async function getRolesByDepartment(departmentId: string) {
             limit: 500 // audit-ignore: административный список, нужны все записи
         });
         return { success: true, data: rolesInDept };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось загрузить роли отдела" };
     }
 }

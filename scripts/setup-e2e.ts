@@ -77,7 +77,7 @@ async function setup() {
                 status: "new",
                 paymentStatus: "unpaid",
                 totalAmount: "5000",
-                orderNumber: `E2E-${Date.now()}`
+                orderNumber: `ORD-${Date.now().toString().slice(-6)}`
             });
         }
 

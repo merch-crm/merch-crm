@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 
 const auditReport = fs.readFileSync('audit-report.md', 'utf-8');

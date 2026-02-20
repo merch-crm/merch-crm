@@ -6,8 +6,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { useBranding } from "@/components/branding-provider";
 import { useToast } from "@/components/ui/toast";
 import { Printer } from "lucide-react";
-import { escapeHtml } from "@/lib/utils";
-import { PaperSize, LayoutStyle, PrinterConfig, DisplayOptions } from "./label-printer/label-printer-types";
+import { PrinterConfig, DisplayOptions } from "./label-printer/label-printer-types";
 import { LabelPrinterSettings } from "./label-printer/LabelPrinterSettings";
 import { LabelPrinterPreview } from "./label-printer/LabelPrinterPreview";
 import { LabelPrinterActions } from "./label-printer/LabelPrinterActions";
@@ -128,7 +127,6 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
                         item={item}
                         resolvedParams={resolvedParams}
                         branding={branding}
-                        isMobile={isMobile}
                     />
                     {!isMobile && <LabelPrinterActions config={config} setConfig={setConfig} handlePrint={handlePrint} />}
                 </div>

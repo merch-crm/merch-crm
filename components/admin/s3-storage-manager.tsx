@@ -1,41 +1,24 @@
 "use client";
 
 import NextImage from "next/image";
-import { format } from "date-fns";
 import { formatCount } from "@/lib/pluralize";
-import { ru } from "date-fns/locale";
 import {
-    HardDrive,
     RefreshCw,
     Trash2,
     File,
     Search,
-    AlertTriangle,
-    Info,
-    Server,
     CloudUpload,
-    Database,
-    Folder,
     FolderPlus,
-    ChevronRight,
-    Home,
-    Edit2,
     CheckSquare,
-    Square,
-    Eye,
     ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useS3StorageManager, isImageFile } from "./hooks/use-s3-storage-manager";
-import type { StorageFile } from "./types";
-import { FolderRow } from "./s3-manager/folder-row";
-import { FileRow } from "./s3-manager/file-row";
+import { useS3StorageManager } from "./hooks/use-s3-storage-manager";
 import { StorageStats } from "./s3-manager/storage-stats";
 import { StorageBreadcrumbs } from "./s3-manager/storage-breadcrumbs";
 import { StorageInfo } from "./s3-manager/storage-info";
@@ -50,37 +33,7 @@ const Z_INDEX = {
 
 // --- Components ---
 
-interface StatCardProps {
-    icon: React.ReactNode;
-    iconBgClassName: string;
-    iconTextClassName: string;
-    title: string;
-    value: React.ReactNode;
-    subtitle?: React.ReactNode;
-    children?: React.ReactNode;
-    onClick?: () => void;
-}
 
-const StatCard = ({ icon, iconBgClassName, iconTextClassName, title, value, subtitle, children, onClick }: StatCardProps) => (
-    <Card
-        className={cn("border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden", onClick && "cursor-pointer hover:bg-slate-50 transition-colors")}
-        onClick={onClick}
-    >
-        <CardContent className={cn("p-6", onClick && "flex items-center justify-between")}>
-            <div className="flex items-center gap-4">
-                <div className={cn("p-3 rounded-[18px]", iconBgClassName, iconTextClassName)}>
-                    {icon}
-                </div>
-                <div>
-                    <p className="text-xs text-slate-400 font-bold ">{title}</p>
-                    {typeof value === 'string' ? <h3 className="text-xl font-bold text-slate-900">{value}</h3> : value}
-                    {typeof subtitle === 'string' ? <p className="text-xs text-slate-500 font-bold mt-0.5">{subtitle}</p> : subtitle}
-                    {children}
-                </div>
-            </div>
-        </CardContent>
-    </Card>
-);
 
 export function S3StorageManager() {
     const {

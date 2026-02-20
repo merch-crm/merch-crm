@@ -5,7 +5,6 @@ import { CLOTHING_COLORS } from "@/app/(main)/dashboard/warehouse/category-utils
 interface UseSummaryLogicProps {
     formData: ItemFormData;
     updateFormData: (updates: Partial<ItemFormData>) => void;
-    category: Category;
     subCategories: Category[];
     dynamicAttributes: InventoryAttribute[];
 }
@@ -13,7 +12,6 @@ interface UseSummaryLogicProps {
 export function useSummaryLogic({
     formData,
     updateFormData,
-    category,
     subCategories,
     dynamicAttributes
 }: UseSummaryLogicProps) {

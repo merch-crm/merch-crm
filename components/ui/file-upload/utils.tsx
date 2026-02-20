@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FILE_ICONS } from "./constants";
 
 export const getFileIcon = (file: File) => {

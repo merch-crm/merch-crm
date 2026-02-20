@@ -28,7 +28,9 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         formData.imageSidePreview
     );
 
-    const thumbSettings = (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 };
+    const thumbSettings = useMemo(() =>
+        (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 },
+        [formData.thumbSettings]);
 
     // Container Resize Observer
     useEffect(() => {
@@ -87,7 +89,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
                 }
             });
         }
-    }, [maxBounds, thumbSettings.x, thumbSettings.y, thumbSettings.zoom, updateFormData, aspectRatio]);
+    }, [maxBounds, thumbSettings, updateFormData, aspectRatio]);
 
     const updateThumb = useCallback((settings: Partial<{ zoom: number; x: number; y: number }>) => {
         updateFormData({ thumbSettings: { ...thumbSettings, ...settings } });

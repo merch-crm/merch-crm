@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Play, Square, Coffee, Pause, Clock, Timer } from "lucide-react";
-import { differenceInSeconds } from "date-fns";
 import { cn } from "@/lib/utils";
 import { formatDuration, formatDurationLong } from "./utils";
 import { TimeTrackerProps } from "./types";

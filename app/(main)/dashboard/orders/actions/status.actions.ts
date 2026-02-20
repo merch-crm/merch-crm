@@ -7,7 +7,7 @@ import { eq, and, gte, sql, desc } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema, OrderIdSchema } from "../validation";
+import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from "../validation";
 import { ActionResult } from "@/lib/types";
 import { releaseOrderReservation } from "./utils";
 

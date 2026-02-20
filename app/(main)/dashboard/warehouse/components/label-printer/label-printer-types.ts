@@ -1,4 +1,4 @@
-import { InventoryItem, AttributeType, InventoryAttribute, BrandingSettings } from "../../types";
+import { InventoryItem, AttributeType, InventoryAttribute } from "../../types";
 
 export interface ResolvedParam {
     label: string;

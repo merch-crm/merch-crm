@@ -1,5 +1,5 @@
 import React from "react";
-import { IconGroup, IconItem, IconGroupInput, SerializedIconGroup } from "./types";
+import { IconGroup, IconGroupInput, SerializedIconGroup } from "./types";
 
 import { ReactSVG } from "react-svg";
 

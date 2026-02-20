@@ -87,20 +87,13 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import { db } from '@/lib/db';
 import { getSession } from '@/lib/auth';
-import { requireAdmin } from '@/lib/admin';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';
 
 import { getCurrentUserAction, getUsers, createUser, updateUser, deleteUser } from '@/app/(main)/admin-panel/actions/users.actions';
-import { getRoles, createRole, updateRole, deleteRole } from '@/app/(main)/admin-panel/actions/roles.actions';
-import { getDepartments, createDepartment, updateDepartment, deleteDepartment } from '@/app/(main)/admin-panel/actions/departments.actions';
-import { getSystemSettings, updateSystemSetting, createDatabaseBackup } from '@/app/(main)/admin-panel/actions/system.actions';
-import { getAuditLogs, clearAuditLogs } from '@/app/(main)/admin-panel/actions/security.actions';
-import { getStorageDetails } from '@/app/(main)/admin-panel/actions/storage.actions';
-import { getNotificationSettingsAction, updateNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/notifications.actions';
-import { getBrandingAction, updateBrandingAction, getIconGroups } from '@/app/(main)/admin-panel/actions/branding.actions';
+import { createDatabaseBackup, clearAuditLogs } from '@/app/(main)/admin-panel/actions/audit.actions';
+import { updateBrandingAction } from '@/app/(main)/admin-panel/actions/branding.actions';
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 

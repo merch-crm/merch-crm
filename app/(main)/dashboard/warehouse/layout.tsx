@@ -15,7 +15,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { findItemBySKU } from "./warehouse-stats-actions";
-import { clearInventoryHistory } from "./history-actions";;
+import { clearInventoryHistory } from "./history-actions";
 
 import { playSound } from "@/lib/sounds";
 import { useWarehouseLayout } from "./hooks/useWarehouseLayout";
@@ -36,12 +36,6 @@ const TAB_INFO: Record<string, { title: string; description: string }> = {
     "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" }
 };
 
-interface HistoryEntry {
-    id: string;
-    type: string;
-    changeAmount: number;
-    createdAt: Date;
-}
 
 export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();

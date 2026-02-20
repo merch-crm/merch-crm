@@ -5,8 +5,7 @@ import { User, Mail, Lock, Shield, Building, Save, Loader2, Eye, EyeOff } from "
 
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+
 import { IconSelect } from "@/components/ui/icon-select";
 import { IconInput } from "@/components/ui/icon-input";
 import { useEditUser } from "./hooks/use-edit-user";

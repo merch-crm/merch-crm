@@ -10,7 +10,6 @@ import { logError } from "@/lib/error-logger";
 import { ClientSchema, ClientUpdateSchema, ClientFiltersSchema, ClientIdSchema, UpdateClientFieldSchema } from "../validation";
 import {
     ClientSummary,
-    ClientDetails,
     ClientStats,
     ClientProfileOrder,
     ClientType,
@@ -20,7 +19,7 @@ import {
 } from "@/lib/types";
 import { releaseReservationsForOrders } from "./utils";
 
-const { clients, orders, users, payments, auditLogs } = schema;
+const { clients, orders, payments, auditLogs } = schema;
 
 export async function getManagers(): Promise<ActionResult<{ id: string; name: string }[]>> {
     try {

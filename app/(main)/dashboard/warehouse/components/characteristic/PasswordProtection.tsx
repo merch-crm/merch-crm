@@ -1,7 +1,6 @@
 "use client";
 import { Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Dispatch, SetStateAction } from "react";
 
 interface PasswordProtectionProps {
     password: string;

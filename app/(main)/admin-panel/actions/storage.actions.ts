@@ -1,15 +1,11 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import fs from "fs";
-import path from "path";
 import { z } from "zod";
 
 export async function getStorageDetails(prefix?: string) {
@@ -58,7 +54,7 @@ export async function deleteS3FileAction(key: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при удалении файла" };
     }
 }
@@ -76,7 +72,7 @@ export async function createS3FolderAction(path: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при создании папки" };
     }
 }
@@ -97,7 +93,7 @@ export async function getLocalStorageDetails(prefix?: string) {
                 files: content.files
             }
         };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при получении данных локального хранилища" };
     }
 }
@@ -115,7 +111,7 @@ export async function createLocalFolderAction(folderPath: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при создании папки" };
     }
 }
@@ -133,7 +129,7 @@ export async function deleteLocalFileAction(filePath: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при удалении файла" };
     }
 }
@@ -151,7 +147,7 @@ export async function renameS3FileAction(oldKey: string, newKey: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при переименовании" };
     }
 }
@@ -169,7 +165,7 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
@@ -187,7 +183,7 @@ export async function renameLocalFileAction(oldPath: string, newPath: string) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при переименовании" };
     }
 }
@@ -205,7 +201,7 @@ export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
             revalidatePath("/admin-panel/storage");
         }
         return res;
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при удалении файлов" };
     }
 }
@@ -217,7 +213,7 @@ export async function getS3FileUrlAction(key: string) {
         const { getFileUrl } = await import("@/lib/storage");
         const url = await getFileUrl(key);
         return { success: true, data: url };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при получении ссылки на файл" };
     }
 }

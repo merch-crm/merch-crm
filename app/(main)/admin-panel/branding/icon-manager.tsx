@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect, createElement } from "react";
+import { useState, useEffect, createElement } from "react";
 import {
     Search, Upload, Plus, X,
-    Sparkles, AlertCircle, Pencil, Save, Trash2, Building2
+    Sparkles, Pencil, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { ICON_GROUPS as INITIAL_ICON_GROUPS, ALL_ICONS_MAP, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ICON_GROUPS as INITIAL_ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { updateIconGroups } from "./actions";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -21,8 +20,6 @@ import {
     createSvgIcon
 } from "./components/icon-manager/utils";
 
-// Constants
-const LIBRARY_ICONS_LIMIT = 50;
 
 
 import { IconGroup, IconItem, CategoryDialog, UploadIconModal, DeleteConfirmation } from "./components/icon-manager";

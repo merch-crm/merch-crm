@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { getClientDetails } from "../actions/core.actions";;
+import { getClientDetails } from "../actions/core.actions";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import Link from "next/link";
 import {
-    ArrowLeft, User, Phone, Mail, MapPin, Instagram, Send,
-    ShoppingBag, CreditCard, Calendar, Plus, Edit2, Archive,
+    ArrowLeft, Phone, Mail, MapPin, Instagram, Send,
+    ShoppingBag, CreditCard, Calendar, Plus,
     History, Wallet, ExternalLink, MessageCircle
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

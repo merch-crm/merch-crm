@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useNewItemForm, DEFAULT_FORM_DATA } from "./useNewItemForm";
-import { ItemFormData, Category, StorageLocation, InventoryAttribute, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
+import { ItemFormData, Category, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
 import { addInventoryItem } from "@/app/(main)/dashboard/warehouse/item-actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -118,7 +118,7 @@ export function useNewItemLogic({
             setSelectedCategory(initialCat);
             setFormData(initialForm);
         });
-    }, [categories, initialCategoryId, initialSubcategoryId]);
+    }, [categories, initialCategoryId, initialSubcategoryId, setFormData, setSelectedCategory, setStep]);
 
     // Save draft on changes
     useEffect(() => {
@@ -149,7 +149,7 @@ export function useNewItemLogic({
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [formData, step, selectedCategory, isMounted]);
+    }, [formData, step, selectedCategory, isMounted, setIsSaving]);
 
     const clearDraft = () => {
         if (typeof window !== "undefined") {

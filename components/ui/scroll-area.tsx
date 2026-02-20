@@ -232,7 +232,7 @@ function ScrollAreaHorizontalList({
     variant = "hidden",
 }: ScrollAreaHorizontalListProps) {
     const viewportRef = React.useRef<HTMLDivElement>(null);
-    const { canScrollLeft, canScrollRight, checkScroll, scroll } = useHorizontalScroll(viewportRef);
+    const { canScrollLeft, canScrollRight, scroll } = useHorizontalScroll(viewportRef);
 
     const gapClasses = {
         sm: "gap-2",

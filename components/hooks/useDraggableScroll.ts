@@ -1,4 +1,4 @@
-import { useState, useRef, RefObject } from "react";
+import { useState, useRef } from "react";
 
 export function useDraggableScroll<T extends HTMLElement>() {
     const scrollRef = useRef<T>(null);

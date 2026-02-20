@@ -3,7 +3,6 @@
 import { File, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { S3RowBase } from "./s3-row-base";
 import { isImageFile } from "../hooks/use-s3-storage-manager";

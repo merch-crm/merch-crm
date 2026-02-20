@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Palette, Clock, CheckCircle2, Sparkles } from "lucide-react";
 import { ModernStatCard } from "@/components/ui/stat-card";
 

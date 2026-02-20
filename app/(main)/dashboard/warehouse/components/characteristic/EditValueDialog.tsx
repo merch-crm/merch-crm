@@ -5,7 +5,7 @@ import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { AttributeType, InventoryAttribute as Attribute } from "../../types";
+import { AttributeType } from "../../types";
 import { transliterateToSku, type ValueFormState, type DeleteDialogState } from "../../hooks/use-warehouse-characteristic";
 
 interface EditValueDialogProps {

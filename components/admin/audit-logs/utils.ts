@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
-    Search, Activity, Calendar, Clock, Trash2, Database, User, Shield, Package, HardDrive, Layout, Server, Folder
+    Activity, Database, User, Shield, Package, HardDrive, Layout, Server, Folder
 } from "lucide-react";
 import { AuditLogDetails } from "@/lib/types";
 

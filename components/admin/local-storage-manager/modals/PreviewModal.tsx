@@ -5,7 +5,6 @@ import NextImage from "next/image";
 import { File, ExternalLink } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { type LocalFile } from "../../hooks/use-local-storage-manager";
 
 interface PreviewModalProps {
     file: { name: string, url: string, type: 'image' | 'other' } | null;

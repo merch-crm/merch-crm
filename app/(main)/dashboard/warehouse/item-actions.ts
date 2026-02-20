@@ -4,7 +4,6 @@ import { z } from "zod";
 import path from "path";
 import { revalidatePath } from "next/cache";
 import { desc, eq, sql, inArray, and, asc, or, ilike, type SQL, isNull } from "drizzle-orm";
-import Fuse from "fuse.js";
 import { db } from "@/lib/db";
 import {
     inventoryItems,
@@ -16,9 +15,9 @@ import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { checkItemStockAlerts } from "@/lib/notifications";
-import { type InventoryFilters, type InventoryItem, type ItemHistoryTransaction, type ActiveOrderItem } from "./types";
+import { type InventoryFilters, type InventoryItem } from "./types";
 import { type ActionResult } from "@/lib/types";
-import { InventoryItemSchema, InventoryFiltersSchema, CheckDuplicateItemSchema } from "./validation";
+import { InventoryItemSchema, InventoryFiltersSchema } from "./validation";
 import { getSession } from "@/lib/auth";
 import { getCategoryPath, saveFile } from "./actions-utils";
 import { sanitizeFileName } from "./shared-utils";
@@ -484,5 +483,4 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
         return { success: false, error: "Не удалось обновить товар" };
     }
 }
-
 

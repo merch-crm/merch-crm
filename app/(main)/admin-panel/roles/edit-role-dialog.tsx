@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Shield, Loader2, Building } from "lucide-react";
 import { updateRole } from "../actions/roles.actions";
 import { getDepartments } from "../actions/departments.actions";
-import { cn } from "@/lib/utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/icon-input";

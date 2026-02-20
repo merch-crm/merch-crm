@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
     InventoryItem,
@@ -15,7 +15,7 @@ import {
     ThumbnailSettings
 } from "@/app/(main)/dashboard/warehouse/types";
 import { formatUnit } from "@/lib/utils";
-import { useToast } from "@/components/ui/toast";
+
 import { useItemDetailData } from "../hooks/useItemDetailData";
 import { useItemDialogs } from "../hooks/useItemDialogs";
 import { useItemThumbnail } from "../hooks/useItemThumbnail";
@@ -121,7 +121,7 @@ export function ItemDetailProvider({
     user: Session | null;
 }) {
     const router = useRouter();
-    const { toast } = useToast();
+
 
     // Data Hook
     const {

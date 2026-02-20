@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import NextImage from "next/image";
-import { File, Folder, ChevronRight, Edit2, Trash2, CheckSquare, Square, ExternalLink } from "lucide-react";
+import { File, Folder, ChevronRight, Edit2, Trash2, CheckSquare, Square } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";

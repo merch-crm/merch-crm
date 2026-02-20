@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
-import { eq, sql, or, ilike, and, desc, gte, count, lte } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { performDatabaseBackup } from "@/lib/backup";
 import os from "os";
@@ -222,12 +222,12 @@ export async function getSystemSettings() {
 
     try {
         const settings = await db.select().from(systemSettings).limit(100);
-        const settingsMap: Record<string, any> = {};
+        const settingsMap: Record<string, unknown> = {};
         settings.forEach(s => {
             settingsMap[s.key] = s.value;
         });
         return { success: true, data: settingsMap };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось загрузить настройки" };
     }
 }
@@ -253,7 +253,7 @@ export async function updateSystemSetting(key: string, value: unknown) {
 
         revalidatePath("/admin-panel/settings");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось обновить настройку" };
     }
 }
@@ -271,7 +271,7 @@ export async function clearRamAction() {
                 error: "Сборщик мусора недоступен. Запустите Node.js с флагом --expose-gc"
             };
         }
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при очистке памяти" };
     }
 }
@@ -295,7 +295,7 @@ export async function restartServerAction() {
         }, 1000);
 
         return { success: true, message: "Перезапуск инициирован" };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при инициализации перезапуска" };
     }
 }

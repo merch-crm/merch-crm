@@ -13,7 +13,6 @@ import { cookies } from "next/headers";
 
 import { z } from "zod";
 
-const SYSTEM_ENTITY_ID = "00000000-0000-0000-0000-000000000000";
 
 // Audit Logs
 export async function getAuditLogs(
@@ -55,7 +54,7 @@ export async function getAuditLogs(
             data: logs,
             pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
         };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось загрузить логи аудита" };
     }
 }
@@ -70,7 +69,7 @@ export async function clearAuditLogs() {
         });
         revalidatePath("/admin-panel/audit");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось очистить логи" };
     }
 }
@@ -124,7 +123,7 @@ export async function impersonateUser(userId: string) {
 
         revalidatePath("/");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка при смене пользователя" };
     }
 }
@@ -171,7 +170,7 @@ export async function stopImpersonating() {
 
         revalidatePath("/");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось вернуться в режим администратора" };
     }
 }
@@ -216,7 +215,7 @@ export async function getMonitoringStats() {
                 entityStats: entityStats.rows
             }
         };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка получения данных мониторинга" };
     }
 }
@@ -256,7 +255,7 @@ export async function getSecurityStats() {
                 maintenanceMode: maintenanceSetting?.value === true
             }
         };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка получения данных безопасности" };
     }
 }
@@ -284,7 +283,7 @@ export async function toggleMaintenanceMode(enabled: boolean) {
         });
         revalidatePath("/");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка переключения режима" };
     }
 }
@@ -372,7 +371,7 @@ export async function getSecurityEventsSummary() {
             success: true,
             data: { summary: totals, recentCritical }
         };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Ошибка получения сводки безопасности" };
     }
 }
@@ -387,7 +386,7 @@ export async function trackActivity() {
             .where(eq(users.id, session.id));
 
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false };
     }
 }
@@ -399,7 +398,7 @@ export async function clearSecurityErrors() {
         await db.delete(systemErrors);
         revalidatePath("/admin-panel/security");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось очистить ошибки системы" };
     }
 }
@@ -411,7 +410,7 @@ export async function clearFailedLogins() {
         await db.delete(securityEvents).where(eq(securityEvents.eventType, "login_failed"));
         revalidatePath("/admin-panel/security");
         return { success: true };
-    } catch (_error) {
+    } catch {
         return { success: false, error: "Не удалось очистить историю входов" };
     }
 }

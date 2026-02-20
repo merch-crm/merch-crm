@@ -7,7 +7,7 @@ import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { deleteInventoryItems, archiveInventoryItems } from "../../bulk-actions";
 import { getInventoryCategories, deleteInventoryCategory } from "../../category-actions";
 import { getItemStocks } from "../../stock-actions";;
-import type { Category, InventoryItem, InventoryFilters, StorageLocation } from "../../types";
+import type { Category, InventoryItem, InventoryFilters } from "../../types";
 
 export function useCategoryDetail(
     category: Category,

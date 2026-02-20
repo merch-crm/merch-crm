@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from "@/components/ui/color-picker";
-import { Loader2, Upload, Mail, CheckCircle2, AlertCircle, RefreshCw, Printer } from "lucide-react";
+import { Loader2, Upload, Mail, Printer } from "lucide-react";
 import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
 
 interface CommunicationSettingsProps {

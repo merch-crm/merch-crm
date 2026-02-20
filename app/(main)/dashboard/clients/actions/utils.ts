@@ -1,7 +1,6 @@
 "use server";
 
 import { eq, sql, and, inArray } from "drizzle-orm";
-import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
