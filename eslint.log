@@ -1,0 +1,511 @@
+
+> merch-crm@0.1.0 lint
+> eslint
+
+
+/Users/leonidmolchanov/Desktop/merch-crm/analyze-dupes.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/departments.actions.ts
+  158:14  error  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/notifications.actions.ts
+  69:14  error  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  94:14  error  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/roles.actions.ts
+  171:14  error  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts
+   16:7   error  'SYSTEM_ENTITY_ID' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   58:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+   73:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  127:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  174:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  219:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  259:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  287:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  375:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  390:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  402:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+  414:14  error  '_error' is defined but never used                     @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts
+    3:10  error  'db' is defined but never used              @typescript-eslint/no-unused-vars
+    4:10  error  'systemSettings' is defined but never used  @typescript-eslint/no-unused-vars
+    9:10  error  'eq' is defined but never used              @typescript-eslint/no-unused-vars
+   12:8   error  'path' is defined but never used            @typescript-eslint/no-unused-vars
+   61:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+   79:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  100:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  118:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  136:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  154:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  172:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  190:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  208:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+  220:14  error  '_error' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts
+    9:10  error  'eq' is defined but never used            @typescript-eslint/no-unused-vars
+    9:19  error  'or' is defined but never used            @typescript-eslint/no-unused-vars
+    9:23  error  'ilike' is defined but never used         @typescript-eslint/no-unused-vars
+    9:30  error  'and' is defined but never used           @typescript-eslint/no-unused-vars
+    9:35  error  'desc' is defined but never used          @typescript-eslint/no-unused-vars
+    9:41  error  'gte' is defined but never used           @typescript-eslint/no-unused-vars
+    9:46  error  'count' is defined but never used         @typescript-eslint/no-unused-vars
+    9:53  error  'lte' is defined but never used           @typescript-eslint/no-unused-vars
+  225:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  230:14  error  '_error' is defined but never used        @typescript-eslint/no-unused-vars
+  256:14  error  '_error' is defined but never used        @typescript-eslint/no-unused-vars
+  274:14  error  '_error' is defined but never used        @typescript-eslint/no-unused-vars
+  298:14  error  '_error' is defined but never used        @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/CommunicationSettings.tsx
+  5:33  error  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+  5:47  error  'AlertCircle' is defined but never used   @typescript-eslint/no-unused-vars
+  5:60  error  'RefreshCw' is defined but never used     @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/icon-manager/utils.tsx
+  2:21  error  'IconItem' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx
+   3:20  error  'useRef' is defined but never used                        @typescript-eslint/no-unused-vars
+   6:15  error  'AlertCircle' is defined but never used                   @typescript-eslint/no-unused-vars
+   6:36  error  'Save' is defined but never used                          @typescript-eslint/no-unused-vars
+   6:50  error  'Building2' is defined but never used                     @typescript-eslint/no-unused-vars
+   9:10  error  'Input' is defined but never used                         @typescript-eslint/no-unused-vars
+  12:46  error  'ALL_ICONS_MAP' is defined but never used                 @typescript-eslint/no-unused-vars
+  13:10  error  'Popover' is defined but never used                       @typescript-eslint/no-unused-vars
+  13:19  error  'PopoverContent' is defined but never used                @typescript-eslint/no-unused-vars
+  13:35  error  'PopoverTrigger' is defined but never used                @typescript-eslint/no-unused-vars
+  25:7   error  'LIBRARY_ICONS_LIMIT' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/add-department-dialog.tsx
+  3:10  error  'useState' is defined but never used   @typescript-eslint/no-unused-vars
+  3:20  error  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/department-settings-dialog.tsx
+  3:10  error  'useState' is defined but never used   @typescript-eslint/no-unused-vars
+  3:20  error  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/roles/edit-role-dialog.tsx
+  7:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/add-user-dialog.tsx
+  6:10  error  'Input' is defined but never used   @typescript-eslint/no-unused-vars
+  7:10  error  'Select' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/edit-user-dialog.tsx
+  8:10  error  'Input' is defined but never used   @typescript-eslint/no-unused-vars
+  9:10  error  'Select' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/users-table.tsx
+  9:10  error  'useRouter' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/client-timeline.tsx
+  6:5  error  'Activity' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/page.tsx
+  7:16  error  'User' is defined but never used     @typescript-eslint/no-unused-vars
+  8:46  error  'Edit2' is defined but never used    @typescript-eslint/no-unused-vars
+  8:53  error  'Archive' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/bulk.actions.ts
+   3:10  error  'eq' is defined but never used              @typescript-eslint/no-unused-vars
+  14:26  error  'users' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/core.actions.ts
+  13:5   error  'ClientDetails' is defined but never used   @typescript-eslint/no-unused-vars
+  23:26  error  'users' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/utils.ts
+  4:10  error  'db' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/clients-list.tsx
+   31:10  error    'ClientFilters' is defined but never used                                                                                                                         @typescript-eslint/no-unused-vars
+   75:8   warning  React Hook useEffect has missing dependencies: 'setManagers', 'setRegions', 'setUiState', and 'setViewState'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   84:8   warning  React Hook useCallback has a missing dependency: 'setUiState'. Either include it or remove the dependency array                                                   react-hooks/exhaustive-deps
+  109:8   warning  React Hook useCallback has a missing dependency: 'setViewState'. Either include it or remove the dependency array                                                 react-hooks/exhaustive-deps
+  181:8   warning  React Hook useCallback has a missing dependency: 'setSelectedIds'. Either include it or remove the dependency array                                               react-hooks/exhaustive-deps
+  187:8   warning  React Hook useCallback has a missing dependency: 'setSelectedIds'. Either include it or remove the dependency array                                               react-hooks/exhaustive-deps
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-filter-panel.test.tsx
+  52:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:85  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/new/page-client.tsx
+  18:10  error  'Input' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/design-widgets.tsx
+  3:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/knowledge-base/wiki-client.test.tsx
+  66:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:95  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  93:95  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts
+   12:44  error  'UpdateOrderFieldSchema' is defined but never used              @typescript-eslint/no-unused-vars
+   16:83  error  'orderAttachments' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+  433:14  error  '_error' is defined but never used                              @typescript-eslint/no-unused-vars
+  440:14  error  '_error' is defined but never used                              @typescript-eslint/no-unused-vars
+  451:14  error  '_error' is defined but never used                              @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/status.actions.ts
+  10:62  error  'OrderIdSchema' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/OrderSidebar.tsx
+  4:28  error  'User' is defined but never used     @typescript-eslint/no-unused-vars
+  4:34  error  'Package' is defined but never used  @typescript-eslint/no-unused-vars
+  4:43  error  'Clock' is defined but never used    @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/StepConfirmation.tsx
+  4:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.test.tsx
+   43:74   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:101  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  125:101  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  128:153  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx
+    6:5   error  'ArrowLeft' is defined but never used              @typescript-eslint/no-unused-vars
+   12:5   error  'RotateCcw' is defined but never used              @typescript-eslint/no-unused-vars
+   13:5   error  'Search' is defined but never used                 @typescript-eslint/no-unused-vars
+   15:5   error  'Plus' is defined but never used                   @typescript-eslint/no-unused-vars
+   16:5   error  'Tag' is defined but never used                    @typescript-eslint/no-unused-vars
+   17:5   error  'CreditCard' is defined but never used             @typescript-eslint/no-unused-vars
+   18:5   error  'AlertCircle' is defined but never used            @typescript-eslint/no-unused-vars
+   20:10  error  'cn' is defined but never used                     @typescript-eslint/no-unused-vars
+   20:14  error  'formatUnit' is defined but never used             @typescript-eslint/no-unused-vars
+   21:10  error  'pluralize' is defined but never used              @typescript-eslint/no-unused-vars
+   29:10  error  'Input' is defined but never used                  @typescript-eslint/no-unused-vars
+   30:10  error  'Select' is defined but never used                 @typescript-eslint/no-unused-vars
+   32:10  error  'Switch' is defined but never used                 @typescript-eslint/no-unused-vars
+  253:11  error  'addToHistory' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/tasks/task-details/TaskDetailsTab.tsx
+  16:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/tasks/tasks-client.tsx
+  66:13  error  Definition for rule 'react-hooks/set-state-in-effect' was not found  react-hooks/set-state-in-effect
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/[id]/category-detail-client.tsx
+   7:10  error  'useDebounce' is defined but never used                @typescript-eslint/no-unused-vars
+  92:24  error  'setAllCategories' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/[id]/hooks/use-category-detail.ts
+  10:58  error  'StorageLocation' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/actions.ts
+  8:10  error  'z' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/archive-table.tsx
+  4:31  error  'useCallback' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryDisplay.tsx
+  8:5  error  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryMobileList.tsx
+   8:5   error  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+  12:14  error  'formatUnit' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryToolbar.tsx
+  4:101  error  'LayoutGrid' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/LabelPrinterDialog.tsx
+   9:10  error  'escapeHtml' is defined but never used   @typescript-eslint/no-unused-vars
+  10:10  error  'PaperSize' is defined but never used    @typescript-eslint/no-unused-vars
+  10:21  error  'LayoutStyle' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/EditValueDialog.tsx
+  8:47  error  'Attribute' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/PasswordProtection.tsx
+  4:10  error  'Dispatch' is defined but never used        @typescript-eslint/no-unused-vars
+  4:20  error  'SetStateAction' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/LabelPrinterSettings.tsx
+   3:10  error  'Printer' is defined but never used            @typescript-eslint/no-unused-vars
+  30:5   error  'isMobile' is defined but never used           @typescript-eslint/no-unused-vars
+  32:11  error  'currentW' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  33:11  error  'currentH' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/label-printer-types.ts
+  1:60  error  'BrandingSettings' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/edit-storage-location-dialog.tsx
+  8:27  error  'StorageLocationItem' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/history-table.tsx
+  3:20  error  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/item-actions.ts
+   7:8   error  'Fuse' is defined but never used                      @typescript-eslint/no-unused-vars
+  19:58  error  'ItemHistoryTransaction' is defined but never used    @typescript-eslint/no-unused-vars
+  19:87  error  'ActiveOrderItem' is defined but never used           @typescript-eslint/no-unused-vars
+  21:55  error  'CheckDuplicateItemSchema' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx
+  19:9  error  'allAttributes' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  20:9  error  'attributeTypes' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  21:9  error  'handleAttributeChange' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  22:9  error  'handleRemoveAttribute' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  25:9  error  'stocks' is assigned a value but never used                 @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx
+   5:5  error  'Sparkles' is defined but never used    @typescript-eslint/no-unused-vars
+   6:5  error  'BadgeCheck' is defined but never used  @typescript-eslint/no-unused-vars
+   7:5  error  'Shirt' is defined but never used       @typescript-eslint/no-unused-vars
+   8:5  error  'Layers' is defined but never used      @typescript-eslint/no-unused-vars
+   9:5  error  'Ruler' is defined but never used       @typescript-eslint/no-unused-vars
+  10:5  error  'Droplets' is defined but never used    @typescript-eslint/no-unused-vars
+  11:5  error  'Search' is defined but never used      @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemMediaSection.tsx
+  3:27  error  'useRef' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/FinancialMetricCard.tsx
+  4:10  error  'LucideIcon' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/types.ts
+  4:10  error  'InventoryItem' is defined but never used           @typescript-eslint/no-unused-vars
+  4:25  error  'ItemHistoryTransaction' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/label-printer/hooks/useLabelPrinterLogic.ts
+  108:13  error  Definition for rule 'react-hooks/set-state-in-effect' was not found  react-hooks/set-state-in-effect
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/context/ItemDetailContext.tsx
+    3:66  error  'useEffect' is defined but never used       @typescript-eslint/no-unused-vars
+  124:13  error  'toast' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/main-photo-uploader.tsx
+  5:10  error  'UploadState' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/summary/hooks/useSummaryLogic.ts
+  16:5  error  'category' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useMediaLogic.ts
+  31:11  warning  The 'thumbSettings' logical expression could make the dependencies of useCallback Hook (at line 94) change on every render. To fix this, wrap the initialization of 'thumbSettings' in its own useMemo() Hook  react-hooks/exhaustive-deps
+  90:8   warning  React Hook useEffect has a missing dependency: 'thumbSettings'. Either include it or remove the dependency array                                                                                               react-hooks/exhaustive-deps
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useNewItemLogic.ts
+    4:51  error    'InventoryAttribute' is defined but never used                                                                                                          @typescript-eslint/no-unused-vars
+    4:71  error    'AttributeType' is defined but never used                                                                                                               @typescript-eslint/no-unused-vars
+  121:8   warning  React Hook useEffect has missing dependencies: 'setFormData', 'setSelectedCategory', and 'setStep'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  152:8   warning  React Hook useEffect has a missing dependency: 'setIsSaving'. Either include it or remove the dependency array                                          react-hooks/exhaustive-deps
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/layout.tsx
+  39:11  error  'HistoryEntry' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/storage-locations-tab.tsx
+  133:11  error  'handleEdit' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/audit-logs/utils.ts
+  6:5   error  'Search' is defined but never used    @typescript-eslint/no-unused-vars
+  6:23  error  'Calendar' is defined but never used  @typescript-eslint/no-unused-vars
+  6:33  error  'Clock' is defined but never used     @typescript-eslint/no-unused-vars
+  6:40  error  'Trash2' is defined but never used    @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager.tsx
+  4:29  error  'CheckSquare' is defined but never used  @typescript-eslint/no-unused-vars
+  4:42  error  'Square' is defined but never used       @typescript-eslint/no-unused-vars
+  4:56  error  'Server' is defined but never used       @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager/StorageFilesList.tsx
+  4:8   error  'NextImage' is defined but never used     @typescript-eslint/no-unused-vars
+  5:74  error  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager/modals/PreviewModal.tsx
+  8:15  error  'LocalFile' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-manager/file-row.tsx
+  6:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-manager/storage-list.tsx
+  4:8  error  'NextImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx
+   4:10  error  'format' is defined but never used              @typescript-eslint/no-unused-vars
+   6:10  error  'ru' is defined but never used                  @typescript-eslint/no-unused-vars
+   8:5   error  'HardDrive' is defined but never used           @typescript-eslint/no-unused-vars
+  13:5   error  'AlertTriangle' is defined but never used       @typescript-eslint/no-unused-vars
+  14:5   error  'Info' is defined but never used                @typescript-eslint/no-unused-vars
+  15:5   error  'Server' is defined but never used              @typescript-eslint/no-unused-vars
+  17:5   error  'Database' is defined but never used            @typescript-eslint/no-unused-vars
+  18:5   error  'Folder' is defined but never used              @typescript-eslint/no-unused-vars
+  20:5   error  'ChevronRight' is defined but never used        @typescript-eslint/no-unused-vars
+  21:5   error  'Home' is defined but never used                @typescript-eslint/no-unused-vars
+  22:5   error  'Edit2' is defined but never used               @typescript-eslint/no-unused-vars
+  24:5   error  'Square' is defined but never used              @typescript-eslint/no-unused-vars
+  25:5   error  'Eye' is defined but never used                 @typescript-eslint/no-unused-vars
+  32:10  error  'ResponsiveDataView' is defined but never used  @typescript-eslint/no-unused-vars
+  35:31  error  'isImageFile' is defined but never used         @typescript-eslint/no-unused-vars
+  36:15  error  'StorageFile' is defined but never used         @typescript-eslint/no-unused-vars
+  37:10  error  'FolderRow' is defined but never used           @typescript-eslint/no-unused-vars
+  38:10  error  'FileRow' is defined but never used             @typescript-eslint/no-unused-vars
+  64:7   error  'StatCard' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDateRangePicker.ts
+  2:108  error  'addMonths' is defined but never used  @typescript-eslint/no-unused-vars
+  2:119  error  'subMonths' is defined but never used  @typescript-eslint/no-unused-vars
+  2:130  error  'setMonth' is defined but never used   @typescript-eslint/no-unused-vars
+  2:140  error  'setYear' is defined but never used    @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDraggableScroll.ts
+  1:28  error  'RefObject' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/layout/mobile-sidebar-trigger.tsx
+  22:9  error  Definition for rule 'react-hooks/set-state-in-effect' was not found  react-hooks/set-state-in-effect
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/file-upload/utils.tsx
+  1:13  error  'React' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/qr-scanner.tsx
+  76:13  error  Definition for rule 'react-hooks/set-state-in-effect' was not found  react-hooks/set-state-in-effect
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/scroll-area.tsx
+  235:44  error  'checkScroll' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/select.test.tsx
+  1:26  error  'fireEvent' is defined but never used  @typescript-eslint/no-unused-vars
+  1:37  error  'waitFor' is defined but never used    @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/stat-card.tsx
+  3:10  error  'LucideIcon' is defined but never used  @typescript-eslint/no-unused-vars
+  5:10  error  'Card' is defined but never used        @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/submit-button.test.tsx
+  42:71  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTracker.tsx
+  5:10  error  'differenceInSeconds' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerBadge.tsx
+  4:10  error  'format' is defined but never used               @typescript-eslint/no-unused-vars
+  4:18  error  'differenceInSeconds' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerCompact.tsx
+  5:10  error  'differenceInSeconds' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerToggle.tsx
+  5:10  error  'differenceInSeconds' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerWidget.tsx
+  4:10  error  'Play' is defined but never used    @typescript-eslint/no-unused-vars
+  4:16  error  'Square' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/types.ts
+  1:13  error  'React' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/auth/debug-login.spec.ts
+   1:16  error  'expect' is defined but never used  @typescript-eslint/no-unused-vars
+  22:14  error  'e' is defined but never used       @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/modules/knowledge-base.spec.ts
+  45:15  error  'firstPage' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/reporters/fix-plan-reporter.ts
+  44:17  error  'result' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/setup/global-setup.ts
+   5:28  error  'config' is defined but never used       @typescript-eslint/no-unused-vars
+  12:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts
+  7:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts
+  3:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts
+  3:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts
+  3:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/admin/admin.test.ts
+    5:9   error  'mockTx' is assigned a value but never used                   @typescript-eslint/no-unused-vars
+   18:22  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   27:26  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   43:26  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   57:29  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   59:60  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   82:62  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   90:10  error  'db' is defined but never used                                @typescript-eslint/no-unused-vars
+   92:10  error  'requireAdmin' is defined but never used                      @typescript-eslint/no-unused-vars
+   97:10  error  'getRoles' is defined but never used                          @typescript-eslint/no-unused-vars
+   97:20  error  'createRole' is defined but never used                        @typescript-eslint/no-unused-vars
+   97:32  error  'updateRole' is defined but never used                        @typescript-eslint/no-unused-vars
+   97:44  error  'deleteRole' is defined but never used                        @typescript-eslint/no-unused-vars
+   98:10  error  'getDepartments' is defined but never used                    @typescript-eslint/no-unused-vars
+   98:26  error  'createDepartment' is defined but never used                  @typescript-eslint/no-unused-vars
+   98:44  error  'updateDepartment' is defined but never used                  @typescript-eslint/no-unused-vars
+   98:62  error  'deleteDepartment' is defined but never used                  @typescript-eslint/no-unused-vars
+   99:29  error  'updateSystemSetting' is defined but never used               @typescript-eslint/no-unused-vars
+  100:10  error  'getAuditLogs' is defined but never used                      @typescript-eslint/no-unused-vars
+  101:10  error  'getStorageDetails' is defined but never used                 @typescript-eslint/no-unused-vars
+  102:41  error  'updateNotificationSettingsAction' is defined but never used  @typescript-eslint/no-unused-vars
+  103:10  error  'getBrandingAction' is defined but never used                 @typescript-eslint/no-unused-vars
+  103:51  error  'getIconGroups' is defined but never used                     @typescript-eslint/no-unused-vars
+  198:18  error  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/clients.test.ts
+    2:57   error  'createFormData' is defined but never used  @typescript-eslint/no-unused-vars
+   66:121  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   73:138  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   74:138  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   75:104  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   78:36   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  121:40   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  135:42   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  142:55   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  143:57   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  174:71   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  214:71   error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/design.test.ts
+  2:10  error  'db' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/finance.test.ts
+  59:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  60:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  61:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  62:93   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/orders.test.ts
+   11:22   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   19:29   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:138  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:138  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:104  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  107:36   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  139:14   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  206:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:63   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  287:119  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  313:123  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/production.test.ts
+  53:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  55:94   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/profile.test.ts
+  66:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  67:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/tasks.test.ts
+  52:5    error  'updateTask' is defined but never used    @typescript-eslint/no-unused-vars
+  53:5    error  'deleteTask' is defined but never used    @typescript-eslint/no-unused-vars
+  64:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  65:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  66:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  67:93   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 304 problems (295 errors, 9 warnings)
+

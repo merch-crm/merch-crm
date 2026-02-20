@@ -73,6 +73,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
 
     useEffect(() => {
         if (isOpen) {
+            // Scanner lifecycle management
             startScanner();
         } else {
             stopScanner();

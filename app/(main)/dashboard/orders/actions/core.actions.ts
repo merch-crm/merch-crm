@@ -430,14 +430,14 @@ export async function getClientsForSelect(): Promise<ActionResult<{ id: string; 
     try {
         const data = await db.select({ id: clients.id, name: clients.name }).from(clients).where(eq(clients.isArchived, false)).limit(100);
         return { success: true, data };
-    } catch (error) { return { success: false, error: "Ошибка" }; }
+    } catch (_error) { return { success: false, error: "Ошибка" }; }
 }
 
 export async function getInventoryForSelect(): Promise<ActionResult<{ id: string; name: string | null; quantity: number | null }[]>> {
     try {
         const data = await db.select({ id: inventoryItems.id, name: inventoryItems.name, quantity: inventoryItems.quantity }).from(inventoryItems).limit(100);
         return { success: true, data };
-    } catch (error) { return { success: false, error: "Ошибка" }; }
+    } catch (_error) { return { success: false, error: "Ошибка" }; }
 }
 
 export async function searchClients(query: string): Promise<ActionResult<typeof clients.$inferSelect[]>> {
@@ -448,5 +448,5 @@ export async function searchClients(query: string): Promise<ActionResult<typeof 
             limit: 10
         });
         return { success: true, data: results };
-    } catch (error) { return { success: false, error: "Ошибка" }; }
+    } catch (_error) { return { success: false, error: "Ошибка" }; }
 }

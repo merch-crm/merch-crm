@@ -66,7 +66,7 @@ export async function getNotificationSettingsAction() {
 
         if (!setting) return { success: true, data: defaultSettings };
         return { success: true, data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
-    } catch (error) {
+    } catch (_error) {
         return { success: true, data: null, error: "Не удалось загрузить настройки уведомлений" };
     }
 }
@@ -91,7 +91,7 @@ export async function updateNotificationSettingsAction(data: NotificationSetting
         revalidatePath("/admin-panel/notifications");
         await logAction("Изменение настроек уведомлений", "system", "notifications", data as unknown as Record<string, unknown>);
         return { success: true };
-    } catch (error) {
+    } catch (_error) {
         return { success: false, error: "Не удалось обновить настройки уведомлений" };
     }
 }

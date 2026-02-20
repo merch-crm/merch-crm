@@ -63,6 +63,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
     useEffect(() => {
         if (!initialView && isMobile === true) {
+
             setView('list');
         }
     }, [initialView, isMobile]);

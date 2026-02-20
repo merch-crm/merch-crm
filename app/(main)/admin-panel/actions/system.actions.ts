@@ -227,7 +227,7 @@ export async function getSystemSettings() {
             settingsMap[s.key] = s.value;
         });
         return { success: true, data: settingsMap };
-    } catch (error) {
+    } catch (_error) {
         return { success: false, error: "Не удалось загрузить настройки" };
     }
 }
@@ -253,7 +253,7 @@ export async function updateSystemSetting(key: string, value: unknown) {
 
         revalidatePath("/admin-panel/settings");
         return { success: true };
-    } catch (error) {
+    } catch (_error) {
         return { success: false, error: "Не удалось обновить настройку" };
     }
 }
@@ -271,7 +271,7 @@ export async function clearRamAction() {
                 error: "Сборщик мусора недоступен. Запустите Node.js с флагом --expose-gc"
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { success: false, error: "Ошибка при очистке памяти" };
     }
 }
@@ -295,7 +295,7 @@ export async function restartServerAction() {
         }, 1000);
 
         return { success: true, message: "Перезапуск инициирован" };
-    } catch (error) {
+    } catch (_error) {
         return { success: false, error: "Ошибка при инициализации перезапуска" };
     }
 }

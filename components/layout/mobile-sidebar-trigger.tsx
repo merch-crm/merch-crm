@@ -19,6 +19,7 @@ export function MobileSidebarTrigger({ user }: { user: UserProp }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // Standard SSR hydration pattern
         setMounted(true);
     }, []);
 

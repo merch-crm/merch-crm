@@ -105,6 +105,7 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
 
     useEffect(() => {
         if (isOpen) {
+
             setUiState(prev => ({ ...prev, quantity: 1 }));
         }
     }, [isOpen]);
