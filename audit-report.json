@@ -1,8 +1,53 @@
 {
-  "timestamp": "21.02.2026, 01:37:51",
-  "duration": 10515,
+  "timestamp": "21.02.2026, 02:03:47",
+  "duration": 13001,
   "projectName": "MerchCRM",
   "errors": [
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/analyze-dupes.js",
+      "line": 1,
+      "column": 12,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-require-imports",
+      "message": "A `require()` style import is forbidden."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/departments.actions.ts",
+      "line": 158,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/notifications.actions.ts",
+      "line": 69,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/notifications.actions.ts",
+      "line": 94,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/roles.actions.ts",
+      "line": 171,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
       "line": 16,
@@ -10,7 +55,106 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'SYSTEM_ENTITY_ID' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'SYSTEM_ENTITY_ID' is assigned a value but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 58,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 73,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 127,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 174,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 219,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 259,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 287,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 375,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 390,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 402,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/security.actions.ts",
+      "line": 414,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
@@ -19,7 +163,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'db' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'db' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
@@ -28,7 +172,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'systemSettings' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'systemSettings' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
@@ -37,7 +181,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'eq' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'eq' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
@@ -46,7 +190,97 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'path' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'path' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 61,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 79,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 100,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 118,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 136,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 154,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 172,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 190,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 208,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/storage.actions.ts",
+      "line": 220,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -55,7 +289,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'eq' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'eq' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -64,7 +298,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'or' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'or' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -73,7 +307,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ilike' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ilike' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -82,7 +316,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'and' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'and' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -91,7 +325,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'desc' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'desc' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -100,7 +334,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'gte' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'gte' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -109,7 +343,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'count' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'count' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -118,7 +352,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'lte' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'lte' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
@@ -130,13 +364,49 @@
       "message": "Unexpected any. Specify a different type."
     },
     {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
+      "line": 230,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
+      "line": 256,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
+      "line": 274,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/actions/system.actions.ts",
+      "line": 298,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/CommunicationSettings.tsx",
       "line": 5,
       "column": 33,
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'CheckCircle2' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'CheckCircle2' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/CommunicationSettings.tsx",
@@ -145,7 +415,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'AlertCircle' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'AlertCircle' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/CommunicationSettings.tsx",
@@ -154,7 +424,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'RefreshCw' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'RefreshCw' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/components/icon-manager/utils.tsx",
@@ -163,7 +433,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'IconItem' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'IconItem' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -172,7 +442,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useRef' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useRef' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -181,7 +451,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'AlertCircle' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'AlertCircle' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -190,7 +460,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Save' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Save' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -199,7 +469,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Building2' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Building2' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -208,7 +478,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Input' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Input' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -217,7 +487,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ALL_ICONS_MAP' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ALL_ICONS_MAP' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -226,7 +496,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Popover' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Popover' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -235,7 +505,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'PopoverContent' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'PopoverContent' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -244,7 +514,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'PopoverTrigger' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'PopoverTrigger' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/branding/icon-manager.tsx",
@@ -253,7 +523,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LIBRARY_ICONS_LIMIT' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'LIBRARY_ICONS_LIMIT' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/add-department-dialog.tsx",
@@ -262,7 +532,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useState' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useState' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/add-department-dialog.tsx",
@@ -271,7 +541,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useEffect' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useEffect' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/department-settings-dialog.tsx",
@@ -280,7 +550,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useState' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useState' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/departments/department-settings-dialog.tsx",
@@ -289,7 +559,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useEffect' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useEffect' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/roles/edit-role-dialog.tsx",
@@ -298,7 +568,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/add-user-dialog.tsx",
@@ -307,7 +577,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Input' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Input' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/add-user-dialog.tsx",
@@ -316,7 +586,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Select' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Select' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/edit-user-dialog.tsx",
@@ -325,7 +595,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Input' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Input' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/edit-user-dialog.tsx",
@@ -334,7 +604,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Select' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Select' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/users/users-table.tsx",
@@ -343,7 +613,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useRouter' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useRouter' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/client-timeline.tsx",
@@ -352,7 +622,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Activity' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Activity' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/page.tsx",
@@ -361,7 +631,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'User' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'User' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/page.tsx",
@@ -370,7 +640,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Edit2' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Edit2' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/[id]/page.tsx",
@@ -379,7 +649,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Archive' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Archive' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/bulk.actions.ts",
@@ -388,7 +658,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'eq' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'eq' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/bulk.actions.ts",
@@ -397,7 +667,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'users' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'users' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/core.actions.ts",
@@ -406,7 +676,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ClientDetails' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ClientDetails' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/core.actions.ts",
@@ -415,7 +685,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'users' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'users' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/utils.ts",
@@ -424,7 +694,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'db' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'db' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/clients-list.tsx",
@@ -433,7 +703,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ClientFilters' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ClientFilters' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/clients-list.tsx",
@@ -487,7 +757,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Input' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Input' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/design-widgets.tsx",
@@ -496,7 +766,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts",
@@ -505,7 +775,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'UpdateOrderFieldSchema' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'UpdateOrderFieldSchema' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts",
@@ -514,7 +784,34 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'orderAttachments' is assigned a value but only used as a type. Allowed unused vars must match /^_/u."
+      "message": "'orderAttachments' is assigned a value but only used as a type."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts",
+      "line": 433,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts",
+      "line": 440,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/core.actions.ts",
+      "line": 451,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_error' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/actions/status.actions.ts",
@@ -523,7 +820,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'OrderIdSchema' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'OrderIdSchema' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/OrderSidebar.tsx",
@@ -532,7 +829,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'User' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'User' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/OrderSidebar.tsx",
@@ -541,7 +838,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Package' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Package' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/OrderSidebar.tsx",
@@ -550,7 +847,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Clock' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Clock' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/components/StepConfirmation.tsx",
@@ -559,7 +856,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -568,7 +865,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ArrowLeft' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ArrowLeft' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -577,7 +874,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'RotateCcw' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'RotateCcw' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -586,7 +883,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Search' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Search' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -595,7 +892,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Plus' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Plus' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -604,7 +901,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Tag' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Tag' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -613,7 +910,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'CreditCard' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'CreditCard' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -622,7 +919,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'AlertCircle' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'AlertCircle' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -631,7 +928,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -640,7 +937,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'formatUnit' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'formatUnit' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -649,7 +946,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'pluralize' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'pluralize' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -658,7 +955,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Input' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Input' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -667,7 +964,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Select' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Select' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -676,7 +973,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Switch' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Switch' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.tsx",
@@ -685,7 +982,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'addToHistory' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'addToHistory' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/tasks/task-details/TaskDetailsTab.tsx",
@@ -694,7 +991,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/[id]/category-detail-client.tsx",
@@ -703,7 +1000,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useDebounce' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useDebounce' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/[id]/category-detail-client.tsx",
@@ -712,7 +1009,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'setAllCategories' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'setAllCategories' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/[id]/hooks/use-category-detail.ts",
@@ -721,7 +1018,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'StorageLocation' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'StorageLocation' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/actions.ts",
@@ -730,7 +1027,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'z' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'z' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/archive-table.tsx",
@@ -739,7 +1036,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useCallback' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useCallback' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryDisplay.tsx",
@@ -748,7 +1045,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ArrowRight' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ArrowRight' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryMobileList.tsx",
@@ -757,7 +1054,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ArrowRight' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ArrowRight' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryMobileList.tsx",
@@ -766,7 +1063,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'formatUnit' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'formatUnit' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/HistoryToolbar.tsx",
@@ -775,7 +1072,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LayoutGrid' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'LayoutGrid' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/LabelPrinterDialog.tsx",
@@ -784,7 +1081,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'escapeHtml' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'escapeHtml' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/LabelPrinterDialog.tsx",
@@ -793,7 +1090,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'PaperSize' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'PaperSize' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/LabelPrinterDialog.tsx",
@@ -802,7 +1099,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LayoutStyle' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'LayoutStyle' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/EditValueDialog.tsx",
@@ -811,7 +1108,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Attribute' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Attribute' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/PasswordProtection.tsx",
@@ -820,7 +1117,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Dispatch' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Dispatch' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/PasswordProtection.tsx",
@@ -829,7 +1126,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'SetStateAction' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'SetStateAction' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/LabelPrinterSettings.tsx",
@@ -838,7 +1135,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Printer' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Printer' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/LabelPrinterSettings.tsx",
@@ -847,7 +1144,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'isMobile' is defined but never used. Allowed unused args must match /^_/u."
+      "message": "'isMobile' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/LabelPrinterSettings.tsx",
@@ -856,7 +1153,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'currentW' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'currentW' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/LabelPrinterSettings.tsx",
@@ -865,7 +1162,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'currentH' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'currentH' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/label-printer/label-printer-types.ts",
@@ -874,7 +1171,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'BrandingSettings' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'BrandingSettings' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/edit-storage-location-dialog.tsx",
@@ -883,7 +1180,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'StorageLocationItem' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'StorageLocationItem' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/history-table.tsx",
@@ -892,7 +1189,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useEffect' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useEffect' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/item-actions.ts",
@@ -901,7 +1198,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Fuse' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Fuse' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/item-actions.ts",
@@ -910,7 +1207,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ItemHistoryTransaction' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ItemHistoryTransaction' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/item-actions.ts",
@@ -919,7 +1216,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ActiveOrderItem' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ActiveOrderItem' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/item-actions.ts",
@@ -928,7 +1225,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'CheckDuplicateItemSchema' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'CheckDuplicateItemSchema' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
@@ -937,7 +1234,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'allAttributes' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'allAttributes' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
@@ -946,7 +1243,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'attributeTypes' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'attributeTypes' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
@@ -955,7 +1252,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'handleAttributeChange' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'handleAttributeChange' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
@@ -964,7 +1261,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'handleRemoveAttribute' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'handleRemoveAttribute' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
@@ -973,7 +1270,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'stocks' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'stocks' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -982,7 +1279,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Sparkles' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Sparkles' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -991,7 +1288,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'BadgeCheck' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'BadgeCheck' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -1000,7 +1297,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Shirt' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Shirt' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -1009,7 +1306,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Layers' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Layers' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -1018,7 +1315,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Ruler' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Ruler' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -1027,7 +1324,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Droplets' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Droplets' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemGeneralInfo.tsx",
@@ -1036,7 +1333,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Search' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Search' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemMediaSection.tsx",
@@ -1045,7 +1342,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useRef' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useRef' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/FinancialMetricCard.tsx",
@@ -1054,7 +1351,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LucideIcon' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'LucideIcon' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/types.ts",
@@ -1063,7 +1360,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'InventoryItem' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'InventoryItem' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/types.ts",
@@ -1072,7 +1369,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ItemHistoryTransaction' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ItemHistoryTransaction' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/context/ItemDetailContext.tsx",
@@ -1081,7 +1378,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'useEffect' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'useEffect' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/context/ItemDetailContext.tsx",
@@ -1090,7 +1387,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'toast' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'toast' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/main-photo-uploader.tsx",
@@ -1099,7 +1396,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'UploadState' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'UploadState' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/summary/hooks/useSummaryLogic.ts",
@@ -1108,7 +1405,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'category' is defined but never used. Allowed unused args must match /^_/u."
+      "message": "'category' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useMediaLogic.ts",
@@ -1135,7 +1432,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'InventoryAttribute' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'InventoryAttribute' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useNewItemLogic.ts",
@@ -1144,7 +1441,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'AttributeType' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'AttributeType' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useNewItemLogic.ts",
@@ -1171,7 +1468,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'HistoryEntry' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'HistoryEntry' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/storage-locations-tab.tsx",
@@ -1180,7 +1477,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'handleEdit' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'handleEdit' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/audit-logs/utils.ts",
@@ -1189,7 +1486,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Search' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Search' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/audit-logs/utils.ts",
@@ -1198,7 +1495,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Calendar' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Calendar' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/audit-logs/utils.ts",
@@ -1207,7 +1504,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Clock' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Clock' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/audit-logs/utils.ts",
@@ -1216,7 +1513,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Trash2' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Trash2' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager.tsx",
@@ -1225,7 +1522,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'CheckSquare' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'CheckSquare' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager.tsx",
@@ -1234,7 +1531,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Square' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Square' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager.tsx",
@@ -1243,7 +1540,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Server' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Server' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager/StorageFilesList.tsx",
@@ -1252,7 +1549,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'NextImage' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'NextImage' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager/StorageFilesList.tsx",
@@ -1261,7 +1558,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ExternalLink' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ExternalLink' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/local-storage-manager/modals/PreviewModal.tsx",
@@ -1270,7 +1567,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LocalFile' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'LocalFile' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-manager/file-row.tsx",
@@ -1279,7 +1576,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'cn' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'cn' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-manager/storage-list.tsx",
@@ -1288,7 +1585,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'NextImage' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'NextImage' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1297,7 +1594,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'format' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'format' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1306,7 +1603,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ru' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ru' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1315,7 +1612,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'HardDrive' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'HardDrive' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1324,7 +1621,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'AlertTriangle' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'AlertTriangle' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1333,7 +1630,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Info' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Info' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1342,7 +1639,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Server' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Server' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1351,7 +1648,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Database' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Database' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1360,7 +1657,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Folder' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Folder' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1369,7 +1666,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ChevronRight' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ChevronRight' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1378,7 +1675,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Home' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Home' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1387,7 +1684,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Edit2' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Edit2' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1396,7 +1693,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Square' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Square' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1405,7 +1702,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Eye' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Eye' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1414,7 +1711,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'ResponsiveDataView' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'ResponsiveDataView' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1423,7 +1720,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'isImageFile' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'isImageFile' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1432,7 +1729,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'StorageFile' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'StorageFile' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1441,7 +1738,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'FolderRow' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'FolderRow' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1450,7 +1747,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'FileRow' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'FileRow' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/admin/s3-storage-manager.tsx",
@@ -1459,7 +1756,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'StatCard' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'StatCard' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDateRangePicker.ts",
@@ -1468,7 +1765,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'addMonths' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'addMonths' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDateRangePicker.ts",
@@ -1477,7 +1774,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'subMonths' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'subMonths' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDateRangePicker.ts",
@@ -1486,7 +1783,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'setMonth' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'setMonth' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDateRangePicker.ts",
@@ -1495,7 +1792,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'setYear' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'setYear' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/hooks/useDraggableScroll.ts",
@@ -1504,7 +1801,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'RefObject' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'RefObject' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/file-upload/utils.tsx",
@@ -1513,7 +1810,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'React' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'React' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/scroll-area.tsx",
@@ -1522,7 +1819,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'checkScroll' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      "message": "'checkScroll' is assigned a value but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/stat-card.tsx",
@@ -1531,7 +1828,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'LucideIcon' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'LucideIcon' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/stat-card.tsx",
@@ -1540,7 +1837,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Card' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Card' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTracker.tsx",
@@ -1549,7 +1846,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'differenceInSeconds' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'differenceInSeconds' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerBadge.tsx",
@@ -1558,7 +1855,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'format' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'format' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerBadge.tsx",
@@ -1567,7 +1864,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'differenceInSeconds' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'differenceInSeconds' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerCompact.tsx",
@@ -1576,7 +1873,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'differenceInSeconds' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'differenceInSeconds' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerToggle.tsx",
@@ -1585,7 +1882,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'differenceInSeconds' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'differenceInSeconds' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerWidget.tsx",
@@ -1594,7 +1891,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Play' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Play' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/TimeTrackerWidget.tsx",
@@ -1603,7 +1900,7 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'Square' is defined but never used. Allowed unused vars must match /^_/u."
+      "message": "'Square' is defined but never used."
     },
     {
       "file": "/Users/leonidmolchanov/Desktop/merch-crm/components/ui/time-tracker/types.ts",
@@ -1612,27 +1909,13 @@
       "severity": "warning",
       "category": "ESLint",
       "rule": "@typescript-eslint/no-unused-vars",
-      "message": "'React' is defined but never used. Allowed unused vars must match /^_/u."
-    },
-    {
-      "file": "package.json",
-      "severity": "error",
-      "category": "Зависимости",
-      "message": "Уязвимости: 0 крит., 13 высоких",
-      "suggestion": "npm audit fix"
-    },
-    {
-      "file": "scripts/fix-unused-vars.ts",
-      "line": 26,
-      "severity": "info",
-      "category": "Именование",
-      "message": "Boolean \"modified\" лучше с is/has/can"
+      "message": "'React' is defined but never used."
     }
   ],
   "stats": {
-    "totalFiles": 691,
-    "totalLines": 90507,
-    "totalSize": 4067333,
+    "totalFiles": 690,
+    "totalLines": 90481,
+    "totalSize": 4066759,
     "pagesCount": 39,
     "componentsCount": 188,
     "hooksCount": 8,
@@ -1645,11 +1928,9 @@
     "migrationsCount": 16,
     "typescriptErrors": 0,
     "lintErrors": 0,
-    "lintWarnings": 179,
+    "lintWarnings": 212,
     "byCategory": {
-      "ESLint": 179,
-      "Зависимости": 1,
-      "Именование": 1
+      "ESLint": 212
     }
   },
   "health": {

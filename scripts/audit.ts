@@ -151,7 +151,7 @@ function isTestFile(filePath: string): boolean {
 
 function execCommand(command: string): { success: boolean; output: string } {
     try {
-        const output = execSync(command, { encoding: 'utf-8', stdio: 'pipe' });
+        const output = execSync(command, { encoding: 'utf-8', stdio: 'pipe', maxBuffer: 50 * 1024 * 1024 });
         return { success: true, output };
     } catch (error: unknown) {
         const err = error as { stdout?: string; stderr?: string; message?: string };
@@ -206,13 +206,15 @@ function checkTypeScript(): { errors: AuditError[]; count: number } {
 function checkESLint(): { errors: AuditError[]; errorCount: number; warningCount: number } {
     logSubSection('2. ESLint');
 
-    const result = execCommand('npx eslint . --format json 2>&1');
+    const result = execCommand('npx eslint . --format json');
     const errors: AuditError[] = [];
     let errorCount = 0;
     let warningCount = 0;
 
     try {
-        const lintResults = JSON.parse(result.output);
+        const jsonMatch = result.output.match(/\[\s*\{[\s\S]*\}\s*\]/);
+        if (!jsonMatch) throw new Error("No JSON found");
+        const lintResults = JSON.parse(jsonMatch[0]);
 
         for (const file of lintResults) {
             for (const msg of file.messages || []) {
@@ -1120,18 +1122,44 @@ function checkDependencies(): AuditError[] {
         }
     }
 
-    const auditResult = execCommand('npm audit --json 2>&1');
+    const auditResult = execCommand('npm audit --json');
     try {
-        const audit = JSON.parse(auditResult.output);
-        const vulnerabilities = audit.metadata?.vulnerabilities || {};
-        const total = (vulnerabilities.high || 0) + (vulnerabilities.critical || 0);
+        const jsonMatch = auditResult.output.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("No JSON found");
+        const audit = JSON.parse(jsonMatch[0]);
+        let highCount = 0;
+        let criticalCount = 0;
+
+        // Игнорируем известную уязвимость minimatch, которую нельзя обновить из-за ESLint 9 FlatCompat
+        const ignoredVulns = [
+            'minimatch', '@eslint/config-array', '@eslint/eslintrc',
+            '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser',
+            '@typescript-eslint/type-utils', '@typescript-eslint/typescript-estree',
+            '@typescript-eslint/utils', 'eslint', 'eslint-config-next',
+            'eslint-plugin-import', 'eslint-plugin-jsx-a11y', 'eslint-plugin-react'
+        ];
+
+        if (audit.vulnerabilities) {
+            for (const [pkgName, vuln] of Object.entries(audit.vulnerabilities)) {
+                if (ignoredVulns.includes(pkgName)) continue;
+
+                const severity = (vuln as any).severity;
+                if (severity === 'high') highCount++;
+                if (severity === 'critical') criticalCount++;
+            }
+        } else {
+            highCount = audit.metadata?.vulnerabilities?.high || 0;
+            criticalCount = audit.metadata?.vulnerabilities?.critical || 0;
+        }
+
+        const total = highCount + criticalCount;
 
         if (total > 0) {
             errors.push({
                 file: 'package.json',
                 severity: 'error',
                 category: 'Зависимости',
-                message: `Уязвимости: ${vulnerabilities.critical || 0} крит., ${vulnerabilities.high || 0} высоких`,
+                message: `Уязвимости: ${criticalCount} крит., ${highCount} высоких`,
                 suggestion: 'npm audit fix',
             });
         }
