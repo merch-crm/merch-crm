@@ -19,7 +19,6 @@ export function MobileSidebarTrigger({ user }: { user: UserProp }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- Standard SSR hydration pattern
         setMounted(true);
     }, []);
 

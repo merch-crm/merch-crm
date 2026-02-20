@@ -63,7 +63,6 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
     useEffect(() => {
         if (!initialView && isMobile === true) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setView('list');
         }
     }, [initialView, isMobile]);

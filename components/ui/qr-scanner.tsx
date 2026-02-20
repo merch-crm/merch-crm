@@ -73,7 +73,6 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
 
     useEffect(() => {
         if (isOpen) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Scanner lifecycle management
             startScanner();
         } else {
             stopScanner();

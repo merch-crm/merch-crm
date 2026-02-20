@@ -105,7 +105,6 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
 
     useEffect(() => {
         if (isOpen) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setUiState(prev => ({ ...prev, quantity: 1 }));
         }
     }, [isOpen]);
