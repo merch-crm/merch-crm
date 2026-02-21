@@ -43,9 +43,9 @@ export default async function ClientPage({ params }: { params: { id: string } })
                     </Link>
                     <div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Карточка клиента</h1>
-                        <p className="text-slate-400 text-xs font-bold mt-2 flex items-center gap-2">
+                        <div className="text-slate-400 text-xs font-bold mt-2 flex items-center gap-2">
                             ID: {client.id.slice(0, 8)} • <Badge variant="secondary" className="text-xs font-bold">{client.clientType === 'b2b' ? 'B2B' : 'B2C'}</Badge>
-                        </p>
+                        </div>
                     </div>
                 </div>
 
