@@ -51,3 +51,12 @@ next-env.d.ts
 /public/SKU/
 .vscode/
 restore_source.json
+
+# logs and debug
+*.log
+audit-report.json
+audit_output.txt
+debug-warehouse.png
+*.png
+!e2e/ui/visual-regression.spec.ts-snapshots/*.png
+playwright/.auth/
