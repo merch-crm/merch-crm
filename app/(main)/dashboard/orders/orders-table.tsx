@@ -88,7 +88,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="orders-list">
             <ResponsiveDataView
                 data={orders}
                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"

@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test'
 
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe('Авторизация', () => {
+    test.beforeEach(async ({ context }) => {
+        // Дополнительная принудительная очистка кук для надежности
+        await context.clearCookies();
+    });
+
     test('успешный вход', async ({ page }) => {
         await page.goto('/login')
 
@@ -14,12 +21,12 @@ test.describe('Авторизация', () => {
 
     test('ошибка при неверном пароле', async ({ page }) => {
         await page.goto('/login')
-        await page.locator('input[name="email"]').fill('admin@test.com')
-        await page.locator('input[name="password"]').fill('wrongpassword')
-        await page.getByRole('button', { name: /войти/i }).click()
+        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
+        await page.getByPlaceholder(/введите пароль/i).fill('wrongpassword')
+        await page.getByRole('button', { name: /войти/i }).click({ force: true })
 
         // Проверяем наличие сообщения об ошибке (в CRM оно обычно в блоке с красным текстом)
-        await expect(page.locator('text=/пароль|ошибка|неверн/i').first()).toBeVisible()
+        await expect(page.getByText(/неверный email или пароль/i)).toBeVisible({ timeout: 10000 })
         await expect(page).toHaveURL('/login')
     })
 

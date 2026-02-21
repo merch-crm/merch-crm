@@ -80,7 +80,7 @@ export function NewItemPageClient({
                     onStepClick={handleSidebarClick}
                 />
 
-                <main className="flex-1 relative h-full flex flex-col gap-3 pb-4 xl:pb-8 px-1">
+                <div className="flex-1 relative h-full flex flex-col gap-3 pb-4 xl:pb-8 px-1">
                     <div className="relative flex-1 flex flex-col min-h-0">
                         <div className="crm-card !p-0 !rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
@@ -178,7 +178,7 @@ export function NewItemPageClient({
                             )}
                         </div>
                     </div>
-                </main>
+                </div>
             </div>
         </div>
     );

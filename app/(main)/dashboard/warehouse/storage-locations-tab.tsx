@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";
@@ -175,15 +176,12 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
     if (dataState.localLocations.length === 0) {
         return (
-            <div className="py-24 flex flex-col items-center justify-center text-center px-4 crm-card shadow-sm">
-                <div className="w-20 h-20 bg-white rounded-[var(--radius-inner)] flex items-center justify-center mb-6 text-slate-300 shadow-sm ring-1 ring-slate-200">
-                    <MapPin className="w-10 h-10" />
-                </div>
-                <h2 className="text-xl font-bold text-slate-900 mb-2 leading-none">Места хранения не найдены</h2>
-                <p className="text-slate-400 text-xs font-medium max-w-[280px] leading-relaxed">
-                    Добавьте первое место хранения для систематизации учета.
-                </p>
-            </div>
+            <EmptyState
+                icon={MapPin}
+                title="Места хранения не найдены"
+                description="Добавьте первое место хранения для систематизации учета."
+                className="py-24 crm-card shadow-sm"
+            />
         );
     }
 
@@ -201,7 +199,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
                         {dataState.localLocations.map((loc) => (
                             <SortableLocationCard
                                 key={loc.id}

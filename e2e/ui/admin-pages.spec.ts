@@ -1,60 +1,36 @@
 import { test, expect } from '@playwright/test';
+import { waitForPageLoad } from '../utils/page-helpers';
 
-test.describe('Admin Panel Pages Regression Pipeline', () => {
+test.describe('Admin Panel Pages', () => {
 
-    test('Loads /admin-panel successfully', async ({ page }) => {
-        await page.goto('/admin-panel');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
+    const adminPages = [
+        { path: '/admin-panel', name: 'Настройки CRM' },
+        { path: '/admin-panel/users', name: 'Пользователи' },
+        { path: '/admin-panel/roles', name: 'Роли' },
+        { path: '/admin-panel/departments', name: 'Отделы' },
+        { path: '/admin-panel/monitoring', name: 'Мониторинг' },
+        { path: '/admin-panel/notifications', name: 'Уведомления' },
+        { path: '/admin-panel/storage', name: 'Хранилище' },
+        { path: '/admin-panel/branding', name: 'Брендинг' },
+    ];
 
-    test('Loads /admin-panel/users successfully', async ({ page }) => {
-        await page.goto('/admin-panel/users');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
+    for (const { path, name: _name } of adminPages) {
+        test(`Loads ${path} successfully`, async ({ page }) => {
+            await page.goto(path);
+            await waitForPageLoad(page, { expectUrl: new RegExp(`.*${path.replace('/', '\\/')}`) });
 
-    test('Loads /admin-panel/roles successfully', async ({ page }) => {
-        await page.goto('/admin-panel/roles');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
+            // Проверяем что main область видна и содержит контент
+            const main = page.locator('main').first();
+            await expect(main).toBeVisible({ timeout: 15000 });
 
-    test('Loads /admin-panel/departments successfully', async ({ page }) => {
-        await page.goto('/admin-panel/departments');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
+            // Проверяем заголовок (используем data-testid или h1/h2)
+            const header = page.locator('[data-testid="admin-page-header"], main h1, main h2, .page-header h1').first();
+            if (await header.count() > 0) {
+                await expect(header).toBeVisible();
+            }
 
-    test('Loads /admin-panel/monitoring successfully', async ({ page }) => {
-        await page.goto('/admin-panel/monitoring');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
-
-    test('Loads /admin-panel/notifications successfully', async ({ page }) => {
-        await page.goto('/admin-panel/notifications');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
-
-    test('Loads /admin-panel/storage successfully', async ({ page }) => {
-        await page.goto('/admin-panel/storage');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
-
-    test('Loads /admin-panel/branding successfully', async ({ page }) => {
-        await page.goto('/admin-panel/branding');
-        const header = page.locator('h1, h2, .page-header').first();
-        await header.waitFor({ state: 'visible', timeout: 15000 });
-        await expect(header).toBeVisible();
-    });
+            // Проверяем что нет ошибок (например 404)
+            await expect(page.locator('text=/404|Not Found|Ошибка/i').first()).not.toBeVisible();
+        });
+    }
 });

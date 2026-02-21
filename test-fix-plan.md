@@ -1,590 +1,11 @@
 # План исправлений после тестирования
 
 **Дата:** 21.02.2026
-**Упавших тестов:** 177
+**Упавших тестов:** 180
 
 ---
 
 ## 1. навигация на мобильном
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 2. Loads /admin-panel/departments successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 3. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 4. Loads /admin-panel/notifications successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 5. Loads /admin-panel/monitoring successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 6. Loads /dashboard successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: locator.waitFor: Unexpected token "=" while parsing css selector "h1, h2, .page-header, text=/Добро пожаловать|Главная/i". Did you mean to CSS.escape it?
-Call log:
-[2m  - waiting for h1, h2, .page-header, text=/Добро пожаловать|Главная/i >> nth=0 to be visible[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 7. Loads /dashboard/orders successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 8. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 9. Loads /dashboard/clients/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 10. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 11. Loads /dashboard/clients successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 12. Loads /dashboard/finance/transactions successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 13. Loads /dashboard/finance/promocodes successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 14. Loads /dashboard/finance/sales successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 15. Loads /dashboard/finance/expenses successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 16. Loads /dashboard/finance/salary successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 17. Loads /dashboard/finance/funds successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 18. Loads /dashboard/finance/pl successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 19. Loads /dashboard/production successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 20. Loads /dashboard/design successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 21. Loads /dashboard/tasks successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 22. Loads /dashboard/references successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 23. Loads /dashboard/knowledge-base successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 24. Loads /dashboard/warehouse/items/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 25. Loads /dashboard/warehouse successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 26. Loads /dashboard/warehouse/characteristics successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 27. Loads /dashboard/warehouse/categories successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 28. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 29. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 30. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
@@ -604,7 +25,7 @@ Call log:
 
 ---
 
-## 31. таблица заказов адаптируется
+## 2. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
@@ -623,7 +44,7 @@ Call log:
 
 ---
 
-## 32. визуальный снимок дашборда
+## 3. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
@@ -643,7 +64,7 @@ Call log:
 
 ---
 
-## 33. Loads /admin-panel successfully
+## 4. Loads /admin-panel successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
@@ -663,7 +84,7 @@ Call log:
 
 ---
 
-## 34. Loads /admin-panel/departments successfully
+## 5. Loads /admin-panel/roles successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
@@ -683,7 +104,7 @@ Call log:
 
 ---
 
-## 35. Loads /admin-panel/roles successfully
+## 6. Loads /admin-panel/departments successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
@@ -703,7 +124,7 @@ Call log:
 
 ---
 
-## 36. Loads /admin-panel/monitoring successfully
+## 7. Loads /admin-panel/monitoring successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
@@ -712,7 +133,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
@@ -723,7 +144,7 @@ Call log:
 
 ---
 
-## 37. Loads /admin-panel/notifications successfully
+## 8. Loads /admin-panel/notifications successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
@@ -732,7 +153,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
@@ -743,7 +164,47 @@ Call log:
 
 ---
 
-## 38. Loads /dashboard successfully
+## 9. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 10. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 11. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
@@ -762,47 +223,7 @@ Call log:
 
 ---
 
-## 39. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 40. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 41. Loads /dashboard/clients successfully
+## 12. Loads /dashboard/clients successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
@@ -822,7 +243,7 @@ Call log:
 
 ---
 
-## 42. Loads /dashboard/clients/new successfully
+## 13. Loads /dashboard/clients/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
@@ -831,7 +252,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
 
 ```
 
@@ -842,7 +263,7 @@ Call log:
 
 ---
 
-## 43. Loads /dashboard/orders successfully
+## 14. Loads /dashboard/orders successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
@@ -851,7 +272,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
 
 ```
 
@@ -862,7 +283,7 @@ Call log:
 
 ---
 
-## 44. Loads /dashboard/orders/new successfully
+## 15. Loads /dashboard/orders/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
@@ -871,7 +292,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
 
 ```
 
@@ -882,7 +303,29 @@ Call log:
 
 ---
 
-## 45. Loads /dashboard/finance/promocodes successfully
+## 16. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    - waiting for" http://localhost:3000/dashboard/finance/sales" navigation to finish...[22m
+[2m    - navigated to "http://localhost:3000/dashboard/finance/sales"[22m
+[2m    28 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 17. Loads /dashboard/finance/transactions successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -902,7 +345,7 @@ Call log:
 
 ---
 
-## 46. Loads /dashboard/finance/transactions successfully
+## 18. Loads /dashboard/finance/promocodes successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -922,7 +365,7 @@ Call log:
 
 ---
 
-## 47. Loads /dashboard/finance/sales successfully
+## 19. Loads /dashboard/finance/sales successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -942,7 +385,7 @@ Call log:
 
 ---
 
-## 48. Loads /dashboard/finance/expenses successfully
+## 20. Loads /dashboard/finance/expenses successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -962,7 +405,7 @@ Call log:
 
 ---
 
-## 49. Loads /dashboard/finance/salary successfully
+## 21. Loads /dashboard/finance/salary successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -982,7 +425,7 @@ Call log:
 
 ---
 
-## 50. Loads /dashboard/finance/funds successfully
+## 22. Loads /dashboard/finance/funds successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -991,7 +434,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
@@ -1002,7 +445,7 @@ Call log:
 
 ---
 
-## 51. Loads /dashboard/finance/pl successfully
+## 23. Loads /dashboard/finance/pl successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1011,7 +454,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
@@ -1022,7 +465,7 @@ Call log:
 
 ---
 
-## 52. Loads /dashboard/production successfully
+## 24. Loads /dashboard/production successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1042,7 +485,7 @@ Call log:
 
 ---
 
-## 53. Loads /dashboard/design successfully
+## 25. Loads /dashboard/design successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1051,7 +494,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
 
 ```
 
@@ -1062,7 +505,7 @@ Call log:
 
 ---
 
-## 54. Loads /dashboard/tasks successfully
+## 26. Loads /dashboard/tasks successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1071,7 +514,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
 
 ```
 
@@ -1082,7 +525,7 @@ Call log:
 
 ---
 
-## 55. Loads /dashboard/knowledge-base successfully
+## 27. Loads /dashboard/knowledge-base successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1102,27 +545,7 @@ Call log:
 
 ---
 
-## 56. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 57. Loads /dashboard/references successfully
+## 28. Loads /dashboard/references successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1131,7 +554,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
@@ -1142,46 +565,7 @@ Call log:
 
 ---
 
-## 58. визуальный снимок дашборда
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
-
-**Ошибка:**
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
-[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 59. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 60. Loads /dashboard/profile successfully
+## 29. Loads /dashboard/profile successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
@@ -1201,26 +585,7 @@ Call log:
 
 ---
 
-## 61. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 62. Loads /dashboard/warehouse successfully
+## 30. Loads /dashboard/warehouse successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
@@ -1240,7 +605,7 @@ Call log:
 
 ---
 
-## 63. Loads /dashboard/warehouse/items/new successfully
+## 31. Loads /dashboard/warehouse/items/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
@@ -1249,7 +614,7 @@ Call log:
 TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
 [2m  - waiting for locator('h1, h2, form').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
@@ -1260,15 +625,16 @@ Call log:
 
 ---
 
-## 64. Loads /dashboard/warehouse/history successfully
+## 32. Loads /dashboard/warehouse/categories successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
@@ -1279,16 +645,77 @@ Call log:
 
 ---
 
-## 65. навигация на мобильном
+## 33. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 34. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 35. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 36. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 37. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1298,16 +725,13 @@ Call log:
 
 ---
 
-## 66. таблица заказов адаптируется
+## 38. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1317,16 +741,13 @@ Call log:
 
 ---
 
-## 67. визуальный снимок дашборда
+## 39. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1336,16 +757,461 @@ Call log:
 
 ---
 
-## 68. Loads /admin-panel successfully
+## 40. Loads /admin-panel successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
 
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 41. Loads /admin-panel/users successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 42. Loads /admin-panel/roles successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 43. Loads /admin-panel/departments successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 44. Loads /admin-panel/monitoring successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 45. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 46. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 47. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 48. Loads /dashboard successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 49. Loads /dashboard/clients successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 50. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 51. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 52. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 53. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 54. Loads /dashboard/finance/transactions successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 55. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 56. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 57. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 58. Loads /dashboard/finance/salary successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 59. Loads /dashboard/finance/funds successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 60. Loads /dashboard/finance/pl successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 61. Loads /dashboard/production successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 62. Loads /dashboard/design successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 63. Loads /dashboard/tasks successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 64. Loads /dashboard/knowledge-base successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 65. Loads /dashboard/references successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 66. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 67. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 68. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1361,11 +1227,7 @@ Call log:
 
 **Ошибка:**
 ```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1375,340 +1237,13 @@ Call log:
 
 ---
 
-## 70. Loads /admin-panel/users successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 71. Loads /admin-panel/roles successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 72. Loads /admin-panel/departments successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 73. Loads /admin-panel/monitoring successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 74. Loads /admin-panel/notifications successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 75. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 76. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 77. Loads /dashboard/clients successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 78. Loads /dashboard successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 79. Loads /dashboard/clients/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 80. Loads /dashboard/orders successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 81. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 82. Loads /dashboard/finance successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 83. Loads /dashboard/finance/transactions successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 84. Loads /dashboard/finance/promocodes successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 85. Loads /dashboard/finance/sales successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 86. Loads /dashboard/finance/expenses successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 87. Loads /dashboard/warehouse/characteristics successfully
+## 70. Loads /dashboard/warehouse/characteristics successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
-[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1718,168 +1253,13 @@ Call log:
 
 ---
 
-## 88. Loads /dashboard/finance/funds successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 89. Loads /dashboard/finance/salary successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 90. Loads /dashboard/finance/pl successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 91. Loads /dashboard/production successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 92. Loads /dashboard/design successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 93. Loads /dashboard/knowledge-base successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 94. Loads /dashboard/tasks successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 95. Loads /dashboard/references successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 96. Loads /dashboard/warehouse successfully
+## 71. Loads /dashboard/warehouse/storage successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1889,35 +1269,13 @@ Call log:
 
 ---
 
-## 97. Loads /dashboard/profile successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 98. Loads /dashboard/warehouse/items/new successfully
+## 72. Loads /dashboard/warehouse/archive successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1927,16 +1285,13 @@ Call log:
 
 ---
 
-## 99. Loads /dashboard/warehouse/categories successfully
+## 73. Loads /dashboard/warehouse/history successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
-
+Error: Project "safari" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -1946,92 +1301,39 @@ Call log:
 
 ---
 
-## 100. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 101. Loads /dashboard/warehouse/characteristics successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 102. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 103. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 104. навигация на мобильном
+## 74. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
+Locator:  locator('nav, [role="navigation"], aside').filter({ hasText: /Заказы|Клиенты/i }).first()
+Expected: visible
+Received: hidden
+Timeout:  10000ms
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 10000ms[22m
+[2m  - waiting for locator('nav, [role="navigation"], aside').filter({ hasText: /Заказы|Клиенты/i }).first()[22m
+[2m    14 × locator resolved to <nav class="hidden md:flex items-center ga
+```
+
+**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 75. Loads /admin-panel successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2041,16 +1343,566 @@ Call log:
 
 ---
 
-## 105. таблица заказов адаптируется
+## 76. Loads /admin-panel/users successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 77. Loads /admin-panel/roles successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 78. Loads /admin-panel/departments successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 79. Loads /admin-panel/monitoring successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 80. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 81. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 82. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 83. Loads /dashboard successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 84. Loads /dashboard/clients successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 85. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 86. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 87. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 88. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 89. Loads /dashboard/finance/transactions successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 90. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 91. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 92. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 93. Loads /dashboard/finance/salary successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 94. Loads /dashboard/finance/funds successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 95. Loads /dashboard/finance/pl successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 96. Loads /dashboard/production successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 97. Loads /dashboard/design successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 98. Loads /dashboard/tasks successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 99. Loads /dashboard/knowledge-base successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 100. Loads /dashboard/references successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 101. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 102. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 103. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 104. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 105. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 106. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 107. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 108. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 109. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
+Locator:  locator('[data-testid="mobile-menu-toggle"], button[aria-label*="меню" i], button[aria-label*="menu" i], .lucide-menu').first()
+Expected: visible
+Received: hidden
+Timeout:  15000ms
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 15000ms[22m
+[2m  - waiting for locator('[data-testid="mobile-menu-toggle"], button[aria-label*="меню" i], button[aria-label*="menu" i], .lucide-menu').first()[22m
+```
+
+**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 110. Loads /admin-panel successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2060,16 +1912,541 @@ Call log:
 
 ---
 
-## 106. визуальный снимок дашборда
+## 111. Loads /admin-panel/users successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 112. Loads /admin-panel/roles successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 113. Loads /admin-panel/departments successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 114. Loads /admin-panel/monitoring successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 115. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 116. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 117. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 118. Loads /dashboard successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 119. Loads /dashboard/clients successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 120. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 121. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 122. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 123. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 124. Loads /dashboard/finance/transactions successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 125. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 126. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 127. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 128. Loads /dashboard/finance/salary successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 129. Loads /dashboard/finance/funds successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 130. Loads /dashboard/finance/pl successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 131. Loads /dashboard/production successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 132. Loads /dashboard/design successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 133. Loads /dashboard/tasks successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 134. Loads /dashboard/knowledge-base successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 135. Loads /dashboard/references successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 136. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 137. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 138. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 139. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 140. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 141. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 142. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 143. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Test not found in the worker process. Make sure test title does not change.
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 144. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2079,662 +2456,13 @@ Call log:
 
 ---
 
-## 107. Loads /admin-panel successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 108. Loads /admin-panel/users successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 109. Loads /admin-panel/roles successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 110. Loads /admin-panel/departments successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 111. Loads /admin-panel/monitoring successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 112. Loads /admin-panel/notifications successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 113. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 114. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 115. Loads /dashboard successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 116. Loads /dashboard/clients successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 117. Loads /dashboard/orders successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 118. Loads /dashboard/clients/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 119. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 120. Loads /dashboard/finance/transactions successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 121. Loads /dashboard/finance successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 122. Loads /dashboard/finance/promocodes successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 123. Loads /dashboard/finance/expenses successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 124. Loads /dashboard/finance/sales successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 125. Loads /dashboard/finance/salary successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 126. Loads /dashboard/finance/funds successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 127. Loads /dashboard/finance/pl successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 128. Loads /dashboard/production successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 129. Loads /dashboard/design successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 130. Loads /dashboard/tasks successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 131. Loads /dashboard/knowledge-base successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 132. Loads /dashboard/references successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 133. Loads /dashboard/profile successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 134. Loads /dashboard/warehouse successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 135. Loads /dashboard/warehouse/items/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 136. Loads /dashboard/warehouse/categories successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 137. Loads /dashboard/warehouse/characteristics successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 138. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 139. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 140. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: Could not connect to the server.
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 141. навигация на мобильном
+## 145. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2744,16 +2472,13 @@ Call log:
 
 ---
 
-## 142. визуальный снимок дашборда
+## 146. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2763,35 +2488,13 @@ Call log:
 
 ---
 
-## 143. таблица заказов адаптируется
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
-
-**Ошибка:**
-```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
-
-```
-
-**Рекомендация:** Требуется ручной анализ ошибки.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 144. Loads /admin-panel/users successfully
+## 147. Loads /admin-panel successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2801,16 +2504,13 @@ Call log:
 
 ---
 
-## 145. Loads /admin-panel/roles successfully
+## 148. Loads /admin-panel/users successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2820,16 +2520,13 @@ Call log:
 
 ---
 
-## 146. Loads /admin-panel successfully
+## 149. Loads /admin-panel/roles successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2839,16 +2536,13 @@ Call log:
 
 ---
 
-## 147. Loads /admin-panel/departments successfully
+## 150. Loads /admin-panel/departments successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2858,16 +2552,13 @@ Call log:
 
 ---
 
-## 148. Loads /admin-panel/monitoring successfully
+## 151. Loads /admin-panel/monitoring successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2877,16 +2568,13 @@ Call log:
 
 ---
 
-## 149. Loads /admin-panel/notifications successfully
+## 152. Loads /admin-panel/notifications successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2896,16 +2584,13 @@ Call log:
 
 ---
 
-## 150. Loads /admin-panel/storage successfully
+## 153. Loads /admin-panel/storage successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2915,16 +2600,13 @@ Call log:
 
 ---
 
-## 151. Loads /admin-panel/branding successfully
+## 154. Loads /admin-panel/branding successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2934,16 +2616,13 @@ Call log:
 
 ---
 
-## 152. Loads /dashboard successfully
+## 155. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2953,16 +2632,13 @@ Call log:
 
 ---
 
-## 153. Loads /dashboard/clients successfully
+## 156. Loads /dashboard/clients successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2972,16 +2648,13 @@ Call log:
 
 ---
 
-## 154. Loads /dashboard/clients/new successfully
+## 157. Loads /dashboard/clients/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -2991,16 +2664,13 @@ Call log:
 
 ---
 
-## 155. Loads /dashboard/orders successfully
+## 158. Loads /dashboard/orders successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3010,16 +2680,13 @@ Call log:
 
 ---
 
-## 156. Loads /dashboard/orders/new successfully
+## 159. Loads /dashboard/orders/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3029,16 +2696,13 @@ Call log:
 
 ---
 
-## 157. Loads /dashboard/finance successfully
+## 160. Loads /dashboard/finance successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3048,16 +2712,13 @@ Call log:
 
 ---
 
-## 158. Loads /dashboard/finance/transactions successfully
+## 161. Loads /dashboard/finance/transactions successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3067,16 +2728,13 @@ Call log:
 
 ---
 
-## 159. Loads /dashboard/finance/promocodes successfully
+## 162. Loads /dashboard/finance/promocodes successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3086,16 +2744,13 @@ Call log:
 
 ---
 
-## 160. Loads /dashboard/finance/sales successfully
+## 163. Loads /dashboard/finance/sales successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3105,16 +2760,13 @@ Call log:
 
 ---
 
-## 161. Loads /dashboard/finance/expenses successfully
+## 164. Loads /dashboard/finance/expenses successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3124,16 +2776,13 @@ Call log:
 
 ---
 
-## 162. Loads /dashboard/finance/salary successfully
+## 165. Loads /dashboard/finance/salary successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3143,16 +2792,13 @@ Call log:
 
 ---
 
-## 163. Loads /dashboard/finance/funds successfully
+## 166. Loads /dashboard/finance/funds successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3162,16 +2808,13 @@ Call log:
 
 ---
 
-## 164. Loads /dashboard/finance/pl successfully
+## 167. Loads /dashboard/finance/pl successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3181,16 +2824,13 @@ Call log:
 
 ---
 
-## 165. Loads /dashboard/production successfully
+## 168. Loads /dashboard/production successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3200,16 +2840,13 @@ Call log:
 
 ---
 
-## 166. Loads /dashboard/design successfully
+## 169. Loads /dashboard/design successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3219,16 +2856,13 @@ Call log:
 
 ---
 
-## 167. Loads /dashboard/tasks successfully
+## 170. Loads /dashboard/tasks successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3238,16 +2872,13 @@ Call log:
 
 ---
 
-## 168. Loads /dashboard/knowledge-base successfully
+## 171. Loads /dashboard/knowledge-base successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3257,16 +2888,13 @@ Call log:
 
 ---
 
-## 169. Loads /dashboard/references successfully
+## 172. Loads /dashboard/references successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3276,16 +2904,13 @@ Call log:
 
 ---
 
-## 170. Loads /dashboard/profile successfully
+## 173. Loads /dashboard/profile successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3295,16 +2920,13 @@ Call log:
 
 ---
 
-## 171. Loads /dashboard/warehouse successfully
+## 174. Loads /dashboard/warehouse successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3314,16 +2936,13 @@ Call log:
 
 ---
 
-## 172. Loads /dashboard/warehouse/items/new successfully
+## 175. Loads /dashboard/warehouse/items/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3333,16 +2952,13 @@ Call log:
 
 ---
 
-## 173. Loads /dashboard/warehouse/categories successfully
+## 176. Loads /dashboard/warehouse/categories successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3352,16 +2968,13 @@ Call log:
 
 ---
 
-## 174. Loads /dashboard/warehouse/characteristics successfully
+## 177. Loads /dashboard/warehouse/characteristics successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3371,16 +2984,13 @@ Call log:
 
 ---
 
-## 175. Loads /dashboard/warehouse/storage successfully
+## 178. Loads /dashboard/warehouse/storage successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3390,16 +3000,13 @@ Call log:
 
 ---
 
-## 176. Loads /dashboard/warehouse/archive successfully
+## 179. Loads /dashboard/warehouse/archive successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.
@@ -3409,16 +3016,13 @@ Call log:
 
 ---
 
-## 177. Loads /dashboard/warehouse/history successfully
+## 180. Loads /dashboard/warehouse/history successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: page.goto: NS_ERROR_CONNECTION_REFUSED
-Call log:
-[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
-
+Error: Project "firefox" not found in the worker process. Make sure project name does not change.
 ```
 
 **Рекомендация:** Требуется ручной анализ ошибки.

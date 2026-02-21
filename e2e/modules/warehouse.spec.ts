@@ -1,30 +1,29 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Склад', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
-        await expect(page).toHaveURL('/dashboard')
-    })
-
-    test('просмотр остатков', async ({ page }) => {
+    test('инвентаризация и поиск', async ({ page }) => {
         await page.goto('/dashboard/warehouse')
 
-        await expect(page.getByRole('heading', { name: /склад/i }).first()).toBeVisible()
+        // Ждем конкретный элемент
+        await expect(page.locator('main h1, main h2').filter({ hasText: /склад|инвентар/i }).first()).toBeVisible({ timeout: 15000 })
     })
 
-    test('поиск товара', async ({ page }) => {
-        await page.goto('/dashboard/warehouse')
-        await page.waitForLoadState('networkidle')
+    test('поиск товара', async ({ page, isMobile }) => {
+        // Сразу переходим на целевую страницу поиска в истории (Пункт 2: Прямые URL)
+        await page.goto('/dashboard/warehouse/history')
+        await page.waitForLoadState('domcontentloaded')
 
-        // Выбираем любую категорию
-        await page.locator('.crm-card').first().click()
-        await page.waitForLoadState('networkidle')
+        if (isMobile) {
+            // На мобильном нужно кликнуть на иконку поиска(лупу), чтобы инпут появился
+            const mobileSearchToggle = page.locator('button .lucide-search').first()
+            if (await mobileSearchToggle.isVisible()) {
+                await mobileSearchToggle.click()
+            }
+        }
 
         // Ищем поле ввода
-        const searchInput = page.locator('input[placeholder*="Поиск"]').first()
+        const searchInput = page.locator('input[placeholder*="Поиск"], .crm-search-input input, .crm-filter-tray-search').first()
+        await expect(searchInput).toBeVisible({ timeout: 10000 })
         await searchInput.fill('тест')
         await page.keyboard.press('Enter')
 

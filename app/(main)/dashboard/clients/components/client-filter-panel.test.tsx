@@ -1,10 +1,17 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ClientFilterPanel, ClientUiState } from './client-filter-panel' // Need to export ClientUiState from component if not already
 import { ClientFilters } from "../actions";
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 
-// ... (mocks ok)
+// Mock Select to simplify
+vi.mock('@/components/ui/select', () => ({
+    Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
+        <select data-testid="select" value={value} onChange={(e) => onChange(e.target.value)}>
+            {options.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
+        </select>
+    )
+}));
 
 describe('ClientFilterPanel', () => {
     const defaultFilters: ClientFilters = {
@@ -105,32 +112,32 @@ describe('ClientFilterPanel', () => {
     // ─── Фильтры (selects) ────────────────────────────────
 
     it('выбор фильтра «Статус» вызывает setFilters', async () => {
-        const user = userEvent.setup()
+        const _user = userEvent.setup()
         renderPanel({ uiState: { showFilters: true } })
 
         const selects = screen.getAllByTestId('select')
         // Порядок: Период, Кол-во заказов, Регион, Статус
         const statusSelect = selects[3]
 
-        await user.selectOptions(statusSelect, 'lost')
+        fireEvent.change(statusSelect, { target: { value: 'lost' } })
 
         expect(setFiltersMock).toHaveBeenCalled()
     })
 
     it('выбор фильтра «Период» вызывает setFilters', async () => {
-        const user = userEvent.setup()
+        const _user = userEvent.setup()
         renderPanel({ uiState: { showFilters: true } })
 
         const selects = screen.getAllByTestId('select')
         const periodSelect = selects[0]
 
-        await user.selectOptions(periodSelect, 'month')
+        fireEvent.change(periodSelect, { target: { value: 'month' } })
 
         expect(setFiltersMock).toHaveBeenCalled()
     })
 
     it('выбор фильтра «Регион» с доступными городами', async () => {
-        const user = userEvent.setup()
+        const _user = userEvent.setup()
         renderPanel({
             uiState: { showFilters: true },
             regions: ['Москва', 'Санкт-Петербург'],
@@ -143,7 +150,7 @@ describe('ClientFilterPanel', () => {
         const options = within(regionSelect).getAllByRole('option')
         expect(options.length).toBe(3) // «Все города» + 2 региона
 
-        await user.selectOptions(regionSelect, 'Москва')
+        fireEvent.change(regionSelect, { target: { value: 'Москва' } })
         expect(setFiltersMock).toHaveBeenCalled()
     })
 
@@ -160,13 +167,15 @@ describe('ClientFilterPanel', () => {
         await user.click(resetBtn)
 
         expect(setFiltersMock).toHaveBeenCalledWith({
-            search: '',
-            sortBy: 'alphabet',
-            period: 'all',
-            orderCount: 'any',
-            region: 'all',
-            status: 'all',
-            showArchived: false,
+            page: 1,
+            limit: 50,
+            search: "",
+            sortBy: "alphabet",
+            period: "all",
+            orderCount: "any",
+            region: "all",
+            status: "all",
+            showArchived: false
         })
     })
 

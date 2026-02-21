@@ -30,6 +30,7 @@ export function MobileSidebarTrigger({ user }: { user: UserProp }) {
             <SheetTrigger asChild>
                 <Button
                     variant="ghost"
+                    data-testid="mobile-menu-toggle"
                     className="relative flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-600 transition-all duration-300 border-none bg-transparent outline-none p-0"
                 >
                     <div className="relative z-10 flex flex-col items-center gap-0.5">

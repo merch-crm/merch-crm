@@ -25,7 +25,7 @@ export function EmptyState({
     children,
 }: EmptyStateProps) {
     return (
-        <div className={cn("text-center py-20", className)}>
+        <div className={cn("text-center py-20", className)} data-testid="empty-state">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
                 <Icon className={cn("w-8 h-8 text-slate-200", iconClassName)} />
             </div>

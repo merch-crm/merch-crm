@@ -57,7 +57,7 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
     });
 
     return (
-        <header className="hidden md:block sticky top-0 z-50 p-3 md:p-4 md:px-6">
+        <header data-testid="desktop-navbar" className="hidden md:block sticky top-0 z-50 p-3 md:p-4 md:px-6">
             <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center">
                 <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     {/* Left: Logo */}

@@ -1,21 +1,11 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Модуль Клиенты', () => {
-    test.beforeEach(async ({ page }) => {
-        // Авторизация
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
-        await expect(page).toHaveURL('/dashboard')
-    })
-
     test('Отображение списка клиентов и поиск', async ({ page }) => {
         await page.goto('/dashboard/clients')
-        await page.waitForLoadState('networkidle')
 
-        // Проверяем наличие заголовка
-        await expect(page.locator('main h1, main h2').filter({ hasText: /клиенты/i }).first()).toBeVisible({ timeout: 10000 })
+        // Ждем конкретный элемент на странице
+        await expect(page.locator('main h1, main h2').filter({ hasText: /клиенты/i }).first()).toBeVisible({ timeout: 15000 })
 
         // Вводим что-то в поиск
         const searchInput = page.getByPlaceholder(/поиск по имени/i).first()

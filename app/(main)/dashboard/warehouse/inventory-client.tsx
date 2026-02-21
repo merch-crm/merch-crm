@@ -95,7 +95,7 @@ export function InventoryClient({ categories = [], user }: InventoryClientProps)
 
     return (
         <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]" data-testid="categories-list">
                 {itemsByCategory.map((category) => {
                     const IconComponent = getCategoryIcon(category);
                     const isOrphaned = category.id === "orphaned";

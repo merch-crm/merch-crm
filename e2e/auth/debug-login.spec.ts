@@ -8,12 +8,16 @@ test('детальная отладка входа', async ({ page }) => {
     await page.goto('/login');
     console.log('Current URL:', page.url());
 
-    await page.locator('input[name="email"]').fill('admin@test.com');
-    await page.locator('input[name="password"]').fill('password123');
+    const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="логин" i], input[placeholder*="email" i]').first();
+    const passwordInput = page.locator('input[type="password"]').first();
+
+    await emailInput.fill('admin@test.com');
+    await passwordInput.fill('password123');
 
     console.log('Clicking login button...');
     // Используем селектор по типу, чтобы точно попасть в кнопку отправки
-    await page.click('button[type="submit"]');
+    const submitButton = page.locator('button[type="submit"], button:has-text("Войти")').first();
+    await submitButton.click();
 
     // Ждем либо редиректа, либо появления ошибки
     try {

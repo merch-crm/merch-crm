@@ -116,12 +116,13 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                     >
                         {session?.roleName === "Администратор" && (
                             <Button
+                                data-testid="clear-history-btn"
                                 variant="destructive"
                                 onClick={() => setIsClearHistoryOpen(true)}
                                 disabled={history.length === 0}
                                 className="h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold flex items-center justify-center shadow-lg shadow-rose-500/20"
                             >
-                                <Eraser className="w-5 h-5 text-white" />
+                                <Eraser className="w-5 h-5 shrink-0 text-white" />
                                 <span className="hidden sm:inline">Очистить историю</span>
                             </Button>
                         )}

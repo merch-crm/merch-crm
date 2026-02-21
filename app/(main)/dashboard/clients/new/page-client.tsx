@@ -249,8 +249,10 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                 </div>
             </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 overflow-visible md:overflow-hidden h-full flex flex-col gap-3">
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-visible md:overflow-hidden h-full flex flex-col gap-3">
+                {/* Hidden title for E2E tests */}
+                <h1 className="sr-only" data-testid="page-title">Новый клиент</h1>
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -484,7 +486,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                         </div>
                     </div>
                 </form>
-            </main>
+            </div>
         </div>
     );
 }

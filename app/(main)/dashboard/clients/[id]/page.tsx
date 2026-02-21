@@ -158,7 +158,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="lg:col-span-8 flex flex-col gap-4">
+                <div className="lg:col-span-8 flex flex-col gap-4">
                     {/* Stats Overview */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         {[
@@ -210,7 +210,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                             </div>
                         </TabsContent>
                     </Tabs>
-                </main>
+                </div>
             </div>
         </div>
     );

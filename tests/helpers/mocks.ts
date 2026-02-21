@@ -106,6 +106,7 @@ export function createMockTask(overrides: Partial<Task> = {}): Task {
         orderId: null,
         dueDate: null,
         createdAt: new Date('2026-01-01'),
+        ...overrides,
     } as Task;
 }
 

@@ -52,7 +52,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     const { toast } = useToast();
 
     if (!mounted) {
-        return <div className="min-h-[400px]" />;
+        return <div className="min-h-[400px]" data-testid="history-container" />;
     }
 
     const handleExportSelected = () => {
@@ -60,7 +60,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
     };
 
     return (
-        <div className="space-y-3 relative pb-0">
+        <div className="space-y-3 relative pb-0" data-testid="history-container">
             <HistoryToolbar
                 isMobileSearchExpanded={isMobileSearchExpanded}
                 setIsMobileSearchExpanded={setIsMobileSearchExpanded}

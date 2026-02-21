@@ -17,7 +17,7 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock('../actions', () => ({
+vi.mock('../actions/core.actions', () => ({
     createOrder: vi.fn(),
     searchClients: vi.fn(),
 }));
@@ -48,7 +48,7 @@ vi.mock('@/components/ui/select', () => ({
     )
 }));
 
-import { searchClients, createOrder } from "../actions/core.actions";;
+import { searchClients, createOrder } from "../actions/core.actions";
 import { validatePromocode } from '../../finance/actions';
 
 const mockInventory = [

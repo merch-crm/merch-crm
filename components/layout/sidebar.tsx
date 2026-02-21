@@ -56,7 +56,7 @@ export function Sidebar({ className, user }: SidebarProps) {
     });
 
     return (
-        <div className={cn("flex flex-col bg-white py-4", className)}>
+        <div data-testid="sidebar" className={cn("flex flex-col bg-white py-4", className)}>
             <div className="px-6 mb-6 flex items-center gap-3">
                 <div className="bg-primary rounded-[14px] w-9 h-9 p-1 flex items-center justify-center shadow-sm">
                     <Printer className="h-7 w-7 text-white" />
@@ -64,7 +64,7 @@ export function Sidebar({ className, user }: SidebarProps) {
                 <span className="text-xl font-bold text-slate-900 tracking-tight">MerchCRM</span>
             </div>
 
-            <nav className="flex-1 px-4 space-y-1">
+            <nav data-testid="main-nav" className="flex-1 px-4 space-y-1">
                 {filteredNavigation.map((item) => {
                     const isActive = item.href === "/dashboard"
                         ? pathname === "/dashboard"

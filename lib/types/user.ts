@@ -89,7 +89,7 @@ export interface User extends BaseEntity {
     status?: UserStatus;
 
     departmentId: string | null; // Совместимость
-    department?: Department | string | null; // Совместимость: string | null
+    department?: Department | { name: string; color?: string | null } | string | null; // Совместимость: string | null
     department_color?: string | null; // Совместимость: цвет отдела
 
     // Разрешения

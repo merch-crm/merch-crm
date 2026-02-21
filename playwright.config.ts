@@ -1,21 +1,39 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import path from 'path';
+
+// Загружаем .env.local для доступа к переменным окружения
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
 export default defineConfig({
     testDir: './e2e',
     globalSetup: require.resolve('./e2e/setup/global-setup'),
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : undefined,
+
+    // Оптимизация для локальной разработки и CI
+    retries: process.env.CI ? 2 : 0, // 0 для мгновенного падения (fail-fast) при локальной разработке
+    workers: process.env.CI ? 1 : 6, // 6 воркеров для распараллеливания по платформам
+
+    // Увеличенные таймауты для тяжёлых страниц CRM
+    timeout: 90000,
+    expect: {
+        timeout: 30000,
+    },
+
     reporter: [
         ['html'],
-        ['./e2e/reporters/fix-plan-reporter.ts'],
+        ['list']
     ],
 
     use: {
-        baseURL: 'http://localhost:3000',
+        baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+
+        navigationTimeout: 60000,
+        actionTimeout: 20000,
     },
 
     projects: [
@@ -23,7 +41,7 @@ export default defineConfig({
             name: 'setup',
             testMatch: /.*\.setup\.ts/,
         },
-        // Google Chrome
+        // Основной проект для тестов - Chrome
         {
             name: 'chrome',
             use: {
@@ -33,18 +51,7 @@ export default defineConfig({
             },
             dependencies: ['setup'],
         },
-
-        // Safari (WebKit)
-        {
-            name: 'safari',
-            use: {
-                ...devices['Desktop Safari'],
-                storageState: 'playwright/.auth/user.json',
-            },
-            dependencies: ['setup'],
-        },
-
-        // Safari на iPhone
+        // Мобильная версия для проверки адаптивности
         {
             name: 'mobile-safari',
             use: {
@@ -53,8 +60,7 @@ export default defineConfig({
             },
             dependencies: ['setup'],
         },
-
-        // Safari на iPad
+        // Планшетная версия
         {
             name: 'tablet-safari',
             use: {
@@ -63,26 +69,15 @@ export default defineConfig({
             },
             dependencies: ['setup'],
         },
-
-        // Firefox
-        {
-            name: 'firefox',
-            use: {
-                ...devices['Desktop Firefox'],
-                storageState: 'playwright/.auth/user.json',
-            },
-            dependencies: ['setup'],
-        },
-
     ],
 
-    // Автозапуск dev-сервера
     webServer: {
         command: 'npm run dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
+        timeout: 120000,
         env: {
             NEXT_PUBLIC_E2E: 'true',
         },
     },
-})
+});

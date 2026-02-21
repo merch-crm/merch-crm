@@ -48,7 +48,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
             />
 
             {/* Main Content Area */}
-            <main className="flex-1 p-6 md:p-8 lg:p-12 relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-full">
+            <div className="flex-1 p-6 md:p-8 lg:p-12 relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-full">
                 <ProfileHeader
                     user={user}
                     view={view}
@@ -101,7 +101,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         )}
                     </motion.div>
                 </AnimatePresence>
-            </main>
+            </div>
         </div>
     );
 }

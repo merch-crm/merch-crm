@@ -163,7 +163,7 @@ export function HistoryDisplay({
             </div>
 
             {/* 📱 Mobile List View (Hidden on desktop) */}
-            <div className="md:hidden crm-card !p-0 !rounded-[var(--radius-outer)] overflow-hidden shadow-sm divide-y divide-slate-100">
+            <div data-testid="history-mobile-list" className="md:hidden crm-card !p-0 !rounded-[var(--radius-outer)] overflow-hidden shadow-sm divide-y divide-slate-100">
                 {currentItems.map((t) => {
                     const isIn = t.type === "in";
                     const amount = Math.abs(t.changeAmount);

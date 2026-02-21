@@ -150,7 +150,8 @@ export function AdminLayoutClient({
             </BottomSheet>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col h-full bg-slate-50/50 relative z-0 overflow-hidden">
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col h-full bg-slate-50/50 relative z-0 overflow-hidden">
                 {/* Desktop Top Bar */}
                 <header className="hidden md:flex h-20 border-b border-slate-200 bg-white/80 backdrop-blur-md px-12 items-center justify-between shrink-0 z-20">
                     <div className="flex items-center gap-4 flex-1">
@@ -168,7 +169,7 @@ export function AdminLayoutClient({
                 <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                     {children}
                 </div>
-            </main>
+            </div>
         </div>
     );
 }

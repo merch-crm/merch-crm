@@ -18,6 +18,8 @@ export default async function StoragePage() {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
+            {/* Hidden title for E2E tests since it's only in Breadcrumbs/MobileHeader visually */}
+            <h1 className="sr-only" data-testid="page-title">Хранение</h1>
             <StorageLocationsTab
                 locations={storageLocations}
                 users={users}

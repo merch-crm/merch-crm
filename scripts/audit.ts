@@ -803,25 +803,29 @@ function checkPerformance(files: string[]): AuditError[] {
             let depth = 1;
             let pos = useEffectMatch.index + useEffectMatch[0].length;
             let hasComma = false;
-            let inString = false;
+            let isInString = false;
             let stringChar = '';
 
             // Simple scanner to find matching parenthesis and comma at depth 1
             while (pos < content.length && depth > 0) {
                 const char = content[pos];
-                if (!inString) {
+                if (!isInString) {
                     if (char === '"' || char === "'" || char === "`") {
-                        inString = true;
+                        isInString = true;
                         stringChar = char;
-                    } else if (char === '(') {
-                        depth++;
-                    } else if (char === ')') {
-                        depth--;
-                    } else if (depth === 1 && char === ',') {
-                        hasComma = true;
                     }
-                } else if (char === stringChar && content[pos - 1] !== '\\') {
-                    inString = false;
+                } else if (char === stringChar) {
+                    // Check for escaped char
+                    if (content[pos - 1] !== '\\') {
+                        isInString = false;
+                    }
+                }
+
+                if (!isInString && char === '(') depth++;
+                if (!isInString && char === ')') depth--;
+
+                if (!isInString && depth === 1 && char === ',') {
+                    hasComma = true;
                 }
                 pos++;
             }
@@ -1226,8 +1230,8 @@ function checkNamingConventions(files: string[]): AuditError[] {
         const fileName = path.basename(file);
 
         if (file.includes('/components/') && file.endsWith('.tsx')) {
-            const isKebab = /^[a-z]+(-[a-z]+)*\.tsx$/.test(fileName);
-            const isPascal = /^[A-Z][a-zA-Z]+\.tsx$/.test(fileName);
+            const isKebab = /^[a-z0-9]+(-[a-z0-9]+)*\.tsx$/.test(fileName);
+            const isPascal = /^[A-Z][a-zA-Z0-9]+\.tsx$/.test(fileName);
 
             if (!isKebab && !isPascal && !fileName.startsWith('use')) {
                 errors.push({

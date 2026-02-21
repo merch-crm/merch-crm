@@ -1,6 +1,7 @@
-const { Client } = require('pg');
-const fs = require('fs');
-const path = require('path');
+import pg from 'pg';
+const { Client } = pg;
+import fs from 'fs';
+import path from 'path';
 
 // Basic env parser for .env.local
 function loadEnv() {

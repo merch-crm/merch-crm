@@ -1,21 +1,12 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Модуль Задачи', () => {
-    test.beforeEach(async ({ page }) => {
-        // Авторизация
-        await page.goto('/login')
-        await page.getByPlaceholder(/введите логин/i).fill('admin@test.com')
-        await page.getByPlaceholder(/введите пароль/i).fill('password123')
-        await page.getByRole('button', { name: /войти/i }).click({ force: true })
-        await expect(page).toHaveURL('/dashboard')
-    })
-
-    test('Отображение канбан-доски', async ({ page }) => {
+    test('Отображение задач и перенос', async ({ page }) => {
         await page.goto('/dashboard/tasks')
-        await page.waitForLoadState('networkidle')
 
-        // Проверяем наличие заголовка
-        await expect(page.locator('main h1, main h2, main .page-header').filter({ hasText: /рабочие процессы/i }).first()).toBeVisible({ timeout: 10000 })
+        // Ждем конкретный элемент
+        // Ждем конкретный элемент
+        await expect(page.locator('main h1, main h2, .page-header').filter({ hasText: /задачи|рабочие процессы/i }).first()).toBeVisible({ timeout: 15000 })
 
         // Проверяем наличие колонок канбана (To Do, In Progress и тд)
         await expect(page.locator('[data-status], .kanban-column, .task-column').first()).toBeVisible()

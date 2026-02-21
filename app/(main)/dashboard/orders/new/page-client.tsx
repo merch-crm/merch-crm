@@ -275,6 +275,8 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
     return (
         <div className="flex-1 flex flex-col md:h-[calc(100vh-130px)] overflow-hidden bg-muted/50">
+            {/* Hidden title for E2E tests - placed at top level for reliable detection */}
+            <h1 className="sr-only" data-testid="page-title">Новый заказ</h1>
             <div className="px-8 pt-6 shrink-0">
                 <Breadcrumbs
                     items={[
@@ -298,9 +300,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                     selectedClientName={orderData.selectedClient ? (orderData.selectedClient.displayName || orderData.selectedClient.fullName) : ""}
                 />
 
-                {/* Main Content */}
-                <main className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
-                    <div className="crm-card flex-1 min-w-0 flex flex-col h-full min-h-[400px]">
+                {/* Main Content Area */}
+                <div className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
+                    <div className="crm-card flex-1 min-w-0 flex flex-col h-full min-h-[400px]" data-testid="order-form">
                         <div className="flex-1 overflow-y-auto p-6 md:p-10">
                             {uiState.step === 0 && (
                                 <StepClientSelection
@@ -376,7 +378,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                             </div>
                         </div>
                     </div>
-                </main>
+                </div>
             </div >
         </div >
     );

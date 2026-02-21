@@ -204,7 +204,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="clients-list">
             <ClientFilterPanel
                 filters={filters}
                 setFilters={setFilters}
