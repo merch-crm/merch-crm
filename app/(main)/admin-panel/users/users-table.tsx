@@ -144,7 +144,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 <td className="crm-td">
                                                     <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                                                         <Building className="w-4 h-4 text-slate-300" />
-                                                        {user.department || "—"}
+                                                        {(typeof user.department === 'object' ? user.department?.name : user.department) || "—"}
                                                     </div>
                                                 </td>
                                                 <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
@@ -258,7 +258,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                             <div className="flex items-center justify-between pt-2 border-t border-slate-50">
                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
                                     <Building className="w-3.5 h-3.5 opacity-50" />
-                                    {user.department || "Нет отдела"}
+                                    {(typeof user.department === 'object' ? user.department?.name : user.department) || "Нет отдела"}
                                 </div>
                                 <div role="button" tabIndex={0} onKeyDown={(e) => handleA11yKeyDown(e, () => e.stopPropagation())} onClick={(e) => e.stopPropagation()}>
                                     <input
